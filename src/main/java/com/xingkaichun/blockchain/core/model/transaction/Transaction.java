@@ -37,4 +37,6 @@ public class Transaction implements Serializable {
         this.outputs = outputs;
     }
 
+    public Transaction() {
+    }
 }
