@@ -287,26 +287,24 @@ public class BlockChainCore {
         try{
             //校验区块是否真实存在
             if(possibleLastBlock != null){
-                //不存在，置为null
+                //不存在，置为null 之前添加的区块可能被删除了
                 possibleLastBlock = findBlockByBlockHeight(possibleLastBlock.getBlockHeight());
             }
-            //当前区块
-            Block currentBlock = possibleLastBlock;
-            byte[] currentByteBlock;
-            //当前区块为null，重新查找最终区块，先找到第一个区块
-            if(currentBlock == null){
-                currentByteBlock = LevelDBUtil.get(BlockChain_DB, Constant.FIRST_BLOCK_PREVIOUS_HASH);
-                if(currentByteBlock==null){
-                    return null;
+            if(possibleLastBlock ==null){
+                possibleLastBlock = findBlockByBlockHeight(Constant.FIRST_BLOCK_HEIGHT);
+            }
+            if(possibleLastBlock ==null){
+                return null;
+            }
+            for(int blockHeight=possibleLastBlock.getBlockHeight()+1;;blockHeight++){
+                Block currentBlock = findBlockByBlockHeight(blockHeight);
+                if(currentBlock == null){
+                    break;
+                }else {
+                    possibleLastBlock = currentBlock;
                 }
-                currentBlock = EncodeDecode.decodeToBlock(currentByteBlock);
             }
-            //尝试查找最终区块
-            while((currentByteBlock = LevelDBUtil.get(BlockChain_DB,String.valueOf((currentBlock.getBlockHeight()+1))))!=null){
-                currentBlock = EncodeDecode.decodeToBlock(currentByteBlock);
-                this.possibleLastBlock = currentBlock;
-            }
-            return currentBlock;
+            return possibleLastBlock;
         }finally {
             lock.unlock();
         }
