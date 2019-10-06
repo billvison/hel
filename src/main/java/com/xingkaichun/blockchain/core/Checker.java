@@ -10,5 +10,5 @@ public interface Checker {
     /**
      * 检测区块
      */
-    boolean checkBlock(BlockChainCore blockChainCore, Block block) throws Exception;
+    void checkBlock(BlockChainCore blockChainCore, Block block) throws Exception;
 }
