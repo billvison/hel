@@ -26,7 +26,7 @@ public class DefaultChecker implements Checker {
     /**
      * 检测区块
      */
-    public void checkBlock(BlockChainCore blockChainCore, Block block) throws Exception {
+    public boolean checkBlock(BlockChainCore blockChainCore, Block block) throws Exception {
         //区块角度检测区块的数据的安全性
         //同一张钱不能被两次交易同时使用【同一个UTXO在不同的交易中出现】
         Set<String> transactionOutputUUIDSet = new HashSet<>();
@@ -57,6 +57,7 @@ public class DefaultChecker implements Checker {
         if(minerTransactionTimes == 0){
             throw new BlockChainCoreException("区块数据异常，没有检测到挖矿奖励交易。");
         }
+        return true;
     }
 
     private void checkMinerTransaction(Transaction tx) {
@@ -65,7 +66,7 @@ public class DefaultChecker implements Checker {
     /**
      * 校验交易的合法性
      */
-    public void checkTransaction(BlockChainCore blockChainCore, Transaction transaction) throws Exception{
+    public boolean checkTransaction(BlockChainCore blockChainCore, Transaction transaction) throws Exception{
         ArrayList<TransactionInput> inputs = transaction.getInputs();
         if(inputs==null||inputs.size()==0){
             throw new BlockChainCoreException("交易校验失败：交易的输入不能为空。不合法的交易。");
@@ -119,6 +120,7 @@ public class DefaultChecker implements Checker {
         }catch (Exception e){
             throw new BlockChainCoreException("交易校验失败：校验交易签名失败。不合法的交易。");
         }
+        return true;
     }
 
 }

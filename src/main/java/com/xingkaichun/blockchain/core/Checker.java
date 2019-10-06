@@ -11,11 +11,11 @@ public interface Checker {
     /**
      * 检测区块
      */
-    void checkBlock(BlockChainCore blockChainCore, Block block) throws Exception;
+    boolean checkBlock(BlockChainCore blockChainCore, Block block) throws Exception;
 
     /**
      * 校验交易的合法性
      */
-    void checkTransaction(BlockChainCore blockChainCore, Transaction transaction) throws Exception;
+    boolean checkTransaction(BlockChainCore blockChainCore, Transaction transaction) throws Exception;
 
 }
