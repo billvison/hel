@@ -82,7 +82,7 @@ public class BlockChainCore {
             }
             WriteBatch writeBatch = createWriteBatch(block,true,false);
             LevelDBUtil.put(BlockChain_DB,writeBatch);
-            notifyAddBlockActionListener(block,true,false);
+            notifyBlockChainActionListener(block,true,false);
             return true;
         }finally {
             lock.unlock();
@@ -130,7 +130,7 @@ public class BlockChainCore {
             }
             WriteBatch writeBatch = createWriteBatch(tailBlock,false,true);
             LevelDBUtil.put(BlockChain_DB,writeBatch);
-            notifyAddBlockActionListener(tailBlock,false,true);
+            notifyBlockChainActionListener(tailBlock,false,true);
             return true;
         }finally {
             lock.unlock();
@@ -190,8 +190,8 @@ public class BlockChainCore {
 
             LevelDBUtil.put(BlockChain_DB,writeBatch);
 
-            notifyAddBlockActionListener(deleteBlockList,false,true);
-            notifyAddBlockActionListener(addBlockList,true,false);
+            notifyBlockChainActionListener(deleteBlockList,false,true);
+            notifyBlockChainActionListener(addBlockList,true,false);
             return true;
         }finally {
             lock.unlock();
@@ -439,7 +439,7 @@ public class BlockChainCore {
     //endregion
 
     //region 监听器
-    public void addAddBlockActionListener(BlockChainActionListener blockChainActionListener){
+    public void addBlockChainActionListener(BlockChainActionListener blockChainActionListener){
         lock.lock();
         try{
             blockChainActionListenerList.add(blockChainActionListener);
@@ -447,17 +447,17 @@ public class BlockChainCore {
             lock.unlock();
         }
     }
-    private void notifyAddBlockActionListener(Block block, boolean addBlock, boolean deleteBlock) {
+    private void notifyBlockChainActionListener(Block block, boolean addBlock, boolean deleteBlock) {
         lock.lock();
         try{
             List<Block> blockList = new ArrayList<>();
             blockList.add(block);
-            notifyAddBlockActionListener(blockList,addBlock,deleteBlock);
+            notifyBlockChainActionListener(blockList,addBlock,deleteBlock);
         }finally {
             lock.unlock();
         }
     }
-    private void notifyAddBlockActionListener(List<Block> blockList, boolean addBlock, boolean deleteBlock) {
+    private void notifyBlockChainActionListener(List<Block> blockList, boolean addBlock, boolean deleteBlock) {
         lock.lock();
         try{
             for (BlockChainActionListener listener: blockChainActionListenerList) {
