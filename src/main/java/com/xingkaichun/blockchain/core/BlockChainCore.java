@@ -42,10 +42,8 @@ public class BlockChainCore {
     //可能的最后一个区块
     private Block possibleLastBlock;
 
-    //监听核心区块链删除区块的动作
-    private List<DeleteBlockActionListener> deleteBlockActionListenerList = new ArrayList<>();
-    //监听核心区块链新增区块的动作
-    private List<AddBlockActionListener> addBlockActionListenerList = new ArrayList<>();
+    //监听区块链区块的增删
+    private List<BlockChainActionListener> blockChainActionListenerList = new ArrayList<>();
 
     //保证对区块链增区块、删区块、查区块的操作是同步的。
     private Lock lock = new ReentrantLock();
@@ -84,7 +82,7 @@ public class BlockChainCore {
             }
             WriteBatch writeBatch = createWriteBatch(block,true,false);
             LevelDBUtil.put(BlockChain_DB,writeBatch);
-            notifyAddBlockActionListener(block);
+            notifyAddBlockActionListener(block,true,false);
             return true;
         }finally {
             lock.unlock();
@@ -132,7 +130,7 @@ public class BlockChainCore {
             }
             WriteBatch writeBatch = createWriteBatch(tailBlock,false,true);
             LevelDBUtil.put(BlockChain_DB,writeBatch);
-            notifyDeleteBlockActionListener(tailBlock);
+            notifyAddBlockActionListener(tailBlock,false,true);
             return true;
         }finally {
             lock.unlock();
@@ -142,14 +140,14 @@ public class BlockChainCore {
     /**
      * 回滚到老的区块，并新增区块
      */
-    public boolean backAndAddBlocks(List<Block> blockList) throws Exception {
+    public boolean backAndAddBlocks(List<Block> addBlockList) throws Exception {
         lock.lock();
         try{
-            if(blockList==null || blockList.size()==0){
+            if(addBlockList==null || addBlockList.size()==0){
                 return true;
             }
 
-            Block addedFirstBlock = blockList.get(0);
+            Block addedFirstBlock = addBlockList.get(0);
             int addedFirstBlockHight = addedFirstBlock.getBlockHeight();
             Block deleteUntilBlock = findBlockByBlockHeight(addedFirstBlock.getBlockHeight()-1);
 
@@ -157,7 +155,7 @@ public class BlockChainCore {
                 return false;
             }
 
-            for(int i=0;i<blockList.size();i++){
+            for(int i=0;i<addBlockList.size();i++){
                 if(i==0){
                     //校验新增的区块们
                     boolean continueBlock = continueBlock(deleteUntilBlock,addedFirstBlock);
@@ -165,7 +163,7 @@ public class BlockChainCore {
                         return false;
                     }
                 }else{
-                    boolean continueBlock = continueBlock(blockList.get(i-1),blockList.get(i));
+                    boolean continueBlock = continueBlock(addBlockList.get(i-1),addBlockList.get(i));
                     if(!continueBlock){
                         return false;
                     }
@@ -186,14 +184,14 @@ public class BlockChainCore {
             }
 
             //增 替换的区块
-            for(Block block:blockList){
+            for(Block block:addBlockList){
                 fillWriteBatch(writeBatch,block,true,false);
             }
 
             LevelDBUtil.put(BlockChain_DB,writeBatch);
 
-            notifyDeleteBlockActionListener(deleteBlockList);
-            notifyAddBlockActionListener(blockList);
+            notifyAddBlockActionListener(deleteBlockList,false,true);
+            notifyAddBlockActionListener(addBlockList,true,false);
             return true;
         }finally {
             lock.unlock();
@@ -349,6 +347,27 @@ public class BlockChainCore {
     }
 
     /**
+     * 查找所有的UTXO
+     * @param transactionOutputId 交易输出ID
+     */
+    public TransactionOutput findAllUTXOByPublicKey(String transactionOutputId) throws Exception {
+        lock.lock();
+        //TODO
+        try{
+            if(transactionOutputId==null||"".equals(transactionOutputId)){
+                return null;
+            }
+            byte[] utxo = LevelDBUtil.get(BlockChain_DB,addUnspendTransactionOutputPrefix(transactionOutputId));
+            if(utxo == null){
+                return null;
+            }
+            return EncodeDecode.decodeToTransactionOutput(utxo);
+        }finally {
+            lock.unlock();
+        }
+    }
+
+    /**
      * 查找UTXO
      * @param transactionOutputId 交易输出ID
      */
@@ -367,7 +386,6 @@ public class BlockChainCore {
             lock.unlock();
         }
     }
-
     /**
      * 查找区块
      * @param blockHeight 区块高度
@@ -421,61 +439,29 @@ public class BlockChainCore {
     //endregion
 
     //region 监听器
-    public void addDeleteBlockActionListener(DeleteBlockActionListener deleteBlockActionListener){
+    public void addAddBlockActionListener(BlockChainActionListener blockChainActionListener){
         lock.lock();
         try{
-            deleteBlockActionListenerList.add(deleteBlockActionListener);
+            blockChainActionListenerList.add(blockChainActionListener);
         }finally {
             lock.unlock();
         }
     }
-    private void notifyDeleteBlockActionListener(Block block) {
+    private void notifyAddBlockActionListener(Block block, boolean addBlock, boolean deleteBlock) {
         lock.lock();
         try{
-            for (DeleteBlockActionListener listener:deleteBlockActionListenerList) {
-                listener.deleteBlock(block);
-            }
+            List<Block> blockList = new ArrayList<>();
+            blockList.add(block);
+            notifyAddBlockActionListener(blockList,addBlock,deleteBlock);
         }finally {
             lock.unlock();
         }
     }
-    private void notifyDeleteBlockActionListener(List<Block> blockList) {
+    private void notifyAddBlockActionListener(List<Block> blockList, boolean addBlock, boolean deleteBlock) {
         lock.lock();
         try{
-            for(Block block:blockList){
-                for (DeleteBlockActionListener listener:deleteBlockActionListenerList) {
-                    listener.deleteBlock(block);
-                }
-            }
-        }finally {
-            lock.unlock();
-        }
-    }
-    public void addAddBlockActionListener(AddBlockActionListener addBlockActionListener){
-        lock.lock();
-        try{
-            addBlockActionListenerList.add(addBlockActionListener);
-        }finally {
-            lock.unlock();
-        }
-    }
-    private void notifyAddBlockActionListener(Block block) {
-        lock.lock();
-        try{
-            for (AddBlockActionListener listener:addBlockActionListenerList) {
-                listener.addBlock(block);
-            }
-        }finally {
-            lock.unlock();
-        }
-    }
-    private void notifyAddBlockActionListener(List<Block> blockList) {
-        lock.lock();
-        try{
-            for(Block block:blockList){
-                for (AddBlockActionListener listener:addBlockActionListenerList) {
-                    listener.addBlock(block);
-                }
+            for (BlockChainActionListener listener: blockChainActionListenerList) {
+                listener.addOrDeleteBlock(blockList,addBlock,deleteBlock);
             }
         }finally {
             lock.unlock();
