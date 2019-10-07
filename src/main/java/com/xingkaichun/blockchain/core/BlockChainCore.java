@@ -24,6 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class BlockChainCore {
 
+    //region 变量
     //区块链数据库
     private DB BlockChain_DB;
     //区块校验者
@@ -47,9 +48,10 @@ public class BlockChainCore {
 
     //保证对区块链增区块、删区块、查区块的操作是同步的。
     private Lock lock = new ReentrantLock();
+    //endregion
 
     /**
-     * 初始化区块链
+     * 构造函数
      * @param dbPath 数据库地址
      * @param checker 校验者
      */
