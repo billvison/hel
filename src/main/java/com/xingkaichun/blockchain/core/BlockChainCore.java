@@ -59,6 +59,7 @@ public class BlockChainCore {
         this.BlockChain_DB = LevelDBUtil.createDB(new File(dbPath,"BlockChain_DB"));
         this.checker = checker;
 
+
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 BlockChain_DB.close();
