@@ -112,6 +112,7 @@ public class BlockChainCore {
     }
 
     /**
+     * //TODO 有BUG
      * 回滚到老的区块，并新增区块
      */
     public boolean backAndAddBlocks(List<Block> addBlockList) throws Exception {
@@ -132,6 +133,7 @@ public class BlockChainCore {
             for(int i=0;i<addBlockList.size();i++){
                 if(i==0){
                     //校验新增的区块们
+                    //TODO 有BUG
                     boolean continueBlock = continueBlock(deleteUntilBlock,addedFirstBlock);
                     if(!continueBlock){
                         return false;
