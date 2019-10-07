@@ -66,6 +66,7 @@ public class BlockChainCore {
         }));
     }
 
+    //region 区块增加与删除
     /**
      * 区块链新增区块
      */
@@ -83,35 +84,6 @@ public class BlockChainCore {
             WriteBatch writeBatch = createWriteBatch(block,true,false);
             LevelDBUtil.put(BlockChain_DB,writeBatch);
             notifyBlockChainActionListener(block,true,false);
-            return true;
-        }finally {
-            lock.unlock();
-        }
-    }
-
-    /**
-     * 校验新的区块是否可以是区块链的下一个区块
-     * @param frontBlock 前面的区块
-     * @param behindBlock 后面的区块
-     */
-    private boolean continueBlock(Block frontBlock, Block behindBlock) throws Exception {
-        lock.lock();
-        try{
-            if(frontBlock != null){
-                //区块高度校验
-                if((frontBlock.getBlockHeight()+1) != behindBlock.getBlockHeight()){
-                    return false;
-                }
-                //区块hash校验
-                if(!frontBlock.getHash().equals(behindBlock.getPreviousHash())){
-                    return false;
-                }
-            }
-            //区块数据的校验
-            if(!checker.checkBlock(this, behindBlock)){
-                System.out.println("区块链上新增的区块数据不合法。请检测区块。");
-                return false;
-            }
             return true;
         }finally {
             lock.unlock();
@@ -192,6 +164,36 @@ public class BlockChainCore {
 
             notifyBlockChainActionListener(deleteBlockList,false,true);
             notifyBlockChainActionListener(addBlockList,true,false);
+            return true;
+        }finally {
+            lock.unlock();
+        }
+    }
+    //endregion
+
+    /**
+     * 校验新的区块是否可以是区块链的下一个区块
+     * @param frontBlock 前面的区块
+     * @param behindBlock 后面的区块
+     */
+    private boolean continueBlock(Block frontBlock, Block behindBlock) throws Exception {
+        lock.lock();
+        try{
+            if(frontBlock != null){
+                //区块高度校验
+                if((frontBlock.getBlockHeight()+1) != behindBlock.getBlockHeight()){
+                    return false;
+                }
+                //区块hash校验
+                if(!frontBlock.getHash().equals(behindBlock.getPreviousHash())){
+                    return false;
+                }
+            }
+            //区块数据的校验
+            if(!checker.checkBlock(this, behindBlock)){
+                System.out.println("区块链上新增的区块数据不合法。请检测区块。");
+                return false;
+            }
             return true;
         }finally {
             lock.unlock();
