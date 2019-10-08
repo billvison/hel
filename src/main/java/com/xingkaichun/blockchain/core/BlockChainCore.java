@@ -194,6 +194,13 @@ public class BlockChainCore {
                 if(!lastBlock.getHash().equals(behindBlock.getPreviousHash())){
                     return false;
                 }
+            } else {
+                if(behindBlock.getBlockHeight()!=1){
+                    return false;
+                }
+                if(!BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH.equals(behindBlock.getPreviousHash())){
+                    return false;
+                }
             }
             //区块数据的校验
             if(!checker.checkBlock(this, behindBlock)){

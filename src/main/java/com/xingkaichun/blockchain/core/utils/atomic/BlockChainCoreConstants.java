@@ -12,5 +12,6 @@ public class BlockChainCoreConstants {
 
     //第一个区块的高度
     public final static int FIRST_BLOCK_HEIGHT = 1;
-
+    //第一个区块的PREVIOUS_HASH
+    public final static String FIRST_BLOCK_PREVIOUS_HASH = "xingkaichun";
 }
