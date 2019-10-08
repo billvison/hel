@@ -20,7 +20,7 @@ public class CipherUtil {
     public static String applySha256(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(input.getBytes(Constant.CHARSET));
+            byte[] hash = digest.digest(input.getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
             StringBuffer hexString = new StringBuffer();
             for (int i = 0; i < hash.length; i++) {
                 String hex = Integer.toHexString(0xff & hash[i]);

@@ -5,7 +5,7 @@ import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.blockchain.core.utils.atomic.Constant;
+import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.EncodeDecode;
 import com.xingkaichun.blockchain.core.utils.atomic.LevelDBUtil;
 import org.iq80.leveldb.DB;
@@ -234,11 +234,11 @@ public class BlockChainCore {
         try{
             //区块数据
             if(addBlock){
-                writeBatch.put(addBlockHashPrefix(block.getHash()).getBytes(Constant.CHARSET), EncodeDecode.encode(block));
-                writeBatch.put(addBlockHeightPrefix(block.getBlockHeight()).getBytes(Constant.CHARSET), EncodeDecode.encode(block));
+                writeBatch.put(addBlockHashPrefix(block.getHash()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(block));
+                writeBatch.put(addBlockHeightPrefix(block.getBlockHeight()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(block));
             }else{
-                writeBatch.delete(addBlockHashPrefix(block.getHash()).getBytes(Constant.CHARSET));
-                writeBatch.delete(addBlockHeightPrefix(block.getBlockHeight()).getBytes(Constant.CHARSET));
+                writeBatch.delete(addBlockHashPrefix(block.getHash()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
+                writeBatch.delete(addBlockHeightPrefix(block.getBlockHeight()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
             }
 
             //UTXO信息
@@ -247,18 +247,18 @@ public class BlockChainCore {
                 for(Transaction transaction:packingTransactionList){
                     //交易数据
                     if(addBlock){
-                        writeBatch.put(addTransactionPrefix(transaction.getTransactionUUID()).getBytes(Constant.CHARSET), EncodeDecode.encode(transaction));
+                        writeBatch.put(addTransactionPrefix(transaction.getTransactionUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(transaction));
                     } else {
-                        writeBatch.delete(addTransactionPrefix(transaction.getTransactionUUID()).getBytes(Constant.CHARSET));
+                        writeBatch.delete(addTransactionPrefix(transaction.getTransactionUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
                     }
                     ArrayList<TransactionInput> inputs = transaction.getInputs();
                     if(inputs!=null){
                         for(TransactionInput txInput:inputs){
                             if(addBlock){
                                 //删除用掉的UTXO
-                                writeBatch.delete(addUnspendTransactionOutputPrefix(txInput.getUtxo().getTransactionOutputUUID()).getBytes(Constant.CHARSET));
+                                writeBatch.delete(addUnspendTransactionOutputPrefix(txInput.getUtxo().getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
                             } else {
-                                writeBatch.put(addUnspendTransactionOutputPrefix(txInput.getUtxo().getTransactionOutputUUID()).getBytes(Constant.CHARSET),EncodeDecode.encode(txInput.getUtxo()));
+                                writeBatch.put(addUnspendTransactionOutputPrefix(txInput.getUtxo().getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8),EncodeDecode.encode(txInput.getUtxo()));
                             }
                         }
                     }
@@ -267,12 +267,12 @@ public class BlockChainCore {
                         for(TransactionOutput output:outputs){
                             if(addBlock){
                                 //新产生的UTXO
-                                writeBatch.put(addUnspendTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(Constant.CHARSET), EncodeDecode.encode(output));
+                                writeBatch.put(addUnspendTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(output));
                                 //所有的TXO数据
-                                writeBatch.put(addTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(Constant.CHARSET), EncodeDecode.encode(output));
+                                writeBatch.put(addTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(output));
                             } else {
-                                writeBatch.delete(addUnspendTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(Constant.CHARSET));
-                                writeBatch.delete(addTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(Constant.CHARSET));
+                                writeBatch.delete(addUnspendTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
+                                writeBatch.delete(addTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
                             }
 
                         }
@@ -296,7 +296,7 @@ public class BlockChainCore {
                 possibleLastBlock = findBlockByBlockHeight(possibleLastBlock.getBlockHeight());
             }
             if(possibleLastBlock ==null){
-                possibleLastBlock = findBlockByBlockHeight(Constant.FIRST_BLOCK_HEIGHT);
+                possibleLastBlock = findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
             }
             if(possibleLastBlock ==null){
                 return null;

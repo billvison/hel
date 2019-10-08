@@ -16,7 +16,7 @@ public class LevelDBUtil {
     }
 
     public static byte[] get(DB db,String key) throws DBException{
-        return db.get(key.getBytes(Constant.CHARSET));
+        return db.get(key.getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
     }
 
     public static DB createDB(File dbFile) throws Exception{
