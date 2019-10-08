@@ -80,8 +80,7 @@ public class BlockChainCore {
         }
         lock.lock();
         try{
-            Block lastBlock = findLastBlockFromBlock();
-            if(!continueBlock(lastBlock,block)){
+            if(!continueBlock(block)){
                 return false;
             }
             WriteBatch writeBatch = createWriteBatch(block,true,false);
@@ -116,6 +115,7 @@ public class BlockChainCore {
      * //TODO 有BUG
      * 回滚到老的区块，并新增区块
      */
+/*
     public boolean backAndAddBlocks(List<Block> addBlockList) throws Exception {
         lock.lock();
         try{
@@ -174,23 +174,24 @@ public class BlockChainCore {
             lock.unlock();
         }
     }
+*/
     //endregion
 
     /**
      * 校验新的区块是否可以是区块链的下一个区块
-     * @param frontBlock 前面的区块
      * @param behindBlock 后面的区块
      */
-    private boolean continueBlock(Block frontBlock, Block behindBlock) throws Exception {
+    private boolean continueBlock(Block behindBlock) throws Exception {
         lock.lock();
         try{
-            if(frontBlock != null){
+            Block lastBlock = findLastBlockFromBlock();
+            if(lastBlock != null){
                 //区块高度校验
-                if((frontBlock.getBlockHeight()+1) != behindBlock.getBlockHeight()){
+                if((lastBlock.getBlockHeight()+1) != behindBlock.getBlockHeight()){
                     return false;
                 }
                 //区块hash校验
-                if(!frontBlock.getHash().equals(behindBlock.getPreviousHash())){
+                if(!lastBlock.getHash().equals(behindBlock.getPreviousHash())){
                     return false;
                 }
             }
