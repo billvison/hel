@@ -329,27 +329,6 @@ public class BlockChainCore {
     }
 
     /**
-     * 查找所有的UTXO
-     * @param transactionOutputId 交易输出ID
-     */
-    public TransactionOutput findAllUTXOByPublicKey(String transactionOutputId) throws Exception {
-        lock.lock();
-        //TODO
-        try{
-            if(transactionOutputId==null||"".equals(transactionOutputId)){
-                return null;
-            }
-            byte[] utxo = LevelDBUtil.get(BlockChain_DB,addUnspendTransactionOutputPrefix(transactionOutputId));
-            if(utxo == null){
-                return null;
-            }
-            return EncodeDecode.decodeToTransactionOutput(utxo);
-        }finally {
-            lock.unlock();
-        }
-    }
-
-    /**
      * 查找UTXO
      * @param transactionOutputId 交易输出ID
      */
