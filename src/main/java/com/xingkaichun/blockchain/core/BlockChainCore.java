@@ -69,7 +69,7 @@ public class BlockChainCore {
         }));
     }
     //endregion
-    
+
     //region 区块增加与删除
     /**
      * 区块链新增区块
@@ -215,7 +215,7 @@ public class BlockChainCore {
      * @param addBlock 是新增区块？
      * @param deleteBlock 是删除区块？
      */
-    public void fillWriteBatch(WriteBatch writeBatch, Block block, boolean addBlock, boolean deleteBlock) throws Exception {
+    private void fillWriteBatch(WriteBatch writeBatch, Block block, boolean addBlock, boolean deleteBlock) throws Exception {
         if(addBlock == deleteBlock){
             throw new BlockChainCoreException("参数addBlock、deleteBlock互斥，不允许同时为true、或同时为false");
         }
