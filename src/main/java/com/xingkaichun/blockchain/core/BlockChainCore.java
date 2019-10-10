@@ -178,6 +178,23 @@ public class BlockChainCore {
 */
     //endregion
 
+    //region 数据库相关
+    //region 拼装数据库Key的值
+    private String addTransactionOutputPrefix(String transactionOutputUUID) {
+        return TRANSACTION_OUTPUT_UUID_FLAG + transactionOutputUUID;
+    }
+    private String addUnspendTransactionOutputUuidPrefix(String transactionOutputUUID) {
+        return UNSPEND_TRANSACTION_OUPUT_UUID_FLAG + transactionOutputUUID;
+    }
+    private String addTransactionUuidPrefix(String transactionUUID) {
+        return TRANSACTION_UUID_FLAG + transactionUUID;
+    }
+    private String addBlockHeightPrefix(int blockHeight) {
+        return BLOCK_HEIGHT_FLAG + blockHeight;
+    }
+    //endregion
+
+    //region 拼装WriteBatch
     /**
      * 将区块信息组装成WriteBatch对象
      * @param block 区块
@@ -254,23 +271,7 @@ public class BlockChainCore {
             lock.unlock();
         }
     }
-
-    //region 拼装数据库Key的值
-    private String addTransactionOutputPrefix(String transactionOutputUUID) {
-        return TRANSACTION_OUTPUT_UUID_FLAG + transactionOutputUUID;
-    }
-
-    private String addUnspendTransactionOutputUuidPrefix(String transactionOutputUUID) {
-        return UNSPEND_TRANSACTION_OUPUT_UUID_FLAG + transactionOutputUUID;
-    }
-
-    private String addTransactionUuidPrefix(String transactionUUID) {
-        return TRANSACTION_UUID_FLAG + transactionUUID;
-    }
-
-    private String addBlockHeightPrefix(int blockHeight) {
-        return BLOCK_HEIGHT_FLAG + blockHeight;
-    }
+    //endregion
     //endregion
 
     //region 对外提供的方法
