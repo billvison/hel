@@ -9,12 +9,12 @@ import com.xingkaichun.blockchain.core.model.transaction.Transaction;
  */
 public interface Checker {
     /**
-     * 检测区块
+     * 检测(下一个加入区块链上的)区块的合法性
      */
     boolean checkBlockOfNextAddToBlockChain(BlockChainCore blockChainCore, Block block) throws Exception;
 
     /**
-     * 校验交易的合法性
+     * 校验(未打包进区块的)交易的合法性
      */
     boolean checkTransaction(BlockChainCore blockChainCore, Transaction transaction) throws Exception;
 
