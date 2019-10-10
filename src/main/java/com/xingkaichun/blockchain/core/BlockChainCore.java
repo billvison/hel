@@ -39,7 +39,7 @@ public class BlockChainCore {
     //交易输出标识
     private final static String TRANSACTION_OUTPUT_UUID_FLAG = "T_O_U_F";
 
-    //可能的最后一个区块
+    //区块链上有可能的最后一个区块【不保证一定是最后的区块】
     private Block possibleLastBlock;
 
     //监听区块链区块的增删
@@ -49,6 +49,7 @@ public class BlockChainCore {
     private Lock lock = new ReentrantLock();
     //endregion
 
+    //region 构造函数
     /**
      * 构造函数
      * @param dbPath 数据库地址
@@ -67,12 +68,13 @@ public class BlockChainCore {
             }
         }));
     }
-
+    //endregion
+    
     //region 区块增加与删除
     /**
      * 区块链新增区块
      */
-    public boolean addBlockToBlockChain(Block block) throws Exception {
+    public boolean addBlock(Block block) throws Exception {
         if(block==null){
             System.out.println("区块链上新增的区块不能为空。请检测区块。");
             return false;
