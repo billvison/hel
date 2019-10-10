@@ -31,14 +31,13 @@ public class BlockChainCore {
     private Checker checker;
 
     //区块标识
-    private final static String BLOCK_HASH_FLAG = "BLOCK_HASH_FLAG_";
-    private final static String BLOCK_HEIGHT_FLAG = "BLOCK_HEIGHT_FLAG_";
+    private final static String BLOCK_HEIGHT_FLAG = "B_H_F_";
     //交易标识
-    private final static String TRANSACTION_UUID_FLAG = "Transaction_FLAG_";
+    private final static String TRANSACTION_UUID_FLAG = "T_U_F_";
     //UTXO标识
-    private final static String UNSPEND_TRANSACTION_OUPUT_UUID_FLAG = "UnspendTransactionOutput_";
+    private final static String UNSPEND_TRANSACTION_OUPUT_UUID_FLAG = "U_T_O_U_F";
     //交易输出标识
-    private final static String TRANSACTION_OUTPUT_UUID_FLAG = "TransactionOutput_FLAG_";
+    private final static String TRANSACTION_OUTPUT_UUID_FLAG = "T_O_U_F";
 
     //可能的最后一个区块
     private Block possibleLastBlock;
