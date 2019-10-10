@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 public class Block implements Serializable {
-    //区块高度 区块id
+    //区块高度
     private int blockHeight;
     //区块随机数
     private int nonce;
@@ -22,7 +22,7 @@ public class Block implements Serializable {
     private String previousHash;
     //区块里的交易
     private List<Transaction> transactions;
-    //默克尔树
+    //默克尔树根
     private String merkleRoot;
 
     public Block(int blockHeight, String previousHash, List<Transaction> transactions, String merkleRoot) {
