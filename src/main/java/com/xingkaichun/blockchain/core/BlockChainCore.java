@@ -321,7 +321,7 @@ public class BlockChainCore {
     public boolean isUTXO(String transactionOutputId) throws Exception {
         lock.lock();
         try{
-            TransactionOutput transactionOutput = findUTXOById(transactionOutputId);
+            TransactionOutput transactionOutput = findUtxoByUtxoUUId(transactionOutputId);
             return transactionOutput!=null;
         }finally {
             lock.unlock();
@@ -330,15 +330,15 @@ public class BlockChainCore {
 
     /**
      * 查找UTXO
-     * @param transactionOutputId 交易输出ID
+     * @param transactionOutputUUID 交易输出ID
      */
-    public TransactionOutput findUTXOById(String transactionOutputId) throws Exception {
+    public TransactionOutput findUtxoByUtxoUUId(String transactionOutputUUID) throws Exception {
         lock.lock();
         try{
-            if(transactionOutputId==null||"".equals(transactionOutputId)){
+            if(transactionOutputUUID==null||"".equals(transactionOutputUUID)){
                 return null;
             }
-            byte[] utxo = LevelDBUtil.get(BlockChain_DB,addUnspendTransactionOutputPrefix(transactionOutputId));
+            byte[] utxo = LevelDBUtil.get(BlockChain_DB,addUnspendTransactionOutputPrefix(transactionOutputUUID));
             if(utxo == null){
                 return null;
             }
@@ -347,6 +347,7 @@ public class BlockChainCore {
             lock.unlock();
         }
     }
+
     /**
      * 查找区块
      * @param blockHeight 区块高度
@@ -365,27 +366,10 @@ public class BlockChainCore {
     }
 
     /**
-     * 查找区块
-     * @param blockHash 区块Hash
-     */
-    public Block findBlockByBlockHash(String blockHash) throws Exception {
-        lock.lock();
-        try{
-            byte[] byteBlock = LevelDBUtil.get(BlockChain_DB,addBlockHashPrefix(blockHash));
-            if(byteBlock==null){
-                return null;
-            }
-            return EncodeDecode.decodeToBlock(byteBlock);
-        }finally {
-            lock.unlock();
-        }
-    }
-
-    /**
      * 查找交易
      * @param transactionUUID 交易ID
      */
-    public Transaction findTransactionById(String transactionUUID) throws Exception {
+    public Transaction findTransactionByUUID(String transactionUUID) throws Exception {
         lock.lock();
         try{
             byte[] byteTransaction = LevelDBUtil.get(BlockChain_DB,addTransactionPrefix(transactionUUID));
@@ -411,18 +395,8 @@ public class BlockChainCore {
     private void notifyBlockChainActionListener(Block block, boolean addBlock, boolean deleteBlock) {
         lock.lock();
         try{
-            List<Block> blockList = new ArrayList<>();
-            blockList.add(block);
-            notifyBlockChainActionListener(blockList,addBlock,deleteBlock);
-        }finally {
-            lock.unlock();
-        }
-    }
-    private void notifyBlockChainActionListener(List<Block> blockList, boolean addBlock, boolean deleteBlock) {
-        lock.lock();
-        try{
             for (BlockChainActionListener listener: blockChainActionListenerList) {
-                listener.addOrDeleteBlock(blockList,addBlock,deleteBlock);
+                listener.addOrDeleteBlock(block,addBlock,deleteBlock);
             }
         }finally {
             lock.unlock();

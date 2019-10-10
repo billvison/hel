@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface BlockChainActionListener {
 
-    void addOrDeleteBlock(List<Block> blockList, boolean addBlock, boolean deleteBlock);
+    void addOrDeleteBlock(Block block, boolean addBlock, boolean deleteBlock);
 }
