@@ -50,9 +50,9 @@ public class DefaultChecker implements Checker {
             }
         }
         //区块角度检测区块的数据的安全性
-        //同一张钱不能被两次交易同时使用【同一个UTXO在不同的交易中出现】
+        //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
         Set<String> transactionOutputUUIDSet = new HashSet<>();
-        //同一区块挖矿奖励交易只能有一次
+        //一个区块只能有一笔挖矿奖励交易
         int minerTransactionTimes = 0;
 
         for(Transaction tx : block.getTransactions()){
