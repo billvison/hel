@@ -203,7 +203,7 @@ public class BlockChainCore {
                 }
             }
             //区块数据的校验
-            if(!checker.checkBlock(this, behindBlock)){
+            if(!checker.checkBlockOfNextAddToBlockChain(this, behindBlock)){
                 System.out.println("区块链上新增的区块数据不合法。请检测区块。");
                 return false;
             }
