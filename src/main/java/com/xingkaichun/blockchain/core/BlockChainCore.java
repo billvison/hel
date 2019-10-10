@@ -34,11 +34,11 @@ public class BlockChainCore {
     private final static String BLOCK_HASH_FLAG = "BLOCK_HASH_FLAG_";
     private final static String BLOCK_HEIGHT_FLAG = "BLOCK_HEIGHT_FLAG_";
     //交易标识
-    private final static String Transaction_FLAG = "Transaction_FLAG_";
+    private final static String TRANSACTION_UUID_FLAG = "Transaction_FLAG_";
     //UTXO标识
-    private final static String UnspendTransactionOutput_FLAG = "UnspendTransactionOutput_";
+    private final static String UNSPEND_TRANSACTION_OUPUT_UUID_FLAG = "UnspendTransactionOutput_";
     //交易输出标识
-    private final static String TransactionOutput_FLAG = "TransactionOutput_FLAG_";
+    private final static String TRANSACTION_OUTPUT_UUID_FLAG = "TransactionOutput_FLAG_";
 
     //可能的最后一个区块
     private Block possibleLastBlock;
@@ -208,10 +208,8 @@ public class BlockChainCore {
         try{
             //区块数据
             if(addBlock){
-                writeBatch.put(addBlockHashPrefix(block.getHash()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(block));
                 writeBatch.put(addBlockHeightPrefix(block.getBlockHeight()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(block));
             }else{
-                writeBatch.delete(addBlockHashPrefix(block.getHash()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
                 writeBatch.delete(addBlockHeightPrefix(block.getBlockHeight()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
             }
 
@@ -221,18 +219,18 @@ public class BlockChainCore {
                 for(Transaction transaction:packingTransactionList){
                     //交易数据
                     if(addBlock){
-                        writeBatch.put(addTransactionPrefix(transaction.getTransactionUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(transaction));
+                        writeBatch.put(addTransactionUuidPrefix(transaction.getTransactionUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(transaction));
                     } else {
-                        writeBatch.delete(addTransactionPrefix(transaction.getTransactionUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
+                        writeBatch.delete(addTransactionUuidPrefix(transaction.getTransactionUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
                     }
                     ArrayList<TransactionInput> inputs = transaction.getInputs();
                     if(inputs!=null){
                         for(TransactionInput txInput:inputs){
                             if(addBlock){
                                 //删除用掉的UTXO
-                                writeBatch.delete(addUnspendTransactionOutputPrefix(txInput.getUtxo().getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
+                                writeBatch.delete(addUnspendTransactionOutputUuidPrefix(txInput.getUtxo().getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
                             } else {
-                                writeBatch.put(addUnspendTransactionOutputPrefix(txInput.getUtxo().getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8),EncodeDecode.encode(txInput.getUtxo()));
+                                writeBatch.put(addUnspendTransactionOutputUuidPrefix(txInput.getUtxo().getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8),EncodeDecode.encode(txInput.getUtxo()));
                             }
                         }
                     }
@@ -241,11 +239,11 @@ public class BlockChainCore {
                         for(TransactionOutput output:outputs){
                             if(addBlock){
                                 //新产生的UTXO
-                                writeBatch.put(addUnspendTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(output));
+                                writeBatch.put(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(output));
                                 //所有的TXO数据
                                 writeBatch.put(addTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(output));
                             } else {
-                                writeBatch.delete(addUnspendTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
+                                writeBatch.delete(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
                                 writeBatch.delete(addTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
                             }
 
@@ -258,8 +256,27 @@ public class BlockChainCore {
         }
     }
 
+    //region 拼装数据库Key的值
+    private String addTransactionOutputPrefix(String transactionOutputUUID) {
+        return TRANSACTION_OUTPUT_UUID_FLAG + transactionOutputUUID;
+    }
+
+    private String addUnspendTransactionOutputUuidPrefix(String transactionOutputUUID) {
+        return UNSPEND_TRANSACTION_OUPUT_UUID_FLAG + transactionOutputUUID;
+    }
+
+    private String addTransactionUuidPrefix(String transactionUUID) {
+        return TRANSACTION_UUID_FLAG + transactionUUID;
+    }
+
+    private String addBlockHeightPrefix(int blockHeight) {
+        return BLOCK_HEIGHT_FLAG + blockHeight;
+    }
+    //endregion
+
+    //region 对外提供的方法
     /**
-      * 查找最后一个区块
+     * 查找最后一个区块
      */
     public Block findLastBlockFromBlock() throws Exception {
         lock.lock();
@@ -290,30 +307,6 @@ public class BlockChainCore {
         }
     }
 
-
-    //region 拼装数据库Key的值
-    private String addTransactionOutputPrefix(String transactionOutputUUID) {
-        return TransactionOutput_FLAG + transactionOutputUUID;
-    }
-
-    private String addUnspendTransactionOutputPrefix(String transactionOutputUUID) {
-        return UnspendTransactionOutput_FLAG + transactionOutputUUID;
-    }
-
-    private String addTransactionPrefix(String transactionUUID) {
-        return Transaction_FLAG + transactionUUID;
-    }
-
-    private String addBlockHashPrefix(String blockHash) {
-        return BLOCK_HASH_FLAG + blockHash;
-    }
-
-    private String addBlockHeightPrefix(int blockHeight) {
-        return BLOCK_HEIGHT_FLAG + blockHeight;
-    }
-    //endregion
-
-    //region 对外提供的方法
     /**
      * 交易输出ID是UTXO吗？
      * @param transactionOutputId 交易输出ID
@@ -338,7 +331,7 @@ public class BlockChainCore {
             if(transactionOutputUUID==null||"".equals(transactionOutputUUID)){
                 return null;
             }
-            byte[] utxo = LevelDBUtil.get(BlockChain_DB,addUnspendTransactionOutputPrefix(transactionOutputUUID));
+            byte[] utxo = LevelDBUtil.get(BlockChain_DB, addUnspendTransactionOutputUuidPrefix(transactionOutputUUID));
             if(utxo == null){
                 return null;
             }
@@ -372,7 +365,7 @@ public class BlockChainCore {
     public Transaction findTransactionByUUID(String transactionUUID) throws Exception {
         lock.lock();
         try{
-            byte[] byteTransaction = LevelDBUtil.get(BlockChain_DB,addTransactionPrefix(transactionUUID));
+            byte[] byteTransaction = LevelDBUtil.get(BlockChain_DB, addTransactionUuidPrefix(transactionUUID));
             if(byteTransaction==null){
                 return null;
             }
