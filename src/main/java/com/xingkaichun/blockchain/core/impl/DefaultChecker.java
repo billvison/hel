@@ -26,7 +26,8 @@ public class DefaultChecker implements Checker {
     /**
      * 检测区块
      */
-    public boolean checkBlock(BlockChainCore blockChainCore, Block block) throws Exception {
+    @Override
+    public boolean checkBlockOfNextAddToBlockChain(BlockChainCore blockChainCore, Block block) throws Exception {
         //区块角度检测区块的数据的安全性
         //同一张钱不能被两次交易同时使用【同一个UTXO在不同的交易中出现】
         Set<String> transactionOutputUUIDSet = new HashSet<>();
@@ -64,6 +65,7 @@ public class DefaultChecker implements Checker {
     /**
      * 校验交易的合法性
      */
+    @Override
     public boolean checkTransaction(BlockChainCore blockChainCore, Transaction transaction) throws Exception{
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();

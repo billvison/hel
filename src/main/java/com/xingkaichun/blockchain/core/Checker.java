@@ -11,7 +11,7 @@ public interface Checker {
     /**
      * 检测区块
      */
-    boolean checkBlock(BlockChainCore blockChainCore, Block block) throws Exception;
+    boolean checkBlockOfNextAddToBlockChain(BlockChainCore blockChainCore, Block block) throws Exception;
 
     /**
      * 校验交易的合法性
