@@ -10,6 +10,7 @@ import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
 
 import java.math.BigDecimal;
@@ -28,6 +29,26 @@ public class DefaultChecker implements Checker {
      */
     @Override
     public boolean checkBlockOfNextAddToBlockChain(BlockChainCore blockChainCore, Block block) throws Exception {
+        Block tailBlock = blockChainCore.findLastBlockFromBlock();
+        if(tailBlock == null){
+            //区块高度校验
+            if(block.getBlockHeight()!=1){
+                return false;
+            }
+            //区块hash校验
+            if(!BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousHash())){
+                return false;
+            }
+        } else {
+            //区块高度校验
+            if((tailBlock.getBlockHeight()+1) != block.getBlockHeight()){
+                return false;
+            }
+            //区块hash校验
+            if(!tailBlock.getHash().equals(block.getPreviousHash())){
+                return false;
+            }
+        }
         //区块角度检测区块的数据的安全性
         //同一张钱不能被两次交易同时使用【同一个UTXO在不同的交易中出现】
         Set<String> transactionOutputUUIDSet = new HashSet<>();

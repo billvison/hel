@@ -184,24 +184,6 @@ public class BlockChainCore {
     private boolean continueBlock(Block behindBlock) throws Exception {
         lock.lock();
         try{
-            Block lastBlock = findLastBlockFromBlock();
-            if(lastBlock != null){
-                //区块高度校验
-                if((lastBlock.getBlockHeight()+1) != behindBlock.getBlockHeight()){
-                    return false;
-                }
-                //区块hash校验
-                if(!lastBlock.getHash().equals(behindBlock.getPreviousHash())){
-                    return false;
-                }
-            } else {
-                if(behindBlock.getBlockHeight()!=1){
-                    return false;
-                }
-                if(!BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH.equals(behindBlock.getPreviousHash())){
-                    return false;
-                }
-            }
             //区块数据的校验
             if(!checker.checkBlockOfNextAddToBlockChain(this, behindBlock)){
                 System.out.println("区块链上新增的区块数据不合法。请检测区块。");
