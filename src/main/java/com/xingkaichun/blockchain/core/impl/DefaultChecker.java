@@ -129,7 +129,7 @@ public class DefaultChecker implements Checker {
             }
             ArrayList<TransactionOutput> outputs = transaction.getOutputs();
             if(inputs==null||inputs.size()==0){
-                throw new BlockChainCoreException("交易校验失败：交易的输出不能为空。不合法的交易。\"");
+                throw new BlockChainCoreException("交易校验失败：交易的输出不能为空。不合法的交易。");
             }
             for(TransactionOutput o : outputs) {
                 if(o.getValue().compareTo(new BigDecimal(0))<=0){
