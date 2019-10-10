@@ -80,7 +80,9 @@ public class BlockChainCore {
         }
         lock.lock();
         try{
-            if(!continueBlock(block)){
+            //区块数据的校验
+            if(!checker.checkBlockOfNextAddToBlockChain(this, block)){
+                System.out.println("区块链上新增的区块数据不合法。请检测区块。");
                 return false;
             }
             WriteBatch writeBatch = createWriteBatch(block,true,false);
@@ -176,24 +178,6 @@ public class BlockChainCore {
     }
 */
     //endregion
-
-    /**
-     * 校验新的区块是否可以是区块链的下一个区块
-     * @param behindBlock 后面的区块
-     */
-    private boolean continueBlock(Block behindBlock) throws Exception {
-        lock.lock();
-        try{
-            //区块数据的校验
-            if(!checker.checkBlockOfNextAddToBlockChain(this, behindBlock)){
-                System.out.println("区块链上新增的区块数据不合法。请检测区块。");
-                return false;
-            }
-            return true;
-        }finally {
-            lock.unlock();
-        }
-    }
 
     /**
      * 将区块信息组装成WriteBatch对象
