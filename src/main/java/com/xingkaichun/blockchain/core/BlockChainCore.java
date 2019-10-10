@@ -97,17 +97,17 @@ public class BlockChainCore {
     /**
      * 删除区块链的尾巴[最后一个]区块
      */
-    public boolean removeTailBlock() throws Exception {
+    public Block removeTailBlock() throws Exception {
         lock.lock();
         try{
             Block tailBlock = findLastBlockFromBlock();
             if(tailBlock == null){
-                return true;
+                return null;
             }
             WriteBatch writeBatch = createWriteBatch(tailBlock,false,true);
             LevelDBUtil.put(BlockChain_DB,writeBatch);
             notifyBlockChainActionListener(tailBlock,false,true);
-            return true;
+            return tailBlock;
         }finally {
             lock.unlock();
         }
@@ -266,14 +266,15 @@ public class BlockChainCore {
         try{
             //校验区块是否真实存在
             if(possibleLastBlock != null){
-                //不存在，置为null 之前添加的区块可能被删除了
+                //校验区块是否存在，由于区块链上有删区块的操作，万一代码写了bug，有可能导致possibleLastBlock变量的值是错误的。
+                //假设区块不存在，再次检测后，possibleLastBlock将置为null
                 possibleLastBlock = findBlockByBlockHeight(possibleLastBlock.getBlockHeight());
             }
             if(possibleLastBlock ==null){
                 possibleLastBlock = findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
-            }
-            if(possibleLastBlock ==null){
-                return null;
+                if(possibleLastBlock == null){
+                    return null;
+                }
             }
             for(int blockHeight=possibleLastBlock.getBlockHeight()+1;;blockHeight++){
                 Block currentBlock = findBlockByBlockHeight(blockHeight);
