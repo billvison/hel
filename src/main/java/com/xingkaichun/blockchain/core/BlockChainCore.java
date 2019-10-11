@@ -203,7 +203,7 @@ public class BlockChainCore {
      * @param addBlock 是新增区块？
      * @param deleteBlock 是删除区块？
      */
-    private WriteBatch createWriteBatch(Block block, boolean addBlock, boolean deleteBlock) throws Exception {
+    public WriteBatch createWriteBatch(Block block, boolean addBlock, boolean deleteBlock) throws Exception {
         WriteBatch writeBatch = new WriteBatchImpl();
         fillWriteBatch(writeBatch,block,addBlock,deleteBlock);
         return writeBatch;
@@ -215,7 +215,7 @@ public class BlockChainCore {
      * @param addBlock 是新增区块？
      * @param deleteBlock 是删除区块？
      */
-    private void fillWriteBatch(WriteBatch writeBatch, Block block, boolean addBlock, boolean deleteBlock) throws Exception {
+    public void fillWriteBatch(WriteBatch writeBatch, Block block, boolean addBlock, boolean deleteBlock) throws Exception {
         if(addBlock == deleteBlock){
             throw new BlockChainCoreException("参数addBlock、deleteBlock互斥，不允许同时为true、或同时为false");
         }

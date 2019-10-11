@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -24,11 +25,8 @@ import java.util.Set;
  */
 public class DefaultChecker implements Checker {
 
-    /**
-     * 检测区块
-     */
     @Override
-    public boolean checkBlockOfNextAddToBlockChain(BlockChainCore blockChainCore, Block block) throws Exception {
+    public boolean isBlockApplyToBlockChain(BlockChainCore blockChainCore, Block block) throws Exception {
         Block tailBlock = blockChainCore.findLastBlockFromBlock();
         if(tailBlock == null){
             //区块高度校验
@@ -75,7 +73,7 @@ public class DefaultChecker implements Checker {
             } else {
                 throw new BlockChainCoreException("区块数据异常，不能识别的交易类型。");
             }
-            checkTransaction(blockChainCore,tx);
+            checkUnBlockChainTransaction(blockChainCore,new LightweightBlockChain(),new LightweightBlockChain(),tx);
         }
         if(minerTransactionTimes == 0){
             throw new BlockChainCoreException("区块数据异常，没有检测到挖矿奖励交易。");
@@ -83,11 +81,8 @@ public class DefaultChecker implements Checker {
         return true;
     }
 
-    /**
-     * 校验交易的合法性
-     */
     @Override
-    public boolean checkTransaction(BlockChainCore blockChainCore, Transaction transaction) throws Exception{
+    public boolean checkUnBlockChainTransaction(BlockChainCore blockChainCore, LightweightBlockChain oldBlocks, LightweightBlockChain newBlocks, Transaction transaction) throws Exception{
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null){
@@ -114,7 +109,8 @@ public class DefaultChecker implements Checker {
                 if(i.getUtxo() ==null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入UTXO不能为空。不合法的交易。");
                 }
-                if(!blockChainCore.isUTXO(i.getUtxo().getTransactionOutputUUID())){
+                //
+                if(!isUTXO(blockChainCore,oldBlocks,newBlocks,i.getUtxo().getTransactionOutputUUID())){
                     throw new BlockChainCoreException("交易校验失败：交易的输入不是UTXO。不合法的交易。");
                 }
             }
@@ -165,4 +161,126 @@ public class DefaultChecker implements Checker {
         }
     }
 
+    @Override
+    public boolean isBlockListApplyToBlockChain(BlockChainCore blockChainCore, List<Block> blockList) throws Exception {
+        //检测区块是否能衔接上区块链
+        if(blockList==null || blockList.size()==0){
+            return false;
+        }
+        Block tailBlock = blockChainCore.findLastBlockFromBlock();
+        Block headPrevBlock = null;
+        Block headBlock = blockList.get(0);
+        if(headBlock.getBlockHeight()>tailBlock.getBlockHeight()+1){
+            return false;
+        }
+        if(headBlock.getBlockHeight()<1){
+            return false;
+        }else if(headBlock.getBlockHeight()==1){
+        }else{
+            headPrevBlock = blockChainCore.findBlockByBlockHeight(headBlock.getBlockHeight()-1);
+            if(!headPrevBlock.getHash().equals(headBlock.getPreviousHash())){
+                return false;
+            }
+        }
+        LightweightBlockChain oldBlock = new LightweightBlockChain();
+        LightweightBlockChain newBlock = new LightweightBlockChain();
+        //需要回滚区块链上的回滚吗？
+        if(tailBlock.getBlockHeight()>=headBlock.getBlockHeight()){
+            //回滚
+            for(int blockHeight=tailBlock.getBlockHeight();blockHeight>=headBlock.getBlockHeight();blockHeight--){
+                Block currentBlock = blockChainCore.findBlockByBlockHeight(blockHeight);
+                fillWriteBatch(oldBlock,currentBlock,true);
+            }
+        }
+
+        //区块角度检测区块的数据的安全性
+        //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
+        Set<String> transactionOutputUUIDSet = new HashSet<>();
+        for(Block currentBlock:blockList){
+            //一个区块只能有一笔挖矿奖励交易
+            int minerTransactionTimes = 0;
+            for(Transaction tx : currentBlock.getTransactions()){
+                if(tx.getTransactionType() == TransactionType.MINER){
+                    minerTransactionTimes++;
+                    //有多个挖矿交易
+                    if(minerTransactionTimes>1){
+                        throw new BlockChainCoreException("区块数据异常，一个区块只能有一笔挖矿奖励。");
+                    }
+                } else if(tx.getTransactionType() == TransactionType.NORMAL){
+                    ArrayList<TransactionInput> inputs = tx.getInputs();
+                    for(TransactionInput input:inputs){
+                        String transactionOutputUUID = input.getUtxo().getTransactionOutputUUID();
+                        //同一个UTXO被多次使用
+                        if(transactionOutputUUIDSet.contains(transactionOutputUUID)){
+                            throw new BlockChainCoreException("区块数据异常，同一个UTXO在一个区块中多次使用。");
+                        }
+                        transactionOutputUUIDSet.add(transactionOutputUUID);
+                    }
+                } else {
+                    throw new BlockChainCoreException("区块数据异常，不能识别的交易类型。");
+                }
+                boolean check = checkUnBlockChainTransaction(blockChainCore,oldBlock,newBlock,tx);
+                if(!check){
+                    throw new BlockChainCoreException("区块数据异常，交易异常。");
+                }
+            }
+            if(minerTransactionTimes == 0){
+                throw new BlockChainCoreException("区块数据异常，没有检测到挖矿奖励交易。");
+            }
+            fillWriteBatch(newBlock,currentBlock,false);
+        }
+        return true;
+    }
+
+    public void fillWriteBatch(LightweightBlockChain blocks, Block block, boolean rollback) throws Exception {
+        //UTXO信息
+        List<Transaction> packingTransactionList = block.getTransactions();
+        if(packingTransactionList!=null){
+            for(Transaction transaction:packingTransactionList){
+                ArrayList<TransactionInput> inputs = transaction.getInputs();
+                if(inputs!=null){
+                    for(TransactionInput txInput:inputs){
+                        if(rollback){
+                            //将用掉的UTXO回滚
+                            blocks.getAddUtxoList().add(txInput.getUtxo().getTransactionOutputUUID());
+                        } else {
+                            blocks.getDeleteUtxoList().add(txInput.getUtxo().getTransactionOutputUUID());
+                        }
+                    }
+                }
+                ArrayList<TransactionOutput> outputs = transaction.getOutputs();
+                if(outputs!=null){
+                    for(TransactionOutput output:outputs){
+                        if(rollback){
+                            //将新产生的UTXO回滚
+                            blocks.getDeleteUtxoList().add(output.getTransactionOutputUUID());
+                        } else {
+                            blocks.getAddUtxoList().add(output.getTransactionOutputUUID());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isUTXO(BlockChainCore blockChainCore, LightweightBlockChain rollbackBlocks, LightweightBlockChain newBlocks, String transactionOutputUUID) throws Exception {
+        List<String> newBlocks_addUtxoList = newBlocks.getAddUtxoList();
+        List<String> newBlocks_deleteUtxoList = newBlocks.getDeleteUtxoList();
+        if(newBlocks_deleteUtxoList.contains(transactionOutputUUID)){
+            return false;
+        }
+        if(newBlocks_addUtxoList.contains(transactionOutputUUID)){
+            return true;
+        }
+        List<String> oldBlocks_addUtxoList = rollbackBlocks.getAddUtxoList();
+        List<String> oldBlocks_deleteUtxoList = rollbackBlocks.getDeleteUtxoList();
+        if(oldBlocks_deleteUtxoList.contains(transactionOutputUUID)){
+            return false;
+        }
+        if(oldBlocks_addUtxoList.contains(transactionOutputUUID)){
+            return true;
+        }
+        boolean isUtxo = blockChainCore.isUTXO(transactionOutputUUID);
+        return isUtxo;
+    }
 }
