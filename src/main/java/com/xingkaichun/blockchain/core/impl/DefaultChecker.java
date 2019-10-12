@@ -109,11 +109,11 @@ public class DefaultChecker implements Checker {
                 if(i.getUtxo() ==null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入UTXO不能为空。不合法的交易。");
                 }
-                //
                 if(!isUTXO(blockChainCore,oldBlocks,newBlocks,i.getUtxo().getTransactionOutputUUID())){
                     throw new BlockChainCoreException("交易校验失败：交易的输入不是UTXO。不合法的交易。");
                 }
             }
+            //存放交易用过的UTXO
             Set<String> input_UTXO_Ids = new HashSet<>();
             for(TransactionInput i : inputs) {
                 String utxoId = i.getUtxo().getTransactionOutputUUID();
