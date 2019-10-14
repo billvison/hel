@@ -129,6 +129,7 @@ public class DefaultChecker implements Checker {
             return false;
         }else if(headBlock.getBlockHeight()==1){
         }else if(headBlock.getBlockHeight()>blockchainTailBlock.getBlockHeight()+1){
+            //增加区块时，区块的高度应当是连贯的，当前区块链的区块高度为A，则下一个新增的区块的区块高度必须是A+1
             return false;
         }else{
             //链的长度:区块链长度只会变长，不会变短
