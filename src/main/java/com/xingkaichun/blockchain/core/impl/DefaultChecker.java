@@ -121,16 +121,20 @@ public class DefaultChecker implements Checker {
         if(blockList==null || blockList.size()==0){
             return false;
         }
-        Block tailBlock = blockChainCore.findLastBlockFromBlock();
+        Block blockchainTailBlock = blockChainCore.findLastBlockFromBlock();
         Block headPrevBlock = null;
         Block headBlock = blockList.get(0);
-        if(headBlock.getBlockHeight()>tailBlock.getBlockHeight()+1){
-            return false;
-        }
+        Block tailBlock = blockList.get(blockList.size()-1);
         if(headBlock.getBlockHeight()<1){
             return false;
         }else if(headBlock.getBlockHeight()==1){
+        }else if(headBlock.getBlockHeight()>blockchainTailBlock.getBlockHeight()+1){
+            return false;
         }else{
+            //链的长度:区块链长度只会变长，不会变短
+            if(tailBlock.getBlockHeight()<=blockchainTailBlock.getBlockHeight()){
+                return false;
+            }
             headPrevBlock = blockChainCore.findBlockByBlockHeight(headBlock.getBlockHeight()-1);
             if(!headPrevBlock.getHash().equals(headBlock.getPreviousHash())){
                 return false;
@@ -139,9 +143,9 @@ public class DefaultChecker implements Checker {
         LightweightBlockChain oldBlock = new LightweightBlockChain();
         LightweightBlockChain newBlock = new LightweightBlockChain();
         //需要回滚区块链上的回滚吗？
-        if(tailBlock.getBlockHeight()>=headBlock.getBlockHeight()){
+        if(blockchainTailBlock.getBlockHeight()>=headBlock.getBlockHeight()){
             //回滚
-            for(int blockHeight=tailBlock.getBlockHeight();blockHeight>=headBlock.getBlockHeight();blockHeight--){
+            for(int blockHeight=blockchainTailBlock.getBlockHeight();blockHeight>=headBlock.getBlockHeight();blockHeight--){
                 Block currentBlock = blockChainCore.findBlockByBlockHeight(blockHeight);
                 fillWriteBatch(oldBlock,currentBlock,true);
             }
