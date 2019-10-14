@@ -132,7 +132,7 @@ public class DefaultChecker implements Checker {
             //增加区块时，区块的高度应当是连贯的，当前区块链的区块高度为A，则下一个新增的区块的区块高度必须是A+1
             return false;
         }else{
-            //链的长度:区块链长度只会变长，不会变短
+            //链的长度:区块链长度只可以变长，长度不可以变短或是不变
             if(tailBlock.getBlockHeight()<=blockchainTailBlock.getBlockHeight()){
                 return false;
             }
@@ -143,8 +143,8 @@ public class DefaultChecker implements Checker {
         }
         LightweightBlockChain oldBlock = new LightweightBlockChain();
         LightweightBlockChain newBlock = new LightweightBlockChain();
-        //需要回滚区块链上的回滚吗？
-        if(blockchainTailBlock.getBlockHeight()>=headBlock.getBlockHeight()){
+        //需要回滚区块链上的区块吗？
+        if(headPrevBlock!=null && headPrevBlock.getBlockHeight()>=headBlock.getBlockHeight()){
             //回滚
             for(int blockHeight=blockchainTailBlock.getBlockHeight();blockHeight>=headBlock.getBlockHeight();blockHeight--){
                 Block currentBlock = blockChainCore.findBlockByBlockHeight(blockHeight);
