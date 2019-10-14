@@ -122,10 +122,20 @@ public class DefaultChecker implements Checker {
         if(blockList==null || blockList.size()==0){
             return false;
         }
-        for(Block block:blockList){
+        for(int i=0;i<blockList.size();i++){
+            Block block = blockList.get(i);
+            //校验Block hash正确
             if(!BlockUtils.checkHash(block)){
                 return false;
             }
+            if(i<blockList.size()-1){
+                Block nextBlock = blockList.get(i);
+                //校验Block是否连贯 block的hash值是否正确的
+                if(!block.getHash().equals(nextBlock.getPreviousHash())){
+                    return false;
+                }
+            }
+            //TODO 校验挖矿是否正确
         }
         Block blockchainTailBlock = blockChainCore.findLastBlockFromBlock();
         Block headPrevBlock = null;
@@ -162,7 +172,6 @@ public class DefaultChecker implements Checker {
         //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
         Set<String> transactionOutputUUIDSet = new HashSet<>();
         for(Block currentBlock:blockList){
-            //TODO 校验Block是否连贯 block的hash值是否正确的
             //一个区块只能有一笔挖矿奖励交易
             int minerTransactionTimes = 0;
             for(Transaction tx : currentBlock.getTransactions()){
