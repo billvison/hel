@@ -27,57 +27,12 @@ public class DefaultChecker implements Checker {
 
     @Override
     public boolean isBlockApplyToBlockChain(BlockChainCore blockChainCore, Block block) throws Exception {
-        Block tailBlock = blockChainCore.findLastBlockFromBlock();
-        if(tailBlock == null){
-            //区块高度校验
-            if(block.getBlockHeight()!=1){
-                return false;
-            }
-            //区块hash校验
-            if(!BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousHash())){
-                return false;
-            }
-        } else {
-            //区块高度校验
-            if((tailBlock.getBlockHeight()+1) != block.getBlockHeight()){
-                return false;
-            }
-            //区块hash校验
-            if(!tailBlock.getHash().equals(block.getPreviousHash())){
-                return false;
-            }
+        if(block==null){
+            throw new BlockChainCoreException("区块校验失败：区块不能为null。");
         }
-        //区块角度检测区块的数据的安全性
-        //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
-        Set<String> transactionOutputUUIDSet = new HashSet<>();
-        //一个区块只能有一笔挖矿奖励交易
-        int minerTransactionTimes = 0;
-
-        for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() == TransactionType.MINER){
-                minerTransactionTimes++;
-                //有多个挖矿交易
-                if(minerTransactionTimes>1){
-                    throw new BlockChainCoreException("区块数据异常，一个区块只能有一笔挖矿奖励。");
-                }
-            } else if(tx.getTransactionType() == TransactionType.NORMAL){
-                ArrayList<TransactionInput> inputs = tx.getInputs();
-                for(TransactionInput input:inputs){
-                    String transactionOutputUUID = input.getUtxo().getTransactionOutputUUID();
-                    //同一个UTXO被多次使用
-                    if(transactionOutputUUIDSet.contains(transactionOutputUUID)){
-                        throw new BlockChainCoreException("区块数据异常，同一个UTXO在一个区块中多次使用。");
-                    }
-                    transactionOutputUUIDSet.add(transactionOutputUUID);
-                }
-            } else {
-                throw new BlockChainCoreException("区块数据异常，不能识别的交易类型。");
-            }
-            checkUnBlockChainTransaction(blockChainCore,new LightweightBlockChain(),new LightweightBlockChain(),tx);
-        }
-        if(minerTransactionTimes == 0){
-            throw new BlockChainCoreException("区块数据异常，没有检测到挖矿奖励交易。");
-        }
+        List<Block> blockList = new ArrayList<>();
+        blockList.add(block);
+        isBlockListApplyToBlockChain(blockChainCore,blockList);
         return true;
     }
 
