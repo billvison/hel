@@ -32,8 +32,7 @@ public class DefaultChecker implements Checker {
         }
         List<Block> blockList = new ArrayList<>();
         blockList.add(block);
-        isBlockListApplyToBlockChain(blockChainCore,blockList);
-        return true;
+        return isBlockListApplyToBlockChain(blockChainCore,blockList);
     }
 
     @Override
