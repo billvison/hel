@@ -10,6 +10,7 @@ import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.blockchain.core.utils.BlockUtils;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
 
@@ -121,6 +122,11 @@ public class DefaultChecker implements Checker {
         if(blockList==null || blockList.size()==0){
             return false;
         }
+        for(Block block:blockList){
+            if(!BlockUtils.checkHash(block)){
+                return false;
+            }
+        }
         Block blockchainTailBlock = blockChainCore.findLastBlockFromBlock();
         Block headPrevBlock = null;
         Block headBlock = blockList.get(0);
@@ -156,6 +162,7 @@ public class DefaultChecker implements Checker {
         //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
         Set<String> transactionOutputUUIDSet = new HashSet<>();
         for(Block currentBlock:blockList){
+            //TODO 校验Block是否连贯 block的hash值是否正确的
             //一个区块只能有一笔挖矿奖励交易
             int minerTransactionTimes = 0;
             for(Transaction tx : currentBlock.getTransactions()){

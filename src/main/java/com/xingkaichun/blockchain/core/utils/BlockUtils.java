@@ -9,4 +9,9 @@ public class BlockUtils {
 
         return CipherUtil.applySha256(block.getPreviousHash() + block.getNonce() + block.getMerkleRoot());
     }
+
+    public static boolean checkHash(Block block) {
+        String hash = calculateHash(block);
+        return block.getHash().equals(hash);
+    }
 }
