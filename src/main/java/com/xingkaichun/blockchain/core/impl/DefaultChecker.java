@@ -144,7 +144,7 @@ public class DefaultChecker implements Checker {
         LightweightBlockChain oldBlock = new LightweightBlockChain();
         LightweightBlockChain newBlock = new LightweightBlockChain();
         //需要回滚区块链上的区块吗？
-        if(headPrevBlock!=null && headPrevBlock.getBlockHeight()>=headBlock.getBlockHeight()){
+        if(blockchainTailBlock!=null && blockchainTailBlock.getBlockHeight()>=headBlock.getBlockHeight()){
             //回滚
             for(int blockHeight=blockchainTailBlock.getBlockHeight();blockHeight>=headBlock.getBlockHeight();blockHeight--){
                 Block currentBlock = blockChainCore.findBlockByBlockHeight(blockHeight);
