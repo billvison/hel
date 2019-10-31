@@ -2,8 +2,6 @@ package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.model.Block;
 
-import java.util.List;
-
 /**
  * 监听核心区块链区块增、删的动作
  */
