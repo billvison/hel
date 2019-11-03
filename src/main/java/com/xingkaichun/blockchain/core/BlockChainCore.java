@@ -1,6 +1,7 @@
 package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
+import com.xingkaichun.blockchain.core.listen.BlockChainActionData;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionEnum;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionListener;
 import com.xingkaichun.blockchain.core.model.Block;
@@ -90,7 +91,8 @@ public class BlockChainCore {
             }
             WriteBatch writeBatch = createWriteBatch(block,true,false);
             LevelDBUtil.put(BlockChain_DB,writeBatch);
-            notifyBlockChainActionListener(block, BlockChainActionEnum.ADD_BLOCK);
+
+            notifyBlockChainActionListener(createBlockChainActionDataList(block,BlockChainActionEnum.ADD_BLOCK));
             return true;
         }finally {
             lock.unlock();
@@ -109,8 +111,51 @@ public class BlockChainCore {
             }
             WriteBatch writeBatch = createWriteBatch(tailBlock,false,true);
             LevelDBUtil.put(BlockChain_DB,writeBatch);
-            notifyBlockChainActionListener(tailBlock,BlockChainActionEnum.DELETE_BLOCK);
+            notifyBlockChainActionListener(createBlockChainActionDataList(tailBlock,BlockChainActionEnum.DELETE_BLOCK));
             return tailBlock;
+        }finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * 回滚到老的区块，并新增区块
+     */
+    public boolean backAndAddBlocks(List<Block> addBlockList) throws Exception {
+        lock.lock();
+        try{
+            if(addBlockList==null || addBlockList.size()==0){
+                return true;
+            }
+            //区块数据的校验
+            if(!checker.isBlockListApplyToBlockChain(this, addBlockList)){
+                System.out.println("区块链上新增的区块数据不合法。请检测区块。");
+                return false;
+            }
+
+            //记录数据库批量操作
+            WriteBatch writeBatch = new WriteBatchImpl();
+            //记录区块链上将被删掉的区块
+            List<Block> deleteBlockList = new ArrayList<>();
+            //被新增上去的第一个区块高度[等价于区块链上将被删除的第一个区块的高度]
+            int addedFirstBlockHight = addBlockList.get(0).getBlockHeight();
+            //区块链上将被删除的最后一个区块的高度
+            int lastBlockHeight = findLastBlockFromBlock().getBlockHeight();
+            for(int blockHeight=addedFirstBlockHight;blockHeight<=lastBlockHeight;blockHeight++){
+                Block block = findBlockByBlockHeight(blockHeight);
+                fillWriteBatch(writeBatch,block,false,true);
+                deleteBlockList.add(block);
+            }
+
+            //增 替换的区块
+            for(Block block:addBlockList){
+                fillWriteBatch(writeBatch,block,true,false);
+            }
+
+            LevelDBUtil.put(BlockChain_DB,writeBatch);
+
+            notifyBlockChainActionListener(createBlockChainActionDataList(deleteBlockList,BlockChainActionEnum.DELETE_BLOCK,addBlockList,BlockChainActionEnum.ADD_BLOCK));
+            return true;
         }finally {
             lock.unlock();
         }
@@ -324,15 +369,33 @@ public class BlockChainCore {
             lock.unlock();
         }
     }
-    private void notifyBlockChainActionListener(Block block, BlockChainActionEnum blockChainActionEnum) {
+
+    private void notifyBlockChainActionListener(List<BlockChainActionData> dataList) {
         lock.lock();
         try{
             for (BlockChainActionListener listener: blockChainActionListenerList) {
-                listener.addOrDeleteBlock(block,blockChainActionEnum);
+                listener.addOrDeleteBlock(dataList);
             }
         }finally {
             lock.unlock();
         }
+    }
+    //endregion
+
+    //region 私有方法
+    private List<BlockChainActionData> createBlockChainActionDataList(Block block, BlockChainActionEnum blockChainActionEnum) {
+        List<BlockChainActionData> dataList = new ArrayList<>();
+        BlockChainActionData addData = new BlockChainActionData(block,blockChainActionEnum);
+        dataList.add(addData);
+        return dataList;
+    }
+    private List<BlockChainActionData> createBlockChainActionDataList(List<Block> firstBlockList, BlockChainActionEnum firstBlockChainActionEnum, List<Block> nextBlockList, BlockChainActionEnum nextBlockChainActionEnum) {
+        List<BlockChainActionData> dataList = new ArrayList<>();
+        BlockChainActionData deleteData = new BlockChainActionData(firstBlockList,firstBlockChainActionEnum);
+        dataList.add(deleteData);
+        BlockChainActionData addData = new BlockChainActionData(nextBlockList,nextBlockChainActionEnum);
+        dataList.add(addData);
+        return dataList;
     }
     //endregion
 }
