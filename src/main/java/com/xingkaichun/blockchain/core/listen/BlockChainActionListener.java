@@ -1,4 +1,4 @@
-package com.xingkaichun.blockchain.core;
+package com.xingkaichun.blockchain.core.listen;
 
 import com.xingkaichun.blockchain.core.model.Block;
 
@@ -7,5 +7,5 @@ import com.xingkaichun.blockchain.core.model.Block;
  */
 public interface BlockChainActionListener {
 
-    void addOrDeleteBlock(Block block, boolean addBlock, boolean deleteBlock);
+    void addOrDeleteBlock(Block block, BlockChainActionEnum blockChainActionEnum);
 }

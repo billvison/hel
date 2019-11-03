@@ -1,6 +1,8 @@
 package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
+import com.xingkaichun.blockchain.core.listen.BlockChainActionEnum;
+import com.xingkaichun.blockchain.core.listen.BlockChainActionListener;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
@@ -88,7 +90,7 @@ public class BlockChainCore {
             }
             WriteBatch writeBatch = createWriteBatch(block,true,false);
             LevelDBUtil.put(BlockChain_DB,writeBatch);
-            notifyBlockChainActionListener(block,true,false);
+            notifyBlockChainActionListener(block, BlockChainActionEnum.ADD_BLOCK);
             return true;
         }finally {
             lock.unlock();
@@ -107,7 +109,7 @@ public class BlockChainCore {
             }
             WriteBatch writeBatch = createWriteBatch(tailBlock,false,true);
             LevelDBUtil.put(BlockChain_DB,writeBatch);
-            notifyBlockChainActionListener(tailBlock,false,true);
+            notifyBlockChainActionListener(tailBlock,BlockChainActionEnum.DELETE_BLOCK);
             return tailBlock;
         }finally {
             lock.unlock();
@@ -322,11 +324,11 @@ public class BlockChainCore {
             lock.unlock();
         }
     }
-    private void notifyBlockChainActionListener(Block block, boolean addBlock, boolean deleteBlock) {
+    private void notifyBlockChainActionListener(Block block, BlockChainActionEnum blockChainActionEnum) {
         lock.lock();
         try{
             for (BlockChainActionListener listener: blockChainActionListenerList) {
-                listener.addOrDeleteBlock(block,addBlock,deleteBlock);
+                listener.addOrDeleteBlock(block,blockChainActionEnum);
             }
         }finally {
             lock.unlock();
