@@ -130,18 +130,25 @@ public class BlockChainCore {
                 return false;
             }
 
-            //记录数据库批量操作
+            //用于记录数据库操作
             WriteBatch writeBatch = new WriteBatchImpl();
-            //记录区块链上将被删掉的区块
+            //区块链上将被删掉的区块
             List<Block> deleteBlockList = new ArrayList<>();
-            //被新增上去的第一个区块高度[等价于区块链上将被删除的第一个区块的高度]
+            //新增到区块链上第一个区块的高度
             int addedFirstBlockHight = addBlockList.get(0).getBlockHeight();
-            //区块链上将被删除的最后一个区块的高度
+            //区块链上最后一个区块的高度
             int lastBlockHeight = findLastBlockFromBlock().getBlockHeight();
-            for(int blockHeight=addedFirstBlockHight;blockHeight<=lastBlockHeight;blockHeight++){
-                Block block = findBlockByBlockHeight(blockHeight);
-                fillWriteBatch(writeBatch,block,BlockChainActionEnum.DELETE_BLOCK);
-                deleteBlockList.add(block);
+            /**
+             * 当lastBlockHeight>=addedFirstBlockHight 表示有替换
+             * 当lastBlockHeight+1=addedFirstBlockHight 表示区块都是新增
+             * 当lastBlockHeight+1<addedFirstBlockHight 表示新增的区块高度有误
+             */
+            if(lastBlockHeight>=addedFirstBlockHight){
+                for(int blockHeight=addedFirstBlockHight;blockHeight<=lastBlockHeight;blockHeight++){
+                    Block block = findBlockByBlockHeight(blockHeight);
+                    fillWriteBatch(writeBatch,block,BlockChainActionEnum.DELETE_BLOCK);
+                    deleteBlockList.add(block);
+                }
             }
 
             //增 替换的区块
