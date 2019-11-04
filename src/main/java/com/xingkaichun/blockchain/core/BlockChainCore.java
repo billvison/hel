@@ -121,7 +121,7 @@ public class BlockChainCore {
     /**
      * 回滚到老的区块，并新增区块
      */
-    public boolean backAndAddBlocks(List<Block> addBlockList) throws Exception {
+    public boolean replaceBlocks(List<Block> addBlockList) throws Exception {
         lock.lock();
         try{
             if(addBlockList==null || addBlockList.size()==0){
