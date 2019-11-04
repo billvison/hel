@@ -2,9 +2,9 @@ package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionData;
-import com.xingkaichun.blockchain.core.listen.BlockChainActionEnum;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionListener;
 import com.xingkaichun.blockchain.core.model.Block;
+import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
@@ -89,10 +89,10 @@ public class BlockChainCore {
                 System.out.println("区块链上新增的区块数据不合法。请检测区块。");
                 return false;
             }
-            WriteBatch writeBatch = createWriteBatch(block,true,false);
+            WriteBatch writeBatch = createWriteBatch(block,BlockChainActionEnum.ADD_BLOCK);
             LevelDBUtil.put(BlockChain_DB,writeBatch);
 
-            notifyBlockChainActionListener(createBlockChainActionDataList(block,BlockChainActionEnum.ADD_BLOCK));
+            notifyBlockChainActionListener(createBlockChainActionDataList(block, BlockChainActionEnum.ADD_BLOCK));
             return true;
         }finally {
             lock.unlock();
@@ -109,7 +109,7 @@ public class BlockChainCore {
             if(tailBlock == null){
                 return null;
             }
-            WriteBatch writeBatch = createWriteBatch(tailBlock,false,true);
+            WriteBatch writeBatch = createWriteBatch(tailBlock,BlockChainActionEnum.DELETE_BLOCK);
             LevelDBUtil.put(BlockChain_DB,writeBatch);
             notifyBlockChainActionListener(createBlockChainActionDataList(tailBlock,BlockChainActionEnum.DELETE_BLOCK));
             return tailBlock;
@@ -143,13 +143,13 @@ public class BlockChainCore {
             int lastBlockHeight = findLastBlockFromBlock().getBlockHeight();
             for(int blockHeight=addedFirstBlockHight;blockHeight<=lastBlockHeight;blockHeight++){
                 Block block = findBlockByBlockHeight(blockHeight);
-                fillWriteBatch(writeBatch,block,false,true);
+                fillWriteBatch(writeBatch,block,BlockChainActionEnum.DELETE_BLOCK);
                 deleteBlockList.add(block);
             }
 
             //增 替换的区块
             for(Block block:addBlockList){
-                fillWriteBatch(writeBatch,block,true,false);
+                fillWriteBatch(writeBatch,block,BlockChainActionEnum.ADD_BLOCK);
             }
 
             LevelDBUtil.put(BlockChain_DB,writeBatch);
@@ -181,25 +181,19 @@ public class BlockChainCore {
     //region 拼装WriteBatch
     /**
      * 将区块信息组装成WriteBatch对象
-     * @param block 区块
-     * @param addBlock 是新增区块？
-     * @param deleteBlock 是删除区块？
      */
-    public WriteBatch createWriteBatch(Block block, boolean addBlock, boolean deleteBlock) throws Exception {
+    public WriteBatch createWriteBatch(Block block, BlockChainActionEnum blockChainActionEnum) throws Exception {
         WriteBatch writeBatch = new WriteBatchImpl();
-        fillWriteBatch(writeBatch,block,addBlock,deleteBlock);
+        fillWriteBatch(writeBatch,block,blockChainActionEnum);
         return writeBatch;
     }
 
     /**
      * 把区块信息组装进WriteBatch对象
-     * @param block 区块
-     * @param addBlock 是新增区块？
-     * @param deleteBlock 是删除区块？
      */
-    public void fillWriteBatch(WriteBatch writeBatch, Block block, boolean addBlock, boolean deleteBlock) throws Exception {
-        if(addBlock == deleteBlock){
-            throw new BlockChainCoreException("参数addBlock、deleteBlock互斥，不允许同时为true、或同时为false");
+    public void fillWriteBatch(WriteBatch writeBatch, Block block, BlockChainActionEnum blockChainActionEnum) throws Exception {
+        if(blockChainActionEnum == null){
+            throw new BlockChainCoreException("区块链动作不能为空");
         }
         if(writeBatch==null){
             throw new BlockChainCoreException("参数writeBatch没有初始化");
@@ -207,7 +201,7 @@ public class BlockChainCore {
         lock.lock();
         try{
             //区块数据
-            if(addBlock){
+            if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
                 writeBatch.put(addBlockHeightPrefix(block.getBlockHeight()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(block));
             }else{
                 writeBatch.delete(addBlockHeightPrefix(block.getBlockHeight()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
@@ -218,7 +212,7 @@ public class BlockChainCore {
             if(packingTransactionList!=null){
                 for(Transaction transaction:packingTransactionList){
                     //交易数据
-                    if(addBlock){
+                    if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
                         writeBatch.put(addTransactionUuidPrefix(transaction.getTransactionUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(transaction));
                     } else {
                         writeBatch.delete(addTransactionUuidPrefix(transaction.getTransactionUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
@@ -226,7 +220,7 @@ public class BlockChainCore {
                     ArrayList<TransactionInput> inputs = transaction.getInputs();
                     if(inputs!=null){
                         for(TransactionInput txInput:inputs){
-                            if(addBlock){
+                            if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
                                 //删除用掉的UTXO
                                 writeBatch.delete(addUnspendTransactionOutputUuidPrefix(txInput.getUtxo().getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
                             } else {
@@ -237,7 +231,7 @@ public class BlockChainCore {
                     ArrayList<TransactionOutput> outputs = transaction.getOutputs();
                     if(outputs!=null){
                         for(TransactionOutput output:outputs){
-                            if(addBlock){
+                            if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
                                 //新产生的UTXO
                                 writeBatch.put(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(output));
                                 //所有的TXO数据

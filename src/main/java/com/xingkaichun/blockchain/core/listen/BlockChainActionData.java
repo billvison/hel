@@ -1,6 +1,7 @@
 package com.xingkaichun.blockchain.core.listen;
 
 import com.xingkaichun.blockchain.core.model.Block;
+import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
 import lombok.Data;
 
 import java.util.ArrayList;
