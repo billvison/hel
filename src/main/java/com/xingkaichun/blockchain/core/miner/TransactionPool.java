@@ -125,7 +125,7 @@ public class TransactionPool {
                     synchronized (TransactionPool.class){
                         size = transactionList.size();
                         for(Transaction transaction: transactionList){
-                            writeBatch.put(transaction.getTransactionUUID().getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(transaction));
+                            writeBatch.put(LevelDBUtil.stringToBytes(transaction.getTransactionUUID()), EncodeDecode.encode(transaction));
                         }
                         transactionList.clear();
                     }

@@ -206,9 +206,9 @@ public class BlockChainCore {
         try{
             //区块数据
             if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                writeBatch.put(addBlockHeightPrefix(block.getBlockHeight()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(block));
+                writeBatch.put(LevelDBUtil.stringToBytes(addBlockHeightPrefix(block.getBlockHeight())), EncodeDecode.encode(block));
             }else{
-                writeBatch.delete(addBlockHeightPrefix(block.getBlockHeight()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
+                writeBatch.delete(LevelDBUtil.stringToBytes(addBlockHeightPrefix(block.getBlockHeight())));
             }
 
             //UTXO信息
@@ -217,18 +217,18 @@ public class BlockChainCore {
                 for(Transaction transaction:packingTransactionList){
                     //交易数据
                     if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                        writeBatch.put(addTransactionUuidPrefix(transaction.getTransactionUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(transaction));
+                        writeBatch.put(LevelDBUtil.stringToBytes(addTransactionUuidPrefix(transaction.getTransactionUUID())), EncodeDecode.encode(transaction));
                     } else {
-                        writeBatch.delete(addTransactionUuidPrefix(transaction.getTransactionUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
+                        writeBatch.delete(LevelDBUtil.stringToBytes(addTransactionUuidPrefix(transaction.getTransactionUUID())));
                     }
                     ArrayList<TransactionInput> inputs = transaction.getInputs();
                     if(inputs!=null){
                         for(TransactionInput txInput:inputs){
                             if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
                                 //删除用掉的UTXO
-                                writeBatch.delete(addUnspendTransactionOutputUuidPrefix(txInput.getUtxo().getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
+                                writeBatch.delete(LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(txInput.getUtxo().getTransactionOutputUUID())));
                             } else {
-                                writeBatch.put(addUnspendTransactionOutputUuidPrefix(txInput.getUtxo().getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8),EncodeDecode.encode(txInput.getUtxo()));
+                                writeBatch.put(LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(txInput.getUtxo().getTransactionOutputUUID())),EncodeDecode.encode(txInput.getUtxo()));
                             }
                         }
                     }
@@ -237,12 +237,12 @@ public class BlockChainCore {
                         for(TransactionOutput output:outputs){
                             if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
                                 //新产生的UTXO
-                                writeBatch.put(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(output));
+                                writeBatch.put(LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID())), EncodeDecode.encode(output));
                                 //所有的TXO数据
-                                writeBatch.put(addTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8), EncodeDecode.encode(output));
+                                writeBatch.put(LevelDBUtil.stringToBytes(addTransactionOutputPrefix(output.getTransactionOutputUUID())), EncodeDecode.encode(output));
                             } else {
-                                writeBatch.delete(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
-                                writeBatch.delete(addTransactionOutputPrefix(output.getTransactionOutputUUID()).getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
+                                writeBatch.delete(LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID())));
+                                writeBatch.delete(LevelDBUtil.stringToBytes(addTransactionOutputPrefix(output.getTransactionOutputUUID())));
                             }
 
                         }

@@ -4,9 +4,14 @@ import org.iq80.leveldb.*;
 import org.iq80.leveldb.impl.Iq80DBFactory;
 
 import java.io.File;
+import java.nio.charset.Charset;
 
 public class LevelDBUtil {
+
+    private static final Charset CHARSET_UTF_8 = Charset.forName("UTF-8");
+
     private static WriteOptions writeOptions = new WriteOptions();
+
     static {
         writeOptions.sync(true);
         writeOptions.snapshot(true);
@@ -16,12 +21,21 @@ public class LevelDBUtil {
     }
 
     public static byte[] get(DB db,String key) throws DBException{
-        return db.get(key.getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
+        return db.get(stringToBytes(key));
     }
 
     public static DB createDB(File dbFile) throws Exception{
         DBFactory factory = new Iq80DBFactory();
         Options options = new Options();
         return factory.open(dbFile, options);
+    }
+
+    public static byte[] stringToBytes(long value) {
+        String strValue = String.valueOf(value);
+        return stringToBytes(strValue);
+    }
+
+    public static byte[] stringToBytes(String value) {
+        return value.getBytes(CHARSET_UTF_8);
     }
 }
