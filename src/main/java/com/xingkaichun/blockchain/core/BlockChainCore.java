@@ -209,7 +209,6 @@ public class BlockChainCore {
                 writeBatch.delete(blockHeightKey);
             }
 
-            //UTXO信息
             List<Transaction> packingTransactionList = block.getTransactions();
             if(packingTransactionList!=null){
                 for(Transaction transaction:packingTransactionList){
