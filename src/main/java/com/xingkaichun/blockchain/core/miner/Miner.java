@@ -176,4 +176,8 @@ public class Miner {
     public MineAward getMineAward() {
         return mineAward;
     }
+
+    public Checker getChecker() {
+        return checker;
+    }
 }

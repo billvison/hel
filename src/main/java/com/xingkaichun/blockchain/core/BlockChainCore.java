@@ -31,8 +31,6 @@ public class BlockChainCore {
     //region 变量
     //区块链数据库
     private DB blockChainDB;
-    //区块校验者
-    private Checker checker;
     //矿工
     private Miner miner;
 
@@ -59,11 +57,9 @@ public class BlockChainCore {
     /**
      * 构造函数
      * @param dbPath 数据库地址
-     * @param checker 校验者
      */
-    public BlockChainCore(String dbPath, Checker checker, Miner miner) throws Exception {
+    public BlockChainCore(String dbPath, Miner miner) throws Exception {
         this.blockChainDB = LevelDBUtil.createDB(new File(dbPath,"blockChainDB"));
-        this.checker = checker;
         this.miner = miner;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -88,7 +84,7 @@ public class BlockChainCore {
         lock.lock();
         try{
             //区块数据的校验
-            if(!checker.isBlockApplyToBlockChain(this, block)){
+            if(!miner.getChecker().isBlockApplyToBlockChain(this, block)){
                 System.out.println("区块链上新增的区块数据不合法。请检测区块。");
                 return false;
             }
@@ -128,7 +124,7 @@ public class BlockChainCore {
         lock.lock();
         try{
             //区块数据的校验
-            if(!checker.isBlockListApplyToBlockChain(this, addBlockList)){
+            if(!miner.getChecker().isBlockListApplyToBlockChain(this, addBlockList)){
                 System.out.println("区块链上新增的区块数据不合法。请检测区块。");
                 return false;
             }
