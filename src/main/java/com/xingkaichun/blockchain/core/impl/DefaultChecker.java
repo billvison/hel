@@ -4,6 +4,7 @@ package com.xingkaichun.blockchain.core.impl;
 import com.xingkaichun.blockchain.core.BlockChainCore;
 import com.xingkaichun.blockchain.core.Checker;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
+import com.xingkaichun.blockchain.core.miner.MineAward;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
@@ -36,7 +37,7 @@ public class DefaultChecker extends Checker {
     }
 
     @Override
-    public boolean checkUnBlockChainTransaction(BlockChainCore blockChainCore, RollBackMemoryBlockChain oldBlocks, GrowingMemoryBlockChain newBlocks, Transaction transaction) throws Exception{
+    public boolean checkUnBlockChainTransaction(BlockChainCore blockChainCore, Block block, RollBackMemoryBlockChain oldBlocks, GrowingMemoryBlockChain newBlocks, Transaction transaction) throws Exception{
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null){
@@ -50,8 +51,9 @@ public class DefaultChecker extends Checker {
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出有且只能有一笔。不合法的交易。");
             }
             TransactionOutput output = outputs.get(0);
-            //TODO BUG
-            if(output.getValue().compareTo(new BigDecimal(100))!=0){
+            MineAward mineAward = blockChainCore.getMiner().getMineAward();
+            BigDecimal award = mineAward.difficulty(blockChainCore,block);
+            if(output.getValue().compareTo(award)!=0){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出金额不正确。不合法的交易。");
             }
             return true;
@@ -200,7 +202,7 @@ public class DefaultChecker extends Checker {
                 } else {
                     throw new BlockChainCoreException("区块数据异常，不能识别的交易类型。");
                 }
-                boolean check = checkUnBlockChainTransaction(blockChainCore,oldBlock,newBlock,tx);
+                boolean check = checkUnBlockChainTransaction(blockChainCore,currentBlock,oldBlock,newBlock,tx);
                 if(!check){
                     throw new BlockChainCoreException("区块数据异常，交易异常。");
                 }

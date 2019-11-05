@@ -60,7 +60,7 @@ public class TransactionPool {
      */
     public boolean addTransaction(Transaction transaction) throws Exception {
         //交易校验失败 丢弃交易
-        if(!checker.checkUnBlockChainTransaction(blockChainCore,new RollBackMemoryBlockChain(),new GrowingMemoryBlockChain(),transaction)){
+        if(!checker.checkUnBlockChainTransaction(blockChainCore,null,new RollBackMemoryBlockChain(),new GrowingMemoryBlockChain(),transaction)){
             return false;
         }
         //交易已经存在于区块链 丢弃交易

@@ -22,15 +22,17 @@ public class Miner {
     private BlockChainCore blockChainCore;
     private PublicKeyString minerPublicKey;
     private MineDifficulty mineDifficulty;
+    private MineAward mineAward;
     private TransactionPool transactionPool;
     private MerkleUtils merkleUtils = new MerkleUtils();
     private Checker checker;
 
-    public Miner(TransactionPool transactionPool, MineDifficulty mineDifficulty, BlockChainCore blockChainCore, PublicKeyString minerPublicKey, Checker checker) {
+    public Miner(TransactionPool transactionPool, MineDifficulty mineDifficulty, MineAward mineAward, BlockChainCore blockChainCore, PublicKeyString minerPublicKey, Checker checker) {
         this.transactionPool = transactionPool;
         this.blockChainCore = blockChainCore;
         this.minerPublicKey = minerPublicKey;
         this.mineDifficulty = mineDifficulty;
+        this.mineAward = mineAward;
         this.checker = checker;
     }
 
@@ -155,7 +157,7 @@ public class Miner {
         while (iterator.hasNext()){
             Transaction tx = iterator.next();
             try {
-                boolean checkPass = checker.checkUnBlockChainTransaction(blockchain,new RollBackMemoryBlockChain(),new GrowingMemoryBlockChain(),tx);
+                boolean checkPass = checker.checkUnBlockChainTransaction(blockchain,null,new RollBackMemoryBlockChain(),new GrowingMemoryBlockChain(),tx);
                 if(!checkPass){
                     iterator.remove();
                     System.out.println("交易校验失败：丢弃交易。");
@@ -165,5 +167,13 @@ public class Miner {
                 System.out.println("交易校验失败：丢弃交易。");
             }
         }
+    }
+
+    public MineDifficulty getMineDifficulty() {
+        return mineDifficulty;
+    }
+
+    public MineAward getMineAward() {
+        return mineAward;
     }
 }
