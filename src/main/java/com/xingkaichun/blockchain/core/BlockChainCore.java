@@ -46,10 +46,10 @@ public class BlockChainCore {
     //区块链上有可能的最后一个区块【不保证一定是最后的区块】
     private Block possibleLastBlock;
 
-    //监听区块链区块的增删
+    //监听区块链上区块的增删动作
     private List<BlockChainActionListener> blockChainActionListenerList = new ArrayList<>();
 
-    //保证对区块链增区块、删区块、查区块的操作是同步的。
+    //锁:保证对区块链增区块、删区块、查区块的操作是同步的。
     private Lock lock = new ReentrantLock();
     //endregion
 
@@ -57,6 +57,7 @@ public class BlockChainCore {
     /**
      * 构造函数
      * @param dbPath 数据库地址
+     * @param miner 矿工
      */
     public BlockChainCore(String dbPath, Miner miner) throws Exception {
         this.blockChainDB = LevelDBUtil.createDB(new File(dbPath,"blockChainDB"));
@@ -167,9 +168,6 @@ public class BlockChainCore {
 
     //region 数据库相关
     //region 拼装数据库Key的值
-    private String addTransactionOutputPrefix(String transactionOutputUUID) {
-        return TRANSACTION_OUTPUT_UUID_FLAG + transactionOutputUUID;
-    }
     private String addUnspendTransactionOutputUuidPrefix(String transactionOutputUUID) {
         return UNSPEND_TRANSACTION_OUPUT_UUID_FLAG + transactionOutputUUID;
     }
@@ -198,50 +196,51 @@ public class BlockChainCore {
         if(blockChainActionEnum == null){
             throw new BlockChainCoreException("区块链动作不能为空");
         }
-        if(writeBatch==null){
+        if(writeBatch == null){
             throw new BlockChainCoreException("参数writeBatch没有初始化");
         }
         lock.lock();
         try{
-            //区块数据
+            //更新区块数据
+            byte[] blockHeightKey = LevelDBUtil.stringToBytes(addBlockHeightPrefix(block.getBlockHeight()));
             if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                writeBatch.put(LevelDBUtil.stringToBytes(addBlockHeightPrefix(block.getBlockHeight())), EncodeDecode.encode(block));
+                writeBatch.put(blockHeightKey, EncodeDecode.encode(block));
             }else{
-                writeBatch.delete(LevelDBUtil.stringToBytes(addBlockHeightPrefix(block.getBlockHeight())));
+                writeBatch.delete(blockHeightKey);
             }
 
             //UTXO信息
             List<Transaction> packingTransactionList = block.getTransactions();
             if(packingTransactionList!=null){
                 for(Transaction transaction:packingTransactionList){
-                    //交易数据
+                    //更新交易数据
+                    byte[] transactionUuidKey = LevelDBUtil.stringToBytes(addTransactionUuidPrefix(transaction.getTransactionUUID()));
                     if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                        writeBatch.put(LevelDBUtil.stringToBytes(addTransactionUuidPrefix(transaction.getTransactionUUID())), EncodeDecode.encode(transaction));
+                        writeBatch.put(transactionUuidKey, EncodeDecode.encode(transaction));
                     } else {
-                        writeBatch.delete(LevelDBUtil.stringToBytes(addTransactionUuidPrefix(transaction.getTransactionUUID())));
+                        writeBatch.delete(transactionUuidKey);
                     }
                     ArrayList<TransactionInput> inputs = transaction.getInputs();
                     if(inputs!=null){
                         for(TransactionInput txInput:inputs){
+                            //更新UTXO数据
+                            byte[] transactionOutputUuidKey = LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(txInput.getUtxo().getTransactionOutputUUID()));
                             if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                                //删除用掉的UTXO
-                                writeBatch.delete(LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(txInput.getUtxo().getTransactionOutputUUID())));
+                                writeBatch.delete(transactionOutputUuidKey);
                             } else {
-                                writeBatch.put(LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(txInput.getUtxo().getTransactionOutputUUID())),EncodeDecode.encode(txInput.getUtxo()));
+                                writeBatch.put(transactionOutputUuidKey,EncodeDecode.encode(txInput.getUtxo()));
                             }
                         }
                     }
                     ArrayList<TransactionOutput> outputs = transaction.getOutputs();
                     if(outputs!=null){
                         for(TransactionOutput output:outputs){
+                            //更新UTXO数据
+                            byte[] unspendTransactionOutputUuidKey = LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID()));
                             if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                                //新产生的UTXO
-                                writeBatch.put(LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID())), EncodeDecode.encode(output));
-                                //所有的TXO数据
-                                writeBatch.put(LevelDBUtil.stringToBytes(addTransactionOutputPrefix(output.getTransactionOutputUUID())), EncodeDecode.encode(output));
+                                writeBatch.put(unspendTransactionOutputUuidKey, EncodeDecode.encode(output));
                             } else {
-                                writeBatch.delete(LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID())));
-                                writeBatch.delete(LevelDBUtil.stringToBytes(addTransactionOutputPrefix(output.getTransactionOutputUUID())));
+                                writeBatch.delete(unspendTransactionOutputUuidKey);
                             }
 
                         }
