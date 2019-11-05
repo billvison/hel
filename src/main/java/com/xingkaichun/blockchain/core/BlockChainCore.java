@@ -30,7 +30,7 @@ public class BlockChainCore {
 
     //region 变量
     //区块链数据库
-    private DB BlockChain_DB;
+    private DB blockChainDB;
     //区块校验者
     private Checker checker;
     //矿工
@@ -62,13 +62,13 @@ public class BlockChainCore {
      * @param checker 校验者
      */
     public BlockChainCore(String dbPath, Checker checker, Miner miner) throws Exception {
-        this.BlockChain_DB = LevelDBUtil.createDB(new File(dbPath,"BlockChain_DB"));
+        this.blockChainDB = LevelDBUtil.createDB(new File(dbPath,"blockChainDB"));
         this.checker = checker;
         this.miner = miner;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                BlockChain_DB.close();
+                blockChainDB.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -93,7 +93,7 @@ public class BlockChainCore {
                 return false;
             }
             WriteBatch writeBatch = createWriteBatch(block,BlockChainActionEnum.ADD_BLOCK);
-            LevelDBUtil.put(BlockChain_DB,writeBatch);
+            LevelDBUtil.put(blockChainDB,writeBatch);
 
             notifyBlockChainActionListener(createBlockChainActionDataList(block, BlockChainActionEnum.ADD_BLOCK));
             return true;
@@ -113,7 +113,7 @@ public class BlockChainCore {
                 return null;
             }
             WriteBatch writeBatch = createWriteBatch(tailBlock,BlockChainActionEnum.DELETE_BLOCK);
-            LevelDBUtil.put(BlockChain_DB,writeBatch);
+            LevelDBUtil.put(blockChainDB,writeBatch);
             notifyBlockChainActionListener(createBlockChainActionDataList(tailBlock,BlockChainActionEnum.DELETE_BLOCK));
             return tailBlock;
         }finally {
@@ -159,7 +159,7 @@ public class BlockChainCore {
                 fillWriteBatch(writeBatch,block,BlockChainActionEnum.ADD_BLOCK);
             }
 
-            LevelDBUtil.put(BlockChain_DB,writeBatch);
+            LevelDBUtil.put(blockChainDB,writeBatch);
 
             notifyBlockChainActionListener(createBlockChainActionDataList(deleteBlockList,BlockChainActionEnum.DELETE_BLOCK,addBlockList,BlockChainActionEnum.ADD_BLOCK));
             return true;
@@ -316,7 +316,7 @@ public class BlockChainCore {
             if(transactionOutputUUID==null||"".equals(transactionOutputUUID)){
                 return null;
             }
-            byte[] utxo = LevelDBUtil.get(BlockChain_DB, addUnspendTransactionOutputUuidPrefix(transactionOutputUUID));
+            byte[] utxo = LevelDBUtil.get(blockChainDB, addUnspendTransactionOutputUuidPrefix(transactionOutputUUID));
             if(utxo == null){
                 return null;
             }
@@ -333,7 +333,7 @@ public class BlockChainCore {
     public Block findBlockByBlockHeight(int blockHeight) throws Exception {
         lock.lock();
         try{
-            byte[] byteBlock = LevelDBUtil.get(BlockChain_DB,addBlockHeightPrefix(blockHeight));
+            byte[] byteBlock = LevelDBUtil.get(blockChainDB,addBlockHeightPrefix(blockHeight));
             if(byteBlock==null){
                 return null;
             }
@@ -350,7 +350,7 @@ public class BlockChainCore {
     public Transaction findTransactionByUUID(String transactionUUID) throws Exception {
         lock.lock();
         try{
-            byte[] byteTransaction = LevelDBUtil.get(BlockChain_DB, addTransactionUuidPrefix(transactionUUID));
+            byte[] byteTransaction = LevelDBUtil.get(blockChainDB, addTransactionUuidPrefix(transactionUUID));
             if(byteTransaction==null){
                 return null;
             }
