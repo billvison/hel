@@ -11,7 +11,6 @@ import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.blockchain.core.utils.BlockUtils;
-import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
 
 import java.math.BigDecimal;
@@ -24,7 +23,7 @@ import java.util.Set;
 /**
  * 区块校验者
  */
-public class DefaultChecker implements Checker {
+public class DefaultChecker extends Checker {
 
     @Override
     public boolean isBlockApplyToBlockChain(BlockChainCore blockChainCore, Block block) throws Exception {
@@ -37,7 +36,7 @@ public class DefaultChecker implements Checker {
     }
 
     @Override
-    public boolean checkUnBlockChainTransaction(BlockChainCore blockChainCore, LightweightBlockChain oldBlocks, LightweightBlockChain newBlocks, Transaction transaction) throws Exception{
+    public boolean checkUnBlockChainTransaction(BlockChainCore blockChainCore, RollBackMemoryBlockChain oldBlocks, GrowingMemoryBlockChain newBlocks, Transaction transaction) throws Exception{
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null){
@@ -51,6 +50,7 @@ public class DefaultChecker implements Checker {
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出有且只能有一笔。不合法的交易。");
             }
             TransactionOutput output = outputs.get(0);
+            //TODO BUG
             if(output.getValue().compareTo(new BigDecimal(100))!=0){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出金额不正确。不合法的交易。");
             }
@@ -118,7 +118,7 @@ public class DefaultChecker implements Checker {
 
     @Override
     public boolean isBlockListApplyToBlockChain(BlockChainCore blockChainCore, List<Block> blockList) throws Exception {
-        //检测区块是否能衔接上区块链
+        //被检测区块不允许是空
         if(blockList==null || blockList.size()==0){
             return false;
         }
@@ -129,9 +129,13 @@ public class DefaultChecker implements Checker {
                 return false;
             }
             if(i<blockList.size()-1){
-                Block nextBlock = blockList.get(i);
-                //校验Block是否连贯 block的hash值是否正确的
+                Block nextBlock = blockList.get(i+1);
+                //校验区块Hash是否连贯
                 if(!block.getHash().equals(nextBlock.getPreviousHash())){
+                    return false;
+                }
+                //校验区块高度是否连贯
+                if((block.getBlockHeight()+1)!=nextBlock.getBlockHeight()){
                     return false;
                 }
             }
@@ -157,14 +161,14 @@ public class DefaultChecker implements Checker {
                 return false;
             }
         }
-        LightweightBlockChain oldBlock = new LightweightBlockChain();
-        LightweightBlockChain newBlock = new LightweightBlockChain();
+        RollBackMemoryBlockChain oldBlock = new RollBackMemoryBlockChain();
+        GrowingMemoryBlockChain newBlock = new GrowingMemoryBlockChain();
         //需要回滚区块链上的区块吗？
         if(blockchainTailBlock!=null && blockchainTailBlock.getBlockHeight()>=headBlock.getBlockHeight()){
             //回滚
             for(int blockHeight=blockchainTailBlock.getBlockHeight();blockHeight>=headBlock.getBlockHeight();blockHeight--){
                 Block currentBlock = blockChainCore.findBlockByBlockHeight(blockHeight);
-                fillWriteBatch(oldBlock,currentBlock,true);
+                oldBlock.fillWriteBatch(currentBlock);
             }
         }
 
@@ -202,43 +206,12 @@ public class DefaultChecker implements Checker {
             if(minerTransactionTimes == 0){
                 throw new BlockChainCoreException("区块数据异常，没有检测到挖矿奖励交易。");
             }
-            fillWriteBatch(newBlock,currentBlock,false);
+            newBlock.fillWriteBatch(currentBlock);
         }
         return true;
     }
 
-    public void fillWriteBatch(LightweightBlockChain blocks, Block block, boolean rollback) throws Exception {
-        //UTXO信息
-        List<Transaction> packingTransactionList = block.getTransactions();
-        if(packingTransactionList!=null){
-            for(Transaction transaction:packingTransactionList){
-                ArrayList<TransactionInput> inputs = transaction.getInputs();
-                if(inputs!=null){
-                    for(TransactionInput txInput:inputs){
-                        if(rollback){
-                            //将用掉的UTXO回滚
-                            blocks.getAddUtxoList().add(txInput.getUtxo().getTransactionOutputUUID());
-                        } else {
-                            blocks.getDeleteUtxoList().add(txInput.getUtxo().getTransactionOutputUUID());
-                        }
-                    }
-                }
-                ArrayList<TransactionOutput> outputs = transaction.getOutputs();
-                if(outputs!=null){
-                    for(TransactionOutput output:outputs){
-                        if(rollback){
-                            //将新产生的UTXO回滚
-                            blocks.getDeleteUtxoList().add(output.getTransactionOutputUUID());
-                        } else {
-                            blocks.getAddUtxoList().add(output.getTransactionOutputUUID());
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private boolean isUTXO(BlockChainCore blockChainCore, LightweightBlockChain rollbackBlocks, LightweightBlockChain newBlocks, String transactionOutputUUID) throws Exception {
+    private boolean isUTXO(BlockChainCore blockChainCore, RollBackMemoryBlockChain rollbackBlocks, GrowingMemoryBlockChain newBlocks, String transactionOutputUUID) throws Exception {
         List<String> newBlocks_addUtxoList = newBlocks.getAddUtxoList();
         List<String> newBlocks_deleteUtxoList = newBlocks.getDeleteUtxoList();
         if(newBlocks_deleteUtxoList.contains(transactionOutputUUID)){

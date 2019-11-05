@@ -2,7 +2,9 @@ package com.xingkaichun.blockchain.core.miner;
 
 import com.xingkaichun.blockchain.core.BlockChainCore;
 import com.xingkaichun.blockchain.core.Checker;
-import com.xingkaichun.blockchain.core.impl.LightweightBlockChain;
+import com.xingkaichun.blockchain.core.impl.GrowingMemoryBlockChain;
+import com.xingkaichun.blockchain.core.impl.MemoryBlockChain;
+import com.xingkaichun.blockchain.core.impl.RollBackMemoryBlockChain;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
@@ -140,7 +142,7 @@ public class Miner {
         while (iterator.hasNext()){
             Transaction tx = iterator.next();
             try {
-                boolean checkPass = checker.checkUnBlockChainTransaction(blockchain,new LightweightBlockChain(),new LightweightBlockChain(),tx);
+                boolean checkPass = checker.checkUnBlockChainTransaction(blockchain,new RollBackMemoryBlockChain(),new GrowingMemoryBlockChain(),tx);
                 if(!checkPass){
                     iterator.remove();
                     System.out.println("交易校验失败：丢弃交易。");
