@@ -168,6 +168,9 @@ public class BlockChainCore {
 
     //region 数据库相关
     //region 拼装数据库Key的值
+    private String addTransactionOutputPrefix(String transactionOutputUUID) {
+        return TRANSACTION_OUTPUT_UUID_FLAG + transactionOutputUUID;
+    }
     private String addUnspendTransactionOutputUuidPrefix(String transactionOutputUUID) {
         return UNSPEND_TRANSACTION_OUPUT_UUID_FLAG + transactionOutputUUID;
     }
@@ -234,14 +237,17 @@ public class BlockChainCore {
                     ArrayList<TransactionOutput> outputs = transaction.getOutputs();
                     if(outputs!=null){
                         for(TransactionOutput output:outputs){
+                            //更新所有的交易输出
+                            byte[] transactionOutputUuidKey = LevelDBUtil.stringToBytes(addTransactionOutputPrefix(output.getTransactionOutputUUID()));
                             //更新UTXO数据
                             byte[] unspendTransactionOutputUuidKey = LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID()));
                             if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
+                                writeBatch.put(transactionOutputUuidKey, EncodeDecode.encode(output));
                                 writeBatch.put(unspendTransactionOutputUuidKey, EncodeDecode.encode(output));
                             } else {
+                                writeBatch.delete(transactionOutputUuidKey);
                                 writeBatch.delete(unspendTransactionOutputUuidKey);
                             }
-
                         }
                     }
                 }
