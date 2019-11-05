@@ -128,6 +128,9 @@ public class DefaultChecker extends Checker {
             if(!BlockUtils.checkHash(block)){
                 return false;
             }
+            //校验挖矿是否正确
+            blockChainCore.getMiner().isHashSuccess(block);
+            //校验区块的连贯性
             if(i<blockList.size()-1){
                 Block nextBlock = blockList.get(i+1);
                 //校验区块Hash是否连贯
@@ -139,7 +142,6 @@ public class DefaultChecker extends Checker {
                     return false;
                 }
             }
-            //TODO 校验挖矿是否正确
         }
         Block blockchainTailBlock = blockChainCore.findLastBlockFromBlock();
         Block headPrevBlock = null;

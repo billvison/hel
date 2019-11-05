@@ -3,7 +3,6 @@ package com.xingkaichun.blockchain.core.miner;
 import com.xingkaichun.blockchain.core.BlockChainCore;
 import com.xingkaichun.blockchain.core.Checker;
 import com.xingkaichun.blockchain.core.impl.GrowingMemoryBlockChain;
-import com.xingkaichun.blockchain.core.impl.MemoryBlockChain;
 import com.xingkaichun.blockchain.core.impl.RollBackMemoryBlockChain;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
@@ -70,10 +69,10 @@ public class Miner {
 
         //创建打包区块
         Block packingBlock = createPackingBlock(lastBlock,packingTransactionList);
-        int difficulty = mineDifficulty.difficulty();
+        int difficulty = mineDifficulty.difficulty(blockChainCore, packingBlock);
         String target = CipherUtil.getDificultyString(difficulty);
         packingBlock.setHash(BlockUtils.calculateHash(packingBlock));
-        while (!packingBlock.getHash().substring(0, difficulty).equals(target)) {
+        while (!isHashSuccess(packingBlock.getHash(),difficulty,target)) {
             //TODO 中断 其它旷工已经挖到矿了。
             packingBlock.setNonce((packingBlock.getNonce()+1));
             packingBlock.setHash(BlockUtils.calculateHash(packingBlock));
@@ -82,6 +81,20 @@ public class Miner {
         return packingBlock;
     }
 
+    /**
+     * 判断Block的挖矿Hash是否正确
+     */
+    public boolean isHashSuccess(Block block){
+        int difficulty = mineDifficulty.difficulty(blockChainCore,block);
+        return isHashSuccess(block.getHash(),difficulty);
+    }
+    public boolean isHashSuccess(String hash,int difficulty){
+        String target = CipherUtil.getDificultyString(difficulty);
+        return isHashSuccess(hash,difficulty,target);
+    }
+    public boolean isHashSuccess(String hash,int difficulty,String target){
+        return hash.substring(0, difficulty).equals(target);
+    }
     /**
      * 启动挖矿线程
      */

@@ -3,6 +3,7 @@ package com.xingkaichun.blockchain.core;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionData;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionListener;
+import com.xingkaichun.blockchain.core.miner.Miner;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
@@ -32,6 +33,8 @@ public class BlockChainCore {
     private DB BlockChain_DB;
     //区块校验者
     private Checker checker;
+    //矿工
+    private Miner miner;
 
     //区块标识
     private final static String BLOCK_HEIGHT_FLAG = "B_H_F_";
@@ -58,10 +61,10 @@ public class BlockChainCore {
      * @param dbPath 数据库地址
      * @param checker 校验者
      */
-    public BlockChainCore(String dbPath, Checker checker) throws Exception {
+    public BlockChainCore(String dbPath, Checker checker, Miner miner) throws Exception {
         this.BlockChain_DB = LevelDBUtil.createDB(new File(dbPath,"BlockChain_DB"));
         this.checker = checker;
-
+        this.miner = miner;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -396,4 +399,9 @@ public class BlockChainCore {
         return dataList;
     }
     //endregion
+
+
+    public Miner getMiner() {
+        return miner;
+    }
 }
