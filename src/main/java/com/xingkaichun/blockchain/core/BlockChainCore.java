@@ -216,6 +216,7 @@ public class BlockChainCore {
             if(packingTransactionList!=null){
                 for(Transaction transaction:packingTransactionList){
                     //更新交易数据
+                    //TODO 校验交易ID唯一
                     byte[] transactionUuidKey = LevelDBUtil.stringToBytes(addTransactionUuidPrefix(transaction.getTransactionUUID()));
                     if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
                         writeBatch.put(transactionUuidKey, EncodeDecode.encode(transaction));
