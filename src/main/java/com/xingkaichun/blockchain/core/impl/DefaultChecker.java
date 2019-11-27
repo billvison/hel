@@ -11,7 +11,6 @@ import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.blockchain.core.utils.BlockUtils;
 import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
 
 import java.math.BigDecimal;
@@ -31,13 +30,57 @@ public class DefaultChecker extends Checker {
         if(block==null){
             throw new BlockChainCoreException("区块校验失败：区块不能为null。");
         }
-        List<Block> blockList = new ArrayList<>();
-        blockList.add(block);
-        return isBlockListApplyToBlockChain(blockChainCore,blockList);
+        //校验挖矿是否正确
+        blockChainCore.getMiner().checkBlock(block);
+        //校验区块的连贯性
+        Block tailBlock = blockChainCore.findLastBlockFromBlock();
+        //校验区块Hash是否连贯
+        if(!tailBlock.getHash().equals(block.getPreviousHash())){
+            return false;
+        }
+        //校验区块高度是否连贯
+        if((tailBlock.getBlockHeight()+1)!=block.getBlockHeight()){
+            return false;
+        }
+
+        //区块角度检测区块的数据的安全性
+        //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
+        Set<String> transactionOutputUUIDSet = new HashSet<>();
+        //一个区块只能有一笔挖矿奖励交易
+        int minerTransactionTimes = 0;
+        for(Transaction tx : block.getTransactions()){
+            if(tx.getTransactionType() == TransactionType.MINER){
+                minerTransactionTimes++;
+                //有多个挖矿交易
+                if(minerTransactionTimes>1){
+                    throw new BlockChainCoreException("区块数据异常，一个区块只能有一笔挖矿奖励。");
+                }
+            } else if(tx.getTransactionType() == TransactionType.NORMAL){
+                ArrayList<TransactionInput> inputs = tx.getInputs();
+                for(TransactionInput input:inputs){
+                    String transactionOutputUUID = input.getUtxo().getTransactionOutputUUID();
+                    //同一个UTXO被多次使用
+                    if(transactionOutputUUIDSet.contains(transactionOutputUUID)){
+                        throw new BlockChainCoreException("区块数据异常，同一个UTXO在一个区块中多次使用。");
+                    }
+                    transactionOutputUUIDSet.add(transactionOutputUUID);
+                }
+            } else {
+                throw new BlockChainCoreException("区块数据异常，不能识别的交易类型。");
+            }
+            boolean check = checkUnBlockChainTransaction(blockChainCore,block,tx);
+            if(!check){
+                throw new BlockChainCoreException("区块数据异常，交易异常。");
+            }
+        }
+        if(minerTransactionTimes == 0){
+            throw new BlockChainCoreException("区块数据异常，没有检测到挖矿奖励交易。");
+        }
+        return true;
     }
 
     @Override
-    public boolean checkUnBlockChainTransaction(BlockChainCore blockChainCore, Block block, RollBackMemoryBlockChain oldBlocks, GrowingMemoryBlockChain newBlocks, Transaction transaction) throws Exception{
+    public boolean checkUnBlockChainTransaction(BlockChainCore blockChainCore, Block block, Transaction transaction) throws Exception{
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null){
@@ -66,7 +109,7 @@ public class DefaultChecker extends Checker {
                 if(i.getUtxo() ==null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入UTXO不能为空。不合法的交易。");
                 }
-                if(!isUTXO(blockChainCore,oldBlocks,newBlocks,i.getUtxo().getTransactionOutputUUID())){
+                if(!isUTXO(blockChainCore,i.getUtxo().getTransactionOutputUUID())){
                     throw new BlockChainCoreException("交易校验失败：交易的输入不是UTXO。不合法的交易。");
                 }
             }
@@ -124,114 +167,63 @@ public class DefaultChecker extends Checker {
         if(blockList==null || blockList.size()==0){
             return false;
         }
-        for(int i=0;i<blockList.size();i++){
-            Block block = blockList.get(i);
-            //校验Block hash正确
-            if(!BlockUtils.checkHash(block)){
-                return false;
-            }
-            //校验挖矿是否正确
-            blockChainCore.getMiner().isHashSuccess(block);
-            //校验区块的连贯性
-            if(i<blockList.size()-1){
-                Block nextBlock = blockList.get(i+1);
-                //校验区块Hash是否连贯
-                if(!block.getHash().equals(nextBlock.getPreviousHash())){
-                    return false;
-                }
-                //校验区块高度是否连贯
-                if((block.getBlockHeight()+1)!=nextBlock.getBlockHeight()){
-                    return false;
-                }
-            }
-        }
-        Block blockchainTailBlock = blockChainCore.findLastBlockFromBlock();
-        Block headPrevBlock = null;
-        Block headBlock = blockList.get(0);
-        Block tailBlock = blockList.get(blockList.size()-1);
-        if(headBlock.getBlockHeight()<1){
-            return false;
-        }else if(headBlock.getBlockHeight()==1){
-        }else if(headBlock.getBlockHeight()>blockchainTailBlock.getBlockHeight()+1){
-            //增加区块时，区块的高度应当是连贯的，当前区块链的区块高度为A，则下一个新增的区块的区块高度必须是A+1
-            return false;
-        }else{
-            //链的长度:区块链长度只可以变长，长度不可以变短或是不变
-            if(tailBlock.getBlockHeight()<=blockchainTailBlock.getBlockHeight()){
-                return false;
-            }
-            headPrevBlock = blockChainCore.findBlockByBlockHeight(headBlock.getBlockHeight()-1);
-            if(!headPrevBlock.getHash().equals(headBlock.getPreviousHash())){
-                return false;
-            }
-        }
-        RollBackMemoryBlockChain oldBlock = new RollBackMemoryBlockChain();
-        GrowingMemoryBlockChain newBlock = new GrowingMemoryBlockChain();
-        //需要回滚区块链上的区块吗？
-        if(blockchainTailBlock!=null && blockchainTailBlock.getBlockHeight()>=headBlock.getBlockHeight()){
-            //回滚
-            for(int blockHeight=blockchainTailBlock.getBlockHeight();blockHeight>=headBlock.getBlockHeight();blockHeight--){
-                Block currentBlock = blockChainCore.findBlockByBlockHeight(blockHeight);
-                oldBlock.fillWriteBatch(currentBlock);
-            }
-        }
 
-        //区块角度检测区块的数据的安全性
-        //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
-        Set<String> transactionOutputUUIDSet = new HashSet<>();
-        for(Block currentBlock:blockList){
-            //一个区块只能有一笔挖矿奖励交易
-            int minerTransactionTimes = 0;
-            for(Transaction tx : currentBlock.getTransactions()){
-                if(tx.getTransactionType() == TransactionType.MINER){
-                    minerTransactionTimes++;
-                    //有多个挖矿交易
-                    if(minerTransactionTimes>1){
-                        throw new BlockChainCoreException("区块数据异常，一个区块只能有一笔挖矿奖励。");
-                    }
-                } else if(tx.getTransactionType() == TransactionType.NORMAL){
-                    ArrayList<TransactionInput> inputs = tx.getInputs();
-                    for(TransactionInput input:inputs){
-                        String transactionOutputUUID = input.getUtxo().getTransactionOutputUUID();
-                        //同一个UTXO被多次使用
-                        if(transactionOutputUUIDSet.contains(transactionOutputUUID)){
-                            throw new BlockChainCoreException("区块数据异常，同一个UTXO在一个区块中多次使用。");
-                        }
-                        transactionOutputUUIDSet.add(transactionOutputUUID);
-                    }
-                } else {
-                    throw new BlockChainCoreException("区块数据异常，不能识别的交易类型。");
-                }
-                boolean check = checkUnBlockChainTransaction(blockChainCore,currentBlock,oldBlock,newBlock,tx);
-                if(!check){
-                    throw new BlockChainCoreException("区块数据异常，交易异常。");
+        boolean success = true;
+
+        List<Block> changeDeleteBlockList = new ArrayList<>();
+        List<Block> changeAddBlockList = new ArrayList<>();
+
+        Block headBlock = blockList.get(0);
+        int headBlockHeight = headBlock.getBlockHeight();
+
+        if(blockChainCore.findLastBlockFromBlock() == null){
+            if(headBlockHeight != 1){
+                return false;
+            }
+        }else{
+            Block blockchainTailBlock = blockChainCore.findLastBlockFromBlock();
+            int blockchainTailBlockHeight = blockchainTailBlock.getBlockHeight();
+            if(headBlockHeight < 1){
+                return false;
+            }
+            if(blockchainTailBlockHeight+1 < headBlockHeight){
+                return false;
+            }
+            while (blockchainTailBlock != null && blockchainTailBlock.getBlockHeight() >= headBlockHeight){
+                Block removeTailBlock = blockChainCore.removeTailBlock();
+                changeDeleteBlockList.add(removeTailBlock);
+                blockchainTailBlock = blockChainCore.findLastBlockFromBlock();
+            }
+        }
+        for(Block block:blockList){
+            boolean isBlockApplyToBlockChain = isBlockApplyToBlockChain(blockChainCore,block);
+            if(isBlockApplyToBlockChain){
+                //TODO 循环了
+                blockChainCore.addBlock(block);
+                changeAddBlockList.add(block);
+            }else{
+                success = false;
+                break;
+            }
+        }
+        //TODO 回滚
+        if(!success){
+            if(changeAddBlockList.size()!=0){
+                for (int i=changeAddBlockList.size(); i>=0; i--){
+                    blockChainCore.removeTailBlock();
                 }
             }
-            if(minerTransactionTimes == 0){
-                throw new BlockChainCoreException("区块数据异常，没有检测到挖矿奖励交易。");
+            if(changeDeleteBlockList.size()!=0){
+                for (int i=changeDeleteBlockList.size(); i>=0; i--){
+                    blockChainCore.addBlock(changeAddBlockList.get(i));
+                }
             }
-            newBlock.fillWriteBatch(currentBlock);
+            return false;
         }
         return true;
     }
 
-    private boolean isUTXO(BlockChainCore blockChainCore, RollBackMemoryBlockChain rollbackBlocks, GrowingMemoryBlockChain newBlocks, String transactionOutputUUID) throws Exception {
-        List<String> newBlocks_addUtxoList = newBlocks.getAddUtxoList();
-        List<String> newBlocks_deleteUtxoList = newBlocks.getDeleteUtxoList();
-        if(newBlocks_deleteUtxoList.contains(transactionOutputUUID)){
-            return false;
-        }
-        if(newBlocks_addUtxoList.contains(transactionOutputUUID)){
-            return true;
-        }
-        List<String> oldBlocks_addUtxoList = rollbackBlocks.getAddUtxoList();
-        List<String> oldBlocks_deleteUtxoList = rollbackBlocks.getDeleteUtxoList();
-        if(oldBlocks_deleteUtxoList.contains(transactionOutputUUID)){
-            return false;
-        }
-        if(oldBlocks_addUtxoList.contains(transactionOutputUUID)){
-            return true;
-        }
+    private boolean isUTXO(BlockChainCore blockChainCore, String transactionOutputUUID) throws Exception {
         boolean isUtxo = blockChainCore.isUTXO(transactionOutputUUID);
         return isUtxo;
     }

@@ -2,8 +2,6 @@ package com.xingkaichun.blockchain.core.miner;
 
 import com.xingkaichun.blockchain.core.BlockChainCore;
 import com.xingkaichun.blockchain.core.Checker;
-import com.xingkaichun.blockchain.core.impl.GrowingMemoryBlockChain;
-import com.xingkaichun.blockchain.core.impl.RollBackMemoryBlockChain;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
@@ -86,9 +84,13 @@ public class Miner {
     /**
      * 判断Block的挖矿Hash是否正确
      */
-    public boolean isHashSuccess(Block block){
+    public boolean checkBlock(Block block){
         int difficulty = mineDifficulty.difficulty(blockChainCore,block);
-        return isHashSuccess(block.getHash(),difficulty);
+        String hash = BlockUtils.calculateHash(block);
+        if(!hash.equals(block.getHash())){
+            return false;
+        }
+        return isHashSuccess(hash, difficulty);
     }
     public boolean isHashSuccess(String hash,int difficulty){
         String target = CipherUtil.getDificultyString(difficulty);
@@ -157,7 +159,7 @@ public class Miner {
         while (iterator.hasNext()){
             Transaction tx = iterator.next();
             try {
-                boolean checkPass = checker.checkUnBlockChainTransaction(blockchain,null,new RollBackMemoryBlockChain(),new GrowingMemoryBlockChain(),tx);
+                boolean checkPass = checker.checkUnBlockChainTransaction(blockchain,null,tx);
                 if(!checkPass){
                     iterator.remove();
                     System.out.println("交易校验失败：丢弃交易。");

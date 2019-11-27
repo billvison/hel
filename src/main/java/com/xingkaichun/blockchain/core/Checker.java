@@ -1,8 +1,6 @@
 package com.xingkaichun.blockchain.core;
 
 
-import com.xingkaichun.blockchain.core.impl.GrowingMemoryBlockChain;
-import com.xingkaichun.blockchain.core.impl.RollBackMemoryBlockChain;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 
@@ -30,6 +28,6 @@ public abstract class Checker {
     /**
      * 校验(未打包进区块链的)交易的合法性
      */
-    public abstract boolean checkUnBlockChainTransaction(BlockChainCore blockChainCore, Block block, RollBackMemoryBlockChain blockRollback, GrowingMemoryBlockChain newBlock, Transaction transaction) throws Exception;
+    public abstract boolean checkUnBlockChainTransaction(BlockChainCore blockChainCore, Block block, Transaction transaction) throws Exception;
 
 }
