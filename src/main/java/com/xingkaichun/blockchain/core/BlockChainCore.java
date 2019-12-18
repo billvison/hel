@@ -34,14 +34,14 @@ public class BlockChainCore {
     //矿工
     private Miner miner;
 
-    //区块标识
+    //区块头标识
     private final static String BLOCK_HEIGHT_FLAG = "B_H_F_";
-    //交易标识
+    //交易头标识
     private final static String TRANSACTION_UUID_FLAG = "T_U_F_";
-    //UTXO标识
-    private final static String UNSPEND_TRANSACTION_OUPUT_UUID_FLAG = "U_T_O_U_F";
-    //交易输出标识
+    //交易输出头标识
     private final static String TRANSACTION_OUTPUT_UUID_FLAG = "T_O_U_F";
+    //UTXO头标识
+    private final static String UNSPEND_TRANSACTION_OUPUT_UUID_FLAG = "U_T_O_U_F";
 
     //区块链上有可能的最后一个区块【不保证一定是最后的区块】
     private Block possibleLastBlock;
