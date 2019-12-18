@@ -163,6 +163,7 @@ public class DefaultChecker extends Checker {
 
     @Override
     public boolean isBlockListApplyToBlockChain(BlockChainCore blockChainCore, List<Block> blockList) throws Exception {
+        //TODO 校验不应该对区块链做更改
         //被检测区块不允许是空
         if(blockList==null || blockList.size()==0){
             return false;
