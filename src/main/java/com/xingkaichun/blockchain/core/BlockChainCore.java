@@ -78,10 +78,6 @@ public class BlockChainCore {
      * 区块链新增区块
      */
     public boolean addBlock(Block block) throws Exception {
-        if(block==null){
-            System.out.println("区块链上新增的区块不能为空。请检测区块。");
-            return false;
-        }
         lock.lock();
         try{
             //区块数据的校验
