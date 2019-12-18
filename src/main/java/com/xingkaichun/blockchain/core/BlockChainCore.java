@@ -269,12 +269,13 @@ public class BlockChainCore {
                 //假设区块不存在，再次检测后，possibleLastBlock将置为null
                 possibleLastBlock = findBlockByBlockHeight(possibleLastBlock.getBlockHeight());
             }
-            if(possibleLastBlock ==null){
+            if(possibleLastBlock == null){
                 possibleLastBlock = findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
                 if(possibleLastBlock == null){
                     return null;
                 }
             }
+            //TODO 效率有待优化
             for(int blockHeight=possibleLastBlock.getBlockHeight()+1;;blockHeight++){
                 Block currentBlock = findBlockByBlockHeight(blockHeight);
                 if(currentBlock == null){
