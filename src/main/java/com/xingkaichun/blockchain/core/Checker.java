@@ -27,6 +27,7 @@ public abstract class Checker {
 
     /**
      * 校验(未打包进区块链的)交易的合法性
+     * 奖励交易校验需要传入block参数
      */
     public abstract boolean checkUnBlockChainTransaction(BlockChainCore blockChainCore, Block block, Transaction transaction) throws Exception;
 

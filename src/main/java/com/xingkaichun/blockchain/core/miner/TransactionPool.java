@@ -2,9 +2,6 @@ package com.xingkaichun.blockchain.core.miner;
 
 import com.xingkaichun.blockchain.core.BlockChainCore;
 import com.xingkaichun.blockchain.core.Checker;
-import com.xingkaichun.blockchain.core.impl.GrowingMemoryBlockChain;
-import com.xingkaichun.blockchain.core.impl.MemoryBlockChain;
-import com.xingkaichun.blockchain.core.impl.RollBackMemoryBlockChain;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.utils.atomic.EncodeDecode;
 import com.xingkaichun.blockchain.core.utils.atomic.LevelDBUtil;
@@ -60,7 +57,7 @@ public class TransactionPool {
      */
     public boolean addTransaction(Transaction transaction) throws Exception {
         //交易校验失败 丢弃交易
-        if(!checker.checkUnBlockChainTransaction(blockChainCore,null,new RollBackMemoryBlockChain(),new GrowingMemoryBlockChain(),transaction)){
+        if(!checker.checkUnBlockChainTransaction(blockChainCore,null,transaction)){
             return false;
         }
         //交易已经存在于区块链 丢弃交易
