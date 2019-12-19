@@ -13,7 +13,7 @@ public abstract class Checker {
 
     /**
      * 检测区块是否可以被应用到区块链上
-     * 只有一种情况，区块可以被应用到区块链: 区块可以是区块链上的下一个区块
+     * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
      */
     public abstract boolean isBlockApplyToBlockChain(BlockChainCore blockChainCore, Block block) throws Exception;
 
