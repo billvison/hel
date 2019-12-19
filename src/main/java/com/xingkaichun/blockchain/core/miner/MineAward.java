@@ -6,7 +6,7 @@ import com.xingkaichun.blockchain.core.model.Block;
 import java.math.BigDecimal;
 
 /**
- * 挖矿的奖励
+ * 挖矿奖励
  */
 public class MineAward {
     /**

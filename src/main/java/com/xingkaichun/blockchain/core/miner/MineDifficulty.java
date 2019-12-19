@@ -10,7 +10,7 @@ public class MineDifficulty {
     /**
      * 挖矿的难度
      * @param blockChainCore 区块链
-     * @param block 目标区块的难度
+     * @param block 目标区块
      */
     public int difficulty(BlockChainCore blockChainCore, Block block){
         return 4;
