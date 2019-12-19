@@ -123,7 +123,7 @@ public class DefaultChecker extends Checker {
                 if(i.getUtxo() == null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入UTXO不能为空。不合法的交易。");
                 }
-                if(!isUTXO(blockChainCore,i.getUtxo().getTransactionOutputUUID())){
+                if(!blockChainCore.isUTXO(i.getUtxo().getTransactionOutputUUID())){
                     throw new BlockChainCoreException("交易校验失败：交易的输入不是UTXO。不合法的交易。");
                 }
             }
@@ -232,10 +232,5 @@ public class DefaultChecker extends Checker {
             }
         }
         return true;
-    }
-
-    private boolean isUTXO(BlockChainCore blockChainCore, String transactionOutputUUID) throws Exception {
-        boolean isUtxo = blockChainCore.isUTXO(transactionOutputUUID);
-        return isUtxo;
     }
 }
