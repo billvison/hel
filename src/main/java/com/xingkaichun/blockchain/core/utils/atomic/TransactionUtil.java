@@ -18,7 +18,7 @@ public class TransactionUtil {
      * 交易输入总额
      */
     public static BigDecimal getInputsValue(ArrayList<TransactionInput> inputs) {
-        BigDecimal total = new BigDecimal(0);
+        BigDecimal total = new BigDecimal("0");
         for(TransactionInput i : inputs) {
             if(i.getUtxo() == null) continue; //if Transaction can't be found skip it, This behavior may not be optimal.
             total = total.add(i.getUtxo().getValue());
@@ -30,7 +30,7 @@ public class TransactionUtil {
      * 交易输出总额
      */
     public static BigDecimal getOutputsValue(ArrayList<TransactionOutput> outputs) {
-        BigDecimal total = new BigDecimal(0);
+        BigDecimal total = new BigDecimal("0");
         for(TransactionOutput o : outputs) {
             total = total.add(o.getValue());
 
@@ -98,7 +98,20 @@ public class TransactionUtil {
     }
 
     public static PublicKeyString getSender(Transaction transaction){
+        //TODO  付款方不确定一定是一个
         TransactionInput transactionInput = transaction.getInputs().get(0);
         return transactionInput.getUtxo().getReciepient();
+    }
+
+    public static boolean isOnlyOneSender(Transaction transaction){
+        ArrayList<TransactionInput> inputs = transaction.getInputs();
+        TransactionInput transactionInput = transaction.getInputs().get(0);
+        for(TransactionInput input:inputs){
+            boolean eq = transactionInput.getUtxo().getReciepient().equals(input.getUtxo().getReciepient());
+            if(!eq){
+                return false;
+            }
+        }
+        return true;
     }
 }
