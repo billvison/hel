@@ -31,7 +31,7 @@ public class DefaultChecker extends Checker {
             throw new BlockChainCoreException("区块校验失败：区块不能为null。");
         }
         //校验挖矿[区块本身的数据]是否正确
-        boolean minerSuccess = blockChainCore.getMiner().checkBlock(block);
+        boolean minerSuccess = blockChainCore.getMiner().isMinedBlockSuccess(block);
         if(!minerSuccess){
             return false;
         }

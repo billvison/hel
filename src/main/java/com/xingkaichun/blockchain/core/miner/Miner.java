@@ -103,7 +103,7 @@ public class Miner {
     /**
      * 判断Block的挖矿Hash是否正确
      */
-    public boolean checkBlock(Block block){
+    public boolean isMinedBlockSuccess(Block block){
         //校验markettree
         String merkleRoot = merkleUtils.getMerkleRoot(block.getTransactions());
         if(!merkleRoot.equals(block.getMerkleRoot())){
@@ -118,11 +118,11 @@ public class Miner {
         return isHashSuccess(hash, difficulty);
     }
     public boolean isHashSuccess(String hash,int difficulty){
-        String target = CipherUtil.getDificultyString(difficulty);
-        return isHashSuccess(hash,difficulty,target);
+        String difficultyString = CipherUtil.getDificultyString(difficulty);
+        return isHashSuccess(hash,difficulty,difficultyString);
     }
-    public boolean isHashSuccess(String hash,int difficulty,String target){
-        return hash.substring(0, difficulty).equals(target);
+    public boolean isHashSuccess(String hash,int difficulty,String difficultyString){
+        return hash.substring(0, difficulty).equals(difficultyString);
     }
     /**
      * 启动挖矿线程
