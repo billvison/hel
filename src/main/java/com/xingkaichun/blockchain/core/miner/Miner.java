@@ -83,9 +83,9 @@ public class Miner {
         //创建打包区块
         Block packingBlock = createPackingBlock(lastBlock,packingTransactionList);
         int difficulty = mineDifficulty.difficulty(blockChainCore, packingBlock);
-        String target = CipherUtil.getDificultyString(difficulty);
+        String difficultyString = CipherUtil.getDificultyString(difficulty);
         packingBlock.setHash(BlockUtils.calculateHash(packingBlock));
-        while (!isHashSuccess(packingBlock.getHash(),difficulty,target)) {
+        while (!isHashSuccess(packingBlock.getHash(),difficulty,difficultyString)) {
             //中断挖矿
             synchronized (stopCurrentBlockMining){
                 if(stopCurrentBlockMining){
