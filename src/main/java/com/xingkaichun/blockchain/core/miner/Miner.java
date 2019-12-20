@@ -62,6 +62,19 @@ public class Miner {
     }
 
     /**
+     * 停止当前区块的挖矿，可能这个区块已经被挖出来了
+     */
+    public volatile Boolean stopCurrentBlockMining = false;
+    public boolean stopCurrentBlockMining(){
+        synchronized (stopCurrentBlockMining){
+            if(!stopCurrentBlockMining){
+                stopCurrentBlockMining = true;
+            }
+        }
+        return true;
+    }
+
+    /**
      * 挖矿
      */
     public Block mineBlock(Block lastBlock, List<Transaction> packingTransactionList) throws Exception {
@@ -73,7 +86,13 @@ public class Miner {
         String target = CipherUtil.getDificultyString(difficulty);
         packingBlock.setHash(BlockUtils.calculateHash(packingBlock));
         while (!isHashSuccess(packingBlock.getHash(),difficulty,target)) {
-            //TODO 中断 其它旷工已经挖到矿了。
+            //中断挖矿
+            synchronized (stopCurrentBlockMining){
+                if(stopCurrentBlockMining){
+                    stopCurrentBlockMining = false;
+                    break;
+                }
+            }
             packingBlock.setNonce((packingBlock.getNonce()+1));
             packingBlock.setHash(BlockUtils.calculateHash(packingBlock));
         }

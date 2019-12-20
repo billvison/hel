@@ -3,7 +3,6 @@ package com.xingkaichun.blockchain.core;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionData;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionListener;
-import com.xingkaichun.blockchain.core.miner.Miner;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
@@ -31,8 +30,8 @@ public class BlockChainCore {
     //region 变量
     //区块链数据库
     private DB blockChainDB;
-    //矿工
-    private Miner miner;
+    //区块校验者
+    private Checker checker;
 
     //区块头标识
     private final static String BLOCK_HEIGHT_FLAG = "B_H_F_";
@@ -57,11 +56,11 @@ public class BlockChainCore {
     /**
      * 构造函数
      * @param dbPath 数据库地址
-     * @param miner 矿工
+     * @param checker 区块校验者
      */
-    public BlockChainCore(String dbPath, Miner miner) throws Exception {
+    public BlockChainCore(String dbPath, Checker checker) throws Exception {
         this.blockChainDB = LevelDBUtil.createDB(new File(dbPath,"blockChainDB"));
-        this.miner = miner;
+        this.checker = checker;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -81,7 +80,7 @@ public class BlockChainCore {
         lock.lock();
         try{
             //区块数据的校验
-            if(!miner.getChecker().isBlockApplyToBlockChain(this, block)){
+            if(!checker.isBlockApplyToBlockChain(this, block)){
                 System.out.println("区块链上新增的区块数据不合法。请检测区块。");
                 return false;
             }
@@ -121,7 +120,7 @@ public class BlockChainCore {
         lock.lock();
         try{
             //区块数据的校验
-            if(!miner.getChecker().isBlockListApplyToBlockChain(this, addBlockList)){
+            if(!checker.isBlockListApplyToBlockChain(this, addBlockList)){
                 System.out.println("区块链上新增的区块数据不合法。请检测区块。");
                 return false;
             }
@@ -397,9 +396,4 @@ public class BlockChainCore {
         return dataList;
     }
     //endregion
-
-
-    public Miner getMiner() {
-        return miner;
-    }
 }
