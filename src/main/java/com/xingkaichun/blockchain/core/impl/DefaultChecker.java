@@ -106,10 +106,7 @@ public class DefaultChecker extends Checker {
             if(outputs.size() != 1){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出有且只能有一笔。不合法的交易。");
             }
-            TransactionOutput mineAwardTransactionOutput = outputs.get(0);
-            MineAward mineAward = blockChainCore.getMiner().getMineAward();
-            BigDecimal award = mineAward.mineAward(blockChainCore,block);
-            if(mineAwardTransactionOutput.getValue().compareTo(award)!=0){
+            if(!blockChainCore.getMiner().isBlockMineAwardRight(block)){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出金额不正确。不合法的交易。");
             }
             return true;

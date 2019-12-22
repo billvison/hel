@@ -2,6 +2,7 @@ package com.xingkaichun.blockchain.core.miner;
 
 import com.xingkaichun.blockchain.core.BlockChainCore;
 import com.xingkaichun.blockchain.core.Checker;
+import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
@@ -39,7 +40,8 @@ public class Miner {
      */
     public Block createPackingBlock(Block lastBlock, List<Transaction> packingTransactionList) throws Exception {
         //TODO 创建挖矿奖励交易[挖矿奖励只在区块同步时校验]
-        Transaction mineAwardTransaction =  createMineAwardTransaction();
+        int blockHeight = lastBlock==null ? BlockChainCoreConstants.FIRST_BLOCK_HEIGHT : lastBlock.getBlockHeight()+1;
+        Transaction mineAwardTransaction =  createMineAwardTransaction(blockChainCore,blockHeight,packingTransactionList);
         //将奖励交易加入待打包列表
         packingTransactionList.add(mineAwardTransaction);
         Block packingBlock = null;
@@ -53,12 +55,46 @@ public class Miner {
 
     /**
      * 创建挖矿交易
+     * @param blockChainCore
+     * @param blockHeight
+     * @param packingTransactionList
      */
-    public Transaction createMineAwardTransaction() {
+    public Transaction createMineAwardTransaction(BlockChainCore blockChainCore, int blockHeight, List<Transaction> packingTransactionList) {
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
         Transaction transaction = new Transaction(TransactionType.MINER,null,outputs);
-        outputs.add(new TransactionOutput(this.minerPublicKey,new BigDecimal(100),transaction.getTransactionUUID()));
+        BigDecimal award = mineAward.mineAward(blockChainCore,blockHeight,packingTransactionList);
+        outputs.add(new TransactionOutput(this.minerPublicKey,award,transaction.getTransactionUUID()));
         return transaction;
+    }
+
+    /**
+     * 获取区块中写入的挖矿奖励
+     * @param block
+     * @return
+     */
+    public BigDecimal extractMineAward(Block block) {
+        for(Transaction tx : block.getTransactions()){
+            if(tx.getTransactionType() == TransactionType.MINER){
+                ArrayList<TransactionOutput> outputs = tx.getOutputs();
+                TransactionOutput mineAwardTransactionOutput = outputs.get(0);
+                return mineAwardTransactionOutput.getValue();
+            }
+        }
+        throw new BlockChainCoreException("区块数据异常：没有包含挖矿奖励数据。");
+    }
+
+    public boolean isBlockMineAwardRight(Block block){
+        List<Transaction> packingTransactionList = new ArrayList<>();
+        for(Transaction tx : block.getTransactions()){
+            if(tx.getTransactionType() != TransactionType.MINER){
+                packingTransactionList.add(tx);
+            }
+        }
+        //计算的挖矿奖励
+        BigDecimal mineAward = getMineAward().mineAward(blockChainCore,block.getBlockHeight(),packingTransactionList);
+        //区块中写入的挖矿奖励
+        BigDecimal mineAwardByPass = extractMineAward(block);
+        return mineAward.compareTo(mineAwardByPass) != 0 ;
     }
 
     /**
