@@ -1,7 +1,6 @@
 package com.xingkaichun.blockchain.core.miner;
 
 import com.xingkaichun.blockchain.core.BlockChainCore;
-import com.xingkaichun.blockchain.core.Checker;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.utils.atomic.EncodeDecode;
 import com.xingkaichun.blockchain.core.utils.atomic.LevelDBUtil;
@@ -23,7 +22,6 @@ public class TransactionPool {
 
     //交易池数据库
     private DB transactionPool_DB;
-    private Checker checker;
     private BlockChainCore blockChainCore;
 
     //等待持久化进数据库的交易
@@ -32,12 +30,11 @@ public class TransactionPool {
 
 
 
-    public TransactionPool(String dbPath, BlockChainCore blockChainCore, Checker checker) throws Exception {
+    public TransactionPool(String dbPath, BlockChainCore blockChainCore) throws Exception {
 
 
         this.waitForSendToDbTransactionList = new ArrayList<>();
 
-        this.checker = checker;
         this.transactionPool_DB = LevelDBUtil.createDB(new File(dbPath,"TransactionPool_DB"));
         this.blockChainCore = blockChainCore;
 
@@ -57,7 +54,7 @@ public class TransactionPool {
      */
     public boolean addTransaction(Transaction transaction) throws Exception {
         //交易校验失败 丢弃交易
-        if(!checker.checkUnBlockChainTransaction(blockChainCore,null,transaction)){
+        if(!blockChainCore.getMiner().checkUnBlockChainTransaction(blockChainCore,null,transaction)){
             return false;
         }
         //交易已经存在于区块链 丢弃交易

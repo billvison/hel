@@ -1,7 +1,6 @@
 package com.xingkaichun.blockchain.core.miner;
 
 import com.xingkaichun.blockchain.core.BlockChainCore;
-import com.xingkaichun.blockchain.core.Checker;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
@@ -13,8 +12,10 @@ import com.xingkaichun.blockchain.core.utils.BlockUtils;
 import com.xingkaichun.blockchain.core.utils.MerkleUtils;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.CipherUtil;
+import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
 
 import java.math.BigDecimal;
+import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 
 public class Miner {
@@ -24,15 +25,13 @@ public class Miner {
     private MineAward mineAward;
     private TransactionPool transactionPool;
     private MerkleUtils merkleUtils = new MerkleUtils();
-    private Checker checker;
 
-    public Miner(TransactionPool transactionPool, MineDifficulty mineDifficulty, MineAward mineAward, BlockChainCore blockChainCore, PublicKeyString minerPublicKey, Checker checker) {
+    public Miner(TransactionPool transactionPool, MineDifficulty mineDifficulty, MineAward mineAward, BlockChainCore blockChainCore, PublicKeyString minerPublicKey) {
         this.transactionPool = transactionPool;
         this.blockChainCore = blockChainCore;
         this.minerPublicKey = minerPublicKey;
         this.mineDifficulty = mineDifficulty;
         this.mineAward = mineAward;
-        this.checker = checker;
     }
 
     /**
@@ -220,7 +219,7 @@ public class Miner {
         while (iterator.hasNext()){
             Transaction tx = iterator.next();
             try {
-                boolean checkPass = checker.checkUnBlockChainTransaction(blockchain,null,tx);
+                boolean checkPass = checkUnBlockChainTransaction(blockchain,null,tx);
                 if(!checkPass){
                     iterator.remove();
                     System.out.println("交易校验失败：丢弃交易。");
@@ -240,7 +239,230 @@ public class Miner {
         return mineAward;
     }
 
-    public Checker getChecker() {
-        return checker;
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * 检测区块是否可以被应用到区块链上
+     * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
+     */
+    public boolean isBlockApplyToBlockChain(BlockChainCore blockChainCore, Block block) throws Exception {
+        if(block==null){
+            throw new BlockChainCoreException("区块校验失败：区块不能为null。");
+        }
+        //校验挖矿[区块本身的数据]是否正确
+        boolean minerSuccess = blockChainCore.getMiner().isMinedBlockSuccess(block);
+        if(!minerSuccess){
+            return false;
+        }
+        //校验区块的连贯性
+        Block tailBlock = blockChainCore.findLastBlockFromBlock();
+        if(tailBlock == null){
+            //校验区块Previous Hash
+            if(!BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousHash())){
+                return false;
+            }
+            //校验区块高度
+            if(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT != block.getBlockHeight()){
+                return false;
+            }
+        } else {
+            //校验区块Hash是否连贯
+            if(!tailBlock.getHash().equals(block.getPreviousHash())){
+                return false;
+            }
+            //校验区块高度是否连贯
+            if((tailBlock.getBlockHeight()+1) != block.getBlockHeight()){
+                return false;
+            }
+        }
+        //区块角度检测区块的数据的安全性
+        //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
+        Set<String> transactionOutputUUIDSet = new HashSet<>();
+        //一个区块只能有一笔挖矿奖励交易
+        int minerTransactionTimes = 0;
+        for(Transaction tx : block.getTransactions()){
+            if(tx.getTransactionType() == TransactionType.MINER){
+                minerTransactionTimes++;
+                //有多个挖矿交易
+                if(minerTransactionTimes>1){
+                    throw new BlockChainCoreException("区块数据异常，一个区块只能有一笔挖矿奖励。");
+                }
+            } else if(tx.getTransactionType() == TransactionType.NORMAL){
+                ArrayList<TransactionInput> inputs = tx.getInputs();
+                for(TransactionInput input:inputs){
+                    String transactionOutputUUID = input.getUtxo().getTransactionOutputUUID();
+                    //同一个UTXO被多次使用
+                    if(transactionOutputUUIDSet.contains(transactionOutputUUID)){
+                        throw new BlockChainCoreException("区块数据异常，同一个UTXO在一个区块中多次使用。");
+                    }
+                    transactionOutputUUIDSet.add(transactionOutputUUID);
+                }
+            } else {
+                throw new BlockChainCoreException("区块数据异常，不能识别的交易类型。");
+            }
+            boolean check = checkUnBlockChainTransaction(blockChainCore,block,tx);
+            if(!check){
+                throw new BlockChainCoreException("区块数据异常，交易异常。");
+            }
+        }
+        if(minerTransactionTimes == 0){
+            throw new BlockChainCoreException("区块数据异常，没有检测到挖矿奖励交易。");
+        }
+        return true;
+    }
+
+    /**
+     * 检测一串区块是否可以被应用到区块链上
+     * 有两种情况，一串区块可以被应用到区块链:
+     * 情况1：需要删除一部分链上的区块，然后链上可以衔接这串区块，且删除的区块数目要小于增加的区块的数目
+     * 情况2：不需要删除链上的区块，链上直接可以衔接这串区块
+     */
+    public boolean checkUnBlockChainTransaction(BlockChainCore blockChainCore, Block block, Transaction transaction) throws Exception{
+        if(transaction.getTransactionType() == TransactionType.MINER){
+            ArrayList<TransactionInput> inputs = transaction.getInputs();
+            if(inputs!=null && inputs.size()!=0){
+                throw new BlockChainCoreException("交易校验失败：挖矿交易的输入只能为空。不合法的交易。");
+            }
+            ArrayList<TransactionOutput> outputs = transaction.getOutputs();
+            if(outputs == null){
+                throw new BlockChainCoreException("交易校验失败：挖矿交易的输出不能为空。不合法的交易。");
+            }
+            if(outputs.size() != 1){
+                throw new BlockChainCoreException("交易校验失败：挖矿交易的输出有且只能有一笔。不合法的交易。");
+            }
+            if(!blockChainCore.getMiner().isBlockMineAwardRight(block)){
+                throw new BlockChainCoreException("交易校验失败：挖矿交易的输出金额不正确。不合法的交易。");
+            }
+            return true;
+        } else if(transaction.getTransactionType() == TransactionType.NORMAL){
+            ArrayList<TransactionInput> inputs = transaction.getInputs();
+            if(inputs==null || inputs.size()==0){
+                throw new BlockChainCoreException("交易校验失败：交易的输入不能为空。不合法的交易。");
+            }
+            for(TransactionInput i : inputs) {
+                if(i.getUtxo() == null){
+                    throw new BlockChainCoreException("交易校验失败：交易的输入UTXO不能为空。不合法的交易。");
+                }
+                if(!blockChainCore.isUTXO(i.getUtxo().getTransactionOutputUUID())){
+                    throw new BlockChainCoreException("交易校验失败：交易的输入不是UTXO。不合法的交易。");
+                }
+            }
+            if(inputs==null || inputs.size()==0){
+                throw new BlockChainCoreException("交易校验失败：交易的输出不能为空。不合法的交易。");
+            }
+            //存放交易用过的UTXO
+            Set<String> input_UTXO_Ids = new HashSet<>();
+            for(TransactionInput i : inputs) {
+                String utxoId = i.getUtxo().getTransactionOutputUUID();
+                //校验 同一张钱不能使用两次
+                if(input_UTXO_Ids.contains(utxoId)){
+                    throw new BlockChainCoreException("交易校验失败：交易的输入中同一个UTXO被多次使用。不合法的交易。");
+                }
+                input_UTXO_Ids.add(utxoId);
+            }
+            ArrayList<TransactionOutput> outputs = transaction.getOutputs();
+            for(TransactionOutput o : outputs) {
+                if(o.getValue().compareTo(new BigDecimal("0"))<=0){
+                    throw new BlockChainCoreException("交易校验失败：交易的输出<=0。不合法的交易。");
+                }
+            }
+            BigDecimal inputsValue = TransactionUtil.getInputsValue(transaction);
+            BigDecimal outputsValue = TransactionUtil.getOutputsValue(transaction);
+            if(inputsValue.compareTo(outputsValue) < 0) {
+                throw new BlockChainCoreException("交易校验失败：交易的输入少于交易的输出。不合法的交易。");
+            }
+            //校验 付款方是同一个用户[公钥] 用户花的钱是自己的钱
+            if(!TransactionUtil.isOnlyOneSender(transaction)){
+                throw new BlockChainCoreException("交易校验失败：交易的付款方有多个。不合法的交易。");
+            }
+            //校验签名验证
+            try{
+                if(!TransactionUtil.verifySignature(transaction)) {
+                    throw new BlockChainCoreException("交易校验失败：校验交易签名失败。不合法的交易。");
+                }
+            }catch (InvalidKeySpecException invalidKeySpecException){
+                throw new BlockChainCoreException("交易校验失败：校验交易签名失败。不合法的交易。");
+            }catch (Exception e){
+                throw new BlockChainCoreException("交易校验失败：校验交易签名失败。不合法的交易。");
+            }
+            return true;
+        } else {
+            throw new BlockChainCoreException("区块数据异常，不能识别的交易类型。");
+        }
+    }
+
+    /**
+     * 校验(未打包进区块链的)交易的合法性
+     * 奖励交易校验需要传入block参数
+     */
+    public boolean isBlockListApplyToBlockChain(BlockChainCore blockChainCore, List<Block> blockList) throws Exception {
+        boolean success = true;
+        List<Block> changeDeleteBlockList = new ArrayList<>();
+        List<Block> changeAddBlockList = new ArrayList<>();
+        try {
+            //被检测区块不允许是空
+            if(blockList==null || blockList.size()==0){
+                return false;
+            }
+            Block headBlock = blockList.get(0);
+            int headBlockHeight = headBlock.getBlockHeight();
+
+            Block blockchainTailBlock = blockChainCore.findLastBlockFromBlock();
+            if(blockchainTailBlock == null){
+                if(headBlockHeight != BlockChainCoreConstants.FIRST_BLOCK_HEIGHT){
+                    return false;
+                }
+            }else{
+                int blockchainTailBlockHeight = blockchainTailBlock.getBlockHeight();
+                if(headBlockHeight < 1){
+                    return false;
+                }
+                if(blockchainTailBlockHeight+1 < headBlockHeight){
+                    return false;
+                }
+                while (blockchainTailBlock.getBlockHeight() >= headBlockHeight){
+                    Block removeTailBlock = blockChainCore.removeTailBlock();
+                    changeDeleteBlockList.add(removeTailBlock);
+                    blockchainTailBlock = blockChainCore.findLastBlockFromBlock();
+                }
+            }
+
+            for(Block block:blockList){
+                boolean isBlockApplyToBlockChain = blockChainCore.addBlock(block);
+                if(isBlockApplyToBlockChain){
+                    changeAddBlockList.add(block);
+                }else{
+                    success = false;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if(!success){
+                if(changeAddBlockList.size() != 0){
+                    for (int i=changeAddBlockList.size(); i>=0; i--){
+                        blockChainCore.removeTailBlock();
+                    }
+                }
+                if(changeDeleteBlockList.size()!= 0){
+                    for (int i=changeDeleteBlockList.size(); i>=0; i--){
+                        blockChainCore.addBlock(changeAddBlockList.get(i));
+                    }
+                }
+                return false;
+            }
+        }
+        return true;
     }
 }

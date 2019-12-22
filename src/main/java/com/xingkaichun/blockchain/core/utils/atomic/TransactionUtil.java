@@ -1,5 +1,6 @@
 package com.xingkaichun.blockchain.core.utils.atomic;
 
+import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.key.PrivateKeyString;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
@@ -98,7 +99,9 @@ public class TransactionUtil {
     }
 
     public static PublicKeyString getSender(Transaction transaction){
-        //TODO  付款方不确定一定是一个
+        if(!isOnlyOneSender(transaction)){
+            throw new BlockChainCoreException("付款方不是同一人");
+        }
         TransactionInput transactionInput = transaction.getInputs().get(0);
         return transactionInput.getUtxo().getReciepient();
     }
