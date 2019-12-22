@@ -212,7 +212,6 @@ public class BlockChainCore {
             if(packingTransactionList!=null){
                 for(Transaction transaction:packingTransactionList){
                     //更新交易数据
-                    //TODO 校验交易ID唯一
                     byte[] transactionUuidKey = LevelDBUtil.stringToBytes(addTransactionUuidPrefix(transaction.getTransactionUUID()));
                     if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
                         writeBatch.put(transactionUuidKey, EncodeDecode.encode(transaction));
@@ -353,6 +352,15 @@ public class BlockChainCore {
                 return null;
             }
             return EncodeDecode.decodeToTransaction(byteTransaction);
+        }finally {
+            lock.unlock();
+        }
+    }
+    public boolean isExistTransaction(String transactionUUID) throws Exception {
+        lock.lock();
+        try{
+            Transaction transaction = findTransactionByUUID(transactionUUID);
+            return transaction != null;
         }finally {
             lock.unlock();
         }
