@@ -16,6 +16,15 @@ public class LevelDBUtil {
         writeOptions.sync(true);
         writeOptions.snapshot(true);
     }
+
+    public static void put(DB db, String key, byte[] value) throws DBException{
+        db.put(stringToBytes(key),value);
+    }
+
+    public static void put(DB db, byte[] key, byte[] value) throws DBException{
+        db.put(key,value);
+    }
+
     public static void put(DB db,WriteBatch writeBatch) throws DBException{
         db.write(writeBatch);
     }

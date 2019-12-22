@@ -75,10 +75,8 @@ public class TransactionPool {
      * 获取挖矿的原料:交易
      */
     public List<Transaction> getTransactionListForMine() throws Exception {
-        //TODO 从数据库取数据
         synchronized (BlockChainCore.class){
             List<Transaction> forMineTransactionList = new ArrayList<>();
-            //TODO 如何同步了别的节点的区块，若删除了自己的的区块，被删除区块的交易信息应当再次加入到交易池
             DBIterator dbIterator = this.transactionPool_DB.iterator();
             while (dbIterator.hasNext()){
                 Map.Entry<byte[],byte[]> entry =  dbIterator.next();
