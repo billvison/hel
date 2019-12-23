@@ -259,31 +259,31 @@ public class BlockChainCore {
     public Block findLastBlockFromBlock() throws Exception {
         lock.lock();
         try{
-            int maxRangeBlockHeight = BlockChainCoreConstants.FIRST_BLOCK_HEIGHT;
+            int lastBlockBlockHeight = BlockChainCoreConstants.FIRST_BLOCK_HEIGHT;
             while (true){
-                Block currentBlock = findBlockByBlockHeight(maxRangeBlockHeight);
+                Block currentBlock = findBlockByBlockHeight(lastBlockBlockHeight);
                 if(currentBlock == null){
                     //特殊情况:区块链上没有区块
-                    if(maxRangeBlockHeight == BlockChainCoreConstants.FIRST_BLOCK_HEIGHT){
+                    if(lastBlockBlockHeight == BlockChainCoreConstants.FIRST_BLOCK_HEIGHT){
                         return null;
                     }
                     break;
                 }else {
-                    maxRangeBlockHeight = maxRangeBlockHeight<<1;
+                    lastBlockBlockHeight = lastBlockBlockHeight<<1;
                 }
             }
 
-            int start = maxRangeBlockHeight>>1;
+            int start = lastBlockBlockHeight>>1;
             while (true){
-                int middle = (start + maxRangeBlockHeight)/2;
-                Block currentBlock = findBlockByBlockHeight(middle);
-                Block currentNextBlock = findBlockByBlockHeight(middle+1);
+                int middleBlockHeight = (start + lastBlockBlockHeight)/2;
+                Block currentBlock = findBlockByBlockHeight(middleBlockHeight);
+                Block currentNextBlock = findBlockByBlockHeight(middleBlockHeight+1);
                 if(currentBlock!=null && currentNextBlock==null){
                     return currentBlock;
                 }else if(currentBlock!=null){
-                    start = middle+1;
+                    start = middleBlockHeight+1;
                 }else {
-                    maxRangeBlockHeight = middle-1;
+                    lastBlockBlockHeight = middleBlockHeight-1;
                 }
             }
         }finally {
