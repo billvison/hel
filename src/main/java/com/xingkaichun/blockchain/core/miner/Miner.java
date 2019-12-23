@@ -22,11 +22,11 @@ public class Miner {
     private PublicKeyString minerPublicKey;
     private MineDifficulty mineDifficulty;
     private MineAward mineAward;
-    private TransactionPool transactionPool;
+    private NonPersistenceToBlockChainTransactionPool nonPersistenceToBlockChainTransactionPool;
     private MerkleUtils merkleUtils = new MerkleUtils();
 
-    public Miner(TransactionPool transactionPool, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
-        this.transactionPool = transactionPool;
+    public Miner(NonPersistenceToBlockChainTransactionPool nonPersistenceToBlockChainTransactionPool, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
+        this.nonPersistenceToBlockChainTransactionPool = nonPersistenceToBlockChainTransactionPool;
         this.minerPublicKey = minerPublicKey;
         this.mineDifficulty = mineDifficulty;
         this.mineAward = mineAward;
@@ -164,7 +164,7 @@ public class Miner {
             try {
                 while (true){
                     Block lastBlock = blockChainCore.findLastBlockFromBlock();
-                    Block mineBlock = mineBlock(blockChainCore,lastBlock,transactionPool.getTransactionListForMine());
+                    Block mineBlock = mineBlock(blockChainCore,lastBlock, nonPersistenceToBlockChainTransactionPool.getTransactionListForMine());
                     if(mineBlock != null){
                         blockChainCore.addBlock(mineBlock);
                     }
