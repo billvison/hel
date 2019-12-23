@@ -11,19 +11,25 @@ import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.blockchain.core.utils.BlockUtils;
 import com.xingkaichun.blockchain.core.utils.MerkleUtils;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
-import com.xingkaichun.blockchain.core.utils.atomic.CipherUtil;
 import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
 
 import java.math.BigDecimal;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 
+/**
+ * 矿工:挖矿、计算挖矿奖励、计算挖矿难度、校验交易数据的合法性、校验区块数据的合法性。
+ */
 public class Miner {
+
+    //矿工公钥
     private PublicKeyString minerPublicKey;
     private MineDifficulty mineDifficulty;
     private MineAward mineAward;
+
+    //交易池
+    //从交易池里获取挖矿的原材料-交易数据
     private NonPersistenceToBlockChainTransactionPool nonPersistenceToBlockChainTransactionPool;
-    private MerkleUtils merkleUtils = new MerkleUtils();
 
     public Miner(NonPersistenceToBlockChainTransactionPool nonPersistenceToBlockChainTransactionPool, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
         this.nonPersistenceToBlockChainTransactionPool = nonPersistenceToBlockChainTransactionPool;
@@ -42,9 +48,9 @@ public class Miner {
         packingTransactionList.add(mineAwardTransaction);
         Block packingBlock = null;
         if(lastBlock==null){
-            packingBlock = new Block(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT, BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH, packingTransactionList,merkleUtils.getMerkleRoot(packingTransactionList));
+            packingBlock = new Block(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT, BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH, packingTransactionList);
         } else {
-            packingBlock = new Block(lastBlock.getBlockHeight()+1, lastBlock.getHash(),packingTransactionList,merkleUtils.getMerkleRoot(packingTransactionList));
+            packingBlock = new Block(lastBlock.getBlockHeight()+1, lastBlock.getHash(),packingTransactionList);
         }
         return packingBlock;
     }
@@ -115,9 +121,9 @@ public class Miner {
         //创建打包区块
         Block packingBlock = createPackingBlock(blockChainCore,lastBlock,packingTransactionList);
         int difficulty = mineDifficulty.difficulty(blockChainCore, packingBlock);
-        String difficultyString = CipherUtil.getDificultyString(difficulty);
         packingBlock.setHash(BlockUtils.calculateHash(packingBlock));
-        while (!isHashSuccess(packingBlock.getHash(),difficulty,difficultyString)) {
+        String targetMineDificultyString = getTargetMineDificultyString(difficulty);
+        while (!isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(packingBlock.getHash(),difficulty))) {
             //中断挖矿
             synchronized (stopCurrentBlockMining){
                 if(stopCurrentBlockMining){
@@ -137,7 +143,7 @@ public class Miner {
      */
     public boolean isMinedBlockSuccess(BlockChainCore blockChainCore, Block block){
         //校验markettree
-        String merkleRoot = merkleUtils.getMerkleRoot(block.getTransactions());
+        String merkleRoot = MerkleUtils.getMerkleRoot(block.getTransactions());
         if(!merkleRoot.equals(block.getMerkleRoot())){
             return false;
         }
@@ -147,15 +153,47 @@ public class Miner {
             return false;
         }
         int difficulty = mineDifficulty.difficulty(blockChainCore,block);
-        return isHashSuccess(hash, difficulty);
+        return isHashDifficultyRight(hash, difficulty);
     }
-    public boolean isHashSuccess(String hash,int difficulty){
-        String difficultyString = CipherUtil.getDificultyString(difficulty);
-        return isHashSuccess(hash,difficulty,difficultyString);
+
+    /**
+     * hash的难度是difficulty吗？
+     * @param hash hash
+     * @param targetDifficulty 目标难度
+     * @return
+     */
+    public boolean isHashDifficultyRight(String hash,int targetDifficulty){
+        String targetMineDificultyString = getTargetMineDificultyString(targetDifficulty);
+        return isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(hash, targetDifficulty));
     }
-    public boolean isHashSuccess(String hash,int difficulty,String difficultyString){
-        return hash.substring(0, difficulty).equals(difficultyString);
+    /**
+     * 挖矿难度正确吗？
+     * @param targetMineDificultyString 目标的字符串表示的挖矿难度
+     * @param actualMineDificultyString 实际的字符串表示的挖矿难度
+     * @return
+     */
+    public boolean isHashDifficultyRight(String targetMineDificultyString,String actualMineDificultyString){
+        return targetMineDificultyString.equals(actualMineDificultyString);
     }
+
+    /**
+     * 获取实际的字符串表示的挖矿难度
+     * @param hash hash
+     * @param targetDifficulty 目标挖矿难度
+     * @return
+     */
+    public String getActualMineDificultyString(String hash, int targetDifficulty){
+        return hash.substring(0, targetDifficulty);
+    }
+    /**
+     * 计算字符串表示的挖矿难度目标
+     * 示例: 难度为5返回"00000"
+     * @param targetDifficulty 目标挖矿难度
+     */
+    public static String getTargetMineDificultyString(int targetDifficulty) {
+        return new String(new char[targetDifficulty]).replace('\0', '0');
+    }
+
     /**
      * 启动挖矿线程
      */

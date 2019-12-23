@@ -2,6 +2,7 @@ package com.xingkaichun.blockchain.core.model;
 
 
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
+import com.xingkaichun.blockchain.core.utils.MerkleUtils;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -25,11 +26,12 @@ public class Block implements Serializable {
     //默克尔树根
     private String merkleRoot;
 
-    public Block(int blockHeight, String previousHash, List<Transaction> transactions, String merkleRoot) {
+    public Block(int blockHeight, String previousHash, List<Transaction> transactions) {
         this.blockHeight = blockHeight;
         this.previousHash = previousHash;
         this.transactions = transactions;
-        this.merkleRoot = merkleRoot;
+        //计算默克尔树根
+        this.merkleRoot = MerkleUtils.getMerkleRoot(transactions);
     }
 
 }

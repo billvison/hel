@@ -6,8 +6,11 @@ import com.xingkaichun.blockchain.core.utils.atomic.CipherUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 默克尔树工具类
+ */
 public class MerkleUtils {
-    public String getMerkleRoot(List<Transaction> transactions) {
+    public static String getMerkleRoot(List<Transaction> transactions) {
         if(transactions==null || transactions.size()==0){
             return "";
         }

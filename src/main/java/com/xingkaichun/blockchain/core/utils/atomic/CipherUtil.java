@@ -64,14 +64,6 @@ public class CipherUtil {
     }
 
     /**
-     * 挖矿难度目标
-     * 难度为5返回"00000"
-     */
-    public static String getDificultyString(int difficulty) {
-        return new String(new char[difficulty]).replace('\0', '0');
-    }
-
-    /**
      * 默克尔根值
      */
     public static String getMerkleRoot(List<Transaction> transactions) {
