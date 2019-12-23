@@ -43,9 +43,6 @@ public class BlockChainCore {
     //UTXO头标识
     private final static String UNSPEND_TRANSACTION_OUPUT_UUID_FLAG = "U_T_O_U_F";
 
-    //区块链上有可能的最后一个区块【不保证一定是最后的区块】
-    private Block possibleLastBlock;
-
     //监听区块链上区块的增删动作
     private List<BlockChainActionListener> blockChainActionListenerList = new ArrayList<>();
 
@@ -262,28 +259,33 @@ public class BlockChainCore {
     public Block findLastBlockFromBlock() throws Exception {
         lock.lock();
         try{
-            //校验区块是否真实存在
-            if(possibleLastBlock != null){
-                //校验区块是否存在，由于区块链上有删区块的操作，万一代码写了bug，有可能导致possibleLastBlock变量的值是错误的。
-                //假设区块不存在，再次检测后，possibleLastBlock将置为null
-                possibleLastBlock = findBlockByBlockHeight(possibleLastBlock.getBlockHeight());
-            }
-            if(possibleLastBlock == null){
-                possibleLastBlock = findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
-                if(possibleLastBlock == null){
-                    return null;
-                }
-            }
-            //TODO 效率有待优化
-            for(int blockHeight=possibleLastBlock.getBlockHeight()+1;;blockHeight++){
-                Block currentBlock = findBlockByBlockHeight(blockHeight);
+            int maxRangeBlockHeight = BlockChainCoreConstants.FIRST_BLOCK_HEIGHT;
+            while (true){
+                Block currentBlock = findBlockByBlockHeight(maxRangeBlockHeight);
                 if(currentBlock == null){
+                    //特殊情况:区块链上没有区块
+                    if(maxRangeBlockHeight == BlockChainCoreConstants.FIRST_BLOCK_HEIGHT){
+                        return null;
+                    }
                     break;
                 }else {
-                    possibleLastBlock = currentBlock;
+                    maxRangeBlockHeight = maxRangeBlockHeight<<1;
                 }
             }
-            return possibleLastBlock;
+
+            int start = maxRangeBlockHeight>>1;
+            while (true){
+                int middle = (start + maxRangeBlockHeight)/2;
+                Block currentBlock = findBlockByBlockHeight(middle);
+                Block currentNextBlock = findBlockByBlockHeight(middle+1);
+                if(currentBlock!=null && currentNextBlock==null){
+                    return currentBlock;
+                }else if(currentBlock!=null){
+                    start = middle+1;
+                }else {
+                    maxRangeBlockHeight = middle-1;
+                }
+            }
         }finally {
             lock.unlock();
         }
