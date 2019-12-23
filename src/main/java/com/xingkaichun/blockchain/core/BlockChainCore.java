@@ -57,7 +57,7 @@ public class BlockChainCore {
      * @param miner 矿工
      */
     public BlockChainCore(String dbPath, Miner miner) throws Exception {
-        this.blockChainDB = LevelDBUtil.createDB(new File(dbPath,"blockChainDB"));
+        this.blockChainDB = LevelDBUtil.createDB(new File(dbPath,"BlockChainDB"));
         this.miner = miner;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
