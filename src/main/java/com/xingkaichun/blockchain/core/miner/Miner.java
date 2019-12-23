@@ -19,16 +19,14 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 
 public class Miner {
-    private BlockChainCore blockChainCore;
     private PublicKeyString minerPublicKey;
     private MineDifficulty mineDifficulty;
     private MineAward mineAward;
     private TransactionPool transactionPool;
     private MerkleUtils merkleUtils = new MerkleUtils();
 
-    public Miner(TransactionPool transactionPool, MineDifficulty mineDifficulty, MineAward mineAward, BlockChainCore blockChainCore, PublicKeyString minerPublicKey) {
+    public Miner(TransactionPool transactionPool, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
         this.transactionPool = transactionPool;
-        this.blockChainCore = blockChainCore;
         this.minerPublicKey = minerPublicKey;
         this.mineDifficulty = mineDifficulty;
         this.mineAward = mineAward;
@@ -37,7 +35,7 @@ public class Miner {
     /**
      * 创建要打包的区块
      */
-    public Block createPackingBlock(Block lastBlock, List<Transaction> packingTransactionList) throws Exception {
+    public Block createPackingBlock(BlockChainCore blockChainCore, Block lastBlock, List<Transaction> packingTransactionList) throws Exception {
         int blockHeight = lastBlock==null ? BlockChainCoreConstants.FIRST_BLOCK_HEIGHT : lastBlock.getBlockHeight()+1;
         Transaction mineAwardTransaction =  createMineAwardTransaction(blockChainCore,blockHeight,packingTransactionList);
         //将奖励交易加入待打包列表
@@ -81,7 +79,7 @@ public class Miner {
         throw new BlockChainCoreException("区块数据异常：没有包含挖矿奖励数据。");
     }
 
-    public boolean isBlockMineAwardRight(Block block){
+    public boolean isBlockMineAwardRight(BlockChainCore blockChainCore, Block block){
         List<Transaction> packingTransactionList = new ArrayList<>();
         for(Transaction tx : block.getTransactions()){
             if(tx.getTransactionType() != TransactionType.MINER){
@@ -111,11 +109,11 @@ public class Miner {
     /**
      * 挖矿
      */
-    public Block mineBlock(Block lastBlock, List<Transaction> packingTransactionList) throws Exception {
+    public Block mineBlock(BlockChainCore blockChainCore, Block lastBlock, List<Transaction> packingTransactionList) throws Exception {
         dropPackingTransactionException_PointOfView_Block(blockChainCore,packingTransactionList);
 
         //创建打包区块
-        Block packingBlock = createPackingBlock(lastBlock,packingTransactionList);
+        Block packingBlock = createPackingBlock(blockChainCore,lastBlock,packingTransactionList);
         int difficulty = mineDifficulty.difficulty(blockChainCore, packingBlock);
         String difficultyString = CipherUtil.getDificultyString(difficulty);
         packingBlock.setHash(BlockUtils.calculateHash(packingBlock));
@@ -137,7 +135,7 @@ public class Miner {
     /**
      * 判断Block的挖矿Hash是否正确
      */
-    public boolean isMinedBlockSuccess(Block block){
+    public boolean isMinedBlockSuccess(BlockChainCore blockChainCore, Block block){
         //校验markettree
         String merkleRoot = merkleUtils.getMerkleRoot(block.getTransactions());
         if(!merkleRoot.equals(block.getMerkleRoot())){
@@ -161,12 +159,12 @@ public class Miner {
     /**
      * 启动挖矿线程
      */
-    public void mining() throws Exception {
+    public void mining(BlockChainCore blockChainCore) throws Exception {
         new Thread(()->{
             try {
                 while (true){
                     Block lastBlock = blockChainCore.findLastBlockFromBlock();
-                    Block mineBlock = mineBlock(lastBlock,transactionPool.getTransactionListForMine());
+                    Block mineBlock = mineBlock(blockChainCore,lastBlock,transactionPool.getTransactionListForMine());
                     if(mineBlock != null){
                         blockChainCore.addBlock(mineBlock);
                     }
@@ -258,7 +256,7 @@ public class Miner {
             throw new BlockChainCoreException("区块校验失败：区块不能为null。");
         }
         //校验挖矿[区块本身的数据]是否正确
-        boolean minerSuccess = blockChainCore.getMiner().isMinedBlockSuccess(block);
+        boolean minerSuccess = blockChainCore.getMiner().isMinedBlockSuccess(blockChainCore,block);
         if(!minerSuccess){
             return false;
         }
@@ -382,7 +380,7 @@ public class Miner {
             if(outputs.size() != 1){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出有且只能有一笔。不合法的交易。");
             }
-            if(!blockChainCore.getMiner().isBlockMineAwardRight(block)){
+            if(!blockChainCore.getMiner().isBlockMineAwardRight(blockChainCore,block)){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出金额不正确。不合法的交易。");
             }
             return true;
