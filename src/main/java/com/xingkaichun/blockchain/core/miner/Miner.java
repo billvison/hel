@@ -93,10 +93,10 @@ public class Miner {
             }
         }
         //计算的挖矿奖励
-        BigDecimal mineAward = getMineAward().mineAward(blockChainCore,block.getBlockHeight(),packingTransactionList);
+        BigDecimal award = mineAward.mineAward(blockChainCore,block.getBlockHeight(),packingTransactionList);
         //区块中写入的挖矿奖励
         BigDecimal mineAwardByPass = extractMineAward(block);
-        return mineAward.compareTo(mineAwardByPass) != 0 ;
+        return award.compareTo(mineAwardByPass) != 0 ;
     }
 
     /**
@@ -265,22 +265,6 @@ public class Miner {
             }
         }
     }
-
-    public MineDifficulty getMineDifficulty() {
-        return mineDifficulty;
-    }
-
-    public MineAward getMineAward() {
-        return mineAward;
-    }
-
-
-
-
-
-
-
-
 
 
 
