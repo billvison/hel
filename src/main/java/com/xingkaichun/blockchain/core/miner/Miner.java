@@ -57,56 +57,6 @@ public class Miner {
     }
 
     /**
-     * 构建挖矿奖励交易
-     * @param blockChainCore
-     * @param blockHeight
-     * @param packingTransactionList
-     */
-    public Transaction buildMineAwardTransaction(BlockChainCore blockChainCore, int blockHeight, List<Transaction> packingTransactionList) {
-        ArrayList<TransactionOutput> outputs = new ArrayList<>();
-        Transaction transaction = new Transaction(TransactionType.MINER,null,outputs);
-        BigDecimal award = mineAward.mineAward(blockChainCore,blockHeight,packingTransactionList);
-        outputs.add(new TransactionOutput(this.minerPublicKey,award,transaction.getTransactionUUID()));
-        return transaction;
-    }
-
-    /**
-     * 获取区块中写入的挖矿奖励
-     * @param block 区块
-     * @return
-     */
-    public BigDecimal extractBlockWritedMineAward(Block block) {
-        for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() == TransactionType.MINER){
-                ArrayList<TransactionOutput> outputs = tx.getOutputs();
-                TransactionOutput mineAwardTransactionOutput = outputs.get(0);
-                return mineAwardTransactionOutput.getValue();
-            }
-        }
-        throw new BlockChainCoreException("区块数据异常：没有包含挖矿奖励数据。");
-    }
-
-    /**
-     * 区块的挖矿奖励是否正确？
-     * @param blockChainCore 区块链
-     * @param block 被校验挖矿奖励是否正确的区块
-     * @return
-     */
-    public boolean isBlockMineAwardRight(BlockChainCore blockChainCore, Block block){
-        List<Transaction> packingTransactionList = new ArrayList<>();
-        for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() != TransactionType.MINER){
-                packingTransactionList.add(tx);
-            }
-        }
-        //目标挖矿奖励
-        BigDecimal targetMineAward = mineAward.mineAward(blockChainCore,block.getBlockHeight(),packingTransactionList);
-        //区块中写入的挖矿奖励
-        BigDecimal blockWritedMineAward = extractBlockWritedMineAward(block);
-        return targetMineAward.compareTo(blockWritedMineAward) != 0 ;
-    }
-
-    /**
      * 停止当前区块的挖矿，可能这个区块已经被挖出来了
      */
     public volatile Boolean stopCurrentBlockMining = false;
@@ -162,44 +112,6 @@ public class Miner {
         }
         int difficulty = mineDifficulty.difficulty(blockChainCore,block);
         return isHashDifficultyRight(hash, difficulty);
-    }
-
-    /**
-     * hash的难度是difficulty吗？
-     * @param hash hash
-     * @param targetDifficulty 目标难度
-     * @return
-     */
-    public boolean isHashDifficultyRight(String hash,int targetDifficulty){
-        String targetMineDificultyString = getTargetMineDificultyString(targetDifficulty);
-        String actualMineDificultyString = getActualMineDificultyString(hash, targetDifficulty);
-        return isHashDifficultyRight(targetMineDificultyString, actualMineDificultyString);
-    }
-    /**
-     * 挖矿难度正确吗？
-     * @param targetMineDificultyString 目标的字符串表示的挖矿难度
-     * @param actualMineDificultyString 实际的字符串表示的挖矿难度
-     * @return
-     */
-    public boolean isHashDifficultyRight(String targetMineDificultyString,String actualMineDificultyString){
-        return targetMineDificultyString.equals(actualMineDificultyString);
-    }
-    /**
-     * 获取实际的字符串表示的挖矿难度
-     * @param hash hash
-     * @param targetDifficulty 目标挖矿难度
-     * @return
-     */
-    public String getActualMineDificultyString(String hash, int targetDifficulty){
-        return hash.substring(0, targetDifficulty);
-    }
-    /**
-     * 计算字符串表示的挖矿难度目标
-     * 示例: 难度为5返回"00000"
-     * @param targetDifficulty 目标挖矿难度
-     */
-    public static String getTargetMineDificultyString(int targetDifficulty) {
-        return new String(new char[targetDifficulty]).replace('\0', '0');
     }
 
     /**
@@ -535,4 +447,96 @@ public class Miner {
         }
         return true;
     }
+
+
+    //region 挖矿奖励相关
+    /**
+     * 获取区块中写入的挖矿奖励
+     * @param block 区块
+     * @return
+     */
+    public BigDecimal extractBlockWritedMineAward(Block block) {
+        for(Transaction tx : block.getTransactions()){
+            if(tx.getTransactionType() == TransactionType.MINER){
+                ArrayList<TransactionOutput> outputs = tx.getOutputs();
+                TransactionOutput mineAwardTransactionOutput = outputs.get(0);
+                return mineAwardTransactionOutput.getValue();
+            }
+        }
+        throw new BlockChainCoreException("区块数据异常：没有包含挖矿奖励数据。");
+    }
+    /**
+     * 区块的挖矿奖励是否正确？
+     * @param blockChainCore 区块链
+     * @param block 被校验挖矿奖励是否正确的区块
+     * @return
+     */
+    public boolean isBlockMineAwardRight(BlockChainCore blockChainCore, Block block){
+        List<Transaction> packingTransactionList = new ArrayList<>();
+        for(Transaction tx : block.getTransactions()){
+            if(tx.getTransactionType() != TransactionType.MINER){
+                packingTransactionList.add(tx);
+            }
+        }
+        //目标挖矿奖励
+        BigDecimal targetMineAward = mineAward.mineAward(blockChainCore,block.getBlockHeight(),packingTransactionList);
+        //区块中写入的挖矿奖励
+        BigDecimal blockWritedMineAward = extractBlockWritedMineAward(block);
+        return targetMineAward.compareTo(blockWritedMineAward) != 0 ;
+    }
+    /**
+     * 构建挖矿奖励交易
+     * @param blockChainCore
+     * @param blockHeight
+     * @param packingTransactionList
+     */
+    public Transaction buildMineAwardTransaction(BlockChainCore blockChainCore, int blockHeight, List<Transaction> packingTransactionList) {
+        ArrayList<TransactionOutput> outputs = new ArrayList<>();
+        Transaction transaction = new Transaction(TransactionType.MINER,null,outputs);
+        BigDecimal award = mineAward.mineAward(blockChainCore,blockHeight,packingTransactionList);
+        outputs.add(new TransactionOutput(this.minerPublicKey,award,transaction.getTransactionUUID()));
+        return transaction;
+    }
+    //endregion
+
+
+    //region 挖矿难度相关
+    /**
+     * hash的难度是difficulty吗？
+     * @param hash hash
+     * @param targetDifficulty 目标难度
+     * @return
+     */
+    public boolean isHashDifficultyRight(String hash,int targetDifficulty){
+        String targetMineDificultyString = getTargetMineDificultyString(targetDifficulty);
+        String actualMineDificultyString = getActualMineDificultyString(hash, targetDifficulty);
+        return isHashDifficultyRight(targetMineDificultyString, actualMineDificultyString);
+    }
+    /**
+     * 挖矿难度正确吗？
+     * @param targetMineDificultyString 目标的字符串表示的挖矿难度
+     * @param actualMineDificultyString 实际的字符串表示的挖矿难度
+     * @return
+     */
+    public boolean isHashDifficultyRight(String targetMineDificultyString,String actualMineDificultyString){
+        return targetMineDificultyString.equals(actualMineDificultyString);
+    }
+    /**
+     * 获取实际的字符串表示的挖矿难度
+     * @param hash hash
+     * @param targetDifficulty 目标挖矿难度
+     * @return
+     */
+    public String getActualMineDificultyString(String hash, int targetDifficulty){
+        return hash.substring(0, targetDifficulty);
+    }
+    /**
+     * 计算字符串表示的挖矿难度目标
+     * 示例: 难度为5返回"00000"
+     * @param targetDifficulty 目标挖矿难度
+     */
+    public static String getTargetMineDificultyString(int targetDifficulty) {
+        return new String(new char[targetDifficulty]).replace('\0', '0');
+    }
+    //endregion
 }

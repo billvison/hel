@@ -53,7 +53,7 @@ public class BlockChainCore {
     //region 构造函数
     /**
      * 构造函数
-     * @param dbPath 数据库地址
+     * @param dbPath 区块链数据库地址
      * @param miner 矿工
      */
     public BlockChainCore(String dbPath, Miner miner) throws Exception {
@@ -112,7 +112,7 @@ public class BlockChainCore {
     }
 
     /**
-     * 回滚到老的区块，并新增区块
+     * 回滚老的区块，并新增区块
      */
     public boolean replaceBlocks(List<Block> addBlockList) throws Exception {
         lock.lock();
