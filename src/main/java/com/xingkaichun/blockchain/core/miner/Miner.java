@@ -172,7 +172,8 @@ public class Miner {
      */
     public boolean isHashDifficultyRight(String hash,int targetDifficulty){
         String targetMineDificultyString = getTargetMineDificultyString(targetDifficulty);
-        return isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(hash, targetDifficulty));
+        String actualMineDificultyString = getActualMineDificultyString(hash, targetDifficulty);
+        return isHashDifficultyRight(targetMineDificultyString, actualMineDificultyString);
     }
     /**
      * 挖矿难度正确吗？
