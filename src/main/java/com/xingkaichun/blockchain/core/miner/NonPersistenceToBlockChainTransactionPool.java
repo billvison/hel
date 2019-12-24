@@ -21,12 +21,10 @@ public class NonPersistenceToBlockChainTransactionPool {
 
     //交易池数据库
     private DB transactionPoolDB;
-    private BlockChainCore blockChainCore;
 
-    public NonPersistenceToBlockChainTransactionPool(String dbPath, BlockChainCore blockChainCore) throws Exception {
+    public NonPersistenceToBlockChainTransactionPool(String dbPath) throws Exception {
 
         this.transactionPoolDB = LevelDBUtil.createDB(new File(dbPath,"TransactionPoolDB"));
-        this.blockChainCore = blockChainCore;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -38,17 +36,9 @@ public class NonPersistenceToBlockChainTransactionPool {
     }
 
     /**
-     * 添加交易
+     * 添加交易进交易池
      */
     public boolean addTransaction(Transaction transaction) throws Exception {
-        //交易校验失败 丢弃交易
-        if(!blockChainCore.getMiner().checkUnBlockChainTransaction(blockChainCore,null,transaction)){
-            return false;
-        }
-        //交易已经存在于区块链 丢弃交易
-        if(blockChainCore.findTransactionByUUID(transaction.getTransactionUUID())!=null){
-            return false;
-        }
         //交易已经持久化进交易池数据库 丢弃交易
         if(isTransactionExsitInPool(transaction.getTransactionUUID())){
             return false;
@@ -60,7 +50,7 @@ public class NonPersistenceToBlockChainTransactionPool {
     }
 
     /**
-     * 获取挖矿的原料:交易
+     * 从交易池获取交易
      */
     public List<Transaction> getTransactionList() throws Exception {
         synchronized (BlockChainCore.class){
