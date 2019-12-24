@@ -184,7 +184,6 @@ public class Miner {
     public boolean isHashDifficultyRight(String targetMineDificultyString,String actualMineDificultyString){
         return targetMineDificultyString.equals(actualMineDificultyString);
     }
-
     /**
      * 获取实际的字符串表示的挖矿难度
      * @param hash hash
