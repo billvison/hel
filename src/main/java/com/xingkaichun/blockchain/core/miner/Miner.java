@@ -209,7 +209,7 @@ public class Miner {
         new Thread(()->{
             try {
                 while (true){
-                    Block mineBlock = mineBlock(blockChainCore,nonPersistenceToBlockChainTransactionPool.getTransactionListForMine());
+                    Block mineBlock = mineBlock(blockChainCore,nonPersistenceToBlockChainTransactionPool.getTransactionList());
                     if(mineBlock != null){
                         blockChainCore.addBlock(mineBlock);
                     }

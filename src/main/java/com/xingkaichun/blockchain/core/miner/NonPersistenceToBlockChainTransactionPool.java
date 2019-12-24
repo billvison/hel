@@ -50,7 +50,7 @@ public class NonPersistenceToBlockChainTransactionPool {
             return false;
         }
         //交易已经持久化进交易池数据库 丢弃交易
-        if(isTransactionExsitInDb(transaction.getTransactionUUID())){
+        if(isTransactionExsitInPool(transaction.getTransactionUUID())){
             return false;
         }
         synchronized (BlockChainCore.class){
@@ -62,21 +62,25 @@ public class NonPersistenceToBlockChainTransactionPool {
     /**
      * 获取挖矿的原料:交易
      */
-    public List<Transaction> getTransactionListForMine() throws Exception {
+    public List<Transaction> getTransactionList() throws Exception {
         synchronized (BlockChainCore.class){
-            List<Transaction> forMineTransactionList = new ArrayList<>();
+            List<Transaction> transactionList = new ArrayList<>();
             DBIterator dbIterator = this.transactionPoolDB.iterator();
             while (dbIterator.hasNext()){
                 Map.Entry<byte[],byte[]> entry =  dbIterator.next();
                 byte[] byteTransaction = entry.getValue();
                 Transaction transaction = EncodeDecode.decodeToTransaction(byteTransaction);
-                forMineTransactionList.add(transaction);
+                transactionList.add(transaction);
             }
-            return forMineTransactionList;
+            return transactionList;
         }
     }
 
-    public boolean isTransactionExsitInDb(String transactionUUID) throws Exception {
+    /**
+     * 交易是否已经存在于交易池
+     * @param transactionUUID 交易ID
+     */
+    private boolean isTransactionExsitInPool(String transactionUUID) throws Exception {
         byte[] byteTransaction = LevelDBUtil.get(transactionPoolDB,transactionUUID);
         return byteTransaction != null;
     }
