@@ -39,11 +39,11 @@ public class Miner {
     }
 
     /**
-     * 创建要打包的区块
+     * 构建缺少nonce(代表尚未被挖矿)的区块
      */
-    public Block createPackingBlock(BlockChainCore blockChainCore, Block lastBlock, List<Transaction> packingTransactionList) throws Exception {
+    public Block buildNonNonceBlock(BlockChainCore blockChainCore, Block lastBlock, List<Transaction> packingTransactionList) throws Exception {
         int blockHeight = lastBlock==null ? BlockChainCoreConstants.FIRST_BLOCK_HEIGHT : lastBlock.getBlockHeight()+1;
-        Transaction mineAwardTransaction =  createMineAwardTransaction(blockChainCore,blockHeight,packingTransactionList);
+        Transaction mineAwardTransaction =  buildMineAwardTransaction(blockChainCore,blockHeight,packingTransactionList);
         //将奖励交易加入待打包列表
         packingTransactionList.add(mineAwardTransaction);
         Block packingBlock = null;
@@ -56,12 +56,12 @@ public class Miner {
     }
 
     /**
-     * 创建挖矿交易
+     * 构建挖矿奖励交易
      * @param blockChainCore
      * @param blockHeight
      * @param packingTransactionList
      */
-    public Transaction createMineAwardTransaction(BlockChainCore blockChainCore, int blockHeight, List<Transaction> packingTransactionList) {
+    public Transaction buildMineAwardTransaction(BlockChainCore blockChainCore, int blockHeight, List<Transaction> packingTransactionList) {
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
         Transaction transaction = new Transaction(TransactionType.MINER,null,outputs);
         BigDecimal award = mineAward.mineAward(blockChainCore,blockHeight,packingTransactionList);
@@ -71,10 +71,10 @@ public class Miner {
 
     /**
      * 获取区块中写入的挖矿奖励
-     * @param block
+     * @param block 区块
      * @return
      */
-    public BigDecimal extractMineAward(Block block) {
+    public BigDecimal extractBlockWritedMineAward(Block block) {
         for(Transaction tx : block.getTransactions()){
             if(tx.getTransactionType() == TransactionType.MINER){
                 ArrayList<TransactionOutput> outputs = tx.getOutputs();
@@ -92,11 +92,11 @@ public class Miner {
                 packingTransactionList.add(tx);
             }
         }
-        //计算的挖矿奖励
-        BigDecimal award = mineAward.mineAward(blockChainCore,block.getBlockHeight(),packingTransactionList);
+        //目标挖矿奖励
+        BigDecimal targetMineAward = mineAward.mineAward(blockChainCore,block.getBlockHeight(),packingTransactionList);
         //区块中写入的挖矿奖励
-        BigDecimal mineAwardByPass = extractMineAward(block);
-        return award.compareTo(mineAwardByPass) != 0 ;
+        BigDecimal blockWritedMineAward = extractBlockWritedMineAward(block);
+        return targetMineAward.compareTo(blockWritedMineAward) != 0 ;
     }
 
     /**
@@ -119,7 +119,7 @@ public class Miner {
         dropPackingTransactionException_PointOfView_Block(blockChainCore,packingTransactionList);
 
         //创建打包区块
-        Block packingBlock = createPackingBlock(blockChainCore,lastBlock,packingTransactionList);
+        Block packingBlock = buildNonNonceBlock(blockChainCore,lastBlock,packingTransactionList);
         int difficulty = mineDifficulty.difficulty(blockChainCore, packingBlock);
         packingBlock.setHash(BlockUtils.calculateHash(packingBlock));
         String targetMineDificultyString = getTargetMineDificultyString(difficulty);
