@@ -98,7 +98,7 @@ public class BlockChainCore {
     public Block removeTailBlock() throws Exception {
         lock.lock();
         try{
-            Block tailBlock = findLastBlockFromBlock();
+            Block tailBlock = findTailBlock();
             if(tailBlock == null){
                 return null;
             }
@@ -130,7 +130,7 @@ public class BlockChainCore {
             //新增到区块链上第一个区块的高度
             int addedFirstBlockHight = addBlockList.get(0).getBlockHeight();
             //区块链上最后一个区块的高度
-            int lastBlockHeight = findLastBlockFromBlock().getBlockHeight();
+            int lastBlockHeight = findTailBlock().getBlockHeight();
             /**
              * 当lastBlockHeight>=addedFirstBlockHight 表示有替换
              * 当lastBlockHeight+1=addedFirstBlockHight 表示区块都是新增
@@ -252,11 +252,11 @@ public class BlockChainCore {
     //endregion
     //endregion
 
-    //region 对外提供的方法
+    //region 区块链提供的通用方法
     /**
-     * 查找最后一个区块
+     * 查找区块链上的最后一个区块
      */
-    public Block findLastBlockFromBlock() throws Exception {
+    public Block findTailBlock() throws Exception {
         lock.lock();
         try{
             int lastBlockBlockHeight = BlockChainCoreConstants.FIRST_BLOCK_HEIGHT;
@@ -292,13 +292,13 @@ public class BlockChainCore {
     }
 
     /**
-     * 交易输出ID是UTXO吗？
+     * 根据TXO ID判断TXO是UTXO吗？
      * @param transactionOutputId 交易输出ID
      */
     public boolean isUTXO(String transactionOutputId) throws Exception {
         lock.lock();
         try{
-            TransactionOutput transactionOutput = findUtxoByUtxoUUId(transactionOutputId);
+            TransactionOutput transactionOutput = findUtxoByUtxoUuid(transactionOutputId);
             return transactionOutput!=null;
         }finally {
             lock.unlock();
@@ -306,10 +306,10 @@ public class BlockChainCore {
     }
 
     /**
-     * 查找UTXO
-     * @param transactionOutputUUID 交易输出ID
+     * 在区块链中根据 UTXO ID 查找UTXO
+     * @param transactionOutputUUID UTXO ID
      */
-    public TransactionOutput findUtxoByUtxoUUId(String transactionOutputUUID) throws Exception {
+    public TransactionOutput findUtxoByUtxoUuid(String transactionOutputUUID) throws Exception {
         lock.lock();
         try{
             if(transactionOutputUUID==null||"".equals(transactionOutputUUID)){
@@ -326,7 +326,7 @@ public class BlockChainCore {
     }
 
     /**
-     * 查找区块
+     * 在区块链中根据区块高度查找区块
      * @param blockHeight 区块高度
      */
     public Block findBlockByBlockHeight(int blockHeight) throws Exception {
@@ -343,10 +343,10 @@ public class BlockChainCore {
     }
 
     /**
-     * 查找交易
+     * 在区块链中根据交易ID查找交易
      * @param transactionUUID 交易ID
      */
-    public Transaction findTransactionByUUID(String transactionUUID) throws Exception {
+    public Transaction findTransactionByTransactionUuid(String transactionUUID) throws Exception {
         lock.lock();
         try{
             byte[] byteTransaction = LevelDBUtil.get(blockChainDB, addTransactionUuidPrefix(transactionUUID));
@@ -358,10 +358,15 @@ public class BlockChainCore {
             lock.unlock();
         }
     }
-    public boolean isExistTransaction(String transactionUUID) throws Exception {
+
+    /**
+     * 交易是否已经存在于区块链之中？
+     * @param transactionUUID 交易ID
+     */
+    public boolean isTransactionExist(String transactionUUID) throws Exception {
         lock.lock();
         try{
-            Transaction transaction = findTransactionByUUID(transactionUUID);
+            Transaction transaction = findTransactionByTransactionUuid(transactionUUID);
             return transaction != null;
         }finally {
             lock.unlock();
@@ -389,9 +394,7 @@ public class BlockChainCore {
             lock.unlock();
         }
     }
-    //endregion
 
-    //region 私有方法
     private List<BlockChainActionData> createBlockChainActionDataList(Block block, BlockChainActionEnum blockChainActionEnum) {
         List<BlockChainActionData> dataList = new ArrayList<>();
         BlockChainActionData addData = new BlockChainActionData(block,blockChainActionEnum);
@@ -407,9 +410,4 @@ public class BlockChainCore {
         return dataList;
     }
     //endregion
-
-
-    public Miner getMiner() {
-        return miner;
-    }
 }

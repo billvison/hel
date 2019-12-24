@@ -42,7 +42,7 @@ public class Miner {
      * 构建缺少nonce(代表尚未被挖矿)的区块
      */
     public Block buildNonNonceBlock(BlockChainCore blockChainCore, List<Transaction> packingTransactionList) throws Exception {
-        Block lastBlock = blockChainCore.findLastBlockFromBlock();
+        Block lastBlock = blockChainCore.findTailBlock();
         int blockHeight = lastBlock==null ? BlockChainCoreConstants.FIRST_BLOCK_HEIGHT : lastBlock.getBlockHeight()+1;
         Transaction mineAwardTransaction =  buildMineAwardTransaction(blockChainCore,blockHeight,packingTransactionList);
         //将奖励交易加入待打包列表
@@ -285,12 +285,12 @@ public class Miner {
             throw new BlockChainCoreException("区块校验失败：区块不能为null。");
         }
         //校验挖矿[区块本身的数据]是否正确
-        boolean minerSuccess = blockChainCore.getMiner().isMinedBlockSuccess(blockChainCore,block);
+        boolean minerSuccess = isMinedBlockSuccess(blockChainCore,block);
         if(!minerSuccess){
             return false;
         }
         //校验区块的连贯性
-        Block tailBlock = blockChainCore.findLastBlockFromBlock();
+        Block tailBlock = blockChainCore.findTailBlock();
         if(tailBlock == null){
             //校验区块Previous Hash
             if(!BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousHash())){
@@ -323,7 +323,7 @@ public class Miner {
             String transactionUUID = tx.getTransactionUUID();
             //region 校验交易ID的唯一性
             //校验交易ID的唯一性:之前的区块没用过这个UUID
-            if(!blockChainCore.isExistTransaction(transactionUUID)){
+            if(!blockChainCore.isTransactionExist(transactionUUID)){
                 throw new BlockChainCoreException("区块数据异常，交易的id在之前的区块中已经被使用了。");
             }
             //校验交易ID的唯一性:本次校验的区块没有使用这个UUID两次或两次以上
@@ -409,7 +409,7 @@ public class Miner {
             if(outputs.size() != 1){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出有且只能有一笔。不合法的交易。");
             }
-            if(!blockChainCore.getMiner().isBlockMineAwardRight(blockChainCore,block)){
+            if(!isBlockMineAwardRight(blockChainCore,block)){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出金额不正确。不合法的交易。");
             }
             return true;
@@ -486,7 +486,7 @@ public class Miner {
             Block headBlock = blockList.get(0);
             int headBlockHeight = headBlock.getBlockHeight();
 
-            Block blockchainTailBlock = blockChainCore.findLastBlockFromBlock();
+            Block blockchainTailBlock = blockChainCore.findTailBlock();
             if(blockchainTailBlock == null){
                 if(headBlockHeight != BlockChainCoreConstants.FIRST_BLOCK_HEIGHT){
                     return false;
@@ -502,7 +502,7 @@ public class Miner {
                 while (blockchainTailBlock.getBlockHeight() >= headBlockHeight){
                     Block removeTailBlock = blockChainCore.removeTailBlock();
                     changeDeleteBlockList.add(removeTailBlock);
-                    blockchainTailBlock = blockChainCore.findLastBlockFromBlock();
+                    blockchainTailBlock = blockChainCore.findTailBlock();
                 }
             }
 
