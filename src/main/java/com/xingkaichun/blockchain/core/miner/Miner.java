@@ -41,7 +41,8 @@ public class Miner {
     /**
      * 构建缺少nonce(代表尚未被挖矿)的区块
      */
-    public Block buildNonNonceBlock(BlockChainCore blockChainCore, Block lastBlock, List<Transaction> packingTransactionList) throws Exception {
+    public Block buildNonNonceBlock(BlockChainCore blockChainCore, List<Transaction> packingTransactionList) throws Exception {
+        Block lastBlock = blockChainCore.findLastBlockFromBlock();
         int blockHeight = lastBlock==null ? BlockChainCoreConstants.FIRST_BLOCK_HEIGHT : lastBlock.getBlockHeight()+1;
         Transaction mineAwardTransaction =  buildMineAwardTransaction(blockChainCore,blockHeight,packingTransactionList);
         //将奖励交易加入待打包列表
@@ -85,6 +86,12 @@ public class Miner {
         throw new BlockChainCoreException("区块数据异常：没有包含挖矿奖励数据。");
     }
 
+    /**
+     * 区块的挖矿奖励是否正确？
+     * @param blockChainCore 区块链
+     * @param block 被校验挖矿奖励是否正确的区块
+     * @return
+     */
     public boolean isBlockMineAwardRight(BlockChainCore blockChainCore, Block block){
         List<Transaction> packingTransactionList = new ArrayList<>();
         for(Transaction tx : block.getTransactions()){
@@ -115,11 +122,12 @@ public class Miner {
     /**
      * 挖矿
      */
-    public Block mineBlock(BlockChainCore blockChainCore, Block lastBlock, List<Transaction> packingTransactionList) throws Exception {
+    public Block mineBlock(BlockChainCore blockChainCore, List<Transaction> packingTransactionList) throws Exception {
+
         dropPackingTransactionException_PointOfView_Block(blockChainCore,packingTransactionList);
 
         //创建打包区块
-        Block packingBlock = buildNonNonceBlock(blockChainCore,lastBlock,packingTransactionList);
+        Block packingBlock = buildNonNonceBlock(blockChainCore,packingTransactionList);
         int difficulty = mineDifficulty.difficulty(blockChainCore, packingBlock);
         packingBlock.setHash(BlockUtils.calculateHash(packingBlock));
         String targetMineDificultyString = getTargetMineDificultyString(difficulty);
@@ -201,8 +209,7 @@ public class Miner {
         new Thread(()->{
             try {
                 while (true){
-                    Block lastBlock = blockChainCore.findLastBlockFromBlock();
-                    Block mineBlock = mineBlock(blockChainCore,lastBlock, nonPersistenceToBlockChainTransactionPool.getTransactionListForMine());
+                    Block mineBlock = mineBlock(blockChainCore,nonPersistenceToBlockChainTransactionPool.getTransactionListForMine());
                     if(mineBlock != null){
                         blockChainCore.addBlock(mineBlock);
                     }
