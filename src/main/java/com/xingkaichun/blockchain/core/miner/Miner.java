@@ -444,17 +444,9 @@ public class Miner {
     public static String getTargetMineDificultyString(int targetDifficulty) {
         return new String(new char[targetDifficulty]).replace('\0', '0');
     }
-
-    /**
-     * 计算区块的Hash值
-     * @param block 区块
-     */
-    public String calculateBlockHash(Block block) {
-        return CipherUtil.applySha256(block.getPreviousHash() + block.getNonce() + block.getMerkleRoot());
-    }
     //endregion
 
-    //region 区块相关
+    //region 区块构建、区块hash计算、校验区块Hash的正确性
     /**
      * 构建缺少nonce(代表尚未被挖矿)的区块
      */
@@ -471,6 +463,13 @@ public class Miner {
             packingBlock = new Block(lastBlock.getBlockHeight()+1, lastBlock.getHash(),packingTransactionList);
         }
         return packingBlock;
+    }
+    /**
+     * 计算区块的Hash值
+     * @param block 区块
+     */
+    public String calculateBlockHash(Block block) {
+        return CipherUtil.applySha256(block.getPreviousHash() + block.getNonce() + block.getMerkleRoot());
     }
     /**
      * 判断Block的挖矿Hash是否正确
