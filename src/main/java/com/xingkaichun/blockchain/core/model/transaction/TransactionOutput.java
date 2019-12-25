@@ -13,8 +13,6 @@ import java.math.BigDecimal;
 @Data
 public class TransactionOutput implements Serializable {
 
-    //交易的ID
-    private String transactionId;
     //交易输出的ID
     private String transactionOutputUUID;
     //交易输出的接收方

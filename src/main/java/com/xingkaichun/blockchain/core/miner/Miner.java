@@ -407,7 +407,6 @@ public class Miner {
 
         TransactionOutput output = new TransactionOutput();
         output.setTransactionOutputUUID(String.valueOf(UUID.randomUUID()));
-        output.setTransactionId(transaction.getTransactionUUID());
         output.setReciepient(minerPublicKey);
         output.setValue(award);
 
