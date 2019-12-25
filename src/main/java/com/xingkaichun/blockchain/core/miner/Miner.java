@@ -446,7 +446,7 @@ public class Miner {
     }
     //endregion
 
-    //region 区块构建、区块hash计算、校验区块Hash的正确性
+    //region 构建区块、计算区块hash、校验区块Nonce
     /**
      * 构建缺少nonce(代表尚未被挖矿)的区块
      */
