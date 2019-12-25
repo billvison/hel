@@ -103,7 +103,7 @@ public class Miner {
             throw new BlockChainCoreException("区块校验失败：区块不能为null。");
         }
         //校验挖矿[区块本身的数据]是否正确
-        boolean minerSuccess = isMinedBlockSuccess(blockChainCore,block);
+        boolean minerSuccess = isBlockMinedNonceSuccess(blockChainCore,block);
         if(!minerSuccess){
             return false;
         }
@@ -472,9 +472,9 @@ public class Miner {
         return CipherUtil.applySha256(block.getPreviousHash() + block.getNonce() + block.getMerkleRoot());
     }
     /**
-     * 判断Block的挖矿Hash是否正确
+     * 判断Block的挖矿的成果Nonce是否正确
      */
-    public boolean isMinedBlockSuccess(BlockChainCore blockChainCore, Block block){
+    public boolean isBlockMinedNonceSuccess(BlockChainCore blockChainCore, Block block){
         //校验markettree
         String merkleRoot = MerkleUtils.getMerkleRoot(block.getTransactions());
         if(!merkleRoot.equals(block.getMerkleRoot())){
