@@ -478,8 +478,6 @@ public class Miner {
             nonNonceBlock.setPreviousHash(tailBlock.getHash());
             nonNonceBlock.setTransactions(packingTransactionList);
         }
-        String merkleRoot = calculateBlockMerkleRoot(nonNonceBlock);
-        nonNonceBlock.setMerkleRoot(merkleRoot);
         return nonNonceBlock;
     }
     /**
@@ -487,7 +485,8 @@ public class Miner {
      * @param block 区块
      */
     public String calculateBlockHash(Block block) {
-        return CipherUtil.applySha256(block.getPreviousHash() + block.getNonce() + block.getMerkleRoot());
+        String merkleRoot = calculateBlockMerkleRoot(block);
+        return CipherUtil.applySha256(block.getBlockHeight() + block.getNonce() + block.getPreviousHash() + merkleRoot);
     }
     /**
      * 计算区块的默克尔树根值
@@ -501,11 +500,6 @@ public class Miner {
      * 判断Block的挖矿的成果Nonce是否正确
      */
     public boolean isBlockMinedNonceSuccess(BlockChainCore blockChainCore, Block block){
-        //校验markettree
-        String merkleRoot = calculateBlockMerkleRoot(block);
-        if(!merkleRoot.equals(block.getMerkleRoot())){
-            return false;
-        }
         //校验挖矿难度是否正确
         String hash = calculateBlockHash(block);
         if(!hash.equals(block.getHash())){

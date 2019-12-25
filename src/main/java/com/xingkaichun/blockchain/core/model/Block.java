@@ -2,7 +2,6 @@ package com.xingkaichun.blockchain.core.model;
 
 
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
-import com.xingkaichun.blockchain.core.utils.MerkleUtils;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -24,7 +23,5 @@ public class Block implements Serializable {
     private String previousHash;
     //区块里的交易
     private List<Transaction> transactions;
-    //默克尔树根
-    private String merkleRoot;
 
 }
