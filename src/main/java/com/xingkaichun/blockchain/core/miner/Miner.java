@@ -451,16 +451,20 @@ public class Miner {
      * 构建缺少nonce(代表尚未被挖矿)的区块
      */
     public Block buildNonNonceBlock(BlockChainCore blockChainCore, List<Transaction> packingTransactionList) throws Exception {
-        Block lastBlock = blockChainCore.findTailBlock();
-        int blockHeight = lastBlock==null ? BlockChainCoreConstants.FIRST_BLOCK_HEIGHT : lastBlock.getBlockHeight()+1;
+        Block tailBlock = blockChainCore.findTailBlock();
+        int blockHeight = tailBlock==null ? BlockChainCoreConstants.FIRST_BLOCK_HEIGHT : tailBlock.getBlockHeight()+1;
         Transaction mineAwardTransaction =  buildMineAwardTransaction(blockChainCore,blockHeight,packingTransactionList);
         //将奖励交易加入待打包列表
         packingTransactionList.add(mineAwardTransaction);
-        Block packingBlock = null;
-        if(lastBlock==null){
-            packingBlock = new Block(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT, BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH, packingTransactionList);
+        Block packingBlock = new Block();
+        if(tailBlock == null){
+            packingBlock.setBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
+            packingBlock.setPreviousHash(BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH);
+            packingBlock.setTransactions(packingTransactionList);
         } else {
-            packingBlock = new Block(lastBlock.getBlockHeight()+1, lastBlock.getHash(),packingTransactionList);
+            packingBlock.setBlockHeight(tailBlock.getBlockHeight()+1);
+            packingBlock.setPreviousHash(tailBlock.getHash());
+            packingBlock.setTransactions(packingTransactionList);
         }
         String merkleRoot = calculateBlockMerkleRoot(packingBlock);
         packingBlock.setMerkleRoot(merkleRoot);
