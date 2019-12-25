@@ -8,9 +8,9 @@ import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.blockchain.core.utils.BlockUtils;
 import com.xingkaichun.blockchain.core.utils.MerkleUtils;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
+import com.xingkaichun.blockchain.core.utils.atomic.CipherUtil;
 import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
 
 import java.math.BigDecimal;
@@ -406,7 +406,7 @@ public class Miner {
     //endregion
 
 
-    //region 挖矿难度相关
+    //region 挖矿Hash相关
     /**
      * hash的难度是difficulty吗？
      * @param hash hash
@@ -444,6 +444,14 @@ public class Miner {
     public static String getTargetMineDificultyString(int targetDifficulty) {
         return new String(new char[targetDifficulty]).replace('\0', '0');
     }
+
+    /**
+     * 计算区块的Hash值
+     * @param block 区块
+     */
+    public String calculateBlockHash(Block block) {
+        return CipherUtil.applySha256(block.getPreviousHash() + block.getNonce() + block.getMerkleRoot());
+    }
     //endregion
 
     //region 区块相关
@@ -474,7 +482,7 @@ public class Miner {
             return false;
         }
         //校验挖矿难度是否正确
-        String hash = BlockUtils.calculateHash(block);
+        String hash = calculateBlockHash(block);
         if(!hash.equals(block.getHash())){
             return false;
         }
@@ -508,7 +516,7 @@ public class Miner {
         //创建打包区块
         Block packingBlock = buildNonNonceBlock(blockChainCore,packingTransactionList);
         int difficulty = mineDifficulty.difficulty(blockChainCore, packingBlock);
-        packingBlock.setHash(BlockUtils.calculateHash(packingBlock));
+        packingBlock.setHash(calculateBlockHash(packingBlock));
         String targetMineDificultyString = getTargetMineDificultyString(difficulty);
         while (!isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(packingBlock.getHash(),difficulty))) {
             //中断挖矿
@@ -519,7 +527,7 @@ public class Miner {
                 }
             }
             packingBlock.setNonce((packingBlock.getNonce()+1));
-            packingBlock.setHash(BlockUtils.calculateHash(packingBlock));
+            packingBlock.setHash(calculateBlockHash(packingBlock));
         }
         System.out.println("Block Mined!!! : " + packingBlock.getHash());
         return packingBlock;
