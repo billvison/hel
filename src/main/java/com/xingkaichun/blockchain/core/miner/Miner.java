@@ -397,10 +397,16 @@ public class Miner {
      * @param packingTransactionList
      */
     public Transaction buildMineAwardTransaction(BlockChainCore blockChainCore, int blockHeight, List<Transaction> packingTransactionList) {
+        Transaction transaction = new Transaction();
+        transaction.setTransactionUUID(String.valueOf(UUID.randomUUID()));
+        transaction.setTransactionType(TransactionType.MINER);
+        transaction.setInputs(null);
+
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
-        Transaction transaction = new Transaction(TransactionType.MINER,null,outputs);
         BigDecimal award = mineAward.mineAward(blockChainCore,blockHeight,packingTransactionList);
         outputs.add(new TransactionOutput(this.minerPublicKey,award,transaction.getTransactionUUID()));
+        transaction.setOutputs(outputs);
+
         return transaction;
     }
     //endregion
