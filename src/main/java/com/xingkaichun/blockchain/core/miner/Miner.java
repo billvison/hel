@@ -456,19 +456,19 @@ public class Miner {
         Transaction mineAwardTransaction =  buildMineAwardTransaction(blockChainCore,blockHeight,packingTransactionList);
         //将奖励交易加入待打包列表
         packingTransactionList.add(mineAwardTransaction);
-        Block packingBlock = new Block();
+        Block nonNonceBlock = new Block();
         if(tailBlock == null){
-            packingBlock.setBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
-            packingBlock.setPreviousHash(BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH);
-            packingBlock.setTransactions(packingTransactionList);
+            nonNonceBlock.setBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
+            nonNonceBlock.setPreviousHash(BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH);
+            nonNonceBlock.setTransactions(packingTransactionList);
         } else {
-            packingBlock.setBlockHeight(tailBlock.getBlockHeight()+1);
-            packingBlock.setPreviousHash(tailBlock.getHash());
-            packingBlock.setTransactions(packingTransactionList);
+            nonNonceBlock.setBlockHeight(tailBlock.getBlockHeight()+1);
+            nonNonceBlock.setPreviousHash(tailBlock.getHash());
+            nonNonceBlock.setTransactions(packingTransactionList);
         }
-        String merkleRoot = calculateBlockMerkleRoot(packingBlock);
-        packingBlock.setMerkleRoot(merkleRoot);
-        return packingBlock;
+        String merkleRoot = calculateBlockMerkleRoot(nonNonceBlock);
+        nonNonceBlock.setMerkleRoot(merkleRoot);
+        return nonNonceBlock;
     }
     /**
      * 计算区块的Hash值
