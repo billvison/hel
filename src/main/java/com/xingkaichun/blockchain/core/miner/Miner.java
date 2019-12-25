@@ -457,12 +457,13 @@ public class Miner {
         //将奖励交易加入待打包列表
         packingTransactionList.add(mineAwardTransaction);
         Block packingBlock = null;
-        String merkleRoot = MerkleUtils.getMerkleRoot(packingTransactionList);
         if(lastBlock==null){
-            packingBlock = new Block(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT, BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH, packingTransactionList,merkleRoot);
+            packingBlock = new Block(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT, BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH, packingTransactionList);
         } else {
-            packingBlock = new Block(lastBlock.getBlockHeight()+1, lastBlock.getHash(),packingTransactionList,merkleRoot);
+            packingBlock = new Block(lastBlock.getBlockHeight()+1, lastBlock.getHash(),packingTransactionList);
         }
+        String merkleRoot = calculateBlockMerkleRoot(packingBlock);
+        packingBlock.setMerkleRoot(merkleRoot);
         return packingBlock;
     }
     /**
@@ -473,11 +474,19 @@ public class Miner {
         return CipherUtil.applySha256(block.getPreviousHash() + block.getNonce() + block.getMerkleRoot());
     }
     /**
+     * 计算区块的默克尔树根值
+     * @param block 区块
+     */
+    public String calculateBlockMerkleRoot(Block block) {
+        List<Transaction> transactionList = block.getTransactions();
+        return MerkleUtils.getMerkleRoot(transactionList);
+    }
+    /**
      * 判断Block的挖矿的成果Nonce是否正确
      */
     public boolean isBlockMinedNonceSuccess(BlockChainCore blockChainCore, Block block){
         //校验markettree
-        String merkleRoot = MerkleUtils.getMerkleRoot(block.getTransactions());
+        String merkleRoot = calculateBlockMerkleRoot(block);
         if(!merkleRoot.equals(block.getMerkleRoot())){
             return false;
         }
