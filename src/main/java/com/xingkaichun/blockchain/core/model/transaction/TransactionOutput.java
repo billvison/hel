@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.UUID;
 
 /**
  * 交易输出
@@ -22,13 +21,5 @@ public class TransactionOutput implements Serializable {
     private PublicKeyString reciepient;
     //交易输出的金额
     private BigDecimal value;
-
-
-    public TransactionOutput(PublicKeyString reciepient, BigDecimal value, String transactionId) {
-        this.transactionId = transactionId;
-        this.transactionOutputUUID = String.valueOf(UUID.randomUUID());
-        this.reciepient = reciepient;
-        this.value = value;
-    }
 
 }

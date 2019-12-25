@@ -404,7 +404,14 @@ public class Miner {
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
         BigDecimal award = mineAward.mineAward(blockChainCore,blockHeight,packingTransactionList);
-        outputs.add(new TransactionOutput(this.minerPublicKey,award,transaction.getTransactionUUID()));
+
+        TransactionOutput output = new TransactionOutput();
+        output.setTransactionOutputUUID(String.valueOf(UUID.randomUUID()));
+        output.setTransactionId(transaction.getTransactionUUID());
+        output.setReciepient(minerPublicKey);
+        output.setValue(award);
+
+        outputs.add(output);
         transaction.setOutputs(outputs);
 
         return transaction;
