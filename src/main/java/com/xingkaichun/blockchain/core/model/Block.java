@@ -26,12 +26,11 @@ public class Block implements Serializable {
     //默克尔树根
     private String merkleRoot;
 
-    public Block(int blockHeight, String previousHash, List<Transaction> transactions) {
+    public Block(int blockHeight, String previousHash, List<Transaction> transactions,String merkleRoot) {
         this.blockHeight = blockHeight;
         this.previousHash = previousHash;
         this.transactions = transactions;
-        //计算默克尔树根
-        this.merkleRoot = MerkleUtils.getMerkleRoot(transactions);
+        this.merkleRoot = merkleRoot;
     }
 
 }

@@ -457,10 +457,11 @@ public class Miner {
         //将奖励交易加入待打包列表
         packingTransactionList.add(mineAwardTransaction);
         Block packingBlock = null;
+        String merkleRoot = MerkleUtils.getMerkleRoot(packingTransactionList);
         if(lastBlock==null){
-            packingBlock = new Block(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT, BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH, packingTransactionList);
+            packingBlock = new Block(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT, BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH, packingTransactionList,merkleRoot);
         } else {
-            packingBlock = new Block(lastBlock.getBlockHeight()+1, lastBlock.getHash(),packingTransactionList);
+            packingBlock = new Block(lastBlock.getBlockHeight()+1, lastBlock.getHash(),packingTransactionList,merkleRoot);
         }
         return packingBlock;
     }
