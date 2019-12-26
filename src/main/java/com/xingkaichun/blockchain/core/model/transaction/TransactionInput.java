@@ -9,6 +9,7 @@ import java.io.Serializable;
  */
 @Data
 public class TransactionInput implements Serializable {
+
     //交易的输入是一笔交易的输出
     private TransactionOutput utxo;
 }
