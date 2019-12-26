@@ -13,14 +13,16 @@ import java.util.List;
 @Data
 public class Block implements Serializable {
 
+    //上一个区块的哈希
+    private String previousHash;
     //区块高度
     private int blockHeight;
     //区块随机数
     private int nonce;
+    //默克尔树根
+    private String merkleRoot;
     //区块哈希
     private String hash;
-    //上一个区块哈希
-    private String previousHash;
     //区块里的交易
     private List<Transaction> transactions;
 

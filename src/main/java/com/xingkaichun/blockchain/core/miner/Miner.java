@@ -500,7 +500,12 @@ public class Miner {
      * 判断Block的挖矿的成果Nonce是否正确
      */
     public boolean isBlockMinedNonceSuccess(BlockChainCore blockChainCore, Block block){
-        //校验挖矿难度是否正确
+        //校验区块写入的MerkleRoot是否正确
+        String merkleRoot = calculateBlockMerkleRoot(block);
+        if(!merkleRoot.equals(block.getMerkleRoot())){
+            return false;
+        }
+        //校验区块写入的挖矿是否正确
         String hash = calculateBlockHash(block);
         if(!hash.equals(block.getHash())){
             return false;
