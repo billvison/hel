@@ -77,11 +77,14 @@ public class BlockChainCore {
     public boolean addBlock(Block block, boolean checkBlock, boolean notifyBlockChainActionListener) throws Exception {
         lock.lock();
         try{
-            //区块数据的校验
-            if(!miner.isBlockApplyToBlockChain(this, block)){
-                System.out.println("区块链上新增的区块数据不合法。请检测区块。");
-                return false;
+            if(checkBlock){
+                //区块数据的校验
+                if(!miner.isBlockApplyToBlockChain(this, block)){
+                    System.out.println("区块链上新增的区块数据不合法。请检测区块。");
+                    return false;
+                }
             }
+
             WriteBatch writeBatch = createWriteBatch(block,BlockChainActionEnum.ADD_BLOCK);
             LevelDBUtil.put(blockChainDB,writeBatch);
 
