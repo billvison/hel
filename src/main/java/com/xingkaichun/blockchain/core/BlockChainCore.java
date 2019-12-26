@@ -74,7 +74,7 @@ public class BlockChainCore {
     /**
      * 区块链新增区块
      */
-    public boolean addBlock(Block block) throws Exception {
+    public boolean addBlock(Block block, boolean checkBlock, boolean notifyBlockChainActionListener) throws Exception {
         lock.lock();
         try{
             //区块数据的校验
@@ -85,7 +85,9 @@ public class BlockChainCore {
             WriteBatch writeBatch = createWriteBatch(block,BlockChainActionEnum.ADD_BLOCK);
             LevelDBUtil.put(blockChainDB,writeBatch);
 
-            notifyBlockChainActionListener(createBlockChainActionDataList(block, BlockChainActionEnum.ADD_BLOCK));
+            if(notifyBlockChainActionListener){
+                notifyBlockChainActionListener(createBlockChainActionDataList(block, BlockChainActionEnum.ADD_BLOCK));
+            }
             return true;
         }finally {
             lock.unlock();
@@ -95,7 +97,7 @@ public class BlockChainCore {
     /**
      * 删除区块链的尾巴[最后一个]区块
      */
-    public Block removeTailBlock() throws Exception {
+    public Block removeTailBlock(boolean notifyBlockChainActionListener) throws Exception {
         lock.lock();
         try{
             Block tailBlock = findTailBlock();
@@ -114,15 +116,16 @@ public class BlockChainCore {
     /**
      * 回滚老的区块，并新增区块
      */
-    public boolean replaceBlocks(List<Block> addBlockList) throws Exception {
+    public boolean replaceBlocks(List<Block> addBlockList, boolean checkBlock, boolean notifyBlockChainActionListener) throws Exception {
         lock.lock();
         try{
-            //区块数据的校验
-            if(!miner.isBlockListApplyToBlockChain(this, addBlockList)){
-                System.out.println("区块链上新增的区块数据不合法。请检测区块。");
-                return false;
+            if(checkBlock){
+                //区块数据的校验
+                if(!miner.isBlockListApplyToBlockChain(this, addBlockList)){
+                    System.out.println("区块链上新增的区块数据不合法。请检测区块。");
+                    return false;
+                }
             }
-
             //用于记录数据库操作
             WriteBatch writeBatch = new WriteBatchImpl();
             //区块链上将被删掉的区块

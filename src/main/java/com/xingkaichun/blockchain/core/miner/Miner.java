@@ -318,14 +318,14 @@ public class Miner {
                     return false;
                 }
                 while (blockchainTailBlock.getBlockHeight() >= headBlockHeight){
-                    Block removeTailBlock = blockChainCore.removeTailBlock();
+                    Block removeTailBlock = blockChainCore.removeTailBlock(false);
                     changeDeleteBlockList.add(removeTailBlock);
                     blockchainTailBlock = blockChainCore.findTailBlock();
                 }
             }
 
             for(Block block:blockList){
-                boolean isBlockApplyToBlockChain = blockChainCore.addBlock(block);
+                boolean isBlockApplyToBlockChain = blockChainCore.addBlock(block,true,false);
                 if(isBlockApplyToBlockChain){
                     changeAddBlockList.add(block);
                 }else{
@@ -340,12 +340,12 @@ public class Miner {
             if(!success){
                 if(changeAddBlockList.size() != 0){
                     for (int i=changeAddBlockList.size(); i>=0; i--){
-                        blockChainCore.removeTailBlock();
+                        blockChainCore.removeTailBlock(false);
                     }
                 }
                 if(changeDeleteBlockList.size()!= 0){
                     for (int i=changeDeleteBlockList.size(); i>=0; i--){
-                        blockChainCore.addBlock(changeAddBlockList.get(i));
+                        blockChainCore.addBlock(changeAddBlockList.get(i),true,false);
                     }
                 }
                 return false;
@@ -568,7 +568,7 @@ public class Miner {
                 while (true){
                     Block mineBlock = mineBlock(blockChainCore,nonPersistenceToBlockChainTransactionPool.getTransactionList());
                     if(mineBlock != null){
-                        blockChainCore.addBlock(mineBlock);
+                        blockChainCore.addBlock(mineBlock,true,true);
                     }
                     Thread.sleep(5*60*1000);
                 }
