@@ -356,20 +356,6 @@ public class BlockChainCore {
     }
 
     /**
-     * 根据TXO ID判断TXO是UTXO吗？
-     * @param transactionOutputId 交易输出ID
-     */
-    public boolean isUTXO(String transactionOutputId) throws Exception {
-        lock.lock();
-        try{
-            TransactionOutput transactionOutput = findUtxoByUtxoUuid(transactionOutputId);
-            return transactionOutput!=null;
-        }finally {
-            lock.unlock();
-        }
-    }
-
-    /**
      * 交易是否已经存在于区块链之中？
      * @param transactionUUID 交易ID
      */

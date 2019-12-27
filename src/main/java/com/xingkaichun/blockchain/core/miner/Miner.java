@@ -238,7 +238,7 @@ public class Miner {
                 if(i.getUtxo() == null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入UTXO不能为空。不合法的交易。");
                 }
-                if(!blockChainCore.isUTXO(i.getUtxo().getTransactionOutputUUID())){
+                if(blockChainCore.findUtxoByUtxoUuid(i.getUtxo().getTransactionOutputUUID())!=null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入不是UTXO。不合法的交易。");
                 }
             }
