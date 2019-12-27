@@ -109,7 +109,9 @@ public class BlockChainCore {
             }
             WriteBatch writeBatch = createWriteBatch(tailBlock,BlockChainActionEnum.DELETE_BLOCK);
             LevelDBUtil.put(blockChainDB,writeBatch);
-            notifyBlockChainActionListener(createBlockChainActionDataList(tailBlock,BlockChainActionEnum.DELETE_BLOCK));
+            if(notifyBlockChainActionListener){
+                notifyBlockChainActionListener(createBlockChainActionDataList(tailBlock,BlockChainActionEnum.DELETE_BLOCK));
+            }
             return tailBlock;
         }finally {
             lock.unlock();
@@ -157,7 +159,9 @@ public class BlockChainCore {
 
             LevelDBUtil.put(blockChainDB,writeBatch);
 
-            notifyBlockChainActionListener(createBlockChainActionDataList(deleteBlockList,BlockChainActionEnum.DELETE_BLOCK,addBlockList,BlockChainActionEnum.ADD_BLOCK));
+            if(notifyBlockChainActionListener){
+                notifyBlockChainActionListener(createBlockChainActionDataList(deleteBlockList,BlockChainActionEnum.DELETE_BLOCK,addBlockList,BlockChainActionEnum.ADD_BLOCK));
+            }
             return true;
         }finally {
             lock.unlock();
