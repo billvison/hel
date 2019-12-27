@@ -34,14 +34,16 @@ public class BlockChainCore {
     //矿工
     private Miner miner;
 
-    //区块头标识
+    //区块标识
     private final static String BLOCK_HEIGHT_FLAG = "B_H_F_";
-    //交易头标识
+    //交易标识
     private final static String TRANSACTION_UUID_FLAG = "T_U_F_";
-    //交易输出头标识
+    //交易输出标识
     private final static String TRANSACTION_OUTPUT_UUID_FLAG = "T_O_U_F";
-    //UTXO头标识
+    //UTXO标识
     private final static String UNSPEND_TRANSACTION_OUPUT_UUID_FLAG = "U_T_O_U_F";
+    //UUID标识
+    private final static String UUID_FLAG = "U_";
 
     //监听区块链上区块的增删动作
     private List<BlockChainActionListener> blockChainActionListenerList = new ArrayList<>();
@@ -183,6 +185,9 @@ public class BlockChainCore {
     private String addBlockHeightPrefix(int blockHeight) {
         return BLOCK_HEIGHT_FLAG + blockHeight;
     }
+    private String addUuidPrefix(String uuid) {
+        return UUID_FLAG + uuid;
+    }
     //endregion
 
     //region 拼装WriteBatch
@@ -218,11 +223,15 @@ public class BlockChainCore {
             List<Transaction> packingTransactionList = block.getTransactions();
             if(packingTransactionList!=null){
                 for(Transaction transaction:packingTransactionList){
+                    //UUID数据
+                    byte[] uuidKey = LevelDBUtil.stringToBytes(addUuidPrefix(transaction.getTransactionUUID()));
                     //更新交易数据
                     byte[] transactionUuidKey = LevelDBUtil.stringToBytes(addTransactionUuidPrefix(transaction.getTransactionUUID()));
                     if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
+                        writeBatch.put(uuidKey, uuidKey);
                         writeBatch.put(transactionUuidKey, EncodeDecode.encode(transaction));
                     } else {
+                        writeBatch.delete(uuidKey);
                         writeBatch.delete(transactionUuidKey);
                     }
                     ArrayList<TransactionInput> inputs = transaction.getInputs();
@@ -240,14 +249,18 @@ public class BlockChainCore {
                     ArrayList<TransactionOutput> outputs = transaction.getOutputs();
                     if(outputs!=null){
                         for(TransactionOutput output:outputs){
+                            //UUID数据
+                            byte[] uuidKey2 = LevelDBUtil.stringToBytes(addUuidPrefix(output.getTransactionOutputUUID()));
                             //更新所有的交易输出
                             byte[] transactionOutputUuidKey = LevelDBUtil.stringToBytes(addTransactionOutputPrefix(output.getTransactionOutputUUID()));
                             //更新UTXO数据
                             byte[] unspendTransactionOutputUuidKey = LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID()));
                             if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
+                                writeBatch.put(uuidKey2, uuidKey2);
                                 writeBatch.put(transactionOutputUuidKey, EncodeDecode.encode(output));
                                 writeBatch.put(unspendTransactionOutputUuidKey, EncodeDecode.encode(output));
                             } else {
+                                writeBatch.delete(uuidKey2);
                                 writeBatch.delete(transactionOutputUuidKey);
                                 writeBatch.delete(unspendTransactionOutputUuidKey);
                             }
@@ -406,4 +419,9 @@ public class BlockChainCore {
         return dataList;
     }
     //endregion
+
+    public boolean isUuidUsed(){
+        //TODO
+        return false;
+    }
 }

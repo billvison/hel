@@ -12,6 +12,7 @@ import com.xingkaichun.blockchain.core.utils.MerkleUtils;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.CipherUtil;
 import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
+import com.xingkaichun.blockchain.core.utils.atomic.UuidUtil;
 
 import java.math.BigDecimal;
 import java.security.spec.InvalidKeySpecException;
@@ -140,6 +141,10 @@ public class Miner {
         for(Transaction tx : block.getTransactions()){
             String transactionUUID = tx.getTransactionUUID();
             //region 校验交易ID的唯一性
+            //校验交易ID的格式
+            if(!UuidUtil.isValidUUID(transactionUUID)){
+                return false;
+            }
             //校验交易ID的唯一性:之前的区块没用过这个UUID
             if(!blockChainCore.isTransactionExist(transactionUUID)){
                 throw new BlockChainCoreException("区块数据异常，交易的id在之前的区块中已经被使用了。");
@@ -168,8 +173,12 @@ public class Miner {
                 if(outputs.size() != 1){
                     throw new BlockChainCoreException("交易校验失败：挖矿交易的输出有且只能有一笔。不合法的交易。");
                 }
+                //TODO 校验UUID
                 TransactionOutput transactionOutput = tx.getOutputs().get(0);
                 String unspendTransactionOutputUUID = transactionOutput.getTransactionOutputUUID();
+                if(!UuidUtil.isValidUUID(unspendTransactionOutputUUID)){
+                    return false;
+                }
                 if(unspendTransactionOutputUUIDSet.contains(unspendTransactionOutputUUID)){
                     throw new BlockChainCoreException("区块数据异常，即将产生的UTXO UUID在区块中使用了两次或者两次以上。");
                 } else {
@@ -188,6 +197,9 @@ public class Miner {
                 ArrayList<TransactionOutput> outputs = tx.getOutputs();
                 for(TransactionOutput transactionOutput:outputs){
                     String unspendTransactionOutputUUID = transactionOutput.getTransactionOutputUUID();
+                    if(!UuidUtil.isValidUUID(unspendTransactionOutputUUID)){
+                        return false;
+                    }
                     if(unspendTransactionOutputUUIDSet.contains(unspendTransactionOutputUUID)){
                         throw new BlockChainCoreException("区块数据异常，即将产生的UTXO UUID在区块中使用了两次或者两次以上。");
                     } else {
