@@ -10,6 +10,7 @@ import java.util.List;
  * 默克尔树工具类
  */
 public class MerkleUtils {
+    //TODO 轻钱包验证
     public static String getMerkleRoot(List<Transaction> transactions) {
         if(transactions==null || transactions.size()==0){
             return "";

@@ -493,6 +493,8 @@ public class Miner {
             nonNonceBlock.setPreviousHash(tailBlock.getHash());
             nonNonceBlock.setTransactions(packingTransactionList);
         }
+        String merkleRoot = calculateBlockMerkleRoot(nonNonceBlock);
+        nonNonceBlock.setMerkleRoot(merkleRoot);
         return nonNonceBlock;
     }
     /**
