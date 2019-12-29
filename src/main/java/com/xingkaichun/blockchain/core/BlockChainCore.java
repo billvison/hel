@@ -358,11 +358,11 @@ public class BlockChainCore {
     public Transaction findTransactionByTransactionUuid(String transactionUUID) throws Exception {
         lock.lock();
         try{
-            byte[] byteTransaction = LevelDBUtil.get(blockChainDB, addTransactionUuidPrefix(transactionUUID));
-            if(byteTransaction==null){
+            byte[] bytesTransaction = LevelDBUtil.get(blockChainDB, addTransactionUuidPrefix(transactionUUID));
+            if(bytesTransaction==null){
                 return null;
             }
-            return EncodeDecode.decodeToTransaction(byteTransaction);
+            return EncodeDecode.decodeToTransaction(bytesTransaction);
         }finally {
             lock.unlock();
         }
