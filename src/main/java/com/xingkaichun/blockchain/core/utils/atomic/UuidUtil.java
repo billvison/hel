@@ -12,12 +12,9 @@ public class UuidUtil {
     private static final Pattern UUID_PATTERN = Pattern.compile("[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}");
 
     /**
-     * 判断一个字符串是否是有效的UUID
-     *
-     * @param uuid
-     * @return
+     * 判断一个字符串是否是格式正确的UUID
      */
-    public static boolean isValidUUID(String uuid) {
+    public static boolean isUuidFormatRight(String uuid) {
         Matcher matcher = UUID_PATTERN.matcher(uuid);
         return matcher.matches();
     }

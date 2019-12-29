@@ -381,6 +381,14 @@ public class BlockChainCore {
             lock.unlock();
         }
     }
+    /**
+     * UUID是否已经存在于区块链之中？
+     * @param uuid uuid
+     */
+    public boolean isUuidExist(String uuid){
+        byte[] bytesUuid = LevelDBUtil.get(blockChainDB,addUuidPrefix(uuid));
+        return bytesUuid != null;
+    }
     //endregion
 
     //region 监听器
@@ -419,9 +427,4 @@ public class BlockChainCore {
         return dataList;
     }
     //endregion
-
-    public boolean isUuidUsed(){
-        //TODO
-        return false;
-    }
 }

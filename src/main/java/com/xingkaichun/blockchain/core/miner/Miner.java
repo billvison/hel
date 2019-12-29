@@ -103,11 +103,6 @@ public class Miner {
         if(block==null){
             throw new BlockChainCoreException("区块校验失败：区块不能为null。");
         }
-        //校验挖矿[区块本身的数据]是否正确
-        boolean minerSuccess = isBlockMinedNonceSuccess(blockChainCore,block);
-        if(!minerSuccess){
-            return false;
-        }
         //校验区块的连贯性
         Block tailBlock = blockChainCore.findTailBlock();
         if(tailBlock == null){
@@ -129,37 +124,32 @@ public class Miner {
                 return false;
             }
         }
+        //校验挖矿[区块本身的数据]是否正确
+        boolean minerSuccess = isBlockMinedNonceSuccess(blockChainCore,block);
+        if(!minerSuccess){
+            return false;
+        }
         //区块角度检测区块的数据的安全性
         //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
         Set<String> transactionOutputUUIDSet = new HashSet<>();
         //校验即将产生UTXO UUID的唯一性
         Set<String> unspendTransactionOutputUUIDSet = new HashSet<>();
-        //校验交易UUID的唯一性
-        Set<String> transactionUUIDSet = new HashSet<>();
-        //一个区块只能有一笔挖矿奖励交易
-        int minerTransactionTimes = 0;
+        //挖矿交易笔数，一个区块有且只能有一笔挖矿奖励交易
+        int minerTransactionNumber = 0;
         for(Transaction tx : block.getTransactions()){
             String transactionUUID = tx.getTransactionUUID();
             //region 校验交易ID的唯一性
             //校验交易ID的格式
-            if(!UuidUtil.isValidUUID(transactionUUID)){
-                return false;
-            }
             //校验交易ID的唯一性:之前的区块没用过这个UUID
-            if(!blockChainCore.isTransactionExist(transactionUUID)){
-                throw new BlockChainCoreException("区块数据异常，交易的id在之前的区块中已经被使用了。");
-            }
             //校验交易ID的唯一性:本次校验的区块没有使用这个UUID两次或两次以上
-            if(transactionUUIDSet.contains(transactionUUID)){
-                throw new BlockChainCoreException("区块数据异常，交易的id在本次校验的区块中使用了两次或者两次以上。");
-            } else {
-                transactionUUIDSet.add(transactionUUID);
+            if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(blockChainCore,unspendTransactionOutputUUIDSet,transactionUUID)){
+                return false;
             }
             //endregion
             if(tx.getTransactionType() == TransactionType.MINER){
-                minerTransactionTimes++;
+                minerTransactionNumber++;
                 //有多个挖矿交易
-                if(minerTransactionTimes>1){
+                if(minerTransactionNumber>1){
                     throw new BlockChainCoreException("区块数据异常，一个区块只能有一笔挖矿奖励。");
                 }
                 ArrayList<TransactionInput> inputs = tx.getInputs();
@@ -173,16 +163,10 @@ public class Miner {
                 if(outputs.size() != 1){
                     throw new BlockChainCoreException("交易校验失败：挖矿交易的输出有且只能有一笔。不合法的交易。");
                 }
-                //TODO 校验UUID
                 TransactionOutput transactionOutput = tx.getOutputs().get(0);
                 String unspendTransactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                if(!UuidUtil.isValidUUID(unspendTransactionOutputUUID)){
+                if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(blockChainCore,unspendTransactionOutputUUIDSet,unspendTransactionOutputUUID)){
                     return false;
-                }
-                if(unspendTransactionOutputUUIDSet.contains(unspendTransactionOutputUUID)){
-                    throw new BlockChainCoreException("区块数据异常，即将产生的UTXO UUID在区块中使用了两次或者两次以上。");
-                } else {
-                    unspendTransactionOutputUUIDSet.add(unspendTransactionOutputUUID);
                 }
             } else if(tx.getTransactionType() == TransactionType.NORMAL){
                 ArrayList<TransactionInput> inputs = tx.getInputs();
@@ -197,13 +181,8 @@ public class Miner {
                 ArrayList<TransactionOutput> outputs = tx.getOutputs();
                 for(TransactionOutput transactionOutput:outputs){
                     String unspendTransactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                    if(!UuidUtil.isValidUUID(unspendTransactionOutputUUID)){
+                    if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(blockChainCore,unspendTransactionOutputUUIDSet,unspendTransactionOutputUUID)){
                         return false;
-                    }
-                    if(unspendTransactionOutputUUIDSet.contains(unspendTransactionOutputUUID)){
-                        throw new BlockChainCoreException("区块数据异常，即将产生的UTXO UUID在区块中使用了两次或者两次以上。");
-                    } else {
-                        unspendTransactionOutputUUIDSet.add(unspendTransactionOutputUUID);
                     }
                 }
             } else {
@@ -214,8 +193,32 @@ public class Miner {
                 throw new BlockChainCoreException("区块数据异常，交易异常。");
             }
         }
-        if(minerTransactionTimes == 0){
+        if(minerTransactionNumber == 0){
             throw new BlockChainCoreException("区块数据异常，没有检测到挖矿奖励交易。");
+        }
+        return true;
+    }
+
+    /**
+     * UUID格式正确，UUID没有在区块链中被使用，uuidSet包含这个uuid，则返回false，否则，将这个uuid放入uuidSet
+     * @param blockChainCore
+     * @param uuidSet
+     * @param uuid
+     * @return
+     */
+    private boolean isUuidAvailableThenAddToSetIfSetNotContainUuid(BlockChainCore blockChainCore, Set<String> uuidSet, String uuid) {
+        if(!UuidUtil.isUuidFormatRight(uuid)){
+            return false;
+        }
+        if(blockChainCore.isUuidExist(uuid)){
+//            throw new BlockChainCoreException("区块数据异常，UUID在区块链中已经被使用了。");
+            return false;
+        }
+        if(uuidSet.contains(uuid)){
+//            throw new BlockChainCoreException("区块数据异常，即将产生的UTXO UUID在区块中使用了两次或者两次以上。");
+            return false;
+        } else {
+            uuidSet.add(uuid);
         }
         return true;
     }
