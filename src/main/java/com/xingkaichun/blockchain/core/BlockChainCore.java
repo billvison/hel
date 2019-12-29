@@ -324,11 +324,11 @@ public class BlockChainCore {
             if(transactionOutputUUID==null||"".equals(transactionOutputUUID)){
                 return null;
             }
-            byte[] utxo = LevelDBUtil.get(blockChainDB, addUnspendTransactionOutputUuidPrefix(transactionOutputUUID));
-            if(utxo == null){
+            byte[] bytesUtxo = LevelDBUtil.get(blockChainDB, addUnspendTransactionOutputUuidPrefix(transactionOutputUUID));
+            if(bytesUtxo == null){
                 return null;
             }
-            return EncodeDecode.decodeToTransactionOutput(utxo);
+            return EncodeDecode.decodeToTransactionOutput(bytesUtxo);
         }finally {
             lock.unlock();
         }
@@ -341,11 +341,11 @@ public class BlockChainCore {
     public Block findBlockByBlockHeight(int blockHeight) throws Exception {
         lock.lock();
         try{
-            byte[] byteBlock = LevelDBUtil.get(blockChainDB,addBlockHeightPrefix(blockHeight));
-            if(byteBlock==null){
+            byte[] bytesBlock = LevelDBUtil.get(blockChainDB,addBlockHeightPrefix(blockHeight));
+            if(bytesBlock==null){
                 return null;
             }
-            return EncodeDecode.decodeToBlock(byteBlock);
+            return EncodeDecode.decodeToBlock(bytesBlock);
         }finally {
             lock.unlock();
         }

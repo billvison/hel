@@ -17,12 +17,12 @@ public class LevelDBUtil {
         writeOptions.snapshot(true);
     }
 
-    public static void put(DB db, String key, byte[] value) throws DBException{
-        db.put(stringToBytes(key),value);
+    public static void put(DB db, String key, byte[] bytesValue) throws DBException{
+        db.put(stringToBytes(key),bytesValue);
     }
 
-    public static void put(DB db, byte[] key, byte[] value) throws DBException{
-        db.put(key,value);
+    public static void put(DB db, byte[] bytesKey, byte[] bytesValue) throws DBException{
+        db.put(bytesKey,bytesValue);
     }
 
     public static void put(DB db,WriteBatch writeBatch) throws DBException{

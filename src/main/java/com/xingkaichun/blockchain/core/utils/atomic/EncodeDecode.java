@@ -16,12 +16,12 @@ public class EncodeDecode {
         ObjectOutputStream objectOutputStream = null;
         objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
         objectOutputStream.writeObject(transaction);
-        byte[] bytes = byteArrayOutputStream.toByteArray();
-        return bytes;
+        byte[] bytesTransaction = byteArrayOutputStream.toByteArray();
+        return bytesTransaction;
     }
 
-    public static Transaction decodeToTransaction(byte[] encode) throws Exception {
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(encode);
+    public static Transaction decodeToTransaction(byte[] bytesTransaction) throws Exception {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytesTransaction);
         ObjectInputStream objectInputStream = null;
         objectInputStream = new ObjectInputStream(byteArrayInputStream);
         Transaction transaction = (Transaction) objectInputStream.readObject();
@@ -33,12 +33,12 @@ public class EncodeDecode {
         ObjectOutputStream objectOutputStream = null;
         objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
         objectOutputStream.writeObject(transactionOutput);
-        byte[] bytes = byteArrayOutputStream.toByteArray();
-        return bytes;
+        byte[] bytesTransactionOutput = byteArrayOutputStream.toByteArray();
+        return bytesTransactionOutput;
     }
 
-    public static TransactionOutput decodeToTransactionOutput(byte[] encode) throws Exception {
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(encode);
+    public static TransactionOutput decodeToTransactionOutput(byte[] bytesTransactionOutput) throws Exception {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytesTransactionOutput);
         ObjectInputStream objectInputStream = null;
         objectInputStream = new ObjectInputStream(byteArrayInputStream);
         TransactionOutput transactionOutput = (TransactionOutput) objectInputStream.readObject();
@@ -50,12 +50,12 @@ public class EncodeDecode {
         ObjectOutputStream objectOutputStream = null;
         objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
         objectOutputStream.writeObject(block);
-        byte[] bytes = byteArrayOutputStream.toByteArray();
-        return bytes;
+        byte[] bytesBlock = byteArrayOutputStream.toByteArray();
+        return bytesBlock;
     }
 
-    public static Block decodeToBlock(byte[] encode) throws Exception{
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(encode);
+    public static Block decodeToBlock(byte[] bytesBlock) throws Exception{
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytesBlock);
         ObjectInputStream objectInputStream = null;
         objectInputStream = new ObjectInputStream(byteArrayInputStream);
         Block block = (Block) objectInputStream.readObject();

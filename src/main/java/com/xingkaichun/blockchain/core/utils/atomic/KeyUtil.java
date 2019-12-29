@@ -24,10 +24,10 @@ public class KeyUtil {
     public static PublicKey convertPublicKeyStringToPublicKey(PublicKeyString publicKeyString) {
         try {
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-            byte[] publicKeyEncode = decode(publicKeyString);
+            byte[] bytesPublicKey = decode(publicKeyString);
 
             final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
-            final X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(publicKeyEncode);
+            final X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(bytesPublicKey);
             final PublicKey pubKey = kf.generatePublic(pubKeySpec);
             return pubKey;
         }catch(Exception e) {
@@ -38,10 +38,10 @@ public class KeyUtil {
     public static PrivateKey convertPrivateKeyStringToPrivateKey(PrivateKeyString privateKeyString) {
         try {
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-            byte[] privateKeyEncode = decode(privateKeyString);
+            byte[] bytesPrivateKey = decode(privateKeyString);
 
             final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
-            final PKCS8EncodedKeySpec encPrivKeySpec = new PKCS8EncodedKeySpec(privateKeyEncode);
+            final PKCS8EncodedKeySpec encPrivKeySpec = new PKCS8EncodedKeySpec(bytesPrivateKey);
             final PrivateKey privKey = kf.generatePrivate(encPrivKeySpec);
             return privKey;
         }catch(Exception e) {
