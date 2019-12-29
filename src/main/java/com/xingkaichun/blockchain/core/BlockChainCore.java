@@ -39,9 +39,9 @@ public class BlockChainCore {
     //交易标识
     private final static String TRANSACTION_UUID_FLAG = "T_U_F_";
     //交易输出标识
-    private final static String TRANSACTION_OUTPUT_UUID_FLAG = "T_O_U_F";
+    private final static String TRANSACTION_OUTPUT_UUID_FLAG = "T_O_U_F_";
     //UTXO标识
-    private final static String UNSPEND_TRANSACTION_OUPUT_UUID_FLAG = "U_T_O_U_F";
+    private final static String UNSPEND_TRANSACTION_OUPUT_UUID_FLAG = "U_T_O_U_F_";
     //UUID标识
     private final static String UUID_FLAG = "U_";
 
