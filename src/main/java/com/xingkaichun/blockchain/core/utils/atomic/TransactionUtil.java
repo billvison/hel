@@ -21,8 +21,8 @@ public class TransactionUtil {
     public static BigDecimal getInputsValue(ArrayList<TransactionInput> inputs) {
         BigDecimal total = new BigDecimal("0");
         for(TransactionInput i : inputs) {
-            if(i.getUtxo() == null) continue; //if Transaction can't be found skip it, This behavior may not be optimal.
-            total = total.add(i.getUtxo().getValue());
+            if(i.getUnspendTransactionOutput() == null) continue; //if Transaction can't be found skip it, This behavior may not be optimal.
+            total = total.add(i.getUnspendTransactionOutput().getValue());
         }
         return total;
     }
@@ -84,7 +84,7 @@ public class TransactionUtil {
         List<String> ids = new ArrayList<>();
         if(transaction.getInputs()==null||ids.size()==0){return ids;}
         for(TransactionInput transactionInput:transaction.getInputs()){
-            ids.add(transactionInput.getUtxo().getTransactionOutputUUID());
+            ids.add(transactionInput.getUnspendTransactionOutput().getTransactionOutputUUID());
         }
         return ids;
     }
@@ -103,14 +103,14 @@ public class TransactionUtil {
             throw new BlockChainCoreException("付款方不是同一人");
         }
         TransactionInput transactionInput = transaction.getInputs().get(0);
-        return transactionInput.getUtxo().getReciepient();
+        return transactionInput.getUnspendTransactionOutput().getReciepient();
     }
 
     public static boolean isOnlyOneSender(Transaction transaction){
         ArrayList<TransactionInput> inputs = transaction.getInputs();
         TransactionInput transactionInput = transaction.getInputs().get(0);
         for(TransactionInput input:inputs){
-            boolean eq = transactionInput.getUtxo().getReciepient().equals(input.getUtxo().getReciepient());
+            boolean eq = transactionInput.getUnspendTransactionOutput().getReciepient().equals(input.getUnspendTransactionOutput().getReciepient());
             if(!eq){
                 return false;
             }

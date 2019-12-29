@@ -238,11 +238,11 @@ public class BlockChainCore {
                     if(inputs!=null){
                         for(TransactionInput txInput:inputs){
                             //更新UTXO数据
-                            byte[] transactionOutputUuidKey = LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(txInput.getUtxo().getTransactionOutputUUID()));
+                            byte[] transactionOutputUuidKey = LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(txInput.getUnspendTransactionOutput().getTransactionOutputUUID()));
                             if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
                                 writeBatch.delete(transactionOutputUuidKey);
                             } else {
-                                writeBatch.put(transactionOutputUuidKey,EncodeDecode.encode(txInput.getUtxo()));
+                                writeBatch.put(transactionOutputUuidKey,EncodeDecode.encode(txInput.getUnspendTransactionOutput()));
                             }
                         }
                     }

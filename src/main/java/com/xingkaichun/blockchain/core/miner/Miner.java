@@ -56,7 +56,7 @@ public class Miner {
             ArrayList<TransactionInput> inputs = tx.getInputs();
             boolean multiUseOneUTXO = false;
             for(TransactionInput input:inputs){
-                String transactionOutputUUID = input.getUtxo().getTransactionOutputUUID();
+                String transactionOutputUUID = input.getUnspendTransactionOutput().getTransactionOutputUUID();
                 if(transactionOutputUUIDSet.contains(transactionOutputUUID)){
                     multiUseOneUTXO = true;
                 }
@@ -171,7 +171,7 @@ public class Miner {
             } else if(tx.getTransactionType() == TransactionType.NORMAL){
                 ArrayList<TransactionInput> inputs = tx.getInputs();
                 for(TransactionInput input:inputs){
-                    String transactionOutputUUID = input.getUtxo().getTransactionOutputUUID();
+                    String transactionOutputUUID = input.getUnspendTransactionOutput().getTransactionOutputUUID();
                     //同一个UTXO被多次使用
                     if(transactionOutputUUIDSet.contains(transactionOutputUUID)){
                         throw new BlockChainCoreException("区块数据异常，同一个UTXO在一个区块中多次使用。");
@@ -250,10 +250,10 @@ public class Miner {
                 throw new BlockChainCoreException("交易校验失败：交易的输入不能为空。不合法的交易。");
             }
             for(TransactionInput i : inputs) {
-                if(i.getUtxo() == null){
+                if(i.getUnspendTransactionOutput() == null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入UTXO不能为空。不合法的交易。");
                 }
-                if(blockChainCore.findUtxoByUtxoUuid(i.getUtxo().getTransactionOutputUUID())!=null){
+                if(blockChainCore.findUtxoByUtxoUuid(i.getUnspendTransactionOutput().getTransactionOutputUUID())!=null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入不是UTXO。不合法的交易。");
                 }
             }
@@ -263,7 +263,7 @@ public class Miner {
             //存放交易用过的UTXO
             Set<String> input_UTXO_Ids = new HashSet<>();
             for(TransactionInput i : inputs) {
-                String utxoId = i.getUtxo().getTransactionOutputUUID();
+                String utxoId = i.getUnspendTransactionOutput().getTransactionOutputUUID();
                 //校验 同一张钱不能使用两次
                 if(input_UTXO_Ids.contains(utxoId)){
                     throw new BlockChainCoreException("交易校验失败：交易的输入中同一个UTXO被多次使用。不合法的交易。");
