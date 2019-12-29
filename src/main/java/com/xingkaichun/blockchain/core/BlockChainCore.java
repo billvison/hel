@@ -43,7 +43,7 @@ public class BlockChainCore {
     //UTXO标识
     private final static String UNSPEND_TRANSACTION_OUPUT_UUID_FLAG = "U_T_O_U_F_";
     //UUID标识
-    private final static String UUID_FLAG = "U_";
+    private final static String UUID_FLAG = "U_F_";
 
     //监听区块链上区块的增删动作
     private List<BlockChainActionListener> blockChainActionListenerList = new ArrayList<>();
