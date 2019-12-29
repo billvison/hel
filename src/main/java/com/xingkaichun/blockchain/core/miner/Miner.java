@@ -58,7 +58,7 @@ public class Miner {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * 停止当前区块的挖矿，可能这个区块已经被挖出来了
      */
