@@ -40,11 +40,74 @@ public class Miner {
     //endregion
 
 
+
+    //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
+    /**
+     * 启动挖矿线程
+     */
+    public void startMining(BlockChainCore blockChainCore) throws Exception {
+        try {
+            while (true){
+                Block mineBlock = mineBlock(blockChainCore,nonPersistenceToBlockChainTransactionPool.getTransactionList());
+                if(mineBlock != null){
+                    blockChainCore.addBlock(mineBlock,true,true);
+                }
+                Thread.sleep(5*60*1000);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * 停止当前区块的挖矿，可能这个区块已经被挖出来了
+     */
+    public volatile Boolean stopCurrentBlockMining = false;
+    public boolean stopCurrentBlockMining(){
+        synchronized (stopCurrentBlockMining){
+            if(!stopCurrentBlockMining){
+                stopCurrentBlockMining = true;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 挖矿
+     */
+    public Block mineBlock(BlockChainCore blockChainCore, List<Transaction> packingTransactionList) throws Exception {
+
+        dropPackingTransactionException_PointOfView_Block(blockChainCore,packingTransactionList);
+
+        //创建打包区块
+        Block packingBlock = buildNonNonceBlock(blockChainCore,packingTransactionList);
+        int difficulty = mineDifficulty.difficulty(blockChainCore, packingBlock);
+        packingBlock.setHash(calculateBlockHash(packingBlock));
+        String targetMineDificultyString = getTargetMineDificultyString(difficulty);
+        while (!isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(packingBlock.getHash(),difficulty))) {
+            //中断挖矿
+            synchronized (stopCurrentBlockMining){
+                if(stopCurrentBlockMining){
+                    stopCurrentBlockMining = false;
+                    break;
+                }
+            }
+            packingBlock.setNonce((packingBlock.getNonce()+1));
+            packingBlock.setHash(calculateBlockHash(packingBlock));
+        }
+        System.out.println("Block Mined!!! : " + packingBlock.getHash());
+        return packingBlock;
+    }
+
+    //endregion
+
+
     /**
      * 打包处理过程: 将异常的交易丢弃掉【站在区块的角度校验交易】
      */
     private void dropPackingTransactionException_PointOfView_Block(BlockChainCore coreBlockChain, List<Transaction> packingTransactionList) throws Exception{
-        if(packingTransactionList==null||packingTransactionList.size()==0){
+        //区块中允许没有交易
+        if(packingTransactionList==null || packingTransactionList.size()==0){
             return;
         }
         dropExceptionPackingTransaction_PointOfView_Transaction(coreBlockChain,packingTransactionList);
@@ -532,67 +595,4 @@ public class Miner {
     }
     //endregion
 
-
-    //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
-    /**
-     * 停止当前区块的挖矿，可能这个区块已经被挖出来了
-     */
-    public volatile Boolean stopCurrentBlockMining = false;
-    public boolean stopCurrentBlockMining(){
-        synchronized (stopCurrentBlockMining){
-            if(!stopCurrentBlockMining){
-                stopCurrentBlockMining = true;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 挖矿
-     */
-    public Block mineBlock(BlockChainCore blockChainCore, List<Transaction> packingTransactionList) throws Exception {
-
-        dropPackingTransactionException_PointOfView_Block(blockChainCore,packingTransactionList);
-
-        //创建打包区块
-        Block packingBlock = buildNonNonceBlock(blockChainCore,packingTransactionList);
-        int difficulty = mineDifficulty.difficulty(blockChainCore, packingBlock);
-        packingBlock.setHash(calculateBlockHash(packingBlock));
-        String targetMineDificultyString = getTargetMineDificultyString(difficulty);
-        while (!isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(packingBlock.getHash(),difficulty))) {
-            //中断挖矿
-            synchronized (stopCurrentBlockMining){
-                if(stopCurrentBlockMining){
-                    stopCurrentBlockMining = false;
-                    break;
-                }
-            }
-            packingBlock.setNonce((packingBlock.getNonce()+1));
-            packingBlock.setHash(calculateBlockHash(packingBlock));
-        }
-        System.out.println("Block Mined!!! : " + packingBlock.getHash());
-        return packingBlock;
-    }
-
-
-
-    /**
-     * 启动挖矿线程
-     */
-    public void startMining(BlockChainCore blockChainCore) throws Exception {
-        new Thread(()->{
-            try {
-                while (true){
-                    Block mineBlock = mineBlock(blockChainCore,nonPersistenceToBlockChainTransactionPool.getTransactionList());
-                    if(mineBlock != null){
-                        blockChainCore.addBlock(mineBlock,true,true);
-                    }
-                    Thread.sleep(5*60*1000);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-    //endregion
 }
