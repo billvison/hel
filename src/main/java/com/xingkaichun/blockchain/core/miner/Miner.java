@@ -43,7 +43,7 @@ public class Miner {
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
     /**
-     * 启动挖矿线程
+     * 启动挖矿
      */
     public void startMining(BlockChainCore blockChainCore) throws Exception {
         try {
