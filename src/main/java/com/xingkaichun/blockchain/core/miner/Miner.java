@@ -27,12 +27,12 @@ public class Miner {
     //矿工公钥
     private PublicKeyString minerPublicKey;
     //交易池：矿工从交易池里获取挖矿的原材料(交易数据)
-    private NonPersistenceToBlockChainTransactionPool nonPersistenceToBlockChainTransactionPool;
+    private ForMinerTransactionDataBase forMinerTransactionDataBase;
     private MineDifficulty mineDifficulty;
     private MineAward mineAward;
 
-    public Miner(NonPersistenceToBlockChainTransactionPool nonPersistenceToBlockChainTransactionPool, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
-        this.nonPersistenceToBlockChainTransactionPool = nonPersistenceToBlockChainTransactionPool;
+    public Miner(ForMinerTransactionDataBase forMinerTransactionDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
+        this.forMinerTransactionDataBase = forMinerTransactionDataBase;
         this.minerPublicKey = minerPublicKey;
         this.mineDifficulty = mineDifficulty;
         this.mineAward = mineAward;
@@ -48,7 +48,7 @@ public class Miner {
     public void startMining(BlockChainDataBase blockChainDataBase) throws Exception {
         try {
             while (true){
-                Block mineBlock = mineBlock(blockChainDataBase,nonPersistenceToBlockChainTransactionPool.getTransactionList());
+                Block mineBlock = mineBlock(blockChainDataBase, forMinerTransactionDataBase.getTransactionList());
                 if(mineBlock != null){
                     blockChainDataBase.addBlock(mineBlock,true,true);
                 }

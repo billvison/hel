@@ -20,12 +20,12 @@ import java.util.Map;
  *
  *
  */
-public class NonPersistenceToBlockChainTransactionPool {
+public class ForMinerTransactionDataBase {
 
     //交易池数据库
     private DB transactionPoolDB;
 
-    public NonPersistenceToBlockChainTransactionPool(String dbPath) throws Exception {
+    public ForMinerTransactionDataBase(String dbPath) throws Exception {
 
         this.transactionPoolDB = LevelDBUtil.createDB(new File(dbPath,"TransactionPoolDB"));
 
