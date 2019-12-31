@@ -35,7 +35,8 @@ public class BlockChainDataBase {
     //region 变量
     //区块链数据库
     private DB blockChainDB;
-    //矿工
+    //矿工。为了防止新增区块时，用户的新增区块是不合法。
+    //不合法的原因可能是多个线程同时增加某一个高度的区块，也有可能是区块本身就是一个虚假
     private Miner miner;
 
     //区块标识
