@@ -1,6 +1,6 @@
 package com.xingkaichun.blockchain.core.miner;
 
-import com.xingkaichun.blockchain.core.BlockChainCore;
+import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.utils.atomic.EncodeDecode;
 import com.xingkaichun.blockchain.core.utils.atomic.LevelDBUtil;
@@ -54,7 +54,7 @@ public class NonPersistenceToBlockChainTransactionPool {
         if(isTransactionExsitInPool(combineTransactionKey)){
             return false;
         }
-        synchronized (BlockChainCore.class){
+        synchronized (BlockChainDataBase.class){
             LevelDBUtil.put(transactionPoolDB,combineTransactionKey, EncodeDecode.encode(transaction));
         }
         return true;
@@ -64,7 +64,7 @@ public class NonPersistenceToBlockChainTransactionPool {
      * 从交易池获取交易
      */
     public List<Transaction> getTransactionList() throws Exception {
-        synchronized (BlockChainCore.class){
+        synchronized (BlockChainDataBase.class){
             List<Transaction> transactionList = new ArrayList<>();
             DBIterator dbIterator = this.transactionPoolDB.iterator();
             while (dbIterator.hasNext()){

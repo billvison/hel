@@ -28,9 +28,9 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * 区块链
  */
-public class BlockChainCore {
+public class BlockChainDataBase {
 
-    private Logger logger = LoggerFactory.getLogger(BlockChainCore.class);
+    private Logger logger = LoggerFactory.getLogger(BlockChainDataBase.class);
 
     //region 变量
     //区块链数据库
@@ -62,7 +62,7 @@ public class BlockChainCore {
      * @param dbPath 区块链数据库地址
      * @param miner 矿工
      */
-    public BlockChainCore(String dbPath, Miner miner) throws Exception {
+    public BlockChainDataBase(String dbPath, Miner miner) throws Exception {
         this.blockChainDB = LevelDBUtil.createDB(new File(dbPath,"BlockChainDB"));
         this.miner = miner;
 

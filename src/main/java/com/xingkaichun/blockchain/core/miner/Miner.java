@@ -1,6 +1,6 @@
 package com.xingkaichun.blockchain.core.miner;
 
-import com.xingkaichun.blockchain.core.BlockChainCore;
+import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
@@ -45,12 +45,12 @@ public class Miner {
     /**
      * 启动挖矿
      */
-    public void startMining(BlockChainCore blockChainCore) throws Exception {
+    public void startMining(BlockChainDataBase blockChainDataBase) throws Exception {
         try {
             while (true){
-                Block mineBlock = mineBlock(blockChainCore,nonPersistenceToBlockChainTransactionPool.getTransactionList());
+                Block mineBlock = mineBlock(blockChainDataBase,nonPersistenceToBlockChainTransactionPool.getTransactionList());
                 if(mineBlock != null){
-                    blockChainCore.addBlock(mineBlock,true,true);
+                    blockChainDataBase.addBlock(mineBlock,true,true);
                 }
                 Thread.sleep(5*60*1000);
             }
@@ -75,13 +75,13 @@ public class Miner {
     /**
      * 挖矿
      */
-    public Block mineBlock(BlockChainCore blockChainCore, List<Transaction> packingTransactionList) throws Exception {
+    public Block mineBlock(BlockChainDataBase blockChainDataBase, List<Transaction> packingTransactionList) throws Exception {
 
-        dropPackingTransactionException_PointOfView_Block(blockChainCore,packingTransactionList);
+        dropPackingTransactionException_PointOfView_Block(blockChainDataBase,packingTransactionList);
 
         //创建打包区块
-        Block packingBlock = buildNonNonceBlock(blockChainCore,packingTransactionList);
-        int difficulty = mineDifficulty.difficulty(blockChainCore, packingBlock);
+        Block packingBlock = buildNonNonceBlock(blockChainDataBase,packingTransactionList);
+        int difficulty = mineDifficulty.difficulty(blockChainDataBase, packingBlock);
         packingBlock.setHash(calculateBlockHash(packingBlock));
         String targetMineDificultyString = getTargetMineDificultyString(difficulty);
         while (!isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(packingBlock.getHash(),difficulty))) {
@@ -105,7 +105,7 @@ public class Miner {
     /**
      * 打包处理过程: 将异常的交易丢弃掉【站在区块的角度校验交易】
      */
-    private void dropPackingTransactionException_PointOfView_Block(BlockChainCore coreBlockChain, List<Transaction> packingTransactionList) throws Exception{
+    private void dropPackingTransactionException_PointOfView_Block(BlockChainDataBase coreBlockChain, List<Transaction> packingTransactionList) throws Exception{
         //区块中允许没有交易
         if(packingTransactionList==null || packingTransactionList.size()==0){
             return;
@@ -135,7 +135,7 @@ public class Miner {
     /**
      * 打包处理过程: 将异常的交易丢弃掉【站在单笔交易的角度校验交易】
      */
-    private void dropExceptionPackingTransaction_PointOfView_Transaction(BlockChainCore blockchain, List<Transaction> transactionList) throws Exception{
+    private void dropExceptionPackingTransaction_PointOfView_Transaction(BlockChainDataBase blockchain, List<Transaction> transactionList) throws Exception{
         if(transactionList==null||transactionList.size()==0){
             return;
         }
@@ -162,12 +162,12 @@ public class Miner {
      * 检测区块是否可以被应用到区块链上
      * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
      */
-    public boolean isBlockApplyToBlockChain(BlockChainCore blockChainCore, Block block) throws Exception {
+    public boolean isBlockApplyToBlockChain(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
         if(block==null){
             throw new BlockChainCoreException("区块校验失败：区块不能为null。");
         }
         //校验区块的连贯性
-        Block tailBlock = blockChainCore.findTailBlock();
+        Block tailBlock = blockChainDataBase.findTailBlock();
         if(tailBlock == null){
             //校验区块Previous Hash
             if(!BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousHash())){
@@ -188,7 +188,7 @@ public class Miner {
             }
         }
         //校验挖矿[区块本身的数据]是否正确
-        boolean minerSuccess = isBlockMinedNonceSuccess(blockChainCore,block);
+        boolean minerSuccess = isBlockMinedNonceSuccess(blockChainDataBase,block);
         if(!minerSuccess){
             return false;
         }
@@ -205,7 +205,7 @@ public class Miner {
             //校验交易ID的格式
             //校验交易ID的唯一性:之前的区块没用过这个UUID
             //校验交易ID的唯一性:本次校验的区块没有使用这个UUID两次或两次以上
-            if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(blockChainCore,unspendTransactionOutputUUIDSet,transactionUUID)){
+            if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(blockChainDataBase,unspendTransactionOutputUUIDSet,transactionUUID)){
                 return false;
             }
             //endregion
@@ -228,7 +228,7 @@ public class Miner {
                 }
                 TransactionOutput transactionOutput = tx.getOutputs().get(0);
                 String unspendTransactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(blockChainCore,unspendTransactionOutputUUIDSet,unspendTransactionOutputUUID)){
+                if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(blockChainDataBase,unspendTransactionOutputUUIDSet,unspendTransactionOutputUUID)){
                     return false;
                 }
             } else if(tx.getTransactionType() == TransactionType.NORMAL){
@@ -244,14 +244,14 @@ public class Miner {
                 ArrayList<TransactionOutput> outputs = tx.getOutputs();
                 for(TransactionOutput transactionOutput:outputs){
                     String unspendTransactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                    if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(blockChainCore,unspendTransactionOutputUUIDSet,unspendTransactionOutputUUID)){
+                    if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(blockChainDataBase,unspendTransactionOutputUUIDSet,unspendTransactionOutputUUID)){
                         return false;
                     }
                 }
             } else {
                 throw new BlockChainCoreException("区块数据异常，不能识别的交易类型。");
             }
-            boolean check = checkUnBlockChainTransaction(blockChainCore,block,tx);
+            boolean check = checkUnBlockChainTransaction(blockChainDataBase,block,tx);
             if(!check){
                 throw new BlockChainCoreException("区块数据异常，交易异常。");
             }
@@ -269,7 +269,7 @@ public class Miner {
      * @param uuid
      * @return
      */
-    private boolean isUuidAvailableThenAddToSetIfSetNotContainUuid(BlockChainCore blockChainCore, Set<String> uuidSet, String uuid) {
+    private boolean isUuidAvailableThenAddToSetIfSetNotContainUuid(BlockChainDataBase blockChainCore, Set<String> uuidSet, String uuid) {
         if(!UuidUtil.isUuidFormatRight(uuid)){
             return false;
         }
@@ -290,7 +290,7 @@ public class Miner {
      * 校验(未打包进区块链的)交易的合法性
      * 奖励交易校验需要传入block参数
      */
-    public boolean checkUnBlockChainTransaction(BlockChainCore blockChainCore, Block block, Transaction transaction) throws Exception{
+    public boolean checkUnBlockChainTransaction(BlockChainDataBase blockChainDataBase, Block block, Transaction transaction) throws Exception{
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();
             if(inputs!=null && inputs.size()!=0){
@@ -303,7 +303,7 @@ public class Miner {
             if(outputs.size() != 1){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出有且只能有一笔。不合法的交易。");
             }
-            if(!isBlockMineAwardRight(blockChainCore,block)){
+            if(!isBlockMineAwardRight(blockChainDataBase,block)){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出金额不正确。不合法的交易。");
             }
             return true;
@@ -316,7 +316,7 @@ public class Miner {
                 if(i.getUnspendTransactionOutput() == null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入UTXO不能为空。不合法的交易。");
                 }
-                if(blockChainCore.findUtxoByUtxoUuid(i.getUnspendTransactionOutput().getTransactionOutputUUID())!=null){
+                if(blockChainDataBase.findUtxoByUtxoUuid(i.getUnspendTransactionOutput().getTransactionOutputUUID())!=null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入不是UTXO。不合法的交易。");
                 }
             }
@@ -370,7 +370,7 @@ public class Miner {
      * 情况1：需要删除一部分链上的区块，然后链上可以衔接这串区块，且删除的区块数目要小于增加的区块的数目
      * 情况2：不需要删除链上的区块，链上直接可以衔接这串区块
      */
-    public boolean isBlockListApplyToBlockChain(BlockChainCore blockChainCore, List<Block> blockList) throws Exception {
+    public boolean isBlockListApplyToBlockChain(BlockChainDataBase blockChainDataBase, List<Block> blockList) throws Exception {
         boolean success = true;
         List<Block> changeDeleteBlockList = new ArrayList<>();
         List<Block> changeAddBlockList = new ArrayList<>();
@@ -382,7 +382,7 @@ public class Miner {
             Block headBlock = blockList.get(0);
             int headBlockHeight = headBlock.getBlockHeight();
 
-            Block blockchainTailBlock = blockChainCore.findTailBlock();
+            Block blockchainTailBlock = blockChainDataBase.findTailBlock();
             if(blockchainTailBlock == null){
                 if(headBlockHeight != BlockChainCoreConstants.FIRST_BLOCK_HEIGHT){
                     return false;
@@ -396,14 +396,14 @@ public class Miner {
                     return false;
                 }
                 while (blockchainTailBlock.getBlockHeight() >= headBlockHeight){
-                    Block removeTailBlock = blockChainCore.removeTailBlock(false);
+                    Block removeTailBlock = blockChainDataBase.removeTailBlock(false);
                     changeDeleteBlockList.add(removeTailBlock);
-                    blockchainTailBlock = blockChainCore.findTailBlock();
+                    blockchainTailBlock = blockChainDataBase.findTailBlock();
                 }
             }
 
             for(Block block:blockList){
-                boolean isBlockApplyToBlockChain = blockChainCore.addBlock(block,true,false);
+                boolean isBlockApplyToBlockChain = blockChainDataBase.addBlock(block,true,false);
                 if(isBlockApplyToBlockChain){
                     changeAddBlockList.add(block);
                 }else{
@@ -418,12 +418,12 @@ public class Miner {
             if(!success){
                 if(changeAddBlockList.size() != 0){
                     for (int i=changeAddBlockList.size(); i>=0; i--){
-                        blockChainCore.removeTailBlock(false);
+                        blockChainDataBase.removeTailBlock(false);
                     }
                 }
                 if(changeDeleteBlockList.size()!= 0){
                     for (int i=changeDeleteBlockList.size(); i>=0; i--){
-                        blockChainCore.addBlock(changeAddBlockList.get(i),true,false);
+                        blockChainDataBase.addBlock(changeAddBlockList.get(i),true,false);
                     }
                 }
                 return false;
@@ -451,11 +451,11 @@ public class Miner {
     }
     /**
      * 区块的挖矿奖励是否正确？
-     * @param blockChainCore 区块链
+     * @param blockChainDataBase 区块链
      * @param block 被校验挖矿奖励是否正确的区块
      * @return
      */
-    public boolean isBlockMineAwardRight(BlockChainCore blockChainCore, Block block){
+    public boolean isBlockMineAwardRight(BlockChainDataBase blockChainDataBase, Block block){
         List<Transaction> packingTransactionList = new ArrayList<>();
         for(Transaction tx : block.getTransactions()){
             if(tx.getTransactionType() != TransactionType.MINER){
@@ -463,25 +463,25 @@ public class Miner {
             }
         }
         //目标挖矿奖励
-        BigDecimal targetMineAward = mineAward.mineAward(blockChainCore,block.getBlockHeight(),packingTransactionList);
+        BigDecimal targetMineAward = mineAward.mineAward(blockChainDataBase,block.getBlockHeight(),packingTransactionList);
         //区块中写入的挖矿奖励
         BigDecimal blockWritedMineAward = extractBlockWritedMineAward(block);
         return targetMineAward.compareTo(blockWritedMineAward) != 0 ;
     }
     /**
      * 构建挖矿奖励交易
-     * @param blockChainCore
+     * @param blockChainDataBase
      * @param blockHeight
      * @param packingTransactionList
      */
-    public Transaction buildMineAwardTransaction(BlockChainCore blockChainCore, int blockHeight, List<Transaction> packingTransactionList) {
+    public Transaction buildMineAwardTransaction(BlockChainDataBase blockChainDataBase, int blockHeight, List<Transaction> packingTransactionList) {
         Transaction transaction = new Transaction();
         transaction.setTransactionUUID(String.valueOf(UUID.randomUUID()));
         transaction.setTransactionType(TransactionType.MINER);
         transaction.setInputs(null);
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
-        BigDecimal award = mineAward.mineAward(blockChainCore,blockHeight,packingTransactionList);
+        BigDecimal award = mineAward.mineAward(blockChainDataBase,blockHeight,packingTransactionList);
 
         TransactionOutput output = new TransactionOutput();
         output.setTransactionOutputUUID(String.valueOf(UUID.randomUUID()));
@@ -540,10 +540,10 @@ public class Miner {
     /**
      * 构建缺少nonce(代表尚未被挖矿)的区块
      */
-    public Block buildNonNonceBlock(BlockChainCore blockChainCore, List<Transaction> packingTransactionList) throws Exception {
-        Block tailBlock = blockChainCore.findTailBlock();
+    public Block buildNonNonceBlock(BlockChainDataBase blockChainDataBase, List<Transaction> packingTransactionList) throws Exception {
+        Block tailBlock = blockChainDataBase.findTailBlock();
         int blockHeight = tailBlock==null ? BlockChainCoreConstants.FIRST_BLOCK_HEIGHT : tailBlock.getBlockHeight()+1;
-        Transaction mineAwardTransaction =  buildMineAwardTransaction(blockChainCore,blockHeight,packingTransactionList);
+        Transaction mineAwardTransaction =  buildMineAwardTransaction(blockChainDataBase,blockHeight,packingTransactionList);
         //将奖励交易加入待打包列表
         packingTransactionList.add(mineAwardTransaction);
         Block nonNonceBlock = new Block();
@@ -579,7 +579,7 @@ public class Miner {
     /**
      * 判断Block的挖矿的成果Nonce是否正确
      */
-    public boolean isBlockMinedNonceSuccess(BlockChainCore blockChainCore, Block block){
+    public boolean isBlockMinedNonceSuccess(BlockChainDataBase blockChainDataBase, Block block){
         //校验区块写入的MerkleRoot是否正确
         String merkleRoot = calculateBlockMerkleRoot(block);
         if(!merkleRoot.equals(block.getMerkleRoot())){
@@ -590,7 +590,7 @@ public class Miner {
         if(!hash.equals(block.getHash())){
             return false;
         }
-        int difficulty = mineDifficulty.difficulty(blockChainCore,block);
+        int difficulty = mineDifficulty.difficulty(blockChainDataBase,block);
         return isHashDifficultyRight(hash, difficulty);
     }
     //endregion
