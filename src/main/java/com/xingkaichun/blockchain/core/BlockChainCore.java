@@ -15,6 +15,8 @@ import com.xingkaichun.blockchain.core.utils.atomic.LevelDBUtil;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.WriteBatch;
 import org.iq80.leveldb.impl.WriteBatchImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * 区块链
  */
 public class BlockChainCore {
+
+    private Logger logger = LoggerFactory.getLogger(BlockChainCore.class);
 
     //region 变量
     //区块链数据库
