@@ -396,7 +396,7 @@ public class BlockChainDataBase {
     //endregion
 
     //region 监听器
-    public void addBlockChainActionListener(BlockChainActionListener blockChainActionListener){
+    public void registerBlockChainActionListener(BlockChainActionListener blockChainActionListener){
         lock.lock();
         try{
             blockChainActionListenerList.add(blockChainActionListener);
