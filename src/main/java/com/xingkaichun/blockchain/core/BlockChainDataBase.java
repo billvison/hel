@@ -64,11 +64,9 @@ public class BlockChainDataBase {
     /**
      * 构造函数
      * @param dbPath 区块链数据库地址
-     * @param miner 矿工
      */
-    public BlockChainDataBase(String dbPath, Miner miner) throws Exception {
+    public BlockChainDataBase(String dbPath) throws Exception {
         this.blockChainDB = LevelDBUtil.createDB(new File(dbPath,"BlockChainDB"));
-        this.miner = miner;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -83,11 +81,15 @@ public class BlockChainDataBase {
     //region 区块增加与删除
     /**
      * 区块链新增区块
+     * 注意多线程、数据校验
      */
     public boolean addBlock(Block block, boolean checkBlock, boolean notifyBlockChainActionListener) throws Exception {
         lock.lock();
         try{
             if(checkBlock){
+                if(miner == null){
+                    throw new BlockChainCoreException("区块链数据库没有设置挖矿者");
+                }
                 //区块数据的校验
                 if(!miner.isBlockApplyToBlockChain(this, block)){
                     System.out.println("区块链上新增的区块数据不合法。请检测区块。");
@@ -135,6 +137,9 @@ public class BlockChainDataBase {
         lock.lock();
         try{
             if(checkBlock){
+                if(miner == null){
+                    throw new BlockChainCoreException("区块链数据库没有设置挖矿者");
+                }
                 //区块数据的校验
                 if(!miner.isBlockListApplyToBlockChain(this, addBlockList)){
                     System.out.println("区块链上新增的区块数据不合法。请检测区块。");
