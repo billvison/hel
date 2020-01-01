@@ -1,4 +1,4 @@
-package com.xingkaichun.blockchain;
+package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.*;
 import com.xingkaichun.blockchain.core.impl.*;
