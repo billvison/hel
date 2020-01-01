@@ -3,8 +3,6 @@ package com.xingkaichun.blockchain.core.impl;
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.Miner;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
-import com.xingkaichun.blockchain.core.listen.BlockChainActionData;
-import com.xingkaichun.blockchain.core.listen.BlockChainActionListener;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
@@ -53,9 +51,6 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     //UUID标识
     private final static String UUID_FLAG = "U_F_";
 
-    //监听区块链上区块的增删动作
-    private List<BlockChainActionListener> blockChainActionListenerList = new ArrayList<>();
-
     /**
      * 锁:保证对区块链增区块、删区块的操作是同步的。
      * 查询区块操作不需要加锁，原因是，只有对区块链进行区块的增删才会改变区块链的数据。
@@ -82,26 +77,11 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     //endregion
 
     //region 区块增加与删除
-    public boolean addBlock(Block block, boolean checkBlock, boolean notifyBlockChainActionListener) throws Exception {
+    public boolean addBlock(Block block) throws Exception {
         lock.lock();
         try{
-            if(checkBlock){
-                if(miner == null){
-                    throw new BlockChainCoreException("区块链数据库没有设置挖矿者");
-                }
-                //区块数据的校验
-                if(!miner.isBlockApplyToBlockChain(this, block)){
-                    System.out.println("区块链上新增的区块数据不合法。请检测区块。");
-                    return false;
-                }
-            }
-
             WriteBatch writeBatch = createWriteBatch(block,BlockChainActionEnum.ADD_BLOCK);
             LevelDBUtil.put(blockChainDB,writeBatch);
-
-            if(notifyBlockChainActionListener){
-                notifyBlockChainActionListener(createBlockChainActionDataList(block, BlockChainActionEnum.ADD_BLOCK));
-            }
             return true;
         }finally {
             lock.unlock();
@@ -111,7 +91,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     /**
      * 删除区块链的尾巴[最后一个]区块
      */
-    public Block removeTailBlock(boolean notifyBlockChainActionListener) throws Exception {
+    public Block removeTailBlock() throws Exception {
         lock.lock();
         try{
             Block tailBlock = findTailBlock();
@@ -120,28 +100,15 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             }
             WriteBatch writeBatch = createWriteBatch(tailBlock,BlockChainActionEnum.DELETE_BLOCK);
             LevelDBUtil.put(blockChainDB,writeBatch);
-            if(notifyBlockChainActionListener){
-                notifyBlockChainActionListener(createBlockChainActionDataList(tailBlock,BlockChainActionEnum.DELETE_BLOCK));
-            }
             return tailBlock;
         }finally {
             lock.unlock();
         }
     }
 
-    public boolean replaceBlocks(List<Block> addBlockList, boolean checkBlock, boolean notifyBlockChainActionListener) throws Exception {
+    public boolean replaceBlocks(List<Block> addBlockList) throws Exception {
         lock.lock();
         try{
-            if(checkBlock){
-                if(miner == null){
-                    throw new BlockChainCoreException("区块链数据库没有设置挖矿者");
-                }
-                //区块数据的校验
-                if(!miner.isBlockListApplyToBlockChain(this, addBlockList)){
-                    System.out.println("区块链上新增的区块数据不合法。请检测区块。");
-                    return false;
-                }
-            }
             //用于记录数据库操作
             WriteBatch writeBatch = new WriteBatchImpl();
             //区块链上将被删掉的区块
@@ -169,10 +136,6 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             }
 
             LevelDBUtil.put(blockChainDB,writeBatch);
-
-            if(notifyBlockChainActionListener){
-                notifyBlockChainActionListener(createBlockChainActionDataList(deleteBlockList,BlockChainActionEnum.DELETE_BLOCK,addBlockList,BlockChainActionEnum.ADD_BLOCK));
-            }
             return true;
         }finally {
             lock.unlock();
@@ -370,31 +333,4 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     }
     //endregion
 
-    //region 监听器
-    public void registerBlockChainActionListener(BlockChainActionListener blockChainActionListener){
-        blockChainActionListenerList.add(blockChainActionListener);
-    }
-
-    public void notifyBlockChainActionListener(List<BlockChainActionData> dataList) {
-        for (BlockChainActionListener listener: blockChainActionListenerList) {
-            listener.addOrDeleteBlock(dataList);
-        }
-    }
-
-    public List<BlockChainActionData> createBlockChainActionDataList(Block block, BlockChainActionEnum blockChainActionEnum) {
-        List<BlockChainActionData> dataList = new ArrayList<>();
-        BlockChainActionData addData = new BlockChainActionData(block,blockChainActionEnum);
-        dataList.add(addData);
-        return dataList;
-    }
-
-    public List<BlockChainActionData> createBlockChainActionDataList(List<Block> firstBlockList, BlockChainActionEnum firstBlockChainActionEnum, List<Block> nextBlockList, BlockChainActionEnum nextBlockChainActionEnum) {
-        List<BlockChainActionData> dataList = new ArrayList<>();
-        BlockChainActionData deleteData = new BlockChainActionData(firstBlockList,firstBlockChainActionEnum);
-        dataList.add(deleteData);
-        BlockChainActionData addData = new BlockChainActionData(nextBlockList,nextBlockChainActionEnum);
-        dataList.add(addData);
-        return dataList;
-    }
-    //endregion
 }

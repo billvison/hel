@@ -1,6 +1,9 @@
 package com.xingkaichun.blockchain.core.impl;
 
-import com.xingkaichun.blockchain.core.*;
+import com.xingkaichun.blockchain.core.BlockChainDataBase;
+import com.xingkaichun.blockchain.core.MineAward;
+import com.xingkaichun.blockchain.core.MineDifficulty;
+import com.xingkaichun.blockchain.core.Miner;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
@@ -26,13 +29,10 @@ public class MinerDefaultImpl implements Miner {
     //region 属性与构造函数
     //矿工公钥
     private PublicKeyString minerPublicKey;
-    //交易池：矿工从交易池里获取挖矿的原材料(交易数据)
-    private ForMinerTransactionDataBase forMinerTransactionDataBase;
     private MineDifficulty mineDifficulty;
     private MineAward mineAward;
 
-    public MinerDefaultImpl(ForMinerTransactionDataBase forMinerTransactionDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
-        this.forMinerTransactionDataBase = forMinerTransactionDataBase;
+    public MinerDefaultImpl(MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
         this.minerPublicKey = minerPublicKey;
         this.mineDifficulty = mineDifficulty;
         this.mineAward = mineAward;
@@ -42,23 +42,6 @@ public class MinerDefaultImpl implements Miner {
 
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
-    /**
-     * 启动挖矿
-     */
-    public void startMining(BlockChainDataBase blockChainDataBase) throws Exception {
-        try {
-            while (true){
-                Block mineBlock = mineBlock(blockChainDataBase, forMinerTransactionDataBase.getTransactionList());
-                if(mineBlock != null){
-                    blockChainDataBase.addBlock(mineBlock,true,true);
-                }
-                Thread.sleep(5*60*1000);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * 停止当前区块的挖矿，可能这个区块已经被挖出来了
      */
@@ -101,14 +84,10 @@ public class MinerDefaultImpl implements Miner {
 
     //endregion
 
-
-    /**
-     * 打包处理过程: 将异常的交易丢弃掉【站在区块的角度校验交易】
-     */
-    private void dropPackingTransactionException_PointOfView_Block(BlockChainDataBase coreBlockChain, List<Transaction> packingTransactionList) throws Exception{
+    public void dropPackingTransactionException_PointOfView_Block(BlockChainDataBase coreBlockChain, List<Transaction> packingTransactionList) throws Exception{
         //区块中允许没有交易
         if(packingTransactionList==null || packingTransactionList.size()==0){
-            return;
+            return ;
         }
         dropExceptionPackingTransaction_PointOfView_Transaction(coreBlockChain,packingTransactionList);
         //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
@@ -396,14 +375,14 @@ public class MinerDefaultImpl implements Miner {
                     return false;
                 }
                 while (blockchainTailBlock.getBlockHeight() >= headBlockHeight){
-                    Block removeTailBlock = blockChainDataBase.removeTailBlock(false);
+                    Block removeTailBlock = blockChainDataBase.removeTailBlock();
                     changeDeleteBlockList.add(removeTailBlock);
                     blockchainTailBlock = blockChainDataBase.findTailBlock();
                 }
             }
 
             for(Block block:blockList){
-                boolean isBlockApplyToBlockChain = blockChainDataBase.addBlock(block,true,false);
+                boolean isBlockApplyToBlockChain = blockChainDataBase.addBlock(block);
                 if(isBlockApplyToBlockChain){
                     changeAddBlockList.add(block);
                 }else{
@@ -418,12 +397,12 @@ public class MinerDefaultImpl implements Miner {
             if(!success){
                 if(changeAddBlockList.size() != 0){
                     for (int i=changeAddBlockList.size(); i>=0; i--){
-                        blockChainDataBase.removeTailBlock(false);
+                        blockChainDataBase.removeTailBlock();
                     }
                 }
                 if(changeDeleteBlockList.size()!= 0){
                     for (int i=changeDeleteBlockList.size(); i>=0; i--){
-                        blockChainDataBase.addBlock(changeAddBlockList.get(i),true,false);
+                        blockChainDataBase.addBlock(changeAddBlockList.get(i));
                     }
                 }
                 return false;

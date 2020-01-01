@@ -12,10 +12,6 @@ import java.util.List;
 public interface Miner {
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
-    /**
-     * 启动挖矿
-     */
-    void startMining(BlockChainDataBase blockChainDataBase) throws Exception ;
 
     /**
      * 停止当前区块的挖矿，可能这个区块已经被挖出来了
@@ -126,5 +122,13 @@ public interface Miner {
      */
     boolean isBlockMinedNonceSuccess(BlockChainDataBase blockChainDataBase, Block block) ;
     //endregion
+    /**
+     * 打包处理过程: 将异常的交易丢弃掉【站在区块的角度校验交易】
+     * @param coreBlockChain
+     * @param packingTransactionList
+    // * @return 被丢弃的异常交易
+     * @throws Exception
+     */
+    void dropPackingTransactionException_PointOfView_Block(BlockChainDataBase coreBlockChain, List<Transaction> packingTransactionList) throws Exception ;
 
 }

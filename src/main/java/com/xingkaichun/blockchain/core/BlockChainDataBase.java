@@ -1,9 +1,6 @@
 package com.xingkaichun.blockchain.core;
 
-import com.xingkaichun.blockchain.core.listen.BlockChainActionData;
-import com.xingkaichun.blockchain.core.listen.BlockChainActionListener;
 import com.xingkaichun.blockchain.core.model.Block;
-import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
 
@@ -22,20 +19,20 @@ public interface BlockChainDataBase {
      * 新增区块本身的数据的正确性;
      * 新增的区块是否能够正确衔接到区块链的尾部;
      */
-    boolean addBlock(Block block, boolean checkBlock, boolean notifyBlockChainActionListener) throws Exception ;
+    boolean addBlock(Block block) throws Exception ;
 
     /**
      * 删除区块链的尾巴[最后一个]区块
      * //TODO 是否需要按照高度删除区块
      */
-    Block removeTailBlock(boolean notifyBlockChainActionListener) throws Exception ;
+    Block removeTailBlock() throws Exception ;
 
     /**
      * 新增多个区块
      * 这个是一个比较复杂的操作。不仅要考虑每一个区块数据的正确性，
      *
      */
-    boolean replaceBlocks(List<Block> addBlockList, boolean checkBlock, boolean notifyBlockChainActionListener) throws Exception ;
+    boolean replaceBlocks(List<Block> addBlockList) throws Exception ;
     //endregion
 
     //region 区块链提供的通用方法
@@ -73,12 +70,5 @@ public interface BlockChainDataBase {
      * @param uuid uuid
      */
     boolean isUuidExist(String uuid) ;
-    //endregion
-
-    //region 监听器
-    void registerBlockChainActionListener(BlockChainActionListener blockChainActionListener) ;
-    void notifyBlockChainActionListener(List<BlockChainActionData> dataList) ;
-    List<BlockChainActionData> createBlockChainActionDataList(Block block, BlockChainActionEnum blockChainActionEnum) ;
-    List<BlockChainActionData> createBlockChainActionDataList(List<Block> firstBlockList, BlockChainActionEnum firstBlockChainActionEnum, List<Block> nextBlockList, BlockChainActionEnum nextBlockChainActionEnum) ;
     //endregion
 }
