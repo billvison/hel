@@ -131,9 +131,6 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         }
     }
 
-    /**
-     * 回滚老的区块，并新增区块
-     */
     public boolean replaceBlocks(List<Block> addBlockList, boolean checkBlock, boolean notifyBlockChainActionListener) throws Exception {
         lock.lock();
         try{

@@ -17,18 +17,23 @@ public interface BlockChainDataBase {
 
     //region 区块增加与删除
     /**
-     * 区块链新增区块
-     * 注意多线程、数据校验
+     * 新增区块
+     * 这是一个有些复杂的操作，需要考虑如下几点:
+     * 新增区块本身的数据的正确性;
+     * 新增的区块是否能够正确衔接到区块链的尾部。
      */
     boolean addBlock(Block block, boolean checkBlock, boolean notifyBlockChainActionListener) throws Exception ;
 
     /**
      * 删除区块链的尾巴[最后一个]区块
+     * //TODO 是否需要按照高度删除区块
      */
     Block removeTailBlock(boolean notifyBlockChainActionListener) throws Exception ;
 
     /**
-     * 回滚老的区块，并新增区块
+     * 新增多个区块
+     * 这个是一个比较复杂的操作。不仅要考虑每一个区块数据的正确性，
+     *
      */
     boolean replaceBlocks(List<Block> addBlockList, boolean checkBlock, boolean notifyBlockChainActionListener) throws Exception ;
     //endregion
