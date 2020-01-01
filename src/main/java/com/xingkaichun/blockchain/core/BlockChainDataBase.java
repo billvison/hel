@@ -53,7 +53,7 @@ public class BlockChainDataBase {
     //监听区块链上区块的增删动作
     private List<BlockChainActionListener> blockChainActionListenerList = new ArrayList<>();
 
-    //锁:保证对区块链增区块、删区块、查区块的操作是同步的。
+    //锁:保证对区块链增区块、删区块的操作是同步的。查区块不需要加锁，原因是，只有对区块链进行区块的增删才会改变区块链的数据。
     private Lock lock = new ReentrantLock();
     //endregion
 
@@ -215,66 +215,61 @@ public class BlockChainDataBase {
         if(writeBatch == null){
             throw new BlockChainCoreException("参数writeBatch没有初始化");
         }
-        lock.lock();
-        try{
-            //更新区块数据
-            byte[] blockHeightKey = LevelDBUtil.stringToBytes(addBlockHeightPrefix(block.getBlockHeight()));
-            if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                writeBatch.put(blockHeightKey, EncodeDecode.encode(block));
-            }else{
-                writeBatch.delete(blockHeightKey);
-            }
+//更新区块数据
+        byte[] blockHeightKey = LevelDBUtil.stringToBytes(addBlockHeightPrefix(block.getBlockHeight()));
+        if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
+            writeBatch.put(blockHeightKey, EncodeDecode.encode(block));
+        }else{
+            writeBatch.delete(blockHeightKey);
+        }
 
-            List<Transaction> packingTransactionList = block.getTransactions();
-            if(packingTransactionList!=null){
-                for(Transaction transaction:packingTransactionList){
-                    //UUID数据
-                    byte[] uuidKey = LevelDBUtil.stringToBytes(addUuidPrefix(transaction.getTransactionUUID()));
-                    //更新交易数据
-                    byte[] transactionUuidKey = LevelDBUtil.stringToBytes(addTransactionUuidPrefix(transaction.getTransactionUUID()));
-                    if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                        writeBatch.put(uuidKey, uuidKey);
-                        writeBatch.put(transactionUuidKey, EncodeDecode.encode(transaction));
-                    } else {
-                        writeBatch.delete(uuidKey);
-                        writeBatch.delete(transactionUuidKey);
-                    }
-                    ArrayList<TransactionInput> inputs = transaction.getInputs();
-                    if(inputs!=null){
-                        for(TransactionInput txInput:inputs){
-                            //更新UTXO数据
-                            byte[] transactionOutputUuidKey = LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(txInput.getUnspendTransactionOutput().getTransactionOutputUUID()));
-                            if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                                writeBatch.delete(transactionOutputUuidKey);
-                            } else {
-                                writeBatch.put(transactionOutputUuidKey,EncodeDecode.encode(txInput.getUnspendTransactionOutput()));
-                            }
+        List<Transaction> packingTransactionList = block.getTransactions();
+        if(packingTransactionList!=null){
+            for(Transaction transaction:packingTransactionList){
+                //UUID数据
+                byte[] uuidKey = LevelDBUtil.stringToBytes(addUuidPrefix(transaction.getTransactionUUID()));
+                //更新交易数据
+                byte[] transactionUuidKey = LevelDBUtil.stringToBytes(addTransactionUuidPrefix(transaction.getTransactionUUID()));
+                if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
+                    writeBatch.put(uuidKey, uuidKey);
+                    writeBatch.put(transactionUuidKey, EncodeDecode.encode(transaction));
+                } else {
+                    writeBatch.delete(uuidKey);
+                    writeBatch.delete(transactionUuidKey);
+                }
+                ArrayList<TransactionInput> inputs = transaction.getInputs();
+                if(inputs!=null){
+                    for(TransactionInput txInput:inputs){
+                        //更新UTXO数据
+                        byte[] transactionOutputUuidKey = LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(txInput.getUnspendTransactionOutput().getTransactionOutputUUID()));
+                        if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
+                            writeBatch.delete(transactionOutputUuidKey);
+                        } else {
+                            writeBatch.put(transactionOutputUuidKey,EncodeDecode.encode(txInput.getUnspendTransactionOutput()));
                         }
                     }
-                    ArrayList<TransactionOutput> outputs = transaction.getOutputs();
-                    if(outputs!=null){
-                        for(TransactionOutput output:outputs){
-                            //UUID数据
-                            byte[] uuidKey2 = LevelDBUtil.stringToBytes(addUuidPrefix(output.getTransactionOutputUUID()));
-                            //更新所有的交易输出
-                            byte[] transactionOutputUuidKey = LevelDBUtil.stringToBytes(addTransactionOutputPrefix(output.getTransactionOutputUUID()));
-                            //更新UTXO数据
-                            byte[] unspendTransactionOutputUuidKey = LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID()));
-                            if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                                writeBatch.put(uuidKey2, uuidKey2);
-                                writeBatch.put(transactionOutputUuidKey, EncodeDecode.encode(output));
-                                writeBatch.put(unspendTransactionOutputUuidKey, EncodeDecode.encode(output));
-                            } else {
-                                writeBatch.delete(uuidKey2);
-                                writeBatch.delete(transactionOutputUuidKey);
-                                writeBatch.delete(unspendTransactionOutputUuidKey);
-                            }
+                }
+                ArrayList<TransactionOutput> outputs = transaction.getOutputs();
+                if(outputs!=null){
+                    for(TransactionOutput output:outputs){
+                        //UUID数据
+                        byte[] uuidKey2 = LevelDBUtil.stringToBytes(addUuidPrefix(output.getTransactionOutputUUID()));
+                        //更新所有的交易输出
+                        byte[] transactionOutputUuidKey = LevelDBUtil.stringToBytes(addTransactionOutputPrefix(output.getTransactionOutputUUID()));
+                        //更新UTXO数据
+                        byte[] unspendTransactionOutputUuidKey = LevelDBUtil.stringToBytes(addUnspendTransactionOutputUuidPrefix(output.getTransactionOutputUUID()));
+                        if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
+                            writeBatch.put(uuidKey2, uuidKey2);
+                            writeBatch.put(transactionOutputUuidKey, EncodeDecode.encode(output));
+                            writeBatch.put(unspendTransactionOutputUuidKey, EncodeDecode.encode(output));
+                        } else {
+                            writeBatch.delete(uuidKey2);
+                            writeBatch.delete(transactionOutputUuidKey);
+                            writeBatch.delete(unspendTransactionOutputUuidKey);
                         }
                     }
                 }
             }
-        }finally {
-            lock.unlock();
         }
     }
     //endregion
@@ -285,37 +280,32 @@ public class BlockChainDataBase {
      * 查找区块链上的最后一个区块
      */
     public Block findTailBlock() throws Exception {
-        lock.lock();
-        try{
-            int lastBlockBlockHeight = BlockChainCoreConstants.FIRST_BLOCK_HEIGHT;
-            while (true){
-                Block currentBlock = findBlockByBlockHeight(lastBlockBlockHeight);
-                if(currentBlock == null){
-                    //特殊情况:区块链上没有区块
-                    if(lastBlockBlockHeight == BlockChainCoreConstants.FIRST_BLOCK_HEIGHT){
-                        return null;
-                    }
-                    break;
-                }else {
-                    lastBlockBlockHeight = lastBlockBlockHeight<<1;
+        int lastBlockBlockHeight = BlockChainCoreConstants.FIRST_BLOCK_HEIGHT;
+        while (true){
+            Block currentBlock = findBlockByBlockHeight(lastBlockBlockHeight);
+            if(currentBlock == null){
+                //特殊情况:区块链上没有区块
+                if(lastBlockBlockHeight == BlockChainCoreConstants.FIRST_BLOCK_HEIGHT){
+                    return null;
                 }
+                break;
+            }else {
+                lastBlockBlockHeight = lastBlockBlockHeight<<1;
             }
+        }
 
-            int start = lastBlockBlockHeight>>1;
-            while (true){
-                int middleBlockHeight = (start + lastBlockBlockHeight)/2;
-                Block currentBlock = findBlockByBlockHeight(middleBlockHeight);
-                Block currentNextBlock = findBlockByBlockHeight(middleBlockHeight+1);
-                if(currentBlock!=null && currentNextBlock==null){
-                    return currentBlock;
-                }else if(currentBlock!=null){
-                    start = middleBlockHeight+1;
-                }else {
-                    lastBlockBlockHeight = middleBlockHeight-1;
-                }
+        int start = lastBlockBlockHeight>>1;
+        while (true){
+            int middleBlockHeight = (start + lastBlockBlockHeight)/2;
+            Block currentBlock = findBlockByBlockHeight(middleBlockHeight);
+            Block currentNextBlock = findBlockByBlockHeight(middleBlockHeight+1);
+            if(currentBlock!=null && currentNextBlock==null){
+                return currentBlock;
+            }else if(currentBlock!=null){
+                start = middleBlockHeight+1;
+            }else {
+                lastBlockBlockHeight = middleBlockHeight-1;
             }
-        }finally {
-            lock.unlock();
         }
     }
 
@@ -324,19 +314,14 @@ public class BlockChainDataBase {
      * @param transactionOutputUUID UTXO ID
      */
     public TransactionOutput findUtxoByUtxoUuid(String transactionOutputUUID) throws Exception {
-        lock.lock();
-        try{
-            if(transactionOutputUUID==null||"".equals(transactionOutputUUID)){
-                return null;
-            }
-            byte[] bytesUtxo = LevelDBUtil.get(blockChainDB, addUnspendTransactionOutputUuidPrefix(transactionOutputUUID));
-            if(bytesUtxo == null){
-                return null;
-            }
-            return EncodeDecode.decodeToTransactionOutput(bytesUtxo);
-        }finally {
-            lock.unlock();
+        if(transactionOutputUUID==null||"".equals(transactionOutputUUID)){
+            return null;
         }
+        byte[] bytesUtxo = LevelDBUtil.get(blockChainDB, addUnspendTransactionOutputUuidPrefix(transactionOutputUUID));
+        if(bytesUtxo == null){
+            return null;
+        }
+        return EncodeDecode.decodeToTransactionOutput(bytesUtxo);
     }
 
     /**
@@ -344,16 +329,11 @@ public class BlockChainDataBase {
      * @param blockHeight 区块高度
      */
     public Block findBlockByBlockHeight(int blockHeight) throws Exception {
-        lock.lock();
-        try{
-            byte[] bytesBlock = LevelDBUtil.get(blockChainDB,addBlockHeightPrefix(blockHeight));
-            if(bytesBlock==null){
-                return null;
-            }
-            return EncodeDecode.decodeToBlock(bytesBlock);
-        }finally {
-            lock.unlock();
+        byte[] bytesBlock = LevelDBUtil.get(blockChainDB,addBlockHeightPrefix(blockHeight));
+        if(bytesBlock==null){
+            return null;
         }
+        return EncodeDecode.decodeToBlock(bytesBlock);
     }
 
     /**
@@ -361,16 +341,11 @@ public class BlockChainDataBase {
      * @param transactionUUID 交易ID
      */
     public Transaction findTransactionByTransactionUuid(String transactionUUID) throws Exception {
-        lock.lock();
-        try{
-            byte[] bytesTransaction = LevelDBUtil.get(blockChainDB, addTransactionUuidPrefix(transactionUUID));
-            if(bytesTransaction==null){
-                return null;
-            }
-            return EncodeDecode.decodeToTransaction(bytesTransaction);
-        }finally {
-            lock.unlock();
+        byte[] bytesTransaction = LevelDBUtil.get(blockChainDB, addTransactionUuidPrefix(transactionUUID));
+        if(bytesTransaction==null){
+            return null;
         }
+        return EncodeDecode.decodeToTransaction(bytesTransaction);
     }
 
     /**
@@ -378,13 +353,8 @@ public class BlockChainDataBase {
      * @param transactionUUID 交易ID
      */
     public boolean isTransactionExist(String transactionUUID) throws Exception {
-        lock.lock();
-        try{
-            Transaction transaction = findTransactionByTransactionUuid(transactionUUID);
-            return transaction != null;
-        }finally {
-            lock.unlock();
-        }
+        Transaction transaction = findTransactionByTransactionUuid(transactionUUID);
+        return transaction != null;
     }
     /**
      * UUID是否已经存在于区块链之中？
@@ -398,22 +368,12 @@ public class BlockChainDataBase {
 
     //region 监听器
     public void registerBlockChainActionListener(BlockChainActionListener blockChainActionListener){
-        lock.lock();
-        try{
-            blockChainActionListenerList.add(blockChainActionListener);
-        }finally {
-            lock.unlock();
-        }
+        blockChainActionListenerList.add(blockChainActionListener);
     }
 
     private void notifyBlockChainActionListener(List<BlockChainActionData> dataList) {
-        lock.lock();
-        try{
-            for (BlockChainActionListener listener: blockChainActionListenerList) {
-                listener.addOrDeleteBlock(dataList);
-            }
-        }finally {
-            lock.unlock();
+        for (BlockChainActionListener listener: blockChainActionListenerList) {
+            listener.addOrDeleteBlock(dataList);
         }
     }
 
