@@ -17,10 +17,10 @@ public interface BlockChainDataBase {
 
     //region 区块增加与删除
     /**
-     * 新增区块
+     * 新增区块: 在不允许删除区块链上的区块的情况下，将一个新的区块添加到区块链上。
      * 这是一个有些复杂的操作，需要考虑如下几点:
      * 新增区块本身的数据的正确性;
-     * 新增的区块是否能够正确衔接到区块链的尾部。
+     * 新增的区块是否能够正确衔接到区块链的尾部;
      */
     boolean addBlock(Block block, boolean checkBlock, boolean notifyBlockChainActionListener) throws Exception ;
 
