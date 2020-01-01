@@ -3,7 +3,6 @@ package com.xingkaichun.blockchain.core;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionData;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionListener;
-import com.xingkaichun.blockchain.core.miner.Miner;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;

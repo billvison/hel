@@ -1,6 +1,5 @@
-package com.xingkaichun.blockchain.core.miner;
+package com.xingkaichun.blockchain.core;
 
-import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;

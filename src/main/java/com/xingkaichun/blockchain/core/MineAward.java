@@ -1,4 +1,4 @@
-package com.xingkaichun.blockchain.core.miner;
+package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;

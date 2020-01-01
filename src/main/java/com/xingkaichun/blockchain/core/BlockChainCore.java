@@ -1,9 +1,5 @@
 package com.xingkaichun.blockchain.core;
 
-import com.xingkaichun.blockchain.core.miner.MineAward;
-import com.xingkaichun.blockchain.core.miner.MineDifficulty;
-import com.xingkaichun.blockchain.core.miner.Miner;
-import com.xingkaichun.blockchain.core.miner.ForMinerTransactionDataBase;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 
 public class BlockChainCore {
