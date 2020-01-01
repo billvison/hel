@@ -1,5 +1,6 @@
-package com.xingkaichun.blockchain.core;
+package com.xingkaichun.blockchain;
 
+import com.xingkaichun.blockchain.core.*;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 
 public class BlockChainCore {
