@@ -28,6 +28,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 区块链
+ *
+ * 注意这是一个线程不安全的实现。在并发的情况下，不保证功能的正确性。
  */
 public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
 
@@ -80,10 +82,6 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     //endregion
 
     //region 区块增加与删除
-    /**
-     * 区块链新增区块
-     * 注意多线程、数据校验
-     */
     public boolean addBlock(Block block, boolean checkBlock, boolean notifyBlockChainActionListener) throws Exception {
         lock.lock();
         try{
