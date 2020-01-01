@@ -53,7 +53,10 @@ public class BlockChainDataBase {
     //监听区块链上区块的增删动作
     private List<BlockChainActionListener> blockChainActionListenerList = new ArrayList<>();
 
-    //锁:保证对区块链增区块、删区块的操作是同步的。查区块不需要加锁，原因是，只有对区块链进行区块的增删才会改变区块链的数据。
+    /**
+     * 锁:保证对区块链增区块、删区块的操作是同步的。
+     * 查询区块操作不需要加锁，原因是，只有对区块链进行区块的增删才会改变区块链的数据。
+     */
     private Lock lock = new ReentrantLock();
     //endregion
 
