@@ -13,14 +13,9 @@ public interface Miner {
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
     /**
-     * 挖矿
+     * 启动
      */
-    Block miningBlock() throws Exception ;
-
-    /**
-     * 停止当前区块的挖矿，可能这个区块已经被挖出来了
-     */
-    boolean stopMiningBlock() ;
+    Block running() throws Exception ;
     //endregion
 
 

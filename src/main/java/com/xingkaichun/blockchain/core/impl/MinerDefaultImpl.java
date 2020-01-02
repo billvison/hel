@@ -44,17 +44,17 @@ public class MinerDefaultImpl implements Miner {
     //endregion
 
 
+    private boolean mineSwitch = false;
+    private boolean synchronizedBlockChainSegementSwitch = false;
+
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
-    /**
-     * 挖矿
-     */
-    public Block miningBlock() throws Exception {
-        //TODO 清洗数据 将被丢弃的数据从数据库中删除
+    public Block running() throws Exception {
         List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.getTransactionList();
         dropPackingTransactionException_PointOfView_Block(transactionListForMinerBlock);
         while (true){
-            Block mineBlock = miningNextBlock(transactionListForMinerBlock);
+            //TODO
+            Block mineBlock = miningNextBlock(transactionListForMinerBlock,0,0);
             if(mineBlock != null){
                 blockChainDataBase.addBlock(mineBlock);
             }
@@ -65,36 +65,26 @@ public class MinerDefaultImpl implements Miner {
     /**
      * 挖矿
      */
-    public Block miningNextBlock(List<Transaction> transactionListForMinerBlock) throws Exception {
+    public Block miningNextBlock(List<Transaction> transactionListForMinerBlock,int startNonce,int endNonce) throws Exception {
         //创建打包区块
         Block packingBlock = buildNonNonceBlock(transactionListForMinerBlock);
-        int difficulty = mineDifficulty.difficulty(blockChainDataBase, packingBlock);
-        packingBlock.setHash(calculateBlockHash(packingBlock));
-        String targetMineDificultyString = getTargetMineDificultyString(difficulty);
-        while (!isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(packingBlock.getHash(),difficulty))) {
-            //中断挖矿
-            synchronized (stopCurrentBlockMining){
-                if(stopCurrentBlockMining){
-                    stopCurrentBlockMining = false;
-                    return null;
-                }
-            }
-            packingBlock.setNonce((packingBlock.getNonce()+1));
+        int targetDifficulty = mineDifficulty.difficulty(blockChainDataBase, packingBlock);
+        String targetMineDificultyString = getTargetMineDificultyString(targetDifficulty);
+
+        for (int currentNonce=startNonce; currentNonce<=endNonce; currentNonce++) {
+            //TODO 优化
+            packingBlock.setNonce(currentNonce);
             packingBlock.setHash(calculateBlockHash(packingBlock));
+
+            if(isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(packingBlock.getHash(),targetDifficulty))){
+                return packingBlock;
+            }
+            //中断挖矿
+            if(!mineSwitch){
+                return null;
+            }
         }
         return packingBlock;
-    }
-    /**
-     * 停止当前区块的挖矿，可能这个区块已经被挖出来了
-     */
-    public volatile Boolean stopCurrentBlockMining = false;
-    public boolean stopMiningBlock(){
-        synchronized (stopCurrentBlockMining){
-            if(!stopCurrentBlockMining){
-                stopCurrentBlockMining = true;
-            }
-        }
-        return true;
     }
     //endregion
 
@@ -556,8 +546,8 @@ public class MinerDefaultImpl implements Miner {
      * @param block 区块
      */
     public String calculateBlockHash(Block block) {
-        String merkleRoot = calculateBlockMerkleRoot(block);
-        return CipherUtil.applySha256(block.getBlockHeight() + block.getNonce() + block.getPreviousHash() + merkleRoot);
+        //TODO 检测有没有用错的地方String merkleRoot = calculateBlockMerkleRoot(block);
+        return CipherUtil.applySha256(block.getBlockHeight() + block.getNonce() + block.getPreviousHash() + block.getMerkleRoot());
     }
     /**
      * 计算区块的默克尔树根值

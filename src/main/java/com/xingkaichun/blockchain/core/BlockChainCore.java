@@ -35,7 +35,6 @@ public class BlockChainCore {
      * 启动挖矿
      */
     public void startMining() throws Exception {
-        miner.miningBlock();
     }
 
 

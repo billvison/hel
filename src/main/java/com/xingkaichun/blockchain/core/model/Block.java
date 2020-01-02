@@ -16,6 +16,7 @@ public class Block implements Serializable {
     //上一个区块的哈希
     private String previousHash;
     //区块高度
+    //TODO 重命名
     private int blockHeight;
     //区块随机数
     private int nonce;
