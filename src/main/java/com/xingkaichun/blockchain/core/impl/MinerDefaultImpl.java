@@ -45,19 +45,6 @@ public class MinerDefaultImpl implements Miner {
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
     /**
-     * 停止当前区块的挖矿，可能这个区块已经被挖出来了
-     */
-    public volatile Boolean stopCurrentBlockMining = false;
-    public boolean stopCurrentBlockMining(){
-        synchronized (stopCurrentBlockMining){
-            if(!stopCurrentBlockMining){
-                stopCurrentBlockMining = true;
-            }
-        }
-        return true;
-    }
-
-    /**
      * 挖矿
      */
     public Block miningBlock() throws Exception {
@@ -72,7 +59,6 @@ public class MinerDefaultImpl implements Miner {
             Thread.sleep(1*1000);
         }
     }
-
 
     /**
      * 挖矿
@@ -97,7 +83,18 @@ public class MinerDefaultImpl implements Miner {
         }
         return packingBlock;
     }
-
+    /**
+     * 停止当前区块的挖矿，可能这个区块已经被挖出来了
+     */
+    public volatile Boolean stopCurrentBlockMining = false;
+    public boolean stopMiningBlock(){
+        synchronized (stopCurrentBlockMining){
+            if(!stopCurrentBlockMining){
+                stopCurrentBlockMining = true;
+            }
+        }
+        return true;
+    }
     //endregion
 
     public void dropPackingTransactionException_PointOfView_Block(List<Transaction> packingTransactionList) throws Exception{
