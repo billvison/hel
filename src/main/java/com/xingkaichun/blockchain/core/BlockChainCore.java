@@ -35,17 +35,7 @@ public class BlockChainCore {
      * 启动挖矿
      */
     public void startMining() throws Exception {
-        try {
-            while (true){
-                Block mineBlock = miner.mineBlock();
-                if(mineBlock != null){
-                    blockChainDataBase.addBlock(mineBlock);
-                }
-                Thread.sleep(1*1000);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        miner.miningBlock();
     }
 
 

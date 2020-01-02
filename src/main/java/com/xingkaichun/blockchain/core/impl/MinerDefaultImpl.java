@@ -60,28 +60,41 @@ public class MinerDefaultImpl implements Miner {
     /**
      * 挖矿
      */
-    public Block mineBlock() throws Exception {
+    public Block miningBlock() throws Exception {
         //TODO 清洗数据 将被丢弃的数据从数据库中删除
         List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.getTransactionList();
         dropPackingTransactionException_PointOfView_Block(transactionListForMinerBlock);
+        while (true){
+            Block mineBlock = miningNextBlock(transactionListForMinerBlock);
+            if(mineBlock != null){
+                blockChainDataBase.addBlock(mineBlock);
+            }
+            Thread.sleep(1*1000);
+        }
+    }
 
+
+    /**
+     * 挖矿
+     */
+    public Block miningNextBlock(List<Transaction> transactionListForMinerBlock) throws Exception {
         //创建打包区块
         Block packingBlock = buildNonNonceBlock(transactionListForMinerBlock);
         int difficulty = mineDifficulty.difficulty(blockChainDataBase, packingBlock);
         packingBlock.setHash(calculateBlockHash(packingBlock));
         String targetMineDificultyString = getTargetMineDificultyString(difficulty);
-        while (!isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(packingBlock.getHash(),difficulty))) {
+        boolean miningBlockSuccess = false;
+        while (!(miningBlockSuccess=isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(packingBlock.getHash(),difficulty)))) {
             //中断挖矿
             synchronized (stopCurrentBlockMining){
                 if(stopCurrentBlockMining){
                     stopCurrentBlockMining = false;
-                    break;
+                    return null;
                 }
             }
             packingBlock.setNonce((packingBlock.getNonce()+1));
             packingBlock.setHash(calculateBlockHash(packingBlock));
         }
-        System.out.println("Block Mined!!! : " + packingBlock.getHash());
         return packingBlock;
     }
 

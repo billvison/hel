@@ -21,7 +21,12 @@ public interface Miner {
     /**
      * 挖矿
      */
-    Block mineBlock() throws Exception ;
+    Block miningBlock() throws Exception ;
+
+    /**
+     * 挖矿
+     */
+    Block miningNextBlock(List<Transaction> transactionListForMinerBlock) throws Exception ;
     //endregion
 
 
