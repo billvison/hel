@@ -52,7 +52,6 @@ public class MinerDefaultImpl implements Miner {
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
     public Block running() throws Exception {
-
         boolean isSynchronizedBlockChainSegementmine = false;
         BlockWrapperForMining blockWrapperForMining = null;
         //分时
@@ -61,13 +60,7 @@ public class MinerDefaultImpl implements Miner {
             isSynchronizedBlockChainSegementmine = synchronizedBlockChainSegementmine();
             //挖矿一定次数，则尝试同步其它区块
             if(blockWrapperForMining == null || isSynchronizedBlockChainSegementmine){
-                List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.getTransactionList();
-                dropPackingTransactionException_PointOfView_Block(transactionListForMinerBlock);
-                Block packingBlock = buildNonNonceBlock(transactionListForMinerBlock);
-                int targetDifficulty = mineDifficulty.difficulty(blockChainDataBase, packingBlock);
-                String targetMineDificultyString = getTargetMineDificultyString(targetDifficulty);
-                blockWrapperForMining.setTargetMineDificultyString(targetMineDificultyString);
-                blockWrapperForMining.setCurrentNonce(0L);
+                blockWrapperForMining = blockWrapperForMining();
             }
             miningBlock(blockWrapperForMining);
             if(blockWrapperForMining.getMiningSuccess() != null && blockWrapperForMining.getMiningSuccess()){
@@ -77,12 +70,29 @@ public class MinerDefaultImpl implements Miner {
         }
     }
 
+    private BlockWrapperForMining blockWrapperForMining() throws Exception {
+        BlockWrapperForMining blockWrapperForMining = null;
+        List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.getTransactionList();
+        dropPackingTransactionException_PointOfView_Block(transactionListForMinerBlock);
+        Block nonNonceBlock = buildNonNonceBlock(transactionListForMinerBlock);
+        int targetDifficulty = mineDifficulty.difficulty(blockChainDataBase, nonNonceBlock);
+        String targetMineDificultyString = getTargetMineDificultyString(targetDifficulty);
+
+        blockWrapperForMining.setBlock(nonNonceBlock);
+        blockWrapperForMining.setTargetMineDificultyString(targetMineDificultyString);
+        blockWrapperForMining.setCurrentNonce(0L);
+        blockWrapperForMining.setMiningSuccess(false);
+        blockWrapperForMining.setBatch(100000L);
+        return blockWrapperForMining;
+    }
+
     @Data
     public static class BlockWrapperForMining{
         private Block block;
         private String targetMineDificultyString;
         private Boolean miningSuccess;
         private long currentNonce;
+        private long batch;
     }
 
     private boolean synchronizedBlockChainSegementmine() throws Exception {
@@ -114,14 +124,14 @@ public class MinerDefaultImpl implements Miner {
         Block block = blockWrapperForMining.getBlock();
         String targetMineDificultyString = blockWrapperForMining.getTargetMineDificultyString();
         long startNonce = blockWrapperForMining.getCurrentNonce();
-        long endNonce = startNonce + 100000L;
+        long endNonce = startNonce + blockWrapperForMining.batch;
         long nonce = miningNonce(block.getPreviousHash(),block.getHeight(),block.getMerkleRoot(),targetMineDificultyString,startNonce,endNonce);
         if(nonce > 0){
             block.setNonce(nonce);
             block.setHash(calculateBlockHash(block));
             blockWrapperForMining.setMiningSuccess(true);
         }
-        blockWrapperForMining.setCurrentNonce(startNonce);
+        blockWrapperForMining.setCurrentNonce(endNonce+1);
     }
     /**
      * 挖矿
@@ -131,9 +141,6 @@ public class MinerDefaultImpl implements Miner {
             String actualBlockHash = calculateBlockHash(previousHash,height,merkleRoot,currentNonce);
             if(isHashDifficultyRight(targetMineDificultyString, actualBlockHash)){
                 return currentNonce;
-            }
-            if(!mineOption){
-                return -1;
             }
         }
         return -1;
