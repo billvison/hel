@@ -16,9 +16,9 @@ public class Block implements Serializable {
     //上一个区块的哈希
     private String previousHash;
     //区块高度
-    private int height;
+    private Integer height;
     //区块随机数
-    private long nonce;
+    private Long nonce;
     //默克尔树根
     private String merkleRoot;
     //区块哈希

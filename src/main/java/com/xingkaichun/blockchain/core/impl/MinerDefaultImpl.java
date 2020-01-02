@@ -3,6 +3,7 @@ package com.xingkaichun.blockchain.core.impl;
 import com.xingkaichun.blockchain.core.*;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
+import com.xingkaichun.blockchain.core.model.BlockChainSegement;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
@@ -13,6 +14,7 @@ import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.CipherUtil;
 import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
 import com.xingkaichun.blockchain.core.utils.atomic.UuidUtil;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.security.spec.InvalidKeySpecException;
@@ -35,7 +37,7 @@ public class MinerDefaultImpl implements Miner {
 
     public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, ForMinerBlockChainSegementDataBase forMinerBlockChainSegementDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
         this.blockChainDataBase = blockChainDataBase;
-        this.forMinerTransactionDataBase = forMinerTransactionDataBase;
+        this.forMinerBlockChainSegementDataBase = forMinerBlockChainSegementDataBase;
         this.forMinerTransactionDataBase = forMinerTransactionDataBase;
         this.minerPublicKey = minerPublicKey;
         this.mineDifficulty = mineDifficulty;
@@ -43,48 +45,98 @@ public class MinerDefaultImpl implements Miner {
     }
     //endregion
 
-
-    private boolean mineSwitch = false;
-    private boolean synchronizedBlockChainSegementSwitch = false;
+    //总开关
+    private boolean mineOption = false;
+    private boolean synchronizedBlockChainSegementmineOption = false;
 
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
     public Block running() throws Exception {
-        List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.getTransactionList();
-        dropPackingTransactionException_PointOfView_Block(transactionListForMinerBlock);
+
+        boolean isSynchronizedBlockChainSegementmine = false;
+        BlockWrapperForMining blockWrapperForMining = null;
+        //分时
         while (true){
-            //TODO
-            Block mineBlock = miningNextBlock(transactionListForMinerBlock,0,0);
-            if(mineBlock != null){
-                blockChainDataBase.addBlock(mineBlock);
+            //同步其它区块
+            isSynchronizedBlockChainSegementmine = synchronizedBlockChainSegementmine();
+            //挖矿一定次数，则尝试同步其它区块
+            if(blockWrapperForMining == null || isSynchronizedBlockChainSegementmine){
+                List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.getTransactionList();
+                dropPackingTransactionException_PointOfView_Block(transactionListForMinerBlock);
+                Block packingBlock = buildNonNonceBlock(transactionListForMinerBlock);
+                int targetDifficulty = mineDifficulty.difficulty(blockChainDataBase, packingBlock);
+                String targetMineDificultyString = getTargetMineDificultyString(targetDifficulty);
+                blockWrapperForMining.setTargetMineDificultyString(targetMineDificultyString);
+                blockWrapperForMining.setCurrentNonce(0L);
             }
-            Thread.sleep(1*1000);
+            miningBlock(blockWrapperForMining);
+            if(blockWrapperForMining.getMiningSuccess() != null && blockWrapperForMining.getMiningSuccess()){
+                blockChainDataBase.addBlock(blockWrapperForMining.getBlock());
+                blockWrapperForMining = null;
+            }
         }
+    }
+
+    @Data
+    public static class BlockWrapperForMining{
+        private Block block;
+        private String targetMineDificultyString;
+        private Boolean miningSuccess;
+        private long currentNonce;
+    }
+
+    private boolean synchronizedBlockChainSegementmine() throws Exception {
+        if(synchronizedBlockChainSegementmineOption){
+            //TODO
+            boolean isBlockListApplyToBlockChain = false;
+            while (true){
+                BlockChainSegement blockChainSegement = forMinerBlockChainSegementDataBase.getBlockChainSegement();
+                if(blockChainSegement == null){
+                    break;
+                }
+                List<Block> blockList = blockChainSegement.getBlockList();
+                boolean currentIsBlockListApplyToBlockChain = isBlockListApplyToBlockChain(blockList);
+                if(currentIsBlockListApplyToBlockChain){
+                    blockChainDataBase.replaceBlocks(blockList);
+                    isBlockListApplyToBlockChain = true;
+                }
+            }
+            return isBlockListApplyToBlockChain;
+        }
+        return false;
     }
 
     /**
      * 挖矿
      */
-    public Block miningNextBlock(List<Transaction> transactionListForMinerBlock,long startNonce,long endNonce) throws Exception {
-        //创建打包区块
-        Block packingBlock = buildNonNonceBlock(transactionListForMinerBlock);
-        int targetDifficulty = mineDifficulty.difficulty(blockChainDataBase, packingBlock);
-        String targetMineDificultyString = getTargetMineDificultyString(targetDifficulty);
-
+    public void miningBlock(BlockWrapperForMining blockWrapperForMining) throws Exception {
+        //TODO 这里可以利用多处理器的性能进行计算
+        Block block = blockWrapperForMining.getBlock();
+        String targetMineDificultyString = blockWrapperForMining.getTargetMineDificultyString();
+        long startNonce = blockWrapperForMining.getCurrentNonce();
+        long endNonce = startNonce + 100000L;
+        long nonce = miningNonce(block.getPreviousHash(),block.getHeight(),block.getMerkleRoot(),targetMineDificultyString,startNonce,endNonce);
+        if(nonce > 0){
+            block.setNonce(nonce);
+            block.setHash(calculateBlockHash(block));
+            blockWrapperForMining.setMiningSuccess(true);
+        }
+        blockWrapperForMining.setCurrentNonce(startNonce);
+    }
+    /**
+     * 挖矿
+     */
+    public long miningNonce(String previousHash,int height,String merkleRoot,String targetMineDificultyString,long startNonce,long endNonce) throws Exception {
         for (long currentNonce=startNonce; currentNonce<=endNonce; currentNonce++) {
-            //TODO 优化
-            packingBlock.setNonce(currentNonce);
-            packingBlock.setHash(calculateBlockHash(packingBlock));
-
-            if(isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(packingBlock.getHash(),targetDifficulty))){
-                return packingBlock;
+            String actualBlockHash = calculateBlockHash(previousHash,height,merkleRoot,currentNonce);
+            if(isHashDifficultyRight(targetMineDificultyString, actualBlockHash)){
+                return currentNonce;
             }
-            //中断挖矿
-            if(!mineSwitch){
-                return null;
+            if(!mineOption){
+                return -1;
             }
         }
-        return packingBlock;
+        return -1;
     }
     //endregion
 
@@ -492,11 +544,12 @@ public class MinerDefaultImpl implements Miner {
     /**
      * 挖矿难度正确吗？
      * @param targetMineDificultyString 目标的字符串表示的挖矿难度
-     * @param actualMineDificultyString 实际的字符串表示的挖矿难度
+     * @param actualHash 挖矿Hash
      * @return
      */
-    public boolean isHashDifficultyRight(String targetMineDificultyString,String actualMineDificultyString){
-        return targetMineDificultyString.equals(actualMineDificultyString);
+    //TODO
+    public boolean isHashDifficultyRight(String targetMineDificultyString,String actualHash){
+        return actualHash.startsWith(targetMineDificultyString);
     }
     /**
      * 获取实际的字符串表示的挖矿难度
@@ -547,7 +600,10 @@ public class MinerDefaultImpl implements Miner {
      */
     public String calculateBlockHash(Block block) {
         //TODO 检测有没有用错的地方String merkleRoot = calculateBlockMerkleRoot(block);
-        return CipherUtil.applySha256(block.getHeight() + block.getNonce() + block.getPreviousHash() + block.getMerkleRoot());
+        return calculateBlockHash(block.getPreviousHash(),block.getHeight(),block.getMerkleRoot(),block.getNonce());
+    }
+    public String calculateBlockHash(String previousHash,int height,String merkleRoot,long nonce) {
+        return CipherUtil.applySha256(previousHash+height+merkleRoot+nonce);
     }
     /**
      * 计算区块的默克尔树根值
