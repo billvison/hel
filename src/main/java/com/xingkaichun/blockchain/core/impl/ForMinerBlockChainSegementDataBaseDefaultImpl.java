@@ -57,7 +57,7 @@ public class ForMinerBlockChainSegementDataBaseDefaultImpl implements ForMinerBl
     private String combineKey(BlockChainSegement blockChainSegement) {
         String key = "";
         for(Block block:blockChainSegement.getBlockList()){
-            key = key+block.getBlockHeight()+block.getHash();
+            key = key+block.getHeight()+block.getHash();
         }
         return key;
     }

@@ -157,7 +157,7 @@ public class MinerDefaultImpl implements Miner {
                 return false;
             }
             //校验区块高度
-            if(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT != block.getBlockHeight()){
+            if(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT != block.getHeight()){
                 return false;
             }
         } else {
@@ -166,7 +166,7 @@ public class MinerDefaultImpl implements Miner {
                 return false;
             }
             //校验区块高度是否连贯
-            if((tailBlock.getBlockHeight()+1) != block.getBlockHeight()){
+            if((tailBlock.getHeight()+1) != block.getHeight()){
                 return false;
             }
         }
@@ -363,7 +363,7 @@ public class MinerDefaultImpl implements Miner {
                 return false;
             }
             Block headBlock = blockList.get(0);
-            int headBlockHeight = headBlock.getBlockHeight();
+            int headBlockHeight = headBlock.getHeight();
 
             Block blockchainTailBlock = blockChainDataBase.findTailBlock();
             if(blockchainTailBlock == null){
@@ -371,14 +371,14 @@ public class MinerDefaultImpl implements Miner {
                     return false;
                 }
             }else{
-                int blockchainTailBlockHeight = blockchainTailBlock.getBlockHeight();
+                int blockchainTailBlockHeight = blockchainTailBlock.getHeight();
                 if(headBlockHeight < 1){
                     return false;
                 }
                 if(blockchainTailBlockHeight+1 < headBlockHeight){
                     return false;
                 }
-                while (blockchainTailBlock.getBlockHeight() >= headBlockHeight){
+                while (blockchainTailBlock.getHeight() >= headBlockHeight){
                     Block removeTailBlock = blockChainDataBase.removeTailBlock();
                     changeDeleteBlockList.add(removeTailBlock);
                     blockchainTailBlock = blockChainDataBase.findTailBlock();
@@ -445,7 +445,7 @@ public class MinerDefaultImpl implements Miner {
             }
         }
         //目标挖矿奖励
-        BigDecimal targetMineAward = mineAward.mineAward(blockChainDataBase,block.getBlockHeight(),packingTransactionList);
+        BigDecimal targetMineAward = mineAward.mineAward(blockChainDataBase,block.getHeight(),packingTransactionList);
         //区块中写入的挖矿奖励
         BigDecimal blockWritedMineAward = extractBlockWritedMineAward(block);
         return targetMineAward.compareTo(blockWritedMineAward) != 0 ;
@@ -523,17 +523,17 @@ public class MinerDefaultImpl implements Miner {
      */
     public Block buildNonNonceBlock(List<Transaction> packingTransactionList) throws Exception {
         Block tailBlock = blockChainDataBase.findTailBlock();
-        int blockHeight = tailBlock==null ? BlockChainCoreConstants.FIRST_BLOCK_HEIGHT : tailBlock.getBlockHeight()+1;
+        int blockHeight = tailBlock==null ? BlockChainCoreConstants.FIRST_BLOCK_HEIGHT : tailBlock.getHeight()+1;
         Transaction mineAwardTransaction =  buildMineAwardTransaction(blockHeight,packingTransactionList);
         //将奖励交易加入待打包列表
         packingTransactionList.add(mineAwardTransaction);
         Block nonNonceBlock = new Block();
         if(tailBlock == null){
-            nonNonceBlock.setBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
+            nonNonceBlock.setHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
             nonNonceBlock.setPreviousHash(BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH);
             nonNonceBlock.setTransactions(packingTransactionList);
         } else {
-            nonNonceBlock.setBlockHeight(tailBlock.getBlockHeight()+1);
+            nonNonceBlock.setHeight(tailBlock.getHeight()+1);
             nonNonceBlock.setPreviousHash(tailBlock.getHash());
             nonNonceBlock.setTransactions(packingTransactionList);
         }
@@ -547,7 +547,7 @@ public class MinerDefaultImpl implements Miner {
      */
     public String calculateBlockHash(Block block) {
         //TODO 检测有没有用错的地方String merkleRoot = calculateBlockMerkleRoot(block);
-        return CipherUtil.applySha256(block.getBlockHeight() + block.getNonce() + block.getPreviousHash() + block.getMerkleRoot());
+        return CipherUtil.applySha256(block.getHeight() + block.getNonce() + block.getPreviousHash() + block.getMerkleRoot());
     }
     /**
      * 计算区块的默克尔树根值

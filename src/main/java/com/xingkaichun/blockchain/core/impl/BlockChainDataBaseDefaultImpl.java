@@ -110,9 +110,9 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             //区块链上将被删掉的区块
             List<Block> deleteBlockList = new ArrayList<>();
             //新增到区块链上第一个区块的高度
-            int addedFirstBlockHight = addBlockList.get(0).getBlockHeight();
+            int addedFirstBlockHight = addBlockList.get(0).getHeight();
             //区块链上最后一个区块的高度
-            int lastBlockHeight = findTailBlock().getBlockHeight();
+            int lastBlockHeight = findTailBlock().getHeight();
             /**
              * 当lastBlockHeight>=addedFirstBlockHight 表示有替换
              * 当lastBlockHeight+1=addedFirstBlockHight 表示区块都是新增
@@ -179,7 +179,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             throw new BlockChainCoreException("参数writeBatch没有初始化");
         }
 //更新区块数据
-        byte[] blockHeightKey = LevelDBUtil.stringToBytes(addBlockHeightPrefix(block.getBlockHeight()));
+        byte[] blockHeightKey = LevelDBUtil.stringToBytes(addBlockHeightPrefix(block.getHeight()));
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
             writeBatch.put(blockHeightKey, EncodeDecode.encode(block));
         }else{
