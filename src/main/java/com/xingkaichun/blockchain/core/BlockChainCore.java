@@ -15,8 +15,7 @@ public class BlockChainCore {
 
     BlockChainDataBase blockChainDataBase ;
     Miner miner ;
-    //交易池：矿工从交易池里获取挖矿的原材料(交易数据)
-    private ForMinerTransactionDataBase forMinerTransactionDataBase;
+
     //监听区块链上区块的增删动作
     private List<BlockChainActionListener> blockChainActionListenerList = new ArrayList<>();
 
@@ -25,11 +24,11 @@ public class BlockChainCore {
     public BlockChainCore() throws Exception {
         MineDifficulty mineDifficulty = new MineDifficultyDefaultImpl();
         MineAward mineAward = new MineAwardDefaultImpl();
-        this.forMinerTransactionDataBase = new ForMinerTransactionDataBaseDefaultImpl("");
+        ForMinerTransactionDataBase forMinerTransactionDataBase = new ForMinerTransactionDataBaseDefaultImpl("");
         PublicKeyString minerPublicKey = new PublicKeyString("");
 
         this.blockChainDataBase = new BlockChainDataBaseDefaultImpl("");
-        this.miner = new MinerDefaultImpl(blockChainDataBase,mineDifficulty,mineAward,minerPublicKey);
+        this.miner = new MinerDefaultImpl(blockChainDataBase,forMinerTransactionDataBase,mineDifficulty,mineAward,minerPublicKey);
     }
 
     /**
@@ -38,10 +37,7 @@ public class BlockChainCore {
     public void startMining() throws Exception {
         try {
             while (true){
-                List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.getTransactionList();
-                //TODO 清洗数据 将被丢弃的数据从数据库中删除
-                miner.dropPackingTransactionException_PointOfView_Block(transactionListForMinerBlock);
-                Block mineBlock = miner.mineBlock(transactionListForMinerBlock);
+                Block mineBlock = miner.mineBlock();
                 if(mineBlock != null){
                     blockChainDataBase.addBlock(mineBlock);
                 }

@@ -1,9 +1,6 @@
 package com.xingkaichun.blockchain.core.impl;
 
-import com.xingkaichun.blockchain.core.BlockChainDataBase;
-import com.xingkaichun.blockchain.core.MineAward;
-import com.xingkaichun.blockchain.core.MineDifficulty;
-import com.xingkaichun.blockchain.core.Miner;
+import com.xingkaichun.blockchain.core.*;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
@@ -32,9 +29,12 @@ public class MinerDefaultImpl implements Miner {
     private MineDifficulty mineDifficulty;
     private MineAward mineAward;
     private BlockChainDataBase blockChainDataBase ;
+    //交易池：矿工从交易池里获取挖矿的原材料(交易数据)
+    private ForMinerTransactionDataBase forMinerTransactionDataBase;
 
-    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
+    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
         this.blockChainDataBase = blockChainDataBase;
+        this.forMinerTransactionDataBase = forMinerTransactionDataBase;
         this.minerPublicKey = minerPublicKey;
         this.mineDifficulty = mineDifficulty;
         this.mineAward = mineAward;
@@ -60,12 +60,13 @@ public class MinerDefaultImpl implements Miner {
     /**
      * 挖矿
      */
-    public Block mineBlock(List<Transaction> packingTransactionList) throws Exception {
-
-        dropPackingTransactionException_PointOfView_Block(packingTransactionList);
+    public Block mineBlock() throws Exception {
+        //TODO 清洗数据 将被丢弃的数据从数据库中删除
+        List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.getTransactionList();
+        dropPackingTransactionException_PointOfView_Block(transactionListForMinerBlock);
 
         //创建打包区块
-        Block packingBlock = buildNonNonceBlock(packingTransactionList);
+        Block packingBlock = buildNonNonceBlock(transactionListForMinerBlock);
         int difficulty = mineDifficulty.difficulty(blockChainDataBase, packingBlock);
         packingBlock.setHash(calculateBlockHash(packingBlock));
         String targetMineDificultyString = getTargetMineDificultyString(difficulty);
