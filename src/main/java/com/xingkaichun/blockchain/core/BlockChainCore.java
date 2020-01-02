@@ -1,6 +1,5 @@
 package com.xingkaichun.blockchain.core;
 
-import com.xingkaichun.blockchain.core.*;
 import com.xingkaichun.blockchain.core.impl.*;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionData;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionListener;
@@ -30,19 +29,19 @@ public class BlockChainCore {
         PublicKeyString minerPublicKey = new PublicKeyString("");
 
         this.blockChainDataBase = new BlockChainDataBaseDefaultImpl("");
-        this.miner = new MinerDefaultImpl(mineDifficulty,mineAward,minerPublicKey);
+        this.miner = new MinerDefaultImpl(blockChainDataBase,mineDifficulty,mineAward,minerPublicKey);
     }
 
     /**
      * 启动挖矿
      */
-    public void startMining(BlockChainDataBase blockChainDataBase) throws Exception {
+    public void startMining() throws Exception {
         try {
             while (true){
                 List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.getTransactionList();
                 //TODO 清洗数据 将被丢弃的数据从数据库中删除
-                miner.dropPackingTransactionException_PointOfView_Block(blockChainDataBase,transactionListForMinerBlock);
-                Block mineBlock = miner.mineBlock(blockChainDataBase, transactionListForMinerBlock);
+                miner.dropPackingTransactionException_PointOfView_Block(transactionListForMinerBlock);
+                Block mineBlock = miner.mineBlock(transactionListForMinerBlock);
                 if(mineBlock != null){
                     blockChainDataBase.addBlock(mineBlock);
                 }

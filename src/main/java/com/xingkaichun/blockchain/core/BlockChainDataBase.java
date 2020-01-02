@@ -8,7 +8,7 @@ import java.util.List;
 
 
 /**
- * 区块链
+ * 区块链数据库
  */
 public interface BlockChainDataBase {
 
