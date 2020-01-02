@@ -69,8 +69,7 @@ public class MinerDefaultImpl implements Miner {
         int difficulty = mineDifficulty.difficulty(blockChainDataBase, packingBlock);
         packingBlock.setHash(calculateBlockHash(packingBlock));
         String targetMineDificultyString = getTargetMineDificultyString(difficulty);
-        boolean miningBlockSuccess = false;
-        while (!(miningBlockSuccess=isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(packingBlock.getHash(),difficulty)))) {
+        while (!isHashDifficultyRight(targetMineDificultyString, getActualMineDificultyString(packingBlock.getHash(),difficulty))) {
             //中断挖矿
             synchronized (stopCurrentBlockMining){
                 if(stopCurrentBlockMining){
