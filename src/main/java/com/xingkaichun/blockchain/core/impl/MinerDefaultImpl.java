@@ -65,13 +65,13 @@ public class MinerDefaultImpl implements Miner {
     /**
      * 挖矿
      */
-    public Block miningNextBlock(List<Transaction> transactionListForMinerBlock,int startNonce,int endNonce) throws Exception {
+    public Block miningNextBlock(List<Transaction> transactionListForMinerBlock,long startNonce,long endNonce) throws Exception {
         //创建打包区块
         Block packingBlock = buildNonNonceBlock(transactionListForMinerBlock);
         int targetDifficulty = mineDifficulty.difficulty(blockChainDataBase, packingBlock);
         String targetMineDificultyString = getTargetMineDificultyString(targetDifficulty);
 
-        for (int currentNonce=startNonce; currentNonce<=endNonce; currentNonce++) {
+        for (long currentNonce=startNonce; currentNonce<=endNonce; currentNonce++) {
             //TODO 优化
             packingBlock.setNonce(currentNonce);
             packingBlock.setHash(calculateBlockHash(packingBlock));

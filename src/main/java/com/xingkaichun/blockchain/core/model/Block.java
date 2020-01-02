@@ -19,7 +19,7 @@ public class Block implements Serializable {
     //TODO 重命名
     private int blockHeight;
     //区块随机数
-    private int nonce;
+    private long nonce;
     //默克尔树根
     private String merkleRoot;
     //区块哈希
