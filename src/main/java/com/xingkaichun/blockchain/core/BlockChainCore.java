@@ -6,7 +6,6 @@ import com.xingkaichun.blockchain.core.listen.BlockChainActionListener;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
-import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +24,11 @@ public class BlockChainCore {
         MineDifficulty mineDifficulty = new MineDifficultyDefaultImpl();
         MineAward mineAward = new MineAwardDefaultImpl();
         ForMinerTransactionDataBase forMinerTransactionDataBase = new ForMinerTransactionDataBaseDefaultImpl("");
+        ForMinerBlockChainSegementDataBase forMinerBlockChainSegementDataBase = new ForMinerBlockChainSegementDataBaseDefaultImpl("");
         PublicKeyString minerPublicKey = new PublicKeyString("");
-
         this.blockChainDataBase = new BlockChainDataBaseDefaultImpl("");
-        this.miner = new MinerDefaultImpl(blockChainDataBase,forMinerTransactionDataBase,mineDifficulty,mineAward,minerPublicKey);
+
+        this.miner = new MinerDefaultImpl(blockChainDataBase,forMinerBlockChainSegementDataBase,forMinerTransactionDataBase,mineDifficulty,mineAward,minerPublicKey);
     }
 
     /**

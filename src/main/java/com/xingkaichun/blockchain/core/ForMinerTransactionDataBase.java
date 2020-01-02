@@ -21,5 +21,6 @@ public interface ForMinerTransactionDataBase {
     /**
      * 从交易池获取交易
      */
+    //TODO 增加按照排序选择
     List<Transaction> getTransactionList() throws Exception ;
 }

@@ -29,11 +29,13 @@ public class MinerDefaultImpl implements Miner {
     private MineDifficulty mineDifficulty;
     private MineAward mineAward;
     private BlockChainDataBase blockChainDataBase ;
+    private ForMinerBlockChainSegementDataBase forMinerBlockChainSegementDataBase;
     //交易池：矿工从交易池里获取挖矿的原材料(交易数据)
     private ForMinerTransactionDataBase forMinerTransactionDataBase;
 
-    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
+    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, ForMinerBlockChainSegementDataBase forMinerBlockChainSegementDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
         this.blockChainDataBase = blockChainDataBase;
+        this.forMinerTransactionDataBase = forMinerTransactionDataBase;
         this.forMinerTransactionDataBase = forMinerTransactionDataBase;
         this.minerPublicKey = minerPublicKey;
         this.mineDifficulty = mineDifficulty;

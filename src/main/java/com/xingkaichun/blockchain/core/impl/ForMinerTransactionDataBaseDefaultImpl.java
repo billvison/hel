@@ -21,7 +21,7 @@ public class ForMinerTransactionDataBaseDefaultImpl implements ForMinerTransacti
 
     public ForMinerTransactionDataBaseDefaultImpl(String dbPath) throws Exception {
 
-        this.transactionPoolDB = LevelDBUtil.createDB(new File(dbPath,"TransactionPoolDB"));
+        this.transactionPoolDB = LevelDBUtil.createDB(new File(dbPath,"ForMinerTransactionDataBase"));
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -41,12 +41,12 @@ public class ForMinerTransactionDataBaseDefaultImpl implements ForMinerTransacti
         }
 
         //交易已经持久化进交易池数据库 丢弃交易
-        String combineTransactionKey = combineTransactionKey(transaction);
-        if(isTransactionExsitInPool(combineTransactionKey)){
+        String combineKey = combineKey(transaction);
+        if(isTransactionExsitInPool(combineKey)){
             return false;
         }
         synchronized (BlockChainDataBase.class){
-            LevelDBUtil.put(transactionPoolDB,combineTransactionKey, EncodeDecode.encode(transaction));
+            LevelDBUtil.put(transactionPoolDB,combineKey, EncodeDecode.encode(transaction));
         }
         return true;
     }
@@ -83,7 +83,7 @@ public class ForMinerTransactionDataBaseDefaultImpl implements ForMinerTransacti
      * 因为KEY是有公钥参与生成，所以在交易池看来，它们是不同的交易，它们都可以持久化进交易池。
      * @param transaction 交易
      */
-    private String combineTransactionKey(Transaction transaction) {
+    private String combineKey(Transaction transaction) {
         return TransactionUtil.getSender(transaction).getValue() + transaction.getTransactionUUID();
     }
 }
