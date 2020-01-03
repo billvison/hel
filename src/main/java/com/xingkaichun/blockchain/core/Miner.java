@@ -24,7 +24,10 @@ public interface Miner {
      * @throws Exception
      */
     boolean synchronizeBlockChainNode() throws Exception ;
-
+    /**
+     * 构建缺少nonce(代表尚未被挖矿)的区块
+     */
+    Block buildNonNonceBlock(List<Transaction> packingTransactionList) throws Exception ;
     /**
      * 检测区块是否可以被应用到区块链上
      * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
@@ -37,21 +40,8 @@ public interface Miner {
      * 情况2：不需要删除链上的区块，链上直接可以衔接这串区块
      */
     boolean isBlockListApplyToBlockChain(List<Block> blockList) throws Exception ;
-    /**
-     * 校验(未打包进区块链的)交易的合法性
-     * 奖励交易校验需要传入block参数
-     */
-    boolean checkUnBlockChainTransaction(Block block, Transaction transaction) throws Exception ;
-    /**
-     * 打包处理过程: 将异常的交易丢弃掉【站在区块的角度校验交易】
-     * @param packingTransactionList
-    // * @return 被丢弃的异常交易
-     * @throws Exception
-     */
-    void dropPackingTransactionException_PointOfView_Block(List<Transaction> packingTransactionList) throws Exception ;
 
-
-    //region 挖矿奖励相关
+    //region 挖矿奖励
     /**
      * 构建区块的挖矿奖励交易
      * @param block 目标区块
@@ -71,31 +61,27 @@ public interface Miner {
     boolean isBlockMineAwardRight(Block block);
     //endregion
 
-    //region 构建区块、计算区块hash、校验区块Nonce
-    /**
-     * 构建缺少nonce(代表尚未被挖矿)的区块
-     */
-    Block buildNonNonceBlock(List<Transaction> packingTransactionList) throws Exception ;
-    /**
-     * 计算区块的Hash值
-     * @param block 区块
-     */
-    String calculateBlockHash(Block block) ;
+    //region 默克尔树根
     /**
      * 计算区块的默克尔树根值
      * @param block 区块
      */
     String calculateBlockMerkleRoot(Block block) ;
     /**
-     * 判断Block的挖矿的成果Nonce是否正确
+     * 判断Block写入的默克尔树根是否正确
      */
-    boolean isBlockMinedNonceSuccess(Block block) ;
-    /**
-     * Hash满足挖矿难度的要求吗？
-     * @param targetDificulty 目标挖矿难度
-     * @param hash 需要校验的Hash
-     */
-    boolean isHashRight(String targetDificulty,String hash) ;
+    boolean isBlockMerkleRootRight(Block block);
     //endregion
 
+    //region 区块Hash
+    /**
+     * 计算区块的Hash值
+     * @param block 区块
+     */
+    String calculateBlockHash(Block block) ;
+    /**
+     * 判断挖矿Hash是否正确
+     */
+    boolean isBlockHashRight(Block block) ;
+    //endregion
 }

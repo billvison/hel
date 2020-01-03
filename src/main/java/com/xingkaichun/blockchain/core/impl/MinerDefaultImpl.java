@@ -157,6 +157,13 @@ public class MinerDefaultImpl implements Miner {
     }
     //endregion
 
+
+    /**
+     * 打包处理过程: 将异常的交易丢弃掉【站在区块的角度校验交易】
+     * @param packingTransactionList
+    // TODO * @return 被丢弃的异常交易
+     * @throws Exception
+     */
     public void dropPackingTransactionException_PointOfView_Block(List<Transaction> packingTransactionList) throws Exception{
         //区块中允许没有交易
         if(packingTransactionList==null || packingTransactionList.size()==0){
@@ -237,7 +244,7 @@ public class MinerDefaultImpl implements Miner {
             }
         }
         //校验挖矿[区块本身的数据]是否正确
-        boolean minerSuccess = isBlockMinedNonceSuccess(block);
+        boolean minerSuccess = isBlockHashRight(block);
         if(!minerSuccess){
             return false;
         }
@@ -335,7 +342,12 @@ public class MinerDefaultImpl implements Miner {
         return true;
     }
 
-    @Override
+
+    /**
+     * 校验(未打包进区块链的)交易的合法性
+     * 奖励交易校验需要传入block参数
+     */
+    //TODO
     public boolean checkUnBlockChainTransaction(Block block, Transaction transaction) throws Exception{
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();
@@ -518,7 +530,11 @@ public class MinerDefaultImpl implements Miner {
 
 
     //region 挖矿Hash相关
-    @Override
+    /**
+     * Hash满足挖矿难度的要求吗？
+     * @param targetDificulty 目标挖矿难度
+     * @param hash 需要校验的Hash
+     */
     public boolean isHashRight(String targetDificulty,String hash){
         return hash.startsWith(targetDificulty);
     }
@@ -559,10 +575,14 @@ public class MinerDefaultImpl implements Miner {
         return MerkleUtils.getMerkleRoot(transactionList);
     }
     @Override
-    public boolean isBlockMinedNonceSuccess(Block block){
+    public boolean isBlockMerkleRootRight(Block block){
+        String targetMerkleRoot = calculateBlockMerkleRoot(block);
+        return targetMerkleRoot.equals(block.getMerkleRoot());
+    }
+    @Override
+    public boolean isBlockHashRight(Block block){
         //校验区块写入的MerkleRoot是否正确
-        String merkleRoot = calculateBlockMerkleRoot(block);
-        if(!merkleRoot.equals(block.getMerkleRoot())){
+        if(!isBlockMerkleRootRight(block)){
             return false;
         }
         //校验区块写入的挖矿是否正确
