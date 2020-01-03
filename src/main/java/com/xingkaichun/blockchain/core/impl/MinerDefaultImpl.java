@@ -51,7 +51,7 @@ public class MinerDefaultImpl implements Miner {
 
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
-    public Block running() throws Exception {
+    public void running() throws Exception {
         boolean isSynchronizedBlockChainSegementmine = false;
         BlockWrapperForMining blockWrapperForMining = null;
         //分时
@@ -66,6 +66,9 @@ public class MinerDefaultImpl implements Miner {
             if(blockWrapperForMining.getMiningSuccess() != null && blockWrapperForMining.getMiningSuccess()){
                 blockChainDataBase.addBlock(blockWrapperForMining.getBlock());
                 blockWrapperForMining = null;
+            }
+            if(mineOption){
+                break;
             }
         }
     }

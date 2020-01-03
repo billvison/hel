@@ -15,7 +15,7 @@ public interface Miner {
     /**
      * 启动
      */
-    Block running() throws Exception ;
+    void running() throws Exception ;
     //endregion
 
 
