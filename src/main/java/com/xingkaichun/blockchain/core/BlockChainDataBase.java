@@ -22,8 +22,7 @@ public interface BlockChainDataBase {
     boolean addBlock(Block block) throws Exception ;
 
     /**
-     * 删除区块链的尾巴[最后一个]区块
-     * //TODO 是否需要按照高度删除区块
+     * 删除区块链的尾巴区块(最后一个区块)
      */
     Block removeTailBlock() throws Exception ;
 

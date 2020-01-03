@@ -478,6 +478,7 @@ public class MinerDefaultImpl implements Miner {
             return false;
         } finally {
             if(!success){
+                //TODO 根据高度回滚、增加
                 if(changeAddBlockList.size() != 0){
                     for (int i=changeAddBlockList.size(); i>=0; i--){
                         blockChainDataBase.removeTailBlock();
