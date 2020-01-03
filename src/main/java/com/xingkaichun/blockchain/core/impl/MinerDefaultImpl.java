@@ -362,7 +362,6 @@ public class MinerDefaultImpl implements Miner {
      * 校验(未打包进区块链的)交易的合法性
      * 奖励交易校验需要传入block参数
      */
-    //TODO
     public boolean checkUnBlockChainTransaction(Block block, Transaction transaction) throws Exception{
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();
