@@ -519,8 +519,8 @@ public class MinerDefaultImpl implements Miner {
 
     //region 挖矿Hash相关
     @Override
-    public boolean isHashRight(String targetDificulty,String actualHash){
-        return actualHash.startsWith(targetDificulty);
+    public boolean isHashRight(String targetDificulty,String hash){
+        return hash.startsWith(targetDificulty);
     }
     //endregion
 

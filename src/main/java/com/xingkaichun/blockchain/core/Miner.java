@@ -18,6 +18,11 @@ public interface Miner {
     void running() throws Exception ;
     //endregion
 
+    /**
+     * 同步其它区块链的数据。
+     * @return 如果真的同步了其它区块链的数据，也就是本区块链新增了区块，返回true；其它情况，返回false。
+     * @throws Exception
+     */
     boolean synchronizeBlockChainNode() throws Exception ;
 
     /**
@@ -25,13 +30,6 @@ public interface Miner {
      * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
      */
     boolean isBlockApplyToBlockChain(Block block) throws Exception ;
-
-    /**
-     * 校验(未打包进区块链的)交易的合法性
-     * 奖励交易校验需要传入block参数
-     */
-    boolean checkUnBlockChainTransaction(Block block, Transaction transaction) throws Exception ;
-
     /**
      * 检测一串区块是否可以被应用到区块链上
      * 有两种情况，一串区块可以被应用到区块链:
@@ -39,9 +37,26 @@ public interface Miner {
      * 情况2：不需要删除链上的区块，链上直接可以衔接这串区块
      */
     boolean isBlockListApplyToBlockChain(List<Block> blockList) throws Exception ;
+    /**
+     * 校验(未打包进区块链的)交易的合法性
+     * 奖励交易校验需要传入block参数
+     */
+    boolean checkUnBlockChainTransaction(Block block, Transaction transaction) throws Exception ;
+    /**
+     * 打包处理过程: 将异常的交易丢弃掉【站在区块的角度校验交易】
+     * @param packingTransactionList
+    // * @return 被丢弃的异常交易
+     * @throws Exception
+     */
+    void dropPackingTransactionException_PointOfView_Block(List<Transaction> packingTransactionList) throws Exception ;
 
 
     //region 挖矿奖励相关
+    /**
+     * 构建区块的挖矿奖励交易
+     * @param block 目标区块
+     */
+    Transaction buildMineAwardTransaction(Block block) ;
     /**
      * 获取区块中写入的挖矿奖励
      * @param block 区块
@@ -54,22 +69,6 @@ public interface Miner {
      * @return
      */
     boolean isBlockMineAwardRight(Block block);
-    /**
-     * 构建区块的挖矿奖励交易
-     * @param block 目标区块
-     */
-    Transaction buildMineAwardTransaction(Block block) ;
-    //endregion
-
-
-    //region 挖矿Hash相关
-    /**
-     * 挖矿难度正确吗？
-     * @param targetMineDificultyString 目标的字符串表示的挖矿难度
-     * @param actualMineDificultyString 实际的字符串表示的挖矿难度
-     * @return
-     */
-    boolean isHashRight(String targetMineDificultyString,String actualMineDificultyString) ;
     //endregion
 
     //region 构建区块、计算区块hash、校验区块Nonce
@@ -91,13 +90,12 @@ public interface Miner {
      * 判断Block的挖矿的成果Nonce是否正确
      */
     boolean isBlockMinedNonceSuccess(Block block) ;
-    //endregion
     /**
-     * 打包处理过程: 将异常的交易丢弃掉【站在区块的角度校验交易】
-     * @param packingTransactionList
-    // * @return 被丢弃的异常交易
-     * @throws Exception
+     * Hash满足挖矿难度的要求吗？
+     * @param targetDificulty 目标挖矿难度
+     * @param hash 需要校验的Hash
      */
-    void dropPackingTransactionException_PointOfView_Block(List<Transaction> packingTransactionList) throws Exception ;
+    boolean isHashRight(String targetDificulty,String hash) ;
+    //endregion
 
 }
