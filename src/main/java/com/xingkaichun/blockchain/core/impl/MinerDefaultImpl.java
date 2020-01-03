@@ -476,7 +476,7 @@ public class MinerDefaultImpl implements Miner {
 
     //region 挖矿奖励相关
     @Override
-    public BigDecimal extractBlockWritedMineAward(Block block) {
+    public BigDecimal obtainBlockWriteMineAward(Block block) {
         for(Transaction tx : block.getTransactions()){
             if(tx.getTransactionType() == TransactionType.MINER){
                 ArrayList<TransactionOutput> outputs = tx.getOutputs();
@@ -488,27 +488,21 @@ public class MinerDefaultImpl implements Miner {
     }
     @Override
     public boolean isBlockMineAwardRight(Block block){
-        List<Transaction> packingTransactionList = new ArrayList<>();
-        for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() != TransactionType.MINER){
-                packingTransactionList.add(tx);
-            }
-        }
-        //目标挖矿奖励
-        BigDecimal targetMineAward = mineAward.mineAward(blockChainDataBase,block.getHeight(),packingTransactionList);
         //区块中写入的挖矿奖励
-        BigDecimal blockWritedMineAward = extractBlockWritedMineAward(block);
+        BigDecimal blockWritedMineAward = obtainBlockWriteMineAward(block);
+        //目标挖矿奖励
+        BigDecimal targetMineAward = mineAward.mineAward(blockChainDataBase,block);
         return targetMineAward.compareTo(blockWritedMineAward) != 0 ;
     }
     @Override
-    public Transaction buildMineAwardTransaction(int blockHeight, List<Transaction> packingTransactionList) {
+    public Transaction buildMineAwardTransaction(Block block) {
         Transaction transaction = new Transaction();
         transaction.setTransactionUUID(String.valueOf(UUID.randomUUID()));
         transaction.setTransactionType(TransactionType.MINER);
         transaction.setInputs(null);
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
-        BigDecimal award = mineAward.mineAward(blockChainDataBase,blockHeight,packingTransactionList);
+        BigDecimal award = mineAward.mineAward(blockChainDataBase,block);
 
         TransactionOutput output = new TransactionOutput();
         output.setTransactionOutputUUID(String.valueOf(UUID.randomUUID()));
@@ -534,10 +528,6 @@ public class MinerDefaultImpl implements Miner {
     @Override
     public Block buildNonNonceBlock(List<Transaction> packingTransactionList) throws Exception {
         Block tailBlock = blockChainDataBase.findTailBlock();
-        int blockHeight = tailBlock==null ? BlockChainCoreConstants.FIRST_BLOCK_HEIGHT : tailBlock.getHeight()+1;
-        Transaction mineAwardTransaction =  buildMineAwardTransaction(blockHeight,packingTransactionList);
-        //将奖励交易加入待打包列表
-        packingTransactionList.add(mineAwardTransaction);
         Block nonNonceBlock = new Block();
         if(tailBlock == null){
             nonNonceBlock.setHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
@@ -548,6 +538,10 @@ public class MinerDefaultImpl implements Miner {
             nonNonceBlock.setPreviousHash(tailBlock.getHash());
             nonNonceBlock.setTransactions(packingTransactionList);
         }
+        Transaction mineAwardTransaction =  buildMineAwardTransaction(nonNonceBlock);
+        //将奖励交易加入待打包列表
+        packingTransactionList.add(mineAwardTransaction);
+
         String merkleRoot = calculateBlockMerkleRoot(nonNonceBlock);
         nonNonceBlock.setMerkleRoot(merkleRoot);
         return nonNonceBlock;

@@ -47,7 +47,7 @@ public interface Miner {
      * @param block 区块
      * @return
      */
-    BigDecimal extractBlockWritedMineAward(Block block) ;
+    BigDecimal obtainBlockWriteMineAward(Block block) ;
     /**
      * 区块的挖矿奖励是否正确？
      * @param block 被校验挖矿奖励是否正确的区块
@@ -55,11 +55,10 @@ public interface Miner {
      */
     boolean isBlockMineAwardRight(Block block);
     /**
-     * 构建挖矿奖励交易
-     * @param blockHeight
-     * @param packingTransactionList
+     * 构建区块的挖矿奖励交易
+     * @param block 目标区块
      */
-    Transaction buildMineAwardTransaction(int blockHeight, List<Transaction> packingTransactionList) ;
+    Transaction buildMineAwardTransaction(Block block) ;
     //endregion
 
 
