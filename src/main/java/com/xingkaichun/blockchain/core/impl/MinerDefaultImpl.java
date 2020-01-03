@@ -133,10 +133,9 @@ public class MinerDefaultImpl implements Miner {
             if(blockChainSegement == null){
                 break;
             }
-            List<Block> blockList = blockChainSegement.getBlockList();
-            boolean currentIsBlockListApplyToBlockChain = isBlockListApplyToBlockChain(blockList);
+            boolean currentIsBlockListApplyToBlockChain = isBlockListApplyToBlockChain(blockChainSegement);
             if(currentIsBlockListApplyToBlockChain){
-                blockChainDataBase.replaceBlocks(blockList);
+                blockChainDataBase.replaceBlocks(blockChainSegement);
                 isBlockChainGrow = true;
             }
         }
@@ -432,11 +431,16 @@ public class MinerDefaultImpl implements Miner {
     }
 
     @Override
-    public boolean isBlockListApplyToBlockChain(List<Block> blockList) throws Exception {
+    public boolean isBlockListApplyToBlockChain(BlockChainSegement blockChainSegement) throws Exception {
+        //TODO forMinerBlockChainSegementDataBase
         boolean success = true;
         List<Block> changeDeleteBlockList = new ArrayList<>();
         List<Block> changeAddBlockList = new ArrayList<>();
         try {
+            if(blockChainSegement == null){
+                return false;
+            }
+            List<Block> blockList = blockChainSegement.getBlockList();
             //被检测区块不允许是空
             if(blockList==null || blockList.size()==0){
                 return false;
@@ -477,6 +481,7 @@ public class MinerDefaultImpl implements Miner {
             e.printStackTrace();
             return false;
         } finally {
+            //区块链的区块不应该增加或是减少。
             if(!success){
                 //TODO 根据高度回滚、增加
                 if(changeAddBlockList.size() != 0){

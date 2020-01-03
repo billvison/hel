@@ -3,6 +3,7 @@ package com.xingkaichun.blockchain.core.impl;
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
+import com.xingkaichun.blockchain.core.model.BlockChainSegement;
 import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
@@ -101,9 +102,10 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         }
     }
     @Override
-    public boolean replaceBlocks(List<Block> addBlockList) throws Exception {
+    public boolean replaceBlocks(BlockChainSegement blockChainSegement) throws Exception {
         lock.lock();
         try{
+            List<Block> addBlockList = blockChainSegement.getBlockList();
             //用于记录数据库操作
             WriteBatch writeBatch = new WriteBatchImpl();
             //区块链上将被删掉的区块

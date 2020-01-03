@@ -1,6 +1,7 @@
 package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.model.Block;
+import com.xingkaichun.blockchain.core.model.BlockChainSegement;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
 
@@ -31,7 +32,7 @@ public interface BlockChainDataBase {
      * 这个是一个比较复杂的操作。不仅要考虑每一个区块数据的正确性，
      *
      */
-    boolean replaceBlocks(List<Block> addBlockList) throws Exception ;
+    boolean replaceBlocks(BlockChainSegement blockChainSegement) throws Exception ;
     //endregion
 
     //region 区块链提供的通用方法

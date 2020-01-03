@@ -1,10 +1,10 @@
 package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.model.Block;
+import com.xingkaichun.blockchain.core.model.BlockChainSegement;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * 矿工:计算挖矿奖励、计算挖矿难度、挖矿、校验区块数据的合法性、将挖到的矿放进区块链上、同步其它区块链节点的数据......
@@ -46,7 +46,7 @@ public interface Miner {
      * 情况1：需要删除一部分链上的区块，然后链上可以衔接这串区块，且删除的区块数目要小于增加的区块的数目
      * 情况2：不需要删除链上的区块，链上直接可以衔接这串区块
      */
-    boolean isBlockListApplyToBlockChain(List<Block> blockList) throws Exception ;
+    boolean isBlockListApplyToBlockChain(BlockChainSegement blockChainSegement) throws Exception ;
     //endregion
 
     //region 挖矿奖励
