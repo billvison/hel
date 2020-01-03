@@ -18,6 +18,7 @@ public interface Miner {
     void running() throws Exception ;
     //endregion
 
+    boolean synchronizeBlockChainNode() throws Exception ;
 
     /**
      * 检测区块是否可以被应用到区块链上
@@ -64,32 +65,12 @@ public interface Miner {
 
     //region 挖矿Hash相关
     /**
-     * hash的难度是difficulty吗？
-     * @param hash hash
-     * @param targetDifficulty 目标难度
-     * @return
-     */
-    boolean isHashDifficultyRight(String hash,int targetDifficulty) ;
-    /**
      * 挖矿难度正确吗？
      * @param targetMineDificultyString 目标的字符串表示的挖矿难度
      * @param actualMineDificultyString 实际的字符串表示的挖矿难度
      * @return
      */
-    boolean isHashDifficultyRight(String targetMineDificultyString,String actualMineDificultyString) ;
-    /**
-     * 获取实际的字符串表示的挖矿难度
-     * @param hash hash
-     * @param targetDifficulty 目标挖矿难度
-     * @return
-     */
-    String getActualMineDificultyString(String hash, int targetDifficulty) ;
-    /**
-     * 计算字符串表示的挖矿难度目标
-     * 示例: 难度为5返回"00000"
-     * @param targetDifficulty 目标挖矿难度
-     */
-    String getTargetMineDificultyString(int targetDifficulty) ;
+    boolean isHashRight(String targetMineDificultyString,String actualMineDificultyString) ;
     //endregion
 
     //region 构建区块、计算区块hash、校验区块Nonce

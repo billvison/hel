@@ -6,7 +6,7 @@ import com.xingkaichun.blockchain.core.model.Block;
 
 public class MineDifficultyDefaultImpl implements MineDifficulty {
 
-    public int difficulty(BlockChainDataBase blockChainDataBase, Block block){
-        return 4;
+    public String difficulty(BlockChainDataBase blockChainDataBase, Block block){
+        return "0000";
     }
 }

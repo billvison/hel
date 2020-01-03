@@ -11,5 +11,5 @@ public interface MineDifficulty {
      * @param blockChainDataBase 区块链
      * @param block 目标区块
      */
-    int difficulty(BlockChainDataBase blockChainDataBase, Block block);
+    String difficulty(BlockChainDataBase blockChainDataBase, Block block);
 }
