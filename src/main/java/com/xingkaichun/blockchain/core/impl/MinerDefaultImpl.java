@@ -51,6 +51,7 @@ public class MinerDefaultImpl implements Miner {
 
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
+    @Override
     public void running() throws Exception {
         boolean isSynchronizedBlockChainSegementmine = false;
         BlockWrapperForMining blockWrapperForMining = null;
@@ -203,10 +204,7 @@ public class MinerDefaultImpl implements Miner {
 
 
 
-    /**
-     * 检测区块是否可以被应用到区块链上
-     * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
-     */
+    @Override
     public boolean isBlockApplyToBlockChain(Block block) throws Exception {
         if(block==null){
             throw new BlockChainCoreException("区块校验失败：区块不能为null。");
@@ -331,10 +329,7 @@ public class MinerDefaultImpl implements Miner {
         return true;
     }
 
-    /**
-     * 校验(未打包进区块链的)交易的合法性
-     * 奖励交易校验需要传入block参数
-     */
+    @Override
     public boolean checkUnBlockChainTransaction(Block block, Transaction transaction) throws Exception{
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();
@@ -409,12 +404,7 @@ public class MinerDefaultImpl implements Miner {
         }
     }
 
-    /**
-     * 检测一串区块是否可以被应用到区块链上
-     * 有两种情况，一串区块可以被应用到区块链:
-     * 情况1：需要删除一部分链上的区块，然后链上可以衔接这串区块，且删除的区块数目要小于增加的区块的数目
-     * 情况2：不需要删除链上的区块，链上直接可以衔接这串区块
-     */
+    @Override
     public boolean isBlockListApplyToBlockChain(List<Block> blockList) throws Exception {
         boolean success = true;
         List<Block> changeDeleteBlockList = new ArrayList<>();
@@ -479,11 +469,7 @@ public class MinerDefaultImpl implements Miner {
 
 
     //region 挖矿奖励相关
-    /**
-     * 获取区块中写入的挖矿奖励
-     * @param block 区块
-     * @return
-     */
+    @Override
     public BigDecimal extractBlockWritedMineAward(Block block) {
         for(Transaction tx : block.getTransactions()){
             if(tx.getTransactionType() == TransactionType.MINER){
@@ -494,11 +480,7 @@ public class MinerDefaultImpl implements Miner {
         }
         throw new BlockChainCoreException("区块数据异常：没有包含挖矿奖励数据。");
     }
-    /**
-     * 区块的挖矿奖励是否正确？
-     * @param block 被校验挖矿奖励是否正确的区块
-     * @return
-     */
+    @Override
     public boolean isBlockMineAwardRight(Block block){
         List<Transaction> packingTransactionList = new ArrayList<>();
         for(Transaction tx : block.getTransactions()){
@@ -512,11 +494,7 @@ public class MinerDefaultImpl implements Miner {
         BigDecimal blockWritedMineAward = extractBlockWritedMineAward(block);
         return targetMineAward.compareTo(blockWritedMineAward) != 0 ;
     }
-    /**
-     * 构建挖矿奖励交易
-     * @param blockHeight
-     * @param packingTransactionList
-     */
+    @Override
     public Transaction buildMineAwardTransaction(int blockHeight, List<Transaction> packingTransactionList) {
         Transaction transaction = new Transaction();
         transaction.setTransactionUUID(String.valueOf(UUID.randomUUID()));
@@ -540,50 +518,29 @@ public class MinerDefaultImpl implements Miner {
 
 
     //region 挖矿Hash相关
-    /**
-     * hash的难度是difficulty吗？
-     * @param hash hash
-     * @param targetDifficulty 目标难度
-     * @return
-     */
+    @Override
     public boolean isHashDifficultyRight(String hash,int targetDifficulty){
         String targetMineDificultyString = getTargetMineDificultyString(targetDifficulty);
         String actualMineDificultyString = getActualMineDificultyString(hash, targetDifficulty);
         return isHashDifficultyRight(targetMineDificultyString, actualMineDificultyString);
     }
-    /**
-     * 挖矿难度正确吗？
-     * @param targetMineDificultyString 目标的字符串表示的挖矿难度
-     * @param actualHash 挖矿Hash
-     * @return
-     */
     //TODO
+    @Override
     public boolean isHashDifficultyRight(String targetMineDificultyString,String actualHash){
         return actualHash.startsWith(targetMineDificultyString);
     }
-    /**
-     * 获取实际的字符串表示的挖矿难度
-     * @param hash hash
-     * @param targetDifficulty 目标挖矿难度
-     * @return
-     */
+    @Override
     public String getActualMineDificultyString(String hash, int targetDifficulty){
         return hash.substring(0, targetDifficulty);
     }
-    /**
-     * 计算字符串表示的挖矿难度目标
-     * 示例: 难度为5返回"00000"
-     * @param targetDifficulty 目标挖矿难度
-     */
+    @Override
     public String getTargetMineDificultyString(int targetDifficulty) {
         return new String(new char[targetDifficulty]).replace('\0', '0');
     }
     //endregion
 
     //region 构建区块、计算区块hash、校验区块Nonce
-    /**
-     * 构建缺少nonce(代表尚未被挖矿)的区块
-     */
+    @Override
     public Block buildNonNonceBlock(List<Transaction> packingTransactionList) throws Exception {
         Block tailBlock = blockChainDataBase.findTailBlock();
         int blockHeight = tailBlock==null ? BlockChainCoreConstants.FIRST_BLOCK_HEIGHT : tailBlock.getHeight()+1;
@@ -604,10 +561,7 @@ public class MinerDefaultImpl implements Miner {
         nonNonceBlock.setMerkleRoot(merkleRoot);
         return nonNonceBlock;
     }
-    /**
-     * 计算区块的Hash值
-     * @param block 区块
-     */
+    @Override
     public String calculateBlockHash(Block block) {
         //TODO 检测有没有用错的地方String merkleRoot = calculateBlockMerkleRoot(block);
         return calculateBlockHash(block.getPreviousHash(),block.getHeight(),block.getMerkleRoot(),block.getNonce());
@@ -615,17 +569,12 @@ public class MinerDefaultImpl implements Miner {
     public String calculateBlockHash(String previousHash,int height,String merkleRoot,long nonce) {
         return CipherUtil.applySha256(previousHash+height+merkleRoot+nonce);
     }
-    /**
-     * 计算区块的默克尔树根值
-     * @param block 区块
-     */
+    @Override
     public String calculateBlockMerkleRoot(Block block) {
         List<Transaction> transactionList = block.getTransactions();
         return MerkleUtils.getMerkleRoot(transactionList);
     }
-    /**
-     * 判断Block的挖矿的成果Nonce是否正确
-     */
+    @Override
     public boolean isBlockMinedNonceSuccess(Block block){
         //校验区块写入的MerkleRoot是否正确
         String merkleRoot = calculateBlockMerkleRoot(block);

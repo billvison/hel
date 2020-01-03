@@ -73,6 +73,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     //endregion
 
     //region 区块增加与删除
+    @Override
     public boolean addBlock(Block block) throws Exception {
         lock.lock();
         try{
@@ -84,9 +85,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         }
     }
 
-    /**
-     * 删除区块链的尾巴[最后一个]区块
-     */
+    @Override
     public Block removeTailBlock() throws Exception {
         lock.lock();
         try{
@@ -101,7 +100,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             lock.unlock();
         }
     }
-
+    @Override
     public boolean replaceBlocks(List<Block> addBlockList) throws Exception {
         lock.lock();
         try{
@@ -239,9 +238,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     //endregion
 
     //region 区块链提供的通用方法
-    /**
-     * 查找区块链上的最后一个区块
-     */
+    @Override
     public Block findTailBlock() throws Exception {
         int lastBlockBlockHeight = BlockChainCoreConstants.FIRST_BLOCK_HEIGHT;
         while (true){
@@ -272,10 +269,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         }
     }
 
-    /**
-     * 在区块链中根据 UTXO ID 查找UTXO
-     * @param transactionOutputUUID UTXO ID
-     */
+    @Override
     public TransactionOutput findUtxoByUtxoUuid(String transactionOutputUUID) throws Exception {
         if(transactionOutputUUID==null||"".equals(transactionOutputUUID)){
             return null;
@@ -287,10 +281,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         return EncodeDecode.decodeToTransactionOutput(bytesUtxo);
     }
 
-    /**
-     * 在区块链中根据区块高度查找区块
-     * @param blockHeight 区块高度
-     */
+    @Override
     public Block findBlockByBlockHeight(int blockHeight) throws Exception {
         byte[] bytesBlock = LevelDBUtil.get(blockChainDB,addBlockHeightPrefix(blockHeight));
         if(bytesBlock==null){
@@ -299,10 +290,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         return EncodeDecode.decodeToBlock(bytesBlock);
     }
 
-    /**
-     * 在区块链中根据交易ID查找交易
-     * @param transactionUUID 交易ID
-     */
+    @Override
     public Transaction findTransactionByTransactionUuid(String transactionUUID) throws Exception {
         byte[] bytesTransaction = LevelDBUtil.get(blockChainDB, addTransactionUuidPrefix(transactionUUID));
         if(bytesTransaction==null){
@@ -311,18 +299,13 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         return EncodeDecode.decodeToTransaction(bytesTransaction);
     }
 
-    /**
-     * 交易是否已经存在于区块链之中？
-     * @param transactionUUID 交易ID
-     */
+    @Override
     public boolean isTransactionExist(String transactionUUID) throws Exception {
         Transaction transaction = findTransactionByTransactionUuid(transactionUUID);
         return transaction != null;
     }
-    /**
-     * UUID是否已经存在于区块链之中？
-     * @param uuid uuid
-     */
+
+    @Override
     public boolean isUuidExist(String uuid){
         byte[] bytesUuid = LevelDBUtil.get(blockChainDB,addUuidPrefix(uuid));
         return bytesUuid != null;
