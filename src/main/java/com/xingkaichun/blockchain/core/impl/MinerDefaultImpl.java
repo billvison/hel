@@ -53,7 +53,7 @@ public class MinerDefaultImpl implements Miner {
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
     @Override
-    public void running() throws Exception {
+    public void run() throws Exception {
         WrapperBlockForMining wrapperBlockForMining = null;
         //分时
         while (true){
@@ -541,7 +541,9 @@ public class MinerDefaultImpl implements Miner {
     //endregion
 
     //region 构建区块、计算区块hash、校验区块Nonce
-    @Override
+    /**
+     * 构建缺少nonce(代表尚未被挖矿)的区块
+     */
     public Block buildNonNonceBlock(List<Transaction> packingTransactionList) throws Exception {
         Block tailBlock = blockChainDataBase.findTailBlock();
         Block nonNonceBlock = new Block();

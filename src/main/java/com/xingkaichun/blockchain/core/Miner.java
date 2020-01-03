@@ -7,27 +7,25 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * 矿工:挖矿、计算挖矿奖励、计算挖矿难度、校验交易数据的合法性、校验区块数据的合法性。
+ * 矿工:计算挖矿奖励、计算挖矿难度、挖矿、校验区块数据的合法性、将挖到的矿放进区块链上、同步其它区块链节点的数据......
  */
 public interface Miner {
 
-    //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
     /**
      * 启动
      */
-    void running() throws Exception ;
-    //endregion
+    void run() throws Exception ;
 
+    //region 同步其它区块链节点的数据
     /**
      * 同步其它区块链的数据。
      * @return 如果真的同步了其它区块链的数据，也就是本区块链新增了区块，返回true；其它情况，返回false。
      * @throws Exception
      */
     boolean synchronizeBlockChainNode() throws Exception ;
-    /**
-     * 构建缺少nonce(代表尚未被挖矿)的区块
-     */
-    Block buildNonNonceBlock(List<Transaction> packingTransactionList) throws Exception ;
+    //endregion
+
+    //region 区块校验
     /**
      * 检测区块是否可以被应用到区块链上
      * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
@@ -40,6 +38,7 @@ public interface Miner {
      * 情况2：不需要删除链上的区块，链上直接可以衔接这串区块
      */
     boolean isBlockListApplyToBlockChain(List<Block> blockList) throws Exception ;
+    //endregion
 
     //region 挖矿奖励
     /**
