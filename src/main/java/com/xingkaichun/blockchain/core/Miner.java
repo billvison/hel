@@ -16,13 +16,22 @@ public interface Miner {
      */
     void run() throws Exception ;
 
+    /**
+     * 停止挖矿
+     */
+    void stopMining();
+
     //region 同步其它区块链节点的数据
     /**
-     * 同步其它区块链的数据。
+     * 同步其它区块链节点的数据。
      * @return 如果真的同步了其它区块链的数据，也就是本区块链新增了区块，返回true；其它情况，返回false。
      * @throws Exception
      */
     boolean synchronizeBlockChainNode() throws Exception ;
+    /**
+     * 停止同步其它区块链节点的数据
+     */
+    void stopSynchronizeBlockChainNode();
     //endregion
 
     //region 区块校验

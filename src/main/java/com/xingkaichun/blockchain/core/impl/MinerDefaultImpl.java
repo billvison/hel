@@ -77,6 +77,11 @@ public class MinerDefaultImpl implements Miner {
         }
     }
 
+    @Override
+    public void stopMining(){
+        mineOption = false;
+    }
+
     private WrapperBlockForMining obtainWrapperBlockForMining() throws Exception {
         WrapperBlockForMining wrapperBlockForMining = null;
         List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.getTransactionList();
@@ -137,6 +142,10 @@ public class MinerDefaultImpl implements Miner {
         }
         return isBlockChainGrow;
     }
+    public void stopSynchronizeBlockChainNode(){
+        synchronizeBlockChainNodeOption = false;
+    }
+
     /**
      * 为了辅助挖矿而创造的类
      * 类里包含了一个需要挖矿的区块变量和一些辅助挖矿的变量。
