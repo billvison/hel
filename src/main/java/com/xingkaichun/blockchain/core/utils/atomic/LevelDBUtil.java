@@ -33,6 +33,10 @@ public class LevelDBUtil {
         return db.get(stringToBytes(key));
     }
 
+    public static void delete(DB db,String key) throws DBException{
+        db.delete(stringToBytes(key));
+    }
+
     public static DB createDB(File dbFile) throws Exception{
         DBFactory factory = new Iq80DBFactory();
         Options options = new Options();

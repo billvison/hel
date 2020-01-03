@@ -85,7 +85,10 @@ public class MinerDefaultImpl implements Miner {
     private WrapperBlockForMining obtainWrapperBlockForMining() throws Exception {
         WrapperBlockForMining wrapperBlockForMining = null;
         List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.getTransactionList();
-        removeExceptionTransaction_PointOfBlockView(transactionListForMinerBlock);
+        List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(transactionListForMinerBlock);
+        //TODO 这里处理可以优化。这里的异常交易指的是不满足区块的交易。但不一定非法，在特定时刻，或许就是合法的交易。
+        // 删除异常交易
+        forMinerTransactionDataBase.deleteTransactionList(exceptionTransactionList);
         Block nonNonceBlock = buildNonNonceBlock(transactionListForMinerBlock);
         String difficulty = mineDifficulty.difficulty(blockChainDataBase, nonNonceBlock);
 
@@ -169,15 +172,19 @@ public class MinerDefaultImpl implements Miner {
     /**
      * 打包处理过程: 将异常的交易丢弃掉【站在区块的角度校验交易】
      * @param packingTransactionList
-    // TODO * @return 被丢弃的异常交易
      * @throws Exception
      */
-    public void removeExceptionTransaction_PointOfBlockView(List<Transaction> packingTransactionList) throws Exception{
+    public List<Transaction> removeExceptionTransaction_PointOfBlockView(List<Transaction> packingTransactionList) throws Exception{
+        List<Transaction> exceptionTransactionList = new ArrayList<>();
         //区块中允许没有交易
         if(packingTransactionList==null || packingTransactionList.size()==0){
-            return ;
+            return exceptionTransactionList;
         }
-        removeExceptionTransaction_PointOfTransactionView(packingTransactionList);
+        List<Transaction> exceptionTransactionList_PointOfTransactionView = removeExceptionTransaction_PointOfTransactionView(packingTransactionList);
+        if(exceptionTransactionList_PointOfTransactionView != null){
+            exceptionTransactionList.addAll(exceptionTransactionList_PointOfTransactionView);
+        }
+
         //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
         Set<String> transactionOutputUUIDSet = new HashSet<>();
         Iterator<Transaction> iterator = packingTransactionList.iterator();
@@ -194,32 +201,32 @@ public class MinerDefaultImpl implements Miner {
             }
             if(multiUseOneUTXO){
                 iterator.remove();
+                exceptionTransactionList.add(tx);
                 System.out.println("交易校验失败：交易的输入中同一个UTXO被多次使用。不合法的交易。");
             }
         }
+        return exceptionTransactionList;
     }
 
     /**
      * 打包处理过程: 将异常的交易丢弃掉【站在单笔交易的角度校验交易】
      */
-    private void removeExceptionTransaction_PointOfTransactionView(List<Transaction> transactionList) throws Exception{
+    private List<Transaction>  removeExceptionTransaction_PointOfTransactionView(List<Transaction> transactionList) throws Exception{
+        List<Transaction> exceptionTransactionList = new ArrayList<>();
         if(transactionList==null||transactionList.size()==0){
-            return;
+            return exceptionTransactionList;
         }
         Iterator<Transaction> iterator = transactionList.iterator();
         while (iterator.hasNext()){
             Transaction tx = iterator.next();
-            try {
-                boolean checkPass = checkUnBlockChainTransaction(null,tx);
-                if(!checkPass){
-                    iterator.remove();
-                    System.out.println("交易校验失败：丢弃交易。");
-                }
-            } catch (Exception e){
+            boolean checkPass = checkUnBlockChainTransaction(null,tx);
+            if(!checkPass){
                 iterator.remove();
+                exceptionTransactionList.add(tx);
                 System.out.println("交易校验失败：丢弃交易。");
             }
         }
+        return exceptionTransactionList;
     }
 
 

@@ -23,4 +23,7 @@ public interface ForMinerTransactionDataBase {
      */
     //TODO 增加按照排序选择
     List<Transaction> getTransactionList() throws Exception ;
+
+    void deleteTransaction(Transaction transaction) throws Exception ;
+    void deleteTransactionList(List<Transaction> transactionList) throws Exception ;
 }

@@ -65,6 +65,23 @@ public class ForMinerTransactionDataBaseDefaultImpl implements ForMinerTransacti
         }
     }
 
+    @Override
+    public void deleteTransaction(Transaction transaction) throws Exception {
+        String combineKey = combineKey(transaction);
+        LevelDBUtil.delete(transactionPoolDB,combineKey);
+    }
+
+    @Override
+    public void deleteTransactionList(List<Transaction> transactionList) throws Exception {
+        if(transactionList == null){
+            return;
+        }
+        for(Transaction transaction:transactionList){
+            deleteTransaction(transaction);
+        }
+    }
+
+
     /**
      * 交易是否已经存在于交易池
      * @param transactionUUID 交易ID
