@@ -49,6 +49,11 @@ public class ForMinerBlockChainSegementDataBaseDefaultImpl implements ForMinerBl
         return blockChainSegement;
     }
 
+    @Override
+    public void delete(BlockChainSegement blockChainSegement) throws Exception {
+        LevelDBUtil.delete(forMinerBlockChainSegementDB,combineKey(blockChainSegement));
+    }
+
     /**
      * key=blockHeight+blockHash
      * @param blockChainSegement

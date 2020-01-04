@@ -8,4 +8,6 @@ public interface ForMinerBlockChainSegementDataBase {
 
     //TODO 指定序号
     BlockChainSegement getBlockChainSegement() throws Exception ;
+
+    void delete(BlockChainSegement blockChainSegement) throws Exception ;
 }

@@ -132,6 +132,7 @@ public class MinerDefaultImpl implements Miner {
             if(!synchronizeBlockChainNodeOption){
                 break;
             }
+            //TODO 处理的不够合理 如何一个区块链同步另一个区块链传输时分成多个，只能处理按顺序的BlockChainSegement
             BlockChainSegement blockChainSegement = forMinerBlockChainSegementDataBase.getBlockChainSegement();
             if(blockChainSegement == null){
                 break;
@@ -141,6 +142,7 @@ public class MinerDefaultImpl implements Miner {
                 blockChainDataBase.replaceBlocks(blockChainSegement);
                 isBlockChainGrow = true;
             }
+            forMinerBlockChainSegementDataBase.delete(blockChainSegement);
         }
         return isBlockChainGrow;
     }
