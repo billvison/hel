@@ -24,11 +24,11 @@ public class BlockChainCore {
         MineDifficulty mineDifficulty = new MineDifficultyDefaultImpl();
         MineAward mineAward = new MineAwardDefaultImpl();
         ForMinerTransactionDataBase forMinerTransactionDataBase = new ForMinerTransactionDataBaseDefaultImpl("");
-        ForMinerBlockChainSegementDataBase forMinerBlockChainSegementDataBase = new ForMinerBlockChainSegementDataBaseDefaultImpl("");
+        ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase = new ForMinerSynchronizeNodeDataBaseDefaultImpl("");
         PublicKeyString minerPublicKey = new PublicKeyString("");
         this.blockChainDataBase = new BlockChainDataBaseDefaultImpl("");
 
-        this.miner = new MinerDefaultImpl(blockChainDataBase,forMinerBlockChainSegementDataBase,forMinerTransactionDataBase,mineDifficulty,mineAward,minerPublicKey);
+        this.miner = new MinerDefaultImpl(blockChainDataBase, forMinerSynchronizeNodeDataBase,forMinerTransactionDataBase,mineDifficulty,mineAward,minerPublicKey);
     }
 
     /**

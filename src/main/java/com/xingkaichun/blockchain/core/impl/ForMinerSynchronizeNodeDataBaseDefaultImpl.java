@@ -1,6 +1,6 @@
 package com.xingkaichun.blockchain.core.impl;
 
-import com.xingkaichun.blockchain.core.ForMinerBlockChainSegementDataBase;
+import com.xingkaichun.blockchain.core.ForMinerSynchronizeNodeDataBase;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.BlockChainSegement;
 import com.xingkaichun.blockchain.core.utils.atomic.EncodeDecode;
@@ -11,14 +11,14 @@ import org.iq80.leveldb.DBIterator;
 import java.io.File;
 import java.util.Map;
 
-public class ForMinerBlockChainSegementDataBaseDefaultImpl implements ForMinerBlockChainSegementDataBase {
+public class ForMinerSynchronizeNodeDataBaseDefaultImpl implements ForMinerSynchronizeNodeDataBase {
 
     //交易池数据库
     private DB forMinerBlockChainSegementDB;
 
-    public ForMinerBlockChainSegementDataBaseDefaultImpl(String dbPath) throws Exception {
+    public ForMinerSynchronizeNodeDataBaseDefaultImpl(String dbPath) throws Exception {
 
-        this.forMinerBlockChainSegementDB = LevelDBUtil.createDB(new File(dbPath,"ForMinerBlockChainSegementDataBase"));
+        this.forMinerBlockChainSegementDB = LevelDBUtil.createDB(new File(dbPath,"ForMinerSynchronizeNodeDataBase"));
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -30,7 +30,7 @@ public class ForMinerBlockChainSegementDataBaseDefaultImpl implements ForMinerBl
     }
 
     @Override
-    public boolean addBlockChainSegement(BlockChainSegement blockChainSegement) throws Exception {
+    public boolean addBlockChainSegement(String nodeId, BlockChainSegement blockChainSegement) throws Exception {
         //交易已经持久化进交易池数据库 丢弃交易
         String combineKey = combineKey(blockChainSegement);
         LevelDBUtil.put(forMinerBlockChainSegementDB,combineKey, EncodeDecode.encode(blockChainSegement));
@@ -38,7 +38,7 @@ public class ForMinerBlockChainSegementDataBaseDefaultImpl implements ForMinerBl
     }
 
     @Override
-    public BlockChainSegement getBlockChainSegement() throws Exception {
+    public BlockChainSegement getNextBlockChainSegement(String nodeId) throws Exception {
         BlockChainSegement blockChainSegement = null;
         DBIterator dbIterator = this.forMinerBlockChainSegementDB.iterator();
         while (dbIterator.hasNext()){
@@ -50,8 +50,19 @@ public class ForMinerBlockChainSegementDataBaseDefaultImpl implements ForMinerBl
     }
 
     @Override
-    public void delete(BlockChainSegement blockChainSegement) throws Exception {
-        LevelDBUtil.delete(forMinerBlockChainSegementDB,combineKey(blockChainSegement));
+    public void deleteSynchronizeDataByNodeId(String nodeId) throws Exception {
+        // TODO
+        // LevelDBUtil.deleteSynchronizeDataByNodeId(forMinerBlockChainSegementDB,combineKey(blockChainSegement));
+    }
+
+    @Override
+    public String getAvailableSynchronizeNodeId() throws Exception {
+        return null;
+    }
+
+    @Override
+    public void setNodeIdAvailableSynchronize(String nodeId) throws Exception {
+
     }
 
     /**

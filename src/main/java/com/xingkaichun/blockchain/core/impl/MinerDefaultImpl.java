@@ -31,13 +31,13 @@ public class MinerDefaultImpl implements Miner {
     private MineDifficulty mineDifficulty;
     private MineAward mineAward;
     private BlockChainDataBase blockChainDataBase ;
-    private ForMinerBlockChainSegementDataBase forMinerBlockChainSegementDataBase;
+    private ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase;
     //交易池：矿工从交易池里获取挖矿的原材料(交易数据)
     private ForMinerTransactionDataBase forMinerTransactionDataBase;
 
-    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, ForMinerBlockChainSegementDataBase forMinerBlockChainSegementDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
+    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
         this.blockChainDataBase = blockChainDataBase;
-        this.forMinerBlockChainSegementDataBase = forMinerBlockChainSegementDataBase;
+        this.forMinerSynchronizeNodeDataBase = forMinerSynchronizeNodeDataBase;
         this.forMinerTransactionDataBase = forMinerTransactionDataBase;
         this.minerPublicKey = minerPublicKey;
         this.mineDifficulty = mineDifficulty;
@@ -133,7 +133,8 @@ public class MinerDefaultImpl implements Miner {
                 break;
             }
             //TODO 处理的不够合理 如何一个区块链同步另一个区块链传输时分成多个，只能处理按顺序的BlockChainSegement
-            BlockChainSegement blockChainSegement = forMinerBlockChainSegementDataBase.getBlockChainSegement();
+            //TODO nodeId抽出来
+            BlockChainSegement blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(this.getClass().toString());
             if(blockChainSegement == null){
                 break;
             }
@@ -142,7 +143,7 @@ public class MinerDefaultImpl implements Miner {
                 blockChainDataBase.replaceBlocks(blockChainSegement);
                 isBlockChainGrow = true;
             }
-            forMinerBlockChainSegementDataBase.delete(blockChainSegement);
+            forMinerSynchronizeNodeDataBase.deleteSynchronizeDataByNodeId(this.getClass().toString());
         }
         return isBlockChainGrow;
     }
@@ -477,7 +478,7 @@ public class MinerDefaultImpl implements Miner {
             //防止jvm崩溃，区块丢失
             BlockChainSegement bcs = new BlockChainSegement();
             bcs.setBlockList(changeDeleteBlockList);
-            forMinerBlockChainSegementDataBase.addBlockChainSegement(bcs);
+            forMinerSynchronizeNodeDataBase.addBlockChainSegement(this.getClass().toString(),bcs);
 
             for(Block block:blockList){
                 boolean isBlockApplyToBlockChain = blockChainDataBase.addBlock(block);
