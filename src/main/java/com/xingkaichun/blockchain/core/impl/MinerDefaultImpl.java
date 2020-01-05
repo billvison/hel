@@ -59,10 +59,9 @@ public class MinerDefaultImpl implements Miner {
             synchronizeBlockChainNode();
             //是否需要重新获取WrapperBlockForMining？区块链的区块有增删，则需要重新获取。
             if(wrapperBlockForMining == null ||
-                    (synchronizeBlockChainNodeOption /* TODO && synchronizeBlockChainNode()*/)){
+                    (synchronizeBlockChainNodeOption && isWrapperBlockForMiningNeedObtainAgain(wrapperBlockForMining))){
                 wrapperBlockForMining = obtainWrapperBlockForMining();
             }
-            adjustMasterSlaveBlockChainDataBase();
             miningBlock(wrapperBlockForMining);
             //挖矿成功
             if(wrapperBlockForMining.getMiningSuccess()){
@@ -80,6 +79,23 @@ public class MinerDefaultImpl implements Miner {
                 forMinerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getTransactionListForMinerBlock());
             }
         }
+    }
+
+    private boolean isWrapperBlockForMiningNeedObtainAgain(WrapperBlockForMining wrapperBlockForMining) throws Exception {
+        if(wrapperBlockForMining == null){
+            return true;
+        }
+        Block tailBlock = blockChainDataBase.findTailBlock();
+        if(tailBlock == null){
+            return false;
+        }
+        Block miningBlock = wrapperBlockForMining.getBlock();
+        //TODO 简单校验
+        if(EqualsUtils.isEquals(tailBlock.getHash(),miningBlock.getPreviousHash()) &&
+                EqualsUtils.isEquals(tailBlock.getHeight(),miningBlock.getHeight()-1)){
+            return false;
+        }
+        return true;
     }
 
     /**
