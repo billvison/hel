@@ -14,12 +14,12 @@ public interface ForMinerTransactionDataBase {
     /**
      * 新增交易
      */
-    boolean insertTransaction(Transaction transaction) throws Exception ;
+    void insertTransaction(Transaction transaction) throws Exception ;
 
     /**
      * 新增交易
      */
-    boolean insertTransactionList(List<Transaction> transactionList) throws Exception ;
+    void insertTransactionList(List<Transaction> transactionList) throws Exception ;
 
     /**
      * 获取交易

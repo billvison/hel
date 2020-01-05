@@ -2,12 +2,15 @@ package com.xingkaichun.blockchain.core.impl;
 
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.ForMinerTransactionDataBase;
+import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.utils.atomic.EncodeDecode;
 import com.xingkaichun.blockchain.core.utils.atomic.LevelDBUtil;
 import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
+import org.iq80.leveldb.WriteBatch;
+import org.iq80.leveldb.impl.WriteBatchImpl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,7 +19,6 @@ import java.util.Map;
 
 public class ForMinerTransactionDataBaseDefaultImpl implements ForMinerTransactionDataBase {
 
-    //交易池数据库
     private DB transactionPoolDB;
 
     public ForMinerTransactionDataBaseDefaultImpl(String dbPath) throws Exception {
@@ -32,39 +34,54 @@ public class ForMinerTransactionDataBaseDefaultImpl implements ForMinerTransacti
         }));
     }
 
-    public boolean insertTransaction(Transaction transaction) throws Exception {
+    public void insertTransaction(Transaction transaction) throws Exception {
 
         //校验签名 防止签名错误的交易加入交易池
         boolean verifySignature = TransactionUtil.verifySignature(transaction);
         if(!verifySignature){
-            return false;
+            throw new BlockChainCoreException("新增交易失败，交易签名错误。");
         }
 
         //交易已经持久化进交易池数据库 丢弃交易
         String combineKey = combineKey(transaction);
-        if(isTransactionExsitInPool(combineKey)){
-            return false;
-        }
         synchronized (BlockChainDataBase.class){
             LevelDBUtil.put(transactionPoolDB,combineKey, EncodeDecode.encode(transaction));
         }
-        return true;
     }
 
     @Override
-    public boolean insertTransactionList(List<Transaction> transactionList) throws Exception {
-        return false;
+    public void insertTransactionList(List<Transaction> transactionList) throws Exception {
+        for(Transaction transaction:transactionList){
+            boolean verifySignature = TransactionUtil.verifySignature(transaction);
+            if(!verifySignature){
+                throw new BlockChainCoreException("新增交易失败，交易签名错误。");
+            }
+        }
+        WriteBatch writeBatch = new WriteBatchImpl();
+        for(Transaction transaction:transactionList){
+            String combineKey = combineKey(transaction);
+            writeBatch.put(LevelDBUtil.stringToBytes(combineKey),EncodeDecode.encode(transaction));
+        }
+        synchronized (BlockChainDataBase.class){
+            LevelDBUtil.put(transactionPoolDB, writeBatch);
+        }
     }
 
     public List<Transaction> selectTransactionList(int from, int size) throws Exception {
         synchronized (BlockChainDataBase.class){
             List<Transaction> transactionList = new ArrayList<>();
             DBIterator dbIterator = this.transactionPoolDB.iterator();
+            int index = 0;
             while (dbIterator.hasNext()){
-                Map.Entry<byte[],byte[]> entry =  dbIterator.next();
-                byte[] byteTransaction = entry.getValue();
-                Transaction transaction = EncodeDecode.decodeToTransaction(byteTransaction);
-                transactionList.add(transaction);
+                if(index>=from && from<from+size){
+                    Map.Entry<byte[],byte[]> entry =  dbIterator.next();
+                    byte[] byteTransaction = entry.getValue();
+                    Transaction transaction = EncodeDecode.decodeToTransaction(byteTransaction);
+                    transactionList.add(transaction);
+                } else {
+                    break;
+                }
+                index++;
             }
             return transactionList;
         }
@@ -84,16 +101,6 @@ public class ForMinerTransactionDataBaseDefaultImpl implements ForMinerTransacti
         for(Transaction transaction:transactionList){
             deleteTransaction(transaction);
         }
-    }
-
-
-    /**
-     * 交易是否已经存在于交易池
-     * @param transactionUUID 交易ID
-     */
-    private boolean isTransactionExsitInPool(String transactionUUID) throws Exception {
-        byte[] byteTransaction = LevelDBUtil.get(transactionPoolDB,transactionUUID);
-        return byteTransaction != null;
     }
 
     /**
