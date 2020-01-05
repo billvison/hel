@@ -73,6 +73,11 @@ public class MinerDefaultImpl implements Miner {
                 }
                 //重置
                 wrapperBlockForMining = null;
+                //TODO 异常交易不应该彻底丢掉。
+                // 例如B交易依赖A交易，但是本区块链并没有成功同步到A交易，因此而判定B交易就是非法的，而将其丢弃。
+                // 应当有一个策略，处理这种情形。
+                forMinerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
+                forMinerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getTransactionListForMinerBlock());
             }
         }
     }
@@ -86,11 +91,12 @@ public class MinerDefaultImpl implements Miner {
         WrapperBlockForMining wrapperBlockForMining = null;
         List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.selectTransactionList(0,10000);
         List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(transactionListForMinerBlock);
-        //TODO 这里处理可以优化。这里的异常交易指的是不满足区块的交易。但不一定非法，在特定时刻，或许就是合法的交易。
-        // 删除异常交易
-        forMinerTransactionDataBase.deleteTransactionList(exceptionTransactionList);
+        wrapperBlockForMining.setTransactionListForMinerBlock(transactionListForMinerBlock);
+        wrapperBlockForMining.setExceptionTransactionList(exceptionTransactionList);
+
         Block nonNonceBlock = buildNonNonceBlock(transactionListForMinerBlock);
         String difficulty = mineDifficulty.difficulty(blockChainDataBase, nonNonceBlock);
+
 
         wrapperBlockForMining.setBlock(nonNonceBlock);
         wrapperBlockForMining.setTargetMineDificultyString(difficulty);
@@ -133,7 +139,6 @@ public class MinerDefaultImpl implements Miner {
                 break;
             }
             //TODO 处理的不够合理 如何一个区块链同步另一个区块链传输时分成多个，只能处理按顺序的BlockChainSegement
-            //TODO nodeId抽出来
             String availableSynchronizeNodeId = forMinerSynchronizeNodeDataBase.getDataTransferFinishFlagNodeId();
             BlockChainSegement blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);
             if(blockChainSegement == null){
@@ -170,6 +175,9 @@ public class MinerDefaultImpl implements Miner {
         private long maxTryMiningTimes;
         //是否挖矿成功
         private Boolean miningSuccess;
+
+        private List<Transaction> transactionListForMinerBlock;
+        private List<Transaction> exceptionTransactionList;
     }
     //endregion
 
