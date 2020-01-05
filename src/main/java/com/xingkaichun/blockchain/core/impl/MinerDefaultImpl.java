@@ -204,34 +204,39 @@ public class MinerDefaultImpl implements Miner {
             if(!synchronizeBlockChainNodeOption){
                 break;
             }
-            //TODO 在slave操作
+            adjustMasterSlaveBlockChainDataBase();
             String availableSynchronizeNodeId = forMinerSynchronizeNodeDataBase.getDataTransferFinishFlagNodeId();
             if(availableSynchronizeNodeId == null){
                 return true;
             }
-            BlockChainSegement blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);
-            List<Block> blockList = blockChainSegement.getBlockList();
-            Block block = blockList.get(0);
-            reduceBlockChain(blockChainDataBaseSlave,block.getHeight()-1);
-            while(true){
-                if(blockChainSegement == null){
-                    break;
-                }
-                for(Block currentBlock :blockList){
-                    boolean isBlockApplyToBlockChain = isBlockApplyToBlockChain(blockChainDataBaseSlave,currentBlock);
-                    if(isBlockApplyToBlockChain){
-                        blockChainDataBase.addBlock(currentBlock);
-                    }else {
-                        return false;
-                    }
-                }
-                blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);
-                blockList = blockChainSegement.getBlockList();
-            }
+            synchronizeBlockChainNode(availableSynchronizeNodeId);
             forMinerSynchronizeNodeDataBase.deleteTransferData(availableSynchronizeNodeId);
             forMinerSynchronizeNodeDataBase.clearDataTransferFinishFlag(availableSynchronizeNodeId);
+            adjustMasterSlaveBlockChainDataBase();
         }
         return isBlockChainGrow;
+    }
+
+    private void synchronizeBlockChainNode(String availableSynchronizeNodeId) throws Exception {
+        BlockChainSegement blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);
+        List<Block> blockList = blockChainSegement.getBlockList();
+        Block block = blockList.get(0);
+        reduceBlockChain(blockChainDataBaseSlave,block.getHeight()-1);
+        while(true){
+            if(blockChainSegement == null){
+                break;
+            }
+            for(Block currentBlock : blockList){
+                boolean isBlockApplyToBlockChain = isBlockApplyToBlockChain(blockChainDataBaseSlave,currentBlock);
+                if(isBlockApplyToBlockChain){
+                    blockChainDataBaseSlave.addBlock(currentBlock);
+                }else {
+                    return;
+                }
+            }
+            blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);
+            blockList = blockChainSegement.getBlockList();
+        }
     }
 
     private void reduceBlockChain(BlockChainDataBase blockChainDataBase, int blockHeight) throws Exception {
