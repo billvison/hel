@@ -10,10 +10,7 @@ import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.blockchain.core.utils.MerkleUtils;
-import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
-import com.xingkaichun.blockchain.core.utils.atomic.CipherUtil;
-import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
-import com.xingkaichun.blockchain.core.utils.atomic.UuidUtil;
+import com.xingkaichun.blockchain.core.utils.atomic.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -31,12 +28,14 @@ public class MinerDefaultImpl implements Miner {
     private MineDifficulty mineDifficulty;
     private MineAward mineAward;
     private BlockChainDataBase blockChainDataBase ;
+    private BlockChainDataBase blockChainDataBaseSlave ;
     private ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase;
     //交易池：矿工从交易池里获取挖矿的原材料(交易数据)
     private ForMinerTransactionDataBase forMinerTransactionDataBase;
 
-    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
+    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, BlockChainDataBase blockChainDataBaseSlave, ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
         this.blockChainDataBase = blockChainDataBase;
+        this.blockChainDataBaseSlave =blockChainDataBaseSlave;
         this.forMinerSynchronizeNodeDataBase = forMinerSynchronizeNodeDataBase;
         this.forMinerTransactionDataBase = forMinerTransactionDataBase;
         this.minerPublicKey = minerPublicKey;
@@ -58,11 +57,13 @@ public class MinerDefaultImpl implements Miner {
         //分时
         while (true){
             if(mineOption){ break; }
+            adjustMasterSlaveBlockChainDataBase();
             //是否需要重新获取WrapperBlockForMining？区块链的区块有增删，则需要重新获取。
             if(wrapperBlockForMining == null ||
                     (synchronizeBlockChainNodeOption && synchronizeBlockChainNode())){
                 wrapperBlockForMining = obtainWrapperBlockForMining();
             }
+            adjustMasterSlaveBlockChainDataBase();
             miningBlock(wrapperBlockForMining);
             //挖矿成功
             if(wrapperBlockForMining.getMiningSuccess()){
@@ -80,6 +81,71 @@ public class MinerDefaultImpl implements Miner {
                 forMinerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getTransactionListForMinerBlock());
             }
         }
+    }
+
+    /**
+     * 调整master slave
+     * 第一步：区块高度高的设为master，低的设置slave。
+     * 第二步：slave同步master的区块。
+     */
+    private void adjustMasterSlaveBlockChainDataBase() throws Exception {
+        Block masterTailBlock = blockChainDataBase.findTailBlock() ;
+        Block slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
+        //第一步：区块高度高的设为master，低的设置slave。
+        if((masterTailBlock == null && slaveTailBlock != null)
+            ||(masterTailBlock != null && slaveTailBlock != null && masterTailBlock.getHeight()<slaveTailBlock.getHeight())){
+            BlockChainDataBase blockChainDataBaseTemp = blockChainDataBase;
+            blockChainDataBase = blockChainDataBaseSlave;
+            blockChainDataBaseSlave = blockChainDataBaseTemp;
+        }
+        //第二步：slave同步master的区块。
+        masterTailBlock = blockChainDataBase.findTailBlock() ;
+        if(masterTailBlock != null){
+            slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
+            //删除区块直到尚未分叉位置停止
+            while(true){
+                if(slaveTailBlock == null){
+                    break;
+                }
+                if(isBlockEqual(masterTailBlock,slaveTailBlock)){
+                    break;
+                }
+                blockChainDataBaseSlave.removeTailBlock();
+                slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
+            }
+            if(slaveTailBlock == null){
+                Block block = blockChainDataBase.findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
+                blockChainDataBaseSlave.addBlock(block);
+            }
+            int masterTailBlockHeight = blockChainDataBase.findTailBlock().getHeight() ;
+            int slaveTailBlockHeight = blockChainDataBaseSlave.findTailBlock().getHeight() ;
+            while(true){
+                if(slaveTailBlockHeight >= masterTailBlockHeight){
+                    break;
+                }
+                slaveTailBlockHeight++;
+                Block currentBlock = blockChainDataBase.findBlockByBlockHeight(slaveTailBlockHeight) ;
+                blockChainDataBaseSlave.addBlock(currentBlock);
+            }
+        }
+    }
+
+    private boolean isBlockEqual(Block masterTailBlock, Block slaveTailBlock) {
+        if(masterTailBlock == null && slaveTailBlock == null){
+            return true;
+        }
+        if(masterTailBlock == null || slaveTailBlock == null){
+            return false;
+        }
+        //不严格校验,这里没有具体校验每一笔交易
+        if(EqualsUtils.isEquals(masterTailBlock.getPreviousHash(),slaveTailBlock.getPreviousHash())
+                && EqualsUtils.isEquals(masterTailBlock.getHeight(),slaveTailBlock.getHeight())
+                && EqualsUtils.isEquals(masterTailBlock.getMerkleRoot(),slaveTailBlock.getMerkleRoot())
+                && EqualsUtils.isEquals(masterTailBlock.getNonce(),slaveTailBlock.getNonce())
+                && EqualsUtils.isEquals(masterTailBlock.getHash(),slaveTailBlock.getHash())){
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -138,6 +204,7 @@ public class MinerDefaultImpl implements Miner {
             if(!synchronizeBlockChainNodeOption){
                 break;
             }
+            //TODO 在slave操作
             //TODO 处理的不够合理 如何一个区块链同步另一个区块链传输时分成多个，只能处理按顺序的BlockChainSegement
             String availableSynchronizeNodeId = forMinerSynchronizeNodeDataBase.getDataTransferFinishFlagNodeId();
             BlockChainSegement blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);

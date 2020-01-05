@@ -13,6 +13,8 @@ import java.util.List;
 public class BlockChainCore {
 
     BlockChainDataBase blockChainDataBase ;
+    BlockChainDataBase blockChainDataBaseSlave ;
+
     Miner miner ;
 
     //监听区块链上区块的增删动作
@@ -27,8 +29,8 @@ public class BlockChainCore {
         ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase = new ForMinerSynchronizeNodeDataBaseDefaultImpl("");
         PublicKeyString minerPublicKey = new PublicKeyString("");
         this.blockChainDataBase = new BlockChainDataBaseDefaultImpl("");
-
-        this.miner = new MinerDefaultImpl(blockChainDataBase, forMinerSynchronizeNodeDataBase,forMinerTransactionDataBase,mineDifficulty,mineAward,minerPublicKey);
+        this.blockChainDataBaseSlave = new BlockChainDataBaseDefaultImpl("");
+        this.miner = new MinerDefaultImpl(blockChainDataBase, this.blockChainDataBaseSlave, forMinerSynchronizeNodeDataBase,forMinerTransactionDataBase,mineDifficulty,mineAward,minerPublicKey);
     }
 
     /**
