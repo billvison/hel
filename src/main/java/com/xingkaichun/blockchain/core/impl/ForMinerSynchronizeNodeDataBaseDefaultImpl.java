@@ -11,6 +11,7 @@ import org.iq80.leveldb.DBIterator;
 import java.io.File;
 import java.util.Map;
 
+//TODO 尚未实现
 public class ForMinerSynchronizeNodeDataBaseDefaultImpl implements ForMinerSynchronizeNodeDataBase {
 
     //交易池数据库
@@ -50,18 +51,23 @@ public class ForMinerSynchronizeNodeDataBaseDefaultImpl implements ForMinerSynch
     }
 
     @Override
-    public void deleteSynchronizeDataByNodeId(String nodeId) throws Exception {
+    public void deleteTransferData(String nodeId) throws Exception {
         // TODO
-        // LevelDBUtil.deleteSynchronizeDataByNodeId(forMinerBlockChainSegementDB,combineKey(blockChainSegement));
+        // LevelDBUtil.deleteTransferData(forMinerBlockChainSegementDB,combineKey(blockChainSegement));
     }
 
     @Override
-    public String getAvailableSynchronizeNodeId() throws Exception {
+    public String getDataTransferFinishFlagNodeId() throws Exception {
         return null;
     }
 
     @Override
-    public void setNodeIdAvailableSynchronize(String nodeId) throws Exception {
+    public void addDataTransferFinishFlag(String nodeId) throws Exception {
+
+    }
+
+    @Override
+    public void clearDataTransferFinishFlag(String nodeId) throws Exception {
 
     }
 

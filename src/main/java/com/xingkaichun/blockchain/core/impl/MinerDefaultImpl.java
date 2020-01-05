@@ -134,16 +134,18 @@ public class MinerDefaultImpl implements Miner {
             }
             //TODO 处理的不够合理 如何一个区块链同步另一个区块链传输时分成多个，只能处理按顺序的BlockChainSegement
             //TODO nodeId抽出来
-            BlockChainSegement blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(this.getClass().toString());
+            String availableSynchronizeNodeId = forMinerSynchronizeNodeDataBase.getDataTransferFinishFlagNodeId();
+            BlockChainSegement blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);
             if(blockChainSegement == null){
                 break;
             }
+            //TODO forMinerSynchronizeNodeDataBase.getNextBlockChainSegement()
             boolean currentIsBlockListApplyToBlockChain = isBlockListApplyToBlockChain(blockChainSegement);
             if(currentIsBlockListApplyToBlockChain){
                 blockChainDataBase.replaceBlocks(blockChainSegement);
                 isBlockChainGrow = true;
             }
-            forMinerSynchronizeNodeDataBase.deleteSynchronizeDataByNodeId(this.getClass().toString());
+            forMinerSynchronizeNodeDataBase.deleteTransferData(availableSynchronizeNodeId);
         }
         return isBlockChainGrow;
     }
@@ -476,9 +478,12 @@ public class MinerDefaultImpl implements Miner {
             }
 
             //防止jvm崩溃，区块丢失
+            //TODO 没有异常，直接删除。forMinerSynchronizeNodeDataBase.deleteTransferData(getLocalNodeId());
             BlockChainSegement bcs = new BlockChainSegement();
             bcs.setBlockList(changeDeleteBlockList);
-            forMinerSynchronizeNodeDataBase.addBlockChainSegement(this.getClass().toString(),bcs);
+            forMinerSynchronizeNodeDataBase.deleteTransferData(getLocalNodeId());
+            forMinerSynchronizeNodeDataBase.addBlockChainSegement(getLocalNodeId(),bcs);
+            forMinerSynchronizeNodeDataBase.addDataTransferFinishFlag(getLocalNodeId());
 
             for(Block block:blockList){
                 boolean isBlockApplyToBlockChain = blockChainDataBase.addBlock(block);
@@ -626,4 +631,7 @@ public class MinerDefaultImpl implements Miner {
     }
     //endregion
 
+    private String getLocalNodeId(){
+        return this.getClass().getName();
+    }
 }
