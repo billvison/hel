@@ -79,7 +79,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         lock.lock();
         try{
             WriteBatch writeBatch = createWriteBatch(block,BlockChainActionEnum.ADD_BLOCK);
-            LevelDBUtil.put(blockChainDB,writeBatch);
+            LevelDBUtil.write(blockChainDB,writeBatch);
             return true;
         }finally {
             lock.unlock();
@@ -95,7 +95,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
                 return null;
             }
             WriteBatch writeBatch = createWriteBatch(tailBlock,BlockChainActionEnum.DELETE_BLOCK);
-            LevelDBUtil.put(blockChainDB,writeBatch);
+            LevelDBUtil.write(blockChainDB,writeBatch);
             return tailBlock;
         }finally {
             lock.unlock();
@@ -132,7 +132,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
                 fillWriteBatch(writeBatch,block,BlockChainActionEnum.ADD_BLOCK);
             }
 
-            LevelDBUtil.put(blockChainDB,writeBatch);
+            LevelDBUtil.write(blockChainDB,writeBatch);
             return true;
         }finally {
             lock.unlock();

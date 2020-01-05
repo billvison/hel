@@ -63,7 +63,7 @@ public class ForMinerTransactionDataBaseDefaultImpl implements ForMinerTransacti
             writeBatch.put(LevelDBUtil.stringToBytes(combineKey),EncodeDecode.encode(transaction));
         }
         synchronized (BlockChainDataBase.class){
-            LevelDBUtil.put(transactionPoolDB, writeBatch);
+            LevelDBUtil.write(transactionPoolDB, writeBatch);
         }
     }
 
@@ -98,9 +98,12 @@ public class ForMinerTransactionDataBaseDefaultImpl implements ForMinerTransacti
         if(transactionList == null){
             return;
         }
+        WriteBatch writeBatch = new WriteBatchImpl();
         for(Transaction transaction:transactionList){
-            deleteTransaction(transaction);
+            String combineKey = combineKey(transaction);
+            writeBatch.delete(LevelDBUtil.stringToBytes(combineKey));
         }
+        LevelDBUtil.write(transactionPoolDB,writeBatch);
     }
 
     /**

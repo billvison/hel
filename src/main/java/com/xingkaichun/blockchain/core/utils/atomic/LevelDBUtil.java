@@ -25,7 +25,7 @@ public class LevelDBUtil {
         db.put(bytesKey,bytesValue);
     }
 
-    public static void put(DB db,WriteBatch writeBatch) throws DBException{
+    public static void write(DB db, WriteBatch writeBatch) throws DBException{
         db.write(writeBatch);
     }
 
