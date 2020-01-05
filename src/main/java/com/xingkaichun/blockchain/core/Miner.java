@@ -1,7 +1,6 @@
 package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.model.Block;
-import com.xingkaichun.blockchain.core.model.BlockChainSegement;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 
 import java.math.BigDecimal;
@@ -24,10 +23,9 @@ public interface Miner {
     //region 同步其它区块链节点的数据
     /**
      * 同步其它区块链节点的数据。
-     * @return 如果真的同步了其它区块链的数据，也就是本区块链新增了区块，返回true；其它情况，返回false。
      * @throws Exception
      */
-    boolean synchronizeBlockChainNode() throws Exception ;
+    void synchronizeBlockChainNode() throws Exception ;
     /**
      * 停止同步其它区块链节点的数据
      */

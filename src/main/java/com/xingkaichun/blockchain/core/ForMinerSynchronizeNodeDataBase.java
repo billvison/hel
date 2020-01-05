@@ -72,4 +72,9 @@ public interface ForMinerSynchronizeNodeDataBase {
      * 删除节点(nodeId)传输过来的数据。
      */
     void deleteTransferData(String nodeId) throws Exception ;
+
+    /**
+     * 节点(nodeId)有数据传输完成的标识吗？
+     */
+    boolean hasDataTransferFinishFlag(String nodeId);
 }

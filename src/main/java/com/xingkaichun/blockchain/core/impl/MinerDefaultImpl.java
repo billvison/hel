@@ -57,10 +57,10 @@ public class MinerDefaultImpl implements Miner {
         //分时
         while (true){
             if(mineOption){ break; }
-            adjustMasterSlaveBlockChainDataBase();
+            synchronizeBlockChainNode();
             //是否需要重新获取WrapperBlockForMining？区块链的区块有增删，则需要重新获取。
             if(wrapperBlockForMining == null ||
-                    (synchronizeBlockChainNodeOption && synchronizeBlockChainNode())){
+                    (synchronizeBlockChainNodeOption /* TODO && synchronizeBlockChainNode()*/)){
                 wrapperBlockForMining = obtainWrapperBlockForMining();
             }
             adjustMasterSlaveBlockChainDataBase();
@@ -198,8 +198,7 @@ public class MinerDefaultImpl implements Miner {
     }
 
     @Override
-    public boolean synchronizeBlockChainNode() throws Exception {
-        boolean isBlockChainGrow = false;
+    public void synchronizeBlockChainNode() throws Exception {
         while (true){
             if(!synchronizeBlockChainNodeOption){
                 break;
@@ -207,17 +206,17 @@ public class MinerDefaultImpl implements Miner {
             adjustMasterSlaveBlockChainDataBase();
             String availableSynchronizeNodeId = forMinerSynchronizeNodeDataBase.getDataTransferFinishFlagNodeId();
             if(availableSynchronizeNodeId == null){
-                return true;
+                return;
             }
             synchronizeBlockChainNode(availableSynchronizeNodeId);
-            forMinerSynchronizeNodeDataBase.deleteTransferData(availableSynchronizeNodeId);
-            forMinerSynchronizeNodeDataBase.clearDataTransferFinishFlag(availableSynchronizeNodeId);
-            adjustMasterSlaveBlockChainDataBase();
         }
-        return isBlockChainGrow;
     }
 
     private void synchronizeBlockChainNode(String availableSynchronizeNodeId) throws Exception {
+        boolean hasDataTransferFinishFlag = forMinerSynchronizeNodeDataBase.hasDataTransferFinishFlag(availableSynchronizeNodeId);
+        if(!hasDataTransferFinishFlag){
+            return;
+        }
         BlockChainSegement blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);
         List<Block> blockList = blockChainSegement.getBlockList();
         Block block = blockList.get(0);
@@ -237,6 +236,9 @@ public class MinerDefaultImpl implements Miner {
             blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);
             blockList = blockChainSegement.getBlockList();
         }
+        forMinerSynchronizeNodeDataBase.deleteTransferData(availableSynchronizeNodeId);
+        forMinerSynchronizeNodeDataBase.clearDataTransferFinishFlag(availableSynchronizeNodeId);
+        adjustMasterSlaveBlockChainDataBase();
     }
 
     private void reduceBlockChain(BlockChainDataBase blockChainDataBase, int blockHeight) throws Exception {

@@ -57,6 +57,11 @@ public class ForMinerSynchronizeNodeDataBaseDefaultImpl implements ForMinerSynch
     }
 
     @Override
+    public boolean hasDataTransferFinishFlag(String nodeId) {
+        return false;
+    }
+
+    @Override
     public String getDataTransferFinishFlagNodeId() throws Exception {
         return null;
     }
