@@ -101,7 +101,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             lock.unlock();
         }
     }
-    @Override
+/*    @Override
     public boolean replaceBlocks(BlockChainSegement blockChainSegement) throws Exception {
         lock.lock();
         try{
@@ -114,11 +114,11 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             int addedFirstBlockHight = addBlockList.get(0).getHeight();
             //区块链上最后一个区块的高度
             int lastBlockHeight = findTailBlock().getHeight();
-            /**
+            *//**
              * 当lastBlockHeight>=addedFirstBlockHight 表示有替换
              * 当lastBlockHeight+1=addedFirstBlockHight 表示区块都是新增
              * 当lastBlockHeight+1<addedFirstBlockHight 表示新增的区块高度有误
-             */
+             *//*
             if(lastBlockHeight>=addedFirstBlockHight){
                 for(int blockHeight=addedFirstBlockHight;blockHeight<=lastBlockHeight;blockHeight++){
                     Block block = findBlockByBlockHeight(blockHeight);
@@ -137,7 +137,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         }finally {
             lock.unlock();
         }
-    }
+    }*/
     //endregion
 
     //region 数据库相关

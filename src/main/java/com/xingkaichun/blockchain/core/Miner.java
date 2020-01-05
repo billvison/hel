@@ -39,14 +39,16 @@ public interface Miner {
      * 检测区块是否可以被应用到区块链上
      * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
      */
-    boolean isBlockApplyToBlockChain(Block block) throws Exception ;
+    boolean isBlockApplyToBlockChain(BlockChainDataBase blockChainDataBase, Block block) throws Exception ;
     /**
      * 检测一串区块是否可以被应用到区块链上
      * 有两种情况，一串区块可以被应用到区块链:
      * 情况1：需要删除一部分链上的区块，然后链上可以衔接这串区块，且删除的区块数目要小于增加的区块的数目
      * 情况2：不需要删除链上的区块，链上直接可以衔接这串区块
      */
+/*
     boolean isBlockListApplyToBlockChain(BlockChainSegement blockChainSegement) throws Exception ;
+*/
     //endregion
 
     //region 挖矿奖励

@@ -205,22 +205,51 @@ public class MinerDefaultImpl implements Miner {
                 break;
             }
             //TODO 在slave操作
-            //TODO 处理的不够合理 如何一个区块链同步另一个区块链传输时分成多个，只能处理按顺序的BlockChainSegement
             String availableSynchronizeNodeId = forMinerSynchronizeNodeDataBase.getDataTransferFinishFlagNodeId();
-            BlockChainSegement blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);
-            if(blockChainSegement == null){
-                break;
+            if(availableSynchronizeNodeId == null){
+                return true;
             }
-            //TODO forMinerSynchronizeNodeDataBase.getNextBlockChainSegement()
-            boolean currentIsBlockListApplyToBlockChain = isBlockListApplyToBlockChain(blockChainSegement);
-            if(currentIsBlockListApplyToBlockChain){
-                blockChainDataBase.replaceBlocks(blockChainSegement);
-                isBlockChainGrow = true;
+            BlockChainSegement blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);
+            List<Block> blockList = blockChainSegement.getBlockList();
+            Block block = blockList.get(0);
+            reduceBlockChain(blockChainDataBaseSlave,block.getHeight()-1);
+            while(true){
+                if(blockChainSegement == null){
+                    break;
+                }
+                for(Block currentBlock :blockList){
+                    boolean isBlockApplyToBlockChain = isBlockApplyToBlockChain(blockChainDataBaseSlave,currentBlock);
+                    if(isBlockApplyToBlockChain){
+                        blockChainDataBase.addBlock(currentBlock);
+                    }else {
+                        return false;
+                    }
+                }
+                blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);
+                blockList = blockChainSegement.getBlockList();
             }
             forMinerSynchronizeNodeDataBase.deleteTransferData(availableSynchronizeNodeId);
+            forMinerSynchronizeNodeDataBase.clearDataTransferFinishFlag(availableSynchronizeNodeId);
         }
         return isBlockChainGrow;
     }
+
+    private void reduceBlockChain(BlockChainDataBase blockChainDataBase, int blockHeight) throws Exception {
+        Block tailBlock = blockChainDataBase.findTailBlock();
+        if(tailBlock == null){
+            return;
+        }
+        int currentBlockHeight = tailBlock.getHeight();
+        while(currentBlockHeight > blockHeight){
+            blockChainDataBase.removeTailBlock();
+            tailBlock = blockChainDataBase.findTailBlock();
+            if(tailBlock == null){
+                return;
+            }
+            currentBlockHeight = tailBlock.getHeight();
+        }
+    }
+
     public void stopSynchronizeBlockChainNode(){
         synchronizeBlockChainNodeOption = false;
     }
@@ -313,7 +342,7 @@ public class MinerDefaultImpl implements Miner {
 
 
     @Override
-    public boolean isBlockApplyToBlockChain(Block block) throws Exception {
+    public boolean isBlockApplyToBlockChain(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
         if(block==null){
             throw new BlockChainCoreException("区块校验失败：区块不能为null。");
         }
@@ -516,7 +545,7 @@ public class MinerDefaultImpl implements Miner {
         }
     }
 
-    @Override
+    /*@Override
     public boolean isBlockListApplyToBlockChain(BlockChainSegement blockChainSegement) throws Exception {
         List<Block> changeDeleteBlockList = new ArrayList<>();
         List<Block> changeAddBlockList = new ArrayList<>();
@@ -591,7 +620,7 @@ public class MinerDefaultImpl implements Miner {
             }
         }
         return true;
-    }
+    }*/
 
 
     //region 挖矿奖励相关
