@@ -5,25 +5,34 @@ import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import java.util.List;
 
 /**
- * 交易池
- * 所有没有持久化进区块链的交易，都应该放入交易池。
- * 其它对象可以从交易池获取这部分交易数据，然后进行自己的活动。例如矿工可以从交易池获取挖矿的原材料(交易数据)进行挖矿活动。
- *
- *
+ * 本来的作用是收集交易，用于挖矿。
+ * 所有没有持久化进区块链的交易，都应该被收集起来，供挖矿使用。
+ * 其它对象可以从本类获取交易数据，然后进行自己的活动。例如矿工可以从交易池获取挖矿的原材料(交易数据)进行挖矿活动。
  */
 public interface ForMinerTransactionDataBase {
 
     /**
-     * 添加交易进交易池
+     * 新增交易
      */
-    boolean addTransaction(Transaction transaction) throws Exception ;
+    boolean insertTransaction(Transaction transaction) throws Exception ;
 
     /**
-     * 从交易池获取交易
+     * 新增交易
      */
-    //TODO 增加按照排序选择
-    List<Transaction> getTransactionList() throws Exception ;
+    boolean insertTransactionList(List<Transaction> transactionList) throws Exception ;
 
+    /**
+     * 获取交易
+     */
+    List<Transaction> selectTransactionList(int from, int size) throws Exception ;
+
+    /**
+     * 删除交易
+     */
     void deleteTransaction(Transaction transaction) throws Exception ;
+
+    /**
+     * 删除交易
+     */
     void deleteTransactionList(List<Transaction> transactionList) throws Exception ;
 }

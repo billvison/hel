@@ -32,7 +32,7 @@ public class ForMinerTransactionDataBaseDefaultImpl implements ForMinerTransacti
         }));
     }
 
-    public boolean addTransaction(Transaction transaction) throws Exception {
+    public boolean insertTransaction(Transaction transaction) throws Exception {
 
         //校验签名 防止签名错误的交易加入交易池
         boolean verifySignature = TransactionUtil.verifySignature(transaction);
@@ -51,7 +51,12 @@ public class ForMinerTransactionDataBaseDefaultImpl implements ForMinerTransacti
         return true;
     }
 
-    public List<Transaction> getTransactionList() throws Exception {
+    @Override
+    public boolean insertTransactionList(List<Transaction> transactionList) throws Exception {
+        return false;
+    }
+
+    public List<Transaction> selectTransactionList(int from, int size) throws Exception {
         synchronized (BlockChainDataBase.class){
             List<Transaction> transactionList = new ArrayList<>();
             DBIterator dbIterator = this.transactionPoolDB.iterator();

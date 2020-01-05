@@ -84,7 +84,7 @@ public class MinerDefaultImpl implements Miner {
 
     private WrapperBlockForMining obtainWrapperBlockForMining() throws Exception {
         WrapperBlockForMining wrapperBlockForMining = null;
-        List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.getTransactionList();
+        List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.selectTransactionList(0,10000);
         List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(transactionListForMinerBlock);
         //TODO 这里处理可以优化。这里的异常交易指的是不满足区块的交易。但不一定非法，在特定时刻，或许就是合法的交易。
         // 删除异常交易
