@@ -1,6 +1,6 @@
 package com.xingkaichun.blockchain.core;
 
-import com.xingkaichun.blockchain.core.model.BlockChainSegement;
+import com.xingkaichun.blockchain.core.model.Block;
 
 
 /**
@@ -46,12 +46,12 @@ public interface ForMinerSynchronizeNodeDataBase {
     /**
      * 保存节点(nodeId)传输过来的数据
      */
-    boolean addBlockChainSegement(String nodeId,BlockChainSegement blockChainSegement) throws Exception ;
+    boolean addBlock(String nodeId, Block block) throws Exception ;
 
     /**
      * 获取节点(nodeId)传输过来的数据，返回结果不为null，代表可以继续调用此方法，继续获取数据。
      */
-    BlockChainSegement getNextBlockChainSegement(String nodeId) throws Exception ;
+    Block getNextBlock(String nodeId) throws Exception ;
 
     /**
      * 获取一个有数据传输完成标识的节点ID

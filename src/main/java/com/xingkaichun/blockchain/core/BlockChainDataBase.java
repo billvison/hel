@@ -1,11 +1,8 @@
 package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.model.Block;
-import com.xingkaichun.blockchain.core.model.BlockChainSegement;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
-
-import java.util.List;
 
 
 /**
@@ -26,13 +23,6 @@ public interface BlockChainDataBase {
      * 删除区块链的尾巴区块(最后一个区块)
      */
     Block removeTailBlock() throws Exception ;
-
-    /**
-     * 新增多个区块
-     * 这个是一个比较复杂的操作。不仅要考虑每一个区块数据的正确性，
-     *
-     */
-/*    boolean replaceBlocks(BlockChainSegement blockChainSegement) throws Exception ;*/
     //endregion
 
     //region 区块链提供的通用方法

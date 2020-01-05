@@ -3,7 +3,6 @@ package com.xingkaichun.blockchain.core.impl;
 import com.xingkaichun.blockchain.core.*;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
-import com.xingkaichun.blockchain.core.model.BlockChainSegement;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
@@ -203,7 +202,6 @@ public class MinerDefaultImpl implements Miner {
             if(!synchronizeBlockChainNodeOption){
                 break;
             }
-            adjustMasterSlaveBlockChainDataBase();
             String availableSynchronizeNodeId = forMinerSynchronizeNodeDataBase.getDataTransferFinishFlagNodeId();
             if(availableSynchronizeNodeId == null){
                 return;
@@ -213,28 +211,26 @@ public class MinerDefaultImpl implements Miner {
     }
 
     private void synchronizeBlockChainNode(String availableSynchronizeNodeId) throws Exception {
+        adjustMasterSlaveBlockChainDataBase();
         boolean hasDataTransferFinishFlag = forMinerSynchronizeNodeDataBase.hasDataTransferFinishFlag(availableSynchronizeNodeId);
         if(!hasDataTransferFinishFlag){
             return;
         }
-        BlockChainSegement blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);
-        List<Block> blockList = blockChainSegement.getBlockList();
-        Block block = blockList.get(0);
-        reduceBlockChain(blockChainDataBaseSlave,block.getHeight()-1);
-        while(true){
-            if(blockChainSegement == null){
-                break;
-            }
-            for(Block currentBlock : blockList){
-                boolean isBlockApplyToBlockChain = isBlockApplyToBlockChain(blockChainDataBaseSlave,currentBlock);
+        Block block = forMinerSynchronizeNodeDataBase.getNextBlock(availableSynchronizeNodeId);
+        if(block != null){
+            reduceBlockChain(blockChainDataBaseSlave,block.getHeight()-1);
+            while(true){
+                boolean isBlockApplyToBlockChain = isBlockApplyToBlockChain(blockChainDataBaseSlave,block);
                 if(isBlockApplyToBlockChain){
-                    blockChainDataBaseSlave.addBlock(currentBlock);
+                    blockChainDataBaseSlave.addBlock(block);
                 }else {
-                    return;
+                    break;
+                }
+                block = forMinerSynchronizeNodeDataBase.getNextBlock(availableSynchronizeNodeId);
+                if(block == null){
+                    break;
                 }
             }
-            blockChainSegement = forMinerSynchronizeNodeDataBase.getNextBlockChainSegement(availableSynchronizeNodeId);
-            blockList = blockChainSegement.getBlockList();
         }
         forMinerSynchronizeNodeDataBase.deleteTransferData(availableSynchronizeNodeId);
         forMinerSynchronizeNodeDataBase.clearDataTransferFinishFlag(availableSynchronizeNodeId);
@@ -593,7 +589,7 @@ public class MinerDefaultImpl implements Miner {
             BlockChainSegement bcs = new BlockChainSegement();
             bcs.setBlockList(changeDeleteBlockList);
             forMinerSynchronizeNodeDataBase.deleteTransferData(getLocalNodeId());
-            forMinerSynchronizeNodeDataBase.addBlockChainSegement(getLocalNodeId(),bcs);
+            forMinerSynchronizeNodeDataBase.addBlock(getLocalNodeId(),bcs);
             forMinerSynchronizeNodeDataBase.addDataTransferFinishFlag(getLocalNodeId());
 
             for(Block block:blockList){

@@ -3,7 +3,6 @@ package com.xingkaichun.blockchain.core.impl;
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
-import com.xingkaichun.blockchain.core.model.BlockChainSegement;
 import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
@@ -101,43 +100,6 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             lock.unlock();
         }
     }
-/*    @Override
-    public boolean replaceBlocks(BlockChainSegement blockChainSegement) throws Exception {
-        lock.lock();
-        try{
-            List<Block> addBlockList = blockChainSegement.getBlockList();
-            //用于记录数据库操作
-            WriteBatch writeBatch = new WriteBatchImpl();
-            //区块链上将被删掉的区块
-            List<Block> deleteBlockList = new ArrayList<>();
-            //新增到区块链上第一个区块的高度
-            int addedFirstBlockHight = addBlockList.get(0).getHeight();
-            //区块链上最后一个区块的高度
-            int lastBlockHeight = findTailBlock().getHeight();
-            *//**
-             * 当lastBlockHeight>=addedFirstBlockHight 表示有替换
-             * 当lastBlockHeight+1=addedFirstBlockHight 表示区块都是新增
-             * 当lastBlockHeight+1<addedFirstBlockHight 表示新增的区块高度有误
-             *//*
-            if(lastBlockHeight>=addedFirstBlockHight){
-                for(int blockHeight=addedFirstBlockHight;blockHeight<=lastBlockHeight;blockHeight++){
-                    Block block = findBlockByBlockHeight(blockHeight);
-                    fillWriteBatch(writeBatch,block,BlockChainActionEnum.DELETE_BLOCK);
-                    deleteBlockList.add(block);
-                }
-            }
-
-            //增 替换的区块
-            for(Block block:addBlockList){
-                fillWriteBatch(writeBatch,block,BlockChainActionEnum.ADD_BLOCK);
-            }
-
-            LevelDBUtil.write(blockChainDB,writeBatch);
-            return true;
-        }finally {
-            lock.unlock();
-        }
-    }*/
     //endregion
 
     //region 数据库相关

@@ -1,7 +1,6 @@
 package com.xingkaichun.blockchain.core.utils.atomic;
 
 import com.xingkaichun.blockchain.core.model.Block;
-import com.xingkaichun.blockchain.core.model.BlockChainSegement;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
 
@@ -63,20 +62,4 @@ public class EncodeDecode {
         return block;
     }
 
-    public static byte[] encode(BlockChainSegement blockChainSegement) throws Exception {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = null;
-        objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        objectOutputStream.writeObject(blockChainSegement);
-        byte[] bytesBlock = byteArrayOutputStream.toByteArray();
-        return bytesBlock;
-    }
-
-    public static BlockChainSegement decodeToBlockChainSegement(byte[] bytesBlock) throws Exception{
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytesBlock);
-        ObjectInputStream objectInputStream = null;
-        objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        BlockChainSegement blockChainSegement = (BlockChainSegement) objectInputStream.readObject();
-        return blockChainSegement;
-    }
 }
