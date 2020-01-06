@@ -60,7 +60,7 @@ public class MinerDefaultImpl implements Miner {
             //是否需要重新获取WrapperBlockForMining？区块链的区块有增删，则需要重新获取。
             if(wrapperBlockForMining == null ||
                     (synchronizeBlockChainNodeOption && isWrapperBlockForMiningNeedObtainAgain(wrapperBlockForMining))){
-                wrapperBlockForMining = obtainWrapperBlockForMining();
+                wrapperBlockForMining = obtainWrapperBlockForMining(blockChainDataBaseMaster);
             }
             miningBlock(wrapperBlockForMining);
             //挖矿成功
@@ -170,10 +170,10 @@ public class MinerDefaultImpl implements Miner {
         mineOption = false;
     }
 
-    private WrapperBlockForMining obtainWrapperBlockForMining() throws Exception {
+    private WrapperBlockForMining obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
         WrapperBlockForMining wrapperBlockForMining = null;
         List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.selectTransactionList(0,10000);
-        List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(transactionListForMinerBlock);
+        List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(blockChainDataBase,transactionListForMinerBlock);
         wrapperBlockForMining.setTransactionListForMinerBlock(transactionListForMinerBlock);
         wrapperBlockForMining.setExceptionTransactionList(exceptionTransactionList);
 
@@ -304,13 +304,13 @@ public class MinerDefaultImpl implements Miner {
      * @param packingTransactionList
      * @throws Exception
      */
-    public List<Transaction> removeExceptionTransaction_PointOfBlockView(List<Transaction> packingTransactionList) throws Exception{
+    public List<Transaction> removeExceptionTransaction_PointOfBlockView(BlockChainDataBase blockChainDataBase,List<Transaction> packingTransactionList) throws Exception{
         List<Transaction> exceptionTransactionList = new ArrayList<>();
         //区块中允许没有交易
         if(packingTransactionList==null || packingTransactionList.size()==0){
             return exceptionTransactionList;
         }
-        List<Transaction> exceptionTransactionList_PointOfTransactionView = removeExceptionTransaction_PointOfTransactionView(packingTransactionList);
+        List<Transaction> exceptionTransactionList_PointOfTransactionView = removeExceptionTransaction_PointOfTransactionView(blockChainDataBase,packingTransactionList);
         if(exceptionTransactionList_PointOfTransactionView != null){
             exceptionTransactionList.addAll(exceptionTransactionList_PointOfTransactionView);
         }
@@ -341,7 +341,7 @@ public class MinerDefaultImpl implements Miner {
     /**
      * 打包处理过程: 将异常的交易丢弃掉【站在单笔交易的角度校验交易】
      */
-    private List<Transaction>  removeExceptionTransaction_PointOfTransactionView(List<Transaction> transactionList) throws Exception{
+    private List<Transaction>  removeExceptionTransaction_PointOfTransactionView(BlockChainDataBase blockChainDataBase,List<Transaction> transactionList) throws Exception{
         List<Transaction> exceptionTransactionList = new ArrayList<>();
         if(transactionList==null||transactionList.size()==0){
             return exceptionTransactionList;
@@ -349,7 +349,7 @@ public class MinerDefaultImpl implements Miner {
         Iterator<Transaction> iterator = transactionList.iterator();
         while (iterator.hasNext()){
             Transaction tx = iterator.next();
-            boolean checkPass = checkUnBlockChainTransaction(null,tx);
+            boolean checkPass = checkUnBlockChainTransaction(blockChainDataBase,null,tx);
             if(!checkPass){
                 iterator.remove();
                 exceptionTransactionList.add(tx);
@@ -452,7 +452,7 @@ public class MinerDefaultImpl implements Miner {
             } else {
                 throw new BlockChainCoreException("区块数据异常，不能识别的交易类型。");
             }
-            boolean check = checkUnBlockChainTransaction(block,tx);
+            boolean check = checkUnBlockChainTransaction(blockChainDataBase,block,tx);
             if(!check){
                 throw new BlockChainCoreException("区块数据异常，交易异常。");
             }
@@ -492,7 +492,7 @@ public class MinerDefaultImpl implements Miner {
      * 校验(未打包进区块链的)交易的合法性
      * 奖励交易校验需要传入block参数
      */
-    public boolean checkUnBlockChainTransaction(Block block, Transaction transaction) throws Exception{
+    public boolean checkUnBlockChainTransaction(BlockChainDataBase blockChainDataBase, Block block, Transaction transaction) throws Exception{
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();
             if(inputs!=null && inputs.size()!=0){
