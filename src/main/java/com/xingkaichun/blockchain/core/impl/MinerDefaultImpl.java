@@ -563,17 +563,17 @@ public class MinerDefaultImpl implements Miner {
     }
 
     //region 挖矿奖励相关
-    @Override
+
+    /**
+     * 获取区块中写入的挖矿奖励金额
+     */
     public BigDecimal obtainBlockWriteMineAward(Block block) {
-        for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() == TransactionType.MINER){
-                ArrayList<TransactionOutput> outputs = tx.getOutputs();
-                TransactionOutput mineAwardTransactionOutput = outputs.get(0);
-                return mineAwardTransactionOutput.getValue();
-            }
-        }
-        throw new BlockChainCoreException("区块数据异常：没有包含挖矿奖励数据。");
+        Transaction tx = obtainBlockWriteTransaction(block);
+        ArrayList<TransactionOutput> outputs = tx.getOutputs();
+        TransactionOutput mineAwardTransactionOutput = outputs.get(0);
+        return mineAwardTransactionOutput.getValue();
     }
+
     @Override
     public boolean isBlockMineAwardRight(Block block){
         //区块中写入的挖矿奖励
@@ -601,6 +601,16 @@ public class MinerDefaultImpl implements Miner {
         transaction.setOutputs(outputs);
 
         return transaction;
+    }
+
+    @Override
+    public Transaction obtainBlockWriteTransaction(Block block) {
+        for(Transaction tx : block.getTransactions()){
+            if(tx.getTransactionType() == TransactionType.MINER){
+                return tx;
+            }
+        }
+        throw new BlockChainCoreException("区块中没有奖励交易。");
     }
     //endregion
 

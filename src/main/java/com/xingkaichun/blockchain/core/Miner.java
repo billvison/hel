@@ -47,11 +47,11 @@ public interface Miner {
      */
     Transaction buildMineAwardTransaction(Block block) ;
     /**
-     * 获取区块中写入的挖矿奖励
+     * 获取区块中写入的挖矿奖励交易
      * @param block 区块
      * @return
      */
-    BigDecimal obtainBlockWriteMineAward(Block block) ;
+    Transaction obtainBlockWriteTransaction(Block block) ;
     /**
      * 区块的挖矿奖励是否正确？
      * @param block 被校验挖矿奖励是否正确的区块
