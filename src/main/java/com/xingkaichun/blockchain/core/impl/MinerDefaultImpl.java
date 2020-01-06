@@ -54,8 +54,7 @@ public class MinerDefaultImpl implements Miner {
         adjustMasterSlaveBlockChainDataBase();
         WrapperBlockForMining wrapperBlockForMining = null;
         //分时
-        while (true){
-            if(mineOption){ break; }
+        while (isActive()){
             synchronizeBlockChainNode();
             //是否需要重新获取WrapperBlockForMining？区块链的区块有增删，则需要重新获取。
             if(wrapperBlockForMining == null ||
@@ -216,10 +215,7 @@ public class MinerDefaultImpl implements Miner {
 
     @Override
     public void synchronizeBlockChainNode() throws Exception {
-        while (true){
-            if(!synchronizeBlockChainNodeOption){
-                break;
-            }
+        while (synchronizeBlockChainNodeOption){
             String availableSynchronizeNodeId = forMinerSynchronizeNodeDataBase.getDataTransferFinishFlagNodeId();
             if(availableSynchronizeNodeId == null){
                 return;
@@ -680,5 +676,9 @@ public class MinerDefaultImpl implements Miner {
 
     private String getLocalNodeId(){
         return this.getClass().getName();
+    }
+
+    private boolean isActive(){
+        return mineOption || synchronizeBlockChainNodeOption;
     }
 }
