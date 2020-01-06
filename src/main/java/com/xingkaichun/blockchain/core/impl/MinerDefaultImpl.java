@@ -234,7 +234,7 @@ public class MinerDefaultImpl implements Miner {
         if(block != null){
             reduceBlockChain(blockChainDataBaseSlave,block.getHeight()-1);
             while(true){
-                boolean isBlockApplyToBlockChain = isBlockApplyToBlockChain(blockChainDataBaseSlave,block);
+                boolean isBlockApplyToBlockChain = isBlockCanApplyToBlockChain(blockChainDataBaseSlave,block);
                 if(isBlockApplyToBlockChain){
                     blockChainDataBaseSlave.addBlock(block);
                 }else {
@@ -359,7 +359,7 @@ public class MinerDefaultImpl implements Miner {
 
 
     @Override
-    public boolean isBlockApplyToBlockChain(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
+    public boolean isBlockCanApplyToBlockChain(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
         if(block==null){
             throw new BlockChainCoreException("区块校验失败：区块不能为null。");
         }

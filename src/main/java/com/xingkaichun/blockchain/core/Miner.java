@@ -35,7 +35,7 @@ public interface Miner {
      * 检测区块是否可以被应用到区块链上
      * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
      */
-    boolean isBlockApplyToBlockChain(BlockChainDataBase blockChainDataBase, Block block) throws Exception ;
+    boolean isBlockCanApplyToBlockChain(BlockChainDataBase blockChainDataBase, Block block) throws Exception ;
     //endregion
 
     //region 挖矿奖励
