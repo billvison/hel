@@ -3,8 +3,6 @@ package com.xingkaichun.blockchain.core;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 
-import java.math.BigDecimal;
-
 /**
  * 矿工:计算挖矿奖励、计算挖矿难度、挖矿、校验区块数据的合法性、将挖到的矿放进区块链上、同步其它区块链节点的数据......
  */
@@ -51,13 +49,13 @@ public interface Miner {
      * @param block 区块
      * @return
      */
-    Transaction obtainBlockWriteTransaction(Block block) ;
+    Transaction obtainBlockWriteMineAwardTransaction(Block block) ;
     /**
-     * 区块的挖矿奖励是否正确？
+     * 区块中写入的挖矿奖励是否正确？
      * @param block 被校验挖矿奖励是否正确的区块
      * @return
      */
-    boolean isBlockMineAwardRight(Block block);
+    boolean isBlockWriteMineAwardRight(Block block);
     //endregion
 
     //region 默克尔树根
@@ -67,9 +65,9 @@ public interface Miner {
      */
     String calculateBlockMerkleRoot(Block block) ;
     /**
-     * 判断Block写入的默克尔树根是否正确
+     * 区块中写入的默克尔树根是否正确
      */
-    boolean isBlockMerkleRootRight(Block block);
+    boolean isBlockWriteMerkleRootRight(Block block);
     //endregion
 
     //region 区块Hash
@@ -79,8 +77,8 @@ public interface Miner {
      */
     String calculateBlockHash(Block block) ;
     /**
-     * 判断挖矿Hash是否正确
+     * 区块中写入的Hash是否正确
      */
-    boolean isBlockHashRight(Block block) ;
+    boolean isBlockWriteHashRight(Block block) ;
     //endregion
 }

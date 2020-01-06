@@ -385,7 +385,7 @@ public class MinerDefaultImpl implements Miner {
             }
         }
         //校验挖矿[区块本身的数据]是否正确
-        boolean minerSuccess = isBlockHashRight(block);
+        boolean minerSuccess = isBlockWriteHashRight(block);
         if(!minerSuccess){
             return false;
         }
@@ -501,7 +501,7 @@ public class MinerDefaultImpl implements Miner {
             if(outputs.size() != 1){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出有且只能有一笔。不合法的交易。");
             }
-            if(!isBlockMineAwardRight(block)){
+            if(!isBlockWriteMineAwardRight(block)){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出金额不正确。不合法的交易。");
             }
             return true;
@@ -568,14 +568,14 @@ public class MinerDefaultImpl implements Miner {
      * 获取区块中写入的挖矿奖励金额
      */
     public BigDecimal obtainBlockWriteMineAward(Block block) {
-        Transaction tx = obtainBlockWriteTransaction(block);
+        Transaction tx = obtainBlockWriteMineAwardTransaction(block);
         ArrayList<TransactionOutput> outputs = tx.getOutputs();
         TransactionOutput mineAwardTransactionOutput = outputs.get(0);
         return mineAwardTransactionOutput.getValue();
     }
 
     @Override
-    public boolean isBlockMineAwardRight(Block block){
+    public boolean isBlockWriteMineAwardRight(Block block){
         //区块中写入的挖矿奖励
         BigDecimal blockWritedMineAward = obtainBlockWriteMineAward(block);
         //目标挖矿奖励
@@ -604,7 +604,7 @@ public class MinerDefaultImpl implements Miner {
     }
 
     @Override
-    public Transaction obtainBlockWriteTransaction(Block block) {
+    public Transaction obtainBlockWriteMineAwardTransaction(Block block) {
         for(Transaction tx : block.getTransactions()){
             if(tx.getTransactionType() == TransactionType.MINER){
                 return tx;
@@ -663,14 +663,14 @@ public class MinerDefaultImpl implements Miner {
         return MerkleUtils.getMerkleRoot(transactionList);
     }
     @Override
-    public boolean isBlockMerkleRootRight(Block block){
+    public boolean isBlockWriteMerkleRootRight(Block block){
         String targetMerkleRoot = calculateBlockMerkleRoot(block);
         return targetMerkleRoot.equals(block.getMerkleRoot());
     }
     @Override
-    public boolean isBlockHashRight(Block block){
+    public boolean isBlockWriteHashRight(Block block){
         //校验区块写入的MerkleRoot是否正确
-        if(!isBlockMerkleRootRight(block)){
+        if(!isBlockWriteMerkleRootRight(block)){
             return false;
         }
         //校验区块写入的挖矿是否正确
