@@ -37,7 +37,7 @@ import com.xingkaichun.blockchain.core.model.Block;
  *
  * 本类的正确使用方式
  * 获取一个有数据传输完毕标识的节点ID。
- * 根据节点ID可获取传输过来的完整数据。(循环获取节点下一个BlockChainSegement，直至获取结果为null)。在这一步中，
+ * 根据节点ID可获取传输过来的完整数据。(循环获取节点下一个Block，直至获取结果为null)。在这一步中，
  * 因为获取到了传输的数据，所以可以做自己的业务逻辑了。
  * 使用完毕，清除节点ID的数据传输完毕标识，删除节点ID传输数据。
  */
