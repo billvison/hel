@@ -82,6 +82,7 @@ public class MinerDefaultImpl implements Miner {
             // 应当有一个策略，处理这种情形。
             forMinerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
             forMinerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getTransactionListForMinerBlock());
+            wrapperBlockForMiningThreadLocal.remove();
         }
     }
 
