@@ -8,12 +8,20 @@ import com.xingkaichun.blockchain.core.model.transaction.Transaction;
  */
 public interface Miner {
 
+    //region 全局控制
     /**
      * 启动
      */
     void run() throws Exception ;
-
-
+    /**
+     * 暂停所有
+     */
+    void pause() throws Exception;
+    /**
+     * 恢复所有
+     */
+    void resume() throws Exception;
+    //endregion
 
     //region 挖矿相关
     /**
@@ -65,7 +73,7 @@ public interface Miner {
      * 构建区块的挖矿奖励交易
      * @param block 目标区块
      */
-    Transaction buildMineAwardTransaction(Block block) ;
+    Transaction buildMineAwardTransaction(BlockChainDataBase blockChainDataBase, Block block) ;
     /**
      * 获取区块中写入的挖矿奖励交易
      * @param block 区块
@@ -77,7 +85,7 @@ public interface Miner {
      * @param block 被校验挖矿奖励是否正确的区块
      * @return
      */
-    boolean isBlockWriteMineAwardRight(Block block);
+    boolean isBlockWriteMineAwardRight(BlockChainDataBase blockChainDataBase, Block block);
     //endregion
 
 
@@ -106,6 +114,6 @@ public interface Miner {
      * 区块中写入的Hash是否正确
      */
     //TODO 应该判断nonce正确，还是hash正确
-    boolean isBlockWriteHashRight(Block block) ;
+    boolean isBlockWriteHashRight(BlockChainDataBase blockChainDataBase, Block block) ;
     //endregion
 }
