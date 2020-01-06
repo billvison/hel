@@ -13,10 +13,24 @@ public interface Miner {
      */
     void run() throws Exception ;
 
+
+
+    //region 挖矿相关
     /**
-     * 停止挖矿
+     * 挖矿
      */
-    void stopMining();
+    void mine() throws Exception;
+    /**
+     * 暂停挖矿
+     */
+    void pauseMine() throws Exception;
+    /**
+     * 恢复挖矿
+     */
+    void resumeMine() throws Exception;
+    //endregion
+
+
 
     //region 同步其它区块链节点的数据
     /**
@@ -25,10 +39,16 @@ public interface Miner {
      */
     void synchronizeBlockChainNode() throws Exception ;
     /**
-     * 停止同步其它区块链节点的数据
+     * 暂停同步其它区块链节点的数据
      */
-    void stopSynchronizeBlockChainNode();
+    void pauseSynchronizeBlockChainNode();
+    /**
+     * 恢复同步其它区块链节点的数据
+     */
+    void resumeSynchronizeBlockChainNode() throws Exception;
     //endregion
+
+
 
     //region 区块校验
     /**
@@ -37,6 +57,8 @@ public interface Miner {
      */
     boolean isBlockCanApplyToBlockChain(BlockChainDataBase blockChainDataBase, Block block) throws Exception ;
     //endregion
+
+
 
     //region 挖矿奖励
     /**
@@ -58,6 +80,8 @@ public interface Miner {
     boolean isBlockWriteMineAwardRight(Block block);
     //endregion
 
+
+
     //region 默克尔树根
     /**
      * 计算区块的默克尔树根值
@@ -69,6 +93,8 @@ public interface Miner {
      */
     boolean isBlockWriteMerkleRootRight(Block block);
     //endregion
+
+
 
     //region 区块Hash
     /**

@@ -52,31 +52,36 @@ public class MinerDefaultImpl implements Miner {
     @Override
     public void run() throws Exception {
         adjustMasterSlaveBlockChainDataBase();
-        WrapperBlockForMining wrapperBlockForMining = null;
-        //分时
         while (isActive()){
             synchronizeBlockChainNode();
-            //是否需要重新获取WrapperBlockForMining？区块链的区块有增删，则需要重新获取。
-            if(wrapperBlockForMining == null ||
-                    (synchronizeBlockChainNodeOption && isWrapperBlockForMiningNeedObtainAgain(wrapperBlockForMining))){
-                wrapperBlockForMining = obtainWrapperBlockForMining(blockChainDataBaseMaster);
+            mine();
+        }
+    }
+
+    private static ThreadLocal<WrapperBlockForMining> wrapperBlockForMiningThreadLocal = new ThreadLocal<>();
+
+    public void mine() throws Exception {
+        WrapperBlockForMining wrapperBlockForMining = wrapperBlockForMiningThreadLocal.get();
+        //是否需要重新获取WrapperBlockForMining？区块链的区块有增删，则需要重新获取。
+        if(wrapperBlockForMining == null ||
+                (synchronizeBlockChainNodeOption && isWrapperBlockForMiningNeedObtainAgain(wrapperBlockForMining))){
+            wrapperBlockForMining = obtainWrapperBlockForMining(blockChainDataBaseMaster);
+        }
+        miningBlock(wrapperBlockForMining);
+        //挖矿成功
+        if(wrapperBlockForMining.getMiningSuccess()){
+            //将矿放入区块链
+            boolean isAddBlockToBlockChainSuccess = blockChainDataBaseMaster.addBlock(wrapperBlockForMining.getBlock());
+            if(!isAddBlockToBlockChainSuccess){
+                throw new BlockChainCoreException("区块链新增区块失败。");
             }
-            miningBlock(wrapperBlockForMining);
-            //挖矿成功
-            if(wrapperBlockForMining.getMiningSuccess()){
-                //将矿放入区块链
-                boolean isAddBlockToBlockChainSuccess = blockChainDataBaseMaster.addBlock(wrapperBlockForMining.getBlock());
-                if(!isAddBlockToBlockChainSuccess){
-                    throw new BlockChainCoreException("区块链新增区块失败。");
-                }
-                //重置
-                wrapperBlockForMining = null;
-                //TODO 异常交易不应该彻底丢掉。
-                // 例如B交易依赖A交易，但是本区块链并没有成功同步到A交易，因此而判定B交易就是非法的，而将其丢弃。
-                // 应当有一个策略，处理这种情形。
-                forMinerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
-                forMinerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getTransactionListForMinerBlock());
-            }
+            //重置
+            wrapperBlockForMining = null;
+            //TODO 异常交易不应该彻底丢掉。
+            // 例如B交易依赖A交易，但是本区块链并没有成功同步到A交易，因此而判定B交易就是非法的，而将其丢弃。
+            // 应当有一个策略，处理这种情形。
+            forMinerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
+            forMinerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getTransactionListForMinerBlock());
         }
     }
 
@@ -165,8 +170,13 @@ public class MinerDefaultImpl implements Miner {
     }
 
     @Override
-    public void stopMining(){
+    public void pauseMine() throws Exception {
         mineOption = false;
+    }
+
+    @Override
+    public void resumeMine() throws Exception {
+
     }
 
     private WrapperBlockForMining obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
@@ -267,8 +277,13 @@ public class MinerDefaultImpl implements Miner {
         }
     }
 
-    public void stopSynchronizeBlockChainNode(){
+    public void pauseSynchronizeBlockChainNode(){
         synchronizeBlockChainNodeOption = false;
+    }
+
+    @Override
+    public void resumeSynchronizeBlockChainNode() throws Exception {
+
     }
 
     /**
