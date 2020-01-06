@@ -16,9 +16,6 @@ import java.math.BigDecimal;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 
-/**
- * 矿工:挖矿、计算挖矿奖励、计算挖矿难度、校验交易数据的合法性、校验区块数据的合法性。
- */
 public class MinerDefaultImpl implements Miner {
 
     //region 属性与构造函数
@@ -26,14 +23,20 @@ public class MinerDefaultImpl implements Miner {
     private PublicKeyString minerPublicKey;
     private MineDifficulty mineDifficulty;
     private MineAward mineAward;
-    private BlockChainDataBase blockChainDataBase ;
+    private BlockChainDataBase blockChainDataBaseMaster ;
     private BlockChainDataBase blockChainDataBaseSlave ;
     private ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase;
     //交易池：矿工从交易池里获取挖矿的原材料(交易数据)
     private ForMinerTransactionDataBase forMinerTransactionDataBase;
 
-    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, BlockChainDataBase blockChainDataBaseSlave, ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
-        this.blockChainDataBase = blockChainDataBase;
+    //挖矿开关:默认打开挖矿的开关
+    private boolean mineOption = true;
+    //同步其它节点的区块数据:默认同步其它节点区块数据
+    private boolean synchronizeBlockChainNodeOption = true;
+
+
+    public MinerDefaultImpl(BlockChainDataBase blockChainDataBaseMaster, BlockChainDataBase blockChainDataBaseSlave, ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
+        this.blockChainDataBaseMaster = blockChainDataBaseMaster;
         this.blockChainDataBaseSlave =blockChainDataBaseSlave;
         this.forMinerSynchronizeNodeDataBase = forMinerSynchronizeNodeDataBase;
         this.forMinerTransactionDataBase = forMinerTransactionDataBase;
@@ -43,10 +46,6 @@ public class MinerDefaultImpl implements Miner {
     }
     //endregion
 
-    //挖矿开关:默认打开挖矿的开关
-    private boolean mineOption = true;
-    //同步其它节点的区块数据:默认同步其它节点区块数据
-    private boolean synchronizeBlockChainNodeOption = true;
 
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
@@ -66,7 +65,7 @@ public class MinerDefaultImpl implements Miner {
             //挖矿成功
             if(wrapperBlockForMining.getMiningSuccess()){
                 //将矿放入区块链
-                boolean isAddBlockToBlockChainSuccess = blockChainDataBase.addBlock(wrapperBlockForMining.getBlock());
+                boolean isAddBlockToBlockChainSuccess = blockChainDataBaseMaster.addBlock(wrapperBlockForMining.getBlock());
                 if(!isAddBlockToBlockChainSuccess){
                     throw new BlockChainCoreException("区块链新增区块失败。");
                 }
@@ -85,7 +84,7 @@ public class MinerDefaultImpl implements Miner {
         if(wrapperBlockForMining == null){
             return true;
         }
-        Block tailBlock = blockChainDataBase.findTailBlock();
+        Block tailBlock = blockChainDataBaseMaster.findTailBlock();
         if(tailBlock == null){
             return false;
         }
@@ -104,17 +103,17 @@ public class MinerDefaultImpl implements Miner {
      * 第二步：slave同步master的区块。
      */
     private void adjustMasterSlaveBlockChainDataBase() throws Exception {
-        Block masterTailBlock = blockChainDataBase.findTailBlock() ;
+        Block masterTailBlock = blockChainDataBaseMaster.findTailBlock() ;
         Block slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
         //第一步：区块高度高的设为master，低的设置slave。
         if((masterTailBlock == null && slaveTailBlock != null)
             ||(masterTailBlock != null && slaveTailBlock != null && masterTailBlock.getHeight()<slaveTailBlock.getHeight())){
-            BlockChainDataBase blockChainDataBaseTemp = blockChainDataBase;
-            blockChainDataBase = blockChainDataBaseSlave;
+            BlockChainDataBase blockChainDataBaseTemp = blockChainDataBaseMaster;
+            blockChainDataBaseMaster = blockChainDataBaseSlave;
             blockChainDataBaseSlave = blockChainDataBaseTemp;
         }
         //第二步：slave同步master的区块。
-        masterTailBlock = blockChainDataBase.findTailBlock() ;
+        masterTailBlock = blockChainDataBaseMaster.findTailBlock() ;
         if(masterTailBlock != null){
             slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
             //删除区块直到尚未分叉位置停止
@@ -129,17 +128,17 @@ public class MinerDefaultImpl implements Miner {
                 slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
             }
             if(slaveTailBlock == null){
-                Block block = blockChainDataBase.findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
+                Block block = blockChainDataBaseMaster.findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
                 blockChainDataBaseSlave.addBlock(block);
             }
-            int masterTailBlockHeight = blockChainDataBase.findTailBlock().getHeight() ;
+            int masterTailBlockHeight = blockChainDataBaseMaster.findTailBlock().getHeight() ;
             int slaveTailBlockHeight = blockChainDataBaseSlave.findTailBlock().getHeight() ;
             while(true){
                 if(slaveTailBlockHeight >= masterTailBlockHeight){
                     break;
                 }
                 slaveTailBlockHeight++;
-                Block currentBlock = blockChainDataBase.findBlockByBlockHeight(slaveTailBlockHeight) ;
+                Block currentBlock = blockChainDataBaseMaster.findBlockByBlockHeight(slaveTailBlockHeight) ;
                 blockChainDataBaseSlave.addBlock(currentBlock);
             }
         }
@@ -176,7 +175,7 @@ public class MinerDefaultImpl implements Miner {
         wrapperBlockForMining.setExceptionTransactionList(exceptionTransactionList);
 
         Block nonNonceBlock = buildNonNonceBlock(transactionListForMinerBlock);
-        String difficulty = mineDifficulty.difficulty(blockChainDataBase, nonNonceBlock);
+        String difficulty = mineDifficulty.difficulty(blockChainDataBaseMaster, nonNonceBlock);
 
 
         wrapperBlockForMining.setBlock(nonNonceBlock);
@@ -516,7 +515,7 @@ public class MinerDefaultImpl implements Miner {
                 if(i.getUnspendTransactionOutput() == null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入UTXO不能为空。不合法的交易。");
                 }
-                if(blockChainDataBase.findUtxoByUtxoUuid(i.getUnspendTransactionOutput().getTransactionOutputUUID())!=null){
+                if(blockChainDataBaseMaster.findUtxoByUtxoUuid(i.getUnspendTransactionOutput().getTransactionOutputUUID())!=null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入不是UTXO。不合法的交易。");
                 }
             }
@@ -581,7 +580,7 @@ public class MinerDefaultImpl implements Miner {
         //区块中写入的挖矿奖励
         BigDecimal blockWritedMineAward = obtainBlockWriteMineAward(block);
         //目标挖矿奖励
-        BigDecimal targetMineAward = mineAward.mineAward(blockChainDataBase,block);
+        BigDecimal targetMineAward = mineAward.mineAward(blockChainDataBaseMaster,block);
         return targetMineAward.compareTo(blockWritedMineAward) != 0 ;
     }
     @Override
@@ -592,7 +591,7 @@ public class MinerDefaultImpl implements Miner {
         transaction.setInputs(null);
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
-        BigDecimal award = mineAward.mineAward(blockChainDataBase,block);
+        BigDecimal award = mineAward.mineAward(blockChainDataBaseMaster,block);
 
         TransactionOutput output = new TransactionOutput();
         output.setTransactionOutputUUID(String.valueOf(UUID.randomUUID()));
@@ -623,7 +622,7 @@ public class MinerDefaultImpl implements Miner {
      * 构建缺少nonce(代表尚未被挖矿)的区块
      */
     public Block buildNonNonceBlock(List<Transaction> packingTransactionList) throws Exception {
-        Block tailBlock = blockChainDataBase.findTailBlock();
+        Block tailBlock = blockChainDataBaseMaster.findTailBlock();
         Block nonNonceBlock = new Block();
         if(tailBlock == null){
             nonNonceBlock.setHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
@@ -671,7 +670,7 @@ public class MinerDefaultImpl implements Miner {
             return false;
         }
         //校验挖矿是否正确
-        String difficulty = mineDifficulty.difficulty(blockChainDataBase,block);
+        String difficulty = mineDifficulty.difficulty(blockChainDataBaseMaster,block);
         return isHashRight(difficulty,hash);
     }
     //endregion

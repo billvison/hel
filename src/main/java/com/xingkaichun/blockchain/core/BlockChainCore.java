@@ -12,7 +12,7 @@ import java.util.List;
 
 public class BlockChainCore {
 
-    BlockChainDataBase blockChainDataBase ;
+    BlockChainDataBase blockChainDataBaseMaster ;
     BlockChainDataBase blockChainDataBaseSlave ;
 
     Miner miner ;
@@ -28,9 +28,9 @@ public class BlockChainCore {
         ForMinerTransactionDataBase forMinerTransactionDataBase = new ForMinerTransactionDataBaseDefaultImpl("");
         ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase = new ForMinerSynchronizeNodeDataBaseDefaultImpl("");
         PublicKeyString minerPublicKey = new PublicKeyString("");
-        this.blockChainDataBase = new BlockChainDataBaseDefaultImpl("");
+        this.blockChainDataBaseMaster = new BlockChainDataBaseDefaultImpl("");
         this.blockChainDataBaseSlave = new BlockChainDataBaseDefaultImpl("");
-        this.miner = new MinerDefaultImpl(blockChainDataBase, this.blockChainDataBaseSlave, forMinerSynchronizeNodeDataBase,forMinerTransactionDataBase,mineDifficulty,mineAward,minerPublicKey);
+        this.miner = new MinerDefaultImpl(blockChainDataBaseMaster, this.blockChainDataBaseSlave, forMinerSynchronizeNodeDataBase,forMinerTransactionDataBase,mineDifficulty,mineAward,minerPublicKey);
     }
 
     /**
