@@ -79,6 +79,7 @@ public interface Miner {
     /**
      * 区块中写入的Hash是否正确
      */
+    //TODO 应该判断nonce正确，还是hash正确
     boolean isBlockWriteHashRight(Block block) ;
     //endregion
 }
