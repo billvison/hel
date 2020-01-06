@@ -51,6 +51,7 @@ public class MinerDefaultImpl implements Miner {
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
     @Override
     public void run() throws Exception {
+        adjustMasterSlaveBlockChainDataBase();
         WrapperBlockForMining wrapperBlockForMining = null;
         //分时
         while (true){
@@ -99,48 +100,50 @@ public class MinerDefaultImpl implements Miner {
 
     /**
      * 调整master slave
-     * 第一步：区块高度高的设为master，低的设置slave。
+     * 第一步：区块高度高的设为master，低的设置为slave。
      * 第二步：slave同步master的区块。
      */
     private void adjustMasterSlaveBlockChainDataBase() throws Exception {
         Block masterTailBlock = blockChainDataBaseMaster.findTailBlock() ;
         Block slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
+        //不需要调整
+        if(masterTailBlock == null && slaveTailBlock == null){
+            return;
+        }
         //第一步：区块高度高的设为master，低的设置slave。
         if((masterTailBlock == null && slaveTailBlock != null)
             ||(masterTailBlock != null && slaveTailBlock != null && masterTailBlock.getHeight()<slaveTailBlock.getHeight())){
-            BlockChainDataBase blockChainDataBaseTemp = blockChainDataBaseMaster;
+            BlockChainDataBase tempBlockChainDataBase = blockChainDataBaseMaster;
             blockChainDataBaseMaster = blockChainDataBaseSlave;
-            blockChainDataBaseSlave = blockChainDataBaseTemp;
+            blockChainDataBaseSlave = tempBlockChainDataBase;
         }
         //第二步：slave同步master的区块。
         masterTailBlock = blockChainDataBaseMaster.findTailBlock() ;
-        if(masterTailBlock != null){
-            slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
-            //删除区块直到尚未分叉位置停止
-            while(true){
-                if(slaveTailBlock == null){
-                    break;
-                }
-                if(isBlockEqual(masterTailBlock,slaveTailBlock)){
-                    break;
-                }
-                blockChainDataBaseSlave.removeTailBlock();
-                slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
-            }
+        slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
+        //删除slave区块直到尚未分叉位置停止
+        while(true){
             if(slaveTailBlock == null){
-                Block block = blockChainDataBaseMaster.findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
-                blockChainDataBaseSlave.addBlock(block);
+                break;
             }
-            int masterTailBlockHeight = blockChainDataBaseMaster.findTailBlock().getHeight() ;
-            int slaveTailBlockHeight = blockChainDataBaseSlave.findTailBlock().getHeight() ;
-            while(true){
-                if(slaveTailBlockHeight >= masterTailBlockHeight){
-                    break;
-                }
-                slaveTailBlockHeight++;
-                Block currentBlock = blockChainDataBaseMaster.findBlockByBlockHeight(slaveTailBlockHeight) ;
-                blockChainDataBaseSlave.addBlock(currentBlock);
+            if(isBlockEqual(masterTailBlock,slaveTailBlock)){
+                break;
             }
+            blockChainDataBaseSlave.removeTailBlock();
+            slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
+        }
+        if(slaveTailBlock == null){
+            Block block = blockChainDataBaseMaster.findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
+            blockChainDataBaseSlave.addBlock(block);
+        }
+        int masterTailBlockHeight = blockChainDataBaseMaster.findTailBlock().getHeight() ;
+        int slaveTailBlockHeight = blockChainDataBaseSlave.findTailBlock().getHeight() ;
+        while(true){
+            if(slaveTailBlockHeight >= masterTailBlockHeight){
+                break;
+            }
+            slaveTailBlockHeight++;
+            Block currentBlock = blockChainDataBaseMaster.findBlockByBlockHeight(slaveTailBlockHeight) ;
+            blockChainDataBaseSlave.addBlock(currentBlock);
         }
     }
 
