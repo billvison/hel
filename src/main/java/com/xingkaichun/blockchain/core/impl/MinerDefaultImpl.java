@@ -70,8 +70,9 @@ public class MinerDefaultImpl implements Miner {
         synchronizeBlockChainNodeOption = true;
     }
 
-    private static ThreadLocal<WrapperBlockForMining> wrapperBlockForMiningThreadLocal = new ThreadLocal<>();
 
+
+    private static ThreadLocal<WrapperBlockForMining> wrapperBlockForMiningThreadLocal = new ThreadLocal<>();
     public void mine() throws Exception {
         WrapperBlockForMining wrapperBlockForMining = wrapperBlockForMiningThreadLocal.get();
         //是否需要重新获取WrapperBlockForMining？区块链的区块有增删，则需要重新获取。
@@ -115,73 +116,6 @@ public class MinerDefaultImpl implements Miner {
         return true;
     }
 
-    /**
-     * 调整master slave
-     * 第一步：区块高度高的设为master，低的设置为slave。
-     * 第二步：slave同步master的区块。
-     */
-    private void adjustMasterSlaveBlockChainDataBase() throws Exception {
-        Block masterTailBlock = blockChainDataBaseMaster.findTailBlock() ;
-        Block slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
-        //不需要调整
-        if(masterTailBlock == null && slaveTailBlock == null){
-            return;
-        }
-        //第一步：区块高度高的设为master，低的设置slave。
-        if((masterTailBlock == null && slaveTailBlock != null)
-            ||(masterTailBlock != null && slaveTailBlock != null && masterTailBlock.getHeight()<slaveTailBlock.getHeight())){
-            BlockChainDataBase tempBlockChainDataBase = blockChainDataBaseMaster;
-            blockChainDataBaseMaster = blockChainDataBaseSlave;
-            blockChainDataBaseSlave = tempBlockChainDataBase;
-        }
-        //第二步：slave同步master的区块。
-        masterTailBlock = blockChainDataBaseMaster.findTailBlock() ;
-        slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
-        //删除slave区块直到尚未分叉位置停止
-        while(true){
-            if(slaveTailBlock == null){
-                break;
-            }
-            if(isBlockEqual(masterTailBlock,slaveTailBlock)){
-                break;
-            }
-            blockChainDataBaseSlave.removeTailBlock();
-            slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
-        }
-        if(slaveTailBlock == null){
-            Block block = blockChainDataBaseMaster.findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
-            blockChainDataBaseSlave.addBlock(block);
-        }
-        int masterTailBlockHeight = blockChainDataBaseMaster.findTailBlock().getHeight() ;
-        int slaveTailBlockHeight = blockChainDataBaseSlave.findTailBlock().getHeight() ;
-        while(true){
-            if(slaveTailBlockHeight >= masterTailBlockHeight){
-                break;
-            }
-            slaveTailBlockHeight++;
-            Block currentBlock = blockChainDataBaseMaster.findBlockByBlockHeight(slaveTailBlockHeight) ;
-            blockChainDataBaseSlave.addBlock(currentBlock);
-        }
-    }
-
-    private boolean isBlockEqual(Block masterTailBlock, Block slaveTailBlock) {
-        if(masterTailBlock == null && slaveTailBlock == null){
-            return true;
-        }
-        if(masterTailBlock == null || slaveTailBlock == null){
-            return false;
-        }
-        //不严格校验,这里没有具体校验每一笔交易
-        if(EqualsUtils.isEquals(masterTailBlock.getPreviousHash(),slaveTailBlock.getPreviousHash())
-                && EqualsUtils.isEquals(masterTailBlock.getHeight(),slaveTailBlock.getHeight())
-                && EqualsUtils.isEquals(masterTailBlock.getMerkleRoot(),slaveTailBlock.getMerkleRoot())
-                && EqualsUtils.isEquals(masterTailBlock.getNonce(),slaveTailBlock.getNonce())
-                && EqualsUtils.isEquals(masterTailBlock.getHash(),slaveTailBlock.getHash())){
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public void pauseMine() throws Exception {
         mineOption = false;
@@ -189,7 +123,7 @@ public class MinerDefaultImpl implements Miner {
 
     @Override
     public void resumeMine() throws Exception {
-
+        mineOption = true;
     }
 
     private WrapperBlockForMining obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
@@ -591,17 +525,6 @@ public class MinerDefaultImpl implements Miner {
     }
 
     //region 挖矿奖励相关
-
-    /**
-     * 获取区块中写入的挖矿奖励金额
-     */
-    public BigDecimal obtainBlockWriteMineAward(Block block) {
-        Transaction tx = obtainBlockWriteMineAwardTransaction(block);
-        ArrayList<TransactionOutput> outputs = tx.getOutputs();
-        TransactionOutput mineAwardTransactionOutput = outputs.get(0);
-        return mineAwardTransactionOutput.getValue();
-    }
-
     @Override
     public boolean isBlockWriteMineAwardRight(BlockChainDataBase blockChainDataBase, Block block){
         //区块中写入的挖矿奖励
@@ -679,13 +602,10 @@ public class MinerDefaultImpl implements Miner {
         nonNonceBlock.setMerkleRoot(merkleRoot);
         return nonNonceBlock;
     }
+
     @Override
     public String calculateBlockHash(Block block) {
         return calculateBlockHash(block.getPreviousHash(),block.getHeight(),block.getMerkleRoot(),block.getNonce());
-    }
-
-    private String calculateBlockHash(String previousHash,int height,String merkleRoot,long nonce) {
-        return CipherUtil.applySha256(previousHash+height+merkleRoot+nonce);
     }
 
     @Override
@@ -722,4 +642,89 @@ public class MinerDefaultImpl implements Miner {
     private boolean isActive(){
         return mineOption || synchronizeBlockChainNodeOption;
     }
+
+
+
+    //region 私有方法
+    /**
+     * 调整master slave
+     * 第一步：区块高度高的设为master，低的设置为slave。
+     * 第二步：slave同步master的区块。
+     */
+    private void adjustMasterSlaveBlockChainDataBase() throws Exception {
+        Block masterTailBlock = blockChainDataBaseMaster.findTailBlock() ;
+        Block slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
+        //不需要调整
+        if(masterTailBlock == null && slaveTailBlock == null){
+            return;
+        }
+        //第一步：区块高度高的设为master，低的设置slave。
+        if((masterTailBlock == null && slaveTailBlock != null)
+                ||(masterTailBlock != null && slaveTailBlock != null && masterTailBlock.getHeight()<slaveTailBlock.getHeight())){
+            BlockChainDataBase tempBlockChainDataBase = blockChainDataBaseMaster;
+            blockChainDataBaseMaster = blockChainDataBaseSlave;
+            blockChainDataBaseSlave = tempBlockChainDataBase;
+        }
+        //第二步：slave同步master的区块。
+        masterTailBlock = blockChainDataBaseMaster.findTailBlock() ;
+        slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
+        //删除slave区块直到尚未分叉位置停止
+        while(true){
+            if(slaveTailBlock == null){
+                break;
+            }
+            if(isBlockEqual(masterTailBlock,slaveTailBlock)){
+                break;
+            }
+            blockChainDataBaseSlave.removeTailBlock();
+            slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
+        }
+        if(slaveTailBlock == null){
+            Block block = blockChainDataBaseMaster.findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
+            blockChainDataBaseSlave.addBlock(block);
+        }
+        int masterTailBlockHeight = blockChainDataBaseMaster.findTailBlock().getHeight() ;
+        int slaveTailBlockHeight = blockChainDataBaseSlave.findTailBlock().getHeight() ;
+        while(true){
+            if(slaveTailBlockHeight >= masterTailBlockHeight){
+                break;
+            }
+            slaveTailBlockHeight++;
+            Block currentBlock = blockChainDataBaseMaster.findBlockByBlockHeight(slaveTailBlockHeight) ;
+            blockChainDataBaseSlave.addBlock(currentBlock);
+        }
+    }
+
+    private boolean isBlockEqual(Block masterTailBlock, Block slaveTailBlock) {
+        if(masterTailBlock == null && slaveTailBlock == null){
+            return true;
+        }
+        if(masterTailBlock == null || slaveTailBlock == null){
+            return false;
+        }
+        //不严格校验,这里没有具体校验每一笔交易
+        if(EqualsUtils.isEquals(masterTailBlock.getPreviousHash(),slaveTailBlock.getPreviousHash())
+                && EqualsUtils.isEquals(masterTailBlock.getHeight(),slaveTailBlock.getHeight())
+                && EqualsUtils.isEquals(masterTailBlock.getMerkleRoot(),slaveTailBlock.getMerkleRoot())
+                && EqualsUtils.isEquals(masterTailBlock.getNonce(),slaveTailBlock.getNonce())
+                && EqualsUtils.isEquals(masterTailBlock.getHash(),slaveTailBlock.getHash())){
+            return true;
+        }
+        return false;
+    }
+
+    private String calculateBlockHash(String previousHash,int height,String merkleRoot,long nonce) {
+        return CipherUtil.applySha256(previousHash+height+merkleRoot+nonce);
+    }
+
+    /**
+     * 获取区块中写入的挖矿奖励金额
+     */
+    public BigDecimal obtainBlockWriteMineAward(Block block) {
+        Transaction tx = obtainBlockWriteMineAwardTransaction(block);
+        ArrayList<TransactionOutput> outputs = tx.getOutputs();
+        TransactionOutput mineAwardTransactionOutput = outputs.get(0);
+        return mineAwardTransactionOutput.getValue();
+    }
+    //endregion
 }

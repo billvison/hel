@@ -23,6 +23,8 @@ public interface Miner {
     void resume() throws Exception;
     //endregion
 
+
+
     //region 挖矿相关
     /**
      * 挖矿
