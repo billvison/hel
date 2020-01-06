@@ -50,12 +50,6 @@ public interface BlockChainDataBase {
     Transaction findTransactionByTransactionUuid(String transactionUUID) throws Exception ;
 
     /**
-     * 交易是否已经存在于区块链之中？
-     * @param transactionUUID 交易ID
-     */
-    boolean isTransactionExist(String transactionUUID) throws Exception ;
-
-    /**
      * UUID是否已经存在于区块链之中？
      * @param uuid uuid
      */

@@ -264,12 +264,6 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     }
 
     @Override
-    public boolean isTransactionExist(String transactionUUID) throws Exception {
-        Transaction transaction = findTransactionByTransactionUuid(transactionUUID);
-        return transaction != null;
-    }
-
-    @Override
     public boolean isUuidExist(String uuid){
         byte[] bytesUuid = LevelDBUtil.get(blockChainDB,addUuidPrefix(uuid));
         return bytesUuid != null;
