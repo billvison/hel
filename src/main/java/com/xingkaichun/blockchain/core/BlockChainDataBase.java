@@ -6,7 +6,7 @@ import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
 
 
 /**
- * 区块链数据库
+ * 该类用于组织区块链数据的存储，并不会对数据进行校验。
  */
 public interface BlockChainDataBase {
 
