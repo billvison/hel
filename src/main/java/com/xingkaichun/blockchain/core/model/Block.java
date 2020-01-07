@@ -28,10 +28,12 @@ public class Block implements Serializable {
     /**
      * 默克尔树根
      * 由transactions生成
+     * 既然这个字段是有由交易列表生成的，这个字段每次需要时完全可以自己生成？为什么需要这个字段？请参考SPV。
      */
     private String merkleRoot;
     /**
      * 区块哈希：由timestamp、previousHash、height、nonce、merkleRoot共同作用生成。
+     * 为什么需要时间戳这个字段？
      */
     private String hash;
     //区块里的交易
