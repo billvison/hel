@@ -20,6 +20,7 @@ public class Transaction implements Serializable {
     //交易类型
     private TransactionType transactionType;
     //交易输入
+    //TODO 校验金额 或是  List<String> utxoUuids?
     private ArrayList<TransactionInput> inputs;
     //交易输出
     private ArrayList<TransactionOutput> outputs;
