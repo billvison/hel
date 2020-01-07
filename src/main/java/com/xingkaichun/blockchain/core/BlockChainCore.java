@@ -23,14 +23,12 @@ public class BlockChainCore {
 
 
     public BlockChainCore() throws Exception {
-        MineDifficulty mineDifficulty = new MineDifficultyDefaultImpl();
-        MineAward mineAward = new MineAwardDefaultImpl();
         ForMinerTransactionDataBase forMinerTransactionDataBase = new ForMinerTransactionDataBaseDefaultImpl("");
         ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase = new ForMinerSynchronizeNodeDataBaseDefaultImpl("");
         PublicKeyString minerPublicKey = new PublicKeyString("");
         this.blockChainDataBaseMaster = new BlockChainDataBaseDefaultImpl("");
         this.blockChainDataBaseSlave = new BlockChainDataBaseDefaultImpl("");
-        this.miner = new MinerDefaultImpl(blockChainDataBaseMaster, this.blockChainDataBaseSlave, forMinerSynchronizeNodeDataBase,forMinerTransactionDataBase,mineDifficulty,mineAward,minerPublicKey);
+        this.miner = new MinerDefaultImpl(blockChainDataBaseMaster, this.blockChainDataBaseSlave, forMinerSynchronizeNodeDataBase,forMinerTransactionDataBase,minerPublicKey);
     }
 
     /**

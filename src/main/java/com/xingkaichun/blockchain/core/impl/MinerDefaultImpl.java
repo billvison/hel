@@ -21,8 +21,6 @@ public class MinerDefaultImpl implements Miner {
     //region 属性与构造函数
     //矿工公钥
     private PublicKeyString minerPublicKey;
-    private MineDifficulty mineDifficulty;
-    private MineAward mineAward;
     private BlockChainDataBase blockChainDataBaseMaster ;
     private BlockChainDataBase blockChainDataBaseSlave ;
     private ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase;
@@ -35,14 +33,12 @@ public class MinerDefaultImpl implements Miner {
     private boolean synchronizeBlockChainNodeOption = true;
 
 
-    public MinerDefaultImpl(BlockChainDataBase blockChainDataBaseMaster, BlockChainDataBase blockChainDataBaseSlave, ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, MineDifficulty mineDifficulty, MineAward mineAward, PublicKeyString minerPublicKey) {
+    public MinerDefaultImpl(BlockChainDataBase blockChainDataBaseMaster, BlockChainDataBase blockChainDataBaseSlave, ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, PublicKeyString minerPublicKey) {
         this.blockChainDataBaseMaster = blockChainDataBaseMaster;
         this.blockChainDataBaseSlave =blockChainDataBaseSlave;
         this.forMinerSynchronizeNodeDataBase = forMinerSynchronizeNodeDataBase;
         this.forMinerTransactionDataBase = forMinerTransactionDataBase;
         this.minerPublicKey = minerPublicKey;
-        this.mineDifficulty = mineDifficulty;
-        this.mineAward = mineAward;
     }
     //endregion
 
@@ -134,7 +130,7 @@ public class MinerDefaultImpl implements Miner {
         wrapperBlockForMining.setExceptionTransactionList(exceptionTransactionList);
 
         Block nonNonceBlock = buildNonNonceBlock(blockChainDataBase,transactionListForMinerBlock);
-        String difficulty = mineDifficulty.difficulty(blockChainDataBaseMaster,nonNonceBlock);
+        String difficulty = difficulty(blockChainDataBaseMaster,nonNonceBlock);
 
 
         wrapperBlockForMining.setBlock(nonNonceBlock);
@@ -530,7 +526,7 @@ public class MinerDefaultImpl implements Miner {
         //区块中写入的挖矿奖励
         BigDecimal blockWritedMineAward = obtainBlockWriteMineAward(block);
         //目标挖矿奖励
-        BigDecimal targetMineAward = mineAward.mineAward(blockChainDataBase, block);
+        BigDecimal targetMineAward = mineAward(blockChainDataBase, block);
         return targetMineAward.compareTo(blockWritedMineAward) != 0 ;
     }
 
@@ -542,7 +538,7 @@ public class MinerDefaultImpl implements Miner {
         transaction.setInputs(null);
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
-        BigDecimal award = mineAward.mineAward(blockChainDataBase,block);
+        BigDecimal award = mineAward(blockChainDataBase,block);
 
         TransactionOutput output = new TransactionOutput();
         output.setTransactionOutputUUID(String.valueOf(UUID.randomUUID()));
@@ -630,7 +626,7 @@ public class MinerDefaultImpl implements Miner {
             return false;
         }
         //校验挖矿是否正确
-        String difficulty = mineDifficulty.difficulty(blockChainDataBase,block);
+        String difficulty = difficulty(blockChainDataBase,block);
         return isHashRight(difficulty,hash);
     }
     //endregion
@@ -643,7 +639,13 @@ public class MinerDefaultImpl implements Miner {
         return mineOption || synchronizeBlockChainNodeOption;
     }
 
+    public String difficulty(BlockChainDataBase blockChainDataBase, Block block){
+        return "0000";
+    }
 
+    public BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) {
+        return new BigDecimal("100");
+    }
 
     //region 私有方法
     /**

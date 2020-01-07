@@ -3,6 +3,8 @@ package com.xingkaichun.blockchain.core;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 
+import java.math.BigDecimal;
+
 /**
  * 矿工:计算挖矿奖励、计算挖矿难度、挖矿、校验区块数据的合法性、将挖到的矿放进区块链上、同步其它区块链节点的数据......
  */
@@ -118,4 +120,20 @@ public interface Miner {
     //TODO 应该判断nonce正确，还是hash正确
     boolean isBlockWriteHashRight(BlockChainDataBase blockChainDataBase, Block block) ;
     //endregion
+
+    /**
+     * 挖矿的难度
+     * @param blockChainDataBase 区块链
+     * @param block 目标区块
+     */
+    String difficulty(BlockChainDataBase blockChainDataBase, Block block);
+
+    /**
+     * 挖矿的奖励
+     * @param blockChainDataBase 区块链
+     * @param block 待挖矿的区块
+     * @return
+     */
+    //TODO 奖励应当是一笔交易 可以兼容
+    BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) ;
 }
