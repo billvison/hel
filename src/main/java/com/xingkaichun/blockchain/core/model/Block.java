@@ -13,6 +13,8 @@ import java.util.List;
 @Data
 public class Block implements Serializable {
 
+    //TODO 校验 时间戳:为防止作恶。区块的时间戳一定比前一个区块的时间戳大，一定比当前时间小。
+    private long timestamp;
     //上一个区块的哈希
     private String previousHash;
     //区块高度
