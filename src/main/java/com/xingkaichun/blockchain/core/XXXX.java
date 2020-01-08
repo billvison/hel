@@ -1,6 +1,8 @@
 package com.xingkaichun.blockchain.core;
 
-import com.xingkaichun.blockchain.core.impl.*;
+import com.xingkaichun.blockchain.core.impl.BlockChainDataBaseDefaultImpl;
+import com.xingkaichun.blockchain.core.impl.ForMinerTransactionDataBaseDefaultImpl;
+import com.xingkaichun.blockchain.core.impl.MinerDefaultImpl;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionData;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionListener;
 import com.xingkaichun.blockchain.core.model.Block;
@@ -24,11 +26,10 @@ public class XXXX {
 
     public XXXX() throws Exception {
         ForMinerTransactionDataBase forMinerTransactionDataBase = new ForMinerTransactionDataBaseDefaultImpl("");
-        ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase = new ForMinerSynchronizeNodeDataBaseDefaultImpl("");
         PublicKeyString minerPublicKey = new PublicKeyString("");
         this.blockChainDataBaseMaster = new BlockChainDataBaseDefaultImpl("");
         this.blockChainDataBaseSlave = new BlockChainDataBaseDefaultImpl("");
-        this.miner = new MinerDefaultImpl(blockChainDataBaseMaster, this.blockChainDataBaseSlave, forMinerSynchronizeNodeDataBase,forMinerTransactionDataBase,minerPublicKey);
+        this.miner = new MinerDefaultImpl(blockChainDataBaseMaster, forMinerTransactionDataBase,minerPublicKey);
     }
 
     /**

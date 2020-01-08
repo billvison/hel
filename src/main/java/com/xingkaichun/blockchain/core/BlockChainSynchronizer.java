@@ -16,5 +16,7 @@ public interface BlockChainSynchronizer {
      * 恢复同步其它区块链节点的数据
      */
     void resumeSynchronizeBlockChainNode() throws Exception;
+
+    boolean isActive() throws Exception;
     //endregion
 }

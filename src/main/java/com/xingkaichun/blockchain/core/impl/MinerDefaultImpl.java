@@ -22,24 +22,18 @@ public class MinerDefaultImpl implements Miner {
     //矿工公钥
     private PublicKeyString minerPublicKey;
     private BlockChainDataBase blockChainDataBaseMaster ;
-    private BlockChainDataBase blockChainDataBaseSlave ;
-    private ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase;
     //交易池：矿工从交易池里获取挖矿的原材料(交易数据)
     private ForMinerTransactionDataBase forMinerTransactionDataBase;
 
     //挖矿开关:默认打开挖矿的开关
     private boolean mineOption = true;
-    //同步其它节点的区块数据:默认同步其它节点区块数据
-    private boolean synchronizeBlockChainNodeOption = true;
 
 
     private Incentive incentive = new IncentiveDefaultImpl();
     private Consensus consensus = new ProofOfWorkConsensus();
 
-    public MinerDefaultImpl(BlockChainDataBase blockChainDataBaseMaster, BlockChainDataBase blockChainDataBaseSlave, ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, PublicKeyString minerPublicKey) {
+    public MinerDefaultImpl(BlockChainDataBase blockChainDataBaseMaster,ForMinerTransactionDataBase forMinerTransactionDataBase, PublicKeyString minerPublicKey) {
         this.blockChainDataBaseMaster = blockChainDataBaseMaster;
-        this.blockChainDataBaseSlave =blockChainDataBaseSlave;
-        this.forMinerSynchronizeNodeDataBase = forMinerSynchronizeNodeDataBase;
         this.forMinerTransactionDataBase = forMinerTransactionDataBase;
         this.minerPublicKey = minerPublicKey;
     }
@@ -48,35 +42,12 @@ public class MinerDefaultImpl implements Miner {
 
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
-    @Override
-    public void run() throws Exception {
-        adjustMasterSlaveBlockChainDataBase();
-        while (isActive()){
-            synchronizeBlockChainNode();
-            mine();
-        }
-    }
-
-    @Override
-    public void pause() throws Exception {
-        mineOption = false;
-        synchronizeBlockChainNodeOption = false;
-    }
-
-    @Override
-    public void resume() throws Exception {
-        mineOption = true;
-        synchronizeBlockChainNodeOption = true;
-    }
-
-
 
     private static ThreadLocal<WrapperBlockForMining> wrapperBlockForMiningThreadLocal = new ThreadLocal<>();
     public void mine() throws Exception {
         WrapperBlockForMining wrapperBlockForMining = wrapperBlockForMiningThreadLocal.get();
         //是否需要重新获取WrapperBlockForMining？区块链的区块有增删，则需要重新获取。
-        if(wrapperBlockForMining == null ||
-                (synchronizeBlockChainNodeOption && isWrapperBlockForMiningNeedObtainAgain(wrapperBlockForMining))){
+        if(wrapperBlockForMining == null || isWrapperBlockForMiningNeedObtainAgain(wrapperBlockForMining)){
             wrapperBlockForMining = obtainWrapperBlockForMining(blockChainDataBaseMaster);
         }
         miningBlock(wrapperBlockForMining);
@@ -125,6 +96,11 @@ public class MinerDefaultImpl implements Miner {
         mineOption = true;
     }
 
+    @Override
+    public boolean isActive() throws Exception {
+        return mineOption;
+    }
+
     private WrapperBlockForMining obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
         WrapperBlockForMining wrapperBlockForMining = null;
         List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.selectTransactionList(0,10000);
@@ -166,68 +142,6 @@ public class MinerDefaultImpl implements Miner {
         wrapperBlockForMining.setNextNonce(endNonce+1);
     }
 
-    @Override
-    public void synchronizeBlockChainNode() throws Exception {
-        while (synchronizeBlockChainNodeOption){
-            String availableSynchronizeNodeId = forMinerSynchronizeNodeDataBase.getDataTransferFinishFlagNodeId();
-            if(availableSynchronizeNodeId == null){
-                return;
-            }
-            synchronizeBlockChainNode(availableSynchronizeNodeId);
-        }
-    }
-
-    private void synchronizeBlockChainNode(String availableSynchronizeNodeId) throws Exception {
-        adjustMasterSlaveBlockChainDataBase();
-        boolean hasDataTransferFinishFlag = forMinerSynchronizeNodeDataBase.hasDataTransferFinishFlag(availableSynchronizeNodeId);
-        if(!hasDataTransferFinishFlag){
-            return;
-        }
-        Block block = forMinerSynchronizeNodeDataBase.getNextBlock(availableSynchronizeNodeId);
-        if(block != null){
-            reduceBlockChain(blockChainDataBaseSlave,block.getHeight()-1);
-            while(true){
-                boolean isBlockApplyToBlockChain = blockChainDataBaseSlave.isBlockCanApplyToBlockChain(block);
-                if(isBlockApplyToBlockChain){
-                    blockChainDataBaseSlave.addBlock(block);
-                }else {
-                    break;
-                }
-                block = forMinerSynchronizeNodeDataBase.getNextBlock(availableSynchronizeNodeId);
-                if(block == null){
-                    break;
-                }
-            }
-        }
-        forMinerSynchronizeNodeDataBase.deleteTransferData(availableSynchronizeNodeId);
-        forMinerSynchronizeNodeDataBase.clearDataTransferFinishFlag(availableSynchronizeNodeId);
-        adjustMasterSlaveBlockChainDataBase();
-    }
-
-    private void reduceBlockChain(BlockChainDataBase blockChainDataBase, int blockHeight) throws Exception {
-        Block tailBlock = blockChainDataBase.findTailBlock();
-        if(tailBlock == null){
-            return;
-        }
-        int currentBlockHeight = tailBlock.getHeight();
-        while(currentBlockHeight > blockHeight){
-            blockChainDataBase.removeTailBlock();
-            tailBlock = blockChainDataBase.findTailBlock();
-            if(tailBlock == null){
-                return;
-            }
-            currentBlockHeight = tailBlock.getHeight();
-        }
-    }
-
-    public void pauseSynchronizeBlockChainNode(){
-        synchronizeBlockChainNodeOption = false;
-    }
-
-    @Override
-    public void resumeSynchronizeBlockChainNode() throws Exception {
-
-    }
 
     /**
      * 为了辅助挖矿而创造的类
@@ -366,76 +280,6 @@ public class MinerDefaultImpl implements Miner {
         return this.getClass().getName();
     }
 
-    private boolean isActive(){
-        return mineOption || synchronizeBlockChainNodeOption;
-    }
 
-    //region 私有方法
-    /**
-     * 调整master slave
-     * 第一步：区块高度高的设为master，低的设置为slave。
-     * 第二步：slave同步master的区块。
-     */
-    private void adjustMasterSlaveBlockChainDataBase() throws Exception {
-        Block masterTailBlock = blockChainDataBaseMaster.findTailBlock() ;
-        Block slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
-        //不需要调整
-        if(masterTailBlock == null && slaveTailBlock == null){
-            return;
-        }
-        //第一步：区块高度高的设为master，低的设置slave。
-        if((masterTailBlock == null && slaveTailBlock != null)
-                ||(masterTailBlock != null && slaveTailBlock != null && masterTailBlock.getHeight()<slaveTailBlock.getHeight())){
-            BlockChainDataBase tempBlockChainDataBase = blockChainDataBaseMaster;
-            blockChainDataBaseMaster = blockChainDataBaseSlave;
-            blockChainDataBaseSlave = tempBlockChainDataBase;
-        }
-        //第二步：slave同步master的区块。
-        masterTailBlock = blockChainDataBaseMaster.findTailBlock() ;
-        slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
-        //删除slave区块直到尚未分叉位置停止
-        while(true){
-            if(slaveTailBlock == null){
-                break;
-            }
-            if(isBlockEqual(masterTailBlock,slaveTailBlock)){
-                break;
-            }
-            blockChainDataBaseSlave.removeTailBlock();
-            slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
-        }
-        if(slaveTailBlock == null){
-            Block block = blockChainDataBaseMaster.findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
-            blockChainDataBaseSlave.addBlock(block);
-        }
-        int masterTailBlockHeight = blockChainDataBaseMaster.findTailBlock().getHeight() ;
-        int slaveTailBlockHeight = blockChainDataBaseSlave.findTailBlock().getHeight() ;
-        while(true){
-            if(slaveTailBlockHeight >= masterTailBlockHeight){
-                break;
-            }
-            slaveTailBlockHeight++;
-            Block currentBlock = blockChainDataBaseMaster.findBlockByBlockHeight(slaveTailBlockHeight) ;
-            blockChainDataBaseSlave.addBlock(currentBlock);
-        }
-    }
 
-    private boolean isBlockEqual(Block masterTailBlock, Block slaveTailBlock) {
-        if(masterTailBlock == null && slaveTailBlock == null){
-            return true;
-        }
-        if(masterTailBlock == null || slaveTailBlock == null){
-            return false;
-        }
-        //不严格校验,这里没有具体校验每一笔交易
-        if(EqualsUtils.isEquals(masterTailBlock.getPreviousHash(),slaveTailBlock.getPreviousHash())
-                && EqualsUtils.isEquals(masterTailBlock.getHeight(),slaveTailBlock.getHeight())
-                && EqualsUtils.isEquals(masterTailBlock.getMerkleRoot(),slaveTailBlock.getMerkleRoot())
-                && EqualsUtils.isEquals(masterTailBlock.getNonce(),slaveTailBlock.getNonce())
-                && EqualsUtils.isEquals(masterTailBlock.getHash(),slaveTailBlock.getHash())){
-            return true;
-        }
-        return false;
-    }
-    //endregion
 }
