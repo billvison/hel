@@ -10,7 +10,7 @@ import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockChainCore {
+public class XXXX {
 
     BlockChainDataBase blockChainDataBaseMaster ;
     BlockChainDataBase blockChainDataBaseSlave ;
@@ -22,7 +22,7 @@ public class BlockChainCore {
 
 
 
-    public BlockChainCore() throws Exception {
+    public XXXX() throws Exception {
         ForMinerTransactionDataBase forMinerTransactionDataBase = new ForMinerTransactionDataBaseDefaultImpl("");
         ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase = new ForMinerSynchronizeNodeDataBaseDefaultImpl("");
         PublicKeyString minerPublicKey = new PublicKeyString("");
