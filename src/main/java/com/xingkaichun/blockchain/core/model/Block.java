@@ -39,4 +39,5 @@ public class Block implements Serializable {
     //区块里的交易
     private List<Transaction> transactions;
 
+    //TODO 补充一个所有字段校验方法，时间戳，默克尔树根，区块哈希，每一笔交易......
 }
