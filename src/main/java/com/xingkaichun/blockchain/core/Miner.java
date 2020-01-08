@@ -92,28 +92,7 @@ public interface Miner {
     boolean isBlockWriteMineAwardRight(BlockChainDataBase blockChainDataBase, Block block);
     //endregion
 
-
-
-    //region 默克尔树根
-    /**
-     * 计算区块的默克尔树根值
-     * @param block 区块
-     */
-    String calculateBlockMerkleRoot(Block block) ;
-    /**
-     * 区块中写入的默克尔树根是否正确
-     */
-    boolean isBlockWriteMerkleRootRight(Block block);
-    //endregion
-
-
-
     //region 区块Hash
-    /**
-     * 计算区块的Hash值
-     * @param block 区块
-     */
-    String calculateBlockHash(Block block) ;
     /**
      * 区块中写入的Hash是否正确
      */

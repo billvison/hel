@@ -8,8 +8,11 @@ import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.blockchain.core.utils.MerkleUtils;
-import com.xingkaichun.blockchain.core.utils.atomic.*;
+import com.xingkaichun.blockchain.core.utils.BlockUtils;
+import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
+import com.xingkaichun.blockchain.core.utils.atomic.EqualsUtils;
+import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
+import com.xingkaichun.blockchain.core.utils.atomic.UuidUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -158,7 +161,7 @@ public class MinerDefaultImpl implements Miner {
 
         for (long currentNonce=startNonce; currentNonce<=endNonce; currentNonce++) {
             if(mineOption){ break; }
-            String actualHash = calculateBlockHash(previousHash,height,merkleRoot,currentNonce);
+            String actualHash = BlockUtils.calculateBlockHash(previousHash,height,merkleRoot,currentNonce);
             if(isHashRight(targetMineDificultyString, actualHash)){
                 block.setNonce(currentNonce);
                 block.setHash(actualHash);
@@ -597,34 +600,19 @@ public class MinerDefaultImpl implements Miner {
         Transaction mineAwardTransaction =  buildMineAwardTransaction(blockChainDataBase,nonNonceBlock);
         packingTransactionList.add(mineAwardTransaction);
 
-        String merkleRoot = calculateBlockMerkleRoot(nonNonceBlock);
+        String merkleRoot = BlockUtils.calculateBlockMerkleRoot(nonNonceBlock);
         nonNonceBlock.setMerkleRoot(merkleRoot);
         return nonNonceBlock;
     }
 
     @Override
-    public String calculateBlockHash(Block block) {
-        return calculateBlockHash(block.getPreviousHash(),block.getHeight(),block.getMerkleRoot(),block.getNonce());
-    }
-
-    @Override
-    public String calculateBlockMerkleRoot(Block block) {
-        List<Transaction> transactionList = block.getTransactions();
-        return MerkleUtils.getMerkleRoot(transactionList);
-    }
-    @Override
-    public boolean isBlockWriteMerkleRootRight(Block block){
-        String targetMerkleRoot = calculateBlockMerkleRoot(block);
-        return targetMerkleRoot.equals(block.getMerkleRoot());
-    }
-    @Override
     public boolean isBlockWriteHashRight(BlockChainDataBase blockChainDataBase, Block block){
         //校验区块写入的MerkleRoot是否正确
-        if(!isBlockWriteMerkleRootRight(block)){
+        if(!BlockUtils.isBlockWriteMerkleRootRight(block)){
             return false;
         }
         //校验区块写入的挖矿是否正确
-        String hash = calculateBlockHash(block);
+        String hash = BlockUtils.calculateBlockHash(block);
         if(!hash.equals(block.getHash())){
             return false;
         }
@@ -708,10 +696,6 @@ public class MinerDefaultImpl implements Miner {
             return true;
         }
         return false;
-    }
-
-    private String calculateBlockHash(String previousHash,int height,String merkleRoot,long nonce) {
-        return CipherUtil.applySha256(previousHash+height+merkleRoot+nonce);
     }
 
     /**
