@@ -48,13 +48,6 @@ public interface BlockChainDataBase {
      * @param transactionUUID 交易ID
      */
     Transaction findTransactionByTransactionUuid(String transactionUUID) throws Exception ;
-
-    /**
-     * UUID是否已经存在于区块链之中？
-     * @param uuid uuid
-     */
-    //TODO 不应该存在这个方法
-    boolean isUuidExist(String uuid) ;
     //endregion
 
 

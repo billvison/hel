@@ -271,7 +271,10 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         return EncodeDecode.decodeToTransaction(bytesTransaction);
     }
 
-    @Override
+    /**
+     * UUID是否已经存在于区块链之中？
+     * @param uuid uuid
+     */
     public boolean isUuidExist(String uuid){
         byte[] bytesUuid = LevelDBUtil.get(blockChainDB,addUuidPrefix(uuid));
         return bytesUuid != null;
