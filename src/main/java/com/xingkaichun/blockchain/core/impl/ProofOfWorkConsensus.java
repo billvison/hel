@@ -1,12 +1,14 @@
-package com.xingkaichun.blockchain.core;
+package com.xingkaichun.blockchain.core.impl;
 
+import com.xingkaichun.blockchain.core.BlockChainDataBase;
+import com.xingkaichun.blockchain.core.Consensus;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.utils.BlockUtils;
 
 /**
  * 工作量证明
  */
-public class ProofOfWorkConsensus implements Consensus{
+public class ProofOfWorkConsensus implements Consensus {
 
     @Override
     public boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block) {

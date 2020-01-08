@@ -3,7 +3,6 @@ package com.xingkaichun.blockchain.core.impl;
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.Consensus;
 import com.xingkaichun.blockchain.core.Incentive;
-import com.xingkaichun.blockchain.core.ProofOfWorkConsensus;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
