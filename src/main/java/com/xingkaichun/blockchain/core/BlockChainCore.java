@@ -12,30 +12,49 @@ import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XXXX {
+public class BlockChainCore {
 
-    BlockChainDataBase blockChainDataBaseMaster ;
-    BlockChainDataBase blockChainDataBaseSlave ;
-
-    Miner miner ;
-
+    private BlockChainDataBase blockChainDataBaseMaster ;
+    private Miner miner ;
+    private BlockChainSynchronizer blockChainSynchronizer;
     //监听区块链上区块的增删动作
     private List<BlockChainActionListener> blockChainActionListenerList = new ArrayList<>();
 
-
-
-    public XXXX() throws Exception {
+    public BlockChainCore() throws Exception {
         ForMinerTransactionDataBase forMinerTransactionDataBase = new ForMinerTransactionDataBaseDefaultImpl("");
         PublicKeyString minerPublicKey = new PublicKeyString("");
         this.blockChainDataBaseMaster = new BlockChainDataBaseDefaultImpl("");
-        this.blockChainDataBaseSlave = new BlockChainDataBaseDefaultImpl("");
         this.miner = new MinerDefaultImpl(blockChainDataBaseMaster, forMinerTransactionDataBase,minerPublicKey);
     }
 
     /**
-     * 启动挖矿
+     * 启动
      */
-    public void startMining() throws Exception {
+    public void run() throws Exception {
+        while (isActive()){
+            blockChainSynchronizer.synchronizeBlockChainNode();
+            miner.mine();
+        }
+    }
+
+    /**
+     * 暂停所有
+     */
+    public void pause() throws Exception {
+        blockChainSynchronizer.pauseSynchronizeBlockChainNode();
+        miner.pauseMine();
+    }
+
+    /**
+     * 恢复所有
+     */
+    public void resume() throws Exception {
+        blockChainSynchronizer.resumeSynchronizeBlockChainNode();
+        miner.resumeMine();
+    }
+
+    public boolean isActive() throws Exception {
+        return blockChainSynchronizer.isActive() || miner.isActive();
     }
 
 
