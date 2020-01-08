@@ -34,6 +34,7 @@ public class MinerDefaultImpl implements Miner {
 
 
     private Incentive incentive = new IncentiveDefaultImpl();
+    private Consensus consensus = new ProofOfWorkConsensus();
 
     public MinerDefaultImpl(BlockChainDataBase blockChainDataBaseMaster, BlockChainDataBase blockChainDataBaseSlave, ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, PublicKeyString minerPublicKey) {
         this.blockChainDataBaseMaster = blockChainDataBaseMaster;
@@ -132,7 +133,7 @@ public class MinerDefaultImpl implements Miner {
         wrapperBlockForMining.setExceptionTransactionList(exceptionTransactionList);
 
         Block nonNonceBlock = buildNonNonceBlock(blockChainDataBase,transactionListForMinerBlock);
-        String difficulty = difficulty(blockChainDataBaseMaster,nonNonceBlock);
+        String difficulty = consensus.difficulty(blockChainDataBaseMaster,nonNonceBlock);
 
 
         wrapperBlockForMining.setBlock(nonNonceBlock);
@@ -628,7 +629,7 @@ public class MinerDefaultImpl implements Miner {
             return false;
         }
         //校验挖矿是否正确
-        String difficulty = difficulty(blockChainDataBase,block);
+        String difficulty = consensus.difficulty(blockChainDataBase,block);
         return isHashRight(difficulty,hash);
     }
     //endregion
@@ -639,11 +640,6 @@ public class MinerDefaultImpl implements Miner {
 
     private boolean isActive(){
         return mineOption || synchronizeBlockChainNodeOption;
-    }
-
-    @Override
-    public String difficulty(BlockChainDataBase blockChainDataBase, Block block){
-        return "0000";
     }
 
     //region 私有方法

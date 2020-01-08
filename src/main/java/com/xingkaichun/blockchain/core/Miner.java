@@ -120,11 +120,4 @@ public interface Miner {
     //TODO 应该判断nonce正确，还是hash正确
     boolean isBlockWriteHashRight(BlockChainDataBase blockChainDataBase, Block block) ;
     //endregion
-
-    /**
-     * 挖矿的难度
-     * @param blockChainDataBase 区块链
-     * @param block 目标区块
-     */
-    String difficulty(BlockChainDataBase blockChainDataBase, Block block);
 }

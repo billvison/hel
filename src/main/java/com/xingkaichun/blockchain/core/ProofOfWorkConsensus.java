@@ -11,4 +11,9 @@ public class ProofOfWorkConsensus implements Consensus{
     public boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block) {
         return false;
     }
+
+    @Override
+    public String difficulty(BlockChainDataBase blockChainDataBase, Block block){
+        return "0000";
+    }
 }
