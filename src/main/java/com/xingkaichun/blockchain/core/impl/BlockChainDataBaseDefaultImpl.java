@@ -1,6 +1,9 @@
 package com.xingkaichun.blockchain.core.impl;
 
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
+import com.xingkaichun.blockchain.core.Consensus;
+import com.xingkaichun.blockchain.core.Incentive;
+import com.xingkaichun.blockchain.core.ProofOfWorkConsensus;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
@@ -50,6 +53,8 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     //UUID标识
     private final static String UUID_FLAG = "U_F_";
 
+    Incentive incentive = new IncentiveDefaultImpl();
+    Consensus consensus = new ProofOfWorkConsensus();
     /**
      * 锁:保证对区块链增区块、删区块的操作是同步的。
      * 查询区块操作不需要加锁，原因是，只有对区块链进行区块的增删才会改变区块链的数据。
@@ -307,24 +312,16 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
 
 
 
-
-
-
-
-
-
-
-
-
-
-/*
-    @Override
-    public boolean isBlockCanApplyToBlockChain(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
+    /**
+     * 检测区块是否可以被应用到区块链上
+     * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
+     */
+    public boolean isBlockCanApplyToBlockChain(Block block) throws Exception {
         if(block==null){
             throw new BlockChainCoreException("区块校验失败：区块不能为null。");
         }
         //校验区块的连贯性
-        Block tailBlock = blockChainDataBase.findTailBlock();
+        Block tailBlock = findTailBlock();
         if(tailBlock == null){
             //校验区块Previous Hash
             if(!BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousHash())){
@@ -345,8 +342,9 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             }
         }
         //校验挖矿[区块本身的数据]是否正确
-        boolean minerSuccess = isBlockWriteHashRight(blockChainDataBase,block);
-        if(!minerSuccess){
+        //TODO
+        boolean isReachConsensus = consensus.isReachConsensus(this,block);
+        if(!isReachConsensus){
             return false;
         }
         //区块角度检测区块的数据的安全性
@@ -362,7 +360,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             //校验交易ID的格式
             //校验交易ID的唯一性:之前的区块没用过这个UUID
             //校验交易ID的唯一性:本次校验的区块没有使用这个UUID两次或两次以上
-            if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(blockChainDataBase,unspendTransactionOutputUUIDSet,transactionUUID)){
+            if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(unspendTransactionOutputUUIDSet,transactionUUID)){
                 return false;
             }
             //endregion
@@ -385,7 +383,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
                 }
                 TransactionOutput transactionOutput = tx.getOutputs().get(0);
                 String unspendTransactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(blockChainDataBase,unspendTransactionOutputUUIDSet,unspendTransactionOutputUUID)){
+                if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(unspendTransactionOutputUUIDSet,unspendTransactionOutputUUID)){
                     return false;
                 }
             } else if(tx.getTransactionType() == TransactionType.NORMAL){
@@ -401,14 +399,14 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
                 ArrayList<TransactionOutput> outputs = tx.getOutputs();
                 for(TransactionOutput transactionOutput:outputs){
                     String unspendTransactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                    if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(blockChainDataBase,unspendTransactionOutputUUIDSet,unspendTransactionOutputUUID)){
+                    if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(unspendTransactionOutputUUIDSet,unspendTransactionOutputUUID)){
                         return false;
                     }
                 }
             } else {
                 throw new BlockChainCoreException("区块数据异常，不能识别的交易类型。");
             }
-            boolean check = checkUnBlockChainTransaction(blockChainDataBase,block,tx);
+            boolean check = checkUnBlockChainTransaction(block,tx);
             if(!check){
                 throw new BlockChainCoreException("区块数据异常，交易异常。");
             }
@@ -419,18 +417,17 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         return true;
     }
 
-    *//**
+    /**
      * UUID格式正确，UUID没有在区块链中被使用，uuidSet包含这个uuid，则返回false，否则，将这个uuid放入uuidSet
-     * @param blockChainCore
      * @param uuidSet
      * @param uuid
      * @return
-     *//*
-    private boolean isUuidAvailableThenAddToSetIfSetNotContainUuid(BlockChainDataBase blockChainCore, Set<String> uuidSet, String uuid) {
+     */
+    private boolean isUuidAvailableThenAddToSetIfSetNotContainUuid(Set<String> uuidSet, String uuid) {
         if(!UuidUtil.isUuidFormatRight(uuid)){
             return false;
         }
-        if(blockChainCore.isUuidExist(uuid)){
+        if(isUuidExist(uuid)){
 //            throw new BlockChainCoreException("区块数据异常，UUID在区块链中已经被使用了。");
             return false;
         }
@@ -443,11 +440,11 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         return true;
     }
 
-    *//**
+    /**
      * 校验(未打包进区块链的)交易的合法性
      * 奖励交易校验需要传入block参数
-     *//*
-    public boolean checkUnBlockChainTransaction(BlockChainDataBase blockChainDataBase, Block block, Transaction transaction) throws Exception{
+     */
+    public boolean checkUnBlockChainTransaction(Block block, Transaction transaction) throws Exception{
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();
             if(inputs!=null && inputs.size()!=0){
@@ -460,7 +457,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             if(outputs.size() != 1){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出有且只能有一笔。不合法的交易。");
             }
-            if(!isBlockWriteMineAwardRight(blockChainDataBase,block)){
+            if(!isBlockWriteMineAwardRight(block)){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出金额不正确。不合法的交易。");
             }
             return true;
@@ -473,7 +470,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
                 if(i.getUnspendTransactionOutput() == null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入UTXO不能为空。不合法的交易。");
                 }
-                if(blockChainDataBase.findUtxoByUtxoUuid(i.getUnspendTransactionOutput().getTransactionOutputUUID())!=null){
+                if(findUtxoByUtxoUuid(i.getUnspendTransactionOutput().getTransactionOutputUUID())!=null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入不是UTXO。不合法的交易。");
                 }
             }
@@ -519,5 +516,42 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         } else {
             throw new BlockChainCoreException("区块数据异常，不能识别的交易类型。");
         }
-    }*/
+    }
+
+    /**
+     * 区块中写入的挖矿奖励是否正确？
+     * @param block 被校验挖矿奖励是否正确的区块
+     * @return
+     */
+    public boolean isBlockWriteMineAwardRight(Block block){
+        //区块中写入的挖矿奖励
+        BigDecimal blockWritedMineAward = obtainBlockWriteMineAward(block);
+        //目标挖矿奖励
+        BigDecimal targetMineAward = incentive.mineAward(this, block);
+        return targetMineAward.compareTo(blockWritedMineAward) != 0 ;
+    }
+
+    /**
+     * 获取区块中写入的挖矿奖励金额
+     */
+    public BigDecimal obtainBlockWriteMineAward(Block block) {
+        Transaction tx = obtainBlockWriteMineAwardTransaction(block);
+        ArrayList<TransactionOutput> outputs = tx.getOutputs();
+        TransactionOutput mineAwardTransactionOutput = outputs.get(0);
+        return mineAwardTransactionOutput.getValue();
+    }
+
+    /**
+     * 获取区块中写入的挖矿奖励交易
+     * @param block 区块
+     * @return
+     */
+    public Transaction obtainBlockWriteMineAwardTransaction(Block block) {
+        for(Transaction tx : block.getTransactions()){
+            if(tx.getTransactionType() == TransactionType.MINER){
+                return tx;
+            }
+        }
+        throw new BlockChainCoreException("区块中没有奖励交易。");
+    }
 }

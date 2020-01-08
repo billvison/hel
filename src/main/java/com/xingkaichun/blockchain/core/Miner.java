@@ -61,34 +61,11 @@ public interface Miner {
     //endregion
 
 
-
-    //region 区块校验
-    /**
-     * 检测区块是否可以被应用到区块链上
-     * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
-     */
-    boolean isBlockCanApplyToBlockChain(BlockChainDataBase blockChainDataBase, Block block) throws Exception ;
-    //endregion
-
-
-
     //region 挖矿奖励
     /**
      * 构建区块的挖矿奖励交易
      * @param block 目标区块
      */
     Transaction buildMineAwardTransaction(BlockChainDataBase blockChainDataBase, Block block) ;
-    /**
-     * 获取区块中写入的挖矿奖励交易
-     * @param block 区块
-     * @return
-     */
-    Transaction obtainBlockWriteMineAwardTransaction(Block block) ;
-    /**
-     * 区块中写入的挖矿奖励是否正确？
-     * @param block 被校验挖矿奖励是否正确的区块
-     * @return
-     */
-    boolean isBlockWriteMineAwardRight(BlockChainDataBase blockChainDataBase, Block block);
     //endregion
 }

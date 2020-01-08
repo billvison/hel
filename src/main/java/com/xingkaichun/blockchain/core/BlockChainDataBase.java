@@ -56,4 +56,17 @@ public interface BlockChainDataBase {
     //TODO 不应该存在这个方法
     boolean isUuidExist(String uuid) ;
     //endregion
+
+
+
+    /**
+     * 检测区块是否可以被应用到区块链上
+     * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
+     */
+    boolean isBlockCanApplyToBlockChain(Block block) throws Exception ;
+    /**
+     * 校验(未打包进区块链的)交易的合法性
+     * 奖励交易校验需要传入block参数
+     */
+    public boolean checkUnBlockChainTransaction(Block block, Transaction transaction) throws Exception ;
 }
