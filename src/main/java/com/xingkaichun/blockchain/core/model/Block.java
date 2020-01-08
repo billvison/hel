@@ -24,6 +24,7 @@ public class Block implements Serializable {
     //区块高度
     private Integer height;
     //区块随机数
+    //这个随机数用于共识。
     private Long nonce;
     /**
      * 默克尔树根
@@ -33,7 +34,8 @@ public class Block implements Serializable {
     private String merkleRoot;
     /**
      * 区块哈希：由timestamp、previousHash、height、nonce、merkleRoot共同作用生成。
-     * 为什么需要时间戳这个字段？
+     * 为什么需要时间戳这个字段？区块哈希可以用于确认整个区块的数据内容。
+     * 区块哈希确定了，反过来说其它字段的值也是确定的。TODO
      */
     private String hash;
     //区块里的交易
