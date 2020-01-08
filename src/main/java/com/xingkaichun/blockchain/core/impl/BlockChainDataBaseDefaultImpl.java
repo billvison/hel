@@ -53,7 +53,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
      */
     private Lock lock = new ReentrantLock();
     //endregion
-
+    //TODO 内部维护一个高度，将高度写入db,每次使用，重新读取。
     //region 构造函数
     /**
      * 构造函数
