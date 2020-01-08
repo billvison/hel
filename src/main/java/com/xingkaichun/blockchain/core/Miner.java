@@ -91,12 +91,4 @@ public interface Miner {
      */
     boolean isBlockWriteMineAwardRight(BlockChainDataBase blockChainDataBase, Block block);
     //endregion
-
-    //region 区块Hash
-    /**
-     * 区块中写入的Hash是否正确
-     */
-    //TODO 应该判断nonce正确，还是hash正确
-    boolean isBlockWriteHashRight(BlockChainDataBase blockChainDataBase, Block block) ;
-    //endregion
 }

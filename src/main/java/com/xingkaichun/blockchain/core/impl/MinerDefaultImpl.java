@@ -162,7 +162,7 @@ public class MinerDefaultImpl implements Miner {
         for (long currentNonce=startNonce; currentNonce<=endNonce; currentNonce++) {
             if(mineOption){ break; }
             String actualHash = BlockUtils.calculateBlockHash(previousHash,height,merkleRoot,currentNonce);
-            if(isHashRight(targetMineDificultyString, actualHash)){
+            if(consensus.isHashRight(targetMineDificultyString, actualHash)){
                 block.setNonce(currentNonce);
                 block.setHash(actualHash);
                 wrapperBlockForMining.setMiningSuccess(true);
@@ -349,8 +349,8 @@ public class MinerDefaultImpl implements Miner {
             }
         }
         //校验挖矿[区块本身的数据]是否正确
-        boolean minerSuccess = isBlockWriteHashRight(blockChainDataBase,block);
-        if(!minerSuccess){
+        boolean isReachConsensus = consensus.isReachConsensus(blockChainDataBase,block);
+        if(!isReachConsensus){
             return false;
         }
         //区块角度检测区块的数据的安全性
@@ -568,18 +568,6 @@ public class MinerDefaultImpl implements Miner {
     }
     //endregion
 
-
-    //region 挖矿Hash相关
-    /**
-     * Hash满足挖矿难度的要求吗？
-     * @param targetDificulty 目标挖矿难度
-     * @param hash 需要校验的Hash
-     */
-    public boolean isHashRight(String targetDificulty,String hash){
-        return hash.startsWith(targetDificulty);
-    }
-    //endregion
-
     //region 构建区块、计算区块hash、校验区块Nonce
     /**
      * 构建缺少nonce(代表尚未被挖矿)的区块
@@ -603,22 +591,6 @@ public class MinerDefaultImpl implements Miner {
         String merkleRoot = BlockUtils.calculateBlockMerkleRoot(nonNonceBlock);
         nonNonceBlock.setMerkleRoot(merkleRoot);
         return nonNonceBlock;
-    }
-
-    @Override
-    public boolean isBlockWriteHashRight(BlockChainDataBase blockChainDataBase, Block block){
-        //校验区块写入的MerkleRoot是否正确
-        if(!BlockUtils.isBlockWriteMerkleRootRight(block)){
-            return false;
-        }
-        //校验区块写入的挖矿是否正确
-        String hash = BlockUtils.calculateBlockHash(block);
-        if(!hash.equals(block.getHash())){
-            return false;
-        }
-        //校验挖矿是否正确
-        String difficulty = consensus.difficulty(blockChainDataBase,block);
-        return isHashRight(difficulty,hash);
     }
     //endregion
 
