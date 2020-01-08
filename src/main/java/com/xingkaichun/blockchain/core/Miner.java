@@ -127,13 +127,4 @@ public interface Miner {
      * @param block 目标区块
      */
     String difficulty(BlockChainDataBase blockChainDataBase, Block block);
-
-    /**
-     * 挖矿的奖励
-     * @param blockChainDataBase 区块链
-     * @param block 待挖矿的区块
-     * @return
-     */
-    //TODO 奖励应当是一笔交易 可以兼容
-    BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) ;
 }

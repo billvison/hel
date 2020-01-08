@@ -33,6 +33,8 @@ public class MinerDefaultImpl implements Miner {
     private boolean synchronizeBlockChainNodeOption = true;
 
 
+    private Incentive incentive = new IncentiveDefaultImpl();
+
     public MinerDefaultImpl(BlockChainDataBase blockChainDataBaseMaster, BlockChainDataBase blockChainDataBaseSlave, ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase, ForMinerTransactionDataBase forMinerTransactionDataBase, PublicKeyString minerPublicKey) {
         this.blockChainDataBaseMaster = blockChainDataBaseMaster;
         this.blockChainDataBaseSlave =blockChainDataBaseSlave;
@@ -526,7 +528,7 @@ public class MinerDefaultImpl implements Miner {
         //区块中写入的挖矿奖励
         BigDecimal blockWritedMineAward = obtainBlockWriteMineAward(block);
         //目标挖矿奖励
-        BigDecimal targetMineAward = mineAward(blockChainDataBase, block);
+        BigDecimal targetMineAward = incentive.mineAward(blockChainDataBase, block);
         return targetMineAward.compareTo(blockWritedMineAward) != 0 ;
     }
 
@@ -538,7 +540,7 @@ public class MinerDefaultImpl implements Miner {
         transaction.setInputs(null);
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
-        BigDecimal award = mineAward(blockChainDataBase,block);
+        BigDecimal award = incentive.mineAward(blockChainDataBase,block);
 
         TransactionOutput output = new TransactionOutput();
         output.setTransactionOutputUUID(String.valueOf(UUID.randomUUID()));
@@ -641,10 +643,6 @@ public class MinerDefaultImpl implements Miner {
 
     public String difficulty(BlockChainDataBase blockChainDataBase, Block block){
         return "0000";
-    }
-
-    public BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) {
-        return new BigDecimal("100");
     }
 
     //region 私有方法
