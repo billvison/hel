@@ -641,6 +641,7 @@ public class MinerDefaultImpl implements Miner {
         return mineOption || synchronizeBlockChainNodeOption;
     }
 
+    @Override
     public String difficulty(BlockChainDataBase blockChainDataBase, Block block){
         return "0000";
     }
