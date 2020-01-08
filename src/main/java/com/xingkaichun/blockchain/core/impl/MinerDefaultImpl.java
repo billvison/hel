@@ -136,11 +136,9 @@ public class MinerDefaultImpl implements Miner {
         wrapperBlockForMining.setExceptionTransactionList(exceptionTransactionList);
 
         Block nonNonceBlock = buildNonNonceBlock(blockChainDataBase,transactionListForMinerBlock);
-        String difficulty = consensus.difficulty(blockChainDataBaseMaster,nonNonceBlock);
 
-
+        wrapperBlockForMining.setBlockChainDataBase(blockChainDataBase);
         wrapperBlockForMining.setBlock(nonNonceBlock);
-        wrapperBlockForMining.setTargetMineDificultyString(difficulty);
         wrapperBlockForMining.setStartNonce(0L);
         wrapperBlockForMining.setNextNonce(0L);
         wrapperBlockForMining.setMaxTryMiningTimes(100000L);
@@ -149,9 +147,9 @@ public class MinerDefaultImpl implements Miner {
     }
     public void miningBlock(WrapperBlockForMining wrapperBlockForMining) throws Exception {
         //TODO 这里可以利用多处理器的性能进行计算
+        BlockChainDataBase blockChainDataBase = wrapperBlockForMining.getBlockChainDataBase();
         Block block = wrapperBlockForMining.getBlock();
 
-        String targetMineDificultyString = wrapperBlockForMining.getTargetMineDificultyString();
         long startNonce = wrapperBlockForMining.getNextNonce();
         long endNonce = wrapperBlockForMining.getStartNonce() + wrapperBlockForMining.getMaxTryMiningTimes();
 
@@ -161,12 +159,11 @@ public class MinerDefaultImpl implements Miner {
 
         for (long currentNonce=startNonce; currentNonce<=endNonce; currentNonce++) {
             if(mineOption){ break; }
-            String actualHash = BlockUtils.calculateBlockHash(previousHash,height,merkleRoot,currentNonce);
-            if(consensus.isHashRight(targetMineDificultyString, actualHash)){
-                block.setNonce(currentNonce);
+            block.setNonce(currentNonce);
+            if(consensus.isReachConsensus(blockChainDataBase,block)){
+                String actualHash = BlockUtils.calculateBlockHash(previousHash,height,merkleRoot,currentNonce);
                 block.setHash(actualHash);
                 wrapperBlockForMining.setMiningSuccess(true);
-                return;
             }
         }
         wrapperBlockForMining.setNextNonce(endNonce+1);
@@ -242,8 +239,6 @@ public class MinerDefaultImpl implements Miner {
     @Data
     public static class WrapperBlockForMining {
         private Block block;
-        //挖矿目标
-        private String targetMineDificultyString;
         //挖矿的Nonce起点
         private long startNonce;
         //下一个待验证的Nonce
@@ -252,6 +247,7 @@ public class MinerDefaultImpl implements Miner {
         private long maxTryMiningTimes;
         //是否挖矿成功
         private Boolean miningSuccess;
+        private BlockChainDataBase blockChainDataBase;
 
         private List<Transaction> transactionListForMinerBlock;
         private List<Transaction> exceptionTransactionList;
@@ -349,6 +345,7 @@ public class MinerDefaultImpl implements Miner {
             }
         }
         //校验挖矿[区块本身的数据]是否正确
+        //TODO
         boolean isReachConsensus = consensus.isReachConsensus(blockChainDataBase,block);
         if(!isReachConsensus){
             return false;
