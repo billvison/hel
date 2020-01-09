@@ -62,4 +62,13 @@ public interface BlockChainDataBase {
      * 奖励交易校验需要传入block参数
      */
     public boolean checkUnBlockChainTransaction(Block block, Transaction transaction) throws Exception ;
+
+
+    Incentive getIncentive() ;
+
+    void setIncentive(Incentive incentive) ;
+
+    Consensus getConsensus() ;
+
+    void setConsensus(Consensus consensus) ;
 }

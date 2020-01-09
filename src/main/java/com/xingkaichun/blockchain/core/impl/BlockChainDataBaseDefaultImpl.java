@@ -38,6 +38,9 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     private Logger logger = LoggerFactory.getLogger(BlockChainDataBaseDefaultImpl.class);
 
     //region 变量
+    private Incentive incentive ;
+    private Consensus consensus ;
+
     //区块链数据库
     private DB blockChainDB;
 
@@ -51,14 +54,11 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     private final static String UNSPEND_TRANSACTION_OUPUT_UUID_FLAG = "U_T_O_U_F_";
     //UUID标识
     private final static String UUID_FLAG = "U_F_";
-
-    Incentive incentive = new IncentiveDefaultImpl();
-    Consensus consensus = new ProofOfWorkConsensus();
     /**
      * 锁:保证对区块链增区块、删区块的操作是同步的。
      * 查询区块操作不需要加锁，原因是，只有对区块链进行区块的增删才会改变区块链的数据。
      */
-    private Lock lock = new ReentrantLock();
+    private volatile Lock lock = new ReentrantLock();
     //endregion
     //TODO 内部维护一个高度，将高度写入db,每次使用，重新读取。
     //region 构造函数
@@ -66,8 +66,10 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
      * 构造函数
      * @param dbPath 区块链数据库地址
      */
-    public BlockChainDataBaseDefaultImpl(String dbPath) throws Exception {
+    public BlockChainDataBaseDefaultImpl(String dbPath,Incentive incentive,Consensus consensus) throws Exception {
         this.blockChainDB = LevelDBUtil.createDB(new File(dbPath,"BlockChainDB"));
+        this.incentive = incentive ;
+        this.consensus = consensus ;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -148,7 +150,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         if(writeBatch == null){
             throw new BlockChainCoreException("参数writeBatch没有初始化");
         }
-//更新区块数据
+        //更新区块数据
         byte[] blockHeightKey = LevelDBUtil.stringToBytes(addBlockHeightPrefix(block.getHeight()));
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
             writeBatch.put(blockHeightKey, EncodeDecode.encode(block));
@@ -555,5 +557,22 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             }
         }
         throw new BlockChainCoreException("区块中没有奖励交易。");
+    }
+
+
+    public Incentive getIncentive() {
+        return incentive;
+    }
+
+    public void setIncentive(Incentive incentive) {
+        this.incentive = incentive;
+    }
+
+    public Consensus getConsensus() {
+        return consensus;
+    }
+
+    public void setConsensus(Consensus consensus) {
+        this.consensus = consensus;
     }
 }

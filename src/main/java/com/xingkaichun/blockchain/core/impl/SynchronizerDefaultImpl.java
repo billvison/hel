@@ -15,11 +15,13 @@ public class SynchronizerDefaultImpl implements Synchronizer {
     private BlockChainDataBase blockChainDataBaseDuplicate;
     //节点同步数据库 TODO 重命名
     private ForSynchronizerDataBase forSynchronizerDataBase;
+
     //同步其它节点的区块数据:默认同步其它节点区块数据
     private boolean synchronizeBlockChainNodeOption = true;
 
-    public SynchronizerDefaultImpl(BlockChainDataBase blockChainDataBase, ForSynchronizerDataBase forSynchronizerDataBase) {
+    public SynchronizerDefaultImpl(BlockChainDataBase blockChainDataBase, BlockChainDataBase blockChainDataBaseDuplicate, ForSynchronizerDataBase forSynchronizerDataBase) {
         this.blockChainDataBase = blockChainDataBase;
+        this.blockChainDataBaseDuplicate = blockChainDataBaseDuplicate;
         this.forSynchronizerDataBase = forSynchronizerDataBase;
     }
 

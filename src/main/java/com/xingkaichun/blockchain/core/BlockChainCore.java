@@ -1,30 +1,23 @@
 package com.xingkaichun.blockchain.core;
 
-import com.xingkaichun.blockchain.core.impl.BlockChainDataBaseDefaultImpl;
-import com.xingkaichun.blockchain.core.impl.ForMinerTransactionDataBaseDefaultImpl;
-import com.xingkaichun.blockchain.core.impl.MinerDefaultImpl;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionData;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionListener;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
-import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BlockChainCore {
 
-    private BlockChainDataBase blockChainDataBaseMaster ;
     private Miner miner ;
     private Synchronizer synchronizer;
     //监听区块链上区块的增删动作
     private List<BlockChainActionListener> blockChainActionListenerList = new ArrayList<>();
 
-    public BlockChainCore() throws Exception {
-        ForMinerTransactionDataBase forMinerTransactionDataBase = new ForMinerTransactionDataBaseDefaultImpl("");
-        PublicKeyString minerPublicKey = new PublicKeyString("");
-        this.blockChainDataBaseMaster = new BlockChainDataBaseDefaultImpl("");
-        this.miner = new MinerDefaultImpl(blockChainDataBaseMaster, forMinerTransactionDataBase,minerPublicKey);
+    public BlockChainCore(Miner miner,Synchronizer synchronizer) throws Exception {
+        this.miner = miner;
+        this.synchronizer = synchronizer;
     }
 
     /**

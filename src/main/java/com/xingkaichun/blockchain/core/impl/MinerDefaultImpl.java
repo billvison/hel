@@ -21,7 +21,7 @@ public class MinerDefaultImpl implements Miner {
     //region 属性与构造函数
     //矿工公钥
     private PublicKeyString minerPublicKey;
-    private BlockChainDataBase blockChainDataBaseMaster ;
+    private BlockChainDataBase blockChainDataBase ;
     //交易池：矿工从交易池里获取挖矿的原材料(交易数据)
     private ForMinerTransactionDataBase forMinerTransactionDataBase;
 
@@ -29,11 +29,8 @@ public class MinerDefaultImpl implements Miner {
     private boolean mineOption = true;
 
 
-    private Incentive incentive = new IncentiveDefaultImpl();
-    private Consensus consensus = new ProofOfWorkConsensus();
-
-    public MinerDefaultImpl(BlockChainDataBase blockChainDataBaseMaster,ForMinerTransactionDataBase forMinerTransactionDataBase, PublicKeyString minerPublicKey) {
-        this.blockChainDataBaseMaster = blockChainDataBaseMaster;
+    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase,ForMinerTransactionDataBase forMinerTransactionDataBase, PublicKeyString minerPublicKey) {
+        this.blockChainDataBase = blockChainDataBase;
         this.forMinerTransactionDataBase = forMinerTransactionDataBase;
         this.minerPublicKey = minerPublicKey;
     }
@@ -48,13 +45,13 @@ public class MinerDefaultImpl implements Miner {
         WrapperBlockForMining wrapperBlockForMining = wrapperBlockForMiningThreadLocal.get();
         //是否需要重新获取WrapperBlockForMining？区块链的区块有增删，则需要重新获取。
         if(wrapperBlockForMining == null || isWrapperBlockForMiningNeedObtainAgain(wrapperBlockForMining)){
-            wrapperBlockForMining = obtainWrapperBlockForMining(blockChainDataBaseMaster);
+            wrapperBlockForMining = obtainWrapperBlockForMining(blockChainDataBase);
         }
         miningBlock(wrapperBlockForMining);
         //挖矿成功
         if(wrapperBlockForMining.getMiningSuccess()){
             //将矿放入区块链
-            boolean isAddBlockToBlockChainSuccess = blockChainDataBaseMaster.addBlock(wrapperBlockForMining.getBlock());
+            boolean isAddBlockToBlockChainSuccess = blockChainDataBase.addBlock(wrapperBlockForMining.getBlock());
             if(!isAddBlockToBlockChainSuccess){
                 throw new BlockChainCoreException("区块链新增区块失败。");
             }
@@ -73,7 +70,7 @@ public class MinerDefaultImpl implements Miner {
         if(wrapperBlockForMining == null){
             return true;
         }
-        Block tailBlock = blockChainDataBaseMaster.findTailBlock();
+        Block tailBlock = blockChainDataBase.findTailBlock();
         if(tailBlock == null){
             return false;
         }
@@ -133,7 +130,7 @@ public class MinerDefaultImpl implements Miner {
         for (long currentNonce=startNonce; currentNonce<=endNonce; currentNonce++) {
             if(mineOption){ break; }
             block.setNonce(currentNonce);
-            if(consensus.isReachConsensus(blockChainDataBase,block)){
+            if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
                 String actualHash = BlockUtils.calculateBlockHash(previousHash,height,merkleRoot,currentNonce);
                 block.setHash(actualHash);
                 wrapperBlockForMining.setMiningSuccess(true);
@@ -236,7 +233,7 @@ public class MinerDefaultImpl implements Miner {
         transaction.setInputs(null);
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
-        BigDecimal award = incentive.mineAward(blockChainDataBase,block);
+        BigDecimal award = blockChainDataBase.getIncentive().mineAward(blockChainDataBase,block);
 
         TransactionOutput output = new TransactionOutput();
         output.setTransactionOutputUUID(String.valueOf(UUID.randomUUID()));
