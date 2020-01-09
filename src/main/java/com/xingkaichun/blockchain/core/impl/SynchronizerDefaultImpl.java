@@ -2,7 +2,7 @@ package com.xingkaichun.blockchain.core.impl;
 
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.Synchronizer;
-import com.xingkaichun.blockchain.core.ForSynchronizerDataBase;
+import com.xingkaichun.blockchain.core.SynchronizerDataBase;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.EqualsUtils;
@@ -13,22 +13,22 @@ public class SynchronizerDefaultImpl implements Synchronizer {
     private BlockChainDataBase blockChainDataBase;
     //需要同步的区块链的副本
     private BlockChainDataBase blockChainDataBaseDuplicate;
-    //节点同步数据库 TODO 重命名
-    private ForSynchronizerDataBase forSynchronizerDataBase;
+    //节点同步数据库
+    private SynchronizerDataBase synchronizerDataBase;
 
     //同步其它节点的区块数据:默认同步其它节点区块数据
     private boolean synchronizeBlockChainNodeOption = true;
 
-    public SynchronizerDefaultImpl(BlockChainDataBase blockChainDataBase, BlockChainDataBase blockChainDataBaseDuplicate, ForSynchronizerDataBase forSynchronizerDataBase) {
+    public SynchronizerDefaultImpl(BlockChainDataBase blockChainDataBase, BlockChainDataBase blockChainDataBaseDuplicate, SynchronizerDataBase synchronizerDataBase) {
         this.blockChainDataBase = blockChainDataBase;
         this.blockChainDataBaseDuplicate = blockChainDataBaseDuplicate;
-        this.forSynchronizerDataBase = forSynchronizerDataBase;
+        this.synchronizerDataBase = synchronizerDataBase;
     }
 
     @Override
     public void synchronize() throws Exception {
         while (synchronizeBlockChainNodeOption){
-            String availableSynchronizeNodeId = forSynchronizerDataBase.getDataTransferFinishFlagNodeId();
+            String availableSynchronizeNodeId = synchronizerDataBase.getDataTransferFinishFlagNodeId();
             if(availableSynchronizeNodeId == null){
                 return;
             }
@@ -53,11 +53,11 @@ public class SynchronizerDefaultImpl implements Synchronizer {
 
     private void synchronizeBlockChainNode(String availableSynchronizeNodeId) throws Exception {
         adjustMasterSlave(blockChainDataBase,blockChainDataBaseDuplicate);
-        boolean hasDataTransferFinishFlag = forSynchronizerDataBase.hasDataTransferFinishFlag(availableSynchronizeNodeId);
+        boolean hasDataTransferFinishFlag = synchronizerDataBase.hasDataTransferFinishFlag(availableSynchronizeNodeId);
         if(!hasDataTransferFinishFlag){
             return;
         }
-        Block block = forSynchronizerDataBase.getNextBlock(availableSynchronizeNodeId);
+        Block block = synchronizerDataBase.getNextBlock(availableSynchronizeNodeId);
         if(block != null){
             reduceBlockChain(blockChainDataBaseDuplicate,block.getHeight()-1);
             while(true){
@@ -67,14 +67,14 @@ public class SynchronizerDefaultImpl implements Synchronizer {
                 }else {
                     break;
                 }
-                block = forSynchronizerDataBase.getNextBlock(availableSynchronizeNodeId);
+                block = synchronizerDataBase.getNextBlock(availableSynchronizeNodeId);
                 if(block == null){
                     break;
                 }
             }
         }
-        forSynchronizerDataBase.deleteTransferData(availableSynchronizeNodeId);
-        forSynchronizerDataBase.clearDataTransferFinishFlag(availableSynchronizeNodeId);
+        synchronizerDataBase.deleteTransferData(availableSynchronizeNodeId);
+        synchronizerDataBase.clearDataTransferFinishFlag(availableSynchronizeNodeId);
         adjustMasterDuplicate(blockChainDataBase,blockChainDataBaseDuplicate);
     }
 

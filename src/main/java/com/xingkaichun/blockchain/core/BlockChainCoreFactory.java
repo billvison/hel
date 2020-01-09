@@ -16,9 +16,9 @@ public class BlockChainCoreFactory {
         PublicKeyString minerPublicKey = new PublicKeyString("");
         Miner miner = new MinerDefaultImpl(blockChainDataBase,forMinerTransactionDataBase,minerPublicKey);
 
-        ForSynchronizerDataBase forSynchronizerDataBase = new ForSynchronizerDataBaseDefaultImpl("");
+        SynchronizerDataBase synchronizerDataBase = new SynchronizerDataBaseDefaultImpl("");
         BlockChainDataBase blockChainDataBaseDuplicate = new BlockChainDataBaseDefaultImpl("",incentive,consensus);
-        Synchronizer synchronizer = new SynchronizerDefaultImpl(blockChainDataBase,blockChainDataBaseDuplicate,forSynchronizerDataBase);
+        Synchronizer synchronizer = new SynchronizerDefaultImpl(blockChainDataBase,blockChainDataBaseDuplicate, synchronizerDataBase);
 
         BlockChainCore blockChainCore = new BlockChainCore(miner,synchronizer);
         return blockChainCore;
