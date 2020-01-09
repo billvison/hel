@@ -32,7 +32,7 @@ public class BlockChainCore {
      */
     public void run() throws Exception {
         while (isActive()){
-            synchronizer.synchronizeBlockChainNode();
+            synchronizer.synchronize();
             miner.mine();
         }
     }
@@ -41,7 +41,7 @@ public class BlockChainCore {
      * 暂停所有
      */
     public void pause() throws Exception {
-        synchronizer.pauseSynchronizeBlockChainNode();
+        synchronizer.pause();
         miner.pauseMine();
     }
 
@@ -49,7 +49,7 @@ public class BlockChainCore {
      * 恢复所有
      */
     public void resume() throws Exception {
-        synchronizer.resumeSynchronizeBlockChainNode();
+        synchronizer.resume();
         miner.resumeMine();
     }
 

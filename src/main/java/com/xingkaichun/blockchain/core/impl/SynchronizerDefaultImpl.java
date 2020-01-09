@@ -24,7 +24,7 @@ public class SynchronizerDefaultImpl implements Synchronizer {
     }
 
     @Override
-    public void synchronizeBlockChainNode() throws Exception {
+    public void synchronize() throws Exception {
         while (synchronizeBlockChainNodeOption){
             String availableSynchronizeNodeId = forSynchronizerDataBase.getDataTransferFinishFlagNodeId();
             if(availableSynchronizeNodeId == null){
@@ -35,12 +35,12 @@ public class SynchronizerDefaultImpl implements Synchronizer {
     }
 
 
-    public void pauseSynchronizeBlockChainNode(){
+    public void pause(){
         synchronizeBlockChainNodeOption = false;
     }
 
     @Override
-    public void resumeSynchronizeBlockChainNode() throws Exception {
+    public void resume() throws Exception {
         synchronizeBlockChainNodeOption = true;
     }
 

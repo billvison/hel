@@ -7,15 +7,15 @@ public interface Synchronizer {
      * 同步其它区块链节点的数据。
      * @throws Exception
      */
-    void synchronizeBlockChainNode() throws Exception ;
+    void synchronize() throws Exception ;
     /**
      * 暂停同步其它区块链节点的数据
      */
-    void pauseSynchronizeBlockChainNode() throws Exception ;
+    void pause() throws Exception ;
     /**
      * 恢复同步其它区块链节点的数据
      */
-    void resumeSynchronizeBlockChainNode() throws Exception;
+    void resume() throws Exception;
 
     boolean isActive() throws Exception;
     //endregion
