@@ -1,6 +1,8 @@
 package com.xingkaichun.blockchain.core.impl;
 
-import com.xingkaichun.blockchain.core.*;
+import com.xingkaichun.blockchain.core.BlockChainDataBase;
+import com.xingkaichun.blockchain.core.Miner;
+import com.xingkaichun.blockchain.core.MinerTransactionDataBase;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
@@ -236,7 +238,6 @@ public class MinerDefaultImpl implements Miner {
 
         outputs.add(output);
         transaction.setOutputs(outputs);
-
         return transaction;
     }
     //endregion
