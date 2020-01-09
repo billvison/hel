@@ -1,6 +1,7 @@
 package com.xingkaichun.blockchain.core.impl;
 
 import com.xingkaichun.blockchain.core.SynchronizerDataBase;
+import com.xingkaichun.blockchain.core.TransactionDataBase;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.utils.atomic.EncodeDecode;
 import com.xingkaichun.blockchain.core.utils.atomic.LevelDBUtil;
@@ -15,10 +16,12 @@ public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
 
     //交易池数据库
     private DB forMinerBlockChainSegementDB;
+    private TransactionDataBase transactionDataBase;
 
-    public SynchronizerDataBaseDefaultImpl(String dbPath) throws Exception {
+    public SynchronizerDataBaseDefaultImpl(String dbPath, TransactionDataBase transactionDataBase) throws Exception {
 
         this.forMinerBlockChainSegementDB = LevelDBUtil.createDB(new File(dbPath,"SynchronizerDataBase"));
+        this.transactionDataBase = transactionDataBase;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -31,6 +34,9 @@ public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
 
     @Override
     public boolean addBlock(String nodeId, Block block) throws Exception {
+
+        transactionDataBase.insertBlock(block);
+
         String combineKey = combineKey(block);
         LevelDBUtil.put(forMinerBlockChainSegementDB,combineKey, EncodeDecode.encode(block));
         return true;
@@ -49,8 +55,6 @@ public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
 
     @Override
     public void deleteTransferData(String nodeId) throws Exception {
-        // TODO
-        // LevelDBUtil.deleteTransferData(forMinerBlockChainSegementDB,combineKey(blockChainSegement));
     }
 
     @Override

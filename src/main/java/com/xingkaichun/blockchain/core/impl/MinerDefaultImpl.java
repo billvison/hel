@@ -57,9 +57,6 @@ public class MinerDefaultImpl implements Miner {
             }
             //重置
             wrapperBlockForMining = null;
-            //TODO 异常交易不应该彻底丢掉。
-            // 例如B交易依赖A交易，但是本区块链并没有成功同步到A交易，因此而判定B交易就是非法的，而将其丢弃。
-            // 应当有一个策略，处理这种情形。
             minerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
             minerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getTransactionListForMinerBlock());
             wrapperBlockForMiningThreadLocal.remove();

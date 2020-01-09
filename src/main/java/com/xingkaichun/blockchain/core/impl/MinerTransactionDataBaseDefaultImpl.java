@@ -2,6 +2,7 @@ package com.xingkaichun.blockchain.core.impl;
 
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.MinerTransactionDataBase;
+import com.xingkaichun.blockchain.core.TransactionDataBase;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.utils.atomic.EncodeDecode;
@@ -20,10 +21,12 @@ import java.util.Map;
 public class MinerTransactionDataBaseDefaultImpl implements MinerTransactionDataBase {
 
     private DB transactionPoolDB;
+    private TransactionDataBase transactionDataBase;
 
-    public MinerTransactionDataBaseDefaultImpl(String dbPath) throws Exception {
+    public MinerTransactionDataBaseDefaultImpl(String dbPath, TransactionDataBase transactionDataBase) throws Exception {
 
         this.transactionPoolDB = LevelDBUtil.createDB(new File(dbPath,"MinerTransactionDataBase"));
+        this.transactionDataBase = transactionDataBase;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -41,6 +44,8 @@ public class MinerTransactionDataBaseDefaultImpl implements MinerTransactionData
         if(!verifySignature){
             throw new BlockChainCoreException("新增交易失败，交易签名错误。");
         }
+
+        transactionDataBase.insertTransaction(transaction);
 
         //交易已经持久化进交易池数据库 丢弃交易
         String combineKey = combineKey(transaction);
