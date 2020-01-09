@@ -1,6 +1,6 @@
 package com.xingkaichun.blockchain.core.impl;
 
-import com.xingkaichun.blockchain.core.ForMinerSynchronizeNodeDataBase;
+import com.xingkaichun.blockchain.core.ForSynchronizerDataBase;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.utils.atomic.EncodeDecode;
 import com.xingkaichun.blockchain.core.utils.atomic.LevelDBUtil;
@@ -11,14 +11,14 @@ import java.io.File;
 import java.util.Map;
 
 //TODO 尚未实现
-public class ForMinerSynchronizeNodeDataBaseDefaultImpl implements ForMinerSynchronizeNodeDataBase {
+public class ForSynchronizerDataBaseDefaultImpl implements ForSynchronizerDataBase {
 
     //交易池数据库
     private DB forMinerBlockChainSegementDB;
 
-    public ForMinerSynchronizeNodeDataBaseDefaultImpl(String dbPath) throws Exception {
+    public ForSynchronizerDataBaseDefaultImpl(String dbPath) throws Exception {
 
-        this.forMinerBlockChainSegementDB = LevelDBUtil.createDB(new File(dbPath,"ForMinerSynchronizeNodeDataBase"));
+        this.forMinerBlockChainSegementDB = LevelDBUtil.createDB(new File(dbPath,"ForSynchronizerDataBase"));
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {

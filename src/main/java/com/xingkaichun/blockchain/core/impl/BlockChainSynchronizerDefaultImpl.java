@@ -2,7 +2,7 @@ package com.xingkaichun.blockchain.core.impl;
 
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.BlockChainSynchronizer;
-import com.xingkaichun.blockchain.core.ForMinerSynchronizeNodeDataBase;
+import com.xingkaichun.blockchain.core.ForSynchronizerDataBase;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.EqualsUtils;
@@ -14,19 +14,19 @@ public class BlockChainSynchronizerDefaultImpl implements BlockChainSynchronizer
     //需要同步的区块链的副本
     private BlockChainDataBase blockChainDataBaseDuplicate;
     //节点同步数据库 TODO 重命名
-    private ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase;
+    private ForSynchronizerDataBase forSynchronizerDataBase;
     //同步其它节点的区块数据:默认同步其它节点区块数据
     private boolean synchronizeBlockChainNodeOption = true;
 
-    public BlockChainSynchronizerDefaultImpl(BlockChainDataBase blockChainDataBase, ForMinerSynchronizeNodeDataBase forMinerSynchronizeNodeDataBase) {
+    public BlockChainSynchronizerDefaultImpl(BlockChainDataBase blockChainDataBase, ForSynchronizerDataBase forSynchronizerDataBase) {
         this.blockChainDataBase = blockChainDataBase;
-        this.forMinerSynchronizeNodeDataBase = forMinerSynchronizeNodeDataBase;
+        this.forSynchronizerDataBase = forSynchronizerDataBase;
     }
 
     @Override
     public void synchronizeBlockChainNode() throws Exception {
         while (synchronizeBlockChainNodeOption){
-            String availableSynchronizeNodeId = forMinerSynchronizeNodeDataBase.getDataTransferFinishFlagNodeId();
+            String availableSynchronizeNodeId = forSynchronizerDataBase.getDataTransferFinishFlagNodeId();
             if(availableSynchronizeNodeId == null){
                 return;
             }
@@ -51,11 +51,11 @@ public class BlockChainSynchronizerDefaultImpl implements BlockChainSynchronizer
 
     private void synchronizeBlockChainNode(String availableSynchronizeNodeId) throws Exception {
         adjustMasterSlave(blockChainDataBase,blockChainDataBaseDuplicate);
-        boolean hasDataTransferFinishFlag = forMinerSynchronizeNodeDataBase.hasDataTransferFinishFlag(availableSynchronizeNodeId);
+        boolean hasDataTransferFinishFlag = forSynchronizerDataBase.hasDataTransferFinishFlag(availableSynchronizeNodeId);
         if(!hasDataTransferFinishFlag){
             return;
         }
-        Block block = forMinerSynchronizeNodeDataBase.getNextBlock(availableSynchronizeNodeId);
+        Block block = forSynchronizerDataBase.getNextBlock(availableSynchronizeNodeId);
         if(block != null){
             reduceBlockChain(blockChainDataBaseDuplicate,block.getHeight()-1);
             while(true){
@@ -65,14 +65,14 @@ public class BlockChainSynchronizerDefaultImpl implements BlockChainSynchronizer
                 }else {
                     break;
                 }
-                block = forMinerSynchronizeNodeDataBase.getNextBlock(availableSynchronizeNodeId);
+                block = forSynchronizerDataBase.getNextBlock(availableSynchronizeNodeId);
                 if(block == null){
                     break;
                 }
             }
         }
-        forMinerSynchronizeNodeDataBase.deleteTransferData(availableSynchronizeNodeId);
-        forMinerSynchronizeNodeDataBase.clearDataTransferFinishFlag(availableSynchronizeNodeId);
+        forSynchronizerDataBase.deleteTransferData(availableSynchronizeNodeId);
+        forSynchronizerDataBase.clearDataTransferFinishFlag(availableSynchronizeNodeId);
         adjustMasterDuplicate(blockChainDataBase,blockChainDataBaseDuplicate);
     }
 
