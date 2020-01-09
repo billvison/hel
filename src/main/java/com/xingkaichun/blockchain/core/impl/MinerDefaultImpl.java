@@ -75,7 +75,7 @@ public class MinerDefaultImpl implements Miner {
             return false;
         }
         Block miningBlock = wrapperBlockForMining.getBlock();
-        //TODO 简单校验
+        //TODO 可以不改 简单校验
         if(EqualsUtils.isEquals(tailBlock.getHash(),miningBlock.getPreviousHash()) &&
                 EqualsUtils.isEquals(tailBlock.getHeight(),miningBlock.getHeight()-1)){
             return false;
@@ -116,7 +116,7 @@ public class MinerDefaultImpl implements Miner {
         return wrapperBlockForMining;
     }
     public void miningBlock(WrapperBlockForMining wrapperBlockForMining) throws Exception {
-        //TODO 这里可以利用多处理器的性能进行计算
+        //TODO 可以不改 这里可以利用多处理器的性能进行计算
         BlockChainDataBase blockChainDataBase = wrapperBlockForMining.getBlockChainDataBase();
         Block block = wrapperBlockForMining.getBlock();
 
