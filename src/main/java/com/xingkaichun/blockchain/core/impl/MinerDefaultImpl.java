@@ -123,15 +123,11 @@ public class MinerDefaultImpl implements Miner {
         long startNonce = wrapperBlockForMining.getNextNonce();
         long endNonce = wrapperBlockForMining.getStartNonce() + wrapperBlockForMining.getMaxTryMiningTimes();
 
-        String previousHash = block.getPreviousHash();
-        int height = block.getHeight();
-        String merkleRoot = block.getMerkleRoot();
-
         for (long currentNonce=startNonce; currentNonce<=endNonce; currentNonce++) {
             if(mineOption){ break; }
             block.setNonce(currentNonce);
             if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
-                String actualHash = BlockUtils.calculateBlockHash(previousHash,height,merkleRoot,currentNonce);
+                String actualHash = BlockUtils.calculateBlockHash(block);
                 block.setHash(actualHash);
                 wrapperBlockForMining.setMiningSuccess(true);
             }

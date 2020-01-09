@@ -13,11 +13,7 @@ public class BlockUtils {
      * @param block 区块
      */
     public static String calculateBlockHash(Block block) {
-        return calculateBlockHash(block.getPreviousHash(),block.getHeight(),block.getMerkleRoot(),block.getNonce());
-    }
-    //TODO 不面向对象
-    public static String calculateBlockHash(String previousHash,int height,String merkleRoot,long nonce) {
-        return CipherUtil.applySha256(previousHash+height+merkleRoot+nonce);
+        return CipherUtil.applySha256(block.getPreviousHash()+block.getHeight()+block.getMerkleRoot()+block.getNonce());
     }
 
     //region 默克尔树根
