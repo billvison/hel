@@ -44,23 +44,25 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     //区块链数据库
     private DB blockChainDB;
 
+    //区块链高度标识
+    private final static String BLOCK_CHAIN_HEIGHT_FLAG = "B_C_H_F_";
     //区块标识
-    private final static String BLOCK_HEIGHT_FLAG = "B_H_F_";
+    private final static String BLOCK_HEIGHT_PREFIX_FLAG = "B_H_P_F_";
     //交易标识
-    private final static String TRANSACTION_UUID_FLAG = "T_U_F_";
+    private final static String TRANSACTION_UUID_PREFIX_FLAG = "T_U_P_F_";
     //交易输出标识
-    private final static String TRANSACTION_OUTPUT_UUID_FLAG = "T_O_U_F_";
+    private final static String TRANSACTION_OUTPUT_UUID_PREFIX_FLAG = "T_O_U_P_F_";
     //UTXO标识
-    private final static String UNSPEND_TRANSACTION_OUPUT_UUID_FLAG = "U_T_O_U_F_";
+    private final static String UNSPEND_TRANSACTION_OUPUT_UUID_PREFIX_FLAG = "U_T_O_U_P_F_";
     //UUID标识
-    private final static String UUID_FLAG = "U_F_";
+    private final static String UUID_PREFIX_FLAG = "U_F_";
     /**
      * 锁:保证对区块链增区块、删区块的操作是同步的。
      * 查询区块操作不需要加锁，原因是，只有对区块链进行区块的增删才会改变区块链的数据。
      */
     private volatile Lock lock = new ReentrantLock();
     //endregion
-    //TODO 内部维护一个高度，将高度写入db,每次使用，重新读取。
+
     //region 构造函数
     /**
      * 构造函数
@@ -114,19 +116,19 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     //region 数据库相关
     //region 拼装数据库Key的值
     private String addTransactionOutputPrefix(String transactionOutputUUID) {
-        return TRANSACTION_OUTPUT_UUID_FLAG + transactionOutputUUID;
+        return TRANSACTION_OUTPUT_UUID_PREFIX_FLAG + transactionOutputUUID;
     }
     private String addUnspendTransactionOutputUuidPrefix(String transactionOutputUUID) {
-        return UNSPEND_TRANSACTION_OUPUT_UUID_FLAG + transactionOutputUUID;
+        return UNSPEND_TRANSACTION_OUPUT_UUID_PREFIX_FLAG + transactionOutputUUID;
     }
     private String addTransactionUuidPrefix(String transactionUUID) {
-        return TRANSACTION_UUID_FLAG + transactionUUID;
+        return TRANSACTION_UUID_PREFIX_FLAG + transactionUUID;
     }
     private String addBlockHeightPrefix(int blockHeight) {
-        return BLOCK_HEIGHT_FLAG + blockHeight;
+        return BLOCK_HEIGHT_PREFIX_FLAG + blockHeight;
     }
     private String addUuidPrefix(String uuid) {
-        return UUID_FLAG + uuid;
+        return UUID_PREFIX_FLAG + uuid;
     }
     //endregion
 
@@ -156,6 +158,13 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             writeBatch.put(blockHeightKey, EncodeDecode.encode(block));
         }else{
             writeBatch.delete(blockHeightKey);
+        }
+
+        byte[] blockChainHeightKey = LevelDBUtil.stringToBytes(BLOCK_CHAIN_HEIGHT_FLAG);
+        if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
+            writeBatch.put(blockChainHeightKey, LevelDBUtil.stringToBytes(String.valueOf(block.getHeight())));
+        }else{
+            writeBatch.put(blockChainHeightKey, LevelDBUtil.stringToBytes(String.valueOf(block.getHeight()-1)));
         }
 
         List<Transaction> packingTransactionList = block.getTransactions();
@@ -213,33 +222,13 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     //region 区块链提供的通用方法
     @Override
     public Block findTailBlock() throws Exception {
-        int lastBlockBlockHeight = BlockChainCoreConstants.FIRST_BLOCK_HEIGHT;
-        while (true){
-            Block currentBlock = findBlockByBlockHeight(lastBlockBlockHeight);
-            if(currentBlock == null){
-                //特殊情况:区块链上没有区块
-                if(lastBlockBlockHeight == BlockChainCoreConstants.FIRST_BLOCK_HEIGHT){
-                    return null;
-                }
-                break;
-            }else {
-                lastBlockBlockHeight = lastBlockBlockHeight<<1;
-            }
+        byte[] bytesBlockChainHeight = LevelDBUtil.get(blockChainDB,BLOCK_CHAIN_HEIGHT_FLAG);
+        if(bytesBlockChainHeight == null){
+            return null;
         }
-
-        int start = lastBlockBlockHeight>>1;
-        while (true){
-            int middleBlockHeight = (start + lastBlockBlockHeight)/2;
-            Block currentBlock = findBlockByBlockHeight(middleBlockHeight);
-            Block currentNextBlock = findBlockByBlockHeight(middleBlockHeight+1);
-            if(currentBlock!=null && currentNextBlock==null){
-                return currentBlock;
-            }else if(currentBlock!=null){
-                start = middleBlockHeight+1;
-            }else {
-                lastBlockBlockHeight = middleBlockHeight-1;
-            }
-        }
+        String strBlockChainHeight = LevelDBUtil.bytesToString(bytesBlockChainHeight);
+        int intBlockChainHeight = Integer.valueOf(strBlockChainHeight);
+        return findBlockByBlockHeight(intBlockChainHeight);
     }
 
     @Override

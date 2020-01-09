@@ -43,12 +43,11 @@ public class LevelDBUtil {
         return factory.open(dbFile, options);
     }
 
-    public static byte[] stringToBytes(long value) {
-        String strValue = String.valueOf(value);
-        return stringToBytes(strValue);
+    public static byte[] stringToBytes(String strValue) {
+        return strValue.getBytes(CHARSET_UTF_8);
     }
 
-    public static byte[] stringToBytes(String value) {
-        return value.getBytes(CHARSET_UTF_8);
+    public static String bytesToString(byte[] bytesValue) {
+        return new String(bytesValue,CHARSET_UTF_8);
     }
 }
