@@ -1,13 +1,13 @@
 package com.xingkaichun.blockchain.core.impl;
 
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
-import com.xingkaichun.blockchain.core.BlockChainSynchronizer;
+import com.xingkaichun.blockchain.core.Synchronizer;
 import com.xingkaichun.blockchain.core.ForSynchronizerDataBase;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.EqualsUtils;
 
-public class BlockChainSynchronizerDefaultImpl implements BlockChainSynchronizer {
+public class SynchronizerDefaultImpl implements Synchronizer {
 
     //需要同步的区块链
     private BlockChainDataBase blockChainDataBase;
@@ -18,7 +18,7 @@ public class BlockChainSynchronizerDefaultImpl implements BlockChainSynchronizer
     //同步其它节点的区块数据:默认同步其它节点区块数据
     private boolean synchronizeBlockChainNodeOption = true;
 
-    public BlockChainSynchronizerDefaultImpl(BlockChainDataBase blockChainDataBase, ForSynchronizerDataBase forSynchronizerDataBase) {
+    public SynchronizerDefaultImpl(BlockChainDataBase blockChainDataBase, ForSynchronizerDataBase forSynchronizerDataBase) {
         this.blockChainDataBase = blockChainDataBase;
         this.forSynchronizerDataBase = forSynchronizerDataBase;
     }

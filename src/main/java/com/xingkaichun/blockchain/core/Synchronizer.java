@@ -1,6 +1,6 @@
 package com.xingkaichun.blockchain.core;
 
-public interface BlockChainSynchronizer {
+public interface Synchronizer {
 
     //region 同步其它区块链节点的数据
     /**

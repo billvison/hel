@@ -16,7 +16,7 @@ public class BlockChainCore {
 
     private BlockChainDataBase blockChainDataBaseMaster ;
     private Miner miner ;
-    private BlockChainSynchronizer blockChainSynchronizer;
+    private Synchronizer synchronizer;
     //监听区块链上区块的增删动作
     private List<BlockChainActionListener> blockChainActionListenerList = new ArrayList<>();
 
@@ -32,7 +32,7 @@ public class BlockChainCore {
      */
     public void run() throws Exception {
         while (isActive()){
-            blockChainSynchronizer.synchronizeBlockChainNode();
+            synchronizer.synchronizeBlockChainNode();
             miner.mine();
         }
     }
@@ -41,7 +41,7 @@ public class BlockChainCore {
      * 暂停所有
      */
     public void pause() throws Exception {
-        blockChainSynchronizer.pauseSynchronizeBlockChainNode();
+        synchronizer.pauseSynchronizeBlockChainNode();
         miner.pauseMine();
     }
 
@@ -49,12 +49,12 @@ public class BlockChainCore {
      * 恢复所有
      */
     public void resume() throws Exception {
-        blockChainSynchronizer.resumeSynchronizeBlockChainNode();
+        synchronizer.resumeSynchronizeBlockChainNode();
         miner.resumeMine();
     }
 
     public boolean isActive() throws Exception {
-        return blockChainSynchronizer.isActive() || miner.isActive();
+        return synchronizer.isActive() || miner.isActive();
     }
 
 
