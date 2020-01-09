@@ -1,7 +1,7 @@
 package com.xingkaichun.blockchain.core.impl;
 
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
-import com.xingkaichun.blockchain.core.ForMinerTransactionDataBase;
+import com.xingkaichun.blockchain.core.MinerTransactionDataBase;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.utils.atomic.EncodeDecode;
@@ -17,13 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ForMinerTransactionDataBaseDefaultImpl implements ForMinerTransactionDataBase {
+public class MinerTransactionDataBaseDefaultImpl implements MinerTransactionDataBase {
 
     private DB transactionPoolDB;
 
-    public ForMinerTransactionDataBaseDefaultImpl(String dbPath) throws Exception {
+    public MinerTransactionDataBaseDefaultImpl(String dbPath) throws Exception {
 
-        this.transactionPoolDB = LevelDBUtil.createDB(new File(dbPath,"ForMinerTransactionDataBase"));
+        this.transactionPoolDB = LevelDBUtil.createDB(new File(dbPath,"MinerTransactionDataBase"));
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {

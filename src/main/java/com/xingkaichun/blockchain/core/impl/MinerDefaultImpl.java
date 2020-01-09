@@ -23,15 +23,15 @@ public class MinerDefaultImpl implements Miner {
     private PublicKeyString minerPublicKey;
     private BlockChainDataBase blockChainDataBase ;
     //交易池：矿工从交易池里获取挖矿的原材料(交易数据)
-    private ForMinerTransactionDataBase forMinerTransactionDataBase;
+    private MinerTransactionDataBase minerTransactionDataBase;
 
     //挖矿开关:默认打开挖矿的开关
     private boolean mineOption = true;
 
 
-    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase,ForMinerTransactionDataBase forMinerTransactionDataBase, PublicKeyString minerPublicKey) {
+    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, MinerTransactionDataBase minerTransactionDataBase, PublicKeyString minerPublicKey) {
         this.blockChainDataBase = blockChainDataBase;
-        this.forMinerTransactionDataBase = forMinerTransactionDataBase;
+        this.minerTransactionDataBase = minerTransactionDataBase;
         this.minerPublicKey = minerPublicKey;
     }
     //endregion
@@ -60,8 +60,8 @@ public class MinerDefaultImpl implements Miner {
             //TODO 异常交易不应该彻底丢掉。
             // 例如B交易依赖A交易，但是本区块链并没有成功同步到A交易，因此而判定B交易就是非法的，而将其丢弃。
             // 应当有一个策略，处理这种情形。
-            forMinerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
-            forMinerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getTransactionListForMinerBlock());
+            minerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
+            minerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getTransactionListForMinerBlock());
             wrapperBlockForMiningThreadLocal.remove();
         }
     }
@@ -100,7 +100,7 @@ public class MinerDefaultImpl implements Miner {
 
     private WrapperBlockForMining obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
         WrapperBlockForMining wrapperBlockForMining = null;
-        List<Transaction> transactionListForMinerBlock = forMinerTransactionDataBase.selectTransactionList(0,10000);
+        List<Transaction> transactionListForMinerBlock = minerTransactionDataBase.selectTransactionList(0,10000);
         List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(blockChainDataBase,transactionListForMinerBlock);
         wrapperBlockForMining.setTransactionListForMinerBlock(transactionListForMinerBlock);
         wrapperBlockForMining.setExceptionTransactionList(exceptionTransactionList);

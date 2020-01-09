@@ -12,9 +12,9 @@ public class BlockChainCoreFactory {
         Consensus consensus = new ProofOfWorkConsensus();
         BlockChainDataBase blockChainDataBase = new BlockChainDataBaseDefaultImpl("",incentive,consensus);
 
-        ForMinerTransactionDataBase forMinerTransactionDataBase = new ForMinerTransactionDataBaseDefaultImpl("");
+        MinerTransactionDataBase minerTransactionDataBase = new MinerTransactionDataBaseDefaultImpl("");
         PublicKeyString minerPublicKey = new PublicKeyString("");
-        Miner miner = new MinerDefaultImpl(blockChainDataBase,forMinerTransactionDataBase,minerPublicKey);
+        Miner miner = new MinerDefaultImpl(blockChainDataBase, minerTransactionDataBase,minerPublicKey);
 
         SynchronizerDataBase synchronizerDataBase = new SynchronizerDataBaseDefaultImpl("");
         BlockChainDataBase blockChainDataBaseDuplicate = new BlockChainDataBaseDefaultImpl("",incentive,consensus);

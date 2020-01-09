@@ -11,7 +11,7 @@ import java.util.List;
  * 只有正确的交易才应该放进该类。
  * //TODO 需要设计一个数据库，用于保存所有的签名正确的交易。
  */
-public interface ForMinerTransactionDataBase {
+public interface MinerTransactionDataBase {
 
     /**
      * 新增交易
