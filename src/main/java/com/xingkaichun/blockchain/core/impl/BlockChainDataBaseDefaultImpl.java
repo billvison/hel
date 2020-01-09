@@ -10,6 +10,7 @@ import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.blockchain.core.utils.BlockUtils;
 import com.xingkaichun.blockchain.core.utils.atomic.*;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.WriteBatch;
@@ -324,6 +325,10 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             if(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT != block.getHeight()){
                 return false;
             }
+            //校验时间
+            if(block.getTimestamp()<0 || block.getTimestamp()>System.currentTimeMillis()){
+                return false;
+            }
         } else {
             //校验区块Hash是否连贯
             if(!tailBlock.getHash().equals(block.getPreviousHash())){
@@ -333,13 +338,26 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             if((tailBlock.getHeight()+1) != block.getHeight()){
                 return false;
             }
+            //校验时间
+            if(block.getTimestamp() <= tailBlock.getTimestamp() || block.getTimestamp() > System.currentTimeMillis()){
+                return false;
+            }
         }
-        //校验挖矿[区块本身的数据]是否正确
-        //TODO
+
+        //校验写入的值是否与计算得来的一致
+        if(!BlockUtils.isBlockWriteMerkleRootRight(block)){
+            return false;
+        }
+        if(!BlockUtils.isBlockWriteHashRight(block)){
+            return false;
+        }
+
+        //校验共识
         boolean isReachConsensus = consensus.isReachConsensus(this,block);
         if(!isReachConsensus){
             return false;
         }
+
         //区块角度检测区块的数据的安全性
         //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
         Set<String> transactionOutputUUIDSet = new HashSet<>();

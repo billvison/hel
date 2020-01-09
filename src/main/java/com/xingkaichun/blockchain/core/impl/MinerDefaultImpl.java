@@ -253,12 +253,13 @@ public class MinerDefaultImpl implements Miner {
         if(tailBlock == null){
             nonNonceBlock.setHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
             nonNonceBlock.setPreviousHash(BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH);
-            nonNonceBlock.setTransactions(packingTransactionList);
         } else {
             nonNonceBlock.setHeight(tailBlock.getHeight()+1);
             nonNonceBlock.setPreviousHash(tailBlock.getHash());
-            nonNonceBlock.setTransactions(packingTransactionList);
         }
+        nonNonceBlock.setTransactions(packingTransactionList);
+        nonNonceBlock.setTimestamp(System.currentTimeMillis());
+
         //创建奖励交易，并将奖励加入区块
         Transaction mineAwardTransaction =  buildMineAwardTransaction(blockChainDataBase,nonNonceBlock);
         packingTransactionList.add(mineAwardTransaction);

@@ -16,6 +16,14 @@ public class BlockUtils {
         return CipherUtil.applySha256(block.getPreviousHash()+block.getHeight()+block.getMerkleRoot()+block.getNonce());
     }
 
+    /**
+     * 区块中写入的默克尔树根是否正确
+     */
+    public static boolean isBlockWriteHashRight(Block block){
+        String targetHash = calculateBlockHash(block);
+        return targetHash.equals(block.getHash());
+    }
+
     //region 默克尔树根
     /**
      * 计算区块的默克尔树根值
