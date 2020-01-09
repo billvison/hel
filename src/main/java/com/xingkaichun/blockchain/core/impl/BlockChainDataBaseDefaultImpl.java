@@ -456,6 +456,9 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
      * 奖励交易校验需要传入block参数
      */
     public boolean checkUnBlockChainTransaction(Block block, Transaction transaction) throws Exception{
+        if(block.getTimestamp()<=transaction.getTimestamp()){
+            throw new BlockChainCoreException("交易校验失败：挖矿的时间应当在交易的时间之后。");
+        }
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();
             if(inputs!=null && inputs.size()!=0){

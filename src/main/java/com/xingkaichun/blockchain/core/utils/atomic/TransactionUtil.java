@@ -59,7 +59,8 @@ public class TransactionUtil {
      * @return
      */
     public static String signatureData(Transaction transaction) throws Exception {
-        String data = transaction.getTransactionUUID() + getInput_UTXO_Ids(transaction) + getOutput_UTXO_Ids(transaction);
+        String data = transaction.getTimestamp() + transaction.getTransactionUUID()
+                        + getInput_UTXO_Ids(transaction) + getOutput_UTXO_Ids(transaction);
         String sha256Data = CipherUtil.applySha256(data);
         return sha256Data;
     }

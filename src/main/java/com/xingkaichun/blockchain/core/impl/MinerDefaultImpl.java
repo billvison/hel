@@ -221,6 +221,7 @@ public class MinerDefaultImpl implements Miner {
     @Override
     public Transaction buildMineAwardTransaction(BlockChainDataBase blockChainDataBase, Block block) {
         Transaction transaction = new Transaction();
+        transaction.setTimestamp(System.currentTimeMillis());
         transaction.setTransactionUUID(String.valueOf(UUID.randomUUID()));
         transaction.setTransactionType(TransactionType.MINER);
         transaction.setInputs(null);

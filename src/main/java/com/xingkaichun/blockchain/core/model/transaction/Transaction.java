@@ -12,7 +12,7 @@ import java.util.ArrayList;
 @Data
 public class Transaction implements Serializable {
 
-    //交易时间戳 TODO 放进签名 校验
+    //交易时间戳
     private long timestamp;
     //交易ID
     private String transactionUUID;
