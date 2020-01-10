@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class TransactionUtil {
@@ -68,9 +69,11 @@ public class TransactionUtil {
     /**
      * 交易签名
      */
-    public static byte[] signature(Transaction transaction, PrivateKeyString privateKeyString) throws Exception {
+    public static String signature(Transaction transaction, PrivateKeyString privateKeyString) throws Exception {
         PrivateKey privateKey = KeyUtil.convertPrivateKeyStringToPrivateKey(privateKeyString);
-        return CipherUtil.applyECDSASig(privateKey,signatureData(transaction));
+        byte[] bytesSignature = CipherUtil.applyECDSASig(privateKey,signatureData(transaction));
+        String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
+        return strSignature;
     }
 
     /**
@@ -78,7 +81,9 @@ public class TransactionUtil {
      */
     public static boolean verifySignature(Transaction transaction) throws Exception {
         PublicKey publicKey = KeyUtil.convertPublicKeyStringToPublicKey(getSender(transaction));
-        return CipherUtil.verifyECDSASig(publicKey,signatureData(transaction),transaction.getSignature());
+        String strSignature = transaction.getSignature();
+        byte[] bytesSignature = Base64.getDecoder().decode(strSignature);
+        return CipherUtil.verifyECDSASig(publicKey,signatureData(transaction),bytesSignature);
     }
 
     public static List<String> getInput_UTXO_Ids(Transaction transaction){

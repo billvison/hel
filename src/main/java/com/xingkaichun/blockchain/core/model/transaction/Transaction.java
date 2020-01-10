@@ -16,8 +16,8 @@ public class Transaction implements Serializable {
     private long timestamp;
     //交易ID
     private String transactionUUID;
-    //交易签名 TODO 字符串
-    private byte[] signature;
+    //交易签名
+    private String signature;
 
     //交易类型
     private TransactionType transactionType;
