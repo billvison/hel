@@ -12,7 +12,8 @@ import com.xingkaichun.blockchain.core.model.transaction.Transaction;
  * 可能节点收集到了A交易，但是还没有挖矿成功)，因此不能武断的判定B交易就是非法的，而直接将B交易丢弃。
  *
  * 应当有一个策略，处理这种情形。
- * 这里处理的策略是：周期性的将这里的交易直接同步至{@link MinerTransactionDataBase} //TODO
+ * 这里处理的策略是：周期性的将这里的交易直接同步至{@link MinerTransactionDataBase}
+ * //TODO 改善型功能
  */
 public interface TransactionDataBase {
 
