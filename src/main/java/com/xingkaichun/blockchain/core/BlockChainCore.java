@@ -25,7 +25,7 @@ public class BlockChainCore {
      */
     public void run() throws Exception {
         while (isActive()){
-            synchronizer.synchronize();
+            synchronizer.run();
             miner.mine();
         }
     }

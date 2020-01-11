@@ -4,10 +4,9 @@ public interface Synchronizer {
 
     //region 同步其它区块链节点的数据
     /**
-     * 同步其它区块链节点的数据。
-     * @throws Exception
+     * 开始同步其它区块链节点的数据。
      */
-    void synchronize() throws Exception ;
+    void run() throws Exception ;
     /**
      * 暂停同步其它区块链节点的数据
      */
@@ -16,7 +15,9 @@ public interface Synchronizer {
      * 恢复同步其它区块链节点的数据
      */
     void resume() throws Exception;
-
+    /**
+     * 同步功能是否开启
+     */
     boolean isActive() throws Exception;
     //endregion
 }

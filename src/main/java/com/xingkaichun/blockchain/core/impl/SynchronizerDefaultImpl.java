@@ -16,8 +16,8 @@ public class SynchronizerDefaultImpl implements Synchronizer {
     //节点同步数据库
     private SynchronizerDataBase synchronizerDataBase;
 
-    //同步其它节点的区块数据:默认同步其它节点区块数据
-    private boolean synchronizeBlockChainNodeOption = true;
+    //同步开关:默认同步其它节点区块链数据
+    private boolean synchronizeOption = true;
 
     public SynchronizerDefaultImpl(BlockChainDataBase blockChainDataBase, BlockChainDataBase blockChainDataBaseDuplicate, SynchronizerDataBase synchronizerDataBase) {
         this.blockChainDataBase = blockChainDataBase;
@@ -26,8 +26,8 @@ public class SynchronizerDefaultImpl implements Synchronizer {
     }
 
     @Override
-    public void synchronize() throws Exception {
-        while (synchronizeBlockChainNodeOption){
+    public void run() throws Exception {
+        while (synchronizeOption){
             String availableSynchronizeNodeId = synchronizerDataBase.getDataTransferFinishFlagNodeId();
             if(availableSynchronizeNodeId == null){
                 return;
@@ -36,19 +36,18 @@ public class SynchronizerDefaultImpl implements Synchronizer {
         }
     }
 
-
     public void pause(){
-        synchronizeBlockChainNodeOption = false;
+        synchronizeOption = false;
     }
 
     @Override
     public void resume() throws Exception {
-        synchronizeBlockChainNodeOption = true;
+        synchronizeOption = true;
     }
 
     @Override
     public boolean isActive() throws Exception {
-        return synchronizeBlockChainNodeOption;
+        return synchronizeOption;
     }
 
     private void synchronizeBlockChainNode(String availableSynchronizeNodeId) throws Exception {
@@ -86,23 +85,6 @@ public class SynchronizerDefaultImpl implements Synchronizer {
         adjustMasterDuplicate(blockChainDataBase,blockChainDataBaseDuplicate);
     }
 
-    private void reduceBlockChain(BlockChainDataBase blockChainDataBase, int blockHeight) throws Exception {
-        Block tailBlock = blockChainDataBase.findTailBlock();
-        if(tailBlock == null){
-            return;
-        }
-        int currentBlockHeight = tailBlock.getHeight();
-        while(currentBlockHeight > blockHeight){
-            blockChainDataBase.removeTailBlock();
-            tailBlock = blockChainDataBase.findTailBlock();
-            if(tailBlock == null){
-                return;
-            }
-            currentBlockHeight = tailBlock.getHeight();
-        }
-    }
-
-    //region 私有方法
     /**
      * 若blockChainDataBaseMaster的高度小于blockChainDataBaseDuplicate的高度，
      * 则blockChainDataBaseMaster同步blockChainDataBaseDuplicate的区块链数据。
@@ -165,7 +147,26 @@ public class SynchronizerDefaultImpl implements Synchronizer {
             blockChainDataBaseSlave.addBlock(currentBlock);
         }
     }
-
+    /**
+     * 降低区块链高度
+     * @param blockChainDataBase 区块链
+     * @param blockHeight 降低区块链高度到的位置
+     */
+    private void reduceBlockChain(BlockChainDataBase blockChainDataBase, int blockHeight) throws Exception {
+        Block tailBlock = blockChainDataBase.findTailBlock();
+        if(tailBlock == null){
+            return;
+        }
+        int currentBlockHeight = tailBlock.getHeight();
+        while(currentBlockHeight > blockHeight){
+            blockChainDataBase.removeTailBlock();
+            tailBlock = blockChainDataBase.findTailBlock();
+            if(tailBlock == null){
+                return;
+            }
+            currentBlockHeight = tailBlock.getHeight();
+        }
+    }
     private boolean isBlockEqual(Block masterTailBlock, Block slaveTailBlock) {
         if(masterTailBlock == null && slaveTailBlock == null){
             return true;
@@ -183,5 +184,4 @@ public class SynchronizerDefaultImpl implements Synchronizer {
         }
         return false;
     }
-    //endregion
 }
