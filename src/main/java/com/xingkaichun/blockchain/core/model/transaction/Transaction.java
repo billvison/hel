@@ -23,7 +23,7 @@ public class Transaction implements Serializable {
     private PublicKeyString sender;
     //交易输入
     //TODO 校验金额 或是  List<String> utxoUuids? 注意反序列化时，将这个值补充完整
-    private transient ArrayList<TransactionInput> inputs;
+    private ArrayList<TransactionInput> inputs;
     //交易输出
     private ArrayList<TransactionOutput> outputs;
     //交易签名
