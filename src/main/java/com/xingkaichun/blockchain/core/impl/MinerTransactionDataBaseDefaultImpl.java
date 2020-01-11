@@ -117,7 +117,7 @@ public class MinerTransactionDataBaseDefaultImpl implements MinerTransactionData
      * 假设有客户端恶意生成和别人相同的交易UUID。
      * 因为KEY是有公钥参与生成，客户端不可能冒充别人(想要冒充别人得有别人的公钥与私钥)
      * 一个客户端多次发送同一笔交易，会计算成同一个KEY，所以在交易池只会保存一笔。
-     * 因为KEY是有公钥参与生成，所以在交易池看来，它们是不同的交易，它们都可以持久化进交易池。
+     * 因为KEY是有公钥参与生成，所以在交易数据库看来，它们是不同的交易，它们都可以持久化进数据库。
      * @param transaction 交易
      */
     private String combineKey(Transaction transaction) {
