@@ -48,32 +48,27 @@ public interface SynchronizerDataBase {
      * 保存节点(nodeId)传输过来的数据
      */
     boolean addBlock(String nodeId, Block block) throws Exception ;
-
     /**
      * 获取节点(nodeId)传输过来的数据，返回结果不为null，代表可以继续调用此方法，继续获取数据。
      */
     Block getNextBlock(String nodeId) throws Exception ;
-
+    /**
+     * 获取节点(nodeId)传输过来最大的区块高度。
+     */
+    int getMaxBlockHeight(String nodeId) throws Exception ;
     /**
      * 获取一个有数据传输完成标识的节点ID
      */
     String getDataTransferFinishFlagNodeId() throws Exception ;
-
     /**
      * 给节点(nodeId)添加数据传输完成的标识。
      */
     void addDataTransferFinishFlag(String nodeId) throws Exception ;
-
-    /**
-     * 清除节点(nodeId)的数据传输完成标识
-     */
-    void clearDataTransferFinishFlag(String nodeId) throws Exception ;
-
     /**
      * 删除节点(nodeId)传输过来的数据。
+     * 清除节点(nodeId)的数据传输完成标识
      */
-    void deleteTransferData(String nodeId) throws Exception ;
-
+    void clear(String nodeId) throws Exception ;
     /**
      * 节点(nodeId)有数据传输完成的标识吗？
      */

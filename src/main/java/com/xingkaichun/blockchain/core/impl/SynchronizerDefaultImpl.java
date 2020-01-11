@@ -55,8 +55,17 @@ public class SynchronizerDefaultImpl implements Synchronizer {
         adjustMasterSlave(blockChainDataBase,blockChainDataBaseDuplicate);
         boolean hasDataTransferFinishFlag = synchronizerDataBase.hasDataTransferFinishFlag(availableSynchronizeNodeId);
         if(!hasDataTransferFinishFlag){
+            synchronizerDataBase.clear(availableSynchronizeNodeId);
             return;
         }
+
+        int maxBlockHeight = synchronizerDataBase.getMaxBlockHeight(availableSynchronizeNodeId);
+        Integer blockChainLength = blockChainDataBase.obtainBlockChainLength();
+        if(blockChainLength != null && blockChainLength>=maxBlockHeight){
+            synchronizerDataBase.clear(availableSynchronizeNodeId);
+            return;
+        }
+
         Block block = synchronizerDataBase.getNextBlock(availableSynchronizeNodeId);
         if(block != null){
             reduceBlockChain(blockChainDataBaseDuplicate,block.getHeight()-1);
@@ -73,11 +82,9 @@ public class SynchronizerDefaultImpl implements Synchronizer {
                 }
             }
         }
-        synchronizerDataBase.deleteTransferData(availableSynchronizeNodeId);
-        synchronizerDataBase.clearDataTransferFinishFlag(availableSynchronizeNodeId);
+        synchronizerDataBase.clear(availableSynchronizeNodeId);
         adjustMasterDuplicate(blockChainDataBase,blockChainDataBaseDuplicate);
     }
-
 
     private void reduceBlockChain(BlockChainDataBase blockChainDataBase, int blockHeight) throws Exception {
         Block tailBlock = blockChainDataBase.findTailBlock();
