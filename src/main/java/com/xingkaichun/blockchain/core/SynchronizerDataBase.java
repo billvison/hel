@@ -2,6 +2,8 @@ package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.model.Block;
 
+import java.sql.SQLException;
+
 
 /**
  * 节点同步数据库
@@ -72,5 +74,5 @@ public interface SynchronizerDataBase {
     /**
      * 节点(nodeId)有数据传输完成的标识吗？
      */
-    boolean hasDataTransferFinishFlag(String nodeId);
+    boolean hasDataTransferFinishFlag(String nodeId) throws Exception;
 }
