@@ -34,7 +34,7 @@ public class ProofOfWorkConsensus implements Consensus {
      * @param targetDificulty 目标挖矿难度
      * @param hash 需要校验的Hash
      */
-    private boolean isHashRight(String targetDificulty,String hash){
+    private boolean isHashRight(String targetDificulty, String hash){
         return hash.startsWith(targetDificulty);
     }
 }

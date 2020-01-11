@@ -13,7 +13,6 @@ import com.xingkaichun.blockchain.core.model.transaction.Transaction;
  *
  * 应当有一个策略，处理这种情形。
  * 这里处理的策略是：周期性的将这里的交易直接同步至{@link MinerTransactionDataBase}
- * //TODO 改善型功能
  */
 public interface TransactionDataBase {
 
