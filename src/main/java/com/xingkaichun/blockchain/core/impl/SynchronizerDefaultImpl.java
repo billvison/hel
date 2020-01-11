@@ -19,7 +19,9 @@ public class SynchronizerDefaultImpl implements Synchronizer {
     //同步开关:默认同步其它节点区块链数据
     private boolean synchronizeOption = true;
 
-    public SynchronizerDefaultImpl(BlockChainDataBase blockChainDataBase, BlockChainDataBase blockChainDataBaseDuplicate, SynchronizerDataBase synchronizerDataBase) {
+    public SynchronizerDefaultImpl(BlockChainDataBase blockChainDataBase,
+                                   BlockChainDataBase blockChainDataBaseDuplicate,
+                                   SynchronizerDataBase synchronizerDataBase) {
         this.blockChainDataBase = blockChainDataBase;
         this.blockChainDataBaseDuplicate = blockChainDataBaseDuplicate;
         this.synchronizerDataBase = synchronizerDataBase;
@@ -89,7 +91,8 @@ public class SynchronizerDefaultImpl implements Synchronizer {
      * 若blockChainDataBaseMaster的高度小于blockChainDataBaseDuplicate的高度，
      * 则blockChainDataBaseMaster同步blockChainDataBaseDuplicate的区块链数据。
      */
-    private void adjustMasterDuplicate(BlockChainDataBase blockChainDataBaseMaster,BlockChainDataBase blockChainDataBaseDuplicate) throws Exception {
+    private void adjustMasterDuplicate(BlockChainDataBase blockChainDataBaseMaster,
+                                       BlockChainDataBase blockChainDataBaseDuplicate) throws Exception {
         Block masterTailBlock = blockChainDataBaseMaster.findTailBlock() ;
         Block duplicateTailBlock = blockChainDataBaseDuplicate.findTailBlock() ;
         //不需要调整
@@ -114,7 +117,8 @@ public class SynchronizerDefaultImpl implements Synchronizer {
     /**
      * 使得blockChainDataBaseSlave和blockChainDataBaseMaster的区块链数据一模一样
      */
-    private void adjustMasterSlave(BlockChainDataBase blockChainDataBaseMaster,BlockChainDataBase blockChainDataBaseSlave) throws Exception {
+    private void adjustMasterSlave(BlockChainDataBase blockChainDataBaseMaster,
+                                   BlockChainDataBase blockChainDataBaseSlave) throws Exception {
         Block masterTailBlock = blockChainDataBaseMaster.findTailBlock() ;
         Block slaveTailBlock = blockChainDataBaseSlave.findTailBlock() ;
         //不需要调整
