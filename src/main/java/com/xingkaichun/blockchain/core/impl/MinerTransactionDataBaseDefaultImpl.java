@@ -121,6 +121,6 @@ public class MinerTransactionDataBaseDefaultImpl implements MinerTransactionData
      * @param transaction 交易
      */
     private String combineKey(Transaction transaction) {
-        return TransactionUtil.getSender(transaction).getValue() + transaction.getTransactionUUID();
+        return transaction.getSender().getValue() + transaction.getTransactionUUID();
     }
 }

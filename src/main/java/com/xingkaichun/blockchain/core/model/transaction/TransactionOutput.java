@@ -15,7 +15,7 @@ public class TransactionOutput implements Serializable {
 
     //交易输出的ID
     private String transactionOutputUUID;
-    //交易输出的接收方
+    //交易输出的接收方 TODO 地址
     private PublicKeyString reciepient;
     //交易输出的金额
     private BigDecimal value;

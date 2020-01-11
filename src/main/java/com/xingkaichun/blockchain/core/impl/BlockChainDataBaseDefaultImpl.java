@@ -513,7 +513,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
                 throw new BlockChainCoreException("交易校验失败：交易的输入少于交易的输出。不合法的交易。");
             }
             //校验 付款方是同一个用户[公钥] 用户花的钱是自己的钱
-            if(!TransactionUtil.isOnlyOneSender(transaction)){
+            if(!TransactionUtil.isSpendOwnUtxo(transaction)){
                 throw new BlockChainCoreException("交易校验失败：交易的付款方有多个。不合法的交易。");
             }
             //校验签名验证

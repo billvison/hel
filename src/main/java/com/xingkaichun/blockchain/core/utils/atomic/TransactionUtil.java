@@ -60,8 +60,8 @@ public class TransactionUtil {
      * @return
      */
     public static String signatureData(Transaction transaction) throws Exception {
-        String data = transaction.getTimestamp() + transaction.getTransactionUUID()
-                        + getInput_UTXO_Ids(transaction) + getOutput_UTXO_Ids(transaction);
+        String data = transaction.getTimestamp() + transaction.getTransactionUUID() + transaction.getSender().getValue()
+                        + getInputUtxoIds(transaction) + getOutpuUtxoIds(transaction);
         String sha256Data = CipherUtil.applySha256(data);
         return sha256Data;
     }
@@ -80,13 +80,13 @@ public class TransactionUtil {
      * 签名验证
      */
     public static boolean verifySignature(Transaction transaction) throws Exception {
-        PublicKey publicKey = KeyUtil.convertPublicKeyStringToPublicKey(getSender(transaction));
+        PublicKey publicKey = KeyUtil.convertPublicKeyStringToPublicKey(transaction.getSender());
         String strSignature = transaction.getSignature();
         byte[] bytesSignature = Base64.getDecoder().decode(strSignature);
         return CipherUtil.verifyECDSASig(publicKey,signatureData(transaction),bytesSignature);
     }
 
-    public static List<String> getInput_UTXO_Ids(Transaction transaction){
+    public static List<String> getInputUtxoIds(Transaction transaction){
         List<String> ids = new ArrayList<>();
         if(transaction.getInputs()==null||ids.size()==0){return ids;}
         for(TransactionInput transactionInput:transaction.getInputs()){
@@ -95,7 +95,7 @@ public class TransactionUtil {
         return ids;
     }
 
-    public static List<String> getOutput_UTXO_Ids(Transaction transaction){
+    public static List<String> getOutpuUtxoIds(Transaction transaction){
         List<String> ids = new ArrayList<>();
         if(transaction.getInputs()==null||ids.size()==0){return ids;}
         for(TransactionOutput transactionOutput:transaction.getOutputs()){
@@ -104,19 +104,11 @@ public class TransactionUtil {
         return ids;
     }
 
-    public static PublicKeyString getSender(Transaction transaction){
-        if(!isOnlyOneSender(transaction)){
-            throw new BlockChainCoreException("付款方不是同一人");
-        }
-        TransactionInput transactionInput = transaction.getInputs().get(0);
-        return transactionInput.getUnspendTransactionOutput().getReciepient();
-    }
-
-    public static boolean isOnlyOneSender(Transaction transaction){
+    public static boolean isSpendOwnUtxo(Transaction transaction){
+        PublicKeyString sender = transaction.getSender();
         ArrayList<TransactionInput> inputs = transaction.getInputs();
-        TransactionInput transactionInput = transaction.getInputs().get(0);
         for(TransactionInput input:inputs){
-            boolean eq = transactionInput.getUnspendTransactionOutput().getReciepient().equals(input.getUnspendTransactionOutput().getReciepient());
+            boolean eq = sender.getValue().equals(input.getUnspendTransactionOutput().getReciepient().getValue());
             if(!eq){
                 return false;
             }

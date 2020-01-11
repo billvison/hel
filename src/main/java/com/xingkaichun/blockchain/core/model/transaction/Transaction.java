@@ -1,6 +1,7 @@
 package com.xingkaichun.blockchain.core.model.transaction;
 
 
+import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,14 +17,15 @@ public class Transaction implements Serializable {
     private long timestamp;
     //交易ID
     private String transactionUUID;
-    //交易签名
-    private String signature;
-
     //交易类型
     private TransactionType transactionType;
+    //花钱人公钥
+    private PublicKeyString sender;
     //交易输入
-    //TODO 校验金额 或是  List<String> utxoUuids?
-    private ArrayList<TransactionInput> inputs;
+    //TODO 校验金额 或是  List<String> utxoUuids? 注意反序列化时，将这个值补充完整
+    private transient ArrayList<TransactionInput> inputs;
     //交易输出
     private ArrayList<TransactionOutput> outputs;
+    //交易签名
+    private String signature;
 }
