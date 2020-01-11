@@ -223,13 +223,22 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
     //region 区块链提供的通用方法
     @Override
     public Block findTailBlock() throws Exception {
+        Integer intBlockChainHeight = obtainBlockChainLength();
+        if(intBlockChainHeight == null){
+            return null;
+        }
+        return findBlockByBlockHeight(intBlockChainHeight);
+    }
+
+    @Override
+    public Integer obtainBlockChainLength() throws Exception {
         byte[] bytesBlockChainHeight = LevelDBUtil.get(blockChainDB,BLOCK_CHAIN_HEIGHT_FLAG);
         if(bytesBlockChainHeight == null){
             return null;
         }
         String strBlockChainHeight = LevelDBUtil.bytesToString(bytesBlockChainHeight);
-        int intBlockChainHeight = Integer.valueOf(strBlockChainHeight);
-        return findBlockByBlockHeight(intBlockChainHeight);
+        Integer intBlockChainHeight = Integer.valueOf(strBlockChainHeight);
+        return intBlockChainHeight;
     }
 
     @Override

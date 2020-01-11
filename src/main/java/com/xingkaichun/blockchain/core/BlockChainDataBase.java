@@ -32,6 +32,11 @@ public interface BlockChainDataBase {
     Block findTailBlock() throws Exception ;
 
     /**
+     * 获取区块链的长度
+     */
+    Integer obtainBlockChainLength() throws Exception ;
+
+    /**
      * 在区块链中根据 UTXO ID 查找UTXO
      * @param transactionOutputUUID UTXO ID
      */
