@@ -11,6 +11,8 @@ import java.io.Serializable;
 public class PublicKeyString implements Serializable {
 
     private String value;
+    //TODO 钱包地址 公钥hash 校验 版本
+
 
     public PublicKeyString(String value) {
         this.value = value;

@@ -26,7 +26,7 @@ public class WalletUtil {
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA","BC");
             SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-            ECGenParameterSpec ecSpec = new ECGenParameterSpec("prime192v1");
+            ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256k1");
             // Initialize the key generator and generate a KeyPair
             keyGen.initialize(ecSpec, random); //256
             KeyPair keyPair = keyGen.generateKeyPair();
