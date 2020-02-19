@@ -25,7 +25,7 @@ public class MinerTransactionDataBaseDefaultImpl implements MinerTransactionData
 
     public MinerTransactionDataBaseDefaultImpl(String dbPath, TransactionDataBase transactionDataBase) throws Exception {
 
-        this.transactionPoolDB = LevelDBUtil.createDB(new File(dbPath,"MinerTransactionDataBase"));
+        this.transactionPoolDB = LevelDBUtil.createDB(new File(dbPath));
         this.transactionDataBase = transactionDataBase;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

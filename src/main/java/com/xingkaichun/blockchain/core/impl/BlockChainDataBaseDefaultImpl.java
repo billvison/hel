@@ -70,7 +70,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
      * @param dbPath 区块链数据库地址
      */
     public BlockChainDataBaseDefaultImpl(String dbPath,Incentive incentive,Consensus consensus) throws Exception {
-        this.blockChainDB = LevelDBUtil.createDB(new File(dbPath,"BlockChainDB"));
+        this.blockChainDB = LevelDBUtil.createDB(new File(dbPath));
         this.incentive = incentive ;
         this.consensus = consensus ;
 

@@ -60,7 +60,6 @@ public class MinerDefaultImpl implements Miner {
                 return;
             }
             //重置
-            wrapperBlockForMining = null;
             minerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
             minerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getForMineBlockTransactionList());
             wrapperBlockForMiningThreadLocal.remove();
@@ -125,7 +124,7 @@ public class MinerDefaultImpl implements Miner {
         long endNonce = wrapperBlockForMining.getStartNonce() + wrapperBlockForMining.getMaxTryMiningTimes();
 
         for (long currentNonce=startNonce; currentNonce<=endNonce; currentNonce++) {
-            if(mineOption){ break; }
+            if(!mineOption){ break; }
             block.setNonce(currentNonce);
             block.setHash(BlockUtils.calculateBlockHash(block));
             if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){

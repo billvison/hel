@@ -6,15 +6,18 @@ import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.utils.atomic.EncodeDecode;
 
 import javax.sql.rowset.serial.SerialBlob;
+import java.io.File;
 import java.sql.*;
 
 public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
 
     String dbPath;
+    String dbFileName;
     private TransactionDataBase transactionDataBase;
 
-    public SynchronizerDataBaseDefaultImpl(String dbPath, TransactionDataBase transactionDataBase) throws Exception {
+    public SynchronizerDataBaseDefaultImpl(String dbPath, String dbFileName, TransactionDataBase transactionDataBase) throws Exception {
         this.dbPath = dbPath;
+        this.dbFileName = dbFileName;
         this.transactionDataBase = transactionDataBase;
 
         init();
@@ -27,7 +30,7 @@ public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
 
         String sql = "INSERT INTO DATA (nodeId,blockHeight,block) " +
                 "VALUES (?, ?, ?);";
-        PreparedStatement preparedStatement = connection(dbPath).prepareStatement(sql);
+        PreparedStatement preparedStatement = connection().prepareStatement(sql);
         preparedStatement.setString(1,nodeId);
         preparedStatement.setInt(2,block.getHeight());
         preparedStatement.setBlob(3,new SerialBlob(EncodeDecode.encode(block)));
@@ -40,13 +43,13 @@ public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
     public Block getNextBlock(String nodeId) throws Exception {
         int intNextBlockHeight = 0;
         String sql1 = "SELECT nextBlockHeight FROM NODE WHERE status = 'FINISH' nodeId = ?";
-        PreparedStatement preparedStatement1 = connection(dbPath).prepareStatement(sql1);
+        PreparedStatement preparedStatement1 = connection().prepareStatement(sql1);
         ResultSet resultSet = preparedStatement1.executeQuery();
         while (resultSet.next()){
             Object objNextBlockHeight = resultSet.getObject("nextBlockHeight");
             if(objNextBlockHeight == null){
                 String minBlockHeightSql = "SELECT min(blockHeight) FROM DATA WHERE nodeId = ?";
-                PreparedStatement minBlockHeightPreparedStatement = connection(dbPath).prepareStatement(minBlockHeightSql);
+                PreparedStatement minBlockHeightPreparedStatement = connection().prepareStatement(minBlockHeightSql);
                 ResultSet minBlockHeightResultSet = minBlockHeightPreparedStatement.executeQuery();
                 if (resultSet.next()){
                     intNextBlockHeight = resultSet.getInt("blockHeight");
@@ -58,7 +61,7 @@ public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
             }
             //更新next
             String setNextSql = "UPDATE NODE SET nextBlockHeight = ? WHERE nodeId = ?";
-            PreparedStatement setNextPreparedStatement = connection(dbPath).prepareStatement(setNextSql);
+            PreparedStatement setNextPreparedStatement = connection().prepareStatement(setNextSql);
             setNextPreparedStatement.setInt(1,1+intNextBlockHeight);
             setNextPreparedStatement.setString(2,nodeId);
         }
@@ -68,7 +71,7 @@ public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
     @Override
     public int getMaxBlockHeight(String nodeId) throws Exception {
         String sql1 = "SELECT max(blockHeight) FROM DATA WHERE nodeId = ?";
-        PreparedStatement preparedStatement1 = connection(dbPath).prepareStatement(sql1);
+        PreparedStatement preparedStatement1 = connection().prepareStatement(sql1);
         ResultSet resultSet = preparedStatement1.executeQuery();
         while (resultSet.next()){
             int blockHeight = resultSet.getInt("blockHeight");
@@ -80,7 +83,7 @@ public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
     @Override
     public boolean hasDataTransferFinishFlag(String nodeId) throws Exception {
         String sql1 = "SELECT top 1 * FROM NODE WHERE status = 'FINISH' and nodeId = ?";
-        PreparedStatement preparedStatement1 = connection(dbPath).prepareStatement(sql1);
+        PreparedStatement preparedStatement1 = connection().prepareStatement(sql1);
         preparedStatement1.setString(1,nodeId);
         ResultSet resultSet = preparedStatement1.executeQuery();
         while (resultSet.next()){
@@ -91,8 +94,8 @@ public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
 
     @Override
     public String getDataTransferFinishFlagNodeId() throws Exception {
-        String sql1 = "SELECT top 1 * FROM NODE WHERE status = 'FINISH'";
-        PreparedStatement preparedStatement2 = connection(dbPath).prepareStatement(sql1);
+        String sql1 = "SELECT * FROM NODE WHERE status = 'FINISH' limit 0,1";
+        PreparedStatement preparedStatement2 = connection().prepareStatement(sql1);
         ResultSet resultSet = preparedStatement2.executeQuery();
         while (resultSet.next()){
             String nodeId = resultSet.getString("nodeId");
@@ -104,7 +107,7 @@ public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
     @Override
     public void addDataTransferFinishFlag(String nodeId) throws Exception {
         String sql1 = "INSERT NODE (nodeId,status) VALUES (? , ?)";
-        PreparedStatement preparedStatement2 = connection(dbPath).prepareStatement(sql1);
+        PreparedStatement preparedStatement2 = connection().prepareStatement(sql1);
         preparedStatement2.setString(1,nodeId);
         preparedStatement2.setString(2,"FINISH");
         preparedStatement2.executeUpdate();
@@ -113,19 +116,22 @@ public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
     @Override
     public void clear(String nodeId) throws Exception {
         String sql = "DELETE DATA WHERE  nodeId = ?";
-        PreparedStatement preparedStatement = connection(dbPath).prepareStatement(sql);
+        PreparedStatement preparedStatement = connection().prepareStatement(sql);
         preparedStatement.setString(1,nodeId);
         preparedStatement.executeUpdate();
 
         String sql2 = "DELETE NODE WHERE nodeId = ?";
-        PreparedStatement preparedStatement2 = connection(dbPath).prepareStatement(sql2);
+        PreparedStatement preparedStatement2 = connection().prepareStatement(sql2);
         preparedStatement2.setString(1,nodeId);
         preparedStatement2.executeUpdate();
     }
 
-    private Connection connection(String dbPath) throws ClassNotFoundException, SQLException {
+    private Connection connection() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:"+dbPath);
+        File dataPath = new File(dbPath);
+        dataPath.mkdirs();
+        File dataFile = new File(dataPath,dbFileName);
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:" + dataFile.getAbsolutePath());
         return connection;
     }
 
@@ -148,7 +154,7 @@ public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
     }
 
     private void executeSql(String sql) throws SQLException, ClassNotFoundException {
-        Statement stmt = connection(dbPath).createStatement();
+        Statement stmt = connection().createStatement();
         stmt.executeUpdate(sql);
         stmt.close();
     }
