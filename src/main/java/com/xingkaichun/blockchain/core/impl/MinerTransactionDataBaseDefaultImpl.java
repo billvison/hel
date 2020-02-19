@@ -105,6 +105,9 @@ public class MinerTransactionDataBaseDefaultImpl implements MinerTransactionData
         }
         WriteBatch writeBatch = new WriteBatchImpl();
         for(Transaction transaction:transactionList){
+            if(transaction.getSender() == null){
+                return;
+            }
             String combineKey = combineKey(transaction);
             writeBatch.delete(LevelDBUtil.stringToBytes(combineKey));
         }

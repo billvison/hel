@@ -129,6 +129,7 @@ public class MinerDefaultImpl implements Miner {
             block.setHash(BlockUtils.calculateBlockHash(block));
             if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
                 wrapperBlockForMining.setMiningSuccess(true);
+                break;
             }
         }
         wrapperBlockForMining.setNextNonce(endNonce+1);
