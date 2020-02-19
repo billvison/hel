@@ -62,11 +62,12 @@ public interface BlockChainDataBase {
      * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
      */
     boolean isBlockCanApplyToBlockChain(Block block) throws Exception ;
+
     /**
-     * 校验(未打包进区块链的)交易的合法性
-     * 奖励交易校验需要传入block参数
+     * 校验交易是否可以被添加进下一个区块之中。
+     * 如果校验的是奖励交易，则需要整个区块的信息，因此这个函数包含了两个参数：交易所在的区块、交易
      */
-    public boolean checkUnBlockChainTransaction(Block block, Transaction transaction) throws Exception ;
+    boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception ;
 
 
     Incentive getIncentive() ;

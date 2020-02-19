@@ -3,7 +3,6 @@ package com.xingkaichun.blockchain.core.impl;
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.Miner;
 import com.xingkaichun.blockchain.core.MinerTransactionDataBase;
-import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
@@ -45,7 +44,7 @@ public class MinerDefaultImpl implements Miner {
     private static ThreadLocal<WrapperBlockForMining> wrapperBlockForMiningThreadLocal = new ThreadLocal<>();
     public void mine() throws Exception {
         WrapperBlockForMining wrapperBlockForMining = wrapperBlockForMiningThreadLocal.get();
-        //是否需要重新获取WrapperBlockForMining？区块链的区块有增删，则需要重新获取。
+        //是否需要重新获取WrapperBlockForMining？区块链的区块若有改变，则需要重新获取。
         if(wrapperBlockForMining == null || isWrapperBlockForMiningNeedObtainAgain(wrapperBlockForMining)){
             wrapperBlockForMining = obtainWrapperBlockForMining(blockChainDataBase);
         }
@@ -62,7 +61,7 @@ public class MinerDefaultImpl implements Miner {
             //重置
             wrapperBlockForMining = null;
             minerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
-            minerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getTransactionListForMinerBlock());
+            minerTransactionDataBase.deleteTransactionList(wrapperBlockForMining.getForMineBlockTransactionList());
             wrapperBlockForMiningThreadLocal.remove();
         }
     }
@@ -101,15 +100,15 @@ public class MinerDefaultImpl implements Miner {
 
     private WrapperBlockForMining obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
         WrapperBlockForMining wrapperBlockForMining = new WrapperBlockForMining();
-        List<Transaction> forMinerBlockTransactionList = minerTransactionDataBase.selectTransactionList(0,10000);
-        List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(blockChainDataBase,forMinerBlockTransactionList);
-        wrapperBlockForMining.setTransactionListForMinerBlock(forMinerBlockTransactionList);
+        List<Transaction> forMineBlockTransactionList = minerTransactionDataBase.selectTransactionList(0,10000);
+        //TODO 错误类别处理
+        List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(blockChainDataBase,forMineBlockTransactionList);
+        wrapperBlockForMining.setForMineBlockTransactionList(forMineBlockTransactionList);
         wrapperBlockForMining.setExceptionTransactionList(exceptionTransactionList);
-
-        Block nonNonceBlock = buildNonNonceBlock(blockChainDataBase,forMinerBlockTransactionList);
+        Block nextMineBlock = buildNextMineBlock(blockChainDataBase,forMineBlockTransactionList);
 
         wrapperBlockForMining.setBlockChainDataBase(blockChainDataBase);
-        wrapperBlockForMining.setBlock(nonNonceBlock);
+        wrapperBlockForMining.setBlock(nextMineBlock);
         wrapperBlockForMining.setStartNonce(0L);
         wrapperBlockForMining.setNextNonce(0L);
         wrapperBlockForMining.setMaxTryMiningTimes(100000L);
@@ -153,7 +152,7 @@ public class MinerDefaultImpl implements Miner {
         private Boolean miningSuccess;
         private BlockChainDataBase blockChainDataBase;
 
-        private List<Transaction> transactionListForMinerBlock;
+        private List<Transaction> forMineBlockTransactionList;
         private List<Transaction> exceptionTransactionList;
     }
     //endregion
@@ -181,15 +180,16 @@ public class MinerDefaultImpl implements Miner {
         while (iterator.hasNext()){
             Transaction tx = iterator.next();
             ArrayList<TransactionInput> inputs = tx.getInputs();
-            boolean multiUseOneUTXO = false;
+            boolean multiTimeUseOneUTXO = false;
             for(TransactionInput input:inputs){
                 String transactionOutputUUID = input.getUnspendTransactionOutput().getTransactionOutputUUID();
                 if(transactionOutputUUIDSet.contains(transactionOutputUUID)){
-                    multiUseOneUTXO = true;
+                    multiTimeUseOneUTXO = true;
+                    break;
                 }
                 transactionOutputUUIDSet.add(transactionOutputUUID);
             }
-            if(multiUseOneUTXO){
+            if(multiTimeUseOneUTXO){
                 iterator.remove();
                 exceptionTransactionList.add(tx);
                 System.out.println("交易校验失败：交易的输入中同一个UTXO被多次使用。不合法的交易。");
@@ -203,14 +203,14 @@ public class MinerDefaultImpl implements Miner {
      */
     private List<Transaction>  removeExceptionTransaction_PointOfTransactionView(BlockChainDataBase blockChainDataBase,List<Transaction> transactionList) throws Exception{
         List<Transaction> exceptionTransactionList = new ArrayList<>();
-        if(transactionList==null||transactionList.size()==0){
+        if(transactionList==null || transactionList.size()==0){
             return exceptionTransactionList;
         }
         Iterator<Transaction> iterator = transactionList.iterator();
         while (iterator.hasNext()){
             Transaction tx = iterator.next();
-            boolean checkPass = blockChainDataBase.checkUnBlockChainTransaction(null,tx);
-            if(!checkPass){
+            boolean transactionCanAddToNextBlock = blockChainDataBase.isTransactionCanAddToNextBlock(null,tx);
+            if(!transactionCanAddToNextBlock){
                 iterator.remove();
                 exceptionTransactionList.add(tx);
                 System.out.println("交易校验失败：丢弃交易。");
@@ -245,9 +245,9 @@ public class MinerDefaultImpl implements Miner {
 
     //region 构建区块、计算区块hash、校验区块Nonce
     /**
-     * 构建缺少nonce(代表尚未被挖矿)的区块
+     * 构建挖矿区块
      */
-    public Block buildNonNonceBlock(BlockChainDataBase blockChainDataBase, List<Transaction> packingTransactionList) throws Exception {
+    public Block buildNextMineBlock(BlockChainDataBase blockChainDataBase, List<Transaction> packingTransactionList) throws Exception {
         Block tailBlock = blockChainDataBase.findTailBlock();
         Block nonNonceBlock = new Block();
         if(tailBlock == null){
@@ -258,6 +258,7 @@ public class MinerDefaultImpl implements Miner {
             nonNonceBlock.setPreviousHash(tailBlock.getHash());
         }
         nonNonceBlock.setTransactions(packingTransactionList);
+        //这个挖矿时间不需要特别精确，没必要非要挖出矿的前一霎那时间。省去了挖矿时实时更新这个时间的繁琐。
         nonNonceBlock.setTimestamp(System.currentTimeMillis());
 
         //创建奖励交易，并将奖励加入区块

@@ -426,8 +426,8 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             } else {
                 throw new BlockChainCoreException("区块数据异常，不能识别的交易类型。");
             }
-            boolean check = checkUnBlockChainTransaction(block,tx);
-            if(!check){
+            boolean transactionCanAddToNextBlock = isTransactionCanAddToNextBlock(block,tx);
+            if(!transactionCanAddToNextBlock){
                 throw new BlockChainCoreException("区块数据异常，交易异常。");
             }
         }
@@ -460,17 +460,13 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         return true;
     }
 
-    /**
-     * 校验(未打包进区块链的)交易的合法性
-     * 奖励交易校验需要传入block参数
-     */
-    public boolean checkUnBlockChainTransaction(Block block, Transaction transaction) throws Exception{
-        if(block.getTimestamp()<=transaction.getTimestamp()){
+    public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception{
+        if(block.getTimestamp() <= transaction.getTimestamp()){
             throw new BlockChainCoreException("交易校验失败：挖矿的时间应当在交易的时间之后。");
         }
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();
-            if(inputs!=null && inputs.size()!=0){
+            if(inputs!=null && inputs.size() != 0){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输入只能为空。不合法的交易。");
             }
             ArrayList<TransactionOutput> outputs = transaction.getOutputs();
