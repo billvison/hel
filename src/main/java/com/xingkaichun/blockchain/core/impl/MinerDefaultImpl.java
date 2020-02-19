@@ -100,13 +100,13 @@ public class MinerDefaultImpl implements Miner {
     }
 
     private WrapperBlockForMining obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
-        WrapperBlockForMining wrapperBlockForMining = null;
-        List<Transaction> transactionListForMinerBlock = minerTransactionDataBase.selectTransactionList(0,10000);
-        List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(blockChainDataBase,transactionListForMinerBlock);
-        wrapperBlockForMining.setTransactionListForMinerBlock(transactionListForMinerBlock);
+        WrapperBlockForMining wrapperBlockForMining = new WrapperBlockForMining();
+        List<Transaction> forMinerBlockTransactionList = minerTransactionDataBase.selectTransactionList(0,10000);
+        List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(blockChainDataBase,forMinerBlockTransactionList);
+        wrapperBlockForMining.setTransactionListForMinerBlock(forMinerBlockTransactionList);
         wrapperBlockForMining.setExceptionTransactionList(exceptionTransactionList);
 
-        Block nonNonceBlock = buildNonNonceBlock(blockChainDataBase,transactionListForMinerBlock);
+        Block nonNonceBlock = buildNonNonceBlock(blockChainDataBase,forMinerBlockTransactionList);
 
         wrapperBlockForMining.setBlockChainDataBase(blockChainDataBase);
         wrapperBlockForMining.setBlock(nonNonceBlock);
