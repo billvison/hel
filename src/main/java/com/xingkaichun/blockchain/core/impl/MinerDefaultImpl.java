@@ -117,7 +117,7 @@ public class MinerDefaultImpl implements Miner {
         return wrapperBlockForMining;
     }
     public void miningBlock(WrapperBlockForMining wrapperBlockForMining) throws Exception {
-        //TODO 改善型功能 这里可以利用多处理器的性能进行计算
+        //TODO 改善型功能 这里可以利用多处理器的性能进行计算 还可以进行矿池挖矿
         BlockChainDataBase blockChainDataBase = wrapperBlockForMining.getBlockChainDataBase();
         Block block = wrapperBlockForMining.getBlock();
 
@@ -127,9 +127,8 @@ public class MinerDefaultImpl implements Miner {
         for (long currentNonce=startNonce; currentNonce<=endNonce; currentNonce++) {
             if(mineOption){ break; }
             block.setNonce(currentNonce);
+            block.setHash(BlockUtils.calculateBlockHash(block));
             if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
-                String actualHash = BlockUtils.calculateBlockHash(block);
-                block.setHash(actualHash);
                 wrapperBlockForMining.setMiningSuccess(true);
             }
         }

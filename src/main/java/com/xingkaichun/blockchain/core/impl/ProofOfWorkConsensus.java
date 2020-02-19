@@ -3,7 +3,6 @@ package com.xingkaichun.blockchain.core.impl;
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.Consensus;
 import com.xingkaichun.blockchain.core.model.Block;
-import com.xingkaichun.blockchain.core.utils.BlockUtils;
 
 /**
  * 工作量证明
@@ -12,9 +11,9 @@ public class ProofOfWorkConsensus implements Consensus {
 
     @Override
     public boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block) {
-        //校验区块写入的挖矿是否正确
-        String hash = BlockUtils.calculateBlockHash(block);
-        //校验挖矿是否正确
+        //区块中写入的区块Hash
+        String hash = block.getHash();
+        //挖矿难度
         String difficulty = difficulty(blockChainDataBase,block);
         return isHashRight(difficulty,hash);
     }
