@@ -10,6 +10,7 @@ public interface Synchronizer {
     //region 同步其它区块链节点的数据
     /**
      * 开始同步其它区块链节点的数据。
+     * 若是真正确定满足同步区块的时候，应当暂停挖矿。因为这个时候应当在同步区块后在挖矿。//TODO
      */
     void run() throws Exception ;
     /**
