@@ -23,7 +23,9 @@ public class Block implements Serializable {
      * 区块不允许放入超过一定时间产生的交易(例如一年前...)。
      */
     private long timestamp;
-    //上一个区块的哈希
+    /**
+     * 上一个区块的哈希
+     */
     private String previousHash;
     //区块高度
     private Integer height;
@@ -44,6 +46,9 @@ public class Block implements Serializable {
      * 我们就在区块里加上previousHash这个字段，这样上一个区块哈希确定了，自然上一个区块的数据也就确定了。
      * 自然上上一个区块的数据也就确定了，自然所有区块的数据也就确定了。
      * 可以想象，如果我们得到一个区块链的最后一个区块的哈希，那一个区块链的所有数据都是确定下来了，谁也不能伪造。
+     *
+     * 如果不对区块产生的hash做约束的话，同一区块链上不同的位置区块可能产生相同的hash，
+     * 为了简单，请保证同一区块链上不出现区块hash相同的两个区块。TODO
      */
     private String hash;
     //区块里的交易
