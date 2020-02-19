@@ -55,7 +55,9 @@ public class MinerDefaultImpl implements Miner {
             //将矿放入区块链
             boolean isAddBlockToBlockChainSuccess = blockChainDataBase.addBlock(wrapperBlockForMining.getBlock());
             if(!isAddBlockToBlockChainSuccess){
-                throw new BlockChainCoreException("区块链新增区块失败。");
+                System.err.println("挖矿成功，但是放入区块链失败。");
+                wrapperBlockForMiningThreadLocal.remove();
+                return;
             }
             //重置
             wrapperBlockForMining = null;
