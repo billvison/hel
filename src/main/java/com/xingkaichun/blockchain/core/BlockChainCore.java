@@ -22,6 +22,9 @@ public class BlockChainCore {
 
     /**
      * 启动
+     * 这里是一个单线程实现。为了协调节点间的区块同步、矿工的挖矿，先进行节点间区块数据的同步，
+     * 同步结束后，矿工进行一段时间的挖矿，然后退出挖矿，进行区块同步，矿工进行一段时间的挖矿，
+     * 然后退出挖矿，进行区块同步......
      */
     public void run() throws Exception {
         while (isActive()){
