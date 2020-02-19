@@ -320,12 +320,13 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
      * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
      */
     public boolean isBlockCanApplyToBlockChain(Block block) throws Exception {
-        if(block==null){
+        if(block == null){
             throw new BlockChainCoreException("区块校验失败：区块不能为null。");
         }
         //校验区块的连贯性
         Block tailBlock = findTailBlock();
         if(tailBlock == null){
+            //TODO 初始区块
             //校验区块Previous Hash
             if(!BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousHash())){
                 return false;
@@ -335,7 +336,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
                 return false;
             }
             //校验时间
-            if(block.getTimestamp()<0 || block.getTimestamp()>System.currentTimeMillis()){
+            if(block.getTimestamp() > System.currentTimeMillis()){
                 return false;
             }
         } else {
@@ -370,8 +371,8 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         //区块角度检测区块的数据的安全性
         //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
         Set<String> transactionOutputUUIDSet = new HashSet<>();
-        //校验即将产生UTXO UUID的唯一性
-        Set<String> unspendTransactionOutputUUIDSet = new HashSet<>();
+        //校验UUID的唯一性
+        Set<String> uuidSet = new HashSet<>();
         //挖矿交易笔数，一个区块有且只能有一笔挖矿奖励交易
         int minerTransactionNumber = 0;
         for(Transaction tx : block.getTransactions()){
@@ -380,7 +381,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             //校验交易ID的格式
             //校验交易ID的唯一性:之前的区块没用过这个UUID
             //校验交易ID的唯一性:本次校验的区块没有使用这个UUID两次或两次以上
-            if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(unspendTransactionOutputUUIDSet,transactionUUID)){
+            if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(uuidSet,transactionUUID)){
                 return false;
             }
             //endregion
@@ -403,7 +404,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
                 }
                 TransactionOutput transactionOutput = tx.getOutputs().get(0);
                 String unspendTransactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(unspendTransactionOutputUUIDSet,unspendTransactionOutputUUID)){
+                if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(uuidSet,unspendTransactionOutputUUID)){
                     return false;
                 }
             } else if(tx.getTransactionType() == TransactionType.NORMAL){
@@ -419,7 +420,7 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
                 ArrayList<TransactionOutput> outputs = tx.getOutputs();
                 for(TransactionOutput transactionOutput:outputs){
                     String unspendTransactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                    if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(unspendTransactionOutputUUIDSet,unspendTransactionOutputUUID)){
+                    if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(uuidSet,unspendTransactionOutputUUID)){
                         return false;
                     }
                 }
@@ -448,11 +449,9 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             return false;
         }
         if(isUuidExist(uuid)){
-//            throw new BlockChainCoreException("区块数据异常，UUID在区块链中已经被使用了。");
             return false;
         }
         if(uuidSet.contains(uuid)){
-//            throw new BlockChainCoreException("区块数据异常，即将产生的UTXO UUID在区块中使用了两次或者两次以上。");
             return false;
         } else {
             uuidSet.add(uuid);
@@ -464,6 +463,13 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
         if(block.getTimestamp() <= transaction.getTimestamp()){
             throw new BlockChainCoreException("交易校验失败：挖矿的时间应当在交易的时间之后。");
         }
+        //校验UUID的唯一性
+        Set<String> uuidSet = new HashSet<>();
+        String transactionUUID = transaction.getTransactionUUID();
+        if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(uuidSet,transactionUUID)){
+            return false;
+        }
+
         if(transaction.getTransactionType() == TransactionType.MINER){
             ArrayList<TransactionInput> inputs = transaction.getInputs();
             if(inputs!=null && inputs.size() != 0){
@@ -475,6 +481,11 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
             }
             if(outputs.size() != 1){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出有且只能有一笔。不合法的交易。");
+            }
+            TransactionOutput transactionOutput = outputs.get(0);
+            String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
+            if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(uuidSet,transactionOutputUUID)){
+                return false;
             }
             if(!isBlockWriteMineAwardRight(block)){
                 throw new BlockChainCoreException("交易校验失败：挖矿交易的输出金额不正确。不合法的交易。");
@@ -489,27 +500,33 @@ public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
                 if(i.getUnspendTransactionOutput() == null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入UTXO不能为空。不合法的交易。");
                 }
-                if(findUtxoByUtxoUuid(i.getUnspendTransactionOutput().getTransactionOutputUUID())!=null){
+                if(findUtxoByUtxoUuid(i.getUnspendTransactionOutput().getTransactionOutputUUID()) != null){
                     throw new BlockChainCoreException("交易校验失败：交易的输入不是UTXO。不合法的交易。");
                 }
-            }
-            if(inputs==null || inputs.size()==0){
-                throw new BlockChainCoreException("交易校验失败：交易的输出不能为空。不合法的交易。");
+                TransactionOutput unspendTransactionOutput = i.getUnspendTransactionOutput();
+                String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
+                if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(uuidSet,unspendTransactionOutputUUID)){
+                    return false;
+                }
             }
             //存放交易用过的UTXO
-            Set<String> input_UTXO_Ids = new HashSet<>();
+            Set<String> inputUtxoIds = new HashSet<>();
             for(TransactionInput i : inputs) {
                 String utxoId = i.getUnspendTransactionOutput().getTransactionOutputUUID();
                 //校验 同一张钱不能使用两次
-                if(input_UTXO_Ids.contains(utxoId)){
+                if(inputUtxoIds.contains(utxoId)){
                     throw new BlockChainCoreException("交易校验失败：交易的输入中同一个UTXO被多次使用。不合法的交易。");
                 }
-                input_UTXO_Ids.add(utxoId);
+                inputUtxoIds.add(utxoId);
             }
             ArrayList<TransactionOutput> outputs = transaction.getOutputs();
             for(TransactionOutput o : outputs) {
                 if(o.getValue().compareTo(new BigDecimal("0"))<=0){
                     throw new BlockChainCoreException("交易校验失败：交易的输出<=0。不合法的交易。");
+                }
+                String transactionOutputUUID = o.getTransactionOutputUUID();
+                if(!isUuidAvailableThenAddToSetIfSetNotContainUuid(uuidSet,transactionOutputUUID)){
+                    return false;
                 }
             }
             BigDecimal inputsValue = TransactionUtil.getInputsValue(transaction);

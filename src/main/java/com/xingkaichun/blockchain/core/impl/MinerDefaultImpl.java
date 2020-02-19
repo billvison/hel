@@ -12,6 +12,7 @@ import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.blockchain.core.utils.BlockUtils;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.EqualsUtils;
+import com.xingkaichun.blockchain.core.utils.atomic.UuidUtil;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -175,19 +176,27 @@ public class MinerDefaultImpl implements Miner {
         }
 
         //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
-        Set<String> transactionOutputUUIDSet = new HashSet<>();
+        //校验UUID的唯一性
+        Set<String> uuidSet = new HashSet<>();
         Iterator<Transaction> iterator = packingTransactionList.iterator();
         while (iterator.hasNext()){
             Transaction tx = iterator.next();
             ArrayList<TransactionInput> inputs = tx.getInputs();
             boolean multiTimeUseOneUTXO = false;
             for(TransactionInput input:inputs){
-                String transactionOutputUUID = input.getUnspendTransactionOutput().getTransactionOutputUUID();
-                if(transactionOutputUUIDSet.contains(transactionOutputUUID)){
+                String unspendTransactionOutputUUID = input.getUnspendTransactionOutput().getTransactionOutputUUID();
+                if(!uuidSet.add(unspendTransactionOutputUUID)){
                     multiTimeUseOneUTXO = true;
                     break;
                 }
-                transactionOutputUUIDSet.add(transactionOutputUUID);
+            }
+            ArrayList<TransactionOutput> outputs = tx.getOutputs();
+            for(TransactionOutput transactionOutput:outputs){
+                String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
+                if(!uuidSet.add(transactionOutputUUID)){
+                    multiTimeUseOneUTXO = true;
+                    break;
+                }
             }
             if(multiTimeUseOneUTXO){
                 iterator.remove();

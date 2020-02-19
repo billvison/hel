@@ -19,7 +19,7 @@ public class Transaction implements Serializable {
     private String transactionUUID;
     //交易类型
     private TransactionType transactionType;
-    //花钱人公钥
+    //花钱人公钥 TODO 冗余了？
     private PublicKeyString sender;
     //交易输入
     //TODO 校验金额 或是  List<String> utxoUuids? 注意反序列化时，将这个值补充完整
