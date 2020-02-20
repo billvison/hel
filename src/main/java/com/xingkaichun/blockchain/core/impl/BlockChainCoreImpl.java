@@ -23,9 +23,12 @@ public class BlockChainCoreImpl extends BlockChainCore {
      */
     @Override
     public void run() throws Exception {
-        while (isActive()){
-            synchronizer.run();
-            miner.mine();
+        while (true){
+            while(isActive()){
+                synchronizer.run();
+                miner.mine();
+            }
+            Thread.sleep(10);
         }
     }
 

@@ -25,7 +25,7 @@ public class ProofOfWorkConsensus extends Consensus {
      * @param block              目标区块
      */
     private String difficulty(BlockChainDataBase blockChainDataBase, Block block){
-        return "0000";
+        return "000000";
     }
 
     /**

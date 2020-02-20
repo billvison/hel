@@ -51,6 +51,7 @@ public class MinerDefaultImpl extends Miner {
         //是否需要重新获取WrapperBlockForMining？区块链的区块若有改变，则需要重新获取。
         if(wrapperBlockForMining == null || isWrapperBlockForMiningNeedObtainAgain(wrapperBlockForMining)){
             wrapperBlockForMining = obtainWrapperBlockForMining(blockChainDataBase);
+            wrapperBlockForMiningThreadLocal.set(wrapperBlockForMining);
         }
         miningBlock(wrapperBlockForMining);
         //挖矿成功
@@ -113,9 +114,8 @@ public class MinerDefaultImpl extends Miner {
 
         wrapperBlockForMining.setBlockChainDataBase(blockChainDataBase);
         wrapperBlockForMining.setBlock(nextMineBlock);
-        wrapperBlockForMining.setStartNonce(0L);
         wrapperBlockForMining.setNextNonce(0L);
-        wrapperBlockForMining.setMaxTryMiningTimes(100000L);
+        wrapperBlockForMining.setMaxTryEveryTime(10000L);
         wrapperBlockForMining.setMiningSuccess(false);
         return wrapperBlockForMining;
     }
@@ -183,7 +183,7 @@ public class MinerDefaultImpl extends Miner {
         Block block = wrapperBlockForMining.getBlock();
 
         long startNonce = wrapperBlockForMining.getNextNonce();
-        long endNonce = wrapperBlockForMining.getStartNonce() + wrapperBlockForMining.getMaxTryMiningTimes();
+        long endNonce = wrapperBlockForMining.getNextNonce() + wrapperBlockForMining.getMaxTryEveryTime();
 
         for (long currentNonce=startNonce; currentNonce<=endNonce; currentNonce++) {
             if(!mineOption){ break; }
@@ -205,12 +205,10 @@ public class MinerDefaultImpl extends Miner {
     @Data
     public static class WrapperBlockForMining {
         private Block block;
-        //挖矿的Nonce起点
-        private long startNonce;
         //下一个待验证的Nonce
         private long nextNonce;
-        //挖矿的最大尝试次数
-        private long maxTryMiningTimes;
+        //每次挖矿的最大尝试次数
+        private long maxTryEveryTime;
         //是否挖矿成功
         private Boolean miningSuccess;
         private BlockChainDataBase blockChainDataBase;
