@@ -19,9 +19,9 @@ public class TranslateTest {
 
         TransactionDataBase transactionDataBase = new TransactionDataBaseDefaultImpl();
 
-        MinerTransactionDataBase minerTransactionDataBase = new MinerTransactionDataBaseDefaultImpl(dbPath+"MinerTransactionDataBase",transactionDataBase);
+        MinerTransactionDtoDataBase minerTransactionDtoDataBase = new MinerTransactionDtoDtoDataBaseDefaultImpl(dbPath+"MinerTransactionDtoDataBase",transactionDataBase);
         PublicKeyString minerPublicKey = new PublicKeyString(minerPublicKeyString);
-        Miner miner = new MinerDefaultImpl(blockChainDataBase, minerTransactionDataBase,minerPublicKey);
+        Miner miner = new MinerDefaultImpl(blockChainDataBase, minerTransactionDtoDataBase,minerPublicKey);
 
         SynchronizerDataBase synchronizerDataBase = new SynchronizerDataBaseDefaultImpl(dbPath+"Synchronizer","otherNodeBlock.data",transactionDataBase);
         BlockChainDataBase blockChainDataBaseDuplicate = new BlockChainDataBaseDefaultImpl(dbPath+"BlockChainDataBaseDuplicate",incentive,consensus);
@@ -33,7 +33,7 @@ public class TranslateTest {
 /*        transaction.setTimestamp();
         transaction.setTransactionUUID();*/
 
-        minerTransactionDataBase.insertTransaction(transaction);
+        //minerTransactionDtoDataBase.insertTransaction(transaction);
 
         int height = blockChainDataBase.findTailBlock().getHeight();
         for(int i=1;i<=height;i++){

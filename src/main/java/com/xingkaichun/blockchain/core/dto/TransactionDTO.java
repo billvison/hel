@@ -1,6 +1,7 @@
 package com.xingkaichun.blockchain.core.dto;
 
 
+import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -17,7 +18,7 @@ public class TransactionDTO implements Serializable {
     //交易ID
     private String transactionUUID;
     //交易类型
-    private TransactionTypeDTO transactionType;
+    private TransactionType transactionType;
     //交易输入
     private ArrayList<String> inputs;
     //交易输出

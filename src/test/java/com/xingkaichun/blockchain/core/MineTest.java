@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.xingkaichun.blockchain.core.impl.*;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
-import com.xingkaichun.blockchain.core.model.wallet.Wallet;
-import com.xingkaichun.blockchain.core.utils.atomic.WalletUtil;
 
 public class MineTest {
 
@@ -20,9 +18,9 @@ public class MineTest {
 
         TransactionDataBase transactionDataBase = new TransactionDataBaseDefaultImpl();
 
-        MinerTransactionDataBase minerTransactionDataBase = new MinerTransactionDataBaseDefaultImpl(dbPath+"MinerTransactionDataBase",transactionDataBase);
+        MinerTransactionDtoDataBase minerTransactionDtoDataBase = new MinerTransactionDtoDtoDataBaseDefaultImpl(dbPath+"MinerTransactionDtoDataBase",transactionDataBase);
         PublicKeyString minerPublicKey = new PublicKeyString(minerPublicKeyString);
-        Miner miner = new MinerDefaultImpl(blockChainDataBase, minerTransactionDataBase,minerPublicKey);
+        Miner miner = new MinerDefaultImpl(blockChainDataBase, minerTransactionDtoDataBase,minerPublicKey);
 
         SynchronizerDataBase synchronizerDataBase = new SynchronizerDataBaseDefaultImpl(dbPath+"Synchronizer","otherNodeBlock.data",transactionDataBase);
         BlockChainDataBase blockChainDataBaseDuplicate = new BlockChainDataBaseDefaultImpl(dbPath+"BlockChainDataBaseDuplicate",incentive,consensus);

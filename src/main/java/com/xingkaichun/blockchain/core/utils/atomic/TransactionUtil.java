@@ -1,6 +1,5 @@
 package com.xingkaichun.blockchain.core.utils.atomic;
 
-import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.key.PrivateKeyString;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
@@ -60,10 +59,19 @@ public class TransactionUtil {
      * @return
      */
     public static String signatureData(Transaction transaction) throws Exception {
-        String data = transaction.getTimestamp() + transaction.getTransactionUUID() + transaction.getSender().getValue()
+        String data = transaction.getTimestamp() + transaction.getTransactionUUID() + getSenderPublicKeyString(transaction)
                         + getInputUtxoIds(transaction) + getOutpuUtxoIds(transaction);
         String sha256Data = CipherUtil.applySha256(data);
         return sha256Data;
+    }
+
+    public static PublicKeyString getSenderPublicKeyString(Transaction transaction) {
+        ArrayList<TransactionInput> inputs = transaction.getInputs();
+        if(inputs == null || inputs.size() == 0){
+            return null;
+        }
+        PublicKeyString senderPublicKeyString = inputs.get(0).getUnspendTransactionOutput().getReciepient();
+        return senderPublicKeyString;
     }
 
     /**
@@ -80,7 +88,8 @@ public class TransactionUtil {
      * 签名验证
      */
     public static boolean verifySignature(Transaction transaction) throws Exception {
-        PublicKey publicKey = KeyUtil.convertPublicKeyStringToPublicKey(transaction.getSender());
+        PublicKeyString senderPublicKeyString = getSenderPublicKeyString(transaction);
+        PublicKey publicKey = KeyUtil.convertPublicKeyStringToPublicKey(senderPublicKeyString);
         String strSignature = transaction.getSignature();
         byte[] bytesSignature = Base64.getDecoder().decode(strSignature);
         return CipherUtil.verifyECDSASig(publicKey,signatureData(transaction),bytesSignature);
@@ -105,10 +114,10 @@ public class TransactionUtil {
     }
 
     public static boolean isSpendOwnUtxo(Transaction transaction){
-        PublicKeyString sender = transaction.getSender();
+        PublicKeyString senderPublicKeyString = getSenderPublicKeyString(transaction);
         ArrayList<TransactionInput> inputs = transaction.getInputs();
         for(TransactionInput input:inputs){
-            boolean eq = sender.getValue().equals(input.getUnspendTransactionOutput().getReciepient().getValue());
+            boolean eq = senderPublicKeyString.getValue().equals(input.getUnspendTransactionOutput().getReciepient().getValue());
             if(!eq){
                 return false;
             }
