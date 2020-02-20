@@ -7,7 +7,7 @@ import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.EqualsUtils;
 
-public class SynchronizerDefaultImpl implements Synchronizer {
+public class SynchronizerDefaultImpl extends Synchronizer {
 
     //需要同步的区块链
     private BlockChainDataBase blockChainDataBase;
@@ -38,6 +38,7 @@ public class SynchronizerDefaultImpl implements Synchronizer {
         }
     }
 
+    @Override
     public void pause(){
         synchronizeOption = false;
     }

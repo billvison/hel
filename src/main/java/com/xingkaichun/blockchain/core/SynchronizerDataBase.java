@@ -42,35 +42,35 @@ import com.xingkaichun.blockchain.core.model.Block;
  * 因为获取到了传输的数据，所以可以做自己的业务逻辑了。
  * 使用完毕后，删除节点ID传输数据，清除节点ID的数据传输完毕标识。
  */
-public interface SynchronizerDataBase {
+public abstract class  SynchronizerDataBase {
 
     /**
      * 保存节点(nodeId)传输过来的数据
      */
-    boolean addBlock(String nodeId, Block block) throws Exception ;
+    public abstract boolean addBlock(String nodeId, Block block) throws Exception ;
     /**
      * 获取节点(nodeId)传输过来的数据，返回结果不为null，代表可以继续调用此方法，继续获取数据。
      */
-    Block getNextBlock(String nodeId) throws Exception ;
+    public abstract Block getNextBlock(String nodeId) throws Exception ;
     /**
      * 获取节点(nodeId)传输过来所有区块中最大的区块高度。
      */
-    int getMaxBlockHeight(String nodeId) throws Exception ;
+    public abstract int getMaxBlockHeight(String nodeId) throws Exception ;
     /**
      * 获取一个有数据传输完成标识的节点ID
      */
-    String getDataTransferFinishFlagNodeId() throws Exception ;
+    public abstract String getDataTransferFinishFlagNodeId() throws Exception ;
     /**
      * 给节点(nodeId)添加数据传输完成的标识。
      */
-    void addDataTransferFinishFlag(String nodeId) throws Exception ;
+    public abstract void addDataTransferFinishFlag(String nodeId) throws Exception ;
     /**
      * 删除节点(nodeId)传输过来的数据。
      * 清除节点(nodeId)的数据传输完成标识
      */
-    void clear(String nodeId) throws Exception ;
+    public abstract void clear(String nodeId) throws Exception ;
     /**
      * 节点(nodeId)有数据传输完成的标识吗？
      */
-    boolean hasDataTransferFinishFlag(String nodeId) throws Exception;
+    public abstract boolean hasDataTransferFinishFlag(String nodeId) throws Exception;
 }

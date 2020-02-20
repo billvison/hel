@@ -19,7 +19,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.*;
 
-public class MinerDefaultImpl implements Miner {
+public class MinerDefaultImpl extends Miner {
 
     //region 属性与构造函数
     //矿工公钥
@@ -44,6 +44,8 @@ public class MinerDefaultImpl implements Miner {
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
 
     private static ThreadLocal<WrapperBlockForMining> wrapperBlockForMiningThreadLocal = new ThreadLocal<>();
+
+    @Override
     public void mine() throws Exception {
         WrapperBlockForMining wrapperBlockForMining = wrapperBlockForMiningThreadLocal.get();
         //是否需要重新获取WrapperBlockForMining？区块链的区块若有改变，则需要重新获取。

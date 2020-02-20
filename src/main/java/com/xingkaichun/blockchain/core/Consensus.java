@@ -12,7 +12,7 @@ import com.xingkaichun.blockchain.core.model.Block;
  * 当然，即使有了区块产生的共识，也有可能多个节点都产生了下一个区块(有了共识，产生的下一个区块少了很多很多)。
  * 这个问题，就让他们继续竞争下去，看谁能产生下下个区块。
  */
-public interface Consensus {
+public abstract class Consensus {
 
     /**
      * 这个区块写入的nonce达成共识了吗？
@@ -20,6 +20,6 @@ public interface Consensus {
      * @param blockChainDataBase 区块链
      * @param block              需要被验证nonce是否已经达成了共识的区块
      */
-    boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block);
+    public abstract boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block);
 }
 

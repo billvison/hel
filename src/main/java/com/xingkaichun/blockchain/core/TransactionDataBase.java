@@ -2,7 +2,6 @@ package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.dto.TransactionDTO;
 import com.xingkaichun.blockchain.core.model.Block;
-import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 
 /**
  * 保存一定时间内(例如一年之内)产生的[所有已知的(已经被放进区块链)或是(未来可能放进区块链)]的交易。
@@ -15,12 +14,12 @@ import com.xingkaichun.blockchain.core.model.transaction.Transaction;
  * 应当有一个策略，处理这种情形。
  * 这里处理的策略是：周期性的将这里的交易直接同步至{@link MinerTransactionDtoDataBase}
  */
-public interface TransactionDataBase {
+public abstract class  TransactionDataBase {
 
     /**
      * 新增交易
      */
-    void insertTransaction(TransactionDTO transactionDTO) throws Exception ;
+    public abstract void insertTransaction(TransactionDTO transactionDTO) throws Exception ;
 
-    void insertBlock(Block block) throws Exception ;
+    public abstract void insertBlock(Block block) throws Exception ;
 }

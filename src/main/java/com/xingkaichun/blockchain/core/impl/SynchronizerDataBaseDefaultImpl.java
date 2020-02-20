@@ -9,7 +9,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
 import java.sql.*;
 
-public class SynchronizerDataBaseDefaultImpl implements SynchronizerDataBase {
+public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
     String dbPath;
     String dbFileName;

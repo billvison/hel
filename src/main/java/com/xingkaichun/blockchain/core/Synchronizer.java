@@ -5,25 +5,25 @@ package com.xingkaichun.blockchain.core;
  * 区块链是一个分布式的数据库。
  * 本地节点的区块链高度落后于网络节点A的区块链高度，这时就需要将A的区块同步至本地区块链，这个就是该类的主要功能。
  */
-public interface Synchronizer {
+public abstract class  Synchronizer {
 
     //region 同步其它区块链节点的数据
     /**
      * 开始同步其它区块链节点的数据。
      * 若是真正确定满足同步区块的时候，应当暂停挖矿。因为这个时候应当在同步区块后在挖矿。//TODO
      */
-    void run() throws Exception ;
+    public abstract void run() throws Exception ;
     /**
      * 暂停同步其它区块链节点的数据
      */
-    void pause() throws Exception ;
+    public abstract void pause() throws Exception ;
     /**
      * 恢复同步其它区块链节点的数据
      */
-    void resume() throws Exception;
+    public abstract void resume() throws Exception;
     /**
      * 同步功能是否开启
      */
-    boolean isActive() throws Exception;
+    public abstract boolean isActive() throws Exception;
     //endregion
 }

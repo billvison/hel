@@ -6,7 +6,7 @@ import com.xingkaichun.blockchain.core.model.Block;
 
 import java.math.BigDecimal;
 
-public class IncentiveDefaultImpl implements Incentive {
+public class IncentiveDefaultImpl extends Incentive {
 
     @Override
     public BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) {

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 /**
  * 挖矿激励
  */
-public interface Incentive {
+public abstract class Incentive {
 
     /**
      * 最多奖励给矿工的激励数额。
@@ -16,5 +16,5 @@ public interface Incentive {
      * @param blockChainDataBase 区块链
      * @param block 待挖矿的区块
      */
-    BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) ;
+    public abstract BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) ;
 }

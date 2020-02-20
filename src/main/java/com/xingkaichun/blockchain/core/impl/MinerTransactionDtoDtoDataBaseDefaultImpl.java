@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MinerTransactionDtoDtoDataBaseDefaultImpl implements MinerTransactionDtoDataBase {
+public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionDtoDataBase {
 
     private DB transactionPoolDB;
     private TransactionDataBase transactionDataBase;
@@ -58,6 +58,7 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl implements MinerTransacti
         }
     }
 
+    @Override
     public List<TransactionDTO> selectTransactionDtoList(int from, int size) throws Exception {
         synchronized (BlockChainDataBase.class){
             List<TransactionDTO> transactionDtoList = new ArrayList<>();

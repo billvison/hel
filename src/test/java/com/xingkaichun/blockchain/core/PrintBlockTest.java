@@ -26,8 +26,12 @@ public class PrintBlockTest {
         BlockChainDataBase blockChainDataBaseDuplicate = new BlockChainDataBaseDefaultImpl(dbPath+"BlockChainDataBaseDuplicate",incentive,consensus);
         Synchronizer synchronizer = new SynchronizerDefaultImpl(blockChainDataBase,blockChainDataBaseDuplicate, synchronizerDataBase);
 
-        BlockChainCore blockChainCore = new BlockChainCore(miner,synchronizer);
-
+        BlockChainCore blockChainCore = new BlockChainCoreImpl();
+        blockChainCore.setMiner(miner);
+        blockChainCore.setSynchronizer(synchronizer);
+        blockChainCore.setBlockChainDataBase(blockChainDataBase);
+        blockChainCore.setConsensus(consensus);
+        blockChainCore.setIncentive(incentive);
 
         int height = blockChainDataBase.findTailBlock().getHeight();
         for(int i=1;i<=height;i++){

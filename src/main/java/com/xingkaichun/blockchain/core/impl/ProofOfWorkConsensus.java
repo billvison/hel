@@ -7,7 +7,7 @@ import com.xingkaichun.blockchain.core.model.Block;
 /**
  * 工作量证明
  */
-public class ProofOfWorkConsensus implements Consensus {
+public class ProofOfWorkConsensus extends Consensus {
 
     @Override
     public boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block) {

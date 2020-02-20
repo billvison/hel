@@ -34,7 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * 注意这是一个线程不安全的实现。在并发的情况下，不保证功能的正确性。
  */
-public class BlockChainDataBaseDefaultImpl implements BlockChainDataBase {
+public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     private Logger logger = LoggerFactory.getLogger(BlockChainDataBaseDefaultImpl.class);
 

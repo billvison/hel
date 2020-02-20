@@ -35,7 +35,13 @@ public class TranslateTest {
         BlockChainDataBase blockChainDataBaseDuplicate = new BlockChainDataBaseDefaultImpl(dbPath+"BlockChainDataBaseDuplicate",incentive,consensus);
         Synchronizer synchronizer = new SynchronizerDefaultImpl(blockChainDataBase,blockChainDataBaseDuplicate, synchronizerDataBase);
 
-        BlockChainCore blockChainCore = new BlockChainCore(miner,synchronizer);
+        BlockChainCore blockChainCore = new BlockChainCoreImpl();
+        blockChainCore.setMiner(miner);
+        blockChainCore.setSynchronizer(synchronizer);
+        blockChainCore.setBlockChainDataBase(blockChainDataBase);
+        blockChainCore.setConsensus(consensus);
+        blockChainCore.setIncentive(incentive);
+
 
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(System.currentTimeMillis());
