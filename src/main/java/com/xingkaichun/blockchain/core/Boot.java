@@ -5,8 +5,10 @@ public class Boot {
 
 
     public static void main(String[] args) throws Exception {
-        BlockChainCoreFactory blockChainCoreFactory = new BlockChainCoreFactory();
-        BlockChainCore blockChainCore = blockChainCoreFactory.createBlockChainCore();
+        String blockchainPath = "D:\\logs\\hellowordblockchain\\" ;
+        String minerPublicKeyString = "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAErwpbppp/kd7di7NXVcxyTPd4bcpm9ZQArbyMV24veV4fzDnGspPNPGh9530GnhPycGiEKGLDNchTiyQ5+zWTlA==" ;
+
+        BlockChainCore blockChainCore = new BlockChainCoreFactory().createBlockChainCore(blockchainPath,minerPublicKeyString);
         blockChainCore.run();
     }
 }
