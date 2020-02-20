@@ -7,6 +7,7 @@ import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class TransactionSdk {
@@ -18,7 +19,7 @@ public class TransactionSdk {
         return transactionDTO;
     }
 
-    public TransactionDTO createTransactionDTO(PrivateKeyString privateKeyString,ArrayList<String> inputs,ArrayList<TransactionOutputDTO> outputs) throws Exception {
+    public TransactionDTO createTransactionDTO(PrivateKeyString privateKeyString, List<String> inputs, List<TransactionOutputDTO> outputs) throws Exception {
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(System.currentTimeMillis());
         transactionDTO.setTransactionUUID(UUID.randomUUID().toString());

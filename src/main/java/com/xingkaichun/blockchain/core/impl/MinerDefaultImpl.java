@@ -144,7 +144,7 @@ public class MinerDefaultImpl extends Miner {
 
         ArrayList<TransactionInput> inputs = new ArrayList<>();
         transaction.setInputs(inputs);
-        ArrayList<String> dtoInputs = transactionDTO.getInputs();
+        List<String> dtoInputs = transactionDTO.getInputs();
         if(dtoInputs!=null || dtoInputs.size()!=0){
             for (String dtoInput:dtoInputs){
                 TransactionOutput transactionOutput = blockChainDataBase.findUtxoByUtxoUuid(dtoInput);
@@ -156,7 +156,7 @@ public class MinerDefaultImpl extends Miner {
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
         transaction.setOutputs(outputs);
-        ArrayList<TransactionOutputDTO> dtoOutputs = transactionDTO.getOutputs();
+        List<TransactionOutputDTO> dtoOutputs = transactionDTO.getOutputs();
         if(dtoOutputs!=null || dtoOutputs.size()!=0){
             for(TransactionOutputDTO transactionOutputDTO:dtoOutputs){
                 TransactionOutput transactionOutput = classCast(transactionOutputDTO);

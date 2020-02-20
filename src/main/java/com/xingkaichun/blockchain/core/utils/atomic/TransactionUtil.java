@@ -164,7 +164,7 @@ public class TransactionUtil {
 
     public static List<String> getOutpuUtxoIds(TransactionDTO transactionDTO){
         List<String> ids = new ArrayList<>();
-        ArrayList<TransactionOutputDTO> output = transactionDTO.getOutputs();
+        List<TransactionOutputDTO> output = transactionDTO.getOutputs();
         if(output==null || output.size()==0){
             return ids;
         }

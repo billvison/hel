@@ -30,6 +30,7 @@ public class BlockChainCoreFactory {
         blockChainCore.setBlockChainDataBase(blockChainDataBase);
         blockChainCore.setConsensus(consensus);
         blockChainCore.setIncentive(incentive);
+        blockChainCore.setMinerTransactionDtoDataBase(minerTransactionDtoDataBase);
         return blockChainCore;
     }
 }
