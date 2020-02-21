@@ -172,7 +172,7 @@ public class MinerDefaultImpl extends Miner {
     private TransactionOutput classCast(TransactionOutputDTO transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
         transactionOutput.setTransactionOutputUUID(transactionOutputDTO.getTransactionOutputUUID());
-        transactionOutput.setReciepient(transactionOutputDTO.getReciepient());
+        transactionOutput.setReciepient(new PublicKeyString(transactionOutputDTO.getReciepient()));
         transactionOutput.setValue(transactionOutputDTO.getValue());
         return transactionOutput;
     }
