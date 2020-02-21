@@ -1,7 +1,5 @@
 package com.xingkaichun.blockchain.core;
 
-import com.xingkaichun.blockchain.core.impl.IncentiveDefaultImpl;
-import com.xingkaichun.blockchain.core.impl.ProofOfWorkConsensus;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionData;
 import com.xingkaichun.blockchain.core.listen.BlockChainActionListener;
 import com.xingkaichun.blockchain.core.model.Block;
