@@ -35,7 +35,11 @@ public class SynchronizerDefaultImpl extends Synchronizer {
 
     @Override
     public void start() throws Exception {
-        while (synchronizeOption){
+        while (true){
+            Thread.sleep(10);
+            if(!synchronizeOption){
+                continue;
+            }
             String availableSynchronizeNodeId = synchronizerDataBase.getDataTransferFinishFlagNodeId();
             if(availableSynchronizeNodeId == null){
                 return;

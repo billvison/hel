@@ -40,32 +40,27 @@ public class MinerDefaultImpl extends Miner {
 
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
-
-    private static ThreadLocal<WrapperBlockForMining> wrapperBlockForMiningThreadLocal = new ThreadLocal<>();
-
     @Override
     public void start() throws Exception {
-        if(!mineOption){ return; }
-        WrapperBlockForMining wrapperBlockForMining = wrapperBlockForMiningThreadLocal.get();
-        //是否需要重新获取WrapperBlockForMining？区块链的区块若有改变，则需要重新获取。
-        if(wrapperBlockForMining == null || isWrapperBlockForMiningNeedObtainAgain(wrapperBlockForMining)){
-            wrapperBlockForMining = obtainWrapperBlockForMining(blockChainDataBase);
-            wrapperBlockForMiningThreadLocal.set(wrapperBlockForMining);
-        }
-        miningBlock(wrapperBlockForMining);
-        //挖矿成功
-        if(wrapperBlockForMining.getMiningSuccess()){
-            //将矿放入区块链
-            boolean isAddBlockToBlockChainSuccess = blockChainDataBase.addBlock(wrapperBlockForMining.getBlock());
-            if(!isAddBlockToBlockChainSuccess){
-                System.err.println("挖矿成功，但是放入区块链失败。");
-                wrapperBlockForMiningThreadLocal.remove();
-                return;
+        while(true){
+            Thread.sleep(10);
+            if(!mineOption){
+                break;
             }
-            //重置
-            minerTransactionDtoDataBase.deleteTransactionList(wrapperBlockForMining.getForMineBlockTransactionList());
-            minerTransactionDtoDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
-            wrapperBlockForMiningThreadLocal.remove();
+            WrapperBlockForMining wrapperBlockForMining = obtainWrapperBlockForMining(blockChainDataBase);
+            miningBlock(wrapperBlockForMining);
+            //挖矿成功
+            if(wrapperBlockForMining.getMiningSuccess()){
+                //将矿放入区块链
+                boolean isAddBlockToBlockChainSuccess = blockChainDataBase.addBlock(wrapperBlockForMining.getBlock());
+                if(!isAddBlockToBlockChainSuccess){
+                    System.err.println("挖矿成功，但是放入区块链失败。");
+                    break;
+                }
+                //重置
+                minerTransactionDtoDataBase.deleteTransactionList(wrapperBlockForMining.getForMineBlockTransactionList());
+                minerTransactionDtoDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
+            }
         }
     }
 
@@ -113,7 +108,7 @@ public class MinerDefaultImpl extends Miner {
         wrapperBlockForMining.setBlockChainDataBase(blockChainDataBase);
         wrapperBlockForMining.setBlock(nextMineBlock);
         wrapperBlockForMining.setNextNonce(0L);
-        wrapperBlockForMining.setMaxTryEveryTime(10000L);
+        wrapperBlockForMining.setMaxTryEveryTime(Long.MAX_VALUE);
         wrapperBlockForMining.setMiningSuccess(false);
         return wrapperBlockForMining;
     }

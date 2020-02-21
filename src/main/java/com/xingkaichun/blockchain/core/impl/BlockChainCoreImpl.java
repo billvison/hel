@@ -26,11 +26,24 @@ public class BlockChainCoreImpl extends BlockChainCore {
      */
     @Override
     public void start() throws Exception {
-        while (true){
-            synchronizer.start();
-            miner.start();
-            Thread.sleep(10);
-        }
+        new Thread(
+                ()->{
+                    try {
+                        synchronizer.start();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        ).start();
+        new Thread(
+                ()->{
+                    try {
+                        miner.start();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        ).start();
     }
 
     //region 监听器
