@@ -1,6 +1,7 @@
 package com.xingkaichun.blockchain.core;
 
 import com.google.gson.Gson;
+import com.xingkaichun.blockchain.core.dto.DtoUtils;
 import com.xingkaichun.blockchain.core.dto.TransactionDTO;
 import com.xingkaichun.blockchain.core.dto.TransactionOutputDTO;
 import com.xingkaichun.blockchain.core.impl.*;
@@ -37,7 +38,7 @@ public class TranslateTest {
         transactionOutputDTO.setReciepient("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         transactionOutputDTO.setValue(new BigDecimal("20"));
         transactionDTO.setOutputs(outputs);
-        transactionDTO.setSignature(TransactionUtil.signature(transactionDTO,new PrivateKeyString("MIGNAgEAMBAGByqGSM49AgEGBSuBBAAKBHYwdAIBAQQgilXZ39cKVHuzFNjUaZSIPfBh8qWxgHLjKupFPuAezymgBwYFK4EEAAqhRANCAASvClummn+R3t2Ls1dVzHJM93htymb1lACtvIxXbi95Xh/MOcayk808aH3nfQaeE/JwaIQoYsM1yFOLJDn7NZOU")));
+        DtoUtils.signature(transactionDTO,new PrivateKeyString("zzzzzzzzzzzzzzzzzzzz"));
 
         BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
         int height = blockChainDataBase.findTailBlock().getHeight();

@@ -3,8 +3,6 @@ package com.xingkaichun.blockchain.core.impl;
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.Miner;
 import com.xingkaichun.blockchain.core.MinerTransactionDtoDataBase;
-import com.xingkaichun.blockchain.core.dto.TransactionDTO;
-import com.xingkaichun.blockchain.core.dto.TransactionOutputDTO;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
@@ -64,7 +62,8 @@ public class MinerDefaultImpl extends Miner {
                 return;
             }
             //重置
-            minerTransactionDtoDataBase.deleteTransactionDtoList(wrapperBlockForMining.getForMineBlockTransactionDtoList());
+            minerTransactionDtoDataBase.deleteTransactionList(wrapperBlockForMining.getForMineBlockTransactionList());
+            minerTransactionDtoDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
             wrapperBlockForMiningThreadLocal.remove();
         }
     }
@@ -103,13 +102,11 @@ public class MinerDefaultImpl extends Miner {
 
     private WrapperBlockForMining obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
         WrapperBlockForMining wrapperBlockForMining = new WrapperBlockForMining();
-        List<TransactionDTO> forMineBlockTransactionDtoList = minerTransactionDtoDataBase.selectTransactionDtoList(0,10000);
-        wrapperBlockForMining.setForMineBlockTransactionDtoList(forMineBlockTransactionDtoList);
-        List<Transaction> forMineBlockTransactionList = classCast(forMineBlockTransactionDtoList);
-                //TODO 错误类别处理
+        List<Transaction> forMineBlockTransactionList = minerTransactionDtoDataBase.selectTransactionList(blockChainDataBase,0,10000);
+        //TODO 错误类别处理
         List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(blockChainDataBase,forMineBlockTransactionList);
-        wrapperBlockForMining.setForMineBlockTransactionList(forMineBlockTransactionList);
         wrapperBlockForMining.setExceptionTransactionList(exceptionTransactionList);
+        wrapperBlockForMining.setForMineBlockTransactionList(forMineBlockTransactionList);
         Block nextMineBlock = buildNextMineBlock(blockChainDataBase,forMineBlockTransactionList);
 
         wrapperBlockForMining.setBlockChainDataBase(blockChainDataBase);
@@ -118,63 +115,6 @@ public class MinerDefaultImpl extends Miner {
         wrapperBlockForMining.setMaxTryEveryTime(10000L);
         wrapperBlockForMining.setMiningSuccess(false);
         return wrapperBlockForMining;
-    }
-
-    private List<Transaction> classCast(List<TransactionDTO> transactionDtoList) {
-        List<Transaction> transactionList = new ArrayList<>();
-        if(transactionDtoList != null && transactionDtoList.size()!=0){
-            for(TransactionDTO transactionDTO:transactionDtoList){
-                try {
-                    Transaction transaction = classCast(transactionDTO);
-                    transactionList.add(transaction);
-                } catch (Exception e){
-
-                }
-            }
-        }
-        return transactionList;
-    }
-
-    private Transaction classCast(TransactionDTO transactionDTO) throws Exception {
-        Transaction transaction = new Transaction();
-        transaction.setTimestamp(transaction.getTimestamp());
-        transaction.setTransactionUUID(transactionDTO.getTransactionUUID());
-        transaction.setTransactionType(transactionDTO.getTransactionType());
-        transaction.setSignature(transactionDTO.getSignature());
-
-        ArrayList<TransactionInput> inputs = new ArrayList<>();
-        transaction.setInputs(inputs);
-        List<String> dtoInputs = transactionDTO.getInputs();
-        if(dtoInputs!=null || dtoInputs.size()!=0){
-            for (String dtoInput:dtoInputs){
-                TransactionOutput transactionOutput = blockChainDataBase.findUtxoByUtxoUuid(dtoInput);
-                TransactionInput transactionInput = new TransactionInput();
-                transactionInput.setUnspendTransactionOutput(transactionOutput);
-                inputs.add(transactionInput);
-            }
-        }
-
-        ArrayList<TransactionOutput> outputs = new ArrayList<>();
-        transaction.setOutputs(outputs);
-        List<TransactionOutputDTO> dtoOutputs = transactionDTO.getOutputs();
-        if(dtoOutputs!=null || dtoOutputs.size()!=0){
-            for(TransactionOutputDTO transactionOutputDTO:dtoOutputs){
-                TransactionOutput transactionOutput = classCast(transactionOutputDTO);
-                outputs.add(transactionOutput);
-            }
-        }
-
-        PublicKeyString sender;
-        //TODO
-        return null;
-    }
-
-    private TransactionOutput classCast(TransactionOutputDTO transactionOutputDTO) {
-        TransactionOutput transactionOutput = new TransactionOutput();
-        transactionOutput.setTransactionOutputUUID(transactionOutputDTO.getTransactionOutputUUID());
-        transactionOutput.setReciepient(new PublicKeyString(transactionOutputDTO.getReciepient()));
-        transactionOutput.setValue(transactionOutputDTO.getValue());
-        return transactionOutput;
     }
 
     public void miningBlock(WrapperBlockForMining wrapperBlockForMining) throws Exception {
@@ -215,7 +155,6 @@ public class MinerDefaultImpl extends Miner {
 
         private List<Transaction> forMineBlockTransactionList;
         private List<Transaction> exceptionTransactionList;
-        private List<TransactionDTO> forMineBlockTransactionDtoList;
     }
     //endregion
 

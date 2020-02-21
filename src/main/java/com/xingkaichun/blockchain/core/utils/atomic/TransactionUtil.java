@@ -1,7 +1,5 @@
 package com.xingkaichun.blockchain.core.utils.atomic;
 
-import com.xingkaichun.blockchain.core.dto.TransactionDTO;
-import com.xingkaichun.blockchain.core.dto.TransactionOutputDTO;
 import com.xingkaichun.blockchain.core.model.key.PrivateKeyString;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
@@ -70,16 +68,6 @@ public class TransactionUtil {
      * 用于签名的数据数据
      * @return
      */
-    public static String signatureData(TransactionDTO transactionDTO) throws Exception {
-        String data = signatureData(transactionDTO.getTimestamp(),transactionDTO.getTransactionUUID(),getInputUtxoIds(transactionDTO),getOutpuUtxoIds(transactionDTO));
-        String sha256Data = CipherUtil.applySha256(data);
-        return sha256Data;
-    }
-
-    /**
-     * 用于签名的数据数据
-     * @return
-     */
     public static String signatureData(long timestamp,String transactionUUID,List<String> inputUtxoUuidList,List<String> outputUtxoUuidList) throws Exception {
         String inputs = "";
         if(inputUtxoUuidList != null){
@@ -116,15 +104,6 @@ public class TransactionUtil {
         String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
         return strSignature;
     }
-    /**
-     * 交易签名
-     */
-    public static String signature(TransactionDTO transactionDTO, PrivateKeyString privateKeyString) throws Exception {
-        PrivateKey privateKey = KeyUtil.convertPrivateKeyStringToPrivateKey(privateKeyString);
-        byte[] bytesSignature = CipherUtil.applyECDSASig(privateKey,signatureData(transactionDTO));
-        String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
-        return strSignature;
-    }
 
     /**
      * 签名验证
@@ -154,22 +133,6 @@ public class TransactionUtil {
         }
         for(TransactionOutput transactionOutput:outputs){
             ids.add(transactionOutput.getTransactionOutputUUID());
-        }
-        return ids;
-    }
-
-    public static List<String> getInputUtxoIds(TransactionDTO transactionDTO){
-        return transactionDTO.getInputs();
-    }
-
-    public static List<String> getOutpuUtxoIds(TransactionDTO transactionDTO){
-        List<String> ids = new ArrayList<>();
-        List<TransactionOutputDTO> output = transactionDTO.getOutputs();
-        if(output==null || output.size()==0){
-            return ids;
-        }
-        for(TransactionOutputDTO transactionOutputDTO:output){
-            ids.add(transactionOutputDTO.getTransactionOutputUUID());
         }
         return ids;
     }

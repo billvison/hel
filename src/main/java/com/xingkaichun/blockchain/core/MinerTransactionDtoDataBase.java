@@ -1,6 +1,7 @@
 package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.dto.TransactionDTO;
+import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public abstract class  MinerTransactionDtoDataBase {
     /**
      * 获取交易
      */
-    public abstract List<TransactionDTO> selectTransactionDtoList(int from, int size) throws Exception ;
+    public abstract List<Transaction> selectTransactionList(BlockChainDataBase blockChainDataBase,int from, int size) throws Exception ;
 
     /**
      * 删除交易
@@ -34,5 +35,5 @@ public abstract class  MinerTransactionDtoDataBase {
     /**
      * 删除交易
      */
-    public abstract void deleteTransactionDtoList(List<TransactionDTO> transactionDtoList) throws Exception ;
+    public abstract void deleteTransactionList(List<Transaction> transactionList) throws Exception ;
 }
