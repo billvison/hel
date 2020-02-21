@@ -22,39 +22,13 @@ public class BlockChainCoreImpl extends BlockChainCore {
      * 然后退出挖矿，进行区块同步......
      */
     @Override
-    public void run() throws Exception {
+    public void start() throws Exception {
         while (true){
-            while(isActive()){
-                synchronizer.run();
-                miner.mine();
-            }
+            synchronizer.start();
+            miner.start();
             Thread.sleep(10);
         }
     }
-
-    /**
-     * 暂停所有
-     */
-    @Override
-    public void pause() throws Exception {
-        synchronizer.pause();
-        miner.pauseMine();
-    }
-
-    /**
-     * 恢复所有
-     */
-    @Override
-    public void resume() throws Exception {
-        synchronizer.resume();
-        miner.resumeMine();
-    }
-
-    @Override
-    public boolean isActive() throws Exception {
-        return synchronizer.isActive() || miner.isActive();
-    }
-
 
     //region 监听器
     @Override

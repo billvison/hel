@@ -28,7 +28,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
     }
 
     @Override
-    public void run() throws Exception {
+    public void start() throws Exception {
         while (synchronizeOption){
             String availableSynchronizeNodeId = synchronizerDataBase.getDataTransferFinishFlagNodeId();
             if(availableSynchronizeNodeId == null){
@@ -39,7 +39,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
     }
 
     @Override
-    public void pause(){
+    public void stop(){
         synchronizeOption = false;
     }
 
@@ -54,6 +54,9 @@ public class SynchronizerDefaultImpl extends Synchronizer {
     }
 
     private void synchronizeBlockChainNode(String availableSynchronizeNodeId) throws Exception {
+        if(!synchronizeOption){
+            return;
+        }
         adjustMasterSlave(blockChainDataBase,blockChainDataBaseDuplicate);
         boolean hasDataTransferFinishFlag = synchronizerDataBase.hasDataTransferFinishFlag(availableSynchronizeNodeId);
         if(!hasDataTransferFinishFlag){

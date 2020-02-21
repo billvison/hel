@@ -44,7 +44,8 @@ public class MinerDefaultImpl extends Miner {
     private static ThreadLocal<WrapperBlockForMining> wrapperBlockForMiningThreadLocal = new ThreadLocal<>();
 
     @Override
-    public void mine() throws Exception {
+    public void start() throws Exception {
+        if(!mineOption){ return; }
         WrapperBlockForMining wrapperBlockForMining = wrapperBlockForMiningThreadLocal.get();
         //是否需要重新获取WrapperBlockForMining？区块链的区块若有改变，则需要重新获取。
         if(wrapperBlockForMining == null || isWrapperBlockForMiningNeedObtainAgain(wrapperBlockForMining)){
@@ -86,12 +87,12 @@ public class MinerDefaultImpl extends Miner {
     }
 
     @Override
-    public void pauseMine() throws Exception {
+    public void stop() throws Exception {
         mineOption = false;
     }
 
     @Override
-    public void resumeMine() throws Exception {
+    public void resume() throws Exception {
         mineOption = true;
     }
 

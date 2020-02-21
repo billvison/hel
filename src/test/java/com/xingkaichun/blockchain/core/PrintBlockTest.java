@@ -1,9 +1,7 @@
 package com.xingkaichun.blockchain.core;
 
 import com.google.gson.Gson;
-import com.xingkaichun.blockchain.core.impl.*;
 import com.xingkaichun.blockchain.core.model.Block;
-import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 
 public class PrintBlockTest {
 
@@ -13,7 +11,7 @@ public class PrintBlockTest {
         String minerPublicKeyString = "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAErwpbppp/kd7di7NXVcxyTPd4bcpm9ZQArbyMV24veV4fzDnGspPNPGh9530GnhPycGiEKGLDNchTiyQ5+zWTlA==" ;
 
         BlockChainCore blockChainCore = new BlockChainCoreFactory().createBlockChainCore(blockchainPath,minerPublicKeyString);
-        blockChainCore.run();
+        blockChainCore.start();
 
         BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
         int height = blockChainDataBase.findTailBlock().getHeight();

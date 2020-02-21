@@ -23,24 +23,8 @@ public abstract class BlockChainCore {
 
     /**
      * 启动
-     * 这里是一个单线程实现。为了协调节点间的区块同步、矿工的挖矿，先进行节点间区块数据的同步，
-     * 同步结束后，矿工进行一段时间的挖矿，然后退出挖矿，进行区块同步，矿工进行一段时间的挖矿，
-     * 然后退出挖矿，进行区块同步......
      */
-    public abstract void run() throws Exception ;
-
-    /**
-     * 暂停所有
-     */
-    public abstract void pause() throws Exception ;
-
-    /**
-     * 恢复所有
-     */
-    public abstract void resume() throws Exception ;
-
-    public abstract boolean isActive() throws Exception ;
-
+    public abstract void start() throws Exception ;
 
     //region 监听器
     public abstract void registerBlockChainActionListener(BlockChainActionListener blockChainActionListener) ;
