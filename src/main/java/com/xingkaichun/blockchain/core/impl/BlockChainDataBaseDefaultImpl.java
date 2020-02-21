@@ -89,6 +89,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     public boolean addBlock(Block block) throws Exception {
         lock.lock();
         try{
+            boolean isBlockCanApplyToBlockChain = isBlockCanApplyToBlockChain(block);
+            if(!isBlockCanApplyToBlockChain){
+                return false;
+            }
             WriteBatch writeBatch = createWriteBatch(block,BlockChainActionEnum.ADD_BLOCK);
             LevelDBUtil.write(blockChainDB,writeBatch);
             return true;
@@ -231,10 +235,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public Integer obtainBlockChainLength() throws Exception {
+    public int obtainBlockChainLength() throws Exception {
         byte[] bytesBlockChainHeight = LevelDBUtil.get(blockChainDB,BLOCK_CHAIN_HEIGHT_FLAG);
         if(bytesBlockChainHeight == null){
-            return null;
+            return 0;
         }
         String strBlockChainHeight = LevelDBUtil.bytesToString(bytesBlockChainHeight);
         Integer intBlockChainHeight = Integer.valueOf(strBlockChainHeight);
@@ -326,7 +330,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //校验区块的连贯性
         Block tailBlock = findTailBlock();
         if(tailBlock == null){
-            //TODO 初始区块
             //校验区块Previous Hash
             if(!BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousHash())){
                 return false;

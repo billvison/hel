@@ -19,16 +19,16 @@ public abstract class Synchronizer {
     /**
      * 设置同步器为非活动状态。
      */
-    public abstract void stop() throws Exception;
+    public abstract void stop();
 
     /**
      * 设置同步器为活动状态。
      */
-    public abstract void resume() throws Exception;
+    public abstract void resume();
 
     /**
      * 同步器是否处于活动状态。
      */
-    public abstract boolean isActive() throws Exception;
+    public abstract boolean isActive();
     //endregion
 }
