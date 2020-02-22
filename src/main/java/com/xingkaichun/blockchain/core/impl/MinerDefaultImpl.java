@@ -12,11 +12,15 @@ import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.blockchain.core.utils.BlockUtils;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.*;
 
 public class MinerDefaultImpl extends Miner {
+
+    private Logger logger = LoggerFactory.getLogger(MinerDefaultImpl.class);
 
     //region 属性与构造函数
     //矿工公钥

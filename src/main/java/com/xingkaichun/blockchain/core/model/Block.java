@@ -29,15 +29,17 @@ public class Block implements Serializable {
     private String previousHash;
     //区块高度
     private Integer height;
-    //区块随机数
-    //这个随机数用于共识。
-    private Long nonce;
+    //区块里的交易
+    private List<Transaction> transactions;
     /**
      * 默克尔树根
      * 由transactions生成。
      * 既然这个字段是有由交易列表生成的，这个字段每次需要时完全可以自己生成？为什么需要这个字段？请参考SPV。
      */
     private String merkleRoot;
+    //区块随机数
+    //这个随机数用于共识。
+    private Long nonce;
     /**
      * 区块哈希：由timestamp、previousHash、height、nonce、merkleRoot共同作用使用Hash算法生成。
      * 为什么需要哈希这个字段？
@@ -51,6 +53,4 @@ public class Block implements Serializable {
      * 为了简单，请保证同一区块链上不出现区块hash相同的两个区块。TODO
      */
     private String hash;
-    //区块里的交易
-    private List<Transaction> transactions;
 }

@@ -3,7 +3,7 @@ package com.xingkaichun.blockchain.core;
 import com.xingkaichun.blockchain.core.model.Block;
 
 /**
- * 共识
+ * 挖矿共识
  * 区块链是一个分布式的数据库。任何节点都可以产生下一个区块，如果同时有多个节点都产生了下一个区块，
  * 以哪个节点产生的区块为准？
  * 理想状态下，我们希望整个区块链网络下一个区块只产生一个，这样就不存在以哪个为准的问题了。

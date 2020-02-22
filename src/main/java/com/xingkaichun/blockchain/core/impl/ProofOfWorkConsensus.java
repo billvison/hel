@@ -3,11 +3,15 @@ package com.xingkaichun.blockchain.core.impl;
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.Consensus;
 import com.xingkaichun.blockchain.core.model.Block;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 工作量证明
  */
 public class ProofOfWorkConsensus extends Consensus {
+
+    private Logger logger = LoggerFactory.getLogger(ProofOfWorkConsensus.class);
 
     @Override
     public boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block) {

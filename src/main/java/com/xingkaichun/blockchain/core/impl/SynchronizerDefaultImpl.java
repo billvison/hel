@@ -6,8 +6,12 @@ import com.xingkaichun.blockchain.core.SynchronizerDataBase;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.EqualsUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SynchronizerDefaultImpl extends Synchronizer {
+
+    private Logger logger = LoggerFactory.getLogger(SynchronizerDefaultImpl.class);
 
     //本节点的区块链，同步器的目标就是让本节点区块链增长长度。
     private BlockChainDataBase targetBlockChainDataBase;

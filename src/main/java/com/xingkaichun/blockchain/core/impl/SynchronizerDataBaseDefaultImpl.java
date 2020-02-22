@@ -4,12 +4,16 @@ import com.xingkaichun.blockchain.core.SynchronizerDataBase;
 import com.xingkaichun.blockchain.core.TransactionDataBase;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.utils.atomic.EncodeDecode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
 import java.sql.*;
 
 public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
+
+    private Logger logger = LoggerFactory.getLogger(SynchronizerDataBaseDefaultImpl.class);
 
     String dbPath;
     String dbFileName;

@@ -3,12 +3,17 @@ package com.xingkaichun.blockchain.core;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
+import lombok.Data;
 
 
 /**
- * 该类用于组织区块链数据的存储，并不会对数据进行校验。
+ * 区块链数据库：该类用于区块链数据的持久化。
  */
+@Data
 public abstract class BlockChainDataBase {
+
+    protected Incentive incentive ;
+    protected Consensus consensus ;
 
     //region 区块增加与删除
     /**
@@ -68,13 +73,4 @@ public abstract class BlockChainDataBase {
      * 如果校验的是奖励交易，则需要整个区块的信息，因此这个函数包含了两个参数：交易所在的区块、交易
      */
     public abstract boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception ;
-
-
-    public abstract Incentive getIncentive() ;
-
-    public abstract void setIncentive(Incentive incentive) ;
-
-    public abstract Consensus getConsensus() ;
-
-    public abstract void setConsensus(Consensus consensus) ;
 }

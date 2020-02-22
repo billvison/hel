@@ -33,6 +33,10 @@ public class LevelDBUtil {
         return db.get(stringToBytes(key));
     }
 
+    public static byte[] get(DB db, byte[] byteskey) throws DBException{
+        return db.get(byteskey);
+    }
+
     public static void delete(DB db,String key) throws DBException{
         db.delete(stringToBytes(key));
     }

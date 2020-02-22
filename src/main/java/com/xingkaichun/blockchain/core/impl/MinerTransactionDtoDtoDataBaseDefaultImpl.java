@@ -11,6 +11,8 @@ import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.WriteBatch;
 import org.iq80.leveldb.impl.WriteBatchImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionDtoDataBase {
+
+    private Logger logger = LoggerFactory.getLogger(MinerTransactionDtoDtoDataBaseDefaultImpl.class);
 
     private DB transactionPoolDB;
     private TransactionDataBase transactionDataBase;

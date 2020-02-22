@@ -4,6 +4,7 @@ import com.xingkaichun.blockchain.core.impl.*;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class BlockChainCoreFactory {
 
@@ -24,7 +25,7 @@ public class BlockChainCoreFactory {
         BlockChainDataBase temporaryBlockChainDataBase = new BlockChainDataBaseDefaultImpl(new File(blockchainPath,"BlockChainDataBaseDuplicate").getAbsolutePath(),incentive,consensus);
         Synchronizer synchronizer = new SynchronizerDefaultImpl(blockChainDataBase,temporaryBlockChainDataBase, synchronizerDataBase);
 
-        BlockChainCore blockChainCore = new BlockChainCoreImpl();
+        BlockChainCore blockChainCore = new BlockChainCoreImpl(new ArrayList<>());
         blockChainCore.setMiner(miner);
         blockChainCore.setSynchronizer(synchronizer);
         blockChainCore.setBlockChainDataBase(blockChainDataBase);
