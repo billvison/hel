@@ -195,7 +195,7 @@ public class MinerDefaultImpl extends Miner {
     /**
      * 打包处理过程: 将异常的交易丢弃掉【站在单笔交易的角度校验交易】
      */
-    private List<Transaction>  removeExceptionTransaction_PointOfTransactionView(BlockChainDataBase blockChainDataBase,List<Transaction> transactionList) throws Exception{
+    private List<Transaction> removeExceptionTransaction_PointOfTransactionView(BlockChainDataBase blockChainDataBase,List<Transaction> transactionList) throws Exception{
         List<Transaction> exceptionTransactionList = new ArrayList<>();
         if(transactionList==null || transactionList.size()==0){
             return exceptionTransactionList;
