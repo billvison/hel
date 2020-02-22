@@ -53,7 +53,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private final static String TRANSACTION_OUTPUT_UUID_PREFIX_FLAG = "T_O_U_P_F_";
     //未花费的交易输出标识
     private final static String UNSPEND_TRANSACTION_OUPUT_UUID_PREFIX_FLAG = "U_T_O_U_P_F_";
-    //UUID标识
+    //UUID标识：UUID(交易UUID、交易输出UUID)的前缀
     private final static String UUID_PREFIX_FLAG = "U_F_";
     /**
      * 锁:保证对区块链增区块、删区块的操作是同步的。
@@ -122,27 +122,25 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //region 区块链提供的通用方法
     @Override
     public Block findTailBlock() throws Exception {
-        Integer intBlockChainHeight = obtainBlockChainLength();
-        if(intBlockChainHeight == null){
+        int blockChainHeight = obtainBlockChainHeight();
+        if(blockChainHeight <= 0){
             return null;
         }
-        return findBlockByBlockHeight(intBlockChainHeight);
+        return findBlockByBlockHeight(blockChainHeight);
     }
 
     @Override
-    public int obtainBlockChainLength() throws Exception {
-        byte[] bytesBlockChainHeight = buildBlockChainHeightKey();
+    public int obtainBlockChainHeight() throws Exception {
+        byte[] bytesBlockChainHeight = LevelDBUtil.get(blockChainDB, buildBlockChainHeightKey());
         if(bytesBlockChainHeight == null){
             return 0;
         }
-        String strBlockChainHeight = LevelDBUtil.bytesToString(bytesBlockChainHeight);
-        Integer intBlockChainHeight = Integer.valueOf(strBlockChainHeight);
-        return intBlockChainHeight;
+        return decodeBlockChainHeight(bytesBlockChainHeight);
     }
 
     @Override
     public TransactionOutput findUtxoByUtxoUuid(String transactionOutputUUID) throws Exception {
-        if(transactionOutputUUID==null||"".equals(transactionOutputUUID)){
+        if(transactionOutputUUID==null || "".equals(transactionOutputUUID)){
             return null;
         }
         byte[] bytesUtxo = LevelDBUtil.get(blockChainDB, buildUnspendTransactionOutputUuidKey(transactionOutputUUID));
@@ -169,15 +167,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         return EncodeDecode.decodeToTransaction(bytesTransaction);
     }
-
-    /**
-     * UUID是否已经存在于区块链之中？
-     * @param uuid uuid
-     */
-    public boolean isUuidExist(String uuid){
-        byte[] bytesUuid = LevelDBUtil.get(blockChainDB, buildUuidKey(uuid));
-        return bytesUuid != null;
-    }
     //endregion
 
     /**
@@ -192,7 +181,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         Block tailBlock = findTailBlock();
         if(tailBlock == null){
             //校验时间
-            if(block.getTimestamp() <= System.currentTimeMillis()){
+            if(block.getTimestamp() >= System.currentTimeMillis()){
                 return false;
             }
             //校验区块Previous Hash
@@ -205,7 +194,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             }
         } else {
             //校验时间
-            if(block.getTimestamp() <= tailBlock.getTimestamp() || block.getTimestamp() > System.currentTimeMillis()){
+            if(block.getTimestamp() <= tailBlock.getTimestamp() || block.getTimestamp() >= System.currentTimeMillis()){
                 return false;
             }
             //校验区块Hash是否连贯
@@ -245,7 +234,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             logger.error("区块数据异常，没有检测到挖矿奖励交易。");
             return false;
         }
-        if(minerTransactionNumber>1){
+        if(minerTransactionNumber > 1){
             logger.error("区块数据异常，一个区块只能有一笔挖矿奖励。");
             return false;
         }
@@ -258,18 +247,22 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 return false;
             }
             ArrayList<TransactionInput> inputs = transaction.getInputs();
-            for(TransactionInput transactionInput : inputs) {
-                TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
-                String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
-                if(!saveUuid(uuidSet,unspendTransactionOutputUUID)){
-                    return false;
+            if(inputs != null){
+                for(TransactionInput transactionInput : inputs) {
+                    TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
+                    String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
+                    if(!saveUuid(uuidSet,unspendTransactionOutputUUID)){
+                        return false;
+                    }
                 }
             }
             ArrayList<TransactionOutput> outputs = transaction.getOutputs();
-            for(TransactionOutput transactionOutput : outputs) {
-                String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                if(!saveUuid(uuidSet,transactionOutputUUID)){
-                    return false;
+            if(outputs != null){
+                for(TransactionOutput transactionOutput : outputs) {
+                    String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
+                    if(!saveUuid(uuidSet,transactionOutputUUID)){
+                        return false;
+                    }
                 }
             }
         }
@@ -281,18 +274,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 logger.error("区块数据异常，交易异常。");
                 return false;
             }
-        }
-        return true;
-    }
-
-    private boolean saveUuid(Set<String> uuidSet, String uuid) {
-        if(!UuidUtil.isUuidFormatRight(uuid)){
-            return false;
-        }
-        if(uuidSet.contains(uuid)){
-            return false;
-        } else {
-            uuidSet.add(uuid);
         }
         return true;
     }
@@ -310,55 +291,61 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
         ArrayList<TransactionInput> inputs = transaction.getInputs();
-        for(TransactionInput transactionInput : inputs) {
-            TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
-            String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
-            if(!saveUuid(uuidSet,unspendTransactionOutputUUID)){
-                return false;
+        if(inputs != null){
+            for(TransactionInput transactionInput : inputs) {
+                TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
+                String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
+                if(!saveUuid(uuidSet,unspendTransactionOutputUUID)){
+                    return false;
+                }
             }
         }
         ArrayList<TransactionOutput> outputs = transaction.getOutputs();
-        for(TransactionOutput transactionOutput : outputs) {
-            String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-            if(!saveUuid(uuidSet,transactionOutputUUID)){
-                return false;
+        if(outputs != null){
+            for(TransactionOutput transactionOutput : outputs) {
+                String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
+                if(!saveUuid(uuidSet,transactionOutputUUID)){
+                    return false;
+                }
             }
         }
         //校验：交易输入UTXO的UUID存在于区块链
-        for(TransactionInput transactionInput : inputs) {
-            TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
-            String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
-            TransactionOutput tx = findUtxoByUtxoUuid(unspendTransactionOutputUUID);
-            if(tx == null){
-                return false;
+        if(inputs != null){
+            for(TransactionInput transactionInput : inputs) {
+                TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
+                String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
+                TransactionOutput tx = findUtxoByUtxoUuid(unspendTransactionOutputUUID);
+                if(tx == null){
+                    return false;
+                }
             }
         }
         //校验：交易UUID和交易输出的UUID不能已经被区块链占用
         if(isUuidExist(transactionUUID)){
             return false;
         }
-        for(TransactionOutput transactionOutput : outputs) {
-            String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-            if(isUuidExist(transactionOutputUUID)){
-                return false;
+        if(outputs != null){
+            for(TransactionOutput transactionOutput : outputs) {
+                String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
+                if(isUuidExist(transactionOutputUUID)){
+                    return false;
+                }
+            }
+        }
+
+        //交易输出不能小于等于0
+        if(outputs != null){
+            for(TransactionOutput o : outputs) {
+                if(o.getValue().compareTo(new BigDecimal("0"))<=0){
+                    logger.error("交易校验失败：交易的输出<=0。");
+                    return false;
+                }
             }
         }
 
         if(transaction.getTransactionType() == TransactionType.MINER){
-            if(inputs!=null && inputs.size()!=0){
-                logger.error("区块数据异常：挖矿交易的输入只能为空。");
-                return false;
-            }
-            if(outputs == null){
-                logger.error("区块数据异常：挖矿交易的输出不能为空。");
-                return false;
-            }
-            if(outputs.size() != 1){
-                logger.error("区块数据异常：挖矿交易的输出有且只能有一笔。");
-                return false;
-            }
             if(!isBlockWriteMineAwardRight(block)){
-                logger.error("交易校验失败：挖矿交易的输出金额不正确。不合法的交易。");
+                logger.error("交易校验失败：挖矿交易的输出金额不正确。");
                 return false;
             }
             return true;
@@ -366,12 +353,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             if(inputs==null || inputs.size()==0){
                 logger.error("交易校验失败：交易的输入不能为空。不合法的交易。");
                 return false;
-            }
-            for(TransactionOutput o : outputs) {
-                if(o.getValue().compareTo(new BigDecimal("0"))<=0){
-                    logger.error("交易校验失败：交易的输出<=0。不合法的交易。");
-                    return false;
-                }
             }
             BigDecimal inputsValue = TransactionUtil.getInputsValue(transaction);
             BigDecimal outputsValue = TransactionUtil.getOutputsValue(transaction);
@@ -409,41 +390,67 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * @param block 被校验挖矿奖励是否正确的区块
      * @return
      */
-    public boolean isBlockWriteMineAwardRight(Block block){
-        //区块中写入的挖矿奖励
-        BigDecimal blockWritedMineAward = obtainBlockWriteMineAward(block);
-        //目标挖矿奖励
-        BigDecimal targetMineAward = incentive.mineAward(this, block);
-        return targetMineAward.compareTo(blockWritedMineAward) >= 0 ;
-    }
-
-    /**
-     * 获取区块中写入的挖矿奖励金额
-     */
-    public BigDecimal obtainBlockWriteMineAward(Block block) {
-        Transaction tx = obtainBlockWriteMineAwardTransaction(block);
-        ArrayList<TransactionOutput> outputs = tx.getOutputs();
-        BigDecimal value = new BigDecimal("0");
-        for(TransactionOutput output:outputs){
-            value.add(output.getValue());
-        }
-        return value;
-    }
-
-    /**
-     * 获取区块中写入的挖矿奖励交易
-     * @param block 区块
-     * @return
-     */
-    public Transaction obtainBlockWriteMineAwardTransaction(Block block) {
-        for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() == TransactionType.MINER){
-                return tx;
+    private boolean isBlockWriteMineAwardRight(Block block){
+        try {
+            //校验奖励交易笔数
+            int mineAwardTransactionCount = 0;
+            for(Transaction tx : block.getTransactions()){
+                if(tx.getTransactionType() == TransactionType.MINER){
+                    mineAwardTransactionCount++;
+                }
             }
-        }
-        throw new BlockChainCoreException("区块中没有奖励交易。");
-    }
+            if(mineAwardTransactionCount == 0){
+                throw new BlockChainCoreException("区块中没有奖励交易。");
+            }
+            if(mineAwardTransactionCount > 1){
+                throw new BlockChainCoreException("区块中不能有两笔奖励交易。");
+            }
 
+            //获取区块中写入的挖矿奖励交易
+            Transaction mineAwardTransaction = null;
+            for(Transaction tx : block.getTransactions()){
+                if(tx.getTransactionType() == TransactionType.MINER){
+                    mineAwardTransaction = tx;
+                    break;
+                }
+            }
+
+            ArrayList<TransactionInput> inputs = mineAwardTransaction.getInputs();
+            if(inputs!=null && inputs.size()!=0){
+                logger.error("区块数据异常：挖矿交易的输入只能为空。");
+                return false;
+            }
+            ArrayList<TransactionOutput> outputs = mineAwardTransaction.getOutputs();
+            if(outputs == null){
+                logger.error("区块数据异常：挖矿交易的输出不能为空。");
+                return false;
+            }
+            if(outputs.size() != 1){
+                logger.error("区块数据异常：挖矿交易的输出有且只能有一笔。");
+                return false;
+            }
+            //校验正反
+            for(TransactionOutput output:outputs){
+                if(output.getValue().compareTo(new BigDecimal("0"))<0){
+                    logger.error("区块数据异常：挖矿交易的输出不能小于0。");
+                    return false;
+                }
+            }
+
+            //获取区块中写入的挖矿奖励金额
+            BigDecimal blockWritedMineAward = new BigDecimal("0");
+            for(TransactionOutput output:outputs){
+                blockWritedMineAward.add(output.getValue());
+            }
+
+            //目标挖矿奖励
+            BigDecimal targetMineAward = incentive.mineAward(this, block);
+            return targetMineAward.compareTo(blockWritedMineAward) >= 0 ;
+        } catch (Exception e){
+            logger.error("区块数据异常，挖矿奖励交易不正确。");
+            return false;
+        }
+    }
 
     //region 数据库相关
     //region 拼装数据库Key的值
@@ -477,7 +484,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * 将区块信息组装成WriteBatch对象
      */
-    public WriteBatch createWriteBatch(Block block, BlockChainActionEnum blockChainActionEnum) throws Exception {
+    private WriteBatch createWriteBatch(Block block, BlockChainActionEnum blockChainActionEnum) throws Exception {
         WriteBatch writeBatch = new WriteBatchImpl();
         fillWriteBatch(writeBatch,block,blockChainActionEnum);
         return writeBatch;
@@ -486,7 +493,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * 把区块信息组装进WriteBatch对象
      */
-    public void fillWriteBatch(WriteBatch writeBatch, Block block, BlockChainActionEnum blockChainActionEnum) throws Exception {
+    private void fillWriteBatch(WriteBatch writeBatch, Block block, BlockChainActionEnum blockChainActionEnum) throws Exception {
         if(writeBatch == null){
             throw new BlockChainCoreException("参数writeBatch没有初始化");
         }
@@ -503,17 +510,17 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }else{
             writeBatch.delete(blockHeightKey);
         }
-
+        //更新区块链的高度
         byte[] blockChainHeightKey = buildBlockChainHeightKey();
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-            writeBatch.put(blockChainHeightKey, LevelDBUtil.stringToBytes(String.valueOf(block.getHeight())));
+            writeBatch.put(blockChainHeightKey,encodeBlockChainHeight(block.getHeight()));
         }else{
-            writeBatch.put(blockChainHeightKey, LevelDBUtil.stringToBytes(String.valueOf(block.getHeight()-1)));
+            writeBatch.put(blockChainHeightKey,encodeBlockChainHeight(block.getHeight()-1));
         }
 
-        List<Transaction> packingTransactionList = block.getTransactions();
-        if(packingTransactionList!=null){
-            for(Transaction transaction:packingTransactionList){
+        List<Transaction> transactionList = block.getTransactions();
+        if(transactionList != null){
+            for(Transaction transaction:transactionList){
                 //UUID数据
                 byte[] uuidKey = buildUuidKey(transaction.getTransactionUUID());
                 //更新交易数据
@@ -529,11 +536,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 if(inputs!=null){
                     for(TransactionInput txInput:inputs){
                         //更新UTXO数据
-                        byte[] transactionOutputUuidKey = buildUnspendTransactionOutputUuidKey(txInput.getUnspendTransactionOutput().getTransactionOutputUUID());
+                        TransactionOutput unspendTransactionOutput = txInput.getUnspendTransactionOutput();
+                        byte[] unspendTransactionOutputUuidKey = buildUnspendTransactionOutputUuidKey(unspendTransactionOutput.getTransactionOutputUUID());
                         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                            writeBatch.delete(transactionOutputUuidKey);
+                            writeBatch.delete(unspendTransactionOutputUuidKey);
                         } else {
-                            writeBatch.put(transactionOutputUuidKey,EncodeDecode.encode(txInput.getUnspendTransactionOutput()));
+                            writeBatch.put(unspendTransactionOutputUuidKey,EncodeDecode.encode(unspendTransactionOutput));
                         }
                     }
                 }
@@ -562,4 +570,40 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
     //endregion
     //endregion
+
+
+    /**
+     * UUID是否已经存在于区块链之中？
+     * @param uuid uuid
+     */
+    private boolean isUuidExist(String uuid){
+        byte[] bytesUuid = LevelDBUtil.get(blockChainDB, buildUuidKey(uuid));
+        return bytesUuid != null;
+    }
+
+    /**
+     * 将UUID保存进Set
+     * 如果UUID格式不正确，则返回false
+     * 如果Set里已经包含了UUID，返回false
+     * 否则，将UUID保存进Set，返回true
+     */
+    private boolean saveUuid(Set<String> uuidSet, String uuid) {
+        if(!UuidUtil.isUuidFormatRight(uuid)) {
+            return false;
+        }
+        if(uuidSet.contains(uuid)){
+            return false;
+        } else {
+            uuidSet.add(uuid);
+        }
+        return true;
+    }
+    private int decodeBlockChainHeight(byte[] bytesBlockChainHeight){
+        String strBlockChainHeight = LevelDBUtil.bytesToString(bytesBlockChainHeight);
+        Integer intBlockChainHeight = Integer.valueOf(strBlockChainHeight);
+        return intBlockChainHeight;
+    }
+    private byte[] encodeBlockChainHeight(int blockChainHeight){
+        return LevelDBUtil.stringToBytes(String.valueOf(blockChainHeight));
+    }
 }

@@ -39,7 +39,7 @@ public abstract class BlockChainDataBase {
     /**
      * 获取区块链的长度
      */
-    public abstract int obtainBlockChainLength() throws Exception ;
+    public abstract int obtainBlockChainHeight() throws Exception ;
 
     /**
      * 在区块链中根据 UTXO ID 查找UTXO

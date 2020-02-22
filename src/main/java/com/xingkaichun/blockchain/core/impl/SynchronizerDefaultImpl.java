@@ -79,8 +79,8 @@ public class SynchronizerDefaultImpl extends Synchronizer {
         }
 
         int maxBlockHeight = synchronizerDataBase.getMaxBlockHeight(availableSynchronizeNodeId);
-        int targetBlockChainLength = targetBlockChainDataBase.obtainBlockChainLength();
-        if(targetBlockChainLength != 0 && targetBlockChainLength >= maxBlockHeight){
+        int targetBlockChainHeight = targetBlockChainDataBase.obtainBlockChainHeight();
+        if(targetBlockChainHeight != 0 && targetBlockChainHeight >= maxBlockHeight){
             synchronizerDataBase.clear(availableSynchronizeNodeId);
             return;
         }
@@ -119,10 +119,10 @@ public class SynchronizerDefaultImpl extends Synchronizer {
                 return;
             }
         }
-        int targetBlockChainLength = targetBlockChainDataBase.findTailBlock().getHeight() ;
+        int targetBlockChainHeight = targetBlockChainDataBase.findTailBlock().getHeight() ;
         while(true){
-            targetBlockChainLength++;
-            Block currentBlock = temporaryBlockChainDataBase.findBlockByBlockHeight(targetBlockChainLength) ;
+            targetBlockChainHeight++;
+            Block currentBlock = temporaryBlockChainDataBase.findBlockByBlockHeight(targetBlockChainHeight) ;
             if(currentBlock == null){
                 break;
             }
@@ -161,10 +161,10 @@ public class SynchronizerDefaultImpl extends Synchronizer {
                 return;
             }
         }
-        int temporaryBlockChainLength = temporaryBlockChainDataBase.obtainBlockChainLength();
+        int temporaryBlockChainHeight = temporaryBlockChainDataBase.obtainBlockChainHeight();
         while(true){
-            temporaryBlockChainLength++;
-            Block currentBlock = targetBlockChainDataBase.findBlockByBlockHeight(temporaryBlockChainLength) ;
+            temporaryBlockChainHeight++;
+            Block currentBlock = targetBlockChainDataBase.findBlockByBlockHeight(temporaryBlockChainHeight) ;
             if(currentBlock == null){
                 break;
             }
