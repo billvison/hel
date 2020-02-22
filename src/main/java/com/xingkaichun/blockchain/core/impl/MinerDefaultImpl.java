@@ -11,7 +11,6 @@ import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.blockchain.core.utils.BlockUtils;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
-import com.xingkaichun.blockchain.core.utils.atomic.EqualsUtils;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -43,7 +42,7 @@ public class MinerDefaultImpl extends Miner {
     @Override
     public void start() throws Exception {
         while(true){
-            Thread.sleep(10);
+            Thread.sleep(1);
             if(!mineOption){
                 break;
             }
@@ -62,23 +61,6 @@ public class MinerDefaultImpl extends Miner {
                 minerTransactionDtoDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
             }
         }
-    }
-
-    private boolean isWrapperBlockForMiningNeedObtainAgain(WrapperBlockForMining wrapperBlockForMining) throws Exception {
-        if(wrapperBlockForMining == null){
-            return true;
-        }
-        Block tailBlock = blockChainDataBase.findTailBlock();
-        if(tailBlock == null){
-            return false;
-        }
-        Block miningBlock = wrapperBlockForMining.getBlock();
-        //TODO 改善型功能 简单校验
-        if(EqualsUtils.isEquals(tailBlock.getHash(),miningBlock.getPreviousHash()) &&
-                EqualsUtils.isEquals(tailBlock.getHeight(),miningBlock.getHeight()-1)){
-            return false;
-        }
-        return true;
     }
 
     @Override
@@ -107,8 +89,9 @@ public class MinerDefaultImpl extends Miner {
 
         wrapperBlockForMining.setBlockChainDataBase(blockChainDataBase);
         wrapperBlockForMining.setBlock(nextMineBlock);
+        wrapperBlockForMining.setStartNonce(0L);
+        wrapperBlockForMining.setEndNonce(Long.MAX_VALUE);
         wrapperBlockForMining.setNextNonce(0L);
-        wrapperBlockForMining.setMaxTryEveryTime(Long.MAX_VALUE);
         wrapperBlockForMining.setMiningSuccess(false);
         return wrapperBlockForMining;
     }
@@ -117,20 +100,23 @@ public class MinerDefaultImpl extends Miner {
         //TODO 改善型功能 这里可以利用多处理器的性能进行计算 还可以进行矿池挖矿
         BlockChainDataBase blockChainDataBase = wrapperBlockForMining.getBlockChainDataBase();
         Block block = wrapperBlockForMining.getBlock();
-
-        long startNonce = wrapperBlockForMining.getNextNonce();
-        long endNonce = wrapperBlockForMining.getNextNonce() + wrapperBlockForMining.getMaxTryEveryTime();
-
-        for (long currentNonce=startNonce; currentNonce<=endNonce; currentNonce++) {
-            if(!mineOption){ break; }
-            block.setNonce(currentNonce);
+        while(true){
+            if(!mineOption){
+                break;
+            }
+            long nextNonce = wrapperBlockForMining.getNextNonce();
+            if(nextNonce<wrapperBlockForMining.getStartNonce() || nextNonce>wrapperBlockForMining.getEndNonce()){
+                break;
+            }
+            block.setNonce(nextNonce);
             block.setHash(BlockUtils.calculateBlockHash(block));
             if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
                 wrapperBlockForMining.setMiningSuccess(true);
                 break;
             }
+            block.setNonce(null);
+            wrapperBlockForMining.setNextNonce(nextNonce+1);
         }
-        wrapperBlockForMining.setNextNonce(endNonce+1);
     }
 
 
@@ -140,15 +126,18 @@ public class MinerDefaultImpl extends Miner {
      */
     @Data
     public static class WrapperBlockForMining {
+        //矿工挖矿的区块链
+        private BlockChainDataBase blockChainDataBase;
+        //矿工要挖矿的区块
         private Block block;
-        //下一个待验证的Nonce
+        //标记矿工要验证挖矿的起始nonce
+        private long startNonce;
+        //标记矿工要验证挖矿的结束nonce
+        private long endNonce;
+        //标记矿工下一个要验证的nonce
         private long nextNonce;
-        //每次挖矿的最大尝试次数
-        private long maxTryEveryTime;
         //是否挖矿成功
         private Boolean miningSuccess;
-        private BlockChainDataBase blockChainDataBase;
-
         private List<Transaction> forMineBlockTransactionList;
         private List<Transaction> exceptionTransactionList;
     }
