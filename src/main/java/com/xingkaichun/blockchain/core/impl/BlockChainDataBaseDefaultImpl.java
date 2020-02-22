@@ -45,8 +45,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     //区块链高度key
     private final static String BLOCK_CHAIN_HEIGHT_KEY = "B_C_H_K";
-    //区块标识
+    //区块高度标识
     private final static String BLOCK_HEIGHT_PREFIX_FLAG = "B_H_P_F_";
+    //区块Hash标识
+    private final static String BLOCK_HASH_PREFIX_FLAG = "B_HA_P_F_";
     //交易标识
     private final static String TRANSACTION_UUID_PREFIX_FLAG = "T_U_P_F_";
     //交易输出标识
@@ -160,6 +162,15 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
+    public Block findBlockByBlockHash(String blockHash) throws Exception {
+        byte[] bytesBlock = LevelDBUtil.get(blockChainDB, buildBlockHashtKey(blockHash));
+        if(bytesBlock == null){
+            return null;
+        }
+        return EncodeDecode.decodeToBlock(bytesBlock);
+    }
+
+    @Override
     public Transaction findTransactionByTransactionUuid(String transactionUUID) throws Exception {
         byte[] bytesTransaction = LevelDBUtil.get(blockChainDB, buildTransactionUuidKey(transactionUUID));
         if(bytesTransaction==null){
@@ -219,6 +230,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //校验共识
         boolean isReachConsensus = consensus.isReachConsensus(this,block);
         if(!isReachConsensus){
+            return false;
+        }
+
+        //校验区块Hash是否已经被使用了
+        if(findBlockByBlockHash(block.getHash()) != null){
+            logger.error("区块数据异常，区块Hash已经被使用了。");
             return false;
         }
 
@@ -466,6 +483,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         String stringKey = BLOCK_HEIGHT_PREFIX_FLAG + blockHeight;
         return LevelDBUtil.stringToBytes(stringKey);
     }
+    private byte[] buildBlockHashtKey(String blockHash) {
+        String stringKey = BLOCK_HASH_PREFIX_FLAG + blockHash;
+        return LevelDBUtil.stringToBytes(stringKey);
+    }
     private byte[] buildTransactionUuidKey(String transactionUUID) {
         String stringKey = TRANSACTION_UUID_PREFIX_FLAG + transactionUUID;
         return LevelDBUtil.stringToBytes(stringKey);
@@ -509,6 +530,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             writeBatch.put(blockHeightKey, EncodeDecode.encode(block));
         }else{
             writeBatch.delete(blockHeightKey);
+        }
+        byte[] blockHashKey = buildBlockHashtKey(block.getHash());
+        if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
+            writeBatch.put(blockHashKey, EncodeDecode.encode(block));
+        }else{
+            writeBatch.delete(blockHashKey);
         }
         //更新区块链的高度
         byte[] blockChainHeightKey = buildBlockChainHeightKey();

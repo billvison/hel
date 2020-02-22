@@ -54,6 +54,12 @@ public abstract class BlockChainDataBase {
     public abstract Block findBlockByBlockHeight(int blockHeight) throws Exception ;
 
     /**
+     * 在区块链中根据区块Hash查找区块
+     * @param blockHash 区块Hash
+     */
+    public abstract Block findBlockByBlockHash(String blockHash) throws Exception ;
+
+    /**
      * 在区块链中根据交易ID查找交易
      * @param transactionUUID 交易ID
      */
