@@ -42,7 +42,7 @@ public class MinerDefaultImpl extends Miner {
     @Override
     public void start() throws Exception {
         while(true){
-            Thread.sleep(1);
+            Thread.sleep(10);
             if(!mineOption){
                 break;
             }

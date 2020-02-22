@@ -11,18 +11,18 @@ import java.util.List;
 @Data
 public abstract class BlockChainCore {
 
+    //矿工
     protected Miner miner ;
+    //区块链同步器
     protected Synchronizer synchronizer;
-    protected Incentive incentive ;
-    protected Consensus consensus ;
+    //区块链数据库
     protected BlockChainDataBase blockChainDataBase ;
-    protected MinerTransactionDtoDataBase minerTransactionDtoDataBase;
 
     //监听区块链上区块的增删动作
     protected List<BlockChainActionListener> blockChainActionListenerList;
 
     /**
-     * 启动
+     * 启动。激活矿工、区块链同步器。
      */
     public abstract void start() throws Exception ;
 
