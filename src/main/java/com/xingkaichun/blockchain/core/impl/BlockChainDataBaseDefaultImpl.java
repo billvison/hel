@@ -26,7 +26,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 /**
@@ -61,7 +63,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 锁:保证对区块链增区块、删区块的操作是同步的。
      * 查询区块操作不需要加锁，原因是，只有对区块链进行区块的增删才会改变区块链的数据。
      */
-    private volatile Lock lock = new ReentrantLock();
+    private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     //endregion
 
     //region 构造函数
@@ -87,7 +89,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //region 区块增加与删除
     @Override
     public boolean addBlock(Block block) throws Exception {
-        lock.lock();
+        Lock writeLock = readWriteLock.writeLock();
+        writeLock.lock();
         try{
             boolean isBlockCanApplyToBlockChain = isBlockCanApplyToBlockChain(block);
             if(!isBlockCanApplyToBlockChain){
@@ -97,13 +100,14 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             LevelDBUtil.write(blockChainDB,writeBatch);
             return true;
         }finally {
-            lock.unlock();
+            writeLock.unlock();
         }
     }
 
     @Override
     public Block removeTailBlock() throws Exception {
-        lock.lock();
+        Lock writeLock = readWriteLock.writeLock();
+        writeLock.lock();
         try{
             Block tailBlock = findTailBlock();
             if(tailBlock == null){
@@ -113,7 +117,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             LevelDBUtil.write(blockChainDB,writeBatch);
             return tailBlock;
         }finally {
-            lock.unlock();
+            writeLock.unlock();
         }
     }
     //endregion
