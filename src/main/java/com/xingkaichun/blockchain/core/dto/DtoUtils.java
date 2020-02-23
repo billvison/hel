@@ -17,7 +17,9 @@ import java.util.List;
 
 public class DtoUtils {
 
-
+    /**
+     * 类型转换
+     */
     public static Transaction classCast(BlockChainDataBase blockChainDataBase, TransactionDTO transactionDTO) throws Exception {
         Transaction transaction = new Transaction();
         transaction.setTimestamp(transaction.getTimestamp());
@@ -50,6 +52,9 @@ public class DtoUtils {
         return transaction;
     }
 
+    /**
+     * 类型转换
+     */
     public static TransactionOutput classCast(TransactionOutputDTO transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
         transactionOutput.setTransactionOutputUUID(transactionOutputDTO.getTransactionOutputUUID());
@@ -70,7 +75,6 @@ public class DtoUtils {
 
     /**
      * 用于签名的数据数据
-     * @return
      */
     public static String signatureData(TransactionDTO transactionDTO) throws Exception {
         String data = TransactionUtil.signatureData(transactionDTO.getTimestamp(),transactionDTO.getTransactionUUID(),getInputUtxoIds(transactionDTO),getOutpuUtxoIds(transactionDTO));
@@ -78,11 +82,11 @@ public class DtoUtils {
         return sha256Data;
     }
 
-    public static List<String> getInputUtxoIds(TransactionDTO transactionDTO){
+    private static List<String> getInputUtxoIds(TransactionDTO transactionDTO){
         return transactionDTO.getInputs();
     }
 
-    public static List<String> getOutpuUtxoIds(TransactionDTO transactionDTO){
+    private static List<String> getOutpuUtxoIds(TransactionDTO transactionDTO){
         List<String> ids = new ArrayList<>();
         List<TransactionOutputDTO> output = transactionDTO.getOutputs();
         if(output==null || output.size()==0){

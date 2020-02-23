@@ -268,11 +268,4 @@ public class MinerDefaultImpl extends Miner {
         return nonNonceBlock;
     }
     //endregion
-
-    private String getLocalNodeId(){
-        return this.getClass().getName();
-    }
-
-
-
 }
