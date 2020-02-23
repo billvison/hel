@@ -60,7 +60,7 @@ public class MinerDefaultImpl extends Miner {
                     System.err.println("挖矿成功，但是放入区块链失败。");
                     break;
                 }
-                //重置
+                //将使用过的交易从挖矿交易数据库中交易
                 minerTransactionDtoDataBase.deleteTransactionList(wrapperBlockForMining.getForMineBlockTransactionList());
                 minerTransactionDtoDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
             }
@@ -85,7 +85,6 @@ public class MinerDefaultImpl extends Miner {
     private WrapperBlockForMining obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
         WrapperBlockForMining wrapperBlockForMining = new WrapperBlockForMining();
         List<Transaction> forMineBlockTransactionList = minerTransactionDtoDataBase.selectTransactionList(blockChainDataBase,0,10000);
-        //TODO 错误类别处理
         List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(blockChainDataBase,forMineBlockTransactionList);
         wrapperBlockForMining.setExceptionTransactionList(exceptionTransactionList);
         wrapperBlockForMining.setForMineBlockTransactionList(forMineBlockTransactionList);
