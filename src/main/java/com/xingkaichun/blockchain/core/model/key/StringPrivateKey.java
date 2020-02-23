@@ -6,11 +6,11 @@ import lombok.Data;
  * 私钥
  */
 @Data
-public class PrivateKeyString {
+public class StringPrivateKey {
 
     private String value;
 
-    public PrivateKeyString(String value) {
+    public StringPrivateKey(String value) {
         this.value = value;
     }
 }

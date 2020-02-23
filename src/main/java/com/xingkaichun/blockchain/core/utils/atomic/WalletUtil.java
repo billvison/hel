@@ -1,7 +1,7 @@
 package com.xingkaichun.blockchain.core.utils.atomic;
 
-import com.xingkaichun.blockchain.core.model.key.PrivateKeyString;
-import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
+import com.xingkaichun.blockchain.core.model.key.StringPrivateKey;
+import com.xingkaichun.blockchain.core.model.key.StringPublicKey;
 import com.xingkaichun.blockchain.core.model.wallet.Wallet;
 
 import java.security.KeyPair;
@@ -12,9 +12,9 @@ import java.security.spec.ECGenParameterSpec;
 
 public class WalletUtil {
 
-    public static Wallet loadWallet(PrivateKeyString privateKeyString, PublicKeyString publicKeyString){
+    public static Wallet loadWallet(StringPrivateKey stringPrivateKey, StringPublicKey stringPublicKey){
         try {
-            Wallet wallet = new Wallet(privateKeyString,publicKeyString);
+            Wallet wallet = new Wallet(stringPrivateKey,stringPublicKey);
             return wallet;
         }catch(Exception e) {
             throw new RuntimeException(e);
@@ -30,9 +30,9 @@ public class WalletUtil {
             // Initialize the key generator and generate a KeyPair
             keyGen.initialize(ecSpec, random); //256
             KeyPair keyPair = keyGen.generateKeyPair();
-            PublicKeyString publicKeyString = KeyUtil.convertPublicKeyToPublicKeyString(keyPair.getPublic());
-            PrivateKeyString privateKeyString = KeyUtil.convertPrivateKeyToPrivateKeyString(keyPair.getPrivate());
-            Wallet wallet = new Wallet(privateKeyString,publicKeyString);
+            StringPublicKey stringPublicKey = KeyUtil.convertPublicKeyToStringPublicKey(keyPair.getPublic());
+            StringPrivateKey stringPrivateKey = KeyUtil.convertPrivateKeyToStringPrivateKey(keyPair.getPrivate());
+            Wallet wallet = new Wallet(stringPrivateKey,stringPublicKey);
             return wallet;
         }catch(Exception e) {
             throw new RuntimeException(e);

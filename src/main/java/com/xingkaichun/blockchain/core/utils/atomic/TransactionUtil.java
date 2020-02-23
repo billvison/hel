@@ -1,7 +1,7 @@
 package com.xingkaichun.blockchain.core.utils.atomic;
 
-import com.xingkaichun.blockchain.core.model.key.PrivateKeyString;
-import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
+import com.xingkaichun.blockchain.core.model.key.StringPrivateKey;
+import com.xingkaichun.blockchain.core.model.key.StringPublicKey;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
@@ -86,20 +86,20 @@ public class TransactionUtil {
         return sha256Data;
     }
 
-    public static PublicKeyString getSenderPublicKeyString(Transaction transaction) {
+    public static StringPublicKey getSenderStringPublicKey(Transaction transaction) {
         ArrayList<TransactionInput> inputs = transaction.getInputs();
         if(inputs == null || inputs.size() == 0){
             return null;
         }
-        PublicKeyString senderPublicKeyString = inputs.get(0).getPublicKeyString();
-        return senderPublicKeyString;
+        StringPublicKey senderStringPublicKey = inputs.get(0).getStringPublicKey();
+        return senderStringPublicKey;
     }
 
     /**
      * 交易签名
      */
-    public static String signature(Transaction transaction, PrivateKeyString privateKeyString) throws Exception {
-        PrivateKey privateKey = KeyUtil.convertPrivateKeyStringToPrivateKey(privateKeyString);
+    public static String signature(Transaction transaction, StringPrivateKey stringPrivateKey) throws Exception {
+        PrivateKey privateKey = KeyUtil.convertStringPrivateKeyToPrivateKey(stringPrivateKey);
         byte[] bytesSignature = CipherUtil.applyECDSASig(privateKey,signatureData(transaction));
         String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
         return strSignature;
@@ -109,8 +109,8 @@ public class TransactionUtil {
      * 签名验证
      */
     public static boolean verifySignature(Transaction transaction) throws Exception {
-        PublicKeyString senderPublicKeyString = getSenderPublicKeyString(transaction);
-        PublicKey publicKey = KeyUtil.convertPublicKeyStringToPublicKey(senderPublicKeyString);
+        StringPublicKey senderStringPublicKey = getSenderStringPublicKey(transaction);
+        PublicKey publicKey = KeyUtil.convertStringPublicKeyToPublicKey(senderStringPublicKey);
         String strSignature = transaction.getSignature();
         byte[] bytesSignature = Base64.getDecoder().decode(strSignature);
         return CipherUtil.verifyECDSASig(publicKey,signatureData(transaction),bytesSignature);
@@ -138,10 +138,10 @@ public class TransactionUtil {
     }
 
     public static boolean isSpendOwnUtxo(Transaction transaction){
-        PublicKeyString senderPublicKeyString = getSenderPublicKeyString(transaction);
+        StringPublicKey senderStringPublicKey = getSenderStringPublicKey(transaction);
         ArrayList<TransactionInput> inputs = transaction.getInputs();
         for(TransactionInput input:inputs){
-            boolean eq = senderPublicKeyString.getValue().equals(input.getPublicKeyString().getValue());
+            boolean eq = senderStringPublicKey.getValue().equals(input.getStringPublicKey().getValue());
             if(!eq){
                 return false;
             }

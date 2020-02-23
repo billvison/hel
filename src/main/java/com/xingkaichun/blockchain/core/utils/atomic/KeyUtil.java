@@ -1,7 +1,7 @@
 package com.xingkaichun.blockchain.core.utils.atomic;
 
-import com.xingkaichun.blockchain.core.model.key.PrivateKeyString;
-import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
+import com.xingkaichun.blockchain.core.model.key.StringPrivateKey;
+import com.xingkaichun.blockchain.core.model.key.StringPublicKey;
 import com.xingkaichun.blockchain.core.model.wallet.Wallet;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jce.spec.ECPrivateKeySpec;
@@ -14,18 +14,18 @@ import java.util.Base64;
 
 public class KeyUtil {
 
-    public static byte[] decode(PublicKeyString publicKeyString) {
-        return Base64.getDecoder().decode(publicKeyString.getValue());
+    public static byte[] decode(StringPublicKey stringPublicKey) {
+        return Base64.getDecoder().decode(stringPublicKey.getValue());
     }
 
-    public static byte[] decode(PrivateKeyString privateKeyString) {
-        return Base64.getDecoder().decode(privateKeyString.getValue());
+    public static byte[] decode(StringPrivateKey stringPrivateKey) {
+        return Base64.getDecoder().decode(stringPrivateKey.getValue());
     }
 
-    public static PublicKey convertPublicKeyStringToPublicKey(PublicKeyString publicKeyString) {
+    public static PublicKey convertStringPublicKeyToPublicKey(StringPublicKey stringPublicKey) {
         try {
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-            byte[] bytesPublicKey = decode(publicKeyString);
+            byte[] bytesPublicKey = decode(stringPublicKey);
 
             final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
             final X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(bytesPublicKey);
@@ -36,10 +36,10 @@ public class KeyUtil {
         }
     }
 
-    public static PrivateKey convertPrivateKeyStringToPrivateKey(PrivateKeyString privateKeyString) {
+    public static PrivateKey convertStringPrivateKeyToPrivateKey(StringPrivateKey stringPrivateKey) {
         try {
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-            byte[] bytesPrivateKey = decode(privateKeyString);
+            byte[] bytesPrivateKey = decode(stringPrivateKey);
 
             final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
             final PKCS8EncodedKeySpec encPrivKeySpec = new PKCS8EncodedKeySpec(bytesPrivateKey);
@@ -50,30 +50,30 @@ public class KeyUtil {
         }
     }
 
-    public static PublicKeyString convertPublicKeyToPublicKeyString(PublicKey publicKey) {
+    public static StringPublicKey convertPublicKeyToStringPublicKey(PublicKey publicKey) {
         String encode = Base64.getEncoder().encodeToString(publicKey.getEncoded());
-        PublicKeyString publicKeyString = new PublicKeyString(encode);
-        return publicKeyString;
+        StringPublicKey stringPublicKey = new StringPublicKey(encode);
+        return stringPublicKey;
     }
 
-    public static PrivateKeyString convertPrivateKeyToPrivateKeyString(PrivateKey privateKey) {
+    public static StringPrivateKey convertPrivateKeyToStringPrivateKey(PrivateKey privateKey) {
         String encode = Base64.getEncoder().encodeToString(privateKey.getEncoded());
-        PrivateKeyString privateKeyString = new PrivateKeyString(encode);
-        return privateKeyString;
+        StringPrivateKey stringPrivateKey = new StringPrivateKey(encode);
+        return stringPrivateKey;
     }
 
 
     public static void main(String[] args) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
         Wallet wallet = WalletUtil.generateWallet();
-        System.out.println("PrivateKeyString"+wallet.getPrivateKeyString().getValue());
-        //System.out.println("PublicKeyString"+wallet.getPublicKeyString().getValue());
+        System.out.println("StringPrivateKey"+wallet.getStringPrivateKey().getValue());
+        //System.out.println("StringPublicKey"+wallet.getStringPublicKey().getValue());
 
-        byte[] bytesPrivateKey = decode(wallet.getPrivateKeyString());
+        byte[] bytesPrivateKey = decode(wallet.getStringPrivateKey());
 
         final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
         final PKCS8EncodedKeySpec encPrivKeySpec = new PKCS8EncodedKeySpec(bytesPrivateKey);
         final PrivateKey privKey = kf.generatePrivate(encPrivKeySpec);
-        System.out.println("PrivateKeyString" + convertPrivateKeyToPrivateKeyString(privKey).getValue());
+        System.out.println("StringPrivateKey" + convertPrivateKeyToStringPrivateKey(privKey).getValue());
 
         BCECPrivateKey bcecPrivateKey = (BCECPrivateKey)privKey;
        // ECPrivateKeySpec ecPrivateKeySpec = new ECPrivateKeySpec(bcecPrivateKey.getD(),bcecPrivateKey.getParameters());
@@ -83,8 +83,8 @@ public class KeyUtil {
         PrivateKey privateKey2 = kf2.generatePrivate(ecPrivateKeySpec);
         //PublicKey publicKey2 = kf.generatePublic(ecPublicKeySpec);
 
-        System.out.println("PrivateKeyString"+convertPrivateKeyToPrivateKeyString(privateKey2).getValue());
-        //System.out.println("PublicKeyString"+convertPublicKeyToPublicKeyString(publicKey2).getValue());
+        System.out.println("StringPrivateKey"+convertPrivateKeyToStringPrivateKey(privateKey2).getValue());
+        //System.out.println("StringPublicKey"+convertPublicKeyToStringPublicKey(publicKey2).getValue());
 
     }
 }

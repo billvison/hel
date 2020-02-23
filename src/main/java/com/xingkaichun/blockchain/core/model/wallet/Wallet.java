@@ -1,7 +1,7 @@
 package com.xingkaichun.blockchain.core.model.wallet;
 
-import com.xingkaichun.blockchain.core.model.key.PrivateKeyString;
-import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
+import com.xingkaichun.blockchain.core.model.key.StringPrivateKey;
+import com.xingkaichun.blockchain.core.model.key.StringPublicKey;
 import lombok.Data;
 
 /**
@@ -10,13 +10,13 @@ import lombok.Data;
 @Data
 public class Wallet {
 
-    private PrivateKeyString privateKeyString;
+    private StringPrivateKey stringPrivateKey;
 
-    private PublicKeyString publicKeyString;
+    private StringPublicKey stringPublicKey;
 
-    public Wallet(PrivateKeyString privateKeyString, PublicKeyString publicKeyString) {
-        this.privateKeyString = privateKeyString;
-        this.publicKeyString = publicKeyString;
+    public Wallet(StringPrivateKey stringPrivateKey, StringPublicKey stringPublicKey) {
+        this.stringPrivateKey = stringPrivateKey;
+        this.stringPublicKey = stringPublicKey;
     }
 
 }

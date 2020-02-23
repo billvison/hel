@@ -1,8 +1,8 @@
 package com.xingkaichun.blockchain.core.dto;
 
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
-import com.xingkaichun.blockchain.core.model.key.PrivateKeyString;
-import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
+import com.xingkaichun.blockchain.core.model.key.StringPrivateKey;
+import com.xingkaichun.blockchain.core.model.key.StringPublicKey;
 import com.xingkaichun.blockchain.core.model.key.StringAddress;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
@@ -36,7 +36,7 @@ public class DtoUtils {
                 String unspendTransactionOutputUUID = transactionInputDTO.getUnspendTransactionOutputUUID();
                 TransactionOutput transactionOutput = blockChainDataBase.findUtxoByUtxoUuid(unspendTransactionOutputUUID);
                 TransactionInput transactionInput = new TransactionInput();
-                transactionInput.setPublicKeyString(new PublicKeyString(transactionInputDTO.getPublicKeyString()));
+                transactionInput.setStringPublicKey(new StringPublicKey(transactionInputDTO.getPublicKey()));
                 transactionInput.setUnspendTransactionOutput(transactionOutput);
                 inputs.add(transactionInput);
             }
@@ -69,8 +69,8 @@ public class DtoUtils {
     /**
      * 交易签名
      */
-    public static String signature(TransactionDTO transactionDTO, PrivateKeyString privateKeyString) throws Exception {
-        PrivateKey privateKey = KeyUtil.convertPrivateKeyStringToPrivateKey(privateKeyString);
+    public static String signature(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) throws Exception {
+        PrivateKey privateKey = KeyUtil.convertStringPrivateKeyToPrivateKey(stringPrivateKey);
         byte[] bytesSignature = CipherUtil.applyECDSASig(privateKey,signatureData(transactionDTO));
         String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
         return strSignature;

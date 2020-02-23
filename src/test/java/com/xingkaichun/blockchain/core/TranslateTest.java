@@ -6,7 +6,7 @@ import com.xingkaichun.blockchain.core.dto.TransactionDTO;
 import com.xingkaichun.blockchain.core.dto.TransactionInputDTO;
 import com.xingkaichun.blockchain.core.dto.TransactionOutputDTO;
 import com.xingkaichun.blockchain.core.model.Block;
-import com.xingkaichun.blockchain.core.model.key.PrivateKeyString;
+import com.xingkaichun.blockchain.core.model.key.StringPrivateKey;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionType;
 
 import java.math.BigDecimal;
@@ -18,9 +18,9 @@ public class TranslateTest {
     @org.junit.Test
     public void test() throws Exception {
         String blockchainPath = "D:\\logs\\hellowordblockchain\\" ;
-        String minerPublicKeyString = "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAErwpbppp/kd7di7NXVcxyTPd4bcpm9ZQArbyMV24veV4fzDnGspPNPGh9530GnhPycGiEKGLDNchTiyQ5+zWTlA==" ;
+        String minerStringPublicKey = "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAErwpbppp/kd7di7NXVcxyTPd4bcpm9ZQArbyMV24veV4fzDnGspPNPGh9530GnhPycGiEKGLDNchTiyQ5+zWTlA==" ;
 
-        BlockChainCore blockChainCore = new BlockChainCoreFactory().createBlockChainCore(blockchainPath,minerPublicKeyString);
+        BlockChainCore blockChainCore = new BlockChainCoreFactory().createBlockChainCore(blockchainPath,minerStringPublicKey);
         blockChainCore.start();
 
 
@@ -36,7 +36,7 @@ public class TranslateTest {
         transactionOutputDTO.setAddress("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         transactionOutputDTO.setValue(new BigDecimal("20"));
         transactionDTO.setOutputs(outputs);
-        DtoUtils.signature(transactionDTO,new PrivateKeyString("zzzzzzzzzzzzzzzzzzzz"));
+        DtoUtils.signature(transactionDTO,new StringPrivateKey("zzzzzzzzzzzzzzzzzzzz"));
 
         BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
         int height = blockChainDataBase.findTailBlock().getHeight();
