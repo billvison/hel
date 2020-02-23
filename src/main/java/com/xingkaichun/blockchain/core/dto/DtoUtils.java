@@ -1,9 +1,10 @@
 package com.xingkaichun.blockchain.core.dto;
 
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
+import com.xingkaichun.blockchain.core.model.Block;
+import com.xingkaichun.blockchain.core.model.key.StringAddress;
 import com.xingkaichun.blockchain.core.model.key.StringPrivateKey;
 import com.xingkaichun.blockchain.core.model.key.StringPublicKey;
-import com.xingkaichun.blockchain.core.model.key.StringAddress;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
@@ -21,15 +22,56 @@ public class DtoUtils {
     /**
      * 类型转换
      */
-    public static Transaction classCast(BlockChainDataBase blockChainDataBase, TransactionDTO transactionDTO) throws Exception {
-        Transaction transaction = new Transaction();
-        transaction.setTimestamp(transaction.getTimestamp());
-        transaction.setTransactionUUID(transactionDTO.getTransactionUUID());
-        transaction.setTransactionType(transactionDTO.getTransactionType());
-        transaction.setSignature(transactionDTO.getSignature());
+    public static Block classCast(BlockChainDataBase blockChainDataBase, BlockDTO blockDTO) throws Exception {
+        List<Transaction> transactionList = new ArrayList<>();
+        List<TransactionDTO> transactionDtoList = blockDTO.getTransactions();
+        if(transactionDtoList != null){
+            for(TransactionDTO transactionDTO:transactionDtoList){
+                Transaction transaction = classCast(blockChainDataBase,transactionDTO);
+                transactionList.add(transaction);
+            }
+        }
 
-        ArrayList<TransactionInput> inputs = new ArrayList<>();
-        transaction.setInputs(inputs);
+        Block block = new Block();
+        block.setTimestamp(blockDTO.getTimestamp());
+        block.setPreviousHash(blockDTO.getPreviousHash());
+        block.setHeight(blockDTO.getHeight());
+        block.setTransactions(transactionList);
+        block.setMerkleRoot(blockDTO.getMerkleRoot());
+        block.setNonce(blockDTO.getNonce());
+        block.setHash(blockDTO.getHash());
+        return block;
+    }
+
+    /**
+     * 类型转换
+     */
+    public static BlockDTO classCast(Block block) throws Exception {
+        List<TransactionDTO> transactionDtoList = new ArrayList<>();
+        List<Transaction> transactionList = block.getTransactions();
+        if(transactionList != null){
+            for(Transaction transaction:transactionList){
+                TransactionDTO transactionDTO = classCast(transaction);
+                transactionDtoList.add(transactionDTO);
+            }
+        }
+
+        BlockDTO blockDTO = new BlockDTO();
+        blockDTO.setTimestamp(block.getTimestamp());
+        blockDTO.setPreviousHash(block.getPreviousHash());
+        blockDTO.setHeight(block.getHeight());
+        blockDTO.setTransactions(transactionDtoList);
+        blockDTO.setMerkleRoot(block.getMerkleRoot());
+        blockDTO.setNonce(block.getNonce());
+        blockDTO.setHash(block.getHash());
+        return blockDTO;
+    }
+
+    /**
+     * 类型转换
+     */
+    public static Transaction classCast(BlockChainDataBase blockChainDataBase, TransactionDTO transactionDTO) throws Exception {
+        List<TransactionInput> inputs = new ArrayList<>();
         List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getInputs();
         if(transactionInputDtoList!=null || transactionInputDtoList.size()!=0){
             for (TransactionInputDTO transactionInputDTO:transactionInputDtoList){
@@ -42,8 +84,7 @@ public class DtoUtils {
             }
         }
 
-        ArrayList<TransactionOutput> outputs = new ArrayList<>();
-        transaction.setOutputs(outputs);
+        List<TransactionOutput> outputs = new ArrayList<>();
         List<TransactionOutputDTO> dtoOutputs = transactionDTO.getOutputs();
         if(dtoOutputs!=null || dtoOutputs.size()!=0){
             for(TransactionOutputDTO transactionOutputDTO:dtoOutputs){
@@ -52,8 +93,51 @@ public class DtoUtils {
             }
         }
 
+        Transaction transaction = new Transaction();
+        transaction.setTimestamp(transaction.getTimestamp());
+        transaction.setTransactionUUID(transactionDTO.getTransactionUUID());
+        transaction.setTransactionType(transactionDTO.getTransactionType());
+        transaction.setInputs(inputs);
+        transaction.setOutputs(outputs);
+        transaction.setSignature(transactionDTO.getSignature());
         return transaction;
     }
+
+    /**
+     * 类型转换
+     */
+    public static TransactionDTO classCast(Transaction transaction) throws Exception {
+        List<TransactionInputDTO> inputs = new ArrayList<>();
+        List<TransactionInput> transactionInputList = transaction.getInputs();
+        if(transactionInputList!=null || transactionInputList.size()!=0){
+            for (TransactionInput transactionInput:transactionInputList){
+                TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
+                TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
+                transactionInputDTO.setUnspendTransactionOutputUUID(unspendTransactionOutput.getTransactionOutputUUID());
+                transactionInputDTO.setPublicKey(transactionInput.getStringPublicKey().getValue());
+                inputs.add(transactionInputDTO);
+            }
+        }
+
+        List<TransactionOutputDTO> outputs = new ArrayList<>();
+        List<TransactionOutput> transactionOutputList = transaction.getOutputs();
+        if(transactionOutputList!=null || transactionOutputList.size()!=0){
+            for(TransactionOutput transactionOutput:transactionOutputList){
+                TransactionOutputDTO transactionOutputDTO = classCast(transactionOutput);
+                outputs.add(transactionOutputDTO);
+            }
+        }
+
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setTimestamp(transaction.getTimestamp());
+        transactionDTO.setTransactionUUID(transaction.getTransactionUUID());
+        transactionDTO.setTransactionType(transaction.getTransactionType());
+        transactionDTO.setInputs(inputs);
+        transactionDTO.setOutputs(outputs);
+        transactionDTO.setSignature(transaction.getSignature());
+        return transactionDTO;
+    }
+
 
     /**
      * 类型转换
@@ -65,6 +149,17 @@ public class DtoUtils {
         transactionOutput.setValue(transactionOutputDTO.getValue());
         return transactionOutput;
     }
+    /**
+     * 类型转换
+     */
+    public static TransactionOutputDTO classCast(TransactionOutput transactionOutput) {
+        TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
+        transactionOutputDTO.setTransactionOutputUUID(transactionOutputDTO.getTransactionOutputUUID());
+        transactionOutputDTO.setAddress(transactionOutput.getStringAddress().getValue());
+        transactionOutputDTO.setValue(transactionOutputDTO.getValue());
+        return transactionOutputDTO;
+    }
+
 
     /**
      * 交易签名
