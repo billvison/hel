@@ -1,8 +1,11 @@
 package com.xingkaichun.blockchain.core.model.key;
 
+import lombok.Data;
+
 /**
  * 地址
  */
+@Data
 public class StringAddress {
 
     private String value;
