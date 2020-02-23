@@ -188,6 +188,11 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(block == null){
             throw new BlockChainCoreException("区块校验失败：区块不能为null。");
         }
+        if(!isBlcokTransactionSizeLegal(block)){
+            logger.error(String.format("区块数据异常，区块里包含的交易数量超过限制值%d。",
+                    BlockChainCoreConstants.BLOCK_MAX_TRANSACTION_SIZE));
+            return false;
+        }
         //校验区块的连贯性
         Block tailBlock = findTailBlock();
         if(tailBlock == null){
@@ -353,9 +358,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //校验交易输出的金额是否满足区块链系统对金额数字的的强制要求
         if(outputs != null){
             for(TransactionOutput o : outputs) {
-                if(!isLegalTransactionAmount(o.getValue())){
-                    logger.error(String.format("交易校验失败：交易金额不合法，可能的原因：①交易金额小于等于0。" +
-                            "②交易金额小数点位数超过了%d位限制"),BlockChainCoreConstants.TRANSACTION_AMOUNT_DECIMAL_PLACES);
+                if(!isTransactionAmountLegal(o.getValue())){
+                    logger.error(String.format("交易校验失败：交易金额不合法，可能的原因：①交易金额小于限制值%s；" +
+                            "②交易金额大于限制值%s；③交易金额小数点位数超过了%d位限制。",
+                            BlockChainCoreConstants.TRANSACTION_MIN_AMOUNT,
+                            BlockChainCoreConstants.TRANSACTION_MAX_AMOUNT,
+                            BlockChainCoreConstants.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES));
                     return false;
                 }
             }

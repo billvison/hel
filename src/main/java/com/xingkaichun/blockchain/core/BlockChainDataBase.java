@@ -1,5 +1,6 @@
 package com.xingkaichun.blockchain.core;
 
+import com.google.gson.Gson;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 /**
@@ -22,6 +24,8 @@ public abstract class BlockChainDataBase {
 
     protected Incentive incentive ;
     protected Consensus consensus ;
+
+    protected static Gson gson;
 
     //region 区块增加与删除
     /**
@@ -90,18 +94,22 @@ public abstract class BlockChainDataBase {
     /**
      * 是否是一个合法的交易金额：这里用于限制交易金额的最大值、最小值、小数保留位置
      */
-    public boolean isLegalTransactionAmount(BigDecimal transactionAmount) {
+    public boolean isTransactionAmountLegal(BigDecimal transactionAmount) {
         try {
             if(transactionAmount == null){
                 return false;
             }
-            //交易金额只允许大于0
-            if(transactionAmount.compareTo(BigDecimal.ZERO) <= 0){
+            //校验交易金额最小值
+            if(transactionAmount.compareTo(BlockChainCoreConstants.TRANSACTION_MIN_AMOUNT) < 0){
+                return false;
+            }
+            //校验交易金额最大值
+            if(transactionAmount.compareTo(BlockChainCoreConstants.TRANSACTION_MAX_AMOUNT) > 0){
                 return false;
             }
             //校验小数位数
             long decimalPlaces = NumberUtil.decimalPlaces(transactionAmount);
-            if(decimalPlaces > BlockChainCoreConstants.TRANSACTION_AMOUNT_DECIMAL_PLACES){
+            if(decimalPlaces > BlockChainCoreConstants.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES){
                 return false;
             }
             return true;
@@ -113,7 +121,7 @@ public abstract class BlockChainDataBase {
     /**
      * 重载
      */
-    public boolean isLegalTransactionAmount(String transactionAmount) {
+    public boolean isTransactionAmountLegal(String transactionAmount) {
         if(transactionAmount == null){
             return false;
         }
@@ -121,7 +129,37 @@ public abstract class BlockChainDataBase {
             return false;
         }
         BigDecimal bigDecimalTransactionAmount = new BigDecimal(transactionAmount);
-        return isLegalTransactionAmount(bigDecimalTransactionAmount);
+        return isTransactionAmountLegal(bigDecimalTransactionAmount);
     }
     //endregion
+
+    /**
+     * 校验交易文本大小是否合法：用来限制交易的文本大小
+     */
+    public boolean isTransactionTextSizeLegal(Transaction transaction) {
+        if(transaction == null){
+            return false;
+        }
+        try {
+            String stringTransaction = gson.toJson(transaction);
+            return stringTransaction.length() <= BlockChainCoreConstants.TRANSACTION_TEXT_MAX_SIZE;
+        } catch (Exception e) {
+            logger.error("校验交易文本大小是否合法出现异常，请检查。",e);
+            return false;
+        }
+    }
+
+    /**
+     * 校验交易文本大小是否合法：用来限制交易的文本大小
+     */
+    public boolean isBlcokTransactionSizeLegal(Block block) {
+        if(block == null){
+            return false;
+        }
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions == null){
+            return true;
+        }
+        return transactions.size() <= BlockChainCoreConstants.BLOCK_MAX_TRANSACTION_SIZE;
+    }
 }
