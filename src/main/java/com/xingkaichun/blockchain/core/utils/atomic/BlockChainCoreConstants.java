@@ -14,4 +14,7 @@ public class BlockChainCoreConstants {
     public final static int FIRST_BLOCK_HEIGHT = 1;
     //第一个区块的PREVIOUS_HASH
     public final static String FIRST_BLOCK_PREVIOUS_HASH = "xingkaichun";
+
+    //交易金额的小数点保留位数限制
+    public final static long TRANSACTION_AMOUNT_DECIMAL_PLACES = 8;
 }

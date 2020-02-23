@@ -3,7 +3,13 @@ package com.xingkaichun.blockchain.core;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
+import com.xingkaichun.blockchain.core.utils.atomic.NumberUtil;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
 
 
 /**
@@ -11,6 +17,8 @@ import lombok.Data;
  */
 @Data
 public abstract class BlockChainDataBase {
+
+    private Logger logger = LoggerFactory.getLogger(BlockChainDataBase.class);
 
     protected Incentive incentive ;
     protected Consensus consensus ;
@@ -66,8 +74,6 @@ public abstract class BlockChainDataBase {
     public abstract Transaction findTransactionByTransactionUuid(String transactionUUID) throws Exception ;
     //endregion
 
-
-
     /**
      * 检测区块是否可以被应用到区块链上
      * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
@@ -79,4 +85,43 @@ public abstract class BlockChainDataBase {
      * 如果校验的是奖励交易，则需要整个区块的信息，因此这个函数包含了两个参数：交易所在的区块、交易
      */
     public abstract boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception ;
+
+    //region 校验交易金额
+    /**
+     * 是否是一个合法的交易金额：这里用于限制交易金额的最大值、最小值、小数保留位置
+     */
+    public boolean isLegalTransactionAmount(BigDecimal transactionAmount) {
+        try {
+            if(transactionAmount == null){
+                return false;
+            }
+            //交易金额只允许大于0
+            if(transactionAmount.compareTo(BigDecimal.ZERO) <= 0){
+                return false;
+            }
+            //校验小数位数
+            long decimalPlaces = NumberUtil.decimalPlaces(transactionAmount);
+            if(decimalPlaces > BlockChainCoreConstants.TRANSACTION_AMOUNT_DECIMAL_PLACES){
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            logger.error("校验金额方法出现异常，请检查。",e);
+            return false;
+        }
+    }
+    /**
+     * 重载
+     */
+    public boolean isLegalTransactionAmount(String transactionAmount) {
+        if(transactionAmount == null){
+            return false;
+        }
+        if(!NumberUtil.isNumber(transactionAmount)){
+            return false;
+        }
+        BigDecimal bigDecimalTransactionAmount = new BigDecimal(transactionAmount);
+        return isLegalTransactionAmount(bigDecimalTransactionAmount);
+    }
+    //endregion
 }

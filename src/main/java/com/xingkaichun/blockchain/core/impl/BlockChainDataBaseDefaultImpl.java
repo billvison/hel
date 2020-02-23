@@ -350,11 +350,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             }
         }
 
-        //交易输出不能小于等于0
+        //校验交易输出的金额是否满足区块链系统对金额数字的的强制要求
         if(outputs != null){
             for(TransactionOutput o : outputs) {
-                if(o.getValue().compareTo(new BigDecimal("0"))<=0){
-                    logger.error("交易校验失败：交易的输出<=0。");
+                if(!isLegalTransactionAmount(o.getValue())){
+                    logger.error(String.format("交易校验失败：交易金额不合法，可能的原因：①交易金额小于等于0。" +
+                            "②交易金额小数点位数超过了%d位限制"),BlockChainCoreConstants.TRANSACTION_AMOUNT_DECIMAL_PLACES);
                     return false;
                 }
             }
