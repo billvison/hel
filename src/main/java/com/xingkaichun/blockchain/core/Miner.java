@@ -1,12 +1,22 @@
 package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.model.Block;
+import com.xingkaichun.blockchain.core.model.key.StringAddress;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
+import lombok.Data;
 
 /**
  * 矿工:挖矿、分配挖矿奖励
  */
+@Data
 public abstract class Miner {
+
+    //矿工地址
+    protected StringAddress minerStringAddress;
+    // 矿工挖矿所在的区块链
+    protected BlockChainDataBase blockChainDataBase ;
+    //矿工交易数据库：矿工从交易数据库里获取挖矿的原材料(交易数据)
+    protected MinerTransactionDtoDataBase minerTransactionDtoDataBase;
 
     //region 挖矿相关
     /**

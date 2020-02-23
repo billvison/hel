@@ -23,12 +23,6 @@ public class MinerDefaultImpl extends Miner {
     private Logger logger = LoggerFactory.getLogger(MinerDefaultImpl.class);
 
     //region 属性与构造函数
-    //矿工地址
-    private StringAddress minerStringAddress;
-    private BlockChainDataBase blockChainDataBase ;
-    //交易池：矿工从交易池里获取挖矿的原材料(交易数据)
-    private MinerTransactionDtoDataBase minerTransactionDtoDataBase;
-
     //挖矿开关:默认打开挖矿的开关
     private boolean mineOption = true;
 
