@@ -4,7 +4,7 @@ package com.xingkaichun.blockchain.core.model.transaction;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 交易
@@ -19,9 +19,9 @@ public class Transaction implements Serializable {
     //交易类型
     private TransactionType transactionType;
     //交易输入
-    private ArrayList<TransactionInput> inputs;
+    private List<TransactionInput> inputs;
     //交易输出
-    private ArrayList<TransactionOutput> outputs;
+    private List<TransactionOutput> outputs;
     //交易签名
     private String signature;
 }

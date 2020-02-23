@@ -268,7 +268,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             if(!saveUuid(uuidSet,transactionUUID)){
                 return false;
             }
-            ArrayList<TransactionInput> inputs = transaction.getInputs();
+            List<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null){
                 for(TransactionInput transactionInput : inputs) {
                     TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
@@ -278,7 +278,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                     }
                 }
             }
-            ArrayList<TransactionOutput> outputs = transaction.getOutputs();
+            List<TransactionOutput> outputs = transaction.getOutputs();
             if(outputs != null){
                 for(TransactionOutput transactionOutput : outputs) {
                     String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
@@ -312,7 +312,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(!saveUuid(uuidSet,transactionUUID)){
             return false;
         }
-        ArrayList<TransactionInput> inputs = transaction.getInputs();
+        List<TransactionInput> inputs = transaction.getInputs();
         if(inputs != null){
             for(TransactionInput transactionInput : inputs) {
                 TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
@@ -322,7 +322,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 }
             }
         }
-        ArrayList<TransactionOutput> outputs = transaction.getOutputs();
+        List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs != null){
             for(TransactionOutput transactionOutput : outputs) {
                 String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
@@ -441,12 +441,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 }
             }
 
-            ArrayList<TransactionInput> inputs = mineAwardTransaction.getInputs();
+            List<TransactionInput> inputs = mineAwardTransaction.getInputs();
             if(inputs!=null && inputs.size()!=0){
                 logger.error("区块数据异常：挖矿交易的输入只能为空。");
                 return false;
             }
-            ArrayList<TransactionOutput> outputs = mineAwardTransaction.getOutputs();
+            List<TransactionOutput> outputs = mineAwardTransaction.getOutputs();
             if(outputs == null){
                 logger.error("区块数据异常：挖矿交易的输出不能为空。");
                 return false;
@@ -568,7 +568,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                     writeBatch.delete(uuidKey);
                     writeBatch.delete(transactionUuidKey);
                 }
-                ArrayList<TransactionInput> inputs = transaction.getInputs();
+                List<TransactionInput> inputs = transaction.getInputs();
                 if(inputs!=null){
                     for(TransactionInput txInput:inputs){
                         //更新UTXO数据
@@ -581,7 +581,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                         }
                     }
                 }
-                ArrayList<TransactionOutput> outputs = transaction.getOutputs();
+                List<TransactionOutput> outputs = transaction.getOutputs();
                 if(outputs!=null){
                     for(TransactionOutput output:outputs){
                         //UUID数据

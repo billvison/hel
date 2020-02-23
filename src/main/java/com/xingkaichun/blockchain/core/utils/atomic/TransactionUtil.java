@@ -18,7 +18,7 @@ public class TransactionUtil {
     /**
      * 交易输入总额
      */
-    public static BigDecimal getInputsValue(ArrayList<TransactionInput> inputs) {
+    public static BigDecimal getInputsValue(List<TransactionInput> inputs) {
         BigDecimal total = new BigDecimal("0");
         for(TransactionInput i : inputs) {
             if(i.getUnspendTransactionOutput() == null) continue; //if Transaction can't be found skip it, This behavior may not be optimal.
@@ -30,7 +30,7 @@ public class TransactionUtil {
     /**
      * 交易输出总额
      */
-    public static BigDecimal getOutputsValue(ArrayList<TransactionOutput> outputs) {
+    public static BigDecimal getOutputsValue(List<TransactionOutput> outputs) {
         BigDecimal total = new BigDecimal("0");
         for(TransactionOutput o : outputs) {
             total = total.add(o.getValue());
@@ -87,7 +87,7 @@ public class TransactionUtil {
     }
 
     public static StringPublicKey getSenderStringPublicKey(Transaction transaction) {
-        ArrayList<TransactionInput> inputs = transaction.getInputs();
+        List<TransactionInput> inputs = transaction.getInputs();
         if(inputs == null || inputs.size() == 0){
             return null;
         }
@@ -127,7 +127,7 @@ public class TransactionUtil {
 
     public static List<String> getOutpuUtxoIds(Transaction transaction){
         List<String> ids = new ArrayList<>();
-        ArrayList<TransactionOutput> outputs = transaction.getOutputs();
+        List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs==null || outputs.size()==0){
             return ids;
         }
@@ -139,7 +139,7 @@ public class TransactionUtil {
 
     public static boolean isSpendOwnUtxo(Transaction transaction){
         StringPublicKey senderStringPublicKey = getSenderStringPublicKey(transaction);
-        ArrayList<TransactionInput> inputs = transaction.getInputs();
+        List<TransactionInput> inputs = transaction.getInputs();
         for(TransactionInput input:inputs){
             boolean eq = senderStringPublicKey.getValue().equals(input.getStringPublicKey().getValue());
             if(!eq){

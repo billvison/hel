@@ -169,7 +169,7 @@ public class MinerDefaultImpl extends Miner {
         Iterator<Transaction> iterator = packingTransactionList.iterator();
         while (iterator.hasNext()){
             Transaction tx = iterator.next();
-            ArrayList<TransactionInput> inputs = tx.getInputs();
+            List<TransactionInput> inputs = tx.getInputs();
             boolean multiTimeUseOneUTXO = false;
             for(TransactionInput input:inputs){
                 String unspendTransactionOutputUUID = input.getUnspendTransactionOutput().getTransactionOutputUUID();
@@ -178,7 +178,7 @@ public class MinerDefaultImpl extends Miner {
                     break;
                 }
             }
-            ArrayList<TransactionOutput> outputs = tx.getOutputs();
+            List<TransactionOutput> outputs = tx.getOutputs();
             for(TransactionOutput transactionOutput:outputs){
                 String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
                 if(!uuidSet.add(transactionOutputUUID)){
