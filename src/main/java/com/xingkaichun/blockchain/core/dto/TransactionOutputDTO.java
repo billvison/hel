@@ -14,8 +14,8 @@ public class TransactionOutputDTO implements Serializable {
 
     //交易输出的ID
     private String transactionOutputUUID;
-    //交易输出的接收方 TODO 地址
-    private String reciepient;
+    //交易输出的地址
+    private String address;
     //交易输出的金额
     private BigDecimal value;
 

@@ -1,7 +1,7 @@
 package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.impl.*;
-import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
+import com.xingkaichun.blockchain.core.model.key.StringAddress;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class BlockChainCoreFactory {
 
 
-    public BlockChainCore createBlockChainCore(String blockchainPath,String minerPublicKeyString) throws Exception {
+    public BlockChainCore createBlockChainCore(String blockchainPath,String minerAddress) throws Exception {
 
         Incentive incentive = new IncentiveDefaultImpl();
         Consensus consensus = new ProofOfWorkConsensus();
@@ -18,8 +18,8 @@ public class BlockChainCoreFactory {
         TransactionDataBase transactionDataBase = new TransactionDataBaseDefaultImpl();
 
         MinerTransactionDtoDataBase minerTransactionDtoDataBase = new MinerTransactionDtoDtoDataBaseDefaultImpl(new File(blockchainPath,"MinerTransactionDtoDataBase").getAbsolutePath(),transactionDataBase);
-        PublicKeyString minerPublicKey = new PublicKeyString(minerPublicKeyString);
-        Miner miner = new MinerDefaultImpl(blockChainDataBase, minerTransactionDtoDataBase,minerPublicKey);
+        StringAddress minerStringAddress = new StringAddress(minerAddress);
+        Miner miner = new MinerDefaultImpl(blockChainDataBase, minerTransactionDtoDataBase,minerStringAddress);
 
         SynchronizerDataBase synchronizerDataBase = new SynchronizerDataBaseDefaultImpl(new File(blockchainPath,"Synchronizer").getAbsolutePath(),"otherNodeBlock.data",transactionDataBase);
         BlockChainDataBase temporaryBlockChainDataBase = new BlockChainDataBaseDefaultImpl(new File(blockchainPath,"BlockChainDataBaseDuplicate").getAbsolutePath(),incentive,consensus);

@@ -3,6 +3,7 @@ package com.xingkaichun.blockchain.core.dto;
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.model.key.PrivateKeyString;
 import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
+import com.xingkaichun.blockchain.core.model.key.StringAddress;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
@@ -29,11 +30,13 @@ public class DtoUtils {
 
         ArrayList<TransactionInput> inputs = new ArrayList<>();
         transaction.setInputs(inputs);
-        List<String> dtoInputs = transactionDTO.getInputs();
-        if(dtoInputs!=null || dtoInputs.size()!=0){
-            for (String dtoInput:dtoInputs){
-                TransactionOutput transactionOutput = blockChainDataBase.findUtxoByUtxoUuid(dtoInput);
+        List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getInputs();
+        if(transactionInputDtoList!=null || transactionInputDtoList.size()!=0){
+            for (TransactionInputDTO transactionInputDTO:transactionInputDtoList){
+                String unspendTransactionOutputUUID = transactionInputDTO.getUnspendTransactionOutputUUID();
+                TransactionOutput transactionOutput = blockChainDataBase.findUtxoByUtxoUuid(unspendTransactionOutputUUID);
                 TransactionInput transactionInput = new TransactionInput();
+                transactionInput.setPublicKeyString(new PublicKeyString(transactionInputDTO.getPublicKeyString()));
                 transactionInput.setUnspendTransactionOutput(transactionOutput);
                 inputs.add(transactionInput);
             }
@@ -58,7 +61,7 @@ public class DtoUtils {
     public static TransactionOutput classCast(TransactionOutputDTO transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
         transactionOutput.setTransactionOutputUUID(transactionOutputDTO.getTransactionOutputUUID());
-        transactionOutput.setReciepient(new PublicKeyString(transactionOutputDTO.getReciepient()));
+        transactionOutput.setStringAddress(new StringAddress(transactionOutputDTO.getAddress()));
         transactionOutput.setValue(transactionOutputDTO.getValue());
         return transactionOutput;
     }
@@ -83,7 +86,15 @@ public class DtoUtils {
     }
 
     private static List<String> getInputUtxoIds(TransactionDTO transactionDTO){
-        return transactionDTO.getInputs();
+        List<String> ids = new ArrayList<>();
+        List<TransactionInputDTO> inputs = transactionDTO.getInputs();
+        if(inputs==null || inputs.size()==0){
+            return ids;
+        }
+        for(TransactionInputDTO transactionInputDTO:inputs){
+            ids.add(transactionInputDTO.getUnspendTransactionOutputUUID());
+        }
+        return ids;
     }
 
     private static List<String> getOutpuUtxoIds(TransactionDTO transactionDTO){

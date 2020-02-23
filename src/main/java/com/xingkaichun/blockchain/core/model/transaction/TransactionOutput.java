@@ -1,7 +1,7 @@
 package com.xingkaichun.blockchain.core.model.transaction;
 
 
-import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
+import com.xingkaichun.blockchain.core.model.key.StringAddress;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -15,8 +15,8 @@ public class TransactionOutput implements Serializable {
 
     //交易输出的ID
     private String transactionOutputUUID;
-    //交易输出的接收方 TODO 地址
-    private PublicKeyString reciepient;
+    //交易输出的地址
+    private StringAddress stringAddress;
     //交易输出的金额
     private BigDecimal value;
 

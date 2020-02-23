@@ -4,7 +4,7 @@ import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.Miner;
 import com.xingkaichun.blockchain.core.MinerTransactionDtoDataBase;
 import com.xingkaichun.blockchain.core.model.Block;
-import com.xingkaichun.blockchain.core.model.key.PublicKeyString;
+import com.xingkaichun.blockchain.core.model.key.StringAddress;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
@@ -23,8 +23,8 @@ public class MinerDefaultImpl extends Miner {
     private Logger logger = LoggerFactory.getLogger(MinerDefaultImpl.class);
 
     //region 属性与构造函数
-    //矿工公钥
-    private PublicKeyString minerPublicKey;
+    //矿工地址
+    private StringAddress minerStringAddress;
     private BlockChainDataBase blockChainDataBase ;
     //交易池：矿工从交易池里获取挖矿的原材料(交易数据)
     private MinerTransactionDtoDataBase minerTransactionDtoDataBase;
@@ -33,10 +33,10 @@ public class MinerDefaultImpl extends Miner {
     private boolean mineOption = true;
 
 
-    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, MinerTransactionDtoDataBase minerTransactionDtoDataBase, PublicKeyString minerPublicKey) {
+    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, MinerTransactionDtoDataBase minerTransactionDtoDataBase, StringAddress minerStringAddress) {
         this.blockChainDataBase = blockChainDataBase;
         this.minerTransactionDtoDataBase = minerTransactionDtoDataBase;
-        this.minerPublicKey = minerPublicKey;
+        this.minerStringAddress = minerStringAddress;
     }
     //endregion
 
@@ -231,7 +231,7 @@ public class MinerDefaultImpl extends Miner {
 
         TransactionOutput output = new TransactionOutput();
         output.setTransactionOutputUUID(String.valueOf(UUID.randomUUID()));
-        output.setReciepient(minerPublicKey);
+        output.setStringAddress(minerStringAddress);
         output.setValue(award);
 
         outputs.add(output);

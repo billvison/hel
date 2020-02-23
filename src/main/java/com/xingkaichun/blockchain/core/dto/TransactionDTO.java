@@ -20,7 +20,7 @@ public class TransactionDTO implements Serializable {
     //交易类型
     private TransactionType transactionType;
     //交易输入
-    private List<String> inputs;
+    private List<TransactionInputDTO> inputs;
     //交易输出
     private List<TransactionOutputDTO> outputs;
     //交易签名

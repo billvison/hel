@@ -91,7 +91,7 @@ public class TransactionUtil {
         if(inputs == null || inputs.size() == 0){
             return null;
         }
-        PublicKeyString senderPublicKeyString = inputs.get(0).getUnspendTransactionOutput().getReciepient();
+        PublicKeyString senderPublicKeyString = inputs.get(0).getPublicKeyString();
         return senderPublicKeyString;
     }
 
@@ -141,7 +141,7 @@ public class TransactionUtil {
         PublicKeyString senderPublicKeyString = getSenderPublicKeyString(transaction);
         ArrayList<TransactionInput> inputs = transaction.getInputs();
         for(TransactionInput input:inputs){
-            boolean eq = senderPublicKeyString.getValue().equals(input.getUnspendTransactionOutput().getReciepient().getValue());
+            boolean eq = senderPublicKeyString.getValue().equals(input.getPublicKeyString().getValue());
             if(!eq){
                 return false;
             }
