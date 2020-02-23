@@ -119,7 +119,7 @@ public abstract class BlockChainDataBase {
         }
     }
     /**
-     * 重载
+     * 重载，见其它同名函数
      */
     public boolean isTransactionAmountLegal(String transactionAmount) {
         if(transactionAmount == null){
@@ -134,7 +134,7 @@ public abstract class BlockChainDataBase {
     //endregion
 
     /**
-     * 校验交易文本大小是否合法：用来限制交易的文本大小
+     * 校验交易文本大小是否合法：用来限制交易的文本大小，用于限制区块大小
      */
     public boolean isTransactionTextSizeLegal(Transaction transaction) {
         if(transaction == null){
@@ -150,7 +150,7 @@ public abstract class BlockChainDataBase {
     }
 
     /**
-     * 校验交易文本大小是否合法：用来限制交易的文本大小
+     * 校验区块含有的交易数量是否合法：用来限制区块含有的交易数量，用于限制区块大小
      */
     public boolean isBlcokTransactionSizeLegal(Block block) {
         if(block == null){
