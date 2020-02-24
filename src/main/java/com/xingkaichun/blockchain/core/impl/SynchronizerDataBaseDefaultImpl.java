@@ -19,6 +19,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
     String dbFileName;
     private TransactionDataBase transactionDataBase;
 
+    private Connection connection;
     public SynchronizerDataBaseDefaultImpl(String dbPath, String dbFileName, TransactionDataBase transactionDataBase) throws Exception {
         this.dbPath = dbPath;
         this.dbFileName = dbFileName;
@@ -130,12 +131,15 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         preparedStatement2.executeUpdate();
     }
 
-    private Connection connection() throws ClassNotFoundException, SQLException {
+    private synchronized Connection connection() throws ClassNotFoundException, SQLException {
+        if(connection != null){
+            return connection;
+        }
         Class.forName("org.sqlite.JDBC");
         File dataPath = new File(dbPath);
         dataPath.mkdirs();
         File dataFile = new File(dataPath,dbFileName);
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:" + dataFile.getAbsolutePath());
+        connection = DriverManager.getConnection("jdbc:sqlite:" + dataFile.getAbsolutePath());
         return connection;
     }
 
