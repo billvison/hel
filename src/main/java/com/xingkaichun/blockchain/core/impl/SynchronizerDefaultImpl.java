@@ -23,8 +23,6 @@ public class SynchronizerDefaultImpl extends Synchronizer {
      * ③将临时区块链的数据同步至本节点区块链
      */
     private BlockChainDataBase temporaryBlockChainDataBase;
-    //节点同步数据库
-    private SynchronizerDataBase synchronizerDataBase;
 
     //同步开关:默认同步其它节点区块链数据
     private boolean synchronizeOption = true;

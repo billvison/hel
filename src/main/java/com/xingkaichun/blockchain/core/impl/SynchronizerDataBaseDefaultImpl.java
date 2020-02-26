@@ -132,7 +132,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
     }
 
     private synchronized Connection connection() throws ClassNotFoundException, SQLException {
-        if(connection != null){
+        if(connection != null && !connection.isClosed()){
             return connection;
         }
         Class.forName("org.sqlite.JDBC");
