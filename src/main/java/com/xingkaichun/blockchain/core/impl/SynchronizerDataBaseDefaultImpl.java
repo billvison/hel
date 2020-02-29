@@ -29,7 +29,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
     }
 
     @Override
-    public boolean addBlock(String nodeId, BlockDTO blockDTO) throws Exception {
+    public boolean addBlockDTO(String nodeId, BlockDTO blockDTO) throws Exception {
 
         transactionDataBase.insertBlockDTO(blockDTO);
 
@@ -44,7 +44,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
     }
 
     @Override
-    public BlockDTO getNextBlock(String nodeId) throws Exception {
+    public BlockDTO getNextBlockDTO(String nodeId) throws Exception {
         int intNextBlockHeight = 0;
         String sql1 = "SELECT nextBlockHeight FROM NODE WHERE status = 'FINISH' nodeId = ?";
         PreparedStatement preparedStatement1 = connection().prepareStatement(sql1);

@@ -48,11 +48,11 @@ public abstract class  SynchronizerDataBase {
     /**
      * 保存节点(nodeId)传输过来的数据
      */
-    public abstract boolean addBlock(String nodeId, BlockDTO blockDTO) throws Exception ;
+    public abstract boolean addBlockDTO(String nodeId, BlockDTO blockDTO) throws Exception ;
     /**
      * 获取节点(nodeId)传输过来的数据，返回结果不为null，代表可以继续调用此方法，继续获取数据。
      */
-    public abstract BlockDTO getNextBlock(String nodeId) throws Exception ;
+    public abstract BlockDTO getNextBlockDTO(String nodeId) throws Exception ;
     /**
      * 获取节点(nodeId)传输过来所有区块中最大的区块高度。
      */

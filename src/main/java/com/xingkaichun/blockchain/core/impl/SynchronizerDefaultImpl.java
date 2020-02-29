@@ -85,7 +85,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             return;
         }
 
-        BlockDTO blockDTO = synchronizerDataBase.getNextBlock(availableSynchronizeNodeId);
+        BlockDTO blockDTO = synchronizerDataBase.getNextBlockDTO(availableSynchronizeNodeId);
         if(blockDTO != null){
             reduceBlockChain(temporaryBlockChainDataBase,blockDTO.getHeight()-1);
             while(blockDTO != null){
@@ -94,7 +94,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
                 if(!isAddBlockToBlockChainSuccess){
                     break;
                 }
-                blockDTO = synchronizerDataBase.getNextBlock(availableSynchronizeNodeId);
+                blockDTO = synchronizerDataBase.getNextBlockDTO(availableSynchronizeNodeId);
             }
         }
         synchronizerDataBase.clear(availableSynchronizeNodeId);
