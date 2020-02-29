@@ -12,9 +12,7 @@ import com.xingkaichun.blockchain.core.utils.atomic.CipherUtil;
 import com.xingkaichun.blockchain.core.utils.atomic.KeyUtil;
 import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -214,5 +212,13 @@ public class DtoUtils {
         objectOutputStream.writeObject(blockDTO);
         byte[] bytesBlockDTO = byteArrayOutputStream.toByteArray();
         return bytesBlockDTO;
+    }
+
+    public static BlockDTO decodeToBlockDTO(byte[] byteBlockDTO) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteBlockDTO);
+        ObjectInputStream objectInputStream = null;
+        objectInputStream = new ObjectInputStream(byteArrayInputStream);
+        BlockDTO blockDTO = (BlockDTO) objectInputStream.readObject();
+        return blockDTO;
     }
 }

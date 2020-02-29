@@ -50,28 +50,40 @@ public abstract class  SynchronizerDataBase {
      */
     public abstract boolean addBlockDTO(String nodeId, BlockDTO blockDTO) throws Exception ;
     /**
-     * 获取节点(nodeId)传输过来的数据，返回结果不为null，代表可以继续调用此方法，继续获取数据。
+     * 获取节点(nodeId)传输过来所有区块中最小的区块高度。
      */
-    public abstract BlockDTO getNextBlockDTO(String nodeId) throws Exception ;
+    public abstract int getMinBlockHeight(String nodeId) throws Exception ;
     /**
      * 获取节点(nodeId)传输过来所有区块中最大的区块高度。
      */
     public abstract int getMaxBlockHeight(String nodeId) throws Exception ;
     /**
-     * 获取一个有数据传输完成标识的节点ID
+     * 根据节点与区块高度获取区块
      */
-    public abstract String getDataTransferFinishFlagNodeId() throws Exception ;
+    public abstract BlockDTO getBlockDto(String nodeId,int blockHeight) throws Exception ;
     /**
      * 给节点(nodeId)添加数据传输完成的标识。
      */
     public abstract void addDataTransferFinishFlag(String nodeId) throws Exception ;
+    /**
+     * 节点(nodeId)有数据传输完成的标识吗？
+     */
+    public abstract boolean hasDataTransferFinishFlag(String nodeId) throws Exception;
     /**
      * 删除节点(nodeId)传输过来的数据。
      * 清除节点(nodeId)的数据传输完成标识
      */
     public abstract void clear(String nodeId) throws Exception ;
     /**
-     * 节点(nodeId)有数据传输完成的标识吗？
+     * 清空数据库
      */
-    public abstract boolean hasDataTransferFinishFlag(String nodeId) throws Exception;
+    public abstract void clearDB() throws Exception ;
+    /**
+     * 获取一个有数据传输完成标识的节点ID
+     */
+    public abstract String getDataTransferFinishFlagNodeId() throws Exception ;
+    /**
+     * 获取一个节点ID
+     */
+    public abstract String getNodeId() throws Exception ;
 }
