@@ -12,6 +12,9 @@ import com.xingkaichun.blockchain.core.utils.atomic.CipherUtil;
 import com.xingkaichun.blockchain.core.utils.atomic.KeyUtil;
 import com.xingkaichun.blockchain.core.utils.atomic.TransactionUtil;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -202,5 +205,14 @@ public class DtoUtils {
             ids.add(transactionOutputDTO.getTransactionOutputUUID());
         }
         return ids;
+    }
+
+    public static byte[] encode(BlockDTO blockDTO) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = null;
+        objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(blockDTO);
+        byte[] bytesBlockDTO = byteArrayOutputStream.toByteArray();
+        return bytesBlockDTO;
     }
 }

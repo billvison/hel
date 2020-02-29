@@ -1,5 +1,6 @@
 package com.xingkaichun.blockchain.core;
 
+import com.xingkaichun.blockchain.core.dto.BlockDTO;
 import com.xingkaichun.blockchain.core.dto.TransactionDTO;
 import com.xingkaichun.blockchain.core.model.Block;
 
@@ -21,5 +22,5 @@ public abstract class  TransactionDataBase {
      */
     public abstract void insertTransaction(TransactionDTO transactionDTO) throws Exception ;
 
-    public abstract void insertBlock(Block block) throws Exception ;
+    public abstract void insertBlockDTO(BlockDTO blockDTO) throws Exception ;
 }

@@ -3,6 +3,8 @@ package com.xingkaichun.blockchain.core.impl;
 import com.xingkaichun.blockchain.core.BlockChainDataBase;
 import com.xingkaichun.blockchain.core.Synchronizer;
 import com.xingkaichun.blockchain.core.SynchronizerDataBase;
+import com.xingkaichun.blockchain.core.dto.BlockDTO;
+import com.xingkaichun.blockchain.core.dto.DtoUtils;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.blockchain.core.utils.atomic.EqualsUtils;
@@ -83,15 +85,16 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             return;
         }
 
-        Block block = synchronizerDataBase.getNextBlock(availableSynchronizeNodeId);
-        if(block != null){
-            reduceBlockChain(temporaryBlockChainDataBase,block.getHeight()-1);
-            while(block != null){
+        BlockDTO blockDTO = synchronizerDataBase.getNextBlock(availableSynchronizeNodeId);
+        if(blockDTO != null){
+            reduceBlockChain(temporaryBlockChainDataBase,blockDTO.getHeight()-1);
+            while(blockDTO != null){
+                Block block = DtoUtils.classCast(temporaryBlockChainDataBase,blockDTO);
                 boolean isAddBlockToBlockChainSuccess = temporaryBlockChainDataBase.addBlock(block);
                 if(!isAddBlockToBlockChainSuccess){
                     break;
                 }
-                block = synchronizerDataBase.getNextBlock(availableSynchronizeNodeId);
+                blockDTO = synchronizerDataBase.getNextBlock(availableSynchronizeNodeId);
             }
         }
         synchronizerDataBase.clear(availableSynchronizeNodeId);

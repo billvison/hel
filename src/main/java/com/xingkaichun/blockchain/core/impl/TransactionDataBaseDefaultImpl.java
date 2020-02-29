@@ -1,6 +1,7 @@
 package com.xingkaichun.blockchain.core.impl;
 
 import com.xingkaichun.blockchain.core.TransactionDataBase;
+import com.xingkaichun.blockchain.core.dto.BlockDTO;
 import com.xingkaichun.blockchain.core.dto.TransactionDTO;
 import com.xingkaichun.blockchain.core.model.Block;
 import org.slf4j.Logger;
@@ -17,7 +18,7 @@ public class TransactionDataBaseDefaultImpl extends TransactionDataBase {
     }
 
     @Override
-    public void insertBlock(Block block) throws Exception {
+    public void insertBlockDTO(BlockDTO blockDTO) throws Exception {
 
     }
 

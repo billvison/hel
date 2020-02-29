@@ -2,8 +2,8 @@ package com.xingkaichun.blockchain.core.impl;
 
 import com.xingkaichun.blockchain.core.SynchronizerDataBase;
 import com.xingkaichun.blockchain.core.TransactionDataBase;
-import com.xingkaichun.blockchain.core.model.Block;
-import com.xingkaichun.blockchain.core.utils.atomic.EncodeDecode;
+import com.xingkaichun.blockchain.core.dto.BlockDTO;
+import com.xingkaichun.blockchain.core.dto.DtoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,23 +29,22 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
     }
 
     @Override
-    public boolean addBlock(String nodeId, Block block) throws Exception {
+    public boolean addBlock(String nodeId, BlockDTO blockDTO) throws Exception {
 
-        transactionDataBase.insertBlock(block);
+        transactionDataBase.insertBlockDTO(blockDTO);
 
         String sql = "INSERT INTO DATA (nodeId,blockHeight,block) " +
                 "VALUES (?, ?, ?);";
         PreparedStatement preparedStatement = connection().prepareStatement(sql);
         preparedStatement.setString(1,nodeId);
-        preparedStatement.setInt(2,block.getHeight());
-        preparedStatement.setBlob(3,new SerialBlob(EncodeDecode.encode(block)));
+        preparedStatement.setInt(2,blockDTO.getHeight());
+        preparedStatement.setBlob(3,new SerialBlob(DtoUtils.encode(blockDTO)));
         preparedStatement.executeUpdate();
-
         return true;
     }
 
     @Override
-    public Block getNextBlock(String nodeId) throws Exception {
+    public BlockDTO getNextBlock(String nodeId) throws Exception {
         int intNextBlockHeight = 0;
         String sql1 = "SELECT nextBlockHeight FROM NODE WHERE status = 'FINISH' nodeId = ?";
         PreparedStatement preparedStatement1 = connection().prepareStatement(sql1);
