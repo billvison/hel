@@ -182,9 +182,11 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             return connection;
         }
         Class.forName("org.sqlite.JDBC");
-        File dataPath = new File(new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME),NODE_SYNCHRONIZE_DATABASE_File_Name);
-        dataPath.mkdirs();
-        connection = DriverManager.getConnection("jdbc:sqlite:" + dataPath.getAbsolutePath());
+        File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
+        nodeSynchronizeDatabaseDirect.mkdirs();
+        File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
+        String dbUrl = String.format("jdbc:sqlite:%s",nodeSynchronizeDatabasePath.getAbsolutePath());
+        connection = DriverManager.getConnection(dbUrl);
         return connection;
     }
 
