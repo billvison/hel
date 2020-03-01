@@ -1,5 +1,6 @@
 package com.xingkaichun.blockchain.core.utils.atomic;
 
+import com.xingkaichun.blockchain.core.model.key.StringAddress;
 import com.xingkaichun.blockchain.core.model.key.StringPrivateKey;
 import com.xingkaichun.blockchain.core.model.key.StringPublicKey;
 import com.xingkaichun.blockchain.core.model.wallet.Wallet;
@@ -12,9 +13,9 @@ import java.security.spec.ECGenParameterSpec;
 
 public class WalletUtil {
 
-    public static Wallet loadWallet(StringPrivateKey stringPrivateKey, StringPublicKey stringPublicKey){
+    public static Wallet loadWallet(StringPrivateKey stringPrivateKey, StringPublicKey stringPublicKey, StringAddress stringAddress){
         try {
-            Wallet wallet = new Wallet(stringPrivateKey,stringPublicKey);
+            Wallet wallet = new Wallet(stringPrivateKey,stringPublicKey,stringAddress);
             return wallet;
         }catch(Exception e) {
             throw new RuntimeException(e);
@@ -27,12 +28,12 @@ public class WalletUtil {
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA","BC");
             SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
             ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256k1");
-            // Initialize the key generator and generate a KeyPair
-            keyGen.initialize(ecSpec, random); //256
+            keyGen.initialize(ecSpec, random);
             KeyPair keyPair = keyGen.generateKeyPair();
             StringPublicKey stringPublicKey = KeyUtil.convertPublicKeyToStringPublicKey(keyPair.getPublic());
             StringPrivateKey stringPrivateKey = KeyUtil.convertPrivateKeyToStringPrivateKey(keyPair.getPrivate());
-            Wallet wallet = new Wallet(stringPrivateKey,stringPublicKey);
+            StringAddress stringAddress = KeyUtil.convertStringPublicKeyToStringAddress(stringPublicKey);
+            Wallet wallet = new Wallet(stringPrivateKey,stringPublicKey,stringAddress);
             return wallet;
         }catch(Exception e) {
             throw new RuntimeException(e);

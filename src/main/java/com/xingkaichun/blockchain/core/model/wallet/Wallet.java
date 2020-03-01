@@ -1,5 +1,6 @@
 package com.xingkaichun.blockchain.core.model.wallet;
 
+import com.xingkaichun.blockchain.core.model.key.StringAddress;
 import com.xingkaichun.blockchain.core.model.key.StringPrivateKey;
 import com.xingkaichun.blockchain.core.model.key.StringPublicKey;
 import lombok.Data;
@@ -14,9 +15,12 @@ public class Wallet {
 
     private StringPublicKey stringPublicKey;
 
-    public Wallet(StringPrivateKey stringPrivateKey, StringPublicKey stringPublicKey) {
+    private StringAddress stringAddress;
+
+    public Wallet(StringPrivateKey stringPrivateKey, StringPublicKey stringPublicKey, StringAddress stringAddress) {
         this.stringPrivateKey = stringPrivateKey;
         this.stringPublicKey = stringPublicKey;
+        this.stringAddress = stringAddress;
     }
 
 }
