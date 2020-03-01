@@ -1,5 +1,6 @@
 package com.xingkaichun.blockchain.core.utils.atomic;
 
+import com.xingkaichun.blockchain.core.model.key.StringAddress;
 import com.xingkaichun.blockchain.core.model.key.StringPrivateKey;
 import com.xingkaichun.blockchain.core.model.key.StringPublicKey;
 import com.xingkaichun.blockchain.core.model.wallet.Wallet;
@@ -86,5 +87,22 @@ public class KeyUtil {
         System.out.println("StringPrivateKey"+convertPrivateKeyToStringPrivateKey(privateKey2).getValue());
         //System.out.println("StringPublicKey"+convertPublicKeyToStringPublicKey(publicKey2).getValue());
 
+    }
+
+    public static boolean isStringPublicKeyEqualStringAddress(StringPublicKey stringPublicKey, StringAddress stringAddress) {
+        try {
+            StringAddress tempStringAddress = convertStringPublicKeyToStringAddress(stringPublicKey);
+            return stringAddress.getValue().equals(tempStringAddress.getValue());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static StringAddress convertStringPublicKeyToStringAddress(StringPublicKey stringPublicKey) throws Exception {
+        String version = "00";
+        String publicKeyHash =  CipherUtil.ripeMD160(CipherUtil.applySha256(stringPublicKey.getValue()));
+        String check = CipherUtil.applySha256(CipherUtil.applySha256(version+publicKeyHash)).substring(0,4);
+        String address = Base58Util.encode((version+publicKeyHash+check).getBytes());
+        return new StringAddress(address);
     }
 }

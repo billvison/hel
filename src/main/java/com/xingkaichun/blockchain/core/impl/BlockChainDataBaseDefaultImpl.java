@@ -6,6 +6,8 @@ import com.xingkaichun.blockchain.core.Incentive;
 import com.xingkaichun.blockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.blockchain.core.model.Block;
 import com.xingkaichun.blockchain.core.model.enums.BlockChainActionEnum;
+import com.xingkaichun.blockchain.core.model.key.StringAddress;
+import com.xingkaichun.blockchain.core.model.key.StringPublicKey;
 import com.xingkaichun.blockchain.core.model.transaction.Transaction;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.blockchain.core.model.transaction.TransactionOutput;
@@ -352,7 +354,16 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 }
             }
         }
-
+        //
+        if(inputs != null){
+            for(TransactionInput transactionInput : inputs) {
+                StringPublicKey stringPublicKey = transactionInput.getStringPublicKey();
+                StringAddress stringAddress = transactionInput.getUnspendTransactionOutput().getStringAddress();
+                if(!KeyUtil.isStringPublicKeyEqualStringAddress(stringPublicKey,stringAddress)){
+                    return false;
+                }
+            }
+        }
         //校验交易输出的金额是否满足区块链系统对金额数字的的强制要求
         if(outputs != null){
             for(TransactionOutput o : outputs) {

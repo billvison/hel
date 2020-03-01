@@ -1,13 +1,9 @@
 package com.xingkaichun.blockchain.core.utils.atomic;
 
-import com.xingkaichun.blockchain.core.model.transaction.Transaction;
-
 import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 密码学工具类
@@ -63,4 +59,15 @@ public class CipherUtil {
         }
     }
 
+    /**
+     * RipeMD160消息摘要
+     */
+    public static byte[] ripeMD160(byte[] data) throws Exception{
+        MessageDigest md = MessageDigest.getInstance("RipeMD160");
+        return md.digest(data);
+    }
+    public static String ripeMD160(String data) throws Exception{
+        MessageDigest md = MessageDigest.getInstance("RipeMD160");
+        return new String(md.digest(data.getBytes()));
+    }
 }
