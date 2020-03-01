@@ -23,12 +23,13 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
 
     private Logger logger = LoggerFactory.getLogger(MinerTransactionDtoDtoDataBaseDefaultImpl.class);
 
+    private final static String MinerTransaction_DataBase_DirectName = "MinerTransactionDtoDataBase";
     private DB transactionPoolDB;
     private TransactionDataBase transactionDataBase;
 
-    public MinerTransactionDtoDtoDataBaseDefaultImpl(String dbPath, TransactionDataBase transactionDataBase) throws Exception {
+    public MinerTransactionDtoDtoDataBaseDefaultImpl(String blockchainDataPath, TransactionDataBase transactionDataBase) throws Exception {
 
-        this.transactionPoolDB = LevelDBUtil.createDB(new File(dbPath));
+        this.transactionPoolDB = LevelDBUtil.createDB(new File(blockchainDataPath,MinerTransaction_DataBase_DirectName));
         this.transactionDataBase = transactionDataBase;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

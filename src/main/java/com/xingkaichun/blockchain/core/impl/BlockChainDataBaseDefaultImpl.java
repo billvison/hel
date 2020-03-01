@@ -40,6 +40,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private Logger logger = LoggerFactory.getLogger(BlockChainDataBaseDefaultImpl.class);
 
     //region 变量
+    private final static String BlockChain_DataBase_DirectName = "BlockChainDataBase";
     //区块链数据库
     private DB blockChainDB;
 
@@ -57,6 +58,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private final static String UNSPEND_TRANSACTION_OUPUT_UUID_PREFIX_FLAG = "U_T_O_U_P_F_";
     //UUID标识：UUID(交易UUID、交易输出UUID)的前缀
     private final static String UUID_PREFIX_FLAG = "U_F_";
+
     /**
      * 锁:保证对区块链增区块、删区块的操作是同步的。
      * 查询区块操作不需要加锁，原因是，只有对区块链进行区块的增删才会改变区块链的数据。
@@ -65,12 +67,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //endregion
 
     //region 构造函数
-    /**
-     * 构造函数
-     * @param blockChainDataBasePath 区块链数据库地址
-     */
-    public BlockChainDataBaseDefaultImpl(String blockChainDataBasePath,Incentive incentive,Consensus consensus) throws Exception {
-        this.blockChainDB = LevelDBUtil.createDB(new File(blockChainDataBasePath));
+    public BlockChainDataBaseDefaultImpl(String blockchainDataPath,Incentive incentive,Consensus consensus) throws Exception {
+        this.blockChainDB = LevelDBUtil.createDB(new File(blockchainDataPath,BlockChain_DataBase_DirectName));
         this.incentive = incentive ;
         this.consensus = consensus ;
 

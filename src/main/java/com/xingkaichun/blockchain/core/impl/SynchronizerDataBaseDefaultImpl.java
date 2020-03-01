@@ -15,16 +15,17 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
     private Logger logger = LoggerFactory.getLogger(SynchronizerDataBaseDefaultImpl.class);
 
-    private String dbPath;
-    private String dbFileName;
+
+    private static final String NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME = "NodeSynchronizeDatabase";
+    private static final String NODE_SYNCHRONIZE_DATABASE_File_Name = "NodeSynchronize.db";
+
+    private String blockchainDataPath;
     private TransactionDataBase transactionDataBase;
     private Connection connection;
 
-    public SynchronizerDataBaseDefaultImpl(String dbPath, String dbFileName, TransactionDataBase transactionDataBase) throws Exception {
-        this.dbPath = dbPath;
-        this.dbFileName = dbFileName;
+    public SynchronizerDataBaseDefaultImpl(String blockchainDataPath, TransactionDataBase transactionDataBase) throws Exception {
+        this.blockchainDataPath = blockchainDataPath;
         this.transactionDataBase = transactionDataBase;
-
         init();
     }
 
@@ -181,10 +182,9 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             return connection;
         }
         Class.forName("org.sqlite.JDBC");
-        File dataPath = new File(dbPath);
+        File dataPath = new File(new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME),NODE_SYNCHRONIZE_DATABASE_File_Name);
         dataPath.mkdirs();
-        File dataFile = new File(dataPath,dbFileName);
-        connection = DriverManager.getConnection("jdbc:sqlite:" + dataFile.getAbsolutePath());
+        connection = DriverManager.getConnection("jdbc:sqlite:" + dataPath.getAbsolutePath());
         return connection;
     }
 
