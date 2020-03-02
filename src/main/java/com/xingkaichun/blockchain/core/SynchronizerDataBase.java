@@ -1,7 +1,8 @@
 package com.xingkaichun.blockchain.core;
 
 import com.xingkaichun.blockchain.core.dto.BlockDTO;
-import com.xingkaichun.blockchain.core.model.Block;
+
+import java.util.List;
 
 
 /**
@@ -86,4 +87,12 @@ public abstract class  SynchronizerDataBase {
      * 获取一个节点ID
      */
     public abstract String getNodeId() throws Exception ;
+    /**
+     * 获取一个节点ID
+     */
+    public abstract List<String> getAllNodeId() throws Exception ;
+    /**
+     * 获取节点ID最后更新时间
+     */
+    public abstract long getLastUpdateTimestamp(String nodeId) throws Exception ;
 }

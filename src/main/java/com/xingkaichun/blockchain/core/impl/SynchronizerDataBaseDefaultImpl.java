@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
@@ -41,7 +43,8 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
                 "(" +
                 "nodeId CHAR(100) NOT NULL," +
                 "blockHeight INTEGER NOT NULL," +
-                "blockDto BLOB" +
+                "blockDto BLOB," +
+                "insertTime INTEGER NOT NULL" +
                 ")";
         executeSql(createTable1Sql2);
     }
@@ -51,12 +54,13 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
         transactionDataBase.insertBlockDTO(blockDTO);
 
-        String sql = "INSERT INTO DATA (nodeId,blockHeight,blockDto) " +
+        String sql = "INSERT INTO DATA (nodeId,blockHeight,blockDto,insertTime) " +
                 "VALUES (?, ?, ?);";
         PreparedStatement preparedStatement = connection().prepareStatement(sql);
         preparedStatement.setString(1,nodeId);
         preparedStatement.setInt(2,blockDTO.getHeight());
         preparedStatement.setBlob(3,new SerialBlob(DtoUtils.encode(blockDTO)));
+        preparedStatement.setLong(4,System.currentTimeMillis());
         preparedStatement.executeUpdate();
         return true;
     }
@@ -137,6 +141,31 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             return nodeId;
         }
         return null;
+    }
+
+    @Override
+    public List<String> getAllNodeId() throws Exception {
+        String sql = "SELECT * FROM NODE";
+        PreparedStatement preparedStatement = connection().prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<String> nodeList = new ArrayList<>();
+        while (resultSet.next()){
+            String nodeId = resultSet.getString("nodeId");
+            nodeList.add(nodeId);
+        }
+        return nodeList;
+    }
+
+    @Override
+    public long getLastUpdateTimestamp(String nodeId) throws Exception {
+        String selectBlockDataSql = "SELECT insertTime FROM DATA WHERE nodeId = ? order by insertTime desc limit 0,1";
+        PreparedStatement preparedStatement = connection().prepareStatement(selectBlockDataSql);
+        preparedStatement.setString(1,nodeId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()){
+            return resultSet.getLong("insertTime");
+        }
+        return 0;
     }
 
     @Override
