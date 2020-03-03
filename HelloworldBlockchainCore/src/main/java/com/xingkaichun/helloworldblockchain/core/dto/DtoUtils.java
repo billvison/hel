@@ -77,7 +77,7 @@ public class DtoUtils {
     public static Transaction classCast(BlockChainDataBase blockChainDataBase, TransactionDTO transactionDTO) throws Exception {
         List<TransactionInput> inputs = new ArrayList<>();
         List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getInputs();
-        if(transactionInputDtoList!=null || transactionInputDtoList.size()!=0){
+        if(transactionInputDtoList!=null){
             for (TransactionInputDTO transactionInputDTO:transactionInputDtoList){
                 String unspendTransactionOutputUUID = transactionInputDTO.getUnspendTransactionOutputUUID();
                 TransactionOutput transactionOutput = blockChainDataBase.findUtxoByUtxoUuid(unspendTransactionOutputUUID);
@@ -90,7 +90,7 @@ public class DtoUtils {
 
         List<TransactionOutput> outputs = new ArrayList<>();
         List<TransactionOutputDTO> dtoOutputs = transactionDTO.getOutputs();
-        if(dtoOutputs!=null || dtoOutputs.size()!=0){
+        if(dtoOutputs!=null && dtoOutputs.size()!=0){
             for(TransactionOutputDTO transactionOutputDTO:dtoOutputs){
                 TransactionOutput transactionOutput = classCast(transactionOutputDTO);
                 outputs.add(transactionOutput);
@@ -112,7 +112,7 @@ public class DtoUtils {
     public static TransactionDTO classCast(Transaction transaction) throws Exception {
         List<TransactionInputDTO> inputs = new ArrayList<>();
         List<TransactionInput> transactionInputList = transaction.getInputs();
-        if(transactionInputList!=null || transactionInputList.size()!=0){
+        if(transactionInputList!=null){
             for (TransactionInput transactionInput:transactionInputList){
                 TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
                 TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
@@ -124,7 +124,7 @@ public class DtoUtils {
 
         List<TransactionOutputDTO> outputs = new ArrayList<>();
         List<TransactionOutput> transactionOutputList = transaction.getOutputs();
-        if(transactionOutputList!=null || transactionOutputList.size()!=0){
+        if(transactionOutputList!=null){
             for(TransactionOutput transactionOutput:transactionOutputList){
                 TransactionOutputDTO transactionOutputDTO = classCast(transactionOutput);
                 outputs.add(transactionOutputDTO);
