@@ -117,7 +117,7 @@ public class BlockChainController {
      */
     @ResponseBody
     @RequestMapping(value = BlockChainApiRoute.Query_BLOCKDTO_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(QueryBlockDtoByBlockHeightRequest request){
+    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(@RequestBody QueryBlockDtoByBlockHeightRequest request){
         try {
             BlockDTO blockDTO = blockChainService.queryBlockDtoByBlockHeight(request);
 
@@ -136,7 +136,7 @@ public class BlockChainController {
      */
     @ResponseBody
     @RequestMapping(value = BlockChainApiRoute.Query_BLOCK_HASH_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(QueryBlockHashByBlockHeightRequest request){
+    public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(@RequestBody QueryBlockHashByBlockHeightRequest request){
         try {
             String blockHash = blockChainService.queryBlockHashByBlockHeight(request);
 
@@ -155,7 +155,7 @@ public class BlockChainController {
      */
     @ResponseBody
     @RequestMapping(value = BlockChainApiRoute.QUERY_TRANSACTION_BY_TRANSACTION_UUID,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryTransactionByTransactionUuidResponse> queryTransactionByTransactionUUID(QueryTransactionByTransactionUuidRequest request){
+    public ServiceResult<QueryTransactionByTransactionUuidResponse> queryTransactionByTransactionUUID(@RequestBody QueryTransactionByTransactionUuidRequest request){
         try {
             TransactionDTO transactionDTO = blockChainService.QueryTransactionDtoByTransactionUUID(request);
 
