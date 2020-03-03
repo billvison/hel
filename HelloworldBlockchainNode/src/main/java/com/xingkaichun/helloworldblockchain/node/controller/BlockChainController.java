@@ -2,18 +2,23 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 
 import com.xingkaichun.helloworldblockchain.core.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.core.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.wallet.Wallet;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.BlockChainApiRoute;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.*;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchain.response.*;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.GenerateWalletRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryTransactionByTransactionUuidRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryUtxosByAddressRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.SubmitNormalTransactionRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchain.response.GenerateWalletResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchain.response.QueryTransactionByTransactionUuidResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchain.response.QueryUtxosByAddressResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchain.response.SubmitNormalTransactionResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.GetBlockHashByBlockHeightRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.response.GetBlockHashByBlockHeightResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.node.response.QueryBlockDtoResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoByBlockHeightRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockHashByBlockHeightRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.node.response.QueryBlockDtoByBlockHeightResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.node.response.QueryBlockHashByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +47,7 @@ public class BlockChainController {
      * 生成钱包(公钥、私钥、地址)
      */
     @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.GenerateWallet,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = BlockChainApiRoute.GENERATE_WALLET,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<GenerateWalletResponse> generateWallet(@RequestBody GenerateWalletRequest request){
         try {
             Wallet wallet = blockChainService.generateWallet();
@@ -70,25 +75,6 @@ public class BlockChainController {
             return ServiceResult.createSuccessServiceResult("提交交易到区块链网络成功",response);
         } catch (Exception e){
             String message = "提交交易到区块链网络失败";
-            logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
-        }
-    }
-
-    /**
-     * 根据区块高度查询区块
-     */
-    @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.QUERY_BLOCK_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryBlockByBlockHeightResponse> block_height(QueryBlockByBlockHeightRequest request){
-        try {
-            Block block = blockChainService.queryBlockByBlockHeight(request);
-
-            QueryBlockByBlockHeightResponse response = new QueryBlockByBlockHeightResponse();
-            response.setBlock(block);
-            return ServiceResult.createSuccessServiceResult("根据区块高度查询区块成功",response);
-        } catch (Exception e){
-            String message = "根据区块高度查询区块失败";
             logger.error(message,e);
             return ServiceResult.createSuccessServiceResult(message,null);
         }
@@ -152,7 +138,7 @@ public class BlockChainController {
      * 停止挖矿
      */
     @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.STOP_Mine,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = BlockChainApiRoute.STOP_MINE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<String> stopMine(){
         try {
             blockChainService.stopMine();
@@ -169,12 +155,12 @@ public class BlockChainController {
      * 查询区块链的区块数据
      */
     @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.GET_BLOCKDTO,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryBlockDtoResponse> queryBlockDto(QueryBlockDtoRequest request){
+    @RequestMapping(value = BlockChainApiRoute.Query_BLOCKDTO_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(QueryBlockDtoByBlockHeightRequest request){
         try {
             BlockDTO blockDTO = blockChainService.queryBlockDtoByBlockHeight(request);
 
-            QueryBlockDtoResponse response = new QueryBlockDtoResponse();
+            QueryBlockDtoByBlockHeightResponse response = new QueryBlockDtoByBlockHeightResponse();
             response.setBlockDTO(blockDTO);
             return ServiceResult.createSuccessServiceResult("成功获取区块",response);
         } catch (Exception e){
@@ -188,12 +174,12 @@ public class BlockChainController {
      * 查询区块链的区块数据
      */
     @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.GET_BLOCK_HASH_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<GetBlockHashByBlockHeightResponse> queryBlockDto(GetBlockHashByBlockHeightRequest request){
+    @RequestMapping(value = BlockChainApiRoute.Query_BLOCK_HASH_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(QueryBlockHashByBlockHeightRequest request){
         try {
             String blockHash = blockChainService.queryBlockHashByBlockHeight(request);
 
-            GetBlockHashByBlockHeightResponse response = new GetBlockHashByBlockHeightResponse();
+            QueryBlockHashByBlockHeightResponse response = new QueryBlockHashByBlockHeightResponse();
             response.setBlockHash(blockHash);
             return ServiceResult.createSuccessServiceResult("成功获取区块Hash",response);
         } catch (Exception e){

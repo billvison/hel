@@ -3,7 +3,8 @@ package com.xingkaichun.helloworldblockchain.node.dto.node.request;
 import lombok.Data;
 
 @Data
-public class QueryBlockDtoRequest {
+public class QueryBlockHashByBlockHeightRequest {
 
     private int blockHeight;
+
 }

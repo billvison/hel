@@ -13,10 +13,10 @@ import com.xingkaichun.helloworldblockchain.node.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.BlockChainApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.node.Node;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.GetBlockHashByBlockHeightRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.response.GetBlockHashByBlockHeightResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.node.response.QueryBlockDtoResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockHashByBlockHeightRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoByBlockHeightRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.node.response.QueryBlockHashByBlockHeightResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.node.response.QueryBlockDtoByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.node.util.NetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,12 +152,12 @@ public class RemoteNodeServiceImpl implements RemoteNodeService {
 
     private String getBlockHashByBlockHeight(Node node, int blockHeight) {
         try {
-            String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), BlockChainApiRoute.GET_BLOCK_HASH_BY_BLOCK_HEIGHT);
-            GetBlockHashByBlockHeightRequest request = new GetBlockHashByBlockHeightRequest();
+            String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), BlockChainApiRoute.Query_BLOCK_HASH_BY_BLOCK_HEIGHT);
+            QueryBlockHashByBlockHeightRequest request = new QueryBlockHashByBlockHeightRequest();
             request.setBlockHeight(blockHeight);
             String html = NetUtil.getHtml(url,request);
-            Type jsonType = new TypeToken<ServiceResult<GetBlockHashByBlockHeightResponse>>() {}.getType();
-            ServiceResult<GetBlockHashByBlockHeightResponse> responseServiceResult = gson.fromJson(html,jsonType);
+            Type jsonType = new TypeToken<ServiceResult<QueryBlockHashByBlockHeightResponse>>() {}.getType();
+            ServiceResult<QueryBlockHashByBlockHeightResponse> responseServiceResult = gson.fromJson(html,jsonType);
             if(responseServiceResult == null){
                 return null;
             }
@@ -182,12 +182,12 @@ public class RemoteNodeServiceImpl implements RemoteNodeService {
 
     private BlockDTO getRemoteBlockDtoByBlockHeight(Node node, int blockHeight) {
         try {
-            String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), BlockChainApiRoute.GET_BLOCKDTO);
-            QueryBlockDtoRequest request = new QueryBlockDtoRequest();
+            String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), BlockChainApiRoute.Query_BLOCKDTO_BY_BLOCK_HEIGHT);
+            QueryBlockDtoByBlockHeightRequest request = new QueryBlockDtoByBlockHeightRequest();
             request.setBlockHeight(blockHeight);
             String html = NetUtil.getHtml(url,request);
-            Type jsonType = new TypeToken<ServiceResult<QueryBlockDtoResponse>>() {}.getType();
-            ServiceResult<QueryBlockDtoResponse> responseServiceResult = gson.fromJson(html,jsonType);
+            Type jsonType = new TypeToken<ServiceResult<QueryBlockDtoByBlockHeightResponse>>() {}.getType();
+            ServiceResult<QueryBlockDtoByBlockHeightResponse> responseServiceResult = gson.fromJson(html,jsonType);
             if(responseServiceResult == null){
                 return null;
             }

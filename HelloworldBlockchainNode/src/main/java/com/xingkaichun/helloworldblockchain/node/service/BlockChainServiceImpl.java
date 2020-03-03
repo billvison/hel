@@ -10,11 +10,10 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionTy
 import com.xingkaichun.helloworldblockchain.core.model.wallet.Wallet;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.WalletUtil;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.NormalTransactionDto;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryBlockByBlockHeightRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryTransactionByTransactionUuidRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryUtxosByAddressRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.GetBlockHashByBlockHeightRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoByBlockHeightRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockHashByBlockHeightRequest;
 import com.xingkaichun.helloworldblockchain.node.plugins.AddressUtxoPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,11 +35,6 @@ public class BlockChainServiceImpl implements BlockChainService {
     @Override
     public Wallet generateWallet() {
         return WalletUtil.generateWallet();
-    }
-
-    @Override
-    public Block queryBlockByBlockHeight(QueryBlockByBlockHeightRequest request) throws Exception {
-        return blockChainCore.getBlockChainDataBase().findBlockByBlockHeight(request.getBlockHeight());
     }
 
     @Override
@@ -110,7 +104,7 @@ public class BlockChainServiceImpl implements BlockChainService {
     }
 
     @Override
-    public String queryBlockHashByBlockHeight(GetBlockHashByBlockHeightRequest request) throws Exception {
+    public String queryBlockHashByBlockHeight(QueryBlockHashByBlockHeightRequest request) throws Exception {
         Block block = blockChainCore.getBlockChainDataBase().findBlockByBlockHeight(request.getBlockHeight());
         if(block == null){
             return null;
@@ -119,7 +113,7 @@ public class BlockChainServiceImpl implements BlockChainService {
     }
 
     @Override
-    public BlockDTO queryBlockDtoByBlockHeight(QueryBlockDtoRequest request) throws Exception {
+    public BlockDTO queryBlockDtoByBlockHeight(QueryBlockDtoByBlockHeightRequest request) throws Exception {
         int blockHeight = request.getBlockHeight();
         Block block = blockChainCore.getBlockChainDataBase().findBlockByBlockHeight(blockHeight);
         BlockDTO blockDTO = DtoUtils.classCast(block);

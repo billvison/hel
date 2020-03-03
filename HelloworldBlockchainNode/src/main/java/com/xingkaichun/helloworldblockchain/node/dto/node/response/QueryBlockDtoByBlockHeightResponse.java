@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.dto.BlockDTO;
 import lombok.Data;
 
 @Data
-public class QueryBlockDtoResponse {
+public class QueryBlockDtoByBlockHeightResponse {
 
     private BlockDTO blockDTO ;
 }

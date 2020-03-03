@@ -2,17 +2,15 @@ package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.core.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.key.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.wallet.Wallet;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.NormalTransactionDto;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryBlockByBlockHeightRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryTransactionByTransactionUuidRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryUtxosByAddressRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.GetBlockHashByBlockHeightRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoByBlockHeightRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockHashByBlockHeightRequest;
 
 import java.util.List;
 
@@ -22,10 +20,6 @@ public interface BlockChainService {
      * 生成钱包
      */
     Wallet generateWallet();
-    /**
-     * 根据区块高度获取区块
-     */
-    Block queryBlockByBlockHeight(QueryBlockByBlockHeightRequest request) throws Exception;
     /**
      * 根据交易UUID获取交易
      */
@@ -53,11 +47,11 @@ public interface BlockChainService {
     /**
      * 根据区块高度获取区块DTO
      */
-    BlockDTO queryBlockDtoByBlockHeight(QueryBlockDtoRequest request) throws Exception;
+    BlockDTO queryBlockDtoByBlockHeight(QueryBlockDtoByBlockHeightRequest request) throws Exception;
     /**
      * 根据区块高度获取区块Hash
      */
-    String queryBlockHashByBlockHeight(GetBlockHashByBlockHeightRequest request) throws Exception;
+    String queryBlockHashByBlockHeight(QueryBlockHashByBlockHeightRequest request) throws Exception;
     /**
      * 获取区块链高度
      */
