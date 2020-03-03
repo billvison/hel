@@ -42,7 +42,7 @@ public class MinerDefaultImpl extends Miner {
         while(true){
             Thread.sleep(10);
             if(!mineOption){
-                break;
+                continue;
             }
             WrapperBlockForMining wrapperBlockForMining = obtainWrapperBlockForMining(blockChainDataBase);
             miningBlock(wrapperBlockForMining);
@@ -52,7 +52,7 @@ public class MinerDefaultImpl extends Miner {
                 boolean isAddBlockToBlockChainSuccess = blockChainDataBase.addBlock(wrapperBlockForMining.getBlock());
                 if(!isAddBlockToBlockChainSuccess){
                     System.err.println("挖矿成功，但是放入区块链失败。");
-                    break;
+                    continue;
                 }
                 //将使用过的交易从挖矿交易数据库中交易
                 minerTransactionDtoDataBase.deleteTransactionList(wrapperBlockForMining.getForMineBlockTransactionList());

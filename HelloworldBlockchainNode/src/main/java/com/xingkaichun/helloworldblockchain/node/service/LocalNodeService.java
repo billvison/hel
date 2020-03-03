@@ -17,7 +17,7 @@ public interface LocalNodeService {
     /**
      * 新增或者更新节点信息
      */
-    int addOrUpdateNode(Node node) ;
+    boolean addOrUpdateNode(Node node) ;
     /**
      * 删除节点
      */

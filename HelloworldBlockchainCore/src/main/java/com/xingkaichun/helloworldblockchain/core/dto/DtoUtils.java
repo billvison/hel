@@ -48,6 +48,9 @@ public class DtoUtils {
      * 类型转换
      */
     public static BlockDTO classCast(Block block) throws Exception {
+        if(block == null){
+            return null;
+        }
         List<TransactionDTO> transactionDtoList = new ArrayList<>();
         List<Transaction> transactionList = block.getTransactions();
         if(transactionList != null){

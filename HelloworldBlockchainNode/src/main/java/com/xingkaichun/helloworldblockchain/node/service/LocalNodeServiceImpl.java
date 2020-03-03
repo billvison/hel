@@ -33,9 +33,9 @@ public class LocalNodeServiceImpl implements LocalNodeService {
     }
 
     @Override
-    public int addOrUpdateNode(Node node) {
-        if("".equals(node.getIp()) || node.getPort()!=0){
-            return 0;
+    public boolean addOrUpdateNode(Node node) {
+        if("".equals(node.getIp()) || node.getPort()==0){
+            return false;
         }
         Node dbNode = nodeDao.queryNode(node.getIp(),node.getPort());
         if(dbNode == null){
@@ -43,7 +43,7 @@ public class LocalNodeServiceImpl implements LocalNodeService {
         } else {
             nodeDao.updateNode(node);
         }
-        return 0;
+        return true;
     }
 
     @Override

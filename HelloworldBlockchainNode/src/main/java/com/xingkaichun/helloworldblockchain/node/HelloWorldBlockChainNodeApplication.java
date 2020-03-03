@@ -1,5 +1,7 @@
 package com.xingkaichun.helloworldblockchain.node;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCoreFactory;
@@ -57,5 +59,10 @@ public class HelloWorldBlockChainNodeApplication {
 	@Bean
 	public Gson buildGson(){
 		return new Gson();
+	}
+
+	@Bean
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 	}
 }

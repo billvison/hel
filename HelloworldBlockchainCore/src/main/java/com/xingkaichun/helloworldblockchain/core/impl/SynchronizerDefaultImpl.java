@@ -46,7 +46,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             }
             String availableSynchronizeNodeId = synchronizerDataBase.getDataTransferFinishFlagNodeId();
             if(availableSynchronizeNodeId == null){
-                return;
+                continue;
             }
             synchronizeBlockChainNode(availableSynchronizeNodeId);
         }
