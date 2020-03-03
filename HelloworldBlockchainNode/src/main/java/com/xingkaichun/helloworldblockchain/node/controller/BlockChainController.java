@@ -43,6 +43,39 @@ public class BlockChainController {
     @Autowired
     private BlockChainService blockChainService;
 
+
+    /**
+     * 启动挖矿
+     */
+    @ResponseBody
+    @RequestMapping(value = BlockChainApiRoute.START_MINE,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<String> startMine(){
+        try {
+            blockChainService.startMine();
+            return ServiceResult.createSuccessServiceResult("开启挖矿成功",null);
+        } catch (Exception e){
+            String message = "开启挖矿失败";
+            logger.error(message,e);
+            return ServiceResult.createSuccessServiceResult(message,null);
+        }
+    }
+
+    /**
+     * 停止挖矿
+     */
+    @ResponseBody
+    @RequestMapping(value = BlockChainApiRoute.STOP_MINE,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<String> stopMine(){
+        try {
+            blockChainService.stopMine();
+            return ServiceResult.createSuccessServiceResult("关闭挖矿成功",null);
+        } catch (Exception e){
+            String message = "关闭挖矿失败";
+            logger.error(message,e);
+            return ServiceResult.createSuccessServiceResult(message,null);
+        }
+    }
+
     /**
      * 生成钱包(公钥、私钥、地址)
      */
@@ -81,6 +114,44 @@ public class BlockChainController {
     }
 
     /**
+     * 根据区块高度查询区块
+     */
+    @ResponseBody
+    @RequestMapping(value = BlockChainApiRoute.Query_BLOCKDTO_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(QueryBlockDtoByBlockHeightRequest request){
+        try {
+            BlockDTO blockDTO = blockChainService.queryBlockDtoByBlockHeight(request);
+
+            QueryBlockDtoByBlockHeightResponse response = new QueryBlockDtoByBlockHeightResponse();
+            response.setBlockDTO(blockDTO);
+            return ServiceResult.createSuccessServiceResult("成功获取区块",response);
+        } catch (Exception e){
+            String message = "查询获取失败";
+            logger.error(message,e);
+            return ServiceResult.createSuccessServiceResult(message,null);
+        }
+    }
+
+    /**
+     * 根据区块高度查询区块Hash
+     */
+    @ResponseBody
+    @RequestMapping(value = BlockChainApiRoute.Query_BLOCK_HASH_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(QueryBlockHashByBlockHeightRequest request){
+        try {
+            String blockHash = blockChainService.queryBlockHashByBlockHeight(request);
+
+            QueryBlockHashByBlockHeightResponse response = new QueryBlockHashByBlockHeightResponse();
+            response.setBlockHash(blockHash);
+            return ServiceResult.createSuccessServiceResult("成功获取区块Hash",response);
+        } catch (Exception e){
+            String message = "查询区块Hash失败";
+            logger.error(message,e);
+            return ServiceResult.createSuccessServiceResult(message,null);
+        }
+    }
+
+    /**
      * 根据交易UUID查询交易
      */
     @ResponseBody
@@ -100,7 +171,7 @@ public class BlockChainController {
     }
 
     /**
-     * 根据账户地址获取余额
+     * 根据地址获取余额
      */
     @ResponseBody
     @RequestMapping(value = BlockChainApiRoute.QUERY_UTXOS_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
@@ -113,77 +184,6 @@ public class BlockChainController {
             return ServiceResult.createSuccessServiceResult("成功查询用戶余额",response);
         } catch (Exception e){
             String message = "查询用戶余额失败";
-            logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
-        }
-    }
-
-    /**
-     * 启动挖矿
-     */
-    @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.START_MINE,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<String> startMine(){
-        try {
-            blockChainService.startMine();
-            return ServiceResult.createSuccessServiceResult("开启挖矿成功",null);
-        } catch (Exception e){
-            String message = "开启挖矿失败";
-            logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
-        }
-    }
-
-    /**
-     * 停止挖矿
-     */
-    @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.STOP_MINE,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<String> stopMine(){
-        try {
-            blockChainService.stopMine();
-            return ServiceResult.createSuccessServiceResult("关闭挖矿成功",null);
-        } catch (Exception e){
-            String message = "关闭挖矿失败";
-            logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
-        }
-    }
-
-
-    /**
-     * 查询区块链的区块数据
-     */
-    @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.Query_BLOCKDTO_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(QueryBlockDtoByBlockHeightRequest request){
-        try {
-            BlockDTO blockDTO = blockChainService.queryBlockDtoByBlockHeight(request);
-
-            QueryBlockDtoByBlockHeightResponse response = new QueryBlockDtoByBlockHeightResponse();
-            response.setBlockDTO(blockDTO);
-            return ServiceResult.createSuccessServiceResult("成功获取区块",response);
-        } catch (Exception e){
-            String message = "查询获取失败";
-            logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
-        }
-    }
-
-    /**
-     * 查询区块链的区块数据
-     */
-    @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.Query_BLOCK_HASH_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(QueryBlockHashByBlockHeightRequest request){
-        try {
-            String blockHash = blockChainService.queryBlockHashByBlockHeight(request);
-
-            QueryBlockHashByBlockHeightResponse response = new QueryBlockHashByBlockHeightResponse();
-            response.setBlockHash(blockHash);
-            return ServiceResult.createSuccessServiceResult("成功获取区块Hash",response);
-        } catch (Exception e){
-            String message = "查询区块Hash失败";
             logger.error(message,e);
             return ServiceResult.createSuccessServiceResult(message,null);
         }

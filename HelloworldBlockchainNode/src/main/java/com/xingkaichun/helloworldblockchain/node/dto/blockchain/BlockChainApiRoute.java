@@ -2,8 +2,8 @@ package com.xingkaichun.helloworldblockchain.node.dto.blockchain;
 
 public class BlockChainApiRoute {
 
-    public static final String STOP_MINE = "/Api/BlockChain/StopMine";
     public static final String START_MINE = "/Api/BlockChain/StartMine";
+    public static final String STOP_MINE = "/Api/BlockChain/StopMine";
 
     public static final String GENERATE_WALLET = "/Api/BlockChain/GenerateWallet";
     public static final String SUBMIT_TRANSACTION = "/Api/BlockChain/SubmitTransaction";
