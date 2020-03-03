@@ -5,79 +5,100 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.xingkaichun</groupId>
-  <artifactId>blockchain-core</artifactId>
+  <artifactId>helloworld-blockchain-parent</artifactId>
+  <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
+  <modules>
+      <module>HelloworldBlockchainCore</module>
+      <module>HelloworldBlockchainNode</module>
+  </modules>
 
-  <name>blockchain-core</name>
+  <name>HelloworldBlockchain-Parent</name>
   <url>http://www.xingkaichun.com</url>
-
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <lombok.version>1.18.2</lombok.version>
+    <org.springframework.boot.version>2.0.1.RELEASE</org.springframework.boot.version>
   </properties>
 
-  <dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>test</scope>
+      </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
+      <dependency>
+        <groupId>com.xingkaichun</groupId>
+        <artifactId>helloworld-blockchain-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.8.2</version>
-    </dependency>
+      <dependency>
+        <groupId>com.xingkaichun</groupId>
+        <artifactId>helloworld-blockchain-node</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
-      <version>1.59</version>
-    </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <version>${org.springframework.boot.version}</version>
+      </dependency>
 
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcprov-jdk15on</artifactId>
+        <version>1.59</version>
+      </dependency>
 
-    <dependency>
-      <groupId>org.iq80.leveldb</groupId>
-      <artifactId>leveldb</artifactId>
-      <version>0.7</version>
-    </dependency>
-    <dependency>
-      <groupId>org.iq80.leveldb</groupId>
-      <artifactId>leveldb-api</artifactId>
-      <version>0.7</version>
-    </dependency>
+      <dependency>
+        <groupId>org.iq80.leveldb</groupId>
+        <artifactId>leveldb</artifactId>
+        <version>0.7</version>
+      </dependency>
 
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>${lombok.version}</version>
-      <scope>provided</scope>
-    </dependency>
+      <dependency>
+        <groupId>org.iq80.leveldb</groupId>
+        <artifactId>leveldb-api</artifactId>
+        <version>0.7</version>
+      </dependency>
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.1</version>
-    </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${lombok.version}</version>
+      </dependency>
 
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>1.7.1</version>
+      </dependency>
 
-    <dependency>
-      <groupId>org.xerial</groupId>
-      <artifactId>sqlite-jdbc</artifactId>
-      <version>3.8.11.2</version>
-    </dependency>
+      <dependency>
+        <groupId>org.xerial</groupId>
+        <artifactId>sqlite-jdbc</artifactId>
+        <version>3.8.11.2</version>
+      </dependency>
 
-    <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.8.6</version>
-    </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-all</artifactId>
+        <version>4.1.41.Final</version>
+      </dependency>
 
-  </dependencies>
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.8.6</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
 </project>
