@@ -5,7 +5,7 @@ public class BlockChainApiRoute {
     public static final String START_MINE = "/Api/BlockChain/StartMine";
     public static final String STOP_MINE = "/Api/BlockChain/StopMine";
 
-    public static final String GENERATE_WALLET = "/Api/BlockChain/GenerateWallet";
+    public static final String GENERATE_WALLETDTO = "/Api/BlockChain/GenerateWalletDTO";
     public static final String SUBMIT_TRANSACTION = "/Api/BlockChain/SubmitTransaction";
 
     public static final String Query_BLOCKDTO_BY_BLOCK_HEIGHT = "/Api/BlockChain/QueryBlockDtoByBlockHeight";

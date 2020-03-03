@@ -33,13 +33,19 @@ public class BlockChainServiceImpl implements BlockChainService {
 
 
     @Override
-    public Wallet generateWallet() {
-        return WalletUtil.generateWallet();
+    public WalletDTO generateWalletDTO() {
+        Wallet wallet = WalletUtil.generateWallet();
+        return DtoUtils.classCast(wallet);
     }
 
     @Override
-    public Transaction QueryTransactionByTransactionUUID(QueryTransactionByTransactionUuidRequest request) throws Exception {
-        return blockChainCore.getBlockChainDataBase().findTransactionByTransactionUuid(request.getTransactionUUID());
+    public TransactionDTO QueryTransactionDtoByTransactionUUID(QueryTransactionByTransactionUuidRequest request) throws Exception {
+        Transaction transaction = blockChainCore.getBlockChainDataBase().findTransactionByTransactionUuid(request.getTransactionUUID());
+        if(transaction == null){
+            return null;
+        }
+        TransactionDTO transactionDTO = DtoUtils.classCast(transaction);
+        return transactionDTO;
     }
 
     @Override

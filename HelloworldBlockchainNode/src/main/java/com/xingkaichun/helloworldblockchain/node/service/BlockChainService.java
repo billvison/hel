@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.core.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.core.dto.WalletDTO;
 import com.xingkaichun.helloworldblockchain.core.model.key.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
@@ -19,11 +20,11 @@ public interface BlockChainService {
     /**
      * 生成钱包
      */
-    Wallet generateWallet();
+    WalletDTO generateWalletDTO();
     /**
      * 根据交易UUID获取交易
      */
-    Transaction QueryTransactionByTransactionUUID(QueryTransactionByTransactionUuidRequest request) throws Exception;
+    TransactionDTO QueryTransactionDtoByTransactionUUID(QueryTransactionByTransactionUuidRequest request) throws Exception;
     /**
      * 根据地址获取UTXO
      */

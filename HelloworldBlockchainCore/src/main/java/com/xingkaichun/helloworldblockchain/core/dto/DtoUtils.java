@@ -8,6 +8,7 @@ import com.xingkaichun.helloworldblockchain.core.model.key.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.model.wallet.Wallet;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.CipherUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.TransactionUtil;
@@ -43,7 +44,6 @@ public class DtoUtils {
         block.setHash(blockDTO.getHash());
         return block;
     }
-
     /**
      * 类型转换
      */
@@ -103,7 +103,6 @@ public class DtoUtils {
         transaction.setSignature(transactionDTO.getSignature());
         return transaction;
     }
-
     /**
      * 类型转换
      */
@@ -139,7 +138,6 @@ public class DtoUtils {
         return transactionDTO;
     }
 
-
     /**
      * 类型转换
      */
@@ -161,6 +159,22 @@ public class DtoUtils {
         return transactionOutputDTO;
     }
 
+    /**
+     * 类型转换
+     */
+    public static WalletDTO classCast(Wallet wallet){
+        WalletDTO walletDTO = new WalletDTO(wallet.getStringPrivateKey().getValue(),wallet.getStringPublicKey().getValue(),wallet.getStringAddress().getValue());
+        return walletDTO;
+    }
+    /**
+     * 类型转换
+     */
+    public static Wallet classCast(WalletDTO walletDTO){
+        Wallet wallet = new Wallet(new StringPrivateKey(walletDTO.getPrivateKey()),
+                new StringPublicKey(walletDTO.getPublicKey()),
+                new StringAddress(walletDTO.getAddress()));
+        return wallet;
+    }
 
     /**
      * 交易签名
@@ -221,4 +235,5 @@ public class DtoUtils {
         BlockDTO blockDTO = (BlockDTO) objectInputStream.readObject();
         return blockDTO;
     }
+
 }

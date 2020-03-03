@@ -2,9 +2,8 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 
 import com.xingkaichun.helloworldblockchain.core.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.core.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.dto.WalletDTO;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.core.model.wallet.Wallet;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.BlockChainApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.GenerateWalletRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryTransactionByTransactionUuidRequest;
@@ -80,12 +79,12 @@ public class BlockChainController {
      * 生成钱包(公钥、私钥、地址)
      */
     @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.GENERATE_WALLET,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = BlockChainApiRoute.GENERATE_WALLETDTO,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<GenerateWalletResponse> generateWallet(@RequestBody GenerateWalletRequest request){
         try {
-            Wallet wallet = blockChainService.generateWallet();
+            WalletDTO walletDTO = blockChainService.generateWalletDTO();
             GenerateWalletResponse response = new GenerateWalletResponse();
-            response.setWallet(wallet);
+            response.setWalletDTO(walletDTO);
             return ServiceResult.createSuccessServiceResult("生成钱包成功",response);
         } catch (Exception e){
             String message = "生成钱包失败";
@@ -158,10 +157,10 @@ public class BlockChainController {
     @RequestMapping(value = BlockChainApiRoute.QUERY_TRANSACTION_BY_TRANSACTION_UUID,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryTransactionByTransactionUuidResponse> queryTransactionByTransactionUUID(QueryTransactionByTransactionUuidRequest request){
         try {
-            Transaction transaction = blockChainService.QueryTransactionByTransactionUUID(request);
+            TransactionDTO transactionDTO = blockChainService.QueryTransactionDtoByTransactionUUID(request);
 
             QueryTransactionByTransactionUuidResponse response = new QueryTransactionByTransactionUuidResponse();
-            response.setTransaction(transaction);
+            response.setTransactionDTO(transactionDTO);
             return ServiceResult.createSuccessServiceResult("根据交易UUID查询交易成功",response);
         } catch (Exception e){
             String message = "根据交易UUID查询交易失败";
