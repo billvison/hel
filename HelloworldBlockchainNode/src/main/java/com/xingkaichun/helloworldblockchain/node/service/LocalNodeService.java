@@ -26,4 +26,8 @@ public interface LocalNodeService {
      * 节点网络连接错误处理
      */
     void nodeErrorConnectionHandle(String ip, int port) ;
+    /**
+     * 查询node
+     */
+    Node queryNode(String ip, int port);
 }

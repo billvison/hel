@@ -67,4 +67,10 @@ public class LocalNodeServiceImpl implements LocalNodeService {
         }
     }
 
+    @Override
+    public Node queryNode(String ip, int port) {
+        Node node = nodeDao.queryNode(ip,port);
+        return node;
+    }
+
 }
