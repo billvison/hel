@@ -2,11 +2,13 @@ package com.xingkaichun.helloworldblockchain.core.model.key;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 私钥
  */
 @Data
-public class StringPrivateKey {
+public class StringPrivateKey implements Serializable {
 
     private String value;
 
