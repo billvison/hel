@@ -249,12 +249,13 @@ public class MinerDefaultImpl extends Miner {
             nonNonceBlock.setPreviousHash(tailBlock.getHash());
         }
         nonNonceBlock.setTransactions(packingTransactionList);
-        //这个挖矿时间不需要特别精确，没必要非要挖出矿的前一霎那时间。省去了挖矿时实时更新这个时间的繁琐。
-        nonNonceBlock.setTimestamp(System.currentTimeMillis());
 
         //创建奖励交易，并将奖励加入区块
         Transaction mineAwardTransaction =  buildMineAwardTransaction(blockChainDataBase,nonNonceBlock);
         packingTransactionList.add(mineAwardTransaction);
+
+        //这个挖矿时间不需要特别精确，没必要非要挖出矿的前一霎那时间。省去了挖矿时实时更新这个时间的繁琐。
+        nonNonceBlock.setTimestamp(System.currentTimeMillis());
 
         String merkleRoot = BlockUtils.calculateBlockMerkleRoot(nonNonceBlock);
         nonNonceBlock.setMerkleRoot(merkleRoot);
