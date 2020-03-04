@@ -10,7 +10,7 @@ import java.security.spec.ECPublicKeySpec;
 import java.util.Collections;
 
 public class BCECUtil {
-    public static ECPublicKey publicFromPrivate(final ECPrivateKey privateKey) throws Exception {
+    public static ECPublicKey publicFromPrivate(ECPrivateKey privateKey) throws Exception {
         ECParameterSpec params = privateKey.getParams();
         org.bouncycastle.jce.spec.ECParameterSpec bcSpec = org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util
                 .convertSpec(params, false);

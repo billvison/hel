@@ -3,14 +3,11 @@ package com.xingkaichun.helloworldblockchain.core.utils.atomic;
 import com.xingkaichun.helloworldblockchain.core.model.key.StringAddress;
 import com.xingkaichun.helloworldblockchain.core.model.key.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.core.model.key.StringPublicKey;
-import com.xingkaichun.helloworldblockchain.core.model.wallet.Wallet;
 
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
@@ -81,32 +78,4 @@ public class KeyUtil {
         String address = Base58Util.encode((version+publicKeyHash+check).getBytes());
         return new StringAddress(address);
     }
-
-    public static void main(String[] args) throws Exception {
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        Wallet wallet = WalletUtil.generateWallet();
-        System.out.println("StringPrivateKey："+wallet.getStringPrivateKey().getValue());
-        System.out.println("StringPublicKey："+wallet.getStringPublicKey().getValue());
-
-        byte[] bytesPrivateKey = decode(wallet.getStringPrivateKey());
-        final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
-        final PKCS8EncodedKeySpec encPrivKeySpec = new PKCS8EncodedKeySpec(bytesPrivateKey);
-        final PrivateKey privKey = kf.generatePrivate(encPrivKeySpec);
-
-        System.out.println("StringPrivateKey：" + convertPrivateKeyToStringPrivateKey(privKey).getValue());
-        ECPublicKey ecPublicKey = BCECUtil.publicFromPrivate((ECPrivateKey)privKey);
-        System.out.println("StringPublicKey："+ convertPublicKeyToStringPublicKey(ecPublicKey).getValue());
-
-        PrivateKey PrivateKey4 = BCECUtil.PrivateFromPrivate((ECPrivateKey)privKey);
-        System.out.println("StringPrivateKey：" + convertPrivateKeyToStringPrivateKey(PrivateKey4).getValue());
-
-/*        PrivateKey privateKey2 = T.PrivateFromPrivate((ECPrivateKey)privKey);
-        System.out.println("StringPrivateKey：" + convertPrivateKeyToStringPrivateKey(privateKey2).getValue());*/
-
-        PrivateKey privateKey4=  T.getPrivateKeyFromECBigIntAndCurve(((ECPrivateKey) privKey).getS(),"secp256k1");
-        System.out.println("StringPrivateKey：" + convertPrivateKeyToStringPrivateKey(privateKey4).getValue());
-
-
-    }
-
 }
