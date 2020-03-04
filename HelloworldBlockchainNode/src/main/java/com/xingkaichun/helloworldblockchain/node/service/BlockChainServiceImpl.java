@@ -8,6 +8,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.model.wallet.Wallet;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.WalletUtil;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.NormalTransactionDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryTransactionByTransactionUuidRequest;
@@ -18,6 +19,8 @@ import com.xingkaichun.helloworldblockchain.node.plugins.AddressUtxoPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -62,6 +65,10 @@ public class BlockChainServiceImpl implements BlockChainService {
     }
 
     private TransactionDTO classCast(NormalTransactionDto normalTransactionDto) throws Exception {
+        String privateKey = normalTransactionDto.getPrivateKey();
+        ECPublicKey ecPublicKey = KeyUtil.publicFromPrivate((ECPrivateKey) KeyUtil.convertStringPrivateKeyToPrivateKey(new StringPrivateKey(privateKey)));
+
+
         List<NormalTransactionDto.Output> outputs = normalTransactionDto.getOutputs();
         List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();
         if(outputs != null){
@@ -73,12 +80,12 @@ public class BlockChainServiceImpl implements BlockChainService {
                 transactionOutputDtoList.add(transactionOutputDTO);
             }
         }
-        List<NormalTransactionDto.Input> inputs = normalTransactionDto.getInputs();
+        List<String> inputs = normalTransactionDto.getInputs();
         List<TransactionInputDTO> transactionInputDtoList = new ArrayList<>();
-        for(NormalTransactionDto.Input input:inputs){
+        for(String input:inputs){
             TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
-            transactionInputDTO.setUnspendTransactionOutputUUID(input.getUtxoUuid());
-            transactionInputDTO.setPublicKey(input.getPublicKey());
+            transactionInputDTO.setUnspendTransactionOutputUUID(input);
+            transactionInputDTO.setPublicKey(KeyUtil.convertPublicKeyToStringPublicKey(ecPublicKey).getValue());
             transactionInputDtoList.add(transactionInputDTO);
         }
 
@@ -88,7 +95,7 @@ public class BlockChainServiceImpl implements BlockChainService {
         transactionDTO.setTransactionType(TransactionType.NORMAL);
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
-        signatureTransactionDTO(transactionDTO,new StringPrivateKey(normalTransactionDto.getPrivateKey()));
+        signatureTransactionDTO(transactionDTO,new StringPrivateKey(privateKey));
         return transactionDTO;
     }
 
