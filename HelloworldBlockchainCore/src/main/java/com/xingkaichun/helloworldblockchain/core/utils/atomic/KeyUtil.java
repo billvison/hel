@@ -4,11 +4,13 @@ import com.xingkaichun.helloworldblockchain.core.model.key.StringAddress;
 import com.xingkaichun.helloworldblockchain.core.model.key.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.core.model.key.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.core.model.wallet.Wallet;
-import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
-import org.bouncycastle.jce.spec.ECPrivateKeySpec;
 
-import java.security.*;
-import java.security.spec.InvalidKeySpecException;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
@@ -81,36 +83,25 @@ public class KeyUtil {
         return new StringAddress(address);
     }
 
-
-
-
-    public static void main(String[] args) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public static void main(String[] args) throws Exception {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        System.out.println(isStringPublicKeyEqualStringAddress(new StringPublicKey("MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEP/4hnd01dsmpFKDbS6SKcSMHWm67vhNaiQK2niF/ASIUf8h3v/9+KhBgA8rZkD3H6Q8cjNmOnt3F71zqlZ7LHQ=="),
-                new StringAddress("3Psn3vDDeEmjwN53SMYYQpDrhLFQc1esYezehoT5k3zvNHgLUmV8N8G")));
-        System.out.println(isStringPublicKeyEqualStringAddress(new StringPublicKey("MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEP/4hnd01dsmpFKDbS6SKcSMHWm67vhNaiQK2niF/ASIUf8h3v/9+KhBgA8rZkD3H6Q8cjNmOnt3F71zqlZ7LHQ=="),
-                new StringAddress("3Psn3vDDeEmjwN53SMYYQpDrhLFQc1esYezehoT5k3zvNHgLUmV8N8G")));
-/*        Wallet wallet = WalletUtil.generateWallet();
-        System.out.println("StringPrivateKey"+wallet.getStringPrivateKey().getValue());
-        //System.out.println("StringPublicKey"+wallet.getStringPublicKey().getValue());
+        Wallet wallet = WalletUtil.generateWallet();
+        System.out.println("StringPrivateKey："+wallet.getStringPrivateKey().getValue());
+        System.out.println("StringPublicKey："+wallet.getStringPublicKey().getValue());
 
         byte[] bytesPrivateKey = decode(wallet.getStringPrivateKey());
-
         final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
         final PKCS8EncodedKeySpec encPrivKeySpec = new PKCS8EncodedKeySpec(bytesPrivateKey);
         final PrivateKey privKey = kf.generatePrivate(encPrivKeySpec);
-        System.out.println("StringPrivateKey" + convertPrivateKeyToStringPrivateKey(privKey).getValue());
 
-        BCECPrivateKey bcecPrivateKey = (BCECPrivateKey)privKey;
-       // ECPrivateKeySpec ecPrivateKeySpec = new ECPrivateKeySpec(bcecPrivateKey.getD(),bcecPrivateKey.getParameters());
-        ECPrivateKeySpec ecPrivateKeySpec = new ECPrivateKeySpec(bcecPrivateKey.getS(),bcecPrivateKey.getParameters());
-        //ECPublicKeySpec ecPublicKeySpec = new ECPublicKeySpec(ecPrivateKeySpec.getParams().getG(),ecPrivateKeySpec.getParams());
-        KeyFactory kf2 = KeyFactory.getInstance("ECDSA", "BC");
-        PrivateKey privateKey2 = kf2.generatePrivate(ecPrivateKeySpec);
-        //PublicKey publicKey2 = kf.generatePublic(ecPublicKeySpec);
+        System.out.println("StringPrivateKey：" + convertPrivateKeyToStringPrivateKey(privKey).getValue());
+        ECPublicKey ecPublicKey = BCECUtil.publicFromPrivate((ECPrivateKey)privKey);
+        System.out.println("StringPublicKey："+ convertPublicKeyToStringPublicKey(ecPublicKey).getValue());
 
-        System.out.println("StringPrivateKey"+convertPrivateKeyToStringPrivateKey(privateKey2).getValue());
-        //System.out.println("StringPublicKey"+convertPublicKeyToStringPublicKey(publicKey2).getValue());*/
+        PrivateKey privateKey2 = T.getPrivateKeyFromECBigIntAndCurve(((ECPrivateKey) privKey).getS(),"secp256k1");
+        System.out.println("StringPrivateKey：" + convertPrivateKeyToStringPrivateKey(privateKey2).getValue());
+
 
     }
+
 }
