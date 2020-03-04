@@ -3,6 +3,8 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Miner;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
+import com.xingkaichun.helloworldblockchain.core.dto.DtoUtils;
+import com.xingkaichun.helloworldblockchain.core.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.key.StringAddress;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
@@ -55,10 +57,21 @@ public class MinerDefaultImpl extends Miner {
                     continue;
                 }
                 //将使用过的交易从挖矿交易数据库中交易
-                minerTransactionDtoDataBase.deleteTransactionList(wrapperBlockForMining.getForMineBlockTransactionList());
-                minerTransactionDtoDataBase.deleteTransactionList(wrapperBlockForMining.getExceptionTransactionList());
+                minerTransactionDtoDataBase.deleteTransactionDtoListByTransactionUuidList(getTransactionUuidList(wrapperBlockForMining.getForMineBlockTransactionList()));
+                minerTransactionDtoDataBase.deleteTransactionDtoListByTransactionUuidList(getTransactionUuidList(wrapperBlockForMining.getExceptionTransactionList()));
             }
         }
+    }
+
+    private List<String> getTransactionUuidList(List<Transaction> transactionList) {
+        if(transactionList == null){
+            return null;
+        }
+        List<String> transactionUuidList = new ArrayList<>();
+        for(Transaction transaction:transactionList){
+            transactionUuidList.add(transaction.getTransactionUUID());
+        }
+        return transactionUuidList;
     }
 
     @Override
@@ -78,7 +91,20 @@ public class MinerDefaultImpl extends Miner {
 
     private WrapperBlockForMining obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
         WrapperBlockForMining wrapperBlockForMining = new WrapperBlockForMining();
-        List<Transaction> forMineBlockTransactionList = minerTransactionDtoDataBase.selectTransactionList(blockChainDataBase,0,10000);
+        //TODO 如果交易里有一笔挖矿交易
+        List<TransactionDTO> forMineBlockTransactionDtoList = minerTransactionDtoDataBase.selectTransactionDtoList(blockChainDataBase,0,10000);
+        List<Transaction> forMineBlockTransactionList = new ArrayList<>();
+        if(forMineBlockTransactionDtoList != null){
+            for(TransactionDTO transactionDTO:forMineBlockTransactionDtoList){
+                try {
+                    Transaction transaction = DtoUtils.classCast(blockChainDataBase,transactionDTO);
+                    forMineBlockTransactionList.add(transaction);
+                } catch (Exception e) {
+                    logger.info("类型转换异常,将从挖矿交易数据库中删除该交易",e);
+                    minerTransactionDtoDataBase.deleteTransactionDtoByTransactionUUID(transactionDTO.getTransactionUUID());
+                }
+            }
+        }
         List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(blockChainDataBase,forMineBlockTransactionList);
         wrapperBlockForMining.setExceptionTransactionList(exceptionTransactionList);
         wrapperBlockForMining.setForMineBlockTransactionList(forMineBlockTransactionList);
@@ -255,7 +281,7 @@ public class MinerDefaultImpl extends Miner {
         packingTransactionList.add(mineAwardTransaction);
 
         //这个挖矿时间不需要特别精确，没必要非要挖出矿的前一霎那时间。省去了挖矿时实时更新这个时间的繁琐。
-        nonNonceBlock.setTimestamp(System.currentTimeMillis());
+        nonNonceBlock.setTimestamp(System.currentTimeMillis()+1);
 
         String merkleRoot = BlockUtils.calculateBlockMerkleRoot(nonNonceBlock);
         nonNonceBlock.setMerkleRoot(merkleRoot);

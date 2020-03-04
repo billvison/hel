@@ -63,9 +63,34 @@ public class KeyUtil {
         return stringPrivateKey;
     }
 
+    public static boolean isStringPublicKeyEqualStringAddress(StringPublicKey stringPublicKey, StringAddress stringAddress) {
+        try {
+            StringAddress tempStringAddress = convertStringPublicKeyToStringAddress(stringPublicKey);
+            return stringAddress.getValue().equals(tempStringAddress.getValue());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static StringAddress convertStringPublicKeyToStringAddress(StringPublicKey stringPublicKey) throws Exception {
+        String version = "00";
+        String publicKeyHash =  CipherUtil.ripeMD160(CipherUtil.applySha256(stringPublicKey.getValue()));
+        String check = CipherUtil.applySha256(CipherUtil.applySha256(version+publicKeyHash)).substring(0,4);
+        String address = Base58Util.encode((version+publicKeyHash+check).getBytes());
+        System.out.println(address);
+        return new StringAddress(address);
+    }
+
+
+
 
     public static void main(String[] args) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
-        Wallet wallet = WalletUtil.generateWallet();
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        System.out.println(isStringPublicKeyEqualStringAddress(new StringPublicKey("MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEP/4hnd01dsmpFKDbS6SKcSMHWm67vhNaiQK2niF/ASIUf8h3v/9+KhBgA8rZkD3H6Q8cjNmOnt3F71zqlZ7LHQ=="),
+                new StringAddress("3Psn3vDDeEmjwN53SMYYQpDrhLFQc1esYezehoT5k3zvNHgLUmV8N8G")));
+        System.out.println(isStringPublicKeyEqualStringAddress(new StringPublicKey("MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEP/4hnd01dsmpFKDbS6SKcSMHWm67vhNaiQK2niF/ASIUf8h3v/9+KhBgA8rZkD3H6Q8cjNmOnt3F71zqlZ7LHQ=="),
+                new StringAddress("3Psn3vDDeEmjwN53SMYYQpDrhLFQc1esYezehoT5k3zvNHgLUmV8N8G")));
+/*        Wallet wallet = WalletUtil.generateWallet();
         System.out.println("StringPrivateKey"+wallet.getStringPrivateKey().getValue());
         //System.out.println("StringPublicKey"+wallet.getStringPublicKey().getValue());
 
@@ -85,24 +110,7 @@ public class KeyUtil {
         //PublicKey publicKey2 = kf.generatePublic(ecPublicKeySpec);
 
         System.out.println("StringPrivateKey"+convertPrivateKeyToStringPrivateKey(privateKey2).getValue());
-        //System.out.println("StringPublicKey"+convertPublicKeyToStringPublicKey(publicKey2).getValue());
+        //System.out.println("StringPublicKey"+convertPublicKeyToStringPublicKey(publicKey2).getValue());*/
 
-    }
-
-    public static boolean isStringPublicKeyEqualStringAddress(StringPublicKey stringPublicKey, StringAddress stringAddress) {
-        try {
-            StringAddress tempStringAddress = convertStringPublicKeyToStringAddress(stringPublicKey);
-            return stringAddress.getValue().equals(tempStringAddress.getValue());
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public static StringAddress convertStringPublicKeyToStringAddress(StringPublicKey stringPublicKey) throws Exception {
-        String version = "00";
-        String publicKeyHash =  CipherUtil.ripeMD160(CipherUtil.applySha256(stringPublicKey.getValue()));
-        String check = CipherUtil.applySha256(CipherUtil.applySha256(version+publicKeyHash)).substring(0,4);
-        String address = Base58Util.encode((version+publicKeyHash+check).getBytes());
-        return new StringAddress(address);
     }
 }

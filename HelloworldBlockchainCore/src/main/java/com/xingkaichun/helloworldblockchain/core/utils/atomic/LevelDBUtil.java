@@ -41,6 +41,10 @@ public class LevelDBUtil {
         db.delete(stringToBytes(key));
     }
 
+    public static void delete(DB db,byte[] byteskey) throws DBException{
+        db.delete(byteskey);
+    }
+
     public static DB createDB(File dbFile) throws Exception{
         DBFactory factory = new Iq80DBFactory();
         Options options = new Options();

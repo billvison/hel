@@ -1,6 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core.dto;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
+import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.key.StringAddress;
 import com.xingkaichun.helloworldblockchain.core.model.key.StringPrivateKey;
@@ -81,6 +82,9 @@ public class DtoUtils {
             for (TransactionInputDTO transactionInputDTO:transactionInputDtoList){
                 String unspendTransactionOutputUUID = transactionInputDTO.getUnspendTransactionOutputUUID();
                 TransactionOutput transactionOutput = blockChainDataBase.findUtxoByUtxoUuid(unspendTransactionOutputUUID);
+                if(transactionOutput == null){
+                    throw new BlockChainCoreException("TransactionOutput不应该是null。");
+                }
                 TransactionInput transactionInput = new TransactionInput();
                 transactionInput.setStringPublicKey(new StringPublicKey(transactionInputDTO.getPublicKey()));
                 transactionInput.setUnspendTransactionOutput(transactionOutput);
@@ -98,7 +102,7 @@ public class DtoUtils {
         }
 
         Transaction transaction = new Transaction();
-        transaction.setTimestamp(transaction.getTimestamp());
+        transaction.setTimestamp(transactionDTO.getTimestamp());
         transaction.setTransactionUUID(transactionDTO.getTransactionUUID());
         transaction.setTransactionType(transactionDTO.getTransactionType());
         transaction.setInputs(inputs);
@@ -156,9 +160,9 @@ public class DtoUtils {
      */
     public static TransactionOutputDTO classCast(TransactionOutput transactionOutput) {
         TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-        transactionOutputDTO.setTransactionOutputUUID(transactionOutputDTO.getTransactionOutputUUID());
+        transactionOutputDTO.setTransactionOutputUUID(transactionOutput.getTransactionOutputUUID());
         transactionOutputDTO.setAddress(transactionOutput.getStringAddress().getValue());
-        transactionOutputDTO.setValue(transactionOutputDTO.getValue());
+        transactionOutputDTO.setValue(transactionOutput.getValue());
         return transactionOutputDTO;
     }
 
@@ -194,14 +198,13 @@ public class DtoUtils {
      */
     public static String signatureData(TransactionDTO transactionDTO) throws Exception {
         String data = TransactionUtil.signatureData(transactionDTO.getTimestamp(),transactionDTO.getTransactionUUID(),getInputUtxoIds(transactionDTO),getOutpuUtxoIds(transactionDTO));
-        String sha256Data = CipherUtil.applySha256(data);
-        return sha256Data;
+        return data;
     }
 
     private static List<String> getInputUtxoIds(TransactionDTO transactionDTO){
         List<String> ids = new ArrayList<>();
         List<TransactionInputDTO> inputs = transactionDTO.getInputs();
-        if(inputs==null || inputs.size()==0){
+        if(inputs == null){
             return ids;
         }
         for(TransactionInputDTO transactionInputDTO:inputs){
@@ -213,7 +216,7 @@ public class DtoUtils {
     private static List<String> getOutpuUtxoIds(TransactionDTO transactionDTO){
         List<String> ids = new ArrayList<>();
         List<TransactionOutputDTO> output = transactionDTO.getOutputs();
-        if(output==null || output.size()==0){
+        if(output == null){
             return ids;
         }
         for(TransactionOutputDTO transactionOutputDTO:output){

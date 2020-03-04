@@ -406,10 +406,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                     return false;
                 }
             }catch (InvalidKeySpecException invalidKeySpecException){
-                logger.error("交易校验失败：校验交易签名失败。不合法的交易。");
+                logger.error("交易校验失败：校验交易签名失败。不合法的交易。",invalidKeySpecException);
                 return false;
             }catch (Exception e){
-                logger.error("交易校验失败：校验交易签名失败。不合法的交易。");
+                logger.error("交易校验失败：校验交易签名失败。不合法的交易。",e);
                 return false;
             }
             return true;

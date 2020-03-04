@@ -14,6 +14,8 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.security.Security;
+
 @Configuration
 @SpringBootApplication
 @ServletComponentScan
@@ -26,6 +28,7 @@ public class HelloWorldBlockChainNodeApplication {
 
 
 	public static void main(String[] args) throws Exception {
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 		SpringApplication.run(HelloWorldBlockChainNodeApplication.class, args);
 	}
 

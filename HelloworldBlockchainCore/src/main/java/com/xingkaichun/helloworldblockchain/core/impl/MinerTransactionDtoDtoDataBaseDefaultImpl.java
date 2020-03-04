@@ -3,9 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
 import com.xingkaichun.helloworldblockchain.core.TransactionDataBase;
-import com.xingkaichun.helloworldblockchain.core.dto.DtoUtils;
 import com.xingkaichun.helloworldblockchain.core.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.LevelDBUtil;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
@@ -64,7 +62,7 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     }
 
     @Override
-    public List<Transaction> selectTransactionList(BlockChainDataBase blockChainDataBase,int from, int size) throws Exception {
+    public List<TransactionDTO> selectTransactionDtoList(BlockChainDataBase blockChainDataBase,int from, int size) throws Exception {
         synchronized (BlockChainDataBase.class){
             List<TransactionDTO> transactionDtoList = new ArrayList<>();
             DBIterator dbIterator = this.transactionPoolDB.iterator();
@@ -72,32 +70,39 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
             while (dbIterator.hasNext()){
                 if(index>=from && from<from+size){
                     Map.Entry<byte[],byte[]> entry =  dbIterator.next();
+                    byte[] byteKey = entry.getKey();
                     byte[] byteTransaction = entry.getValue();
-                    TransactionDTO transactionDTO = decodeToTransactionDTO(byteTransaction);
-                    transactionDtoList.add(transactionDTO);
+                    TransactionDTO transactionDTO = null;
+                    try {
+                        transactionDTO = decodeToTransactionDTO(byteTransaction);
+                        transactionDtoList.add(transactionDTO);
+                    } catch (Exception e) {
+                        //TODO 删除交易
+                        logger.error("反序列出错",e);
+                        LevelDBUtil.delete(transactionPoolDB,byteKey);
+                    }
                 } else {
                     break;
                 }
                 index++;
             }
-            List<Transaction> transactionList = classCast(blockChainDataBase,transactionDtoList);
-            return transactionList;
+            return transactionDtoList;
         }
     }
 
     @Override
-    public void deleteTransaction(TransactionDTO transactionDTO) throws Exception {
-        LevelDBUtil.delete(transactionPoolDB,transactionDTO.getTransactionUUID());
+    public void deleteTransactionDtoByTransactionUUID(String transactionUUID) throws Exception {
+        LevelDBUtil.delete(transactionPoolDB,transactionUUID);
     }
 
     @Override
-    public void deleteTransactionList(List<Transaction> transactionList) throws Exception {
-        if(transactionList == null){
+    public void deleteTransactionDtoListByTransactionUuidList(List<String> transactionUuidList) throws Exception {
+        if(transactionUuidList == null || transactionUuidList.size()==0){
             return;
         }
         WriteBatch writeBatch = new WriteBatchImpl();
-        for(Transaction transaction:transactionList){
-            writeBatch.delete(LevelDBUtil.stringToBytes(transaction.getTransactionUUID()));
+        for(String transactionUuid:transactionUuidList){
+            writeBatch.delete(LevelDBUtil.stringToBytes(transactionUuid));
         }
         LevelDBUtil.write(transactionPoolDB,writeBatch);
     }
@@ -117,20 +122,5 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
         objectInputStream = new ObjectInputStream(byteArrayInputStream);
         TransactionDTO transactionDTO = (TransactionDTO) objectInputStream.readObject();
         return transactionDTO;
-    }
-
-    private List<Transaction> classCast(BlockChainDataBase blockChainDataBase, List<TransactionDTO> transactionDtoList) {
-        List<Transaction> transactionList = new ArrayList<>();
-        if(transactionDtoList != null && transactionDtoList.size()!=0){
-            for(TransactionDTO transactionDTO:transactionDtoList){
-                try {
-                    Transaction transaction = DtoUtils.classCast(blockChainDataBase,transactionDTO);
-                    transactionList.add(transaction);
-                } catch (Exception e){
-
-                }
-            }
-        }
-        return transactionList;
     }
 }

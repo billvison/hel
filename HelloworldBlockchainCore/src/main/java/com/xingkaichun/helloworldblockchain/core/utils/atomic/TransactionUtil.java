@@ -60,8 +60,7 @@ public class TransactionUtil {
      */
     public static String signatureData(Transaction transaction) throws Exception {
         String data = signatureData(transaction.getTimestamp(),transaction.getTransactionUUID(),getInputUtxoIds(transaction),getOutpuUtxoIds(transaction));
-        String sha256Data = CipherUtil.applySha256(data);
-        return sha256Data;
+        return data;
     }
 
     /**
@@ -118,7 +117,7 @@ public class TransactionUtil {
 
     public static List<String> getInputUtxoIds(Transaction transaction){
         List<String> ids = new ArrayList<>();
-        if(transaction.getInputs()==null||ids.size()==0){return ids;}
+        if(transaction.getInputs()==null){return ids;}
         for(TransactionInput transactionInput:transaction.getInputs()){
             ids.add(transactionInput.getUnspendTransactionOutput().getTransactionOutputUUID());
         }
@@ -128,7 +127,7 @@ public class TransactionUtil {
     public static List<String> getOutpuUtxoIds(Transaction transaction){
         List<String> ids = new ArrayList<>();
         List<TransactionOutput> outputs = transaction.getOutputs();
-        if(outputs==null || outputs.size()==0){
+        if(outputs==null){
             return ids;
         }
         for(TransactionOutput transactionOutput:outputs){

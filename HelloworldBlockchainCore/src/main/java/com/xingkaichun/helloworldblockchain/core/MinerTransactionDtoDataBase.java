@@ -26,15 +26,15 @@ public abstract class  MinerTransactionDtoDataBase {
     /**
      * 获取交易
      */
-    public abstract List<Transaction> selectTransactionList(BlockChainDataBase blockChainDataBase,int from, int size) throws Exception ;
+    public abstract List<TransactionDTO> selectTransactionDtoList(BlockChainDataBase blockChainDataBase,int from, int size) throws Exception ;
 
     /**
      * 删除交易
      */
-    public abstract void deleteTransaction(TransactionDTO transactionDTO) throws Exception ;
+    public abstract void deleteTransactionDtoByTransactionUUID(String transactionUUID) throws Exception ;
 
     /**
      * 删除交易
      */
-    public abstract void deleteTransactionList(List<Transaction> transactionList) throws Exception ;
+    public abstract void deleteTransactionDtoListByTransactionUuidList(List<String> transactionUuidList) throws Exception ;
 }

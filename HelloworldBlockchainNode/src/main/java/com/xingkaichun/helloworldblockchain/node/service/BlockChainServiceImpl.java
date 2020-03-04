@@ -64,7 +64,7 @@ public class BlockChainServiceImpl implements BlockChainService {
     private TransactionDTO classCast(NormalTransactionDto normalTransactionDto) throws Exception {
         List<NormalTransactionDto.Output> outputs = normalTransactionDto.getOutputs();
         List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();
-        if(outputs != null && outputs.size()!=0){
+        if(outputs != null){
             for(NormalTransactionDto.Output o:outputs){
                 TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
                 transactionOutputDTO.setTransactionOutputUUID(UUID.randomUUID().toString());
@@ -85,7 +85,7 @@ public class BlockChainServiceImpl implements BlockChainService {
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(System.currentTimeMillis());
         transactionDTO.setTransactionUUID(UUID.randomUUID().toString());
-        transactionDTO.setTransactionType(TransactionType.MINER);
+        transactionDTO.setTransactionType(TransactionType.NORMAL);
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
         signatureTransactionDTO(transactionDTO,new StringPrivateKey(normalTransactionDto.getPrivateKey()));
@@ -95,7 +95,8 @@ public class BlockChainServiceImpl implements BlockChainService {
 
     @Override
     public TransactionDTO signatureTransactionDTO(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) throws Exception {
-        DtoUtils.signature(transactionDTO,stringPrivateKey);
+        String signature = DtoUtils.signature(transactionDTO,stringPrivateKey);
+        transactionDTO.setSignature(signature);
         return transactionDTO;
     }
 
