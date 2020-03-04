@@ -8,9 +8,10 @@ import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPrivateKeySpec;
-import java.security.spec.InvalidKeySpecException;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
+import java.security.spec.*;
+import java.util.Collections;
 
 public class T {
 
@@ -26,5 +27,36 @@ public class T {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static ECPrivateKey PrivateFromPrivate(final ECPrivateKey privateKey) throws Exception {
+        ECParameterSpec params = privateKey.getParams();
+        ECPrivateKeySpec keySpec = new ECPrivateKeySpec(privateKey.getS(),tryFindNamedCurveSpec(params));
+        return (ECPrivateKey) KeyFactory
+                .getInstance("EC", org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME)
+                .generatePrivate(keySpec);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static ECParameterSpec tryFindNamedCurveSpec(ECParameterSpec params) {
+        org.bouncycastle.jce.spec.ECParameterSpec bcSpec
+                = org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util.convertSpec(params, false);
+        for (Object name : Collections.list(org.bouncycastle.jce.ECNamedCurveTable.getNames())) {
+            org.bouncycastle.jce.spec.ECNamedCurveParameterSpec bcNamedSpec
+                    = org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec((String) name);
+            if (bcNamedSpec.getN().equals(bcSpec.getN())
+                    && bcNamedSpec.getH().equals(bcSpec.getH())
+                    && bcNamedSpec.getCurve().equals(bcSpec.getCurve())
+                    && bcNamedSpec.getG().equals(bcSpec.getG())) {
+                return new org.bouncycastle.jce.spec.ECNamedCurveSpec(
+                        bcNamedSpec.getName(),
+                        bcNamedSpec.getCurve(),
+                        bcNamedSpec.getG(),
+                        bcNamedSpec.getN(),
+                        bcNamedSpec.getH(),
+                        bcNamedSpec.getSeed());
+            }
+        }
+        return params;
     }
 }

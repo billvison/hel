@@ -79,7 +79,6 @@ public class KeyUtil {
         String publicKeyHash =  CipherUtil.ripeMD160(CipherUtil.applySha256(stringPublicKey.getValue()));
         String check = CipherUtil.applySha256(CipherUtil.applySha256(version+publicKeyHash)).substring(0,4);
         String address = Base58Util.encode((version+publicKeyHash+check).getBytes());
-        System.out.println(address);
         return new StringAddress(address);
     }
 
@@ -98,8 +97,14 @@ public class KeyUtil {
         ECPublicKey ecPublicKey = BCECUtil.publicFromPrivate((ECPrivateKey)privKey);
         System.out.println("StringPublicKey："+ convertPublicKeyToStringPublicKey(ecPublicKey).getValue());
 
-        PrivateKey privateKey2 = T.getPrivateKeyFromECBigIntAndCurve(((ECPrivateKey) privKey).getS(),"secp256k1");
-        System.out.println("StringPrivateKey：" + convertPrivateKeyToStringPrivateKey(privateKey2).getValue());
+        PrivateKey PrivateKey4 = BCECUtil.PrivateFromPrivate((ECPrivateKey)privKey);
+        System.out.println("StringPrivateKey：" + convertPrivateKeyToStringPrivateKey(PrivateKey4).getValue());
+
+/*        PrivateKey privateKey2 = T.PrivateFromPrivate((ECPrivateKey)privKey);
+        System.out.println("StringPrivateKey：" + convertPrivateKeyToStringPrivateKey(privateKey2).getValue());*/
+
+        PrivateKey privateKey4=  T.getPrivateKeyFromECBigIntAndCurve(((ECPrivateKey) privKey).getS(),"secp256k1");
+        System.out.println("StringPrivateKey：" + convertPrivateKeyToStringPrivateKey(privateKey4).getValue());
 
 
     }

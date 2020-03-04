@@ -5,6 +5,7 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.ECPoint;
+import java.security.spec.ECPrivateKeySpec;
 import java.security.spec.ECPublicKeySpec;
 import java.util.Collections;
 
@@ -22,6 +23,14 @@ public class BCECUtil {
         return (ECPublicKey) KeyFactory
                 .getInstance("EC", org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME)
                 .generatePublic(keySpec);
+    }
+
+    public static ECPrivateKey PrivateFromPrivate(final ECPrivateKey privateKey) throws Exception {
+        ECParameterSpec params = privateKey.getParams();
+        ECPrivateKeySpec keySpec = new ECPrivateKeySpec(privateKey.getS(),tryFindNamedCurveSpec(params));
+        return (ECPrivateKey) KeyFactory
+                .getInstance("EC", org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME)
+                .generatePrivate(keySpec);
     }
 
     @SuppressWarnings("unchecked")
