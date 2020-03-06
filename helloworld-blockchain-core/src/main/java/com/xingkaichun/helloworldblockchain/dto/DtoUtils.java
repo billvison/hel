@@ -10,7 +10,7 @@ import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.model.wallet.Wallet;
+import com.xingkaichun.helloworldblockchain.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.CipherUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.TransactionUtil;
