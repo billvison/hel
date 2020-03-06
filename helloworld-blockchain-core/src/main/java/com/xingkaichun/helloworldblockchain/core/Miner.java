@@ -28,19 +28,19 @@ public abstract class Miner {
     public abstract void start() throws Exception;
 
     /**
-     * 设置矿工为非活动状态。
-     */
-    public abstract void stop() throws Exception;
-
-    /**
-     * 设置矿工为活动状态。
-     */
-    public abstract void resume() ;
-
-    /**
      * 矿工是否处于活动状态。
      */
     public abstract boolean isActive() ;
+
+    /**
+     * 激活矿工：设置矿工为活动状态。
+     */
+    public abstract void active() ;
+
+    /**
+     * 停用矿工：设置矿工为非活动状态。
+     */
+    public abstract void deactive() throws Exception;
     //endregion
 
 

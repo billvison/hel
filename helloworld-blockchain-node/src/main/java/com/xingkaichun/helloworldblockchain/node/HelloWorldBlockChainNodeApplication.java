@@ -35,8 +35,8 @@ public class HelloWorldBlockChainNodeApplication {
 	@Bean
 	public BlockChainCore buildBlockChainCore() throws Exception {
 		BlockChainCore blockChainCore = new BlockChainCoreFactory().createBlockChainCore(blockchainDataPath,minerAddress);
-		blockChainCore.getMiner().stop();
-		blockChainCore.getSynchronizer().stop();
+		blockChainCore.getMiner().deactive();
+		blockChainCore.getSynchronizer().deactive();
 		new Thread(()->{
 			try {
 				blockChainCore.start();

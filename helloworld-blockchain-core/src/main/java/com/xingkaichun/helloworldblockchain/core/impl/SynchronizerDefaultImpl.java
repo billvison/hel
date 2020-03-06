@@ -53,12 +53,12 @@ public class SynchronizerDefaultImpl extends Synchronizer {
     }
 
     @Override
-    public void stop() {
+    public void deactive() {
         synchronizeOption = false;
     }
 
     @Override
-    public void resume() {
+    public void active() {
         synchronizeOption = true;
     }
 

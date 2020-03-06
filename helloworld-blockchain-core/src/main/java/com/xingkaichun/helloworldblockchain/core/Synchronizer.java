@@ -23,18 +23,18 @@ public abstract class Synchronizer {
     public abstract void start() throws Exception;
 
     /**
-     * 设置同步器为非活动状态。
-     */
-    public abstract void stop();
-
-    /**
-     * 设置同步器为活动状态。
-     */
-    public abstract void resume();
-
-    /**
-     * 同步器是否处于活动状态。
+     * 同步器是否处于激活状态。
      */
     public abstract boolean isActive();
+
+    /**
+     * 激活同步器：设置同步器为活动状态。
+     */
+    public abstract void active();
+
+    /**
+     * 停用同步器：设置同步器为非活动状态。
+     */
+    public abstract void deactive();
     //endregion
 }

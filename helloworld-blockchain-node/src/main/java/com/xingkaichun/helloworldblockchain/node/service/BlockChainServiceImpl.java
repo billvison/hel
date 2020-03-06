@@ -107,16 +107,6 @@ public class BlockChainServiceImpl implements BlockChainService {
     }
 
     @Override
-    public void startMine() throws Exception {
-        blockChainCore.getMiner().resume();
-    }
-
-    @Override
-    public void stopMine() throws Exception {
-        blockChainCore.getMiner().stop();
-    }
-
-    @Override
     public String queryBlockHashByBlockHeight(QueryBlockHashByBlockHeightRequest request) throws Exception {
         Block block = blockChainCore.getBlockChainDataBase().findBlockByBlockHeight(request.getBlockHeight());
         if(block == null){
@@ -139,7 +129,31 @@ public class BlockChainServiceImpl implements BlockChainService {
     }
 
     @Override
-    public boolean isMineActive() {
+    public boolean isMinerActive() {
         return blockChainCore.getMiner().isActive();
+    }
+
+    @Override
+    public void activeMiner() throws Exception {
+        blockChainCore.getMiner().active();
+    }
+
+    @Override
+    public void deactiveMiner() throws Exception {
+        blockChainCore.getMiner().deactive();
+    }
+
+    public boolean isSynchronizerActive() {
+        return blockChainCore.getSynchronizer().isActive();
+    }
+
+    public boolean deactiveSynchronizer() {
+        blockChainCore.getSynchronizer().deactive();
+        return true;
+    }
+
+    public boolean activeSynchronizer() {
+        blockChainCore.getSynchronizer().active();
+        return true;
     }
 }

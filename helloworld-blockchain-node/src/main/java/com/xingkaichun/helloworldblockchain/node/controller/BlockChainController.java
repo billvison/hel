@@ -40,59 +40,114 @@ public class BlockChainController {
     private BlockChainService blockChainService;
 
     /**
-     * 矿工是否激活挖矿
+     * 矿工是否激活
      */
     @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.IS_MINE_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<IsMineActiveResponse> isMineActive(){
+    @RequestMapping(value = BlockChainApiRoute.IS_MINER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<IsMinerActiveResponse> isMineActive(){
         try {
-            boolean isMineActive = blockChainService.isMineActive();
+            boolean isMineActive = blockChainService.isMinerActive();
 
-            IsMineActiveResponse isMineActiveResponse = new IsMineActiveResponse();
-            isMineActiveResponse.setMineActive(isMineActive);
-            return ServiceResult.createSuccessServiceResult("查询矿工是否激活挖矿成功",isMineActiveResponse);
+            IsMinerActiveResponse response = new IsMinerActiveResponse();
+            response.setMineActive(isMineActive);
+            return ServiceResult.createSuccessServiceResult("查询矿工是否激活挖矿成功",response);
         } catch (Exception e){
             String message = "查询矿工是否激活挖矿失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
-
     /**
-     * 启动挖矿
+     * 激活矿工
      */
     @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.START_MINE,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<StartMineResponse> startMine(){
+    @RequestMapping(value = BlockChainApiRoute.ACTIVE_MINER,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<ActiveMinerResponse> activeMiner(){
         try {
-            blockChainService.startMine();
-            StartMineResponse startMineResponse = new StartMineResponse();
-            startMineResponse.setStartMineSuccess(true);
-            return ServiceResult.createSuccessServiceResult("开启挖矿成功",null);
+            blockChainService.activeMiner();
+            ActiveMinerResponse response = new ActiveMinerResponse();
+            response.setStartMineSuccess(true);
+            return ServiceResult.createSuccessServiceResult("开启挖矿成功",response);
         } catch (Exception e){
             String message = "开启挖矿失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
-
     /**
-     * 停止挖矿
+     * 停用矿工
      */
     @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.STOP_MINE,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<StopMineResponse> stopMine(){
+    @RequestMapping(value = BlockChainApiRoute.DEACTIVE_MINER,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<DeactiveMinerResponse> deactiveMiner(){
         try {
-            blockChainService.stopMine();
-            StopMineResponse stopMineResponse = new StopMineResponse();
-            stopMineResponse.setStopMineSuccess(true);
-            return ServiceResult.createSuccessServiceResult("关闭挖矿成功",null);
+            blockChainService.deactiveMiner();
+            DeactiveMinerResponse response = new DeactiveMinerResponse();
+            response.setStopMineSuccess(true);
+            return ServiceResult.createSuccessServiceResult("关闭挖矿成功",response);
         } catch (Exception e){
             String message = "关闭挖矿失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
+
+
+
+    /**
+     * 同步器是否激活
+     */
+    @ResponseBody
+    @RequestMapping(value = BlockChainApiRoute.IS_SYNCHRONIZER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<IsSynchronizerActiveResponse> isSynchronizerActive(){
+        try {
+            boolean isSynchronizerActive = blockChainService.isSynchronizerActive();
+
+            IsSynchronizerActiveResponse response = new IsSynchronizerActiveResponse();
+            response.setSynchronizerActive(isSynchronizerActive);
+            return ServiceResult.createSuccessServiceResult("查询矿工是否激活挖矿成功",response);
+        } catch (Exception e){
+            String message = "查询矿工是否激活挖矿失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+    /**
+     * 激活同步器
+     */
+    @ResponseBody
+    @RequestMapping(value = BlockChainApiRoute.ACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<ActiveSynchronizerResponse> activeSynchronizer(){
+        try {
+            blockChainService.activeSynchronizer();
+            ActiveSynchronizerResponse response = new ActiveSynchronizerResponse();
+            response.setResumeSynchronizerSuccess(true);
+            return ServiceResult.createSuccessServiceResult("激活同步器成功",response);
+        } catch (Exception e){
+            String message = "激活同步器失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+    /**
+     * 停用同步器
+     */
+    @ResponseBody
+    @RequestMapping(value = BlockChainApiRoute.DEACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<DeactiveSynchronizerResponse> deactiveSynchronizer(){
+        try {
+            blockChainService.deactiveSynchronizer();
+            DeactiveSynchronizerResponse response = new DeactiveSynchronizerResponse();
+            response.setStopMineSuccess(true);
+            return ServiceResult.createSuccessServiceResult("停用同步器成功",response);
+        } catch (Exception e){
+            String message = "停用同步器失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+
 
     /**
      * 生成钱包(公钥、私钥、地址)

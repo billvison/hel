@@ -2,9 +2,13 @@ package com.xingkaichun.helloworldblockchain.node.dto.blockchain;
 
 public class BlockChainApiRoute {
 
-    public static final String IS_MINE_ACTIVE = "/Api/BlockChain/IsMineActive";
-    public static final String START_MINE = "/Api/BlockChain/StartMine";
-    public static final String STOP_MINE = "/Api/BlockChain/StopMine";
+    public static final String IS_MINER_ACTIVE = "/Api/BlockChain/IsMinerActive";
+    public static final String ACTIVE_MINER = "/Api/BlockChain/ActiveMiner";
+    public static final String DEACTIVE_MINER = "/Api/BlockChain/DeactiveMiner";
+
+    public static final String IS_SYNCHRONIZER_ACTIVE = "/Api/BlockChain/IsSynchronizerActive";
+    public static final String ACTIVE_SYNCHRONIZER = "/Api/BlockChain/ActiveSynchronizer";
+    public static final String DEACTIVE_SYNCHRONIZER = "/Api/BlockChain/DeactiveSynchronizer";
 
     public static final String GENERATE_WALLETDTO = "/Api/BlockChain/GenerateWalletDTO";
     public static final String SUBMIT_TRANSACTION = "/Api/BlockChain/SubmitTransaction";

@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.node.dto.blockchain.response;
 import lombok.Data;
 
 @Data
-public class StartMineResponse {
+public class IsMinerActiveResponse {
 
-    private boolean isStartMineSuccess;
+    private boolean isMineActive;
 }

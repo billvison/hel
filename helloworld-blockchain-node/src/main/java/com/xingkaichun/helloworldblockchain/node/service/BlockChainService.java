@@ -35,14 +35,7 @@ public interface BlockChainService {
      * 给打上签名交易
      */
     TransactionDTO signatureTransactionDTO(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) throws Exception;
-    /**
-     * 开始挖矿
-     */
-    void startMine() throws Exception;
-    /**
-     * 停止挖矿
-     */
-    void stopMine() throws Exception;
+
     /**
      * 根据区块高度获取区块DTO
      */
@@ -56,5 +49,29 @@ public interface BlockChainService {
      */
     int queryBlockChainHeight() throws Exception;
 
-    boolean isMineActive();
+    /**
+     * 矿工是否处于激活状态
+     */
+    boolean isMinerActive();
+    /**
+     * 开始挖矿
+     */
+    void activeMiner() throws Exception;
+    /**
+     * 停止挖矿
+     */
+    void deactiveMiner() throws Exception;
+
+    /**
+     * 同步器是否激活
+     */
+    boolean isSynchronizerActive();
+    /**
+     * 停止同步器
+     */
+    boolean deactiveSynchronizer();
+    /**
+     * 恢复同步器
+     */
+    boolean activeSynchronizer();
 }
