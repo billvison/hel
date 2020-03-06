@@ -1,8 +1,8 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.TransactionDataBase;
-import com.xingkaichun.helloworldblockchain.core.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.core.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

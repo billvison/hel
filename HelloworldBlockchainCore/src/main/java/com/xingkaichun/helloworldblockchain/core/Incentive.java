@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core;
 
-import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.model.Block;
 
 import java.math.BigDecimal;
 

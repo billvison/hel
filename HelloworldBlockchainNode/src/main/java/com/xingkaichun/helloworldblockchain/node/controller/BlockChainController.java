@@ -1,9 +1,9 @@
 package com.xingkaichun.helloworldblockchain.node.controller;
 
-import com.xingkaichun.helloworldblockchain.core.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.core.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.core.dto.WalletDTO;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.dto.WalletDTO;
+import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.BlockChainApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.GenerateWalletRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryTransactionByTransactionUuidRequest;

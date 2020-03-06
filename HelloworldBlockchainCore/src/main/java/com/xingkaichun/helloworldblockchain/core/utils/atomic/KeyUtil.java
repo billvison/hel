@@ -1,8 +1,8 @@
 package com.xingkaichun.helloworldblockchain.core.utils.atomic;
 
-import com.xingkaichun.helloworldblockchain.core.model.key.StringAddress;
-import com.xingkaichun.helloworldblockchain.core.model.key.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.core.model.key.StringPublicKey;
+import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
+import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.model.key.StringPublicKey;
 
 import java.security.KeyFactory;
 import java.security.PrivateKey;

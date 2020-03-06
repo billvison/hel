@@ -1,10 +1,9 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 import com.google.gson.Gson;
-import com.xingkaichun.helloworldblockchain.core.dto.*;
-import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.key.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.dto.*;
+import com.xingkaichun.helloworldblockchain.model.Block;
+import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

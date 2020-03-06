@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 import com.google.gson.Gson;
-import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.model.Block;
 
 public class PrintBlockTest {
 

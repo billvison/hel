@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 import com.xingkaichun.helloworldblockchain.core.impl.*;
-import com.xingkaichun.helloworldblockchain.core.model.key.StringAddress;
+import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
 
 import java.io.File;
 import java.util.ArrayList;

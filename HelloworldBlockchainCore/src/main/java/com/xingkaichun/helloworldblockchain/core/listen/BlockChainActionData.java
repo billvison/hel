@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core.listen;
 
-import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.enums.BlockChainActionEnum;
+import com.xingkaichun.helloworldblockchain.model.Block;
+import com.xingkaichun.helloworldblockchain.model.enums.BlockChainActionEnum;
 import lombok.Data;
 
 import java.util.ArrayList;

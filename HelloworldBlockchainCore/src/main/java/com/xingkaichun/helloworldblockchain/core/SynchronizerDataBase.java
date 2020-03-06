@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core;
 
-import com.xingkaichun.helloworldblockchain.core.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
 
 import java.util.List;
 

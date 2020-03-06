@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core;
 
-import com.xingkaichun.helloworldblockchain.core.model.wallet.Wallet;
+import com.xingkaichun.helloworldblockchain.model.wallet.Wallet;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BcBigIntegerToPrivateKey;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.WalletUtil;

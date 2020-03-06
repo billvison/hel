@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchain.response;
 
-import com.xingkaichun.helloworldblockchain.core.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import lombok.Data;
 
 @Data

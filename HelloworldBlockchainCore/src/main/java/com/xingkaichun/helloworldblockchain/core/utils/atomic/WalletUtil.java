@@ -1,9 +1,9 @@
 package com.xingkaichun.helloworldblockchain.core.utils.atomic;
 
-import com.xingkaichun.helloworldblockchain.core.model.key.StringAddress;
-import com.xingkaichun.helloworldblockchain.core.model.key.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.core.model.key.StringPublicKey;
-import com.xingkaichun.helloworldblockchain.core.model.wallet.Wallet;
+import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
+import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.model.key.StringPublicKey;
+import com.xingkaichun.helloworldblockchain.model.wallet.Wallet;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
