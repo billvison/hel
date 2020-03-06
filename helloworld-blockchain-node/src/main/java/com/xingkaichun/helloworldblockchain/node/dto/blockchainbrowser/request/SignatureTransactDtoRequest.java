@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.node.dto.blockchain.request;
+package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request;
 
 import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;

@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Miner;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
-import com.xingkaichun.helloworldblockchain.dto.DtoUtils;
+import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
 import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.model.key.StringAddress;

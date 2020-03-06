@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
 import com.xingkaichun.helloworldblockchain.core.TransactionDataBase;
 import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.dto.DtoUtils;
+import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
 import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.dto.DtoUtils;
+import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.EqualsUtils;

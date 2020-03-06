@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.node.dto.blockchain.response;
+package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response;
 
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.node.dto.blockchain;
+package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser;
 
 import lombok.Data;
 

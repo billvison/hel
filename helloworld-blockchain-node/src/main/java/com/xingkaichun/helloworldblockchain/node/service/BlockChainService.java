@@ -5,9 +5,9 @@ import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.dto.WalletDTO;
 import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchain.NormalTransactionDto;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryTransactionByTransactionUuidRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryUtxosByAddressRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryTransactionByTransactionUuidRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryUtxosByAddressRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoByBlockHeightRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockHashByBlockHeightRequest;
 

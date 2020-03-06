@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.core;
 
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.dto.*;
+import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
 

@@ -1,7 +1,8 @@
-package com.xingkaichun.helloworldblockchain.dto;
+package com.xingkaichun.helloworldblockchain.core.utils;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
+import com.xingkaichun.helloworldblockchain.dto.*;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
 import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
