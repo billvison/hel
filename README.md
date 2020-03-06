@@ -1,5 +1,4 @@
-#这是一个Helloworld级别的区块链系统，即一个简单的数字货币系统。
-
+这是一个Helloworld级别的区块链系统，即一个简单的数字货币系统。  
 
 它包含了五个模块。  
 helloworld-blockchain-node：区块链节点，主要负责与其它节点沟通。启动区块链节点后，自动在整个区块链网络中寻找/发布：节点、区块、交易。  
@@ -10,7 +9,7 @@ helloworld-blockchain-model：区块链系统内部使用的model类，字段有
 
 
 
-### helloworld-blockchain-node模块的打包与发布
+helloworld-blockchain-node模块的打包与发布
 打包  
 cd helloworld-blockchain-node  
 mvn -Dmaven.test.skip=true clean package install spring-boot:repackage assembly:single  
