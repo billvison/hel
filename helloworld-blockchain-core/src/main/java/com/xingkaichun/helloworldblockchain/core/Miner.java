@@ -35,12 +35,12 @@ public abstract class Miner {
     /**
      * 设置矿工为活动状态。
      */
-    public abstract void resume() throws Exception;
+    public abstract void resume() ;
 
     /**
      * 矿工是否处于活动状态。
      */
-    public abstract boolean isActive() throws Exception;
+    public abstract boolean isActive() ;
     //endregion
 
 

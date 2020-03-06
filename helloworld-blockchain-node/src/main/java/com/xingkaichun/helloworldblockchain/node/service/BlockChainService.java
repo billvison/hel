@@ -55,4 +55,6 @@ public interface BlockChainService {
      * 获取区块链高度
      */
     int queryBlockChainHeight() throws Exception;
+
+    boolean isMineActive();
 }

@@ -137,4 +137,9 @@ public class BlockChainServiceImpl implements BlockChainService {
     public int queryBlockChainHeight() throws Exception {
         return blockChainCore.getBlockChainDataBase().obtainBlockChainHeight();
     }
+
+    @Override
+    public boolean isMineActive() {
+        return blockChainCore.getMiner().isActive();
+    }
 }

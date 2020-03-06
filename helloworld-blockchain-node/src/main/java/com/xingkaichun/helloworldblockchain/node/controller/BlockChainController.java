@@ -9,10 +9,7 @@ import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.Generate
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryTransactionByTransactionUuidRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.QueryUtxosByAddressRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchain.request.SubmitNormalTransactionRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchain.response.GenerateWalletResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchain.response.QueryTransactionByTransactionUuidResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchain.response.QueryUtxosByAddressResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchain.response.SubmitNormalTransactionResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchain.response.*;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoByBlockHeightRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockHashByBlockHeightRequest;
@@ -42,20 +39,40 @@ public class BlockChainController {
     @Autowired
     private BlockChainService blockChainService;
 
+    /**
+     * 矿工是否激活挖矿
+     */
+    @ResponseBody
+    @RequestMapping(value = BlockChainApiRoute.IS_MINE_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<IsMineActiveResponse> isMineActive(){
+        try {
+            boolean isMineActive = blockChainService.isMineActive();
+
+            IsMineActiveResponse isMineActiveResponse = new IsMineActiveResponse();
+            isMineActiveResponse.setMineActive(isMineActive);
+            return ServiceResult.createSuccessServiceResult("查询矿工是否激活挖矿成功",isMineActiveResponse);
+        } catch (Exception e){
+            String message = "查询矿工是否激活挖矿失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
 
     /**
      * 启动挖矿
      */
     @ResponseBody
     @RequestMapping(value = BlockChainApiRoute.START_MINE,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<String> startMine(){
+    public ServiceResult<StartMineResponse> startMine(){
         try {
             blockChainService.startMine();
+            StartMineResponse startMineResponse = new StartMineResponse();
+            startMineResponse.setStartMineSuccess(true);
             return ServiceResult.createSuccessServiceResult("开启挖矿成功",null);
         } catch (Exception e){
             String message = "开启挖矿失败";
             logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
+            return ServiceResult.createFailServiceResult(message);
         }
     }
 
@@ -64,14 +81,16 @@ public class BlockChainController {
      */
     @ResponseBody
     @RequestMapping(value = BlockChainApiRoute.STOP_MINE,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<String> stopMine(){
+    public ServiceResult<StopMineResponse> stopMine(){
         try {
             blockChainService.stopMine();
+            StopMineResponse stopMineResponse = new StopMineResponse();
+            stopMineResponse.setStopMineSuccess(true);
             return ServiceResult.createSuccessServiceResult("关闭挖矿成功",null);
         } catch (Exception e){
             String message = "关闭挖矿失败";
             logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
+            return ServiceResult.createFailServiceResult(message);
         }
     }
 
@@ -89,7 +108,7 @@ public class BlockChainController {
         } catch (Exception e){
             String message = "生成钱包失败";
             logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
+            return ServiceResult.createFailServiceResult(message);
         }
     }
 
@@ -108,7 +127,7 @@ public class BlockChainController {
         } catch (Exception e){
             String message = "提交交易到区块链网络失败";
             logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
+            return ServiceResult.createFailServiceResult(message);
         }
     }
 
@@ -127,7 +146,7 @@ public class BlockChainController {
         } catch (Exception e){
             String message = "查询获取失败";
             logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
+            return ServiceResult.createFailServiceResult(message);
         }
     }
 
@@ -146,7 +165,7 @@ public class BlockChainController {
         } catch (Exception e){
             String message = "查询区块Hash失败";
             logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
+            return ServiceResult.createFailServiceResult(message);
         }
     }
 
@@ -165,7 +184,7 @@ public class BlockChainController {
         } catch (Exception e){
             String message = "根据交易UUID查询交易失败";
             logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
+            return ServiceResult.createFailServiceResult(message);
         }
     }
 
@@ -184,7 +203,7 @@ public class BlockChainController {
         } catch (Exception e){
             String message = "查询用戶余额失败";
             logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
+            return ServiceResult.createFailServiceResult(message);
         }
     }
 }

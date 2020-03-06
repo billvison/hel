@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.node.dto.blockchain;
 
 public class BlockChainApiRoute {
 
+    public static final String IS_MINE_ACTIVE = "/Api/BlockChain/IsMineActive";
     public static final String START_MINE = "/Api/BlockChain/StartMine";
     public static final String STOP_MINE = "/Api/BlockChain/StopMine";
 

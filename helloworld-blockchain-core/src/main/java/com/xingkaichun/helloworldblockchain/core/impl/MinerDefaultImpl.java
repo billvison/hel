@@ -75,17 +75,17 @@ public class MinerDefaultImpl extends Miner {
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop() {
         mineOption = false;
     }
 
     @Override
-    public void resume() throws Exception {
+    public void resume() {
         mineOption = true;
     }
 
     @Override
-    public boolean isActive() throws Exception {
+    public boolean isActive() {
         return mineOption;
     }
 
