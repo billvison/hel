@@ -14,6 +14,8 @@ helloworld-blockchain-node模块的打包与发布
 cd helloworld-blockchain-node  
 mvn -Dmaven.test.skip=true clean package install spring-boot:repackage assembly:single  
 启动  
-①解压  
-②  
+cd target
+tar -zxvf helloworld-blockchain-node-*.tar.gz
+cd HelloworldBlockchainNode
+./start.sh restart
 

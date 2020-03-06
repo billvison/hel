@@ -22,7 +22,7 @@
                 <include>*.properties</include>
                 <include>*.xml</include>
             </includes>
-            <fileMode>0755</fileMode>
+            <fileMode>0644</fileMode>
         </fileSet>
 
         <!-- 将src/main/resources/下面的前端相关文件拷贝到front-end目录下面 -->
@@ -33,24 +33,32 @@
             <filtered>false</filtered>
         </fileSet>
 
+        <!-- 将scripts下面的所有文件拷贝到根目录下面 -->
+        <fileSet>
+            <directory>scripts/</directory>
+            <outputDirectory>./${project.name}/</outputDirectory>
+            <fileMode>0777</fileMode>
+            <filtered>true</filtered>
+        </fileSet>
+
         <!-- 将target下面的jar包拷贝到lib目录下面 -->
         <fileSet>
             <directory>target</directory>
-            <outputDirectory>${project.name}/lib/</outputDirectory>
+            <outputDirectory>${project.name}/libs/</outputDirectory>
             <includes>
                 <include>${project.artifactId}-*.jar</include>
             </includes>
-            <fileMode>0755</fileMode>
+            <fileMode>0777</fileMode>
         </fileSet>
 
         <!-- 将target/lib下面的jar包拷贝到lib目录下面 -->
         <fileSet>
-            <directory>target/lib</directory>
-            <outputDirectory>${project.name}/lib/</outputDirectory>
+            <directory>target/libs</directory>
+            <outputDirectory>${project.name}/libs/</outputDirectory>
             <includes>
                 <include>*.jar</include>
             </includes>
-            <fileMode>0644</fileMode>
+            <fileMode>0777</fileMode>
         </fileSet>
     </fileSets>
 </assembly>
