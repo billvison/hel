@@ -16,6 +16,14 @@
     <url>http://www.xingkaichun.com</url>
 
     <dependencies>
+        <dependency>
+            <groupId>com.xingkaichun</groupId>
+            <artifactId>helloworld-blockchain-dto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xingkaichun</groupId>
+            <artifactId>helloworld-blockchain-model</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

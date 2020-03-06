@@ -9,6 +9,7 @@ import com.xingkaichun.helloworldblockchain.core.model.key.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.model.wallet.Wallet;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.CipherUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
@@ -101,15 +102,29 @@ public class DtoUtils {
             }
         }
 
+        TransactionTypeDTO transactionTypeDto = transactionDTO.getTransactionType();
+        TransactionType transactionType= classCast(transactionTypeDto);
+
         Transaction transaction = new Transaction();
         transaction.setTimestamp(transactionDTO.getTimestamp());
         transaction.setTransactionUUID(transactionDTO.getTransactionUUID());
-        transaction.setTransactionType(transactionDTO.getTransactionType());
+        transaction.setTransactionType(transactionType);
         transaction.setInputs(inputs);
         transaction.setOutputs(outputs);
         transaction.setSignature(transactionDTO.getSignature());
         return transaction;
     }
+
+    private static TransactionType classCast(TransactionTypeDTO transactionTypeDto) {
+        if(transactionTypeDto == TransactionTypeDTO.MINER){
+            return TransactionType.MINER;
+        } else if(transactionTypeDto == TransactionTypeDTO.NORMAL){
+            return TransactionType.NORMAL;
+        } else {
+            throw new ClassCastException("转换异常");
+        }
+    }
+
     /**
      * 类型转换
      */
@@ -135,14 +150,27 @@ public class DtoUtils {
             }
         }
 
+        TransactionType transactionType = transaction.getTransactionType();
+        TransactionTypeDTO transactionTypeDto = classCast(transactionType);
+
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(transaction.getTimestamp());
         transactionDTO.setTransactionUUID(transaction.getTransactionUUID());
-        transactionDTO.setTransactionType(transaction.getTransactionType());
+        transactionDTO.setTransactionType(transactionTypeDto);
         transactionDTO.setInputs(inputs);
         transactionDTO.setOutputs(outputs);
         transactionDTO.setSignature(transaction.getSignature());
         return transactionDTO;
+    }
+
+    private static TransactionTypeDTO classCast(TransactionType transactionType) {
+        if(transactionType == TransactionType.MINER){
+            return TransactionTypeDTO.MINER;
+        } else if(transactionType == TransactionType.NORMAL){
+            return TransactionTypeDTO.NORMAL;
+        } else {
+            throw new ClassCastException("转换异常");
+        }
     }
 
     /**

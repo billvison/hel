@@ -1,10 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 import com.google.gson.Gson;
-import com.xingkaichun.helloworldblockchain.core.dto.DtoUtils;
-import com.xingkaichun.helloworldblockchain.core.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.core.dto.TransactionInputDTO;
-import com.xingkaichun.helloworldblockchain.core.dto.TransactionOutputDTO;
+import com.xingkaichun.helloworldblockchain.core.dto.*;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.key.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
@@ -27,7 +24,7 @@ public class TranslateTest {
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(System.currentTimeMillis());
         transactionDTO.setTransactionUUID(UUID.randomUUID().toString());
-        transactionDTO.setTransactionType(TransactionType.MINER);
+        transactionDTO.setTransactionType(TransactionTypeDTO.MINER);
         ArrayList<TransactionInputDTO> inputs = new ArrayList<>();
         transactionDTO.setInputs(inputs);
         ArrayList<TransactionOutputDTO> outputs = new ArrayList<>();

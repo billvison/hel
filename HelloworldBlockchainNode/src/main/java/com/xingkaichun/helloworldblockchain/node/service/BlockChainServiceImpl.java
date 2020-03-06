@@ -92,7 +92,7 @@ public class BlockChainServiceImpl implements BlockChainService {
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(System.currentTimeMillis());
         transactionDTO.setTransactionUUID(UUID.randomUUID().toString());
-        transactionDTO.setTransactionType(TransactionType.NORMAL);
+        transactionDTO.setTransactionType(TransactionTypeDTO.NORMAL);
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
         signatureTransactionDTO(transactionDTO,new StringPrivateKey(privateKey));
