@@ -1,25 +1,21 @@
 package com.xingkaichun.helloworldblockchain.core.utils.atomic;
 
-import org.bouncycastle.asn1.x9.ECNamedCurveTable;
-import org.bouncycastle.asn1.x9.X9ECParameters;
-import org.bouncycastle.jce.spec.ECNamedCurveSpec;
+import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
+import org.bouncycastle.jce.spec.ECPrivateKeySpec;
 
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPrivateKeySpec;
 import java.security.spec.InvalidKeySpecException;
 
 public class BcBigIntegerToPrivateKey {
 
 
     public static PrivateKey getPrivateKeyFromECBigIntAndCurve(BigInteger s, String curveName) throws NoSuchProviderException {
-        X9ECParameters ecCurve = ECNamedCurveTable.getByName(curveName);
-        ECParameterSpec ecParameterSpec = new ECNamedCurveSpec(curveName, ecCurve.getCurve(), ecCurve.getG(), ecCurve.getN(), ecCurve.getH(), ecCurve.getSeed());
-        ECPrivateKeySpec privateKeySpec = new ECPrivateKeySpec(s, ecParameterSpec);
+        ECNamedCurveParameterSpec ecCurve = org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec(curveName);
+        ECPrivateKeySpec privateKeySpec = new ECPrivateKeySpec(s, ecCurve);
         try {
             KeyFactory keyFactory = KeyFactory.getInstance("EC",org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME);
             return keyFactory.generatePrivate(privateKeySpec);
