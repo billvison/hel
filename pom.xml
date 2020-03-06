@@ -4,15 +4,15 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.xingkaichun</groupId>
+  <groupId>com.xingkaichun.helloworldblockchain</groupId>
   <artifactId>helloworld-blockchain-parent</artifactId>
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
   <modules>
-    <module>HelloworldBlockchainCore</module>
-    <module>HelloworldBlockchainNode</module>
     <module>helloworld-blockchain-model</module>
     <module>helloworld-blockchain-dto</module>
+    <module>helloworld-blockchain-core</module>
+    <module>helloworld-blockchain-node</module>
   </modules>
 
   <name>HelloworldBlockchain-Parent</name>
@@ -36,25 +36,25 @@
       </dependency>
 
       <dependency>
-        <groupId>com.xingkaichun</groupId>
+        <groupId>com.xingkaichun.helloworldblockchain</groupId>
         <artifactId>helloworld-blockchain-core</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.xingkaichun</groupId>
+        <groupId>com.xingkaichun.helloworldblockchain</groupId>
         <artifactId>helloworld-blockchain-node</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.xingkaichun</groupId>
+        <groupId>com.xingkaichun.helloworldblockchain</groupId>
         <artifactId>helloworld-blockchain-dto</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.xingkaichun</groupId>
+        <groupId>com.xingkaichun.helloworldblockchain</groupId>
         <artifactId>helloworld-blockchain-model</artifactId>
         <version>${project.version}</version>
       </dependency>

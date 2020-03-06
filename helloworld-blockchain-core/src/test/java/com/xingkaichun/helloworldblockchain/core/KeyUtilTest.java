@@ -22,7 +22,7 @@ public class KeyUtilTest {
 
         PublicKey publicKey = KeyUtil.convertStringPublicKeyToPublicKey(wallet.getStringPublicKey());
         //测试这个私钥产生的公钥是否正确
-        ECPublicKey publicKey1 = KeyUtil.publicFromPrivate((java.security.interfaces.ECPrivateKey) privateKey);
+        ECPublicKey publicKey1 = KeyUtil.publicFromPrivate((ECPrivateKey) privateKey);
 
         Assert.assertEquals(KeyUtil.convertPublicKeyToStringPublicKey(publicKey).getValue(),KeyUtil.convertPublicKeyToStringPublicKey(publicKey1).getValue());
 
