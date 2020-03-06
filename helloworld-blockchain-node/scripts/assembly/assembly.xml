@@ -1,0 +1,56 @@
+<assembly>
+    <id>assembly</id>
+    <!-- 设置打包好的文件格式 -->
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <!-- 将src/main/resources/META-INF下面的文件拷贝到config/META-INF目录下面 -->
+        <fileSet>
+            <directory>src/main/resources/META-INF</directory>
+            <outputDirectory>${project.name}/config/META-INF</outputDirectory>
+            <fileMode>0644</fileMode>
+            <filtered>false</filtered>
+        </fileSet>
+
+        <!-- 将src/main/resources/下面的文件拷贝到config/目录下面 -->
+        <fileSet>
+            <directory>src/main/resources</directory>
+            <outputDirectory>${project.name}/config</outputDirectory>
+            <includes>
+                <include>*.properties</include>
+                <include>*.xml</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+        <!-- 将src/main/resources/下面的前端相关文件拷贝到front-end目录下面 -->
+        <fileSet>
+            <directory>src/main/resources/static</directory>
+            <outputDirectory>${project.name}/front-end/static</outputDirectory>
+            <fileMode>0644</fileMode>
+            <filtered>false</filtered>
+        </fileSet>
+
+        <!-- 将target下面的jar包拷贝到lib目录下面 -->
+        <fileSet>
+            <directory>target</directory>
+            <outputDirectory>${project.name}/lib/</outputDirectory>
+            <includes>
+                <include>${project.artifactId}-*.jar</include>
+            </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+        <!-- 将target/lib下面的jar包拷贝到lib目录下面 -->
+        <fileSet>
+            <directory>target/lib</directory>
+            <outputDirectory>${project.name}/lib/</outputDirectory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+            <fileMode>0644</fileMode>
+        </fileSet>
+    </fileSets>
+</assembly>

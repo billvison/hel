@@ -112,7 +112,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptors>
-                        <descriptor>scripts/assembly.xml</descriptor>
+                        <descriptor>scripts/assembly/assembly.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>
