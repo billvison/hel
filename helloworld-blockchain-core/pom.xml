@@ -13,7 +13,6 @@
     <artifactId>helloworld-blockchain-core</artifactId>
 
     <name>HelloworldBlockchainCore</name>
-    <url>http://www.xingkaichun.com</url>
 
     <dependencies>
         <dependency>

@@ -12,8 +12,7 @@
     <groupId>com.xingkaichun.helloworldblockchain</groupId>
     <artifactId>helloworld-blockchain-node</artifactId>
 
-    <name>HelloworldBlockchainNode</name>
-    <url>http://www.xingkaichun.com</url>
+    <name>helloworld-blockchain-node</name>
 
     <dependencies>
         <dependency>
