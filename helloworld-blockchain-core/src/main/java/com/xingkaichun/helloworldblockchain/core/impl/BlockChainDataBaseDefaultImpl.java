@@ -45,19 +45,19 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //区块链数据库
     private DB blockChainDB;
 
-    //区块链高度key
+    //区块链高度key：它对应的值是区块链的高度
     private final static String BLOCK_CHAIN_HEIGHT_KEY = "B_C_H_K";
-    //区块高度标识
+    //区块高度标识：存储区块链高度到区块的映射
     private final static String BLOCK_HEIGHT_PREFIX_FLAG = "B_H_P_F_";
-    //区块Hash标识
+    //区块Hash标识：存储区块链Hash到区块的映射
     private final static String BLOCK_HASH_PREFIX_FLAG = "B_HA_P_F_";
-    //交易标识
+    //交易标识：存储交易UUID到交易的映射
     private final static String TRANSACTION_UUID_PREFIX_FLAG = "T_U_P_F_";
-    //交易输出标识
+    //交易输出标识：存储交易输出UUID到交易输出的映射
     private final static String TRANSACTION_OUTPUT_UUID_PREFIX_FLAG = "T_O_U_P_F_";
-    //未花费的交易输出标识
+    //未花费的交易输出标识：存储未花费交易输出UUID到未花费交易输出的映射
     private final static String UNSPEND_TRANSACTION_OUPUT_UUID_PREFIX_FLAG = "U_T_O_U_P_F_";
-    //UUID标识：UUID(交易UUID、交易输出UUID)的前缀
+    //UUID标识：UUID(交易UUID、交易输出UUID)的前缀，这里希望系统中所有使用到的UUID都是不同的
     private final static String UUID_PREFIX_FLAG = "U_F_";
 
     /**

@@ -4,14 +4,14 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.listen.BlockChainActionData;
 import com.xingkaichun.helloworldblockchain.core.listen.BlockChainActionListener;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.LevelDBUtil;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.model.enums.BlockChainActionEnum;
 import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
 import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.LevelDBUtil;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.WriteBatch;
@@ -68,7 +68,6 @@ public class AddressUtxoPlugin {
                 e.printStackTrace();
             }
         }));
-
     }
 
 
@@ -135,7 +134,7 @@ public class AddressUtxoPlugin {
                 for(Map.Entry<String,List<TransactionOutput>> entry:addressUtxoList.entrySet()){
                     String address = entry.getKey();
                     List<TransactionOutput> utxoList = entry.getValue();
-                    writeBatch1.put(toBytes(addUtxoPrefix(address)),encode(utxoList));
+                    writeBatch1.put(buildUtxoKey(address),encode(utxoList));
                 }
 
                 for(Map.Entry<String,List<TransactionOutput>> entry:addressTxoList.entrySet()){
@@ -155,7 +154,7 @@ public class AddressUtxoPlugin {
         StringAddress stringAddress = transactionOutput.getStringAddress();
         List<TransactionOutput> transactionOutputList = addressUtxoList.get(stringAddress.getValue());
         if(transactionOutputList==null){
-            byte[] byteUtxo = addressUtxoDB.get(toBytes(addUtxoPrefix(stringAddress.getValue())));
+            byte[] byteUtxo = addressUtxoDB.get(buildUtxoKey(stringAddress.getValue()));
             if(byteUtxo==null){
                 transactionOutputList = new ArrayList<>();
             }else {
@@ -190,8 +189,9 @@ public class AddressUtxoPlugin {
         return toBytes(stringKey);
     }
 
-    private String addUtxoPrefix(String address) {
-        return "UTXO_"+ address;
+    private byte[] buildUtxoKey(String address) {
+        String stringKey = "UTXO_"+address;
+        return toBytes(stringKey);
     }
 
     private static byte[] encode(List<TransactionOutput> block) throws Exception {
