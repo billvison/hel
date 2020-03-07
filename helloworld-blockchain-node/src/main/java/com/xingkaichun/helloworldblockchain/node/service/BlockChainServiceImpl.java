@@ -1,21 +1,17 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
-import com.xingkaichun.helloworldblockchain.dto.*;
 import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
-import com.xingkaichun.helloworldblockchain.model.Block;
-import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.WalletUtil;
+import com.xingkaichun.helloworldblockchain.dto.*;
+import com.xingkaichun.helloworldblockchain.model.Block;
+import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
+import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.model.key.Wallet;
+import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryTransactionByTransactionUuidRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryUtxosByAddressRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoByBlockHeightRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockHashByBlockHeightRequest;
-import com.xingkaichun.helloworldblockchain.node.plugins.AddressUtxoPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,10 +26,6 @@ public class BlockChainServiceImpl implements BlockChainService {
 
     @Autowired
     private BlockChainCore blockChainCore;
-
-    @Autowired
-    private AddressUtxoPlugin addressUtxoPlugin;
-
 
     @Override
     public WalletDTO generateWalletDTO() {
@@ -53,7 +45,15 @@ public class BlockChainServiceImpl implements BlockChainService {
 
     @Override
     public List<TransactionOutput> queryUtxoListByAddress(String address) throws Exception {
-        List<TransactionOutput> utxo =  addressUtxoPlugin.queryUtxoListByAddress(address);
+        StringAddress stringAddress = new StringAddress(address);
+        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().querUnspendTransactionOuputListByAddress(stringAddress);
+        return utxo;
+    }
+
+    @Override
+    public List<TransactionOutput> queryTxoListByAddress(String address) throws Exception {
+        StringAddress stringAddress = new StringAddress(address);
+        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryTransactionOuputListByAddress(stringAddress);
         return utxo;
     }
 

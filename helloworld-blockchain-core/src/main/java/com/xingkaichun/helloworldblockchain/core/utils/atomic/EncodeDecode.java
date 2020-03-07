@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
 
 public class EncodeDecode {
 
@@ -62,4 +63,20 @@ public class EncodeDecode {
         return block;
     }
 
+    public static byte[] encode(List<TransactionOutput> transactionOutputList) throws Exception {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = null;
+        objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(transactionOutputList);
+        byte[] bytes = byteArrayOutputStream.toByteArray();
+        return bytes;
+    }
+
+    public static List<TransactionOutput> decodeToTransactionOutputList(byte[] byteTransactionOutputList) throws Exception {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteTransactionOutputList);
+        ObjectInputStream objectInputStream = null;
+        objectInputStream = new ObjectInputStream(byteArrayInputStream);
+        List<TransactionOutput> transactionOutputList = (List<TransactionOutput>) objectInputStream.readObject();
+        return transactionOutputList;
+    }
 }

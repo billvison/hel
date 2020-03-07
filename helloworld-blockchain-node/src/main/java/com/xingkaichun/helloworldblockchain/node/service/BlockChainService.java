@@ -24,6 +24,10 @@ public interface BlockChainService {
      */
     List<TransactionOutput> queryUtxoListByAddress(String address) throws Exception;
     /**
+     * 根据地址获取TXO
+     */
+    List<TransactionOutput> queryTxoListByAddress(String address) throws Exception;
+    /**
      * 提交交易到区块链网络
      */
     TransactionDTO sumiteTransaction(NormalTransactionDto transactionDTO) throws Exception;

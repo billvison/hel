@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCoreFactory;
-import com.xingkaichun.helloworldblockchain.node.plugins.AddressUtxoPlugin;
 import com.xingkaichun.helloworldblockchain.node.timer.TimerService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -45,12 +44,6 @@ public class HelloWorldBlockChainNodeApplication {
 			}
 		}).start();
 		return blockChainCore;
-	}
-
-	@Bean
-	public AddressUtxoPlugin buildPublicKeyUtxoPlugin(BlockChainCore blockChainCore) throws Exception {
-		AddressUtxoPlugin addressUtxoPlugin = new AddressUtxoPlugin(blockchainDataPath,blockChainCore);
-		return addressUtxoPlugin;
 	}
 
 	@Bean

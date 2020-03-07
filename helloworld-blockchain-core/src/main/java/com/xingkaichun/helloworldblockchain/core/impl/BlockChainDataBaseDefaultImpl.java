@@ -4,6 +4,8 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
+import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.*;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.model.enums.BlockChainActionEnum;
 import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
@@ -12,8 +14,6 @@ import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.*;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.WriteBatch;
 import org.iq80.leveldb.impl.WriteBatchImpl;
@@ -23,9 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.math.BigDecimal;
 import java.security.spec.InvalidKeySpecException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -59,6 +57,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private final static String UNSPEND_TRANSACTION_OUPUT_UUID_PREFIX_FLAG = "U_T_O_U_P_F_";
     //UUID标识：UUID(交易UUID、交易输出UUID)的前缀，这里希望系统中所有使用到的UUID都是不同的
     private final static String UUID_PREFIX_FLAG = "U_F_";
+    //地址标识：存储地址到交易输出的映射
+    private final static String ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG = "A_T_T_O_P_F_";
+    //地址标识：存储地址到未花费交易输出的映射
+    private final static String ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG = "A_T_U_T_O_P_F_";
 
     /**
      * 锁:保证对区块链增区块、删区块的操作是同步的。
@@ -516,6 +518,14 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         String stringKey = UNSPEND_TRANSACTION_OUPUT_UUID_PREFIX_FLAG + transactionOutputUUID;
         return LevelDBUtil.stringToBytes(stringKey);
     }
+    private byte[] buildAddressToTransactionOuputListKey(String address) {
+        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address;
+        return LevelDBUtil.stringToBytes(stringKey);
+    }
+    private byte[] buildAddressToUnspendTransactionOuputListKey(String address) {
+        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address;
+        return LevelDBUtil.stringToBytes(stringKey);
+    }
     //endregion
 
     //region 拼装WriteBatch
@@ -610,6 +620,99 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                     }
                 }
             }
+        }
+        addAboutAddressWriteBatch(writeBatch,block,blockChainActionEnum);
+    }
+
+    private void addAboutAddressWriteBatch(WriteBatch writeBatch, Block block, BlockChainActionEnum blockChainActionEnum) throws Exception {
+        Map<String,List<TransactionOutput>> addressUtxoList = new HashMap<>();
+        Map<String,List<TransactionOutput>> addressTxoList = new HashMap<>();
+
+        for(Transaction transaction : block.getTransactions()){
+            List<TransactionInput> inputs = transaction.getInputs();
+            if(inputs!=null){
+                for (TransactionInput transactionInput:inputs){
+                    TransactionOutput utxo = transactionInput.getUnspendTransactionOutput();
+                    List<TransactionOutput> txList = queryUnspendTransactionOuputListByAddress(addressUtxoList,utxo.getStringAddress());
+                    //区块数据
+                    if(blockChainActionEnum == BlockChainActionEnum.ADD_BLOCK){
+                        txList.removeIf(txo -> txo.getTransactionOutputUUID().equals(utxo.getTransactionOutputUUID()));
+                    }else{
+                        txList.add(utxo);
+                    }
+                }
+            }
+            List<TransactionOutput> outputs = transaction.getOutputs();
+            for (TransactionOutput transactionOutput:outputs){
+                List<TransactionOutput> utxoList = queryUnspendTransactionOuputListByAddress(addressUtxoList,transactionOutput.getStringAddress());
+                if(blockChainActionEnum == BlockChainActionEnum.ADD_BLOCK){
+                    utxoList.add(transactionOutput);
+                }else{
+                    utxoList.removeIf(txo -> txo.getTransactionOutputUUID().equals(transactionOutput.getTransactionOutputUUID()));
+                }
+                List<TransactionOutput> txoList = queryTransactionOuputListByAddress(addressTxoList,transactionOutput.getStringAddress());
+                if(blockChainActionEnum == BlockChainActionEnum.ADD_BLOCK){
+                    txoList.add(transactionOutput);
+                }else{
+                    txoList.removeIf(txo -> txo.getTransactionOutputUUID().equals(transactionOutput.getTransactionOutputUUID()));
+                }
+            }
+        }
+
+        for(Map.Entry<String,List<TransactionOutput>> entry:addressUtxoList.entrySet()){
+            String address = entry.getKey();
+            List<TransactionOutput> utxoList = entry.getValue();
+            writeBatch.put(buildAddressToUnspendTransactionOuputListKey(address),EncodeDecode.encode(utxoList));
+        }
+
+        for(Map.Entry<String,List<TransactionOutput>> entry:addressTxoList.entrySet()){
+            String address = entry.getKey();
+            List<TransactionOutput> txoList = entry.getValue();
+            writeBatch.put(buildAddressToTransactionOuputListKey(address),EncodeDecode.encode(txoList));
+        }
+    }
+
+    private List<TransactionOutput> queryUnspendTransactionOuputListByAddress(Map<String, List<TransactionOutput>> addressUtxoList, StringAddress stringAddress) throws Exception {
+        List<TransactionOutput> transactionOutputList = addressUtxoList.get(stringAddress.getValue());
+        if(transactionOutputList == null){
+            transactionOutputList = querUnspendTransactionOuputListByAddress(stringAddress);
+            if(transactionOutputList == null){
+                transactionOutputList = new ArrayList<>();
+            }
+            addressUtxoList.put(stringAddress.getValue(),transactionOutputList);
+        }
+        return transactionOutputList;
+    }
+
+    private List<TransactionOutput> queryTransactionOuputListByAddress(Map<String, List<TransactionOutput>> addressUtxoList, StringAddress stringAddress) throws Exception {
+        List<TransactionOutput> transactionOutputList = addressUtxoList.get(stringAddress.getValue());
+        if(transactionOutputList == null){
+            transactionOutputList = queryTransactionOuputListByAddress(stringAddress);
+            if(transactionOutputList == null){
+                transactionOutputList = new ArrayList<>();
+            }
+            addressUtxoList.put(stringAddress.getValue(),transactionOutputList);
+        }
+        return transactionOutputList;
+    }
+
+    public List<TransactionOutput> querUnspendTransactionOuputListByAddress(StringAddress stringAddress) throws Exception {
+        byte[] byteTxo = LevelDBUtil.get(blockChainDB, buildAddressToUnspendTransactionOuputListKey(stringAddress.getValue()));
+        if(byteTxo==null){
+            return null;
+        }else {
+            List<TransactionOutput> transactionOutputList = EncodeDecode.decodeToTransactionOutputList(byteTxo);
+            return transactionOutputList;
+        }
+    }
+
+    public List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress) throws Exception {
+        byte[] byteTxo = LevelDBUtil.get(blockChainDB, buildAddressToTransactionOuputListKey(stringAddress.getValue()));
+        if(byteTxo == null){
+            return null;
+        }else {
+            List<TransactionOutput> transactionOutputList = EncodeDecode.decodeToTransactionOutputList(byteTxo);
+            return transactionOutputList;
         }
     }
     //endregion

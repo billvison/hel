@@ -113,19 +113,38 @@ public class BlockChainBrowserController {
     }
 
     /**
-     * 根据地址获取余额
+     * 根据地址获取未花费交易输出
      */
     @ResponseBody
     @RequestMapping(value = BlockChainApiRoute.QUERY_UTXOS_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryUtxosByAddressResponse> queryUtxosByAddress(@RequestBody QueryUtxosByAddressRequest queryUtxosByAddressRequest){
+    public ServiceResult<QueryUtxosByAddressResponse> queryUtxosByAddress(@RequestBody QueryUtxosByAddressRequest request){
         try {
-            List<TransactionOutput> utxoList = blockChainService.queryUtxoListByAddress(queryUtxosByAddressRequest.getAddress());
+            List<TransactionOutput> utxoList = blockChainService.queryUtxoListByAddress(request.getAddress());
 
             QueryUtxosByAddressResponse response = new QueryUtxosByAddressResponse();
             response.setUtxos(utxoList);
-            return ServiceResult.createSuccessServiceResult("成功查询用戶余额",response);
+            return ServiceResult.createSuccessServiceResult("根据地址获取未花费交易输出成功",response);
         } catch (Exception e){
-            String message = "查询用戶余额失败";
+            String message = "根据地址获取未花费交易输出失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 根据地址获取未花费交易输出
+     */
+    @ResponseBody
+    @RequestMapping(value = BlockChainApiRoute.QUERY_TXOS_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryTxosByAddressResponse> queryTxosByAddress(@RequestBody QueryTxosByAddressRequest request){
+        try {
+            List<TransactionOutput> txoList = blockChainService.queryTxoListByAddress(request.getAddress());
+
+            QueryTxosByAddressResponse response = new QueryTxosByAddressResponse();
+            response.setUtxos(txoList);
+            return ServiceResult.createSuccessServiceResult("根据地址获取未花费交易输出成功",response);
+        } catch (Exception e){
+            String message = "根据地址获取未花费交易输出失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

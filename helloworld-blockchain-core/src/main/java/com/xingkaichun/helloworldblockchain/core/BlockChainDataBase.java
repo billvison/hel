@@ -1,7 +1,10 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 import com.google.gson.Gson;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.EncodeDecode;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.LevelDBUtil;
 import com.xingkaichun.helloworldblockchain.model.Block;
+import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
 import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
@@ -89,6 +92,16 @@ public abstract class BlockChainDataBase {
      * 如果校验的是奖励交易，则需要整个区块的信息，因此这个函数包含了两个参数：交易所在的区块、交易
      */
     public abstract boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception ;
+
+    /**
+     * 根据地址查询未花费交易输出
+     */
+    public abstract List<TransactionOutput> querUnspendTransactionOuputListByAddress(StringAddress stringAddress) throws Exception ;
+
+    /**
+     * 根据地址查询交易输出
+     */
+    public abstract List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress) throws Exception ;
 
     //region 校验交易金额
     /**
