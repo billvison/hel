@@ -49,6 +49,6 @@ public abstract class Miner {
      * 构建区块的挖矿奖励交易，这里可以实现挖矿奖励的分配。
      * @param block 目标区块
      */
-    public abstract Transaction buildMineAwardTransaction(BlockChainDataBase blockChainDataBase, Block block) ;
+    public abstract Transaction buildMineAwardTransaction(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
     //endregion
 }

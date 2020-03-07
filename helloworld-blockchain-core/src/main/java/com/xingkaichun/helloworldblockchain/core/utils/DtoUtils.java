@@ -36,7 +36,7 @@ public class DtoUtils {
                 transactionList.add(transaction);
             }
         }
-
+        //TODO 缩减dto字段 用区块链系统直接计算可以计算出来的值
         Block block = new Block();
         block.setTimestamp(blockDTO.getTimestamp());
         block.setPreviousHash(blockDTO.getPreviousHash());
@@ -45,6 +45,7 @@ public class DtoUtils {
         block.setMerkleRoot(blockDTO.getMerkleRoot());
         block.setNonce(blockDTO.getNonce());
         block.setHash(blockDTO.getHash());
+        block.setDifficultyString(blockChainDataBase.getConsensus().difficulty(blockChainDataBase,block));
         return block;
     }
     /**

@@ -13,7 +13,24 @@ public class IncentiveDefaultImpl extends Incentive {
     private Logger logger = LoggerFactory.getLogger(IncentiveDefaultImpl.class);
 
     @Override
-    public BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) {
-        return new BigDecimal("100");
+    public BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
+
+        BigDecimal initCoin = new BigDecimal("100");
+
+        int blockHeight = block.getHeight();
+        if(blockHeight <= 1){
+            return initCoin;
+        }
+
+        Block firstBlock = blockChainDataBase.findBlockByBlockHeight(1);
+        //递减周期
+        long timestamp = 1 * 24 * 60 * 60 * 1000;
+        long totalTimestamp = System.currentTimeMillis() - firstBlock.getTimestamp();
+        long multiple = totalTimestamp / timestamp;
+        while (multiple > 1){
+            initCoin = initCoin.divide(new BigDecimal("2"));
+            --multiple;
+        }
+        return initCoin;
     }
 }

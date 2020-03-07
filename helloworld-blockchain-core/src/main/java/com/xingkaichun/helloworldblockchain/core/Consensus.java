@@ -20,6 +20,14 @@ public abstract class Consensus {
      * @param blockChainDataBase 区块链
      * @param block              需要被验证nonce是否已经达成了共识的区块
      */
-    public abstract boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block);
+    public abstract boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
+
+    /**
+     * 共识出的挖矿的难度。挖矿的难度决定了nonce获取难度。根本上讲，首先形成挖矿的难度共识，然后倒着推算出nonce。
+     * //TODO 移除此方法
+     * @param blockChainDataBase 区块链
+     * @param block              目标区块
+     */
+    public abstract String difficulty(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
 }
 

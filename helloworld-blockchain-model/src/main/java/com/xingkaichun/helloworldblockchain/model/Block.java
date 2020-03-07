@@ -53,4 +53,10 @@ public class Block implements Serializable {
      * 为了简单，请保证同一区块链上不出现区块hash相同的两个区块。
      */
     private String hash;
+
+    /**
+     * 挖矿难度。
+     * 这个字段是冗余的。可以通过区块链系统计算出来。
+     */
+    private String difficultyString;
 }

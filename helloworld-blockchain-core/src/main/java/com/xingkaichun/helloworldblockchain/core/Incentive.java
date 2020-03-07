@@ -16,5 +16,5 @@ public abstract class Incentive {
      * @param blockChainDataBase 区块链
      * @param block 待挖矿的区块
      */
-    public abstract BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) ;
+    public abstract BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
 }

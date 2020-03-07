@@ -239,7 +239,7 @@ public class MinerDefaultImpl extends Miner {
     //region 挖矿奖励相关
 
     @Override
-    public Transaction buildMineAwardTransaction(BlockChainDataBase blockChainDataBase, Block block) {
+    public Transaction buildMineAwardTransaction(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
         Transaction transaction = new Transaction();
         transaction.setTimestamp(System.currentTimeMillis());
         transaction.setTransactionUUID(String.valueOf(UUID.randomUUID()));
@@ -285,6 +285,9 @@ public class MinerDefaultImpl extends Miner {
 
         String merkleRoot = BlockUtils.calculateBlockMerkleRoot(nonNonceBlock);
         nonNonceBlock.setMerkleRoot(merkleRoot);
+
+        String difficultyString = blockChainDataBase.getConsensus().difficulty(blockChainDataBase,nonNonceBlock);
+        nonNonceBlock.setDifficultyString(difficultyString);
         return nonNonceBlock;
     }
     //endregion
