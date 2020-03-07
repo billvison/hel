@@ -1,11 +1,12 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response;
 
 import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.dto.TransactionTypeDTO;
 import lombok.Data;
 
-@Data
-public class QueryTransactionByTransactionUuidResponse {
+import java.util.List;
 
-    private TransactionDTO transactionDTO;
+@Data
+public class QueryMiningTransactionListResponse {
+
+    private List<TransactionDTO> transactionDtoList;
 }

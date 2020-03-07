@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class IsSynchronizerActiveResponse {
 
-    private boolean isSynchronizerActive;
+    private boolean synchronizerInActiveState;
 }

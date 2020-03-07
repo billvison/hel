@@ -6,10 +6,6 @@ import com.xingkaichun.helloworldblockchain.dto.WalletDTO;
 import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryTransactionByTransactionUuidRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryUtxosByAddressRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoByBlockHeightRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockHashByBlockHeightRequest;
 
 import java.util.List;
 
@@ -22,11 +18,11 @@ public interface BlockChainService {
     /**
      * 根据交易UUID获取交易
      */
-    TransactionDTO QueryTransactionDtoByTransactionUUID(QueryTransactionByTransactionUuidRequest request) throws Exception;
+    TransactionDTO QueryTransactionDtoByTransactionUUID(String transactionUUID) throws Exception;
     /**
      * 根据地址获取UTXO
      */
-    List<TransactionOutput> queryUtxoListByAddress(QueryUtxosByAddressRequest request) throws Exception;
+    List<TransactionOutput> queryUtxoListByAddress(String address) throws Exception;
     /**
      * 提交交易到区块链网络
      */
@@ -39,39 +35,19 @@ public interface BlockChainService {
     /**
      * 根据区块高度获取区块DTO
      */
-    BlockDTO queryBlockDtoByBlockHeight(QueryBlockDtoByBlockHeightRequest request) throws Exception;
+    BlockDTO queryBlockDtoByBlockHeight(int blockHeight) throws Exception;
     /**
      * 根据区块高度获取区块Hash
      */
-    String queryBlockHashByBlockHeight(QueryBlockHashByBlockHeightRequest request) throws Exception;
+    String queryBlockHashByBlockHeight(int blockHeight) throws Exception;
     /**
      * 获取区块链高度
      */
     int queryBlockChainHeight() throws Exception;
+    /**
+     * 查询挖矿中的交易
+     */
+    List<TransactionDTO> queryMiningTransactionList() throws Exception;
 
-    /**
-     * 矿工是否处于激活状态
-     */
-    boolean isMinerActive();
-    /**
-     * 开始挖矿
-     */
-    void activeMiner() throws Exception;
-    /**
-     * 停止挖矿
-     */
-    void deactiveMiner() throws Exception;
-
-    /**
-     * 同步器是否激活
-     */
-    boolean isSynchronizerActive();
-    /**
-     * 停止同步器
-     */
-    boolean deactiveSynchronizer();
-    /**
-     * 恢复同步器
-     */
-    boolean activeSynchronizer();
+    TransactionDTO queryMiningTransactionDtoByTransactionUUID(String transactionUUID) throws Exception;
 }

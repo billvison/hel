@@ -1,12 +1,17 @@
 package com.xingkaichun.helloworldblockchain.node.controller;
 
+import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.node.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.node.NodeApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.node.request.AddOrUpdateNodeRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.node.request.PingRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoByBlockHeightRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockHashByBlockHeightRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.node.response.AddOrUpdateNodeResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.node.response.PingResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.node.response.QueryBlockDtoByBlockHeightResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.node.response.QueryBlockHashByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainService;
 import com.xingkaichun.helloworldblockchain.node.service.LocalNodeService;
 import org.slf4j.Logger;
@@ -90,6 +95,46 @@ public class NodeController {
             String message = "更新节点失败";
             logger.error(message,e);
             return ServiceResult.createSuccessServiceResult(message,null);
+        }
+    }
+
+
+    /**
+     * 根据区块高度查询区块Hash
+     */
+    @ResponseBody
+    @RequestMapping(value = NodeApiRoute.QUERY_BLOCK_HASH_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(@RequestBody QueryBlockHashByBlockHeightRequest request){
+        try {
+            String blockHash = blockChainService.queryBlockHashByBlockHeight(request.getBlockHeight());
+
+            QueryBlockHashByBlockHeightResponse response = new QueryBlockHashByBlockHeightResponse();
+            response.setBlockHash(blockHash);
+            return ServiceResult.createSuccessServiceResult("成功获取区块Hash",response);
+        } catch (Exception e){
+            String message = "查询区块Hash失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+
+    /**
+     * 根据区块高度查询区块
+     */
+    @ResponseBody
+    @RequestMapping(value = NodeApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(@RequestBody QueryBlockDtoByBlockHeightRequest request){
+        try {
+            BlockDTO blockDTO = blockChainService.queryBlockDtoByBlockHeight(request.getBlockHeight());
+
+            QueryBlockDtoByBlockHeightResponse response = new QueryBlockDtoByBlockHeightResponse();
+            response.setBlockDTO(blockDTO);
+            return ServiceResult.createSuccessServiceResult("成功获取区块",response);
+        } catch (Exception e){
+            String message = "查询获取失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
         }
     }
 }

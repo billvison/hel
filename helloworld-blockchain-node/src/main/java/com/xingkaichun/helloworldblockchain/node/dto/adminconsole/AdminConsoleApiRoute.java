@@ -9,4 +9,6 @@ public class AdminConsoleApiRoute {
     public static final String IS_SYNCHRONIZER_ACTIVE = "/Api/AdminConsole/IsSynchronizerActive";
     public static final String ACTIVE_SYNCHRONIZER = "/Api/AdminConsole/ActiveSynchronizer";
     public static final String DEACTIVE_SYNCHRONIZER = "/Api/AdminConsole/DeactiveSynchronizer";
+
+    public static final String ADD_NODE = "/Api/AdminConsole/AddNode";
 }

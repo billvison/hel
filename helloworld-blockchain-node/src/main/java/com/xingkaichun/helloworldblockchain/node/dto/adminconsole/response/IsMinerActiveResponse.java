@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class IsMinerActiveResponse {
 
-    private boolean isMineActive;
+    private boolean minerInActiveState;
 }

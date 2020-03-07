@@ -42,8 +42,8 @@ public class BlockChainServiceImpl implements BlockChainService {
     }
 
     @Override
-    public TransactionDTO QueryTransactionDtoByTransactionUUID(QueryTransactionByTransactionUuidRequest request) throws Exception {
-        Transaction transaction = blockChainCore.getBlockChainDataBase().findTransactionByTransactionUuid(request.getTransactionUUID());
+    public TransactionDTO QueryTransactionDtoByTransactionUUID(String transactionUUID) throws Exception {
+        Transaction transaction = blockChainCore.getBlockChainDataBase().findTransactionByTransactionUuid(transactionUUID);
         if(transaction == null){
             return null;
         }
@@ -52,8 +52,8 @@ public class BlockChainServiceImpl implements BlockChainService {
     }
 
     @Override
-    public List<TransactionOutput> queryUtxoListByAddress(QueryUtxosByAddressRequest request) throws Exception {
-        List<TransactionOutput> utxo =  addressUtxoPlugin.queryUtxoListByAddress(request.getAddress());
+    public List<TransactionOutput> queryUtxoListByAddress(String address) throws Exception {
+        List<TransactionOutput> utxo =  addressUtxoPlugin.queryUtxoListByAddress(address);
         return utxo;
     }
 
@@ -108,8 +108,8 @@ public class BlockChainServiceImpl implements BlockChainService {
     }
 
     @Override
-    public String queryBlockHashByBlockHeight(QueryBlockHashByBlockHeightRequest request) throws Exception {
-        Block block = blockChainCore.getBlockChainDataBase().findBlockByBlockHeight(request.getBlockHeight());
+    public String queryBlockHashByBlockHeight(int blockHeight) throws Exception {
+        Block block = blockChainCore.getBlockChainDataBase().findBlockByBlockHeight(blockHeight);
         if(block == null){
             return null;
         }
@@ -117,8 +117,7 @@ public class BlockChainServiceImpl implements BlockChainService {
     }
 
     @Override
-    public BlockDTO queryBlockDtoByBlockHeight(QueryBlockDtoByBlockHeightRequest request) throws Exception {
-        int blockHeight = request.getBlockHeight();
+    public BlockDTO queryBlockDtoByBlockHeight(int blockHeight) throws Exception {
         Block block = blockChainCore.getBlockChainDataBase().findBlockByBlockHeight(blockHeight);
         BlockDTO blockDTO = DtoUtils.classCast(block);
         return blockDTO;
@@ -130,31 +129,14 @@ public class BlockChainServiceImpl implements BlockChainService {
     }
 
     @Override
-    public boolean isMinerActive() {
-        return blockChainCore.getMiner().isActive();
+    public List<TransactionDTO> queryMiningTransactionList() throws Exception {
+        List<TransactionDTO> transactionDtoList = blockChainCore.getMiner().getMinerTransactionDtoDataBase().selectTransactionDtoList(blockChainCore.getBlockChainDataBase(),0,100);
+        return transactionDtoList;
     }
 
     @Override
-    public void activeMiner() throws Exception {
-        blockChainCore.getMiner().active();
-    }
-
-    @Override
-    public void deactiveMiner() throws Exception {
-        blockChainCore.getMiner().deactive();
-    }
-
-    public boolean isSynchronizerActive() {
-        return blockChainCore.getSynchronizer().isActive();
-    }
-
-    public boolean deactiveSynchronizer() {
-        blockChainCore.getSynchronizer().deactive();
-        return true;
-    }
-
-    public boolean activeSynchronizer() {
-        blockChainCore.getSynchronizer().active();
-        return true;
+    public TransactionDTO queryMiningTransactionDtoByTransactionUUID(String transactionUUID) throws Exception {
+        TransactionDTO transactionDTO = blockChainCore.getMiner().getMinerTransactionDtoDataBase().selectTransactionDtoByTransactionUUID(transactionUUID);
+        return transactionDTO;
     }
 }

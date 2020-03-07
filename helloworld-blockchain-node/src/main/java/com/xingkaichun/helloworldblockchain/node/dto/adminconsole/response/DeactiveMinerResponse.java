@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class DeactiveMinerResponse {
 
-    private boolean isStopMineSuccess;
+    private boolean deactiveMinerSuccess;
 }

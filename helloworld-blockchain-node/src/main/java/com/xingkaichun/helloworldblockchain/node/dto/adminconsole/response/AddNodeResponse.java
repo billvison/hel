@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response;
 import lombok.Data;
 
 @Data
-public class DeactiveSynchronizerResponse {
+public class AddNodeResponse {
 
-    private boolean deactiveSynchronizerSuccess;
+    boolean addNodeSuccess ;
 }

@@ -107,6 +107,15 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
         LevelDBUtil.write(transactionPoolDB,writeBatch);
     }
 
+    @Override
+    public TransactionDTO selectTransactionDtoByTransactionUUID(String transactionUUID) throws Exception {
+        byte[] byteTransactionDTO = LevelDBUtil.get(transactionPoolDB,transactionUUID);
+        if(byteTransactionDTO == null){
+            return null;
+        }
+        return decodeToTransactionDTO(byteTransactionDTO);
+    }
+
     private static byte[] encode(TransactionDTO transactionDTO) throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = null;

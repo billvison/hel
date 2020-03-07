@@ -36,4 +36,9 @@ public abstract class  MinerTransactionDtoDataBase {
      * 删除交易
      */
     public abstract void deleteTransactionDtoListByTransactionUuidList(List<String> transactionUuidList) throws Exception ;
+
+    /**
+     * 查询交易
+     */
+    public abstract TransactionDTO selectTransactionDtoByTransactionUUID(String transactionUUID) throws Exception;
 }

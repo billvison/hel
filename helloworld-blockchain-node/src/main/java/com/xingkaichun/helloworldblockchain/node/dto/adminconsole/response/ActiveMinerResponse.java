@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class ActiveMinerResponse {
 
-    private boolean isStartMineSuccess;
+    private boolean activeMinerSuccess;
 }
