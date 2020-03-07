@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * admin控制台相关
+ * admin控制台：用于控制本地区块链节点，如激活矿工、停用矿工、同步其它节点数据等。
  */
 @Controller
 @RequestMapping

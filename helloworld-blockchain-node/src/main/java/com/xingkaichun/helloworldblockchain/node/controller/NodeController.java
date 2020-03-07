@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * 节点相关
+ * 节点之间交换信息的控制器
  */
 @Controller
 @RequestMapping
@@ -73,7 +73,7 @@ public class NodeController {
     }
 
     /**
-     * 更新节点信息
+     * 更新节点信息：其它节点通知本地节点它的信息有变更
      */
     @ResponseBody
     @RequestMapping(value = NodeApiRoute.ADD_OR_UPDATE_NODE,method={RequestMethod.GET,RequestMethod.POST})

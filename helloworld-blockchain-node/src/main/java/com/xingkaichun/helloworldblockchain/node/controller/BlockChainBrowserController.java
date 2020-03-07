@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 /**
- * 区块链相关
+ * 区块链浏览器
  */
 @Controller
 @RequestMapping
