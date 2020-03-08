@@ -113,9 +113,12 @@ public class TimerService {
             ServiceResult<PingResponse> pingResponseServiceResult = pingNode(node);
             boolean isAvailable = pingResponseServiceResult!= null && pingResponseServiceResult.getServiceCode() == ServiceCode.SUCCESS;
             node.setNodeAvailable(isAvailable);
-
             if(isAvailable){
                 PingResponse pingResponse = pingResponseServiceResult.getResult();
+                node.setBlockChainHeight(pingResponse.getBlockChainHeight());
+                node.setErrorConnectionTimes(0);
+                localNodeService.addOrUpdateNode(node);
+
                 List<Node> nodesTemp = pingResponse.getNodeList();
                 for(Node nodeTemp : nodesTemp){
                     addNewAvailableNodeToDatabase(nodeTemp);
