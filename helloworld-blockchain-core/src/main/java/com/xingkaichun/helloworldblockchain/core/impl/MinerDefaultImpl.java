@@ -6,6 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
 import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
 import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.model.Block;
+import com.xingkaichun.helloworldblockchain.model.ConsensusTarget;
 import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
 import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionInput;
@@ -286,8 +287,8 @@ public class MinerDefaultImpl extends Miner {
         String merkleRoot = BlockUtils.calculateBlockMerkleRoot(nonNonceBlock);
         nonNonceBlock.setMerkleRoot(merkleRoot);
 
-        String difficultyString = blockChainDataBase.getConsensus().difficulty(blockChainDataBase,nonNonceBlock);
-        nonNonceBlock.setDifficultyString(difficultyString);
+        ConsensusTarget consensusTarget = blockChainDataBase.getConsensus().calculateConsensusTarget(blockChainDataBase,nonNonceBlock);
+        nonNonceBlock.setConsensusTarget(consensusTarget);
         return nonNonceBlock;
     }
     //endregion

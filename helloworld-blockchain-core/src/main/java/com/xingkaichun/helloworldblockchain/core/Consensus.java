@@ -1,6 +1,8 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 import com.xingkaichun.helloworldblockchain.model.Block;
+import com.xingkaichun.helloworldblockchain.model.ConsensusTarget;
+import lombok.Data;
 
 /**
  * 挖矿共识
@@ -12,6 +14,7 @@ import com.xingkaichun.helloworldblockchain.model.Block;
  * 当然，即使有了区块产生的共识，也有可能多个节点都产生了下一个区块(有了共识，产生的下一个区块少了很多很多)。
  * 这个问题，就让他们继续竞争下去，看谁能产生下下个区块。
  */
+@Data
 public abstract class Consensus {
 
     /**
@@ -23,11 +26,10 @@ public abstract class Consensus {
     public abstract boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
 
     /**
-     * 共识出的挖矿的难度。挖矿的难度决定了nonce获取难度。根本上讲，首先形成挖矿的难度共识，然后倒着推算出nonce。
-     * //TODO 移除此方法
+     * 共识目标
      * @param blockChainDataBase 区块链
      * @param block              目标区块
      */
-    public abstract String difficulty(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
+    public abstract ConsensusTarget calculateConsensusTarget(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
 }
 

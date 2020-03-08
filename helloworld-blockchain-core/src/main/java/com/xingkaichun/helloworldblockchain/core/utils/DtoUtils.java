@@ -45,7 +45,7 @@ public class DtoUtils {
         block.setMerkleRoot(blockDTO.getMerkleRoot());
         block.setNonce(blockDTO.getNonce());
         block.setHash(blockDTO.getHash());
-        block.setDifficultyString(blockChainDataBase.getConsensus().difficulty(blockChainDataBase,block));
+        block.setConsensusTarget(blockChainDataBase.getConsensus().calculateConsensusTarget(blockChainDataBase,block));
         return block;
     }
     /**

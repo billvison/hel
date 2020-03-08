@@ -58,5 +58,5 @@ public class Block implements Serializable {
      * 挖矿难度。
      * 这个字段是冗余的。可以通过区块链系统计算出来。
      */
-    private String difficultyString;
+    private ConsensusTarget consensusTarget;
 }
