@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ public class IncentiveDefaultImpl extends Incentive {
     @Override
     public BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
 
-        BigDecimal initCoin = new BigDecimal("100");
+        BigDecimal initCoin = BlockChainCoreConstants.INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT;
 
         int blockHeight = block.getHeight();
         if(blockHeight <= 1){
@@ -23,8 +24,7 @@ public class IncentiveDefaultImpl extends Incentive {
         }
 
         Block firstBlock = blockChainDataBase.findBlockByBlockHeight(1);
-        //递减周期
-        long timestamp = 1 * 24 * 60 * 60 * 1000;
+        long timestamp = BlockChainCoreConstants.MINE_BLOCK_INCENTIVE_REDUCE_BY_HALF_INTERVAL_TIMESTAMP;
         long totalTimestamp = System.currentTimeMillis() - firstBlock.getTimestamp();
         long multiple = totalTimestamp / timestamp;
         while (multiple > 1){

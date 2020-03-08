@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,7 @@ public class ProofOfWorkConsensus extends Consensus {
     public String difficulty(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
         int blockHeight = block.getHeight();
         if(blockHeight <= 2){
-            return "00000000";
+            return BlockChainCoreConstants.INIT_GENERATE_BLOCK_DIFFICULTY_STRING;
         }
         Block previousBlock = blockChainDataBase.findBlockByBlockHeight(blockHeight-1);
         Block previousPreviousBlock = blockChainDataBase.findBlockByBlockHeight(blockHeight-2);
@@ -34,11 +35,9 @@ public class ProofOfWorkConsensus extends Consensus {
         long previousPreviousBlockTimestamp = previousPreviousBlock.getTimestamp();
         long blockIntervalTimestamp = previousBlockTimestamp - previousPreviousBlockTimestamp;
 
-        //稳定时间 10分钟
-        long targetTimestamp = 10 *  60 * 1000;
-        //上下时间波动
-        long minTargetTimestamp = targetTimestamp / 4;
-        long maxTargetTimestamp = targetTimestamp * 4;
+        //允许产生区块时间的波动范围
+        long minTargetTimestamp = BlockChainCoreConstants.GENERATE_BLOCK_AVERAGE_TIMESTAMP / 4;
+        long maxTargetTimestamp = BlockChainCoreConstants.GENERATE_BLOCK_AVERAGE_TIMESTAMP * 4;
 
         String difficultyString = previousBlock.getDifficultyString();
         if(blockIntervalTimestamp < minTargetTimestamp){
