@@ -6,6 +6,7 @@ import com.xingkaichun.helloworldblockchain.dto.WalletDTO;
 import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.SubmitNormalTransactionResponse;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface BlockChainService {
     /**
      * 根据交易UUID获取交易
      */
-    TransactionDTO QueryTransactionDtoByTransactionUUID(String transactionUUID) throws Exception;
+    TransactionDTO queryTransactionDtoByTransactionUUID(String transactionUUID) throws Exception;
     /**
      * 根据地址获取UTXO
      */
@@ -30,7 +31,7 @@ public interface BlockChainService {
     /**
      * 提交交易到区块链网络
      */
-    TransactionDTO sumiteTransaction(NormalTransactionDto transactionDTO) throws Exception;
+    SubmitNormalTransactionResponse sumiteTransaction(NormalTransactionDto transactionDTO) throws Exception;
     /**
      * 给打上签名交易
      */

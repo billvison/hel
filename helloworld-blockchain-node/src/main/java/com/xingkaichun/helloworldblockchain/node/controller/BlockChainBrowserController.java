@@ -62,10 +62,7 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.SUBMIT_TRANSACTION,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<SubmitNormalTransactionResponse> submitTransaction(@RequestBody SubmitNormalTransactionRequest request){
         try {
-            TransactionDTO transactionDTO = blockChainService.sumiteTransaction(request.getNormalTransactionDto());
-
-            SubmitNormalTransactionResponse response = new SubmitNormalTransactionResponse();
-            response.setTransactionDTO(transactionDTO);
+            SubmitNormalTransactionResponse response = blockChainService.sumiteTransaction(request.getNormalTransactionDto());
             return ServiceResult.createSuccessServiceResult("提交交易到区块链网络成功",response);
         } catch (Exception e){
             String message = "提交交易到区块链网络失败";
@@ -81,7 +78,7 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.QUERY_TRANSACTION_BY_TRANSACTION_UUID,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryTransactionByTransactionUuidResponse> queryTransactionByTransactionUUID(@RequestBody QueryTransactionByTransactionUuidRequest request){
         try {
-            TransactionDTO transactionDTO = blockChainService.QueryTransactionDtoByTransactionUUID(request.getTransactionUUID());
+            TransactionDTO transactionDTO = blockChainService.queryTransactionDtoByTransactionUUID(request.getTransactionUUID());
 
             QueryTransactionByTransactionUuidResponse response = new QueryTransactionByTransactionUuidResponse();
             response.setTransactionDTO(transactionDTO);

@@ -4,15 +4,10 @@ import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.node.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.node.NodeApiRoute;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.AddOrUpdateNodeRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.PingRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockDtoByBlockHeightRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.QueryBlockHashByBlockHeightRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.response.AddOrUpdateNodeResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.node.response.PingResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.node.response.QueryBlockDtoByBlockHeightResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.node.response.QueryBlockHashByBlockHeightResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.node.request.*;
+import com.xingkaichun.helloworldblockchain.node.dto.node.response.*;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainService;
+import com.xingkaichun.helloworldblockchain.node.service.BlockchainNodeServerService;
 import com.xingkaichun.helloworldblockchain.node.service.LocalNodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +35,9 @@ public class NodeController {
 
     @Autowired
     private LocalNodeService localNodeService;
+
+    @Autowired
+    private BlockchainNodeServerService blockchainNodeServerService;
 
     /**
      * Ping节点
@@ -133,6 +131,24 @@ public class NodeController {
             return ServiceResult.createSuccessServiceResult("成功获取区块",response);
         } catch (Exception e){
             String message = "查询获取失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 接收其它节点提交的交易
+     */
+    @ResponseBody
+    @RequestMapping(value = NodeApiRoute.RECEIVE_TRANSACTION,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<ReceiveTransactionResponse> receiveTransaction(@RequestBody ReceiveTransactionRequest request){
+        try {
+            blockchainNodeServerService.receiveTransaction(request.getTransactionDTO());
+
+            ReceiveTransactionResponse response = new ReceiveTransactionResponse();
+            return ServiceResult.createSuccessServiceResult("提交交易成功",response);
+        } catch (Exception e){
+            String message = "提交交易失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

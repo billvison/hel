@@ -12,6 +12,9 @@ import com.xingkaichun.helloworldblockchain.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.SubmitNormalTransactionResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.node.dto.node.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,15 @@ public class BlockChainServiceImpl implements BlockChainService {
     @Autowired
     private BlockChainCore blockChainCore;
 
+    @Autowired
+    private LocalNodeService localNodeService;
+
+    @Autowired
+    private BlockchainNodeClientService blockchainNodeClientService;
+
+    @Autowired
+    private BlockchainNodeServerService blockchainNodeServerService;
+
     @Override
     public WalletDTO generateWalletDTO() {
         Wallet wallet = WalletUtil.generateWallet();
@@ -34,7 +46,7 @@ public class BlockChainServiceImpl implements BlockChainService {
     }
 
     @Override
-    public TransactionDTO QueryTransactionDtoByTransactionUUID(String transactionUUID) throws Exception {
+    public TransactionDTO queryTransactionDtoByTransactionUUID(String transactionUUID) throws Exception {
         Transaction transaction = blockChainCore.getBlockChainDataBase().findTransactionByTransactionUuid(transactionUUID);
         if(transaction == null){
             return null;
@@ -58,10 +70,34 @@ public class BlockChainServiceImpl implements BlockChainService {
     }
 
     @Override
-    public TransactionDTO sumiteTransaction(NormalTransactionDto normalTransactionDto) throws Exception {
+    public SubmitNormalTransactionResponse sumiteTransaction(NormalTransactionDto normalTransactionDto) throws Exception {
         TransactionDTO transactionDTO = classCast(normalTransactionDto);
         blockChainCore.getMiner().getMinerTransactionDtoDataBase().insertTransactionDTO(transactionDTO);
-        return transactionDTO;
+        List<Node> nodes = localNodeService.queryAliveNodes();
+
+        List<SubmitNormalTransactionResponse.Node> successSubmitNode = new ArrayList<>();
+        List<SubmitNormalTransactionResponse.Node> failSubmitNode = new ArrayList<>();
+        if(nodes != null){
+            for(Node node:nodes){
+                boolean submitSuccess = true;
+                try {
+                    submitSuccess = blockchainNodeClientService.sumiteTransaction(node,transactionDTO);
+                } catch (Exception e){
+                    submitSuccess = false;
+                }
+                if(submitSuccess){
+                    successSubmitNode.add(new SubmitNormalTransactionResponse.Node(node.getIp(),node.getPort()));
+                } else {
+                    failSubmitNode.add(new SubmitNormalTransactionResponse.Node(node.getIp(),node.getPort()));
+                }
+            }
+        }
+
+        SubmitNormalTransactionResponse response = new SubmitNormalTransactionResponse();
+        response.setTransactionDTO(transactionDTO);
+        response.setSuccessSubmitNode(successSubmitNode);
+        response.setFailSubmitNode(failSubmitNode);
+        return response;
     }
 
     private TransactionDTO classCast(NormalTransactionDto normalTransactionDto) throws Exception {
