@@ -57,6 +57,7 @@ public class MinerDefaultImpl extends Miner {
             MiningBlock miningBlock = miningBlockThreadLocal.get();
             if(!isMiningBlockRight(blockChainDataBase,miningBlock)){
                 miningBlock = obtainWrapperBlockForMining(blockChainDataBase);
+                miningBlockThreadLocal.set(miningBlock);
             }
             miningBlock(miningBlock);
             //挖矿成功
@@ -79,6 +80,9 @@ public class MinerDefaultImpl extends Miner {
      * 校验MiningBlock是否正确
      */
     private boolean isMiningBlockRight(BlockChainDataBase blockChainDataBase, MiningBlock miningBlock) throws Exception {
+        if(miningBlock == null){
+            return false;
+        }
         Block block = miningBlock.getBlock();
         if(block == null){
             return false;
@@ -150,8 +154,6 @@ public class MinerDefaultImpl extends Miner {
 
         miningBlock.setBlockChainDataBase(blockChainDataBase);
         miningBlock.setBlock(nextMineBlock);
-        miningBlock.setStartNonce(0L);
-        miningBlock.setEndNonce(Long.MAX_VALUE);
         miningBlock.setNextNonce(0L);
         miningBlock.setTryNonceSizeEveryBatch(10000000L);
         miningBlock.setMiningSuccess(false);
@@ -162,15 +164,14 @@ public class MinerDefaultImpl extends Miner {
         //TODO 改善型功能 这里可以利用多处理器的性能进行计算 还可以进行矿池挖矿
         BlockChainDataBase blockChainDataBase = miningBlock.getBlockChainDataBase();
         Block block = miningBlock.getBlock();
+        long startNonce = miningBlock.getNextNonce();
+        long tryNonceSizeEveryBatch = miningBlock.getTryNonceSizeEveryBatch();
         while(true){
             if(!mineOption){
                 break;
             }
             long nextNonce = miningBlock.getNextNonce();
-            if(nextNonce<miningBlock.getStartNonce() || nextNonce>miningBlock.getEndNonce()){
-                break;
-            }
-            if(nextNonce-miningBlock.getTryNonceSizeEveryBatch() > miningBlock.getStartNonce()){
+            if(nextNonce-startNonce > tryNonceSizeEveryBatch){
                 break;
             }
             block.setNonce(nextNonce);
@@ -195,10 +196,6 @@ public class MinerDefaultImpl extends Miner {
         private BlockChainDataBase blockChainDataBase;
         //矿工要挖矿的区块
         private Block block;
-        //标记矿工要验证挖矿的起始nonce
-        private long startNonce;
-        //标记矿工要验证挖矿的结束nonce
-        private long endNonce;
         //标记矿工下一个要验证的nonce
         private long nextNonce;
         //标记矿工每批次尝试验证的nonce个数
