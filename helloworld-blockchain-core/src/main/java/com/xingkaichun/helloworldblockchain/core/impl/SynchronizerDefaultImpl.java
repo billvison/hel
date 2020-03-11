@@ -99,8 +99,8 @@ public class SynchronizerDefaultImpl extends Synchronizer {
                 blockDTO = synchronizerDataBase.getBlockDto(availableSynchronizeNodeId,minBlockHeight);
             }
         }
-        synchronizerDataBase.clear(availableSynchronizeNodeId);
         promoteTargetBlockChainDataBase(targetBlockChainDataBase, temporaryBlockChainDataBase);
+        synchronizerDataBase.clear(availableSynchronizeNodeId);
     }
 
     /**
