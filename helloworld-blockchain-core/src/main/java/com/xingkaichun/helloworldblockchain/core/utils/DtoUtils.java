@@ -1,22 +1,23 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
+import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.CipherUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.TransactionUtil;
 import com.xingkaichun.helloworldblockchain.dto.*;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
 import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.model.key.StringPublicKey;
+import com.xingkaichun.helloworldblockchain.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.model.key.Wallet;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.CipherUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.TransactionUtil;
 
-import java.io.*;
+import java.io.IOException;
 import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -24,6 +25,7 @@ import java.util.List;
 
 public class DtoUtils {
 
+    private static Gson gson = new Gson();
     /**
      * 类型转换
      */
@@ -255,21 +257,12 @@ public class DtoUtils {
         return ids;
     }
 
-    public static byte[] encode(BlockDTO blockDTO) throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = null;
-        objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        objectOutputStream.writeObject(blockDTO);
-        byte[] bytesBlockDTO = byteArrayOutputStream.toByteArray();
-        return bytesBlockDTO;
+    public static String encode(BlockDTO blockDTO) throws IOException {
+        return gson.toJson(blockDTO);
     }
 
-    public static BlockDTO decodeToBlockDTO(byte[] byteBlockDTO) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteBlockDTO);
-        ObjectInputStream objectInputStream = null;
-        objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        BlockDTO blockDTO = (BlockDTO) objectInputStream.readObject();
-        return blockDTO;
+    public static BlockDTO decodeToBlockDTO(String stringBlockDTO) throws IOException, ClassNotFoundException {
+        return gson.fromJson(stringBlockDTO,BlockDTO.class);
     }
 
 }

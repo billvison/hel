@@ -48,7 +48,8 @@ public class RemoteNodeServiceImpl implements RemoteNodeService {
         Synchronizer synchronizer = blockChainCore.getSynchronizer();
         SynchronizerDataBase synchronizerDataBase = synchronizer.getSynchronizerDataBase();
         String nodeId = buildNodeId(node);
-
+        //这里直接清除老旧的数据，这里希望同步的操作可以在进程没有退出之前完成。
+        synchronizerDataBase.clear(nodeId);
         //最大支持的回滚的区块个数。
         int rollBlockSizeAllow = 100;
         //每次支持同步区块数
@@ -81,6 +82,9 @@ public class RemoteNodeServiceImpl implements RemoteNodeService {
             //从当前区块同步至到未分叉区块
             int tempBlockHeight = localBlockChainHeight;
             while (true){
+                if(tempBlockHeight <= 0){
+                    break;
+                }
                 if(localBlockChainHeight-tempBlockHeight>rollBlockSizeAllow){
                     return;//这里表明真的分叉区块个数过多了，区块链协议不支持同步了。
                 }
@@ -98,6 +102,9 @@ public class RemoteNodeServiceImpl implements RemoteNodeService {
             //从当前节点同步至最新
             tempBlockHeight = localBlockChainHeight+1;
             while (true){
+                if(tempBlockHeight <= 0){
+                    break;
+                }
                 BlockDTO blockDTO = getBlockDtoByBlockHeight(node,tempBlockHeight);
                 if(blockDTO == null){
                     break;
@@ -129,8 +136,11 @@ public class RemoteNodeServiceImpl implements RemoteNodeService {
         }
         synchronizerDataBase.addDataTransferFinishFlag(nodeId);
         //数据库里nodeid的数据必须清空：清空说明这些数据已经被区块链系统使用
+        //最大允许的同步时间
         int maxTimestamp = 60*60*1000;
-        int totalTimestamp = 60*60*1000;
+        //当前花费的同步时间
+        int totalTimestamp = 0;
+        //检测时间间隔
         long timestamp = 10*1000;
         while (true){
             List<String> allNodeId = synchronizerDataBase.getAllNodeId();

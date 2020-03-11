@@ -43,7 +43,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
                 "(" +
                 "nodeId CHAR(100) NOT NULL," +
                 "blockHeight INTEGER NOT NULL," +
-                "blockDto BLOB," +
+                "blockDto TEXT NOT NULL," +
                 "insertTime INTEGER NOT NULL" +
                 ")";
         executeSql(createTable1Sql2);
@@ -55,11 +55,11 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         transactionDataBase.insertBlockDTO(blockDTO);
 
         String sql = "INSERT INTO DATA (nodeId,blockHeight,blockDto,insertTime) " +
-                "VALUES (?, ?, ?);";
+                "VALUES (?,?,?,?);";
         PreparedStatement preparedStatement = connection().prepareStatement(sql);
         preparedStatement.setString(1,nodeId);
         preparedStatement.setInt(2,blockDTO.getHeight());
-        preparedStatement.setBlob(3,new SerialBlob(DtoUtils.encode(blockDTO)));
+        preparedStatement.setString(3, DtoUtils.encode(blockDTO));
         preparedStatement.setLong(4,System.currentTimeMillis());
         preparedStatement.executeUpdate();
         return true;
@@ -67,12 +67,12 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
     @Override
     public int getMinBlockHeight(String nodeId) throws Exception {
-        String sql = "SELECT min(blockHeight) FROM DATA WHERE nodeId = ?";
+        String sql = "SELECT min(blockHeight) as minBlockHeight FROM DATA WHERE nodeId = ?";
         PreparedStatement preparedStatement = connection().prepareStatement(sql);
         preparedStatement.setString(1,nodeId);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()){
-            int blockHeight = resultSet.getInt("blockHeight");
+            int blockHeight = resultSet.getInt("minBlockHeight");
             return blockHeight;
         }
         return -1;
@@ -80,12 +80,12 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
     @Override
     public int getMaxBlockHeight(String nodeId) throws Exception {
-        String sql = "SELECT max(blockHeight) FROM DATA WHERE nodeId = ?";
+        String sql = "SELECT max(blockHeight) as maxBlockHeight FROM DATA WHERE nodeId = ?";
         PreparedStatement preparedStatement = connection().prepareStatement(sql);
         preparedStatement.setString(1,nodeId);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()){
-            int blockHeight = resultSet.getInt("blockHeight");
+            int blockHeight = resultSet.getInt("maxBlockHeight");
             return blockHeight;
         }
         return -1;
@@ -99,9 +99,8 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         preparedStatement.setInt(2,blockHeight);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()){
-            Blob blob = resultSet.getBlob("blockDto");
-            byte[] byteBlockDto = blob.getBytes(0, (int) blob.length());
-            return DtoUtils.decodeToBlockDTO(byteBlockDto);
+            String stringBlockDto = resultSet.getString("blockDto");
+            return DtoUtils.decodeToBlockDTO(stringBlockDto);
         }
         return null;
     }
@@ -109,7 +108,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
     @Override
     public boolean hasDataTransferFinishFlag(String nodeId) throws Exception {
-        String sql = "SELECT top 1 * FROM NODE WHERE status = 'FINISH' and nodeId = ?";
+        String sql = "SELECT * FROM NODE WHERE status = 'FINISH' and nodeId = ? limit 0,1";
         PreparedStatement preparedStatement = connection().prepareStatement(sql);
         preparedStatement.setString(1,nodeId);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -170,12 +169,12 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
     @Override
     public void addDataTransferFinishFlag(String nodeId) throws Exception {
-        String sql1 = "DELETE NODE WHERE nodeId = ?";
+        String sql1 = "DELETE FROM NODE WHERE nodeId = ?";
         PreparedStatement preparedStatement1 = connection().prepareStatement(sql1);
         preparedStatement1.setString(1,nodeId);
         preparedStatement1.executeUpdate();
 
-        String sql2 = "INSERT NODE (nodeId,status) VALUES (? , ?)";
+        String sql2 = "INSERT INTO NODE (nodeId,status) VALUES (? , ?)";
         PreparedStatement preparedStatement2 = connection().prepareStatement(sql2);
         preparedStatement2.setString(1,nodeId);
         preparedStatement2.setString(2,"FINISH");

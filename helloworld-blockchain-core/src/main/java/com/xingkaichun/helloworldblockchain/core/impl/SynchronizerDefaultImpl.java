@@ -110,9 +110,9 @@ public class SynchronizerDefaultImpl extends Synchronizer {
     private void promoteTargetBlockChainDataBase(BlockChainDataBase targetBlockChainDataBase,
                                                    BlockChainDataBase temporaryBlockChainDataBase) throws Exception {
         Block targetBlockChainTailBlock = targetBlockChainDataBase.findTailBlock() ;
-        Block TemporaryBlockChainTailBlock = temporaryBlockChainDataBase.findTailBlock() ;
+        Block temporaryBlockChainTailBlock = temporaryBlockChainDataBase.findTailBlock() ;
         //不需要调整
-        if(TemporaryBlockChainTailBlock == null){
+        if(temporaryBlockChainTailBlock == null){
             return;
         }
         if(targetBlockChainTailBlock == null){
@@ -122,6 +122,27 @@ public class SynchronizerDefaultImpl extends Synchronizer {
                 return;
             }
         }
+        if(targetBlockChainTailBlock.getHeight() >= temporaryBlockChainTailBlock.getHeight()){
+            return;
+        }
+        //未分叉区块高度
+        int noForkBlockHeight = targetBlockChainTailBlock.getHeight();
+        while (true){
+            if(noForkBlockHeight <= 0){
+                break;
+            }
+            Block targetBlock = targetBlockChainDataBase.findBlockByBlockHeight(noForkBlockHeight);
+            if(targetBlock == null){
+                break;
+            }
+            Block temporaryBlock = temporaryBlockChainDataBase.findBlockByBlockHeight(noForkBlockHeight);
+            if(targetBlock.getHash().equals(temporaryBlock.getHash()) && targetBlock.getPreviousHash().equals(temporaryBlock.getPreviousHash())){
+                break;
+            }
+            targetBlockChainDataBase.removeTailBlock();
+            noForkBlockHeight = targetBlockChainTailBlock.getHeight();
+        }
+
         int targetBlockChainHeight = targetBlockChainDataBase.findTailBlock().getHeight() ;
         while(true){
             targetBlockChainHeight++;

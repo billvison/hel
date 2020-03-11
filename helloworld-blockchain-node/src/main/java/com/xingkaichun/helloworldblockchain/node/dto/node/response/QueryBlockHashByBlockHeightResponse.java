@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class QueryBlockHashByBlockHeightResponse {
 
-    private String BlockHash;
+    private String blockHash;
 }
