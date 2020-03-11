@@ -201,7 +201,7 @@ public class TimerService {
             Type jsonType = new TypeToken<ServiceResult<PingResponse>>() {}.getType();
             ServiceResult<PingResponse> pingResponseServiceResult = gson.fromJson(html,jsonType);
             return pingResponseServiceResult;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.info(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
             localNodeService.nodeErrorConnectionHandle(node.getIp(),node.getPort());
             return null;
@@ -220,7 +220,7 @@ public class TimerService {
             Type jsonType = new TypeToken<ServiceResult<AddOrUpdateNodeResponse>>() {}.getType();
             ServiceResult<AddOrUpdateNodeResponse> pingResponseServiceResult = gson.fromJson(html,jsonType);
             return pingResponseServiceResult.getServiceCode() == ServiceCode.SUCCESS;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.info(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
             localNodeService.nodeErrorConnectionHandle(node.getIp(),node.getPort());
             return false;
