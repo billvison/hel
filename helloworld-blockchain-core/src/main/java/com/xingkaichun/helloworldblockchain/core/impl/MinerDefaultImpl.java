@@ -3,7 +3,9 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Miner;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
+import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.model.ConsensusTarget;
@@ -12,8 +14,6 @@ import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +29,18 @@ public class MinerDefaultImpl extends Miner {
     //挖矿开关:默认打开挖矿的开关
     private boolean mineOption = true;
 
+    /**
+     * 存储正在挖矿中的区块
+     */
+    private ThreadLocal<MiningBlock> miningBlockThreadLocal;
+
 
     public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, MinerTransactionDtoDataBase minerTransactionDtoDataBase, StringAddress minerStringAddress) {
         this.blockChainDataBase = blockChainDataBase;
         this.minerTransactionDtoDataBase = minerTransactionDtoDataBase;
         this.minerStringAddress = minerStringAddress;
+
+        miningBlockThreadLocal = new ThreadLocal<>();
     }
     //endregion
 
@@ -47,20 +54,47 @@ public class MinerDefaultImpl extends Miner {
             if(!mineOption){
                 continue;
             }
-            WrapperBlockForMining wrapperBlockForMining = obtainWrapperBlockForMining(blockChainDataBase);
-            miningBlock(wrapperBlockForMining);
+            MiningBlock miningBlock = miningBlockThreadLocal.get();
+            if(!isMiningBlockRight(blockChainDataBase,miningBlock)){
+                miningBlock = obtainWrapperBlockForMining(blockChainDataBase);
+            }
+            miningBlock(miningBlock);
             //挖矿成功
-            if(wrapperBlockForMining.getMiningSuccess()){
+            if(miningBlock.getMiningSuccess()){
+                miningBlockThreadLocal.remove();
                 //将矿放入区块链
-                boolean isAddBlockToBlockChainSuccess = blockChainDataBase.addBlock(wrapperBlockForMining.getBlock());
+                boolean isAddBlockToBlockChainSuccess = blockChainDataBase.addBlock(miningBlock.getBlock());
                 if(!isAddBlockToBlockChainSuccess){
                     System.err.println("挖矿成功，但是放入区块链失败。");
                     continue;
                 }
                 //将使用过的交易从挖矿交易数据库中交易
-                minerTransactionDtoDataBase.deleteTransactionDtoListByTransactionUuidList(getTransactionUuidList(wrapperBlockForMining.getForMineBlockTransactionList()));
-                minerTransactionDtoDataBase.deleteTransactionDtoListByTransactionUuidList(getTransactionUuidList(wrapperBlockForMining.getExceptionTransactionList()));
+                minerTransactionDtoDataBase.deleteTransactionDtoListByTransactionUuidList(getTransactionUuidList(miningBlock.getForMineBlockTransactionList()));
+                minerTransactionDtoDataBase.deleteTransactionDtoListByTransactionUuidList(getTransactionUuidList(miningBlock.getExceptionTransactionList()));
             }
+        }
+    }
+
+    /**
+     * 校验MiningBlock是否正确
+     */
+    private boolean isMiningBlockRight(BlockChainDataBase blockChainDataBase, MiningBlock miningBlock) throws Exception {
+        Block block = miningBlock.getBlock();
+        if(block == null){
+            return false;
+        }
+        Block tailBlock = blockChainDataBase.findTailBlock();
+        if(tailBlock == null){
+            if(block.getHeight() == 1){
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if(tailBlock.getHeight().equals(block.getHeight()-1) && tailBlock.getHash().equals(block.getPreviousHash())){
+                return true;
+            }
+            return false;
         }
     }
 
@@ -90,8 +124,11 @@ public class MinerDefaultImpl extends Miner {
         return mineOption;
     }
 
-    private WrapperBlockForMining obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
-        WrapperBlockForMining wrapperBlockForMining = new WrapperBlockForMining();
+    /**
+     * 获取正在挖矿中的对象
+     */
+    private MiningBlock obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
+        MiningBlock miningBlock = new MiningBlock();
         //TODO 如果交易里有一笔挖矿交易
         List<TransactionDTO> forMineBlockTransactionDtoList = minerTransactionDtoDataBase.selectTransactionDtoList(blockChainDataBase,0,10000);
         List<Transaction> forMineBlockTransactionList = new ArrayList<>();
@@ -107,49 +144,53 @@ public class MinerDefaultImpl extends Miner {
             }
         }
         List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(blockChainDataBase,forMineBlockTransactionList);
-        wrapperBlockForMining.setExceptionTransactionList(exceptionTransactionList);
-        wrapperBlockForMining.setForMineBlockTransactionList(forMineBlockTransactionList);
+        miningBlock.setExceptionTransactionList(exceptionTransactionList);
+        miningBlock.setForMineBlockTransactionList(forMineBlockTransactionList);
         Block nextMineBlock = buildNextMineBlock(blockChainDataBase,forMineBlockTransactionList);
 
-        wrapperBlockForMining.setBlockChainDataBase(blockChainDataBase);
-        wrapperBlockForMining.setBlock(nextMineBlock);
-        wrapperBlockForMining.setStartNonce(0L);
-        wrapperBlockForMining.setEndNonce(Long.MAX_VALUE);
-        wrapperBlockForMining.setNextNonce(0L);
-        wrapperBlockForMining.setMiningSuccess(false);
-        return wrapperBlockForMining;
+        miningBlock.setBlockChainDataBase(blockChainDataBase);
+        miningBlock.setBlock(nextMineBlock);
+        miningBlock.setStartNonce(0L);
+        miningBlock.setEndNonce(Long.MAX_VALUE);
+        miningBlock.setNextNonce(0L);
+        miningBlock.setTryNonceSizeEveryBatch(10000000L);
+        miningBlock.setMiningSuccess(false);
+        return miningBlock;
     }
 
-    public void miningBlock(WrapperBlockForMining wrapperBlockForMining) throws Exception {
+    public void miningBlock(MiningBlock miningBlock) throws Exception {
         //TODO 改善型功能 这里可以利用多处理器的性能进行计算 还可以进行矿池挖矿
-        BlockChainDataBase blockChainDataBase = wrapperBlockForMining.getBlockChainDataBase();
-        Block block = wrapperBlockForMining.getBlock();
+        BlockChainDataBase blockChainDataBase = miningBlock.getBlockChainDataBase();
+        Block block = miningBlock.getBlock();
         while(true){
             if(!mineOption){
                 break;
             }
-            long nextNonce = wrapperBlockForMining.getNextNonce();
-            if(nextNonce<wrapperBlockForMining.getStartNonce() || nextNonce>wrapperBlockForMining.getEndNonce()){
+            long nextNonce = miningBlock.getNextNonce();
+            if(nextNonce<miningBlock.getStartNonce() || nextNonce>miningBlock.getEndNonce()){
+                break;
+            }
+            if(nextNonce-miningBlock.getTryNonceSizeEveryBatch() > miningBlock.getStartNonce()){
                 break;
             }
             block.setNonce(nextNonce);
             block.setHash(BlockUtils.calculateBlockHash(block));
             if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
-                wrapperBlockForMining.setMiningSuccess(true);
+                miningBlock.setMiningSuccess(true);
                 break;
             }
             block.setNonce(null);
-            wrapperBlockForMining.setNextNonce(nextNonce+1);
+            miningBlock.setNextNonce(nextNonce+1);
         }
     }
 
 
     /**
-     * 为了辅助挖矿而创造的类
-     * 类里包含了一个需要挖矿的区块变量和一些辅助挖矿的变量。
+     * 挖矿中的区块对象
+     * 为了辅助挖矿而创造的类，类里包含了一个需要挖矿的区块和一些辅助挖矿的对象。
      */
     @Data
-    public static class WrapperBlockForMining {
+    public static class MiningBlock {
         //矿工挖矿的区块链
         private BlockChainDataBase blockChainDataBase;
         //矿工要挖矿的区块
@@ -160,6 +201,8 @@ public class MinerDefaultImpl extends Miner {
         private long endNonce;
         //标记矿工下一个要验证的nonce
         private long nextNonce;
+        //标记矿工每批次尝试验证的nonce个数
+        private long tryNonceSizeEveryBatch;
         //是否挖矿成功
         private Boolean miningSuccess;
         private List<Transaction> forMineBlockTransactionList;

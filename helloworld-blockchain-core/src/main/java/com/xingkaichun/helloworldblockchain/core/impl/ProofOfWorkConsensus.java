@@ -26,6 +26,9 @@ public class ProofOfWorkConsensus extends Consensus {
 
     public ConsensusTarget calculateConsensusTarget(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
         ConsensusTarget consensusTarget = new ConsensusTarget();
+        consensusTarget.setValue(BlockChainCoreConstants.INIT_GENERATE_BLOCK_DIFFICULTY_STRING);
+        return consensusTarget;
+/*
         int blockHeight = block.getHeight();
         if(blockHeight <= 2){
             consensusTarget.setValue(BlockChainCoreConstants.INIT_GENERATE_BLOCK_DIFFICULTY_STRING);
@@ -55,5 +58,6 @@ public class ProofOfWorkConsensus extends Consensus {
             consensusTarget.setValue(stringConsensusTarget);
             return consensusTarget;
         }
+*/
     }
 }
