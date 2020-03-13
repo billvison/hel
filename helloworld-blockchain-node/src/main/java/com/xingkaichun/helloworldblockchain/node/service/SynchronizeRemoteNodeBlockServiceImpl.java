@@ -28,9 +28,9 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 @Service
-public class RemoteNodeServiceImpl implements RemoteNodeService {
+public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteNodeBlockService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RemoteNodeServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SynchronizeRemoteNodeBlockServiceImpl.class);
 
     @Autowired
     private NodeDao nodeDao;

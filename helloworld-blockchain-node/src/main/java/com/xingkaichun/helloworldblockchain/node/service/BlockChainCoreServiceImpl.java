@@ -26,13 +26,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class BlockChainServiceImpl implements BlockChainService {
+public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
     @Autowired
     private BlockChainCore blockChainCore;
 
     @Autowired
-    private LocalNodeService localNodeService;
+    private NodeService nodeService;
 
     @Autowired
     private BlockchainNodeClientService blockchainNodeClientService;
@@ -74,7 +74,7 @@ public class BlockChainServiceImpl implements BlockChainService {
     public SubmitNormalTransactionResponse sumiteTransaction(NormalTransactionDto normalTransactionDto) throws Exception {
         TransactionDTO transactionDTO = classCast(normalTransactionDto);
         blockChainCore.getMiner().getMinerTransactionDtoDataBase().insertTransactionDTO(transactionDTO);
-        List<Node> nodes = localNodeService.queryAliveNodes();
+        List<Node> nodes = nodeService.queryAliveNodes();
 
         List<SubmitNormalTransactionResponse.Node> successSubmitNode = new ArrayList<>();
         List<SubmitNormalTransactionResponse.Node> failSubmitNode = new ArrayList<>();

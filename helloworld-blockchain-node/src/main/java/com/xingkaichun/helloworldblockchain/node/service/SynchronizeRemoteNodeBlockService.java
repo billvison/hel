@@ -2,10 +2,10 @@ package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 
-public interface RemoteNodeService {
+public interface SynchronizeRemoteNodeBlockService {
 
     /**
-     * 同步节点的区块到本地区块链
+     * 同步远程节点的区块到本地区块链系统
      */
     void synchronizeRemoteNodeBlock(Node node) throws Exception;
 }

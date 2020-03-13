@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingResponse;
-import com.xingkaichun.helloworldblockchain.node.service.BlockChainService;
+import com.xingkaichun.helloworldblockchain.node.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.node.service.BlockchainNodeClientService;
-import com.xingkaichun.helloworldblockchain.node.service.LocalNodeService;
-import com.xingkaichun.helloworldblockchain.node.service.RemoteNodeService;
+import com.xingkaichun.helloworldblockchain.node.service.NodeService;
+import com.xingkaichun.helloworldblockchain.node.service.SynchronizeRemoteNodeBlockService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +25,13 @@ public class TimerService {
     private static final Logger logger = LoggerFactory.getLogger(TimerService.class);
 
     @Autowired
-    private BlockChainService blockChainService;
+    private BlockChainCoreService blockChainCoreService;
 
     @Autowired
-    private LocalNodeService localNodeService;
+    private NodeService nodeService;
 
     @Autowired
-    private RemoteNodeService remoteNodeService;
+    private SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService;
 
     @Autowired
     private BlockchainNodeClientService blockchainNodeClientService;
@@ -100,7 +100,7 @@ public class TimerService {
      */
     public void searchNewNodes() {
         //TODO 性能调整，并发
-        List<Node> nodes = localNodeService.queryNodes();
+        List<Node> nodes = nodeService.queryNodes();
         for(Node node:nodes){
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
             boolean isPingSuccess = ServiceResult.isSuccess(pingResponseServiceResult);
@@ -110,11 +110,11 @@ public class TimerService {
                 node.setBlockChainHeight(pingResponse.getBlockChainHeight());
                 node.setErrorConnectionTimes(0);
                 //更新节点
-                localNodeService.addOrUpdateNode(node);
+                nodeService.addOrUpdateNode(node);
                 //处理节点传输过来它所知道的节点列表
                 addNewAvailableNodeToDatabase(pingResponse.getNodeList());
             } else {
-                localNodeService.nodeErrorConnectionHandle(node.getIp(),node.getPort());
+                nodeService.nodeErrorConnectionHandle(node.getIp(),node.getPort());
             }
         }
     }
@@ -123,12 +123,12 @@ public class TimerService {
      * 发现自己的区块链高度比全网节点都要高，则广播自己的区块高度
      */
     private void broadcastLocalBlcokChainHeight() throws Exception {
-        List<Node> nodes = localNodeService.queryAliveNodes();
+        List<Node> nodes = nodeService.queryAliveNodes();
         if(nodes == null || nodes.size()==0){
             return;
         }
 
-        int localBlockChainHeight = blockChainService.queryBlockChainHeight();
+        int localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
         boolean isLocalBlockChainHighest = true;
         for(Node node:nodes){
             if(localBlockChainHeight < node.getBlockChainHeight()){
@@ -166,18 +166,18 @@ public class TimerService {
      * 搜索新的区块，并同步这些区块到本地区块链系统
      */
     private void searchNewBlocks() throws Exception {
-        List<Node> nodes = localNodeService.queryAliveNodes();
+        List<Node> nodes = nodeService.queryAliveNodes();
         if(nodes == null || nodes.size()==0){
             return;
         }
 
-        int localBlockChainHeight = blockChainService.queryBlockChainHeight();
+        int localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
         //可能存在多个节点的数据都比本地节点的区块多，但它们节点的数据可能是相同的，不应该向每个节点都去请求数据。
         for(Node node:nodes){
             if(localBlockChainHeight < node.getBlockChainHeight()){
-                remoteNodeService.synchronizeRemoteNodeBlock(node);
+                synchronizeRemoteNodeBlockService.synchronizeRemoteNodeBlock(node);
                 //同步之后，本地区块链高度已经发生改变了
-                localBlockChainHeight = blockChainService.queryBlockChainHeight();
+                localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
             }
         }
     }
@@ -198,14 +198,14 @@ public class TimerService {
      * 若一个新的(之前没有加入过本地数据库)、可用的(网络连接是好的)的节点加入本地数据库
      */
     private void addNewAvailableNodeToDatabase(Node node) {
-        Node localNode = localNodeService.queryNode(node.getIp(),node.getPort());
+        Node localNode = nodeService.queryNode(node.getIp(),node.getPort());
         if(localNode == null){
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
             if(ServiceResult.isSuccess(pingResponseServiceResult)){
                 node.setNodeAvailable(true);
                 node.setBlockChainHeight(pingResponseServiceResult.getResult().getBlockChainHeight());
                 node.setErrorConnectionTimes(0);
-                localNodeService.addOrUpdateNode(node);
+                nodeService.addOrUpdateNode(node);
                 logger.debug(String.format("自动发现节点[%s:%d]，节点已加入节点数据库。",node.getIp(),node.getPort()));
             }
         }

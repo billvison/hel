@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class LocalNodeServiceImpl implements LocalNodeService {
+public class NodeServiceImpl implements NodeService {
 
     @Value("${nodeserver.errorConnectionTimesRemoveThreshold}")
     private int errorConnectionTimesRemoveThreshold;

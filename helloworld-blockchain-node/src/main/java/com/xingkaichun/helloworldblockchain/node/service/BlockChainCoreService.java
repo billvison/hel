@@ -10,7 +10,7 @@ import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.
 
 import java.util.List;
 
-public interface BlockChainService {
+public interface BlockChainCoreService {
 
     /**
      * 生成钱包

@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 
 import java.util.List;
 
-public interface LocalNodeService {
+public interface NodeService {
 
     /**
      * 获取所有节点

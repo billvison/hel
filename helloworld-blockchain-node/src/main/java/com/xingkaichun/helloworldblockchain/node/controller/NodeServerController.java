@@ -6,9 +6,9 @@ import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.NodeServerApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.*;
-import com.xingkaichun.helloworldblockchain.node.service.BlockChainService;
+import com.xingkaichun.helloworldblockchain.node.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.node.service.BlockchainNodeServerService;
-import com.xingkaichun.helloworldblockchain.node.service.LocalNodeService;
+import com.xingkaichun.helloworldblockchain.node.service.NodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +31,10 @@ public class NodeServerController {
     private static final Logger logger = LoggerFactory.getLogger(NodeServerController.class);
 
     @Autowired
-    private BlockChainService blockChainService;
+    private BlockChainCoreService blockChainCoreService;
 
     @Autowired
-    private LocalNodeService localNodeService;
+    private NodeService nodeService;
 
     @Autowired
     private BlockchainNodeServerService blockchainNodeServerService;
@@ -46,8 +46,8 @@ public class NodeServerController {
     @RequestMapping(value = NodeServerApiRoute.PING,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<PingResponse> ping(HttpServletRequest httpServletRequest, @RequestBody PingRequest request){
         try {
-            List<Node> nodeList = localNodeService.queryNodes();
-            int blockChainHeight = blockChainService.queryBlockChainHeight();
+            List<Node> nodeList = nodeService.queryNodes();
+            int blockChainHeight = blockChainCoreService.queryBlockChainHeight();
 
             //将ping的来路作为区块链节点
             Node node = new Node();
@@ -56,7 +56,7 @@ public class NodeServerController {
             node.setIp(ip);
             node.setPort(port);
             node.setNodeAvailable(true);
-            localNodeService.addOrUpdateNode(node);
+            nodeService.addOrUpdateNode(node);
             logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,port));
 
             PingResponse response = new PingResponse();
@@ -86,7 +86,7 @@ public class NodeServerController {
             node.setBlockChainHeight(request.getBlockChainHeight());
             node.setErrorConnectionTimes(0);
 
-            localNodeService.addOrUpdateNode(node);
+            nodeService.addOrUpdateNode(node);
             AddOrUpdateNodeResponse response = new AddOrUpdateNodeResponse();
             return ServiceResult.createSuccessServiceResult("更新节点成功",response);
         } catch (Exception e){
@@ -104,7 +104,7 @@ public class NodeServerController {
     @RequestMapping(value = NodeServerApiRoute.QUERY_BLOCK_HASH_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(@RequestBody QueryBlockHashByBlockHeightRequest request){
         try {
-            String blockHash = blockChainService.queryBlockHashByBlockHeight(request.getBlockHeight());
+            String blockHash = blockChainCoreService.queryBlockHashByBlockHeight(request.getBlockHeight());
 
             QueryBlockHashByBlockHeightResponse response = new QueryBlockHashByBlockHeightResponse();
             response.setBlockHash(blockHash);
@@ -124,7 +124,7 @@ public class NodeServerController {
     @RequestMapping(value = NodeServerApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(@RequestBody QueryBlockDtoByBlockHeightRequest request){
         try {
-            BlockDTO blockDTO = blockChainService.queryBlockDtoByBlockHeight(request.getBlockHeight());
+            BlockDTO blockDTO = blockChainCoreService.queryBlockDtoByBlockHeight(request.getBlockHeight());
 
             QueryBlockDtoByBlockHeightResponse response = new QueryBlockDtoByBlockHeightResponse();
             response.setBlockDTO(blockDTO);

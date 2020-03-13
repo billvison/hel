@@ -14,7 +14,7 @@ public class AdminConsoleServiceImpl implements AdminConsoleService {
     private BlockChainCore blockChainCore;
 
     @Autowired
-    private LocalNodeService localNodeService;
+    private NodeService nodeService;
 
 
     @Override
@@ -57,7 +57,7 @@ public class AdminConsoleServiceImpl implements AdminConsoleService {
             throw new BlockChainCoreException("新增节点，节点的端口不能为空");
         }
 
-        Node localNode = localNodeService.queryNode(request.getIp(),request.getPort());
+        Node localNode = nodeService.queryNode(request.getIp(),request.getPort());
         if(localNode != null){
             return;
         }
@@ -65,6 +65,6 @@ public class AdminConsoleServiceImpl implements AdminConsoleService {
         Node node = new Node();
         node.setIp(ip);
         node.setPort(port);
-        localNodeService.addOrUpdateNode(node);
+        nodeService.addOrUpdateNode(node);
     }
 }
