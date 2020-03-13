@@ -2,7 +2,7 @@ package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.node.dao.NodeDao;
-import com.xingkaichun.helloworldblockchain.node.dto.node.Node;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class LocalNodeServiceImpl implements LocalNodeService {
 
-    @Value("${node.errorConnectionTimesRemoveThreshold}")
+    @Value("${nodeserver.errorConnectionTimesRemoveThreshold}")
     private int errorConnectionTimesRemoveThreshold;
 
     @Autowired

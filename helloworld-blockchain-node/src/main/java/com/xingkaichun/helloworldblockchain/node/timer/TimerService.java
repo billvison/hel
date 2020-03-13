@@ -1,27 +1,19 @@
 package com.xingkaichun.helloworldblockchain.node.timer;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceCode;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.node.dto.node.Node;
-import com.xingkaichun.helloworldblockchain.node.dto.node.NodeApiRoute;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.AddOrUpdateNodeRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.PingRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.response.AddOrUpdateNodeResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.node.response.PingResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainService;
+import com.xingkaichun.helloworldblockchain.node.service.BlockchainNodeClientService;
 import com.xingkaichun.helloworldblockchain.node.service.LocalNodeService;
 import com.xingkaichun.helloworldblockchain.node.service.RemoteNodeService;
-import com.xingkaichun.helloworldblockchain.node.util.NetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,13 +33,16 @@ public class TimerService {
     @Autowired
     private RemoteNodeService remoteNodeService;
 
-    @Value("${node.searchNewNodeTimeInterval}")
+    @Autowired
+    private BlockchainNodeClientService blockchainNodeClientService;
+
+    @Value("${nodeserver.searchNewNodeTimeInterval}")
     private long searchNewNodeTimeInterval;
 
-    @Value("${node.searchNewBlocksTimeInterval}")
+    @Value("${nodeserver.searchNewBlocksTimeInterval}")
     private long searchNewBlocksTimeInterval;
 
-    @Value("${node.checkLocalBlockChainHeightIsHighTimeInterval}")
+    @Value("${nodeserver.checkLocalBlockChainHeightIsHighTimeInterval}")
     private long checkLocalBlockChainHeightIsHighTimeInterval;
 
     @Autowired
@@ -63,7 +58,6 @@ public class TimerService {
                     searchNewNodes();
                 } catch (Exception e) {
                     logger.error("在区块链网络中搜索新的节点出现异常",e);
-                    System.exit(1);
                 }
                 try {
                     Thread.sleep(searchNewNodeTimeInterval);
@@ -78,7 +72,6 @@ public class TimerService {
                     broadcastLocalBlcokChainHeight();
                 } catch (Exception e) {
                     logger.error("在区块链网络中广播自己的区块高度出现异常",e);
-                    System.exit(1);
                 }
                 try {
                     Thread.sleep(checkLocalBlockChainHeightIsHighTimeInterval);
@@ -93,7 +86,6 @@ public class TimerService {
                     searchNewBlocks();
                 } catch (Exception e) {
                     logger.error("在区块链网络中同步其它节点的区块出现异常",e);
-                    System.exit(1);
                 }
                 try {
                     Thread.sleep(searchNewBlocksTimeInterval);
@@ -110,19 +102,17 @@ public class TimerService {
         //TODO 性能调整，并发
         List<Node> nodes = localNodeService.queryNodes();
         for(Node node:nodes){
-            ServiceResult<PingResponse> pingResponseServiceResult = pingNode(node);
-            boolean isAvailable = pingResponseServiceResult!= null && pingResponseServiceResult.getServiceCode() == ServiceCode.SUCCESS;
-            node.setNodeAvailable(isAvailable);
-            if(isAvailable){
+            ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
+            boolean isPingSuccess = ServiceResult.isSuccess(pingResponseServiceResult);
+            node.setNodeAvailable(isPingSuccess);
+            if(isPingSuccess){
                 PingResponse pingResponse = pingResponseServiceResult.getResult();
                 node.setBlockChainHeight(pingResponse.getBlockChainHeight());
                 node.setErrorConnectionTimes(0);
+                //更新节点
                 localNodeService.addOrUpdateNode(node);
-
-                List<Node> nodesTemp = pingResponse.getNodeList();
-                for(Node nodeTemp : nodesTemp){
-                    addNewAvailableNodeToDatabase(nodeTemp);
-                }
+                //处理节点传输过来它所知道的节点列表
+                addNewAvailableNodeToDatabase(pingResponse.getNodeList());
             } else {
                 localNodeService.nodeErrorConnectionHandle(node.getIp(),node.getPort());
             }
@@ -150,7 +140,9 @@ public class TimerService {
         //TODO 性能调整 根据网络带宽设置传播宽度，这里存在可能你所发送的节点一起向你请求数据。
         //通知按照区块高度较高的先
         if(isLocalBlockChainHighest){
+            //广播节点数量
             int broadcastNodeCount = 0;
+            //排序节点
             Collections.sort(nodes,(Node node1,Node node2)->{
                 if(node1.getBlockChainHeight() > node2.getBlockChainHeight()){
                     return -1;
@@ -161,10 +153,8 @@ public class TimerService {
                 }
             });
             for(Node node:nodes){
-                if(localBlockChainHeight-node.getBlockChainHeight()<5){
-                    unicastLocalBlockChainHeight(node,localBlockChainHeight);
-                    ++broadcastNodeCount;
-                }
+                blockchainNodeClientService.unicastLocalBlockChainHeight(node,localBlockChainHeight);
+                ++broadcastNodeCount;
                 if(broadcastNodeCount>20){
                     return;
                 }
@@ -173,7 +163,7 @@ public class TimerService {
     }
 
     /**
-     * 搜索新的区块
+     * 搜索新的区块，并同步这些区块到本地区块链系统
      */
     private void searchNewBlocks() throws Exception {
         List<Node> nodes = localNodeService.queryAliveNodes();
@@ -186,57 +176,32 @@ public class TimerService {
         for(Node node:nodes){
             if(localBlockChainHeight < node.getBlockChainHeight()){
                 remoteNodeService.synchronizeRemoteNodeBlock(node);
+                //同步之后，本地区块链高度已经发生改变了
+                localBlockChainHeight = blockChainService.queryBlockChainHeight();
             }
-            localBlockChainHeight = blockChainService.queryBlockChainHeight();
         }
     }
 
     /**
-     * Ping指定节点
+     * 将远程节点知道的节点，一一进行验证这些节点的合法性，如果正常，则将这些节点加入自己的区块链网络。
      */
-    private ServiceResult<PingResponse> pingNode(Node node) {
-        try {
-            String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeApiRoute.PING);
-            String html = NetUtil.getHtml(url,new PingRequest());
-            Type jsonType = new TypeToken<ServiceResult<PingResponse>>() {}.getType();
-            ServiceResult<PingResponse> pingResponseServiceResult = gson.fromJson(html,jsonType);
-            return pingResponseServiceResult;
-        } catch (Exception e) {
-            logger.info(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
-            localNodeService.nodeErrorConnectionHandle(node.getIp(),node.getPort());
-            return null;
+    private void addNewAvailableNodeToDatabase(List<Node> nodeList) {
+        if(nodeList == null || nodeList.size()==0){
+            return;
         }
-    }
-
-    /**
-     * 单播：将本地区块链高度传给指定节点
-     */
-    private boolean unicastLocalBlockChainHeight(Node node,int localBlockChainHeight) {
-        try {
-            String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeApiRoute.ADD_OR_UPDATE_NODE);
-            AddOrUpdateNodeRequest request = new AddOrUpdateNodeRequest();
-            request.setBlockChainHeight(localBlockChainHeight);
-            String html = NetUtil.getHtml(url,request);
-            Type jsonType = new TypeToken<ServiceResult<AddOrUpdateNodeResponse>>() {}.getType();
-            ServiceResult<AddOrUpdateNodeResponse> pingResponseServiceResult = gson.fromJson(html,jsonType);
-            return pingResponseServiceResult.getServiceCode() == ServiceCode.SUCCESS;
-        } catch (Exception e) {
-            logger.info(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
-            localNodeService.nodeErrorConnectionHandle(node.getIp(),node.getPort());
-            return false;
+        for(Node node : nodeList){
+            addNewAvailableNodeToDatabase(node);
         }
     }
 
     /**
      * 若一个新的(之前没有加入过本地数据库)、可用的(网络连接是好的)的节点加入本地数据库
-     * @param node
      */
     private void addNewAvailableNodeToDatabase(Node node) {
         Node localNode = localNodeService.queryNode(node.getIp(),node.getPort());
         if(localNode == null){
-            ServiceResult<PingResponse> pingResponseServiceResult = pingNode(node);
-            boolean isAvailable = pingResponseServiceResult!= null && pingResponseServiceResult.getServiceCode() == ServiceCode.SUCCESS;
-            if(isAvailable){
+            ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
+            if(ServiceResult.isSuccess(pingResponseServiceResult)){
                 node.setNodeAvailable(true);
                 node.setBlockChainHeight(pingResponseServiceResult.getResult().getBlockChainHeight());
                 node.setErrorConnectionTimes(0);

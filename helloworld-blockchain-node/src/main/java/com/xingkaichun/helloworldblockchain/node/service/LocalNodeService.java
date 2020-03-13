@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
-import com.xingkaichun.helloworldblockchain.node.dto.node.Node;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 
 import java.util.List;
 

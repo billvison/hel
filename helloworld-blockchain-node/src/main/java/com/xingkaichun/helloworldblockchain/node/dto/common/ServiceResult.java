@@ -18,6 +18,9 @@ public class ServiceResult<T> {
     public static<T> ServiceResult<T> createSuccessServiceResult(String message, T result){
         return new ServiceResult(ServiceCode.SUCCESS,message,result);
     }
+    public static<T> ServiceResult<T> createSuccessServiceResult(String message){
+        return new ServiceResult(ServiceCode.SUCCESS,message,null);
+    }
     public static<T> ServiceResult createFailServiceResult(String message){
         return new ServiceResult(ServiceCode.FAIL,message,null);
     }

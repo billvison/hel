@@ -1,12 +1,10 @@
-package com.xingkaichun.helloworldblockchain.node.dto.node;
+package com.xingkaichun.helloworldblockchain.node.dto.nodeserver;
 
 import lombok.Data;
 
 @Data
-public class Node {
+public class Node extends SimpleNode{
 
-    private String ip;
-    private int port;
     private int blockChainHeight;
     private boolean isNodeAvailable;
     private int errorConnectionTimes;

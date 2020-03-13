@@ -8,7 +8,7 @@ import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.BlockChai
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.*;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.node.dto.node.Node;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainService;
 import com.xingkaichun.helloworldblockchain.node.service.LocalNodeService;
 import org.slf4j.Logger;

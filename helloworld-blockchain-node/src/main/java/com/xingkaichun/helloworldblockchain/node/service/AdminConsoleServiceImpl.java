@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.node.service;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.AddNodeRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.node.Node;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -2,10 +2,10 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 
 import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.node.dto.node.Node;
-import com.xingkaichun.helloworldblockchain.node.dto.node.NodeApiRoute;
-import com.xingkaichun.helloworldblockchain.node.dto.node.request.*;
-import com.xingkaichun.helloworldblockchain.node.dto.node.response.*;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.NodeServerApiRoute;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request.*;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.*;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainService;
 import com.xingkaichun.helloworldblockchain.node.service.BlockchainNodeServerService;
 import com.xingkaichun.helloworldblockchain.node.service.LocalNodeService;
@@ -26,9 +26,9 @@ import java.util.List;
  */
 @Controller
 @RequestMapping
-public class NodeController {
+public class NodeServerController {
 
-    private static final Logger logger = LoggerFactory.getLogger(NodeController.class);
+    private static final Logger logger = LoggerFactory.getLogger(NodeServerController.class);
 
     @Autowired
     private BlockChainService blockChainService;
@@ -43,7 +43,7 @@ public class NodeController {
      * Ping节点
      */
     @ResponseBody
-    @RequestMapping(value = NodeApiRoute.PING,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = NodeServerApiRoute.PING,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<PingResponse> ping(HttpServletRequest httpServletRequest, @RequestBody PingRequest request){
         try {
             List<Node> nodeList = localNodeService.queryNodes();
@@ -74,7 +74,7 @@ public class NodeController {
      * 更新节点信息：其它节点通知本地节点它的信息有变更
      */
     @ResponseBody
-    @RequestMapping(value = NodeApiRoute.ADD_OR_UPDATE_NODE,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = NodeServerApiRoute.ADD_OR_UPDATE_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<AddOrUpdateNodeResponse> addOrUpdateNode(HttpServletRequest httpServletRequest, AddOrUpdateNodeRequest request){
         try {
             Node node = new Node();
@@ -101,7 +101,7 @@ public class NodeController {
      * 根据区块高度查询区块Hash
      */
     @ResponseBody
-    @RequestMapping(value = NodeApiRoute.QUERY_BLOCK_HASH_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = NodeServerApiRoute.QUERY_BLOCK_HASH_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(@RequestBody QueryBlockHashByBlockHeightRequest request){
         try {
             String blockHash = blockChainService.queryBlockHashByBlockHeight(request.getBlockHeight());
@@ -121,7 +121,7 @@ public class NodeController {
      * 根据区块高度查询区块
      */
     @ResponseBody
-    @RequestMapping(value = NodeApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = NodeServerApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(@RequestBody QueryBlockDtoByBlockHeightRequest request){
         try {
             BlockDTO blockDTO = blockChainService.queryBlockDtoByBlockHeight(request.getBlockHeight());
@@ -140,7 +140,7 @@ public class NodeController {
      * 接收其它节点提交的交易
      */
     @ResponseBody
-    @RequestMapping(value = NodeApiRoute.RECEIVE_TRANSACTION,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = NodeServerApiRoute.RECEIVE_TRANSACTION,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<ReceiveTransactionResponse> receiveTransaction(@RequestBody ReceiveTransactionRequest request){
         try {
             blockchainNodeServerService.receiveTransaction(request.getTransactionDTO());

@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.node.dto.node.request;
+package com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request;
 
 import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import lombok.Data;

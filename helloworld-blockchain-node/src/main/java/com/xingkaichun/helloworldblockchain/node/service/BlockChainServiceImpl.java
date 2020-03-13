@@ -13,8 +13,9 @@ import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.SubmitNormalTransactionResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.common.EmptyResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.node.dto.node.Node;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,13 +80,8 @@ public class BlockChainServiceImpl implements BlockChainService {
         List<SubmitNormalTransactionResponse.Node> failSubmitNode = new ArrayList<>();
         if(nodes != null){
             for(Node node:nodes){
-                boolean submitSuccess = true;
-                try {
-                    submitSuccess = blockchainNodeClientService.sumiteTransaction(node,transactionDTO);
-                } catch (Exception e){
-                    submitSuccess = false;
-                }
-                if(submitSuccess){
+                ServiceResult<EmptyResponse> submitSuccess = blockchainNodeClientService.sumiteTransaction(node,transactionDTO);
+                if(ServiceResult.isSuccess(submitSuccess)){
                     successSubmitNode.add(new SubmitNormalTransactionResponse.Node(node.getIp(),node.getPort()));
                 } else {
                     failSubmitNode.add(new SubmitNormalTransactionResponse.Node(node.getIp(),node.getPort()));

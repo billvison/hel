@@ -1,6 +1,8 @@
 package com.xingkaichun.helloworldblockchain.node.dto.common;
 
-public enum  ServiceCode {
+import lombok.Data;
 
-    SUCCESS,FAIL
+@Data
+public class EmptyResponse {
+
 }

@@ -1,6 +1,6 @@
-package com.xingkaichun.helloworldblockchain.node.dto.node.response;
+package com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response;
 
-import com.xingkaichun.helloworldblockchain.node.dto.node.Node;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import lombok.Data;
 
 import java.util.List;

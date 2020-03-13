@@ -1,7 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.dao;
 
-import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
-import com.xingkaichun.helloworldblockchain.node.dto.node.Node;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,7 @@ public class NodeDaoImpl implements NodeDao {
 
     @Value("${blockchainDataPath}")
     protected String blockchainDataPath;
-    @Value("${node.seedNodes}")
+    @Value("${nodeserver.seedNodes}")
     private String seedNodes;
 
     private static final String NODE_INFO_DATABASE_DIRECT_NAME = "NodeInfoDatabase";
@@ -45,23 +44,24 @@ public class NodeDaoImpl implements NodeDao {
 
         //插入种子节点
         if(seedNodes == null || "".equals(seedNodes)){
-            throw new BlockChainCoreException("请设置种子节点！");
-        }
-        String[] ipPortArray = seedNodes.split(",");
-        for(String ipPort:ipPortArray){
-            String ip = ipPort.split(":")[0];
-            String port = ipPort.split(":")[1];
-            Node dbNode = queryNode(ip,Integer.valueOf(port));
-            if(dbNode != null){
-                continue;
+            logger.error("没有设置种子节点");
+        } else {
+            String[] ipPortArray = seedNodes.split(",");
+            for(String ipPort:ipPortArray){
+                String ip = ipPort.split(":")[0];
+                String port = ipPort.split(":")[1];
+                Node dbNode = queryNode(ip,Integer.valueOf(port));
+                if(dbNode != null){
+                    continue;
+                }
+                Node node = new Node();
+                node.setIp(ip);
+                node.setPort(Integer.valueOf(port));
+                node.setBlockChainHeight(0);
+                node.setNodeAvailable(true);
+                node.setErrorConnectionTimes(0);
+                addNode(node);
             }
-            Node node = new Node();
-            node.setIp(ip);
-            node.setPort(Integer.valueOf(port));
-            node.setBlockChainHeight(0);
-            node.setNodeAvailable(true);
-            node.setErrorConnectionTimes(0);
-            addNode(node);
         }
     }
 
@@ -82,7 +82,6 @@ public class NodeDaoImpl implements NodeDao {
             }
         } catch (SQLException e) {
             logger.error("sql异常！",e);
-            System.exit(1);
             return null;
         }
     }
@@ -113,7 +112,7 @@ public class NodeDaoImpl implements NodeDao {
             preparedStatement.execute();
         } catch (SQLException e) {
             logger.error("sql异常！",e);
-            System.exit(1);        }
+        }
     }
 
     @Override
@@ -130,7 +129,6 @@ public class NodeDaoImpl implements NodeDao {
             return preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error("sql异常！",e);
-            System.exit(1);
             return 0;
         }
     }
@@ -145,7 +143,6 @@ public class NodeDaoImpl implements NodeDao {
             return preparedStatement.execute();
         } catch (SQLException e) {
             logger.error("sql异常！",e);
-            System.exit(1);
             return false;
         }
     }
@@ -164,11 +161,9 @@ public class NodeDaoImpl implements NodeDao {
             return connection;
         } catch (SQLException e) {
             logger.error("sql异常！",e);
-            System.exit(1);
             return null;
         } catch (ClassNotFoundException classNotFoundException) {
             logger.error("class异常！",classNotFoundException);
-            System.exit(1);
             return null;
         }
     }
@@ -180,7 +175,6 @@ public class NodeDaoImpl implements NodeDao {
             stmt.close();
         } catch (SQLException e) {
             logger.error("sql异常！",e);
-            System.exit(1);
         }
     }
 
@@ -193,7 +187,6 @@ public class NodeDaoImpl implements NodeDao {
             return nodeList;
         } catch (SQLException e) {
             logger.error("sql异常！",e);
-            System.exit(1);
             return null;
         }
     }
@@ -213,7 +206,6 @@ public class NodeDaoImpl implements NodeDao {
             return nodeList;
         } catch (SQLException e) {
             logger.error("sql异常！",e);
-            System.exit(1);
             return null;
         }
     }

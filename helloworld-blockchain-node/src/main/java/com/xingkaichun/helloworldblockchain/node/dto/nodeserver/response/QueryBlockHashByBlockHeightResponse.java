@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.node.dto.node.response;
+package com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response;
 
 import lombok.Data;
 

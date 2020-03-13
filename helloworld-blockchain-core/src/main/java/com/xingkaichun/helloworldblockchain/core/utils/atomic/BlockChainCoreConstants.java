@@ -17,9 +17,9 @@ public class BlockChainCoreConstants {
     public final static String FIRST_BLOCK_PREVIOUS_HASH = "xingkaichun";
 
     //产生区块的平均时间
-    public final static long GENERATE_BLOCK_AVERAGE_TIMESTAMP = 10 *  60 * 1000;
+    public final static long GENERATE_BLOCK_AVERAGE_TIMESTAMP = 2 *  60 * 1000;
     //初始化产生区块的难度
-    public final static String INIT_GENERATE_BLOCK_DIFFICULTY_STRING = "0000000";
+    public final static String INIT_GENERATE_BLOCK_DIFFICULTY_STRING = "000000";
     //初始化挖矿激励金额
     public final static BigDecimal INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT = new BigDecimal("100");
     //挖矿激励减产周期
