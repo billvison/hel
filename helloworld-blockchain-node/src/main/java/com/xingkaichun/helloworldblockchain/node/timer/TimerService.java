@@ -114,7 +114,7 @@ public class TimerService {
                 //处理节点传输过来它所知道的节点列表
                 addNewAvailableNodeToDatabase(pingResponse.getNodeList());
             } else {
-                nodeService.nodeErrorConnectionHandle(node.getIp(),node.getPort());
+                nodeService.nodeErrorConnectionHandle(node);
             }
         }
     }
@@ -198,7 +198,7 @@ public class TimerService {
      * 若一个新的(之前没有加入过本地数据库)、可用的(网络连接是好的)的节点加入本地数据库
      */
     private void addNewAvailableNodeToDatabase(Node node) {
-        Node localNode = nodeService.queryNode(node.getIp(),node.getPort());
+        Node localNode = nodeService.queryNode(node);
         if(localNode == null){
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
             if(ServiceResult.isSuccess(pingResponseServiceResult)){

@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.node.service;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.node.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -47,19 +48,19 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public void deleteNode(String ip, int port) {
-        nodeDao.deleteNode(ip,port);
+    public void deleteNode(SimpleNode simpleNode) {
+        nodeDao.deleteNode(simpleNode.getIp(),simpleNode.getPort());
     }
 
     @Override
-    public void nodeErrorConnectionHandle(String ip, int port) {
-        Node node = nodeDao.queryNode(ip,port);
+    public void nodeErrorConnectionHandle(SimpleNode simpleNode) {
+        Node node = nodeDao.queryNode(simpleNode.getIp(),simpleNode.getPort());
         if(node == null){
             return;
         }
         int errorConnectionTimes = node.getErrorConnectionTimes()+1;
         if(errorConnectionTimes >= errorConnectionTimesRemoveThreshold){
-            nodeDao.deleteNode(ip,port);
+            nodeDao.deleteNode(simpleNode.getIp(),simpleNode.getPort());
         }else {
             node.setErrorConnectionTimes(errorConnectionTimes);
             node.setNodeAvailable(false);
@@ -68,8 +69,8 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public Node queryNode(String ip, int port) {
-        Node node = nodeDao.queryNode(ip,port);
+    public Node queryNode(SimpleNode simpleNode) {
+        Node node = nodeDao.queryNode(simpleNode.getIp(),simpleNode.getPort());
         return node;
     }
 

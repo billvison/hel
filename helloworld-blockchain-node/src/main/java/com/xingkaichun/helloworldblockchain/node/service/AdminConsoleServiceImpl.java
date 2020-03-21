@@ -4,6 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.AddNodeRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +58,7 @@ public class AdminConsoleServiceImpl implements AdminConsoleService {
             throw new BlockChainCoreException("新增节点，节点的端口不能为空");
         }
 
-        Node localNode = nodeService.queryNode(request.getIp(),request.getPort());
+        Node localNode = nodeService.queryNode(new SimpleNode(ip,port));
         if(localNode != null){
             return;
         }
