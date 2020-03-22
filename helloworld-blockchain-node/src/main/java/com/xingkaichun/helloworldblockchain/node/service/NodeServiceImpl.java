@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class NodeServiceImpl implements NodeService {
 
-    @Value("${nodeserver.errorConnectionTimesRemoveThreshold}")
+    @Value("${node.errorConnectionTimesRemoveThreshold}")
     private int errorConnectionTimesRemoveThreshold;
 
     @Autowired

@@ -36,13 +36,13 @@ public class TimerService {
     @Autowired
     private BlockchainNodeClientService blockchainNodeClientService;
 
-    @Value("${nodeserver.searchNewNodeTimeInterval}")
+    @Value("${node.searchNewNodeTimeInterval}")
     private long searchNewNodeTimeInterval;
 
-    @Value("${nodeserver.searchNewBlocksTimeInterval}")
+    @Value("${node.searchNewBlocksTimeInterval}")
     private long searchNewBlocksTimeInterval;
 
-    @Value("${nodeserver.checkLocalBlockChainHeightIsHighTimeInterval}")
+    @Value("${node.checkLocalBlockChainHeightIsHighTimeInterval}")
     private long checkLocalBlockChainHeightIsHighTimeInterval;
 
     @Autowired

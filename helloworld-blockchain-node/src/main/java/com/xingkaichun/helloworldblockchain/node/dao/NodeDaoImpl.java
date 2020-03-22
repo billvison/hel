@@ -19,7 +19,7 @@ public class NodeDaoImpl implements NodeDao {
 
     @Value("${blockchainDataPath}")
     protected String blockchainDataPath;
-    @Value("${nodeserver.seedNodes}")
+    @Value("${node.seedNodes}")
     private String seedNodes;
 
     private static final String NODE_INFO_DATABASE_DIRECT_NAME = "NodeInfoDatabase";

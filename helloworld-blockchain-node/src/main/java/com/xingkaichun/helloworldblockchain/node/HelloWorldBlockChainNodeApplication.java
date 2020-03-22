@@ -5,7 +5,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCoreFactory;
+import com.xingkaichun.helloworldblockchain.node.service.ConfigurationService;
+import com.xingkaichun.helloworldblockchain.node.timer.BlockchainBranchHandler;
+import com.xingkaichun.helloworldblockchain.node.timer.InitUserHandler;
+import com.xingkaichun.helloworldblockchain.node.timer.InitWalletHandler;
 import com.xingkaichun.helloworldblockchain.node.timer.TimerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,9 +26,10 @@ import java.security.Security;
 public class HelloWorldBlockChainNodeApplication {
 
 	@Value("${blockchainDataPath}")
-	protected String blockchainDataPath;
-	@Value("${miner.minerAddress}")
-	protected String minerAddress;
+	private String blockchainDataPath;
+
+	@Autowired
+	private ConfigurationService configurationService;
 
 
 	public static void main(String[] args) throws Exception {
@@ -32,8 +38,14 @@ public class HelloWorldBlockChainNodeApplication {
 	}
 
 	@Bean
-	public BlockChainCore buildBlockChainCore() throws Exception {
-		BlockChainCore blockChainCore = new BlockChainCoreFactory().createBlockChainCore(blockchainDataPath,minerAddress);
+	public InitWalletHandler walletHandler(){
+		InitWalletHandler initWalletHandler = new InitWalletHandler();
+		return initWalletHandler;
+	}
+
+	@Bean
+	public BlockChainCore buildBlockChainCore(InitWalletHandler initWalletHandler) throws Exception {
+		BlockChainCore blockChainCore = new BlockChainCoreFactory().createBlockChainCore(blockchainDataPath,configurationService.getMinerAddress());
 		blockChainCore.getMiner().deactive();
 		blockChainCore.getSynchronizer().deactive();
 		new Thread(()->{
@@ -51,6 +63,19 @@ public class HelloWorldBlockChainNodeApplication {
 		TimerService timerService = new TimerService();
 		return timerService;
 	}
+
+	@Bean
+	public BlockchainBranchHandler blockchainBranchHandler(){
+		BlockchainBranchHandler blockchainBranchHandler = new BlockchainBranchHandler();
+		return blockchainBranchHandler;
+	}
+
+	@Bean
+	public InitUserHandler initUserHandler(){
+		InitUserHandler initUserHandler = new InitUserHandler();
+		return initUserHandler;
+	}
+
 
 	@Bean
 	public Gson buildGson(){

@@ -4,11 +4,15 @@ import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.dto.WalletDTO;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryBlockchainBranchRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.QueryBlockchainBranchResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.BlockChainApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.*;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.node.service.BlockChainBranchService;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.node.service.NodeService;
 import org.slf4j.Logger;
@@ -36,6 +40,9 @@ public class BlockChainBrowserController {
 
     @Autowired
     private NodeService nodeService;
+
+    @Autowired
+    private BlockChainBranchService blockChainBranchService;
 
    /**
      * 生成钱包(公钥、私钥、地址)
@@ -199,6 +206,25 @@ public class BlockChainBrowserController {
             return ServiceResult.createSuccessServiceResult("成功获取区块",response);
         } catch (Exception e){
             String message = "查询获取失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 获取当前区块链分支
+     */
+    @ResponseBody
+    @RequestMapping(value = BlockChainApiRoute.QUERY_BLOCKCHAINBRANCH,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryBlockchainBranchResponse> queryBlockchainBranch(@RequestBody QueryBlockchainBranchRequest request){
+        try {
+            List<BlockchainBranchBlockDto> blockList = blockChainBranchService.queryBlockchainBranch();
+
+            QueryBlockchainBranchResponse response = new QueryBlockchainBranchResponse();
+            response.setBlockList(blockList);
+            return ServiceResult.createSuccessServiceResult("成功获取当前区块链分支",response);
+        } catch (Exception e){
+            String message = "获取当前区块链分支失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

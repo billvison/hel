@@ -3,8 +3,19 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.AdminConsoleApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.*;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.UpdateBlockchainBranchRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.UpdateBlockchainBranchResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.node.dto.user.request.NewUserRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.QueryMinerAddressRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.ResetMinerAddressRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.user.response.NewUserResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.QueryMinerAddressResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.ResetMinerAddressResponse;
 import com.xingkaichun.helloworldblockchain.node.service.AdminConsoleService;
+import com.xingkaichun.helloworldblockchain.node.service.BlockChainBranchService;
+import com.xingkaichun.helloworldblockchain.node.service.ConfigurationService;
+import com.xingkaichun.helloworldblockchain.node.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +37,14 @@ public class AdminConsoleController {
     @Autowired
     private AdminConsoleService adminConsoleService;
 
+    @Autowired
+    private BlockChainBranchService blockChainBranchService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ConfigurationService configurationService;
     /**
      * 矿工是否激活
      */
@@ -147,6 +166,75 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("新增节点成功",response);
         } catch (Exception e){
             String message = "新增节点失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 更换当前区块链分支
+     */
+    @ResponseBody
+    @RequestMapping(value = AdminConsoleApiRoute.UPDATE_BLOCKCHAINBRANCH,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<UpdateBlockchainBranchResponse> updateBranchchainBranch(@RequestBody UpdateBlockchainBranchRequest request){
+        try {
+            blockChainBranchService.updateBranchchainBranch(request.getBlockList());
+            UpdateBlockchainBranchResponse response = new UpdateBlockchainBranchResponse();
+            return ServiceResult.createSuccessServiceResult("成功更换当前区块链分支",response);
+        } catch (Exception e){
+            String message = "更换当前区块链分支失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 重新创建系统管理员用户
+     */
+    @ResponseBody
+    @RequestMapping(value = AdminConsoleApiRoute.NEW_USER,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<NewUserResponse> newUser(@RequestBody NewUserRequest request){
+        try {
+            userService.newUser(request.getUserDto());
+            NewUserResponse response = new NewUserResponse();
+            return ServiceResult.createSuccessServiceResult("新增用户成功",response);
+        } catch (Exception e){
+            String message = "新增用户失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 查询矿工的地址
+     */
+    @ResponseBody
+    @RequestMapping(value = AdminConsoleApiRoute.QUERY_MINER_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryMinerAddressResponse> queryMinerAddress(@RequestBody QueryMinerAddressRequest request){
+        try {
+            String minerAddress = configurationService.getMinerAddress();
+            QueryMinerAddressResponse response = new QueryMinerAddressResponse();
+            response.setMinerAddress(minerAddress);
+            return ServiceResult.createSuccessServiceResult("查询矿工的地址成功",response);
+        } catch (Exception e){
+            String message = "查询矿工的地址失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 重置矿工的地址
+     */
+    @ResponseBody
+    @RequestMapping(value = AdminConsoleApiRoute.RESET_MINER_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<ResetMinerAddressResponse> resetMinerAddress(@RequestBody ResetMinerAddressRequest request){
+        try {
+            configurationService.writeMinerAddress(request.getMinerAddress());
+            ResetMinerAddressResponse response = new ResetMinerAddressResponse();
+            return ServiceResult.createSuccessServiceResult("重置矿工的地址成功，配置将在下次重启应用后生效！",response);
+        } catch (Exception e){
+            String message = "重置矿工的地址失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
