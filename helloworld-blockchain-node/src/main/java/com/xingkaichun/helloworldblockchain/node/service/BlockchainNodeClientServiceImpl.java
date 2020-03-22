@@ -9,14 +9,8 @@ import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.NodeServerApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request.AddOrUpdateNodeRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request.PingRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request.QueryBlockHashByBlockHeightRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request.ReceiveTransactionRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.AddOrUpdateNodeResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockHashByBlockHeightResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.ReceiveTransactionResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request.*;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.*;
 import com.xingkaichun.helloworldblockchain.node.util.NetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,6 +105,29 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
             String html = NetUtil.getHtml(url,request);
             Type jsonType = new TypeToken<ServiceResult<QueryBlockHashByBlockHeightResponse>>() {}.getType();
             ServiceResult<QueryBlockHashByBlockHeightResponse> serviceResult = gson.fromJson(html,jsonType);
+            if(ServiceResult.isSuccess(serviceResult)){
+                return serviceResult;
+            } else {
+                return ServiceResult.createFailServiceResult(serviceResult.getMessage());
+            }
+        } catch (IOException e) {
+            logger.info(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
+            return ServiceResult.createFailServiceResult(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()));
+        } catch (Exception e) {
+            logger.error(String.format("将本地区块链高度单播给节点[%s:%d]出现异常",node.getIp(),node.getPort()),e);
+            return ServiceResult.createFailServiceResult(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()));
+        }
+    }
+
+    @Override
+    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(Node node, int blockHeight) {
+        try {
+            String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeServerApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT);
+            QueryBlockDtoByBlockHeightRequest request = new QueryBlockDtoByBlockHeightRequest();
+            request.setBlockHeight(blockHeight);
+            String html = NetUtil.getHtml(url,request);
+            Type jsonType = new TypeToken<ServiceResult<QueryBlockDtoByBlockHeightResponse>>() {}.getType();
+            ServiceResult<QueryBlockDtoByBlockHeightResponse> serviceResult = gson.fromJson(html,jsonType);
             if(ServiceResult.isSuccess(serviceResult)){
                 return serviceResult;
             } else {

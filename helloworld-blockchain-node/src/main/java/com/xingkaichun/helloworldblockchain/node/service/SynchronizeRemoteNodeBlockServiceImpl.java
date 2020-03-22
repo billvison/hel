@@ -1,7 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Synchronizer;
@@ -12,20 +11,15 @@ import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.node.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.NodeServerApiRoute;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request.QueryBlockDtoByBlockHeightRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockDtoByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockHashByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.node.timer.BlockchainBranchHandler;
-import com.xingkaichun.helloworldblockchain.node.util.NetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.List;
 
 @Service
@@ -232,26 +226,13 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
             if(localBlockDTO != null){
                 return localBlockDTO;
             }
-            return getRemoteBlockDtoByBlockHeight(node,blockHeight);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private BlockDTO getRemoteBlockDtoByBlockHeight(Node node, int blockHeight) {
-        try {
-            String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeServerApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT);
-            QueryBlockDtoByBlockHeightRequest request = new QueryBlockDtoByBlockHeightRequest();
-            request.setBlockHeight(blockHeight);
-            String html = NetUtil.getHtml(url,request);
-            Type jsonType = new TypeToken<ServiceResult<QueryBlockDtoByBlockHeightResponse>>() {}.getType();
-            ServiceResult<QueryBlockDtoByBlockHeightResponse> responseServiceResult = gson.fromJson(html,jsonType);
-            if(responseServiceResult == null){
+            ServiceResult<QueryBlockDtoByBlockHeightResponse> blockDtoServiceResult = blockchainNodeClientService.queryBlockDtoByBlockHeight(node,blockHeight);
+            if(!ServiceResult.isSuccess(blockDtoServiceResult)){
                 return null;
             }
-            return responseServiceResult.getResult().getBlockDTO();
-        } catch (IOException e) {
+            return blockDtoServiceResult.getResult().getBlockDTO();
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

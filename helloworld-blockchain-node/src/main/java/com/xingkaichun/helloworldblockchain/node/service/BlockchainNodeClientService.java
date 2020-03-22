@@ -6,6 +6,7 @@ import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockDtoByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockHashByBlockHeightResponse;
 
 public interface BlockchainNodeClientService {
@@ -25,5 +26,14 @@ public interface BlockchainNodeClientService {
      */
     ServiceResult<EmptyResponse> unicastLocalBlockChainHeight(SimpleNode node, int localBlockChainHeight) ;
 
+    /**
+     * 根据区块高度，获取对应的区块hash
+     */
     ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(Node node, int blockHeight);
+
+    /**
+     * 根据区块高度，获取对应的区块
+     */
+    ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(Node node, int blockHeight) ;
+
 }
