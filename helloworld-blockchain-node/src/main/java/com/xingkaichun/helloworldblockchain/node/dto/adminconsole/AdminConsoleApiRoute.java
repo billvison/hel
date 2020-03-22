@@ -11,6 +11,8 @@ public class AdminConsoleApiRoute {
     public static final String DEACTIVE_SYNCHRONIZER = "/Api/AdminConsole/DeactiveSynchronizer";
 
     public static final String ADD_NODE = "/Api/AdminConsole/AddNode";
+    public static final String UPDATE_NODE = "/Api/AdminConsole/UpdateNode";
+
     public static final String UPDATE_BLOCKCHAINBRANCH = "/Api/AdminConsole/UpdateBranchchainBranch";
     public static final String NEW_USER = "/Api/AdminConsole/NewUser";
     public static final String QUERY_MINER_ADDRESS = "/Api/AdminConsole/QueryMinerAddress";

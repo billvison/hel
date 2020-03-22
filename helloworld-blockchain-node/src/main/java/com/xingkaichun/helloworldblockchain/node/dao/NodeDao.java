@@ -1,33 +1,38 @@
 package com.xingkaichun.helloworldblockchain.node.dao;
 
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.node.model.NodeEntity;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Mapper
+@Component
 public interface NodeDao {
 
     /**
      * 查询节点
      */
-    Node queryNode(String ip, int port);
+    NodeEntity queryNode(SimpleNode simpleNode);
     /**
-     * 获取所有节点
+     * 获取所有未分叉节点
      */
-    List<Node> queryAllNodeList();
+    List<NodeEntity> queryAllNoForkNodeList();
     /**
-     * 获取所有活着的节点
+     * 获取所有活着的、未分叉节点
      */
-    List<Node> queryAliveNodes();
+    List<NodeEntity> queryAllNoForkAliveNodeList();
     /**
      * 添加节点
      */
-    void addNode(Node node);
+    void addNode(NodeEntity node);
     /**
      * 更新节点信息
      */
-    int updateNode(Node node);
+    int updateNode(NodeEntity node);
     /**
      * 删除节点
      */
-    boolean deleteNode(String ip, int port);
+    boolean deleteNode(SimpleNode simpleNode);
 }

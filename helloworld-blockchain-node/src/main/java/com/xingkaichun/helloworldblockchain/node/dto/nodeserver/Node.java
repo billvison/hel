@@ -8,4 +8,5 @@ public class Node extends SimpleNode{
     private int blockChainHeight;
     private boolean isNodeAvailable;
     private int errorConnectionTimes;
+    private boolean fork;
 }

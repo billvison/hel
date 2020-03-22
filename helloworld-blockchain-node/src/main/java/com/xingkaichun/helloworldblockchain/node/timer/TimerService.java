@@ -100,7 +100,7 @@ public class TimerService {
      */
     public void searchNewNodes() {
         //TODO 性能调整，并发
-        List<Node> nodes = nodeService.queryNodes();
+        List<Node> nodes = nodeService.queryAllNoForkNodeList();
         for(Node node:nodes){
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
             boolean isPingSuccess = ServiceResult.isSuccess(pingResponseServiceResult);
@@ -123,7 +123,7 @@ public class TimerService {
      * 发现自己的区块链高度比全网节点都要高，则广播自己的区块高度
      */
     private void broadcastLocalBlcokChainHeight() throws Exception {
-        List<Node> nodes = nodeService.queryAliveNodes();
+        List<Node> nodes = nodeService.queryAllNoForkAliveNodeList();
         if(nodes == null || nodes.size()==0){
             return;
         }
@@ -166,7 +166,7 @@ public class TimerService {
      * 搜索新的区块，并同步这些区块到本地区块链系统
      */
     private void searchNewBlocks() throws Exception {
-        List<Node> nodes = nodeService.queryAliveNodes();
+        List<Node> nodes = nodeService.queryAllNoForkAliveNodeList();
         if(nodes == null || nodes.size()==0){
             return;
         }

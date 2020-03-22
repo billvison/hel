@@ -74,7 +74,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     public SubmitNormalTransactionResponse sumiteTransaction(NormalTransactionDto normalTransactionDto) throws Exception {
         TransactionDTO transactionDTO = classCast(normalTransactionDto);
         blockChainCore.getMiner().getMinerTransactionDtoDataBase().insertTransactionDTO(transactionDTO);
-        List<Node> nodes = nodeService.queryAliveNodes();
+        List<Node> nodes = nodeService.queryAllNoForkAliveNodeList();
 
         List<SubmitNormalTransactionResponse.Node> successSubmitNode = new ArrayList<>();
         List<SubmitNormalTransactionResponse.Node> failSubmitNode = new ArrayList<>();

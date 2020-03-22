@@ -46,7 +46,7 @@ public class NodeServerController {
     @RequestMapping(value = NodeServerApiRoute.PING,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<PingResponse> ping(HttpServletRequest httpServletRequest, @RequestBody PingRequest request){
         try {
-            List<Node> nodeList = nodeService.queryNodes();
+            List<Node> nodeList = nodeService.queryAllNoForkNodeList();
             int blockChainHeight = blockChainCoreService.queryBlockChainHeight();
 
             //将ping的来路作为区块链节点

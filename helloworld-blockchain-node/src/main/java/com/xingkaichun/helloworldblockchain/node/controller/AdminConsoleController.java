@@ -3,19 +3,10 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.AdminConsoleApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.*;
-import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.UpdateBlockchainBranchRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.UpdateBlockchainBranchResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.user.request.NewUserRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.QueryMinerAddressRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.ResetMinerAddressRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.user.response.NewUserResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.QueryMinerAddressResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.ResetMinerAddressResponse;
-import com.xingkaichun.helloworldblockchain.node.service.AdminConsoleService;
-import com.xingkaichun.helloworldblockchain.node.service.BlockChainBranchService;
-import com.xingkaichun.helloworldblockchain.node.service.ConfigurationService;
-import com.xingkaichun.helloworldblockchain.node.service.UserService;
+import com.xingkaichun.helloworldblockchain.node.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +36,10 @@ public class AdminConsoleController {
 
     @Autowired
     private ConfigurationService configurationService;
+
+    @Autowired
+    private NodeService nodeService;
+
     /**
      * 矿工是否激活
      */
@@ -235,6 +230,23 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("重置矿工的地址成功，配置将在下次重启应用后生效！",response);
         } catch (Exception e){
             String message = "重置矿工的地址失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 更新节点信息
+     */
+    @ResponseBody
+    @RequestMapping(value = AdminConsoleApiRoute.UPDATE_NODE,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<UpdateNodeResponse> updateNode(@RequestBody UpdateNodeRequest request){
+        try {
+            nodeService.addOrUpdateNode(request.getNode());
+            UpdateNodeResponse response = new UpdateNodeResponse();
+            return ServiceResult.createSuccessServiceResult("更新节点信息成功",response);
+        } catch (Exception e){
+            String message = "更新节点信息失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

@@ -14,9 +14,10 @@ import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.NodeServerApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request.QueryBlockDtoByBlockHeightRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request.QueryBlockHashByBlockHeightRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockDtoByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockHashByBlockHeightResponse;
+import com.xingkaichun.helloworldblockchain.node.timer.BlockchainBranchHandler;
 import com.xingkaichun.helloworldblockchain.node.util.NetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,14 +40,29 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     private BlockChainCore blockChainCore;
 
     @Autowired
+    private NodeService nodeService;
+
+    @Autowired
+    private BlockchainBranchHandler blockchainBranchHandler;
+
+    @Autowired
+    private BlockchainNodeClientService blockchainNodeClientService;
+
+    @Autowired
     private Gson gson;
 
     @Override
     public void synchronizeRemoteNodeBlock(Node node) throws Exception {
-
+        
         BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
         Synchronizer synchronizer = blockChainCore.getSynchronizer();
         SynchronizerDataBase synchronizerDataBase = synchronizer.getSynchronizerDataBase();
+
+        if(isFork(node)){
+            forkNodeHandler(node,synchronizerDataBase);
+            return;
+        }
+
         String nodeId = buildNodeId(node);
         //这里直接清除老旧的数据，这里希望同步的操作可以在进程没有退出之前完成。
         synchronizerDataBase.clear(nodeId);
@@ -62,7 +78,15 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
             fork = false;
         } else {
             localBlockChainHeight = tailBlock.getHeight();
-            String blockHash = getBlockHashByBlockHeight(node,localBlockChainHeight);
+            ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeightResponseServiceResult = blockchainNodeClientService.queryBlockHashByBlockHeight(node,localBlockChainHeight);
+            if(!ServiceResult.isSuccess(queryBlockHashByBlockHeightResponseServiceResult)){
+                return;
+            }
+            String blockHash = queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash();
+            if(blockchainBranchHandler.isFork(localBlockChainHeight,blockHash)){
+                forkNodeHandler(node,synchronizerDataBase);
+                return;
+            }
             //远程节点的高度没有本地大
             if(blockHash == null || "".equals(blockHash)){
                 return;
@@ -86,11 +110,16 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                     break;
                 }
                 if(localBlockChainHeight-tempBlockHeight>rollBlockSizeAllow){
-                    return;//这里表明真的分叉区块个数过多了，区块链协议不支持同步了。
+                    forkNodeHandler(node,synchronizerDataBase);
+                    return;
                 }
                 BlockDTO blockDTO = getBlockDtoByBlockHeight(node,tempBlockHeight);
                 if(blockDTO == null){
                     break;
+                }
+                if(blockchainBranchHandler.isFork(tempBlockHeight,blockDTO.getHash())){
+                    forkNodeHandler(node,synchronizerDataBase);
+                    return;
                 }
                 Block localBlock = blockChainDataBase.findBlockByBlockHeight(tempBlockHeight);
                 if(localBlock.getHash().equals(blockDTO.getHash())){
@@ -109,6 +138,10 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 if(blockDTO == null){
                     break;
                 }
+                if(blockchainBranchHandler.isFork(tempBlockHeight,blockDTO.getHash())){
+                    forkNodeHandler(node,synchronizerDataBase);
+                    return;
+                }
                 synchronizerDataBase.addBlockDTO(nodeId,blockDTO);
                 tempBlockHeight++;
                 if(tempBlockHeight-localBlockChainHeight>synchronizationBlockSize){
@@ -123,6 +156,10 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 BlockDTO blockDTO = getBlockDtoByBlockHeight(node,tempBlockHeight);
                 if(blockDTO == null){
                     synchronizerDataBase.clear(nodeId);
+                    return;
+                }
+                if(blockchainBranchHandler.isFork(tempBlockHeight,blockDTO.getHash())){
+                    forkNodeHandler(node,synchronizerDataBase);
                     return;
                 }
                 Block block = DtoUtils.classCast(blockChainDataBase,blockDTO);
@@ -156,25 +193,37 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
         }
     }
 
-    private String buildNodeId(Node node) {
-        return node.getIp()+":"+node.getPort();
+    private boolean isFork(Node node) {
+        ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
+        if(!ServiceResult.isSuccess(pingResponseServiceResult)){
+            return false;
+        }
+        int blockChainHeight = pingResponseServiceResult.getResult().getBlockChainHeight();
+        if(blockChainHeight <= 0){
+            return false;
+        }
+        int nearBlockHeight = blockchainBranchHandler.getNearBlockHeight(blockChainHeight);
+        if(nearBlockHeight <= 0){
+            return false;
+        }
+        ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeightResponseServiceResult = blockchainNodeClientService.queryBlockHashByBlockHeight(node,nearBlockHeight);
+        if(!ServiceResult.isSuccess(queryBlockHashByBlockHeightResponseServiceResult)){
+            return false;
+        }
+        return blockchainBranchHandler.isFork(nearBlockHeight,queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash());
     }
 
-    private String getBlockHashByBlockHeight(Node node, int blockHeight) {
-        try {
-            String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeServerApiRoute.QUERY_BLOCK_HASH_BY_BLOCK_HEIGHT);
-            QueryBlockHashByBlockHeightRequest request = new QueryBlockHashByBlockHeightRequest();
-            request.setBlockHeight(blockHeight);
-            String html = NetUtil.getHtml(url,request);
-            Type jsonType = new TypeToken<ServiceResult<QueryBlockHashByBlockHeightResponse>>() {}.getType();
-            ServiceResult<QueryBlockHashByBlockHeightResponse> responseServiceResult = gson.fromJson(html,jsonType);
-            if(responseServiceResult == null){
-                return null;
-            }
-            return responseServiceResult.getResult().getBlockHash();
-        } catch (IOException e) {
-            return null;
-        }
+
+    /**
+     * 这里表明真的分叉区块个数过多了，形成了新的分叉，区块链协议不支持同步了。
+     */
+    private void forkNodeHandler(Node node,SynchronizerDataBase synchronizerDataBase) throws Exception {
+        synchronizerDataBase.clear(buildNodeId(node));
+        nodeService.setNodeFork(node);
+    }
+
+    private String buildNodeId(Node node) {
+        return node.getIp()+":"+node.getPort();
     }
 
     private BlockDTO getBlockDtoByBlockHeight(Node node, int blockHeight) {

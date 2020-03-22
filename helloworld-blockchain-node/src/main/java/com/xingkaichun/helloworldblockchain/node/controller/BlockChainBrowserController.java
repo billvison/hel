@@ -161,7 +161,7 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.PING,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<PingResponse> ping(@RequestBody PingRequest request){
         try {
-            List<Node> nodeList = nodeService.queryNodes();
+            List<Node> nodeList = nodeService.queryAllNoForkNodeList();
             int blockChainHeight = blockChainCoreService.queryBlockChainHeight();
             PingResponse response = new PingResponse();
             response.setNodeList(nodeList);
