@@ -1,6 +1,7 @@
 package com.xingkaichun.helloworldblockchain.node.timer;
 
 import com.google.gson.Gson;
+import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingResponse;
@@ -35,6 +36,9 @@ public class TimerService {
 
     @Autowired
     private BlockchainNodeClientService blockchainNodeClientService;
+
+    @Autowired
+    private BlockChainCore blockChainCore;
 
     @Value("${node.searchNewNodeTimeInterval}")
     private long searchNewNodeTimeInterval;
@@ -166,6 +170,9 @@ public class TimerService {
      * 搜索新的区块，并同步这些区块到本地区块链系统
      */
     private void searchNewBlocks() throws Exception {
+        if(!blockChainCore.getSynchronizer().isActive()){
+            return;
+        }
         List<Node> nodes = nodeService.queryAllNoForkAliveNodeList();
         if(nodes == null || nodes.size()==0){
             return;
