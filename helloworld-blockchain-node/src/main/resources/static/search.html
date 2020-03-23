@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>区块链网</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="css/common.css" type="text/css">   
+</head>
+<body>
+<div class="nav">
+    <div class="container">
+		<h1>Helloworld</h1>
+		<ul class="nav_menu">
+			<li><a href="index.html">首页</a></li>
+			<li><a href="search.html" class="on">搜索</a></li>
+			<li><a href="transaction.html">交易</a></li>
+			<li><a href="my.html">个人</a></li>
+		</ul>
+	</div>
+</div>
+<div class="container main" style="padding-top: 0;">
+	<div class="search_menu" id="search_menu">
+		<span class="byheight_t on">根据高度搜索</span>
+		<span class="line"></span>
+		<span class="byuuid_t">根据UUID搜索</span>
+		<span class="line"></span>
+		<span class="byaddress_t">根据地址搜索</span>
+		<span class="line"></span>
+		<span class="bymining_t">查询挖矿中的交易</span>
+		<span class="line"></span>
+		<span class="trans_byuuid_t">根据交易UUID查询挖矿中交易</span>
+	</div>
+	<ul class="bitcoin_search byheight">
+		<li><input type="text" id="block_height" class="c_txt" placeholder="请输入区块高度">&nbsp;&nbsp;<button onclick="searchByBlockHeight()" class="btn_important" type="button">搜索</button></li>
+		<li id="search_result"><div></div></li>
+	</ul>
+	<ul class="bitcoin_search byuuid">
+		<li><input type="text" id="trans_id" class="c_txt" placeholder="请输入交易UUID">&nbsp;&nbsp;<button onclick="searchByUuid()" class="btn_important" type="button">搜索</button></li>
+		<li id="trans_result"><div></div></li>
+	</ul>
+	<ul class="bitcoin_search byaddress">
+		<li><input type="text" id="v_address" class="c_txt" placeholder="请输入钱包地址">&nbsp;&nbsp;<button onclick="searchByAddress()" class="btn_important" type="button">搜索</button></li>
+		<li id="address_result"><div></div></li>
+	</ul>
+	<ul class="bitcoin_search bymining">
+		<li><button onclick="queryMiningTrans()" class="btn_important" type="button">查询挖矿中的交易</button></li>
+		<li id="mining_result"></li>
+	</ul>
+	<ul class="bitcoin_search trans_byuuid">
+		<li><input type="text" id="querybyuuid" class="c_txt" placeholder="请输入交易UUID">&nbsp;&nbsp;<button onclick="queryMiningTransByUUID()" class="btn_important" type="button">搜索</button></li>
+		<li id="trans_byuuid_result"><div></div></li>
+	</ul>
+</div>
+
+
+
+</body>
+<script type="text/javascript" src="js/jQuery.js"></script>
+<script type="text/javascript" src="js/template.js"></script>
+<!-- <script type="text/javascript" src="js/common.js"></script> -->
+<script type="text/javascript" src="js/search.js"></script>
+</html>

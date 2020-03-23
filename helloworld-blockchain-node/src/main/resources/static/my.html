@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>区块链网</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="css/common.css" type="text/css">   
+</head>
+<body>
+<div class="nav">
+    <div class="container">
+		<h1>Helloworld</h1>
+		<ul class="nav_menu">
+			<li><a href="index.html">首页</a></li>
+			<li><a href="search.html">搜索</a></li>
+			<li><a href="transaction.html">交易</a></li>
+			<li><a href="my.html" class="on">个人</a></li>
+		</ul>
+	</div>
+</div>
+<div class="container main">
+	<div class="my_miner">
+		<div>
+			挖矿状态：<span id="miner_status"></span>
+			<button id="miner_handle" class="btn_important" onclick="toggleUnits('miner')"></button>		
+		</div>
+		<div>
+			同步状态：<span id="syn_status"></span>
+			<button id="syn_handle" class="btn_important" onclick="toggleUnits('syn')"></button>
+		</div>
+		<div><button class="btn_normal" onclick="addNodes()">添加节点</button></div>
+	</div>
+	<div class="my_wallet">
+		<button class="btn_normal"  id="generate_wallet">生成钱包</button>
+	</div>
+</div>
+
+
+</body>
+<script type="text/javascript" src="js/jQuery.js"></script>
+<script type="text/javascript" src="js/template.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="js/my.js"></script>
+</html>
