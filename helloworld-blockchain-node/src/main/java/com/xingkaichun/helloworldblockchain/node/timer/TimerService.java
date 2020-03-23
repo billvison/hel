@@ -87,6 +87,9 @@ public class TimerService {
         new Thread(()->{
             while (true){
                 try {
+                    if(!blockChainCore.getSynchronizer().isActive()){
+                        return;
+                    }
                     searchNewBlocks();
                 } catch (Exception e) {
                     logger.error("在区块链网络中同步其它节点的区块出现异常",e);
@@ -170,9 +173,6 @@ public class TimerService {
      * 搜索新的区块，并同步这些区块到本地区块链系统
      */
     private void searchNewBlocks() throws Exception {
-        if(!blockChainCore.getSynchronizer().isActive()){
-            return;
-        }
         List<Node> nodes = nodeService.queryAllNoForkAliveNodeList();
         if(nodes == null || nodes.size()==0){
             return;
