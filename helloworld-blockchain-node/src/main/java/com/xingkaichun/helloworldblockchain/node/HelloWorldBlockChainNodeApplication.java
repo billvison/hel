@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.node;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCoreFactory;
@@ -18,6 +19,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.File;
 import java.security.Security;
 
 @Configuration
@@ -25,7 +27,7 @@ import java.security.Security;
 @ServletComponentScan
 public class HelloWorldBlockChainNodeApplication {
 
-	@Value("${blockchainDataPath}")
+	@Value("${blockchainDataPath:}")
 	private String blockchainDataPath;
 
 	@Autowired
@@ -45,6 +47,11 @@ public class HelloWorldBlockChainNodeApplication {
 
 	@Bean
 	public BlockChainCore buildBlockChainCore(InitWalletHandler initWalletHandler) throws Exception {
+		if(Strings.isNullOrEmpty(blockchainDataPath)){
+			String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+			blockchainDataPath = new File(path,"blockchaindata").getAbsolutePath();
+		}
+		System.out.println(String.format("区块链数据存放的路径是%s",blockchainDataPath));
 		BlockChainCore blockChainCore = new BlockChainCoreFactory().createBlockChainCore(blockchainDataPath,configurationService.getMinerAddress());
 		blockChainCore.getMiner().deactive();
 		blockChainCore.getSynchronizer().deactive();

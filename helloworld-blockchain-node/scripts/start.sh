@@ -23,7 +23,7 @@ mkdir logs
 
 case "$1" in
     start)
-        nohup java -Xms256M -Xmx1024M -Xss512k -XX:+HeapDumpOnOutOfMemoryError -XX:+DisableExplicitGC -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+UseCMSCompactAtFullCollection -Xloggc:logs/gc.log -Dloader.path=libs/,config/,front-end/ -Dspring.profiles.active=dev -jar libs/$JAR_NAME &
+        nohup java -Xms256M -Xmx1024M -Xss512k -XX:+HeapDumpOnOutOfMemoryError -XX:+DisableExplicitGC -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+UseCMSCompactAtFullCollection -Xloggc:logs/gc.log -Dloader.path=data/,lib/,conf/,front-end/ -Dspring.profiles.active=dev -jar $JAR_NAME &
 
         echo $! > $program_dir/$PID
         echo "=== start $SERVICE_NAME"
