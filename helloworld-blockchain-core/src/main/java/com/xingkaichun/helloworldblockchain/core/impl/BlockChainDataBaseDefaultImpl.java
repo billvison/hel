@@ -265,6 +265,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //在不同的交易中，UUID(交易的UUID、交易输入UUID、交易输出UUID)不应该被使用两次或是两次以上
         Set<String> uuidSet = new HashSet<>();
         for(Transaction transaction : block.getTransactions()){
+            if(!isTransactionUuidFormatRight(transaction)){
+                return false;
+            }
             String transactionUUID = transaction.getTransactionUUID();
             if(!saveUuid(uuidSet,transactionUUID)){
                 return false;
@@ -282,6 +285,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             List<TransactionOutput> outputs = transaction.getOutputs();
             if(outputs != null){
                 for(TransactionOutput transactionOutput : outputs) {
+                    if(!isTransactionOutputUUIDFormatRight(transaction,transactionOutput)){
+                        return false;
+                    }
                     String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
                     if(!saveUuid(uuidSet,transactionOutputUUID)){
                         return false;
@@ -299,6 +305,27 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             }
         }
         return true;
+    }
+
+    /**
+     * 校验交易输出的UUID的格式是否正确
+     */
+    private boolean isTransactionOutputUUIDFormatRight(Transaction transaction,TransactionOutput transactionOutput) {
+        String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
+        if(!BlockchainUuidUtil.isBlockchainUuidFormatRight(transactionOutputUUID)){
+            return false;
+        }
+        return transactionOutputUUID.startsWith(String.valueOf(transaction.getTimestamp()));
+    }
+    /**
+     * 校验交易的UUID的格式是否正确
+     */
+    private boolean isTransactionUuidFormatRight(Transaction transaction) {
+        String transactionUUID = transaction.getTransactionUUID();
+        if(!BlockchainUuidUtil.isBlockchainUuidFormatRight(transactionUUID)){
+            return false;
+        }
+        return transactionUUID.startsWith(String.valueOf(transaction.getTimestamp()));
     }
 
     public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception{
@@ -735,9 +762,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 否则，将UUID保存进Set，返回true
      */
     private boolean saveUuid(Set<String> uuidSet, String uuid) {
-        if(!UuidUtil.isUuidFormatRight(uuid)) {
-            return false;
-        }
         if(uuidSet.contains(uuid)){
             return false;
         } else {

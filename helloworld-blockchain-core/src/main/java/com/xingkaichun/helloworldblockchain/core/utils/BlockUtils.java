@@ -1,8 +1,8 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.CipherUtil;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.CipherUtil;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class BlockUtils {
      * @param block 区块
      */
     public static String calculateBlockHash(Block block) {
-        return CipherUtil.applySha256(block.getTimestamp()+block.getPreviousHash()+block.getHeight()+block.getMerkleRoot()+block.getNonce());
+        return CipherUtil.applySha256(block.getTimestamp()+block.getPreviousHash()+block.getHeight()+block.getMerkleRoot()+block.getNonce())+block.getTimestamp();
     }
 
     /**

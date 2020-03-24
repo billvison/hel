@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.node.service;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.WalletUtil;
 import com.xingkaichun.helloworldblockchain.dto.*;
 import com.xingkaichun.helloworldblockchain.model.Block;
@@ -23,7 +24,6 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class BlockChainCoreServiceImpl implements BlockChainCoreService {
@@ -100,13 +100,14 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         String privateKey = normalTransactionDto.getPrivateKey();
         ECPublicKey ecPublicKey = KeyUtil.publicFromPrivate((ECPrivateKey) KeyUtil.convertStringPrivateKeyToPrivateKey(new StringPrivateKey(privateKey)));
 
+        long currentTimeMillis = System.currentTimeMillis();
 
         List<NormalTransactionDto.Output> outputs = normalTransactionDto.getOutputs();
         List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();
         if(outputs != null){
             for(NormalTransactionDto.Output o:outputs){
                 TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-                transactionOutputDTO.setTransactionOutputUUID(UUID.randomUUID().toString());
+                transactionOutputDTO.setTransactionOutputUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
                 transactionOutputDTO.setAddress(o.getAddress());
                 transactionOutputDTO.setValue(o.getValue());
                 transactionOutputDtoList.add(transactionOutputDTO);
@@ -122,8 +123,8 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         }
 
         TransactionDTO transactionDTO = new TransactionDTO();
-        transactionDTO.setTimestamp(System.currentTimeMillis());
-        transactionDTO.setTransactionUUID(UUID.randomUUID().toString());
+        transactionDTO.setTimestamp(currentTimeMillis);
+        transactionDTO.setTransactionUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
         transactionDTO.setTransactionType(TransactionTypeDTO.NORMAL);
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);

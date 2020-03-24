@@ -27,7 +27,10 @@ public class Block implements Serializable {
      * 上一个区块的哈希
      */
     private String previousHash;
-    //区块高度
+    /**
+     * 区块高度
+     * 冗余字段，这个值可以由区块链计算出来
+     */
     private Integer height;
     //区块里的交易
     private List<Transaction> transactions;
@@ -51,6 +54,12 @@ public class Block implements Serializable {
      *
      * 如果不对区块产生的hash做约束的话，同一区块链上不同的位置区块可能产生相同的hash，
      * 为了简单，请保证同一区块链上不出现区块hash相同的两个区块。
+     *
+     * 区块哈希，由矿工产生，区块链系统进行唯一性校验、格式校验。
+     * 这个值的构成应当足够简单去验证这个值是否是唯一的。
+     * 当区块数据足够庞大时，用户节点只有最近一部分区块与UTXO数据，这时节点必须也可以校验它的唯一性。
+     * 这里建议它的构成是一串字符+时间戳。
+     * 因为后产生的区块时间戳更大，因此只要校验这个时间戳是否比上一个区块产生的时间戳更大，就可校验它的唯一性。
      */
     private String hash;
 
