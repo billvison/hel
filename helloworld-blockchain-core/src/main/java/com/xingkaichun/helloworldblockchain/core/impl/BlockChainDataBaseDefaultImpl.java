@@ -315,7 +315,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(!BlockchainUuidUtil.isBlockchainUuidFormatRight(transactionOutputUUID)){
             return false;
         }
-        return transactionOutputUUID.startsWith(String.valueOf(transaction.getTimestamp()));
+        return transactionOutputUUID.endsWith(String.valueOf(transaction.getTimestamp()));
     }
     /**
      * 校验交易的UUID的格式是否正确
@@ -325,7 +325,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(!BlockchainUuidUtil.isBlockchainUuidFormatRight(transactionUUID)){
             return false;
         }
-        return transactionUUID.startsWith(String.valueOf(transaction.getTimestamp()));
+        return transactionUUID.endsWith(String.valueOf(transaction.getTimestamp()));
     }
 
     public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception{

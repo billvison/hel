@@ -6,6 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
 import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
 import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.model.ConsensusTarget;
@@ -281,9 +282,11 @@ public class MinerDefaultImpl extends Miner {
 
     @Override
     public Transaction buildMineAwardTransaction(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
+        long currentTimeMillis = System.currentTimeMillis();
+
         Transaction transaction = new Transaction();
-        transaction.setTimestamp(System.currentTimeMillis());
-        transaction.setTransactionUUID(String.valueOf(UUID.randomUUID()));
+        transaction.setTimestamp(currentTimeMillis);
+        transaction.setTransactionUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
         transaction.setTransactionType(TransactionType.MINER);
         transaction.setInputs(null);
 
@@ -291,7 +294,7 @@ public class MinerDefaultImpl extends Miner {
         BigDecimal award = blockChainDataBase.getIncentive().mineAward(blockChainDataBase,block);
 
         TransactionOutput output = new TransactionOutput();
-        output.setTransactionOutputUUID(String.valueOf(UUID.randomUUID()));
+        output.setTransactionOutputUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
         output.setStringAddress(minerStringAddress);
         output.setValue(award);
 
