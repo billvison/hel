@@ -17,6 +17,6 @@ public class TransactionOutputDTO implements Serializable {
     //交易输出的地址
     private String address;
     //交易输出的金额
-    private BigDecimal value;
+    private String value;
 
 }

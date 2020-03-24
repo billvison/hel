@@ -123,10 +123,9 @@ function toggleUnits(para){
 		activeMiner(para);
 	}
 }
-var wallet = {};
 //生成钱包
 function generateWallet(){
-	
+	var wallet = {};
 	$.ajax({
 	    type: "post",
 	    url: url + "/Api/BlockChain/GenerateWalletDTO",
@@ -147,10 +146,11 @@ var generate_wallet = document.getElementById("generate_wallet");
 
 generate_wallet.addEventListener('click',function () {
 	// console.log(generateWallet().privateKey);
+	var wallet = generateWallet();
 	var a = '<h1>注意: 以下内容为自动生成,请妥善保管,丢失一律不负责</h1>'+
-			'<div><b>私钥</b>: '+ generateWallet().privateKey + '</div>' +
-			'<div><b>公钥</b>: '+	generateWallet().publicKey + '</div>' +
-			'<div><b>地址</b>: '+	generateWallet().address + '</div>' ;
+			'<div><b>私钥</b>: '+ wallet.privateKey + '</div>' +
+			'<div><b>公钥</b>: '+	wallet.publicKey + '</div>' +
+			'<div><b>地址</b>: '+	wallet.address + '</div>' ;
     popBox.create_box(a,0);
 });
 

@@ -151,6 +151,9 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public BlockDTO queryBlockDtoByBlockHeight(int blockHeight) throws Exception {
         Block block = blockChainCore.getBlockChainDataBase().findBlockByBlockHeight(blockHeight);
+        if(block == null){
+            return null;
+        }
         BlockDTO blockDTO = DtoUtils.classCast(block);
         return blockDTO;
     }

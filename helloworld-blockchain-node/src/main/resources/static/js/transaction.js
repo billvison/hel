@@ -52,7 +52,6 @@ function getInputVal(){
 //提交到区块链网络
 var url = "";
 function submitTrans() {
-	var transaction={};
     $.ajax({
         type: "post",
         url: url + "/Api/BlockChain/SubmitTransaction",
@@ -67,11 +66,15 @@ function submitTrans() {
         dataType: "json",
         async: false,
         success: function (data) {
+            if(data.serviceCode != 'SUCCESS'){
+                alert(data.message);
+                return;
+            }
+            var transaction={};
             transaction.trans = data.result.transactionDTO.transactionUUID;
-			alert("提交成功,交易UUID为:" + transaction.trans);
+            alert("提交成功,交易UUID为:" + transaction.trans);
         },
         error: function (e) {
         }
     });
-    // return transaction.transactionUUID;
 }

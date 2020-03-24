@@ -31,7 +31,7 @@ public class TranslateTest {
         TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
         transactionOutputDTO.setTransactionOutputUUID(UUID.randomUUID().toString());
         transactionOutputDTO.setAddress("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        transactionOutputDTO.setValue(new BigDecimal("20"));
+        transactionOutputDTO.setValue("20");
         transactionDTO.setOutputs(outputs);
         DtoUtils.signature(transactionDTO,new StringPrivateKey("zzzzzzzzzzzzzzzzzzzz"));
 

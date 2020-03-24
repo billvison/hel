@@ -14,7 +14,6 @@ function getNodeList() {
 			
             node_list.result = data.result;
 			console.log(node_list.result);
-			console.log(node_list.result.nodeList[1].nodeAvailable);
         },
         error: function (e) {
         }

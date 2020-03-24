@@ -3,8 +3,8 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
 import com.xingkaichun.helloworldblockchain.core.TransactionDataBase;
-import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.LevelDBUtil;
+import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.WriteBatch;
@@ -65,10 +65,11 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     public List<TransactionDTO> selectTransactionDtoList(BlockChainDataBase blockChainDataBase,int from, int size) throws Exception {
         synchronized (BlockChainDataBase.class){
             List<TransactionDTO> transactionDtoList = new ArrayList<>();
+            List<byte[]> deleteKeyList = new ArrayList<>();
             DBIterator dbIterator = this.transactionPoolDB.iterator();
             int index = 0;
             while (dbIterator.hasNext()){
-                if(index>=from && from<from+size){
+                if(index>=from && index<from+size){
                     Map.Entry<byte[],byte[]> entry =  dbIterator.next();
                     byte[] byteKey = entry.getKey();
                     byte[] byteTransaction = entry.getValue();
@@ -77,14 +78,16 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
                         transactionDTO = decodeToTransactionDTO(byteTransaction);
                         transactionDtoList.add(transactionDTO);
                     } catch (Exception e) {
-                        //TODO 删除交易
                         logger.error("反序列出错",e);
-                        LevelDBUtil.delete(transactionPoolDB,byteKey);
+                        deleteKeyList.add(byteKey);
                     }
                 } else {
                     break;
                 }
                 index++;
+            }
+            for(byte[] byteKey:deleteKeyList){
+                LevelDBUtil.delete(transactionPoolDB,byteKey);
             }
             return transactionDtoList;
         }

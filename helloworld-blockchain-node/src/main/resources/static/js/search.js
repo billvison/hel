@@ -49,7 +49,11 @@ var url = "";
 //根据区块高度搜索
 function searchByBlockHeight() {	
 	var block_height = $("#block_height").val();
-    var block_dto = {};
+	if(block_height == null || block_height == ''){
+	    alert("请输入区块高度");
+	    return;
+	}
+	var ajaxResult = {};
     $.ajax({
         type: "post",
         url: url + "/Api/BlockChain/QueryBlockDtoByBlockHeight",
@@ -60,27 +64,31 @@ function searchByBlockHeight() {
         dataType: "json",
         async: false,
         success: function (data) {
-            block_dto.result = data.result.blockDTO;
+            ajaxResult = data;
         },
         error: function (e) {
         }
     });
-	if(block_dto.result==null){
-		alert("没有该高度");
-		$("#block_height").val(" ");
-	}
+
+    if(ajaxResult.serviceCode != 'SUCCESS'){
+        alert(ajaxResult.message);
+        return;
+    }
+
+    var block_dto = {};
+    block_dto.result = ajaxResult.result.blockDTO;
     var append_result = document.getElementById("search_result");
     var oDiv = document.createElement("div");
     oDiv.className = "search_result";
     oDiv.innerHTML = "<dl>" +
     				 "<dt>搜索结果</dt>" +
     				 "<dd><b>区块高度:</b>" + block_dto.result.height + "</dd>" +
-    				 "<dd><b>时间戳:</b>" + block_dto.result.timestamp + "</dd>" +
-    				 "<dd><b>前哈希:</b>" + block_dto.result.previousHash + "</dd>" +
-					 "<dd><b>交易:</b>" + getTransData() + "</dd>" +
-					 "<dd><b>merkleRoot:</b>" + block_dto.result.merkleRoot + "</dd>" +
+    				 "<dd><b>区块产生的时间戳:</b>" + block_dto.result.timestamp + "</dd>" +
+    				 "<dd><b>上一个区块的哈希值:</b>" + block_dto.result.previousHash + "</dd>" +
+					 "<dd><b>交易列表:</b>" + getTransData() + "</dd>" +
+					 "<dd><b>默克尔树根:</b>" + block_dto.result.merkleRoot + "</dd>" +
 					 "<dd><b>nonce:</b>" + block_dto.result.nonce + "</dd>" +
-					 "<dd><b>后哈希:</b>" + block_dto.result.hash + "</dd>" +
+					 "<dd><b>当前区块哈希值:</b>" + block_dto.result.hash + "</dd>" +
     				 "</dl>";
 	
 	function getTransData(){
@@ -118,11 +126,16 @@ function searchByBlockHeight() {
 	append_result.removeChild(append_result.childNodes[0]);
 	append_result.appendChild(oDiv);
 }
+
 //根据UUID搜索
 function searchByUuid() {	
 	var trans_uuid = $("#trans_id").val();
+    if(trans_uuid == null || trans_uuid == ''){
+        alert("请输入交易UUID");
+        return;
+    }
 	console.log(trans_uuid,typeof trans_uuid);
-    var trans_dto = {};
+    var ajaxResult = {};
     $.ajax({
         type: "post",
         url: url + "/Api/BlockChain/QueryTransactionByTransactionUUID",
@@ -133,15 +146,18 @@ function searchByUuid() {
         dataType: "json",
         async: false,
         success: function (data) {
-            trans_dto.result = data.result.transactionDTO;
+            ajaxResult = data;
         },
         error: function (e) {
         }
     });
-	if(trans_dto.result==null){
-		alert("没有该UUID");
-		$("#trans_id").val(" ");
-	}
+    if(ajaxResult.serviceCode != 'SUCCESS'){
+        alert(ajaxResult.message);
+        return;
+    }
+
+    var trans_dto = {};
+    trans_dto.result = data.result.transactionDTO;
     var append_result = document.getElementById("trans_result");
     var oDiv = document.createElement("div");
     oDiv.className = "search_result";
@@ -162,7 +178,11 @@ function searchByUuid() {
 //根据地址搜索
 function searchByAddress() {	
 	var wallet_address = $("#v_address").val();
-    var address = {};
+    if(wallet_address == null || wallet_address == ''){
+        alert("请输入钱包地址");
+        return;
+    }
+	var ajaxResult = {};
     $.ajax({
         type: "post",
         url: url + "/Api/BlockChain/QueryTxosByAddress",
@@ -173,7 +193,7 @@ function searchByAddress() {
         dataType: "json",
         async: false,
         success: function (data) {
-            address.result = data.result;
+            ajaxResult = data;
 			console.log(wallet_address,typeof wallet_address);
 			console.log(data.message);
 			console.log(data.result);
@@ -181,6 +201,12 @@ function searchByAddress() {
         error: function (e) {
         }
     });
+    if(ajaxResult.serviceCode != 'SUCCESS'){
+    	alert(ajaxResult.message);
+    	return;
+    }
+    var address = {};
+    address.result = ajaxResult.result;
 	if(address.utxos==null){
 		alert("没有该地址");
 		$("#address").val(" ");
@@ -203,7 +229,7 @@ function searchByAddress() {
 }
 //查询挖矿中的交易
 function queryMiningTrans() {
-	var trans={};
+	var ajaxResult = {};
     $.ajax({
         type: "post",
         url: url + "/Api/BlockChain/QueryMiningTransactionList",
@@ -212,12 +238,22 @@ function queryMiningTrans() {
         dataType: "json",
         async: false,
         success: function (data) {
-			trans.List = data.result.transactionDtoList;  
+            ajaxResult = data;
         },
         error: function (e) {
         }
     });
+    if(ajaxResult.serviceCode != 'SUCCESS'){
+    	alert(ajaxResult.message);
+    	return;
+    }
+    var trans={};
+    trans.List = ajaxResult.result.transactionDtoList;
     var mining_result = document.getElementById("mining_result");
+    if(trans.List == null || trans.List.length ==0){
+        alert("没有查询到正在被挖矿的交易。");
+        return;
+    }
 	for (var i=0; i<trans.List.length; i++) {
 		var oDl = document.createElement("dl");
 		oDl.className = "trans_list";
@@ -252,7 +288,11 @@ function queryMiningTrans() {
 //根据UUID查询挖矿中的交易
 function queryMiningTransByUUID() {
 	var querybyuuid = $("#querybyuuid").val();
-	var trans={};
+    if(querybyuuid == null || querybyuuid == ''){
+        alert("请输入交易UUID");
+        return;
+    }
+	var ajaxResult = {};
     $.ajax({
         type: "post",
         url: url + "/Api/BlockChain/QueryMiningTransactionByTransactionUUID",
@@ -263,12 +303,19 @@ function queryMiningTransByUUID() {
         dataType: "json",
         async: false,
         success: function (data) {
-			trans.List = data.result.transactionDTO;
-			// console.log(trans.List);
+            ajaxResult = data;
+			console.log(data);
         },
         error: function (e) {
         }
     });
+    if(ajaxResult.serviceCode != 'SUCCESS'){
+    	alert(ajaxResult.message);
+    	return;
+    }
+
+    var trans={};
+    trans.List = ajaxResult.result.transactionDTO;
     var trans_byuuid_result = document.getElementById("trans_byuuid_result");
 	var oDl = document.createElement("dl");
 	oDl.className = "trans_list";

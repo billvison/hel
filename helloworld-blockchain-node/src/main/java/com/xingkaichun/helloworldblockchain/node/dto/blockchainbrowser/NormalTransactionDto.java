@@ -15,6 +15,6 @@ public class NormalTransactionDto {
     @Data
     public static class Output{
         private String address;
-        private BigDecimal value;
+        private String value;
     }
 }

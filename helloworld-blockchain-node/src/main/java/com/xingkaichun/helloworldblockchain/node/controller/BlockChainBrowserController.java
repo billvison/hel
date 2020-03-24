@@ -1,13 +1,16 @@
 package com.xingkaichun.helloworldblockchain.node.controller;
 
+import com.google.common.base.Strings;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.NumberUtil;
 import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.dto.WalletDTO;
+import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryBlockchainBranchRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.QueryBlockchainBranchResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.BlockChainApiRoute;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.*;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.PrivateKey;
 import java.util.List;
 
 /**
@@ -69,6 +73,40 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.SUBMIT_TRANSACTION,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<SubmitNormalTransactionResponse> submitTransaction(@RequestBody SubmitNormalTransactionRequest request){
         try {
+            NormalTransactionDto normalTransactionDto = request.getNormalTransactionDto();
+            String privateKey = normalTransactionDto.getPrivateKey();
+            if(Strings.isNullOrEmpty(privateKey)){
+                return ServiceResult.createFailServiceResult("私钥不能为空");
+            }
+            try {
+                KeyUtil.convertStringPrivateKeyToPrivateKey(new StringPrivateKey(privateKey));
+            } catch (Exception e){
+                return ServiceResult.createFailServiceResult("私钥不正确，请检查输入的私钥");
+            }
+            List<String> inputs = normalTransactionDto.getInputs();
+            if(inputs == null || inputs.size() == 0){
+                return ServiceResult.createFailServiceResult("交易输入不能为空。");
+            }
+            for(String input:inputs){
+                if(Strings.isNullOrEmpty(input)){
+                    return ServiceResult.createFailServiceResult("交易输入不能为空。");
+                }
+            }
+            List<NormalTransactionDto.Output> outputs = normalTransactionDto.getOutputs();
+            if(outputs == null || outputs.size() == 0){
+                return ServiceResult.createFailServiceResult("交易输出不能为空。");
+            }
+            for(NormalTransactionDto.Output output:outputs){
+                if(Strings.isNullOrEmpty(output.getAddress())){
+                    return ServiceResult.createFailServiceResult("交易输出的地址不能为空。");
+                }
+                if(Strings.isNullOrEmpty(output.getValue())){
+                    return ServiceResult.createFailServiceResult("交易输出的金额不能为空。");
+                }
+                if(!NumberUtil.isNumber(output.getValue())){
+                    return ServiceResult.createFailServiceResult("交易输出的金额不是一个数值。");
+                }
+            }
             SubmitNormalTransactionResponse response = blockChainCoreService.sumiteTransaction(request.getNormalTransactionDto());
             return ServiceResult.createSuccessServiceResult("提交交易到区块链网络成功",response);
         } catch (Exception e){
@@ -86,7 +124,9 @@ public class BlockChainBrowserController {
     public ServiceResult<QueryTransactionByTransactionUuidResponse> queryTransactionByTransactionUUID(@RequestBody QueryTransactionByTransactionUuidRequest request){
         try {
             TransactionDTO transactionDTO = blockChainCoreService.queryTransactionDtoByTransactionUUID(request.getTransactionUUID());
-
+            if(transactionDTO == null){
+                return ServiceResult.createFailServiceResult(String.format("区块链中不存在交易UUID[%s]，请检查输入的交易UUID。",request.getTransactionUUID()));
+            }
             QueryTransactionByTransactionUuidResponse response = new QueryTransactionByTransactionUuidResponse();
             response.setTransactionDTO(transactionDTO);
             return ServiceResult.createSuccessServiceResult("根据交易UUID查询交易成功",response);
@@ -105,6 +145,9 @@ public class BlockChainBrowserController {
     public ServiceResult<QueryMiningTransactionByTransactionUuidResponse> queryMiningTransactionByTransactionUUID(@RequestBody QueryMiningTransactionByTransactionUuidRequest request){
         try {
             TransactionDTO transactionDTO = blockChainCoreService.queryMiningTransactionDtoByTransactionUUID(request.getTransactionUUID());
+            if(transactionDTO == null){
+                return ServiceResult.createFailServiceResult(String.format("交易UUID[%s]不是正在被挖矿的交易。",request.getTransactionUUID()));
+            }
 
             QueryMiningTransactionByTransactionUuidResponse response = new QueryMiningTransactionByTransactionUuidResponse();
             response.setTransactionDTO(transactionDTO);
@@ -143,7 +186,9 @@ public class BlockChainBrowserController {
     public ServiceResult<QueryTxosByAddressResponse> queryTxosByAddress(@RequestBody QueryTxosByAddressRequest request){
         try {
             List<TransactionOutput> txoList = blockChainCoreService.queryTxoListByAddress(request.getAddress());
-
+            if(txoList == null){
+                return ServiceResult.createFailServiceResult(String.format("地址[%s]没有对应的交易输出列表。",request.getAddress()));
+            }
             QueryTxosByAddressResponse response = new QueryTxosByAddressResponse();
             response.setUtxos(txoList);
             return ServiceResult.createSuccessServiceResult("根据地址获取未花费交易输出成功",response);
@@ -200,7 +245,9 @@ public class BlockChainBrowserController {
     public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(@RequestBody QueryBlockDtoByBlockHeightRequest request){
         try {
             BlockDTO blockDTO = blockChainCoreService.queryBlockDtoByBlockHeight(request.getBlockHeight());
-
+            if(blockDTO == null){
+                return ServiceResult.createFailServiceResult(String.format("区块链中不存在区块高度[%d]，请检查输入高度。",request.getBlockHeight()));
+            }
             QueryBlockDtoByBlockHeightResponse response = new QueryBlockDtoByBlockHeightResponse();
             response.setBlockDTO(blockDTO);
             return ServiceResult.createSuccessServiceResult("成功获取区块",response);

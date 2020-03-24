@@ -18,6 +18,7 @@ import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionType;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -184,7 +185,7 @@ public class DtoUtils {
         TransactionOutput transactionOutput = new TransactionOutput();
         transactionOutput.setTransactionOutputUUID(transactionOutputDTO.getTransactionOutputUUID());
         transactionOutput.setStringAddress(new StringAddress(transactionOutputDTO.getAddress()));
-        transactionOutput.setValue(transactionOutputDTO.getValue());
+        transactionOutput.setValue(new BigDecimal(transactionOutputDTO.getValue()));
         return transactionOutput;
     }
     /**
@@ -194,7 +195,7 @@ public class DtoUtils {
         TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
         transactionOutputDTO.setTransactionOutputUUID(transactionOutput.getTransactionOutputUUID());
         transactionOutputDTO.setAddress(transactionOutput.getStringAddress().getValue());
-        transactionOutputDTO.setValue(transactionOutput.getValue());
+        transactionOutputDTO.setValue(transactionOutput.getValue().toPlainString());
         return transactionOutputDTO;
     }
 
