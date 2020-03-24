@@ -329,6 +329,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception{
+        //TODO 一定时间内的交易
         if(block != null && block.getTimestamp() <= transaction.getTimestamp()){
             logger.error("交易校验失败：挖矿的时间应当在交易的时间之后。");
             return false;
