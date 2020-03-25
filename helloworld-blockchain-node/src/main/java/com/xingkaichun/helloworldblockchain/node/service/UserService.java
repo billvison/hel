@@ -9,7 +9,9 @@ public interface UserService {
 
     List<UserDto> queryAllUser();
 
+    UserDto queryUserByUserId(int userId);
     UserDto queryUserByUserName(String userName);
 
-    void newUser(UserDto userDto);
+    void newAdminUser(UserDto userDto);
+    void updateAdminUser(UserDto userDto);
 }

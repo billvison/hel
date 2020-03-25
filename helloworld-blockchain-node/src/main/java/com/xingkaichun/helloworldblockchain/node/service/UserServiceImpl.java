@@ -25,6 +25,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto queryUserByUserId(int userId) {
+        UserEntity userEntity = userDao.queryUserByUserId(userId);
+        if(userEntity == null){
+            return null;
+        }
+        UserDto userDto = classCast(userEntity);
+        return userDto;
+    }
+
+    @Override
     public UserDto queryUserByUserName(String userName) {
         UserEntity userEntity = userDao.queryUserByUserName(userName);
         if(userEntity == null){
@@ -36,16 +46,23 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void newUser(UserDto userDto) {
+    public void newAdminUser(UserDto userDto) {
         userDao.deleteAllUser();
         UserEntity userEntity = classCast(userDto);
         userDao.addUser(userEntity);
+    }
+
+    @Override
+    public void updateAdminUser(UserDto userDto) {
+        UserEntity userEntity = classCast(userDto);
+        userDao.updateUser(userEntity);
     }
 
     private UserEntity classCast(UserDto userDto) {
         UserEntity userEntity = new UserEntity();
         userEntity.setPassword(userDto.getPassword());
         userEntity.setUserName(userDto.getUserName());
+        userEntity.setUserId(userDto.getUserId());
         return userEntity;
     }
 
@@ -62,6 +79,7 @@ public class UserServiceImpl implements UserService {
 
     private UserDto classCast(UserEntity userEntity) {
         UserDto userDto = new UserDto();
+        userDto.setUserId(userEntity.getUserId());
         userDto.setPassword(userEntity.getPassword());
         userDto.setUserName(userEntity.getUserName());
         return userDto;

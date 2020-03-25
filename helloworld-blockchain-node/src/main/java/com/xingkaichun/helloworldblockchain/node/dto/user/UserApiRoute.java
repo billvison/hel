@@ -4,5 +4,5 @@ public class UserApiRoute {
 
 
     public static final String LOGIN = "/Api/User/login";
-    public static final String QUERY_LOGIN_INFO = "/Api/User/QueryLoginInfo";
+    public static final String QUERY_LOGIN_USER_INFO = "/Api/User/QueryLoginUserInfo";
 }

@@ -13,6 +13,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     private ConfigurationDao configurationDao;
 
     private static final String MINER_ADDRESS = "MinerAddress" ;
+    private static final String AUTO_SEARCH_NODE = "AutoSearchNode" ;
 
     @Override
     public String getMinerAddress() {
@@ -30,5 +31,19 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         }else {
             configurationDao.addConfiguration(configurationEntity);
         }
+    }
+
+    @Override
+    public boolean autoSearchNode() {
+        String autoSearchNodeValue = configurationDao.getConfiguratioValue(AUTO_SEARCH_NODE);
+        return !Strings.isNullOrEmpty(autoSearchNodeValue) && Boolean.valueOf(autoSearchNodeValue);
+    }
+
+    @Override
+    public void writeAutoSearchNode(boolean autoSearchNode) {
+        ConfigurationEntity configurationEntity = new ConfigurationEntity();
+        configurationEntity.setConfKey(AUTO_SEARCH_NODE);
+        configurationEntity.setConfValue(String.valueOf(autoSearchNode));
+        configurationDao.updateConfiguration(configurationEntity);
     }
 }

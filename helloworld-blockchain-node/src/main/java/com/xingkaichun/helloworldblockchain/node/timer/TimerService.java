@@ -5,10 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingResponse;
-import com.xingkaichun.helloworldblockchain.node.service.BlockChainCoreService;
-import com.xingkaichun.helloworldblockchain.node.service.BlockchainNodeClientService;
-import com.xingkaichun.helloworldblockchain.node.service.NodeService;
-import com.xingkaichun.helloworldblockchain.node.service.SynchronizeRemoteNodeBlockService;
+import com.xingkaichun.helloworldblockchain.node.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +36,9 @@ public class TimerService {
 
     @Autowired
     private BlockChainCore blockChainCore;
+
+    @Autowired
+    private ConfigurationService configurationService;
 
     @Value("${node.searchNewNodeTimeInterval}")
     private long searchNewNodeTimeInterval;
@@ -107,8 +107,14 @@ public class TimerService {
      */
     public void searchNewNodes() {
         //TODO 性能调整，并发
+        if(!configurationService.autoSearchNode()){
+            return;
+        }
         List<Node> nodes = nodeService.queryAllNoForkNodeList();
         for(Node node:nodes){
+            if(!configurationService.autoSearchNode()){
+                return;
+            }
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
             boolean isPingSuccess = ServiceResult.isSuccess(pingResponseServiceResult);
             node.setNodeAvailable(isPingSuccess);

@@ -37,7 +37,7 @@ public class InitUserHandler {
             UserDto userDto = new UserDto();
             userDto.setUserName(userName);
             userDto.setPassword(password);
-            userService.newUser(userDto);
+            userService.newAdminUser(userDto);
 
             FileWriter fileWriter = null;
             try {

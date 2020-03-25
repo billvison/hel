@@ -5,9 +5,9 @@ import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.user.UserApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
 import com.xingkaichun.helloworldblockchain.node.dto.user.request.LoginRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.user.request.QueryLoginInfoRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.user.request.QueryLoginUserInfoRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.user.response.LoginResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.user.response.QueryLoginInfoResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.user.response.QueryLoginUserInfoResponse;
 import com.xingkaichun.helloworldblockchain.node.service.UserService;
 import com.xingkaichun.helloworldblockchain.node.util.SessionUtils;
 import org.slf4j.Logger;
@@ -55,6 +55,7 @@ public class UserController {
             }
             LoginResponse response = new LoginResponse();
             LoginResponse.LoginUserDto loginUserDto = new LoginResponse.LoginUserDto();
+            loginUserDto.setUserId(userDto.getUserId());
             loginUserDto.setUserName(userDto.getUserName());
             response.setUserDto(loginUserDto);
             SessionUtils.saveUser(httpServletRequest,userDto);
@@ -70,15 +71,16 @@ public class UserController {
      * 获取登录信息
      */
     @ResponseBody
-    @RequestMapping(value = UserApiRoute.QUERY_LOGIN_INFO,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryLoginInfoResponse> queryLoginInfo(@RequestBody QueryLoginInfoRequest request, HttpServletRequest httpServletRequest){
+    @RequestMapping(value = UserApiRoute.QUERY_LOGIN_USER_INFO,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryLoginUserInfoResponse> queryLoginUserInfo(@RequestBody QueryLoginUserInfoRequest request, HttpServletRequest httpServletRequest){
         try {
             UserDto userDto = SessionUtils.getUser(httpServletRequest);
             if(userDto == null){
                 return ServiceResult.createFailServiceResult("获取登录信息失败，用户未登录。");
             }
-            QueryLoginInfoResponse response = new QueryLoginInfoResponse();
-            QueryLoginInfoResponse.LoginUserDto loginUserDto = new QueryLoginInfoResponse.LoginUserDto();
+            QueryLoginUserInfoResponse response = new QueryLoginUserInfoResponse();
+            QueryLoginUserInfoResponse.LoginUserDto loginUserDto = new QueryLoginUserInfoResponse.LoginUserDto();
+            loginUserDto.setUserId(userDto.getUserId());
             loginUserDto.setUserName(userDto.getUserName());
             response.setUserDto(loginUserDto);
             return ServiceResult.createSuccessServiceResult("获取登录信息成功",response);

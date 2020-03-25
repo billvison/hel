@@ -4,8 +4,8 @@ import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.AdminConsoleAp
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.*;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.node.dto.user.request.NewUserRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.user.response.NewUserResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.user.request.UpdateAdminUserRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.user.response.UpdateAdminUserResponse;
 import com.xingkaichun.helloworldblockchain.node.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,17 +184,17 @@ public class AdminConsoleController {
     }
 
     /**
-     * 重新创建系统管理员用户
+     * 更新系统管理员用户
      */
     @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.NEW_USER,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<NewUserResponse> newUser(@RequestBody NewUserRequest request){
+    @RequestMapping(value = AdminConsoleApiRoute.UPDATE_ADMIN_USER,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<UpdateAdminUserResponse> updateAdminUserRequest(@RequestBody UpdateAdminUserRequest request){
         try {
-            userService.newUser(request.getUserDto());
-            NewUserResponse response = new NewUserResponse();
-            return ServiceResult.createSuccessServiceResult("新增用户成功",response);
+            userService.updateAdminUser(request.getUserDto());
+            UpdateAdminUserResponse response = new UpdateAdminUserResponse();
+            return ServiceResult.createSuccessServiceResult("更新系统用户成功",response);
         } catch (Exception e){
-            String message = "新增用户失败";
+            String message = "更新系统用户失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
@@ -247,6 +247,41 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("更新节点信息成功",response);
         } catch (Exception e){
             String message = "更新节点信息失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 查询是否允许自动搜索区块链节点
+     */
+    @ResponseBody
+    @RequestMapping(value = AdminConsoleApiRoute.IS_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<IsAutoSearchNodeResponse> isAutoSearchNewNode(@RequestBody IsAutoSearchNodeRequest request){
+        try {
+            boolean autoSearchNode = configurationService.autoSearchNode();
+            IsAutoSearchNodeResponse response = new IsAutoSearchNodeResponse();
+            response.setAutoSearchNewNode(autoSearchNode);
+            return ServiceResult.createSuccessServiceResult("查询是否允许自动搜索区块链节点成功",response);
+        } catch (Exception e){
+            String message = "查询是否允许自动搜索区块链节点失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 设置否允许自动搜索区块链节点开关
+     */
+    @ResponseBody
+    @RequestMapping(value = AdminConsoleApiRoute.SET_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<SetAutoSearchNodeResponse> setAutoSearchNode(@RequestBody SetAutoSearchNodeRequest request){
+        try {
+            configurationService.writeAutoSearchNode(request.isAutoSearchNode());
+            SetAutoSearchNodeResponse response = new SetAutoSearchNodeResponse();
+            return ServiceResult.createSuccessServiceResult("设置否允许自动搜索区块链节点开关成功",response);
+        } catch (Exception e){
+            String message = "设置否允许自动搜索区块链节点开关失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

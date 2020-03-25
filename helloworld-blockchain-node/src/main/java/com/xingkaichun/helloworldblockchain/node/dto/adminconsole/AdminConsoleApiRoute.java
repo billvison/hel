@@ -14,7 +14,9 @@ public class AdminConsoleApiRoute {
     public static final String UPDATE_NODE = "/Api/AdminConsole/UpdateNode";
 
     public static final String UPDATE_BLOCKCHAINBRANCH = "/Api/AdminConsole/UpdateBranchchainBranch";
-    public static final String NEW_USER = "/Api/AdminConsole/NewUser";
+    public static final String UPDATE_ADMIN_USER = "/Api/AdminConsole/UpdateAdminUserRequest";
     public static final String QUERY_MINER_ADDRESS = "/Api/AdminConsole/QueryMinerAddress";
     public static final String SET_MINER_ADDRESS = "/Api/AdminConsole/SetMinerAddress";
+    public static final String IS_AUTO_SEARCH_NODE = "/Api/AdminConsole/IsAutoSearchNode";
+    public static final String SET_AUTO_SEARCH_NODE = "/Api/AdminConsole/SetAutoSearchNode";
 }

@@ -4,28 +4,47 @@
 
     <resultMap id="BaseResultMap" type="com.xingkaichun.helloworldblockchain.node.model.UserEntity" >
         <id column="userName" property="userName" jdbcType="VARCHAR" />
+        <id column="userId" property="userId" jdbcType="INTEGER" />
         <result column="password" property="password" jdbcType="VARCHAR" />
     </resultMap>
 
     <sql id="Base_Column_List" >
-        userName, password
+        userId, userName, password
     </sql>
 
     <select id="queryAllUser" resultMap="BaseResultMap">
-        select * from user
+        select * from User
     </select>
 
     <select id="queryUserByUserName" resultMap="BaseResultMap">
         select *
-        from user where userName = #{userName,jdbcType=VARCHAR}
+        from User where userName = #{userName,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryUserByUserId" resultMap="BaseResultMap">
+        select *
+        from User where userName = #{userId,jdbcType=VARCHAR}
     </select>
 
     <insert id="addUser" parameterType="com.xingkaichun.helloworldblockchain.node.model.UserEntity">
-        INSERT INTO user (userName, password)
+        INSERT INTO User (userName, password)
         VALUES (#{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR})
     </insert>
 
     <delete id="deleteAllUser">
-        delete from user
+        delete from User
     </delete>
+
+    <update id="updateUser" parameterType="com.xingkaichun.helloworldblockchain.node.model.UserEntity">
+        UPDATE User SET
+        <trim suffixOverrides=",">
+            <if test="userName != null and userName != ''">
+                userName = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where userId = #{userId,jdbcType=INTEGER}
+    </update>
 </mapper>

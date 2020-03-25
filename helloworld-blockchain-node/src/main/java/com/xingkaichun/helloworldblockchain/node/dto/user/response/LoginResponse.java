@@ -10,6 +10,7 @@ public class LoginResponse {
 
     @Data
     public static class LoginUserDto {
+        private int userId;
         private String userName;
     }
 }
