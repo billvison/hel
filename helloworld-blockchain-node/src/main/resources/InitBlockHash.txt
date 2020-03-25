@@ -1,6 +1,4 @@
 {
     "blockList":[
-        {"blockHeight":1,"blockHash":"xxxxx"},
-        {"blockHeight":2,"blockHash":"xxxxx"}
     ]
 }
