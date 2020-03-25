@@ -19,9 +19,9 @@ import java.io.IOException;
 /**
  * 初始化钱包
  */
-public class InitWalletHandler {
+public class InitMinerHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(InitWalletHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(InitMinerHandler.class);
 
     @Autowired
     private ConfigurationService configurationService;
@@ -44,7 +44,7 @@ public class InitWalletHandler {
             //将钱包写入到文本 TODO 删除 由管理页面查看
             FileWriter fileWriter = null;
             try {
-                fileWriter = new FileWriter(new File("InitWallet.txt"));
+                fileWriter = new FileWriter(new File("InitMiner.txt"));
                 fileWriter.write(gson.toJson(walletDTO));
                 fileWriter.close();
             } catch (IOException e) {

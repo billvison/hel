@@ -8,8 +8,8 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCoreFactory;
 import com.xingkaichun.helloworldblockchain.node.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.node.timer.BlockchainBranchHandler;
+import com.xingkaichun.helloworldblockchain.node.timer.InitMinerHandler;
 import com.xingkaichun.helloworldblockchain.node.timer.InitUserHandler;
-import com.xingkaichun.helloworldblockchain.node.timer.InitWalletHandler;
 import com.xingkaichun.helloworldblockchain.node.timer.TimerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,14 +39,9 @@ public class HelloWorldBlockChainNodeApplication {
 		SpringApplication.run(HelloWorldBlockChainNodeApplication.class, args);
 	}
 
-	@Bean
-	public InitWalletHandler walletHandler(){
-		InitWalletHandler initWalletHandler = new InitWalletHandler();
-		return initWalletHandler;
-	}
 
 	@Bean
-	public BlockChainCore buildBlockChainCore(InitWalletHandler initWalletHandler) throws Exception {
+	public BlockChainCore buildBlockChainCore(InitMinerHandler initMinerHandler) throws Exception {
 		if(Strings.isNullOrEmpty(blockchainDataPath)){
 			String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
 			blockchainDataPath = new File(path,"blockchaindata").getAbsolutePath();
@@ -82,7 +77,11 @@ public class HelloWorldBlockChainNodeApplication {
 		InitUserHandler initUserHandler = new InitUserHandler();
 		return initUserHandler;
 	}
-
+	@Bean
+	public InitMinerHandler initMinerHandler(){
+		InitMinerHandler initMinerHandler = new InitMinerHandler();
+		return initMinerHandler;
+	}
 
 	@Bean
 	public Gson buildGson(){

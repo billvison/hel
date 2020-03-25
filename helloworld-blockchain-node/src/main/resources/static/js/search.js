@@ -157,7 +157,7 @@ function searchByUuid() {
     }
 
     var trans_dto = {};
-    trans_dto.result = data.result.transactionDTO;
+    trans_dto.result = ajaxResult.result.transactionDTO;
     var append_result = document.getElementById("trans_result");
     var oDiv = document.createElement("div");
     oDiv.className = "search_result";
@@ -207,10 +207,6 @@ function searchByAddress() {
     }
     var address = {};
     address.result = ajaxResult.result;
-	if(address.utxos==null){
-		alert("没有该地址");
-		$("#address").val(" ");
-	}
     var address_result = document.getElementById("address_result");
     var oDiv = document.createElement("div");
 	oDiv.className = "search_result";

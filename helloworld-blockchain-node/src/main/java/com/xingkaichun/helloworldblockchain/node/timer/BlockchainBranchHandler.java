@@ -39,7 +39,7 @@ public class BlockchainBranchHandler {
     private void startThread() throws IOException {
 
         if(!blockChainBranchService.isConfirmBlockchainBranch()){
-            InputStream inputStream = ClassLoader.getSystemResourceAsStream("InitUser.txt");
+            InputStream inputStream = ClassLoader.getSystemResourceAsStream("InitBlockHash.txt");
             String context = CharStreams.toString(new InputStreamReader(inputStream, "UTF-8"));
             Type jsonType = new TypeToken<InitBlockHash>() {}.getType();
             InitBlockHash initBlockHash = gson.fromJson(context,jsonType);
