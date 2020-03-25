@@ -16,5 +16,5 @@ public class AdminConsoleApiRoute {
     public static final String UPDATE_BLOCKCHAINBRANCH = "/Api/AdminConsole/UpdateBranchchainBranch";
     public static final String NEW_USER = "/Api/AdminConsole/NewUser";
     public static final String QUERY_MINER_ADDRESS = "/Api/AdminConsole/QueryMinerAddress";
-    public static final String RESET_MINER_ADDRESS = "/Api/AdminConsole/ResetMinerAddress";
+    public static final String SET_MINER_ADDRESS = "/Api/AdminConsole/SetMinerAddress";
 }

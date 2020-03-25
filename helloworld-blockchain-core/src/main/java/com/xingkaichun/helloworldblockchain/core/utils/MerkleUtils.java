@@ -33,7 +33,7 @@ public class MerkleUtils {
             previousTreeLayer = treeLayer;
         }
 
-        String merkleRoot = (treeLayer.size() == 1) ? treeLayer.get(0) : "";
+        String merkleRoot = (treeLayer.size() == 1) ? CipherUtil.applySha256(treeLayer.get(0)) : "";
         return merkleRoot;
     }
 }

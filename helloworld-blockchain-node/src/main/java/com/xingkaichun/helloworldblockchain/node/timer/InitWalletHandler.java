@@ -41,7 +41,7 @@ public class InitWalletHandler {
             //将钱包的地址当做矿工的地址写入数据库
             configurationService.writeMinerAddress(walletDTO.getAddress());
 
-            //将钱包写入到文本
+            //将钱包写入到文本 TODO 删除 由管理页面查看
             FileWriter fileWriter = null;
             try {
                 fileWriter = new FileWriter(new File("InitWallet.txt"));

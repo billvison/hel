@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
+import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.node.dao.ConfigurationDao;
 import com.xingkaichun.helloworldblockchain.node.model.ConfigurationEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,14 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     @Override
     public void writeMinerAddress(String address) {
+        boolean hasMinerAddress = Strings.isNullOrEmpty(getMinerAddress());
         ConfigurationEntity configurationEntity = new ConfigurationEntity();
         configurationEntity.setConfKey(MINER_ADDRESS);
         configurationEntity.setConfValue(address);
-        configurationDao.addConfiguration(configurationEntity);
+        if(!hasMinerAddress){
+            configurationDao.updateConfiguration(configurationEntity);
+        }else {
+            configurationDao.addConfiguration(configurationEntity);
+        }
     }
 }

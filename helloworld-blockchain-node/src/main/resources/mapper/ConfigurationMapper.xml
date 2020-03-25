@@ -19,4 +19,17 @@
         INSERT INTO Configuration (confKey, confValue)
         VALUES (#{confKey,jdbcType=VARCHAR}, #{confValue,jdbcType=VARCHAR})
     </insert>
+
+    <update id="updateConfiguration" parameterType="com.xingkaichun.helloworldblockchain.node.model.ConfigurationEntity">
+        UPDATE Configuration SET
+        <trim suffixOverrides=",">
+            <if test="confKey != null and confKey != ''">
+                confKey = #{confKey,jdbcType=VARCHAR},
+            </if>
+            <if test="confValue != null and confValue != ''">
+                confValue = #{confValue,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where confKey = #{confKey,jdbcType=VARCHAR}
+    </update>
 </mapper>

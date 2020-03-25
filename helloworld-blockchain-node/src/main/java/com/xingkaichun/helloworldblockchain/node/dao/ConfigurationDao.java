@@ -12,4 +12,6 @@ public interface ConfigurationDao {
     String getConfiguratioValue(@Param("confKey") String confKey);
 
     void addConfiguration(ConfigurationEntity configurationEntity);
+
+    void updateConfiguration(ConfigurationEntity configurationEntity);
 }

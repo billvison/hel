@@ -219,14 +219,14 @@ public class AdminConsoleController {
     }
 
     /**
-     * 重置矿工的地址
+     * 设置矿工地址
      */
     @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.RESET_MINER_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<ResetMinerAddressResponse> resetMinerAddress(@RequestBody ResetMinerAddressRequest request){
+    @RequestMapping(value = AdminConsoleApiRoute.SET_MINER_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<SetMinerAddressResponse> setMinerAddress(@RequestBody SetMinerAddressRequest request){
         try {
             configurationService.writeMinerAddress(request.getMinerAddress());
-            ResetMinerAddressResponse response = new ResetMinerAddressResponse();
+            SetMinerAddressResponse response = new SetMinerAddressResponse();
             return ServiceResult.createSuccessServiceResult("重置矿工的地址成功，配置将在下次重启应用后生效！",response);
         } catch (Exception e){
             String message = "重置矿工的地址失败";
