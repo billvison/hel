@@ -55,4 +55,6 @@ public interface BlockChainCoreService {
     List<TransactionDTO> queryMiningTransactionList() throws Exception;
 
     TransactionDTO queryMiningTransactionDtoByTransactionUUID(String transactionUUID) throws Exception;
+
+    void removeBlocksUtilBlockHeight(int blockHeight) throws Exception;
 }

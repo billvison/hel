@@ -61,7 +61,7 @@ public class BlockchainBranchHandler {
                     logger.error("在区块链网络中搜索新的节点出现异常",e);
                 }
                 try {
-                    Thread.sleep(3600*1000);
+                    Thread.sleep(10*60*1000);
                 } catch (InterruptedException e) {
                 }
             }

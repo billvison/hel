@@ -175,4 +175,9 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         TransactionDTO transactionDTO = blockChainCore.getMiner().getMinerTransactionDtoDataBase().selectTransactionDtoByTransactionUUID(transactionUUID);
         return transactionDTO;
     }
+
+    @Override
+    public void removeBlocksUtilBlockHeight(int blockHeight) throws Exception {
+        blockChainCore.getBlockChainDataBase().removeBlocksUtilBlockHeight(blockHeight);
+    }
 }

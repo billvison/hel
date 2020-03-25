@@ -119,6 +119,27 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             writeLock.unlock();
         }
     }
+
+    @Override
+    public void removeBlocksUtilBlockHeight(int blockHeight) throws Exception {
+        Lock writeLock = readWriteLock.writeLock();
+        writeLock.lock();
+        try{
+            while (true){
+                Block tailBlock = findTailBlock();
+                if(tailBlock == null){
+                    return;
+                }
+                if(tailBlock.getHeight() < blockHeight){
+                    return;
+                }
+                WriteBatch writeBatch = createWriteBatch(tailBlock,BlockChainActionEnum.DELETE_BLOCK);
+                LevelDBUtil.write(blockChainDB,writeBatch);
+            }
+        }finally {
+            writeLock.unlock();
+        }
+    }
     //endregion
 
 

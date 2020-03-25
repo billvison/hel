@@ -46,20 +46,32 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
         if(blockchainBranchBlockEntityList == null || blockchainBranchBlockEntityList.size()==0){
             return;
         }
-        for(BlockchainBranchBlockEntity entity:blockchainBranchBlockEntityList){
+        blockchainBranchBlockEntityList.sort((o1,o2)->{
+            if(o1.getBlockHeight() == o2.getBlockHeight()){
+                return 0;
+            }else if(o1.getBlockHeight() > o2.getBlockHeight()){
+                return 1;
+            }else {
+                return -1;
+            }
+        });
+        for(int i=0;i<blockchainBranchBlockEntityList.size();i++){
+            BlockchainBranchBlockEntity entity = blockchainBranchBlockEntityList.get(i);
             BlockDTO blockDTO = blockChainCoreService.queryBlockDtoByBlockHeight(entity.getBlockHeight());
             if(blockDTO == null){
-                return;
+                continue;
             }
             if(entity.getBlockHash().equals(blockDTO.getHash()) && entity.getBlockHeight()==blockDTO.getHeight()){
                 return;
             }
-            while(true){
-                int blockChainHeight = blockChainCoreService.queryBlockChainHeight();
-                if(blockChainHeight<=0 || blockChainHeight < entity.getBlockHeight()){
-                    break;
-                }
+            int deleteBlockHeight = 0;
+            if(i==0){
+                deleteBlockHeight = 1;
+            }else {
+                deleteBlockHeight = blockchainBranchBlockEntityList.get(i-1).getBlockHeight() + 1;
             }
+            blockChainCoreService.removeBlocksUtilBlockHeight(deleteBlockHeight);
+            return;
         }
     }
 

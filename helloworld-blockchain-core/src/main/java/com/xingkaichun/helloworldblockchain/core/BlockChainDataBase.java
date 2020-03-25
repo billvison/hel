@@ -43,6 +43,11 @@ public abstract class BlockChainDataBase {
      * 删除区块链的尾巴区块(最后一个区块)
      */
     public abstract Block removeTailBlock() throws Exception ;
+
+    /**
+     * 删除区块高度大于等于@blockHeight的的区块
+     */
+    public abstract void removeBlocksUtilBlockHeight(int blockHeight) throws Exception ;
     //endregion
 
     //region 区块链提供的通用方法

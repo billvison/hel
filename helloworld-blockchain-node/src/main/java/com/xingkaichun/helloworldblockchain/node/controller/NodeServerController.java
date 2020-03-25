@@ -8,6 +8,7 @@ import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.*;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.node.service.BlockchainNodeServerService;
+import com.xingkaichun.helloworldblockchain.node.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.node.service.NodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,9 @@ public class NodeServerController {
     @Autowired
     private BlockchainNodeServerService blockchainNodeServerService;
 
+    @Autowired
+    private ConfigurationService configurationService;
+
     /**
      * Ping节点
      */
@@ -50,14 +54,16 @@ public class NodeServerController {
             int blockChainHeight = blockChainCoreService.queryBlockChainHeight();
 
             //将ping的来路作为区块链节点
-            Node node = new Node();
-            String ip = httpServletRequest.getRemoteHost();
-            int port = httpServletRequest.getRemotePort();
-            node.setIp(ip);
-            node.setPort(port);
-            node.setNodeAvailable(true);
-            nodeService.addOrUpdateNode(node);
-            logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,port));
+            if(configurationService.autoSearchNode()){
+                Node node = new Node();
+                String ip = httpServletRequest.getRemoteHost();
+                int port = httpServletRequest.getRemotePort();
+                node.setIp(ip);
+                node.setPort(port);
+                node.setNodeAvailable(true);
+                nodeService.addOrUpdateNode(node);
+                logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,port));
+            }
 
             PingResponse response = new PingResponse();
             response.setNodeList(nodeList);
@@ -85,6 +91,14 @@ public class NodeServerController {
             node.setNodeAvailable(true);
             node.setBlockChainHeight(request.getBlockChainHeight());
             node.setErrorConnectionTimes(0);
+
+            if(!configurationService.autoSearchNode()){
+                Node nodeInDb = nodeService.queryNode(node);
+                if(nodeInDb == null){
+                    return ServiceResult.createSuccessServiceResult("你不是该节点的授信节点。",null);
+                }
+                logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,port));
+            }
 
             nodeService.addOrUpdateNode(node);
             AddOrUpdateNodeResponse response = new AddOrUpdateNodeResponse();

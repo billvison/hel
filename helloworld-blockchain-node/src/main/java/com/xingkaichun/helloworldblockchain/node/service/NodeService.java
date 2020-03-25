@@ -20,7 +20,7 @@ public interface NodeService {
     List<Node> queryAllNoForkAliveNodeList() ;
     
     /**
-     * 新增或者更新节点信息
+     * 新增或者更新节点信息 TODO 职责不单一
      */
     boolean addOrUpdateNode(Node node) ;
     /**
