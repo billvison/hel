@@ -46,26 +46,4 @@ public class AdminConsoleServiceImpl implements AdminConsoleService {
         blockChainCore.getSynchronizer().active();
         return true;
     }
-
-    @Override
-    public void addNode(AddNodeRequest request) {
-        String ip = request.getIp();
-        int port = request.getPort();
-        if(ip == null || "".equals(ip)){
-            throw new BlockChainCoreException("新增节点，节点的ip不能为空");
-        }
-        if(port == 0){
-            throw new BlockChainCoreException("新增节点，节点的端口不能为空");
-        }
-
-        Node localNode = nodeService.queryNode(new SimpleNode(ip,port));
-        if(localNode != null){
-            return;
-        }
-
-        Node node = new Node();
-        node.setIp(ip);
-        node.setPort(port);
-        nodeService.addOrUpdateNode(node);
-    }
 }

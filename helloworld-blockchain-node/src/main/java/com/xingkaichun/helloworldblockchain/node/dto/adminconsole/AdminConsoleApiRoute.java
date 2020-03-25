@@ -12,6 +12,8 @@ public class AdminConsoleApiRoute {
 
     public static final String ADD_NODE = "/Api/AdminConsole/AddNode";
     public static final String UPDATE_NODE = "/Api/AdminConsole/UpdateNode";
+    public static final String DELETE_NODE = "/Api/AdminConsole/DeleteNode";
+    public static final String QUERY_NODE_LIST = "/Api/AdminConsole/QueryNodeList";
 
     public static final String UPDATE_BLOCKCHAINBRANCH = "/Api/AdminConsole/UpdateBranchchainBranch";
     public static final String UPDATE_ADMIN_USER = "/Api/AdminConsole/UpdateAdminUserRequest";

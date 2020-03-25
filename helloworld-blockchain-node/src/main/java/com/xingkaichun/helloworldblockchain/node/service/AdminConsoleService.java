@@ -29,9 +29,4 @@ public interface AdminConsoleService {
      * 恢复同步器
      */
     boolean activeSynchronizer();
-
-    /**
-     * 新增节点
-     */
-    void addNode(AddNodeRequest request);
 }

@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.QueryNodeListRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
 
@@ -31,5 +32,25 @@ public interface NodeService {
     /**
      * 设置节点为分叉节点
      */
-    void setNodeFork(SimpleNode node);
+    void addOrUpdateNodeForkPropertity(SimpleNode node);
+
+    /**
+     * 删除节点
+     */
+    void deleteNode(SimpleNode node);
+
+    /**
+     * 查询节点
+     */
+    List<Node> queryNodeList(QueryNodeListRequest request);
+
+    /**
+     * 新增节点
+     */
+    void addNode(Node node);
+
+    /**
+     * 更新节点
+     */
+    void updateNode(Node node);
 }

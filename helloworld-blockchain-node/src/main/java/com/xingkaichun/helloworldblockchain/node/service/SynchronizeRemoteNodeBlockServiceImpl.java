@@ -213,7 +213,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
      */
     private void forkNodeHandler(Node node,SynchronizerDataBase synchronizerDataBase) throws Exception {
         synchronizerDataBase.clear(buildNodeId(node));
-        nodeService.setNodeFork(node);
+        nodeService.addOrUpdateNodeForkPropertity(node);
     }
 
     private String buildNodeId(Node node) {

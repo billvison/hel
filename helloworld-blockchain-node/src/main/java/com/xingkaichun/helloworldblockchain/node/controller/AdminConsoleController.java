@@ -1,9 +1,11 @@
 package com.xingkaichun.helloworldblockchain.node.controller;
 
+import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.AdminConsoleApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.*;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.user.request.UpdateAdminUserRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.user.response.UpdateAdminUserResponse;
 import com.xingkaichun.helloworldblockchain.node.service.*;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * admin控制台：用于控制本地区块链节点，如激活矿工、停用矿工、同步其它节点数据等。
@@ -149,24 +153,6 @@ public class AdminConsoleController {
     }
 
     /**
-     * 新增节点
-     */
-    @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.ADD_NODE,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<AddNodeResponse> addNode(@RequestBody AddNodeRequest request){
-        try {
-            adminConsoleService.addNode(request);
-            AddNodeResponse response = new AddNodeResponse();
-            response.setAddNodeSuccess(true);
-            return ServiceResult.createSuccessServiceResult("新增节点成功",response);
-        } catch (Exception e){
-            String message = "新增节点失败";
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
-
-    /**
      * 更换当前区块链分支
      */
     @ResponseBody
@@ -235,6 +221,35 @@ public class AdminConsoleController {
         }
     }
 
+
+    /**
+     * 新增节点
+     */
+    @ResponseBody
+    @RequestMapping(value = AdminConsoleApiRoute.ADD_NODE,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<AddNodeResponse> addNode(@RequestBody AddNodeRequest request){
+        try {
+            Node node = request.getNode();
+            if(Strings.isNullOrEmpty(node.getIp())){
+                return ServiceResult.createFailServiceResult("节点IP不能为空");
+            }
+            if(Strings.isNullOrEmpty(node.getIp())){
+                return ServiceResult.createFailServiceResult("节点端口不能为空");
+            }
+            if(nodeService.queryNode(node) != null){
+                return ServiceResult.createFailServiceResult("节点已经存在，不需要重复添加");
+            }
+            nodeService.addNode(node);
+            AddNodeResponse response = new AddNodeResponse();
+            response.setAddNodeSuccess(true);
+            return ServiceResult.createSuccessServiceResult("新增节点成功",response);
+        } catch (Exception e){
+            String message = "新增节点失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
     /**
      * 更新节点信息
      */
@@ -242,11 +257,52 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.UPDATE_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<UpdateNodeResponse> updateNode(@RequestBody UpdateNodeRequest request){
         try {
-            nodeService.addOrUpdateNode(request.getNode());
+            if(request.getNode() == null){
+                return ServiceResult.createFailServiceResult("请填写节点信息");
+            }
+            if(nodeService.queryNode(request.getNode()) == null){
+                return ServiceResult.createFailServiceResult("节点不存在，无法更新");
+            }
+            nodeService.updateNode(request.getNode());
             UpdateNodeResponse response = new UpdateNodeResponse();
             return ServiceResult.createSuccessServiceResult("更新节点信息成功",response);
         } catch (Exception e){
             String message = "更新节点信息失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 删除节点
+     */
+    @ResponseBody
+    @RequestMapping(value = AdminConsoleApiRoute.DELETE_NODE,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<DeleteNodeResponse> deleteNode(@RequestBody DeleteNodeRequest request){
+        try {
+            nodeService.deleteNode(request.getNode());
+            DeleteNodeResponse response = new DeleteNodeResponse();
+            return ServiceResult.createSuccessServiceResult("删除节点成功",response);
+        } catch (Exception e){
+            String message = "删除节点失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 查询节点
+     */
+    @ResponseBody
+    @RequestMapping(value = AdminConsoleApiRoute.QUERY_NODE_LIST,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryNodeListResponse> queryNodeList(@RequestBody QueryNodeListRequest request){
+        try {
+            List<Node> nodeList = nodeService.queryNodeList(request);
+            QueryNodeListResponse response = new QueryNodeListResponse();
+            response.setNodeList(nodeList);
+            return ServiceResult.createSuccessServiceResult("查询节点成功",response);
+        } catch (Exception e){
+            String message = "查询节点失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

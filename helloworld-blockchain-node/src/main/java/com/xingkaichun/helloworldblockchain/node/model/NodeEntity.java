@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class NodeEntity extends SimpleNode{
 
-    private int blockChainHeight;
-    private boolean isNodeAvailable;
-    private int errorConnectionTimes;
-    private boolean fork;
+    private Integer blockChainHeight;
+    private Boolean isNodeAvailable;
+    private Integer errorConnectionTimes;
+    private Boolean fork;
 }

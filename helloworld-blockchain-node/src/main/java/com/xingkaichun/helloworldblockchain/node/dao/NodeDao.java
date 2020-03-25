@@ -35,4 +35,9 @@ public interface NodeDao {
      * 删除节点
      */
     boolean deleteNode(SimpleNode simpleNode);
+
+    /**
+     * 查询所有节点
+     */
+    List<NodeEntity> queryAllNodeList();
 }

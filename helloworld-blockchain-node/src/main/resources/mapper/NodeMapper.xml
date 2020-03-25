@@ -23,6 +23,10 @@
         select * from Node where fork = 0
     </select>
 
+    <select id="queryAllNodeList" resultMap="BaseResultMap">
+        select * from Node
+    </select>
+
     <select id="queryAllNoForkAliveNodeList" resultMap="BaseResultMap">
         select * from Node WHERE isNodeAvailable = 1 and fork = 0
     </select>
@@ -33,8 +37,8 @@
 
     <insert id="addNode" parameterType="com.xingkaichun.helloworldblockchain.node.model.NodeEntity">
         INSERT INTO Node (ip, port, blockChainHeight, isNodeAvailable, errorConnectionTimes, fork)
-        VALUES (#{ip,jdbcType=VARCHAR}, #{port,jdbcType=INTEGER}), #{blockChainHeight,jdbcType=INTEGER})
-        , #{isNodeAvailable,jdbcType=INTEGER}), #{errorConnectionTimes, jdbcType=INTEGER}, #{fork,jdbcType=INTEGER}))
+        VALUES (#{ip,jdbcType=VARCHAR}, #{port,jdbcType=INTEGER}, #{blockChainHeight,jdbcType=INTEGER}
+        , #{isNodeAvailable,jdbcType=INTEGER}, #{errorConnectionTimes, jdbcType=INTEGER}, #{fork,jdbcType=INTEGER})
     </insert>
 
     <update id="updateNode" parameterType="com.xingkaichun.helloworldblockchain.node.model.NodeEntity">
@@ -49,13 +53,13 @@
             <if test="blockChainHeight != null and blockChainHeight != 0">
                 blockChainHeight = #{blockChainHeight,jdbcType=INTEGER},
             </if>
-            <if test="isNodeAvailable != null and isNodeAvailable != 0">
+            <if test="isNodeAvailable != null">
                 isNodeAvailable = #{isNodeAvailable,jdbcType=INTEGER},
             </if>
             <if test="errorConnectionTimes != null and errorConnectionTimes != ''">
                 errorConnectionTimes = #{errorConnectionTimes,jdbcType=INTEGER},
             </if>
-            <if test="fork != null and fork != 0">
+            <if test="fork != null">
                 fork = #{fork,jdbcType=INTEGER},
             </if>
         </trim>

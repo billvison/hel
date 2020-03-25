@@ -117,7 +117,7 @@ public class TimerService {
             }
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
             boolean isPingSuccess = ServiceResult.isSuccess(pingResponseServiceResult);
-            node.setNodeAvailable(isPingSuccess);
+            node.setIsNodeAvailable(isPingSuccess);
             if(isPingSuccess){
                 PingResponse pingResponse = pingResponseServiceResult.getResult();
                 node.setBlockChainHeight(pingResponse.getBlockChainHeight());
@@ -215,7 +215,7 @@ public class TimerService {
         if(localNode == null){
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
             if(ServiceResult.isSuccess(pingResponseServiceResult)){
-                node.setNodeAvailable(true);
+                node.setIsNodeAvailable(true);
                 node.setBlockChainHeight(pingResponseServiceResult.getResult().getBlockChainHeight());
                 node.setErrorConnectionTimes(0);
                 nodeService.addOrUpdateNode(node);

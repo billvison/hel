@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.node.dao.NodeDao;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.QueryNodeListRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
 import com.xingkaichun.helloworldblockchain.node.model.NodeEntity;
@@ -40,14 +41,13 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public boolean addOrUpdateNode(Node node) {
-        if("".equals(node.getIp()) || node.getPort()==0){
-            return false;
-        }
         NodeEntity nodeEntity = nodeDao.queryNode(node);
-        NodeEntity nodeEntityByPass = classCast(node);
         if(nodeEntity == null){
+            fillNodeDefaultValue(node);
+            NodeEntity nodeEntityByPass = classCast(node);
             nodeDao.addNode(nodeEntityByPass);
         } else {
+            NodeEntity nodeEntityByPass = classCast(node);
             nodeDao.updateNode(nodeEntityByPass);
         }
         return true;
@@ -64,24 +64,51 @@ public class NodeServiceImpl implements NodeService {
             nodeDao.deleteNode(simpleNode);
         } else {
             nodeEntity.setErrorConnectionTimes(errorConnectionTimes);
-            nodeEntity.setNodeAvailable(false);
+            nodeEntity.setIsNodeAvailable(false);
             nodeDao.updateNode(nodeEntity);
         }
     }
 
     @Override
-    public void setNodeFork(SimpleNode simpleNode) {
+    public void addOrUpdateNodeForkPropertity(SimpleNode simpleNode) {
         NodeEntity nodeEntity = nodeDao.queryNode(simpleNode);
         if(nodeEntity == null){
-            NodeEntity nodeEntity1 = new NodeEntity();
-            nodeEntity1.setIp(simpleNode.getIp());
-            nodeEntity1.setPort(simpleNode.getPort());
-            nodeEntity1.setFork(true);
+            Node node = new Node();
+            node.setIp(simpleNode.getIp());
+            node.setPort(simpleNode.getPort());
+            node.setFork(true);
+            fillNodeDefaultValue(node);
+            NodeEntity nodeEntity1 = classCast(node);
             nodeDao.addNode(nodeEntity1);
         }else {
             nodeEntity.setFork(true);
             nodeDao.updateNode(nodeEntity);
         }
+    }
+
+    @Override
+    public void deleteNode(SimpleNode simpleNode) {
+        nodeDao.deleteNode(simpleNode);
+    }
+
+    @Override
+    public List<Node> queryNodeList(QueryNodeListRequest request) {
+        List<NodeEntity> nodeEntityList = nodeDao.queryAllNodeList();
+        List<Node> nodeList = classCast(nodeEntityList);
+        return nodeList;
+    }
+
+    @Override
+    public void addNode(Node node) {
+        fillNodeDefaultValue(node);
+        NodeEntity nodeEntityByPass = classCast(node);
+        nodeDao.addNode(nodeEntityByPass);
+    }
+
+    @Override
+    public void updateNode(Node node) {
+        NodeEntity nodeEntit = classCast(node);
+        nodeDao.updateNode(nodeEntit);
     }
 
     @Override
@@ -109,10 +136,10 @@ public class NodeServiceImpl implements NodeService {
         Node node = new Node();
         node.setIp(nodeEntity.getIp());
         node.setPort(nodeEntity.getPort());
-        node.setNodeAvailable(nodeEntity.isNodeAvailable());
+        node.setIsNodeAvailable(nodeEntity.getIsNodeAvailable());
         node.setErrorConnectionTimes(nodeEntity.getErrorConnectionTimes());
         node.setBlockChainHeight(nodeEntity.getBlockChainHeight());
-        node.setFork(nodeEntity.isFork());
+        node.setFork(nodeEntity.getFork());
         return node;
     }
 
@@ -120,10 +147,25 @@ public class NodeServiceImpl implements NodeService {
         NodeEntity nodeEntity = new NodeEntity();
         nodeEntity.setIp(node.getIp());
         nodeEntity.setPort(node.getPort());
-        nodeEntity.setNodeAvailable(node.isNodeAvailable());
+        nodeEntity.setIsNodeAvailable(node.getIsNodeAvailable());
         nodeEntity.setErrorConnectionTimes(node.getErrorConnectionTimes());
         nodeEntity.setBlockChainHeight(node.getBlockChainHeight());
-        nodeEntity.setFork(node.isFork());
+        nodeEntity.setFork(node.getFork());
         return nodeEntity;
+    }
+
+    private void fillNodeDefaultValue(Node node) {
+        if(node.getBlockChainHeight() == null){
+            node.setBlockChainHeight(0);
+        }
+        if(node.getIsNodeAvailable() == null){
+            node.setIsNodeAvailable(true);
+        }
+        if(node.getErrorConnectionTimes() == null){
+            node.setErrorConnectionTimes(0);
+        }
+        if(node.getFork() == null){
+            node.setFork(false);
+        }
     }
 }
