@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 
 public class MinerDefaultImpl extends Miner {
@@ -155,8 +156,8 @@ public class MinerDefaultImpl extends Miner {
 
         miningBlock.setBlockChainDataBase(blockChainDataBase);
         miningBlock.setBlock(nextMineBlock);
-        miningBlock.setNextNonce(0L);
-        miningBlock.setTryNonceSizeEveryBatch(10000000L);
+        miningBlock.setNextNonce(new BigInteger("0"));
+        miningBlock.setTryNonceSizeEveryBatch(new BigInteger("10000000"));
         miningBlock.setMiningSuccess(false);
         return miningBlock;
     }
@@ -165,14 +166,14 @@ public class MinerDefaultImpl extends Miner {
         //TODO 改善型功能 这里可以利用多处理器的性能进行计算 还可以进行矿池挖矿
         BlockChainDataBase blockChainDataBase = miningBlock.getBlockChainDataBase();
         Block block = miningBlock.getBlock();
-        long startNonce = miningBlock.getNextNonce();
-        long tryNonceSizeEveryBatch = miningBlock.getTryNonceSizeEveryBatch();
+        BigInteger startNonce = miningBlock.getNextNonce();
+        BigInteger tryNonceSizeEveryBatch = miningBlock.getTryNonceSizeEveryBatch();
         while(true){
             if(!mineOption){
                 break;
             }
-            long nextNonce = miningBlock.getNextNonce();
-            if(nextNonce-startNonce > tryNonceSizeEveryBatch){
+            BigInteger nextNonce = miningBlock.getNextNonce();
+            if(nextNonce.subtract(startNonce).compareTo(tryNonceSizeEveryBatch)>0){
                 break;
             }
             block.setNonce(nextNonce);
@@ -182,7 +183,7 @@ public class MinerDefaultImpl extends Miner {
                 break;
             }
             block.setNonce(null);
-            miningBlock.setNextNonce(nextNonce+1);
+            miningBlock.setNextNonce(nextNonce.add(new BigInteger("1")));
         }
     }
 
@@ -198,9 +199,9 @@ public class MinerDefaultImpl extends Miner {
         //矿工要挖矿的区块
         private Block block;
         //标记矿工下一个要验证的nonce
-        private long nextNonce;
+        private BigInteger nextNonce;
         //标记矿工每批次尝试验证的nonce个数
-        private long tryNonceSizeEveryBatch;
+        private BigInteger tryNonceSizeEveryBatch;
         //是否挖矿成功
         private Boolean miningSuccess;
         private List<Transaction> forMineBlockTransactionList;
@@ -325,7 +326,7 @@ public class MinerDefaultImpl extends Miner {
         packingTransactionList.add(mineAwardTransaction);
 
         //这个挖矿时间不需要特别精确，没必要非要挖出矿的前一霎那时间。省去了挖矿时实时更新这个时间的繁琐。
-        nonNonceBlock.setTimestamp(System.currentTimeMillis()+1);
+        nonNonceBlock.setTimestamp(mineAwardTransaction.getTimestamp());
 
         String merkleRoot = BlockUtils.calculateBlockMerkleRoot(nonNonceBlock);
         nonNonceBlock.setMerkleRoot(merkleRoot);

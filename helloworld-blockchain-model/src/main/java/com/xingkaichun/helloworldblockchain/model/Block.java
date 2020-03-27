@@ -5,6 +5,7 @@ import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public class Block implements Serializable {
     private String merkleRoot;
     //区块随机数
     //这个随机数用于共识。
-    private Long nonce;
+    private BigInteger nonce;
     /**
      * 区块哈希：由timestamp、previousHash、height、nonce、merkleRoot共同作用使用Hash算法生成。
      * 为什么需要哈希这个字段？

@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.dto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -15,6 +16,6 @@ public class BlockDTO implements Serializable {
     private Integer height;
     private List<TransactionDTO> transactions;
     private String merkleRoot;
-    private Long nonce;
+    private BigInteger nonce;
     private String hash;
 }

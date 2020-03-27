@@ -351,10 +351,20 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception{
         //TODO 一定时间内的交易
-        if(block != null && block.getTimestamp() <= transaction.getTimestamp()){
-            logger.error("交易校验失败：挖矿的时间应当在交易的时间之后。");
-            return false;
+        if(block != null){
+            if(transaction.getTransactionType() == TransactionType.MINER){
+                if(block.getTimestamp() != transaction.getTimestamp()){
+                    logger.error("交易校验失败：挖矿激励交易时间戳应当等于区块产生的时间。");
+                    return false;
+                }
+            }
+            if(block.getTimestamp() <= transaction.getTimestamp()){
+                logger.error("交易校验失败：区块产生的时间应当在普通交易的时间之后。");
+                return false;
+            }
         }
+
+
 
         //校验：只从交易对象层面校验，交易中使用的UUID是否有重复
         Set<String> uuidSet = new HashSet<>();
