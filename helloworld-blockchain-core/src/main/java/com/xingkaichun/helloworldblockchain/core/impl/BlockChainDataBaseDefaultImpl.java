@@ -357,8 +357,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                     logger.error("交易校验失败：挖矿激励交易时间戳应当等于区块产生的时间。");
                     return false;
                 }
-            }
-            if(block.getTimestamp() <= transaction.getTimestamp()){
+            }else if(block.getTimestamp() <= transaction.getTimestamp()){
                 logger.error("交易校验失败：区块产生的时间应当在普通交易的时间之后。");
                 return false;
             }
