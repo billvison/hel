@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,9 @@ public class BlockchainBranchHandler {
     private void startThread() throws IOException {
 
         if(!blockChainBranchService.isConfirmBlockchainBranch()){
-            InputStream inputStream = ClassLoader.getSystemResourceAsStream("InitBlockHash.txt");
+            URL url = Thread.currentThread().getContextClassLoader().getResource("InitBlockHash.txt");
+            logger.debug("InitBlockHash PATH : "+url.toString());
+            InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("InitBlockHash.txt");
             String context = CharStreams.toString(new InputStreamReader(inputStream, "UTF-8"));
             Type jsonType = new TypeToken<InitBlockHash>() {}.getType();
             InitBlockHash initBlockHash = gson.fromJson(context,jsonType);
