@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.node.timer;
 
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingResponse;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.PostConstruct;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 
@@ -141,10 +143,10 @@ public class TimerService {
             return;
         }
 
-        int localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
+        BigInteger localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
         boolean isLocalBlockChainHighest = true;
         for(Node node:nodes){
-            if(localBlockChainHeight < node.getBlockChainHeight()){
+            if(BigIntegerUtil.isLessThan(localBlockChainHeight,node.getBlockChainHeight())){
                 isLocalBlockChainHighest = false;
                 break;
             }
@@ -157,7 +159,7 @@ public class TimerService {
             int broadcastNodeCount = 0;
             //排序节点
             Collections.sort(nodes,(Node node1,Node node2)->{
-                if(node1.getBlockChainHeight() > node2.getBlockChainHeight()){
+                if(BigIntegerUtil.isGreateThan(node1.getBlockChainHeight(),node2.getBlockChainHeight())){
                     return -1;
                 } else if(node1.getBlockChainHeight() == node2.getBlockChainHeight()){
                     return 0;
@@ -184,10 +186,10 @@ public class TimerService {
             return;
         }
 
-        int localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
+        BigInteger localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
         //可能存在多个节点的数据都比本地节点的区块多，但它们节点的数据可能是相同的，不应该向每个节点都去请求数据。
         for(Node node:nodes){
-            if(localBlockChainHeight < node.getBlockChainHeight()){
+            if(BigIntegerUtil.isLessThan(localBlockChainHeight,node.getBlockChainHeight())){
                 synchronizeRemoteNodeBlockService.synchronizeRemoteNodeBlock(node);
                 //同步之后，本地区块链高度已经发生改变了
                 localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();

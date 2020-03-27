@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
+import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
     private Logger logger = LoggerFactory.getLogger(SynchronizerDataBaseDefaultImpl.class);
-
+//TODO 数值类型用无线大的类型
 
     private static final String NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME = "NodeSynchronizeDatabase";
     private static final String NODE_SYNCHRONIZE_DATABASE_File_Name = "NodeSynchronize.db";
@@ -58,7 +59,8 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
                 "VALUES (?,?,?,?);";
         PreparedStatement preparedStatement = connection().prepareStatement(sql);
         preparedStatement.setString(1,nodeId);
-        preparedStatement.setInt(2,blockDTO.getHeight());
+        //TODO 类型转换失真
+        preparedStatement.setInt(2,blockDTO.getHeight().intValue());
         preparedStatement.setString(3, DtoUtils.encode(blockDTO));
         preparedStatement.setLong(4,System.currentTimeMillis());
         preparedStatement.executeUpdate();
@@ -66,37 +68,39 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
     }
 
     @Override
-    public int getMinBlockHeight(String nodeId) throws Exception {
+    public BigInteger getMinBlockHeight(String nodeId) throws Exception {
         String sql = "SELECT min(blockHeight) as minBlockHeight FROM DATA WHERE nodeId = ?";
         PreparedStatement preparedStatement = connection().prepareStatement(sql);
         preparedStatement.setString(1,nodeId);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()){
             int blockHeight = resultSet.getInt("minBlockHeight");
-            return blockHeight;
+            //TODO 精度
+            return BigInteger.valueOf(blockHeight);
         }
-        return -1;
+        return BigInteger.ZERO;
     }
 
     @Override
-    public int getMaxBlockHeight(String nodeId) throws Exception {
+    public BigInteger getMaxBlockHeight(String nodeId) throws Exception {
         String sql = "SELECT max(blockHeight) as maxBlockHeight FROM DATA WHERE nodeId = ?";
         PreparedStatement preparedStatement = connection().prepareStatement(sql);
         preparedStatement.setString(1,nodeId);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()){
             int blockHeight = resultSet.getInt("maxBlockHeight");
-            return blockHeight;
+            return BigInteger.valueOf(blockHeight);
         }
-        return -1;
+        return null;
     }
 
     @Override
-    public BlockDTO getBlockDto(String nodeId, int blockHeight) throws Exception {
+    public BlockDTO getBlockDto(String nodeId, BigInteger blockHeight) throws Exception {
         String selectBlockDataSql = "SELECT * FROM DATA WHERE nodeId = ? and blockHeight=?";
         PreparedStatement preparedStatement = connection().prepareStatement(selectBlockDataSql);
         preparedStatement.setString(1,nodeId);
-        preparedStatement.setInt(2,blockHeight);
+        //TODO 精度
+        preparedStatement.setInt(2,blockHeight.intValue());
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()){
             String stringBlockDto = resultSet.getString("blockDto");

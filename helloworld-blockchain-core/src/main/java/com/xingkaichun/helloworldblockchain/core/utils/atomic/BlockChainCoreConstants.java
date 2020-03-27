@@ -1,6 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core.utils.atomic;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 
 /**
@@ -12,7 +13,7 @@ public class BlockChainCoreConstants {
     public static final Charset CHARSET_UTF_8 = Charset.forName("UTF-8");
 
     //第一个区块的高度
-    public final static int FIRST_BLOCK_HEIGHT = 1;
+    public final static BigInteger FIRST_BLOCK_HEIGHT = BigInteger.ONE;
     //第一个区块的PREVIOUS_HASH
     public final static String FIRST_BLOCK_PREVIOUS_HASH = "xingkaichun";
 

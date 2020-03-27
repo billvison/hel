@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.node.timer;
 import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.InitBlockHash;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainBranchService;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -71,7 +73,7 @@ public class BlockchainBranchHandler {
         }).start();
     }
 
-    public boolean isFork(int blockHeight,String blockHash){
+    public boolean isFork(BigInteger blockHeight,String blockHash){
         String stringBlockHeight = String.valueOf(blockHeight);
         String blockHashTemp = blockHeightBlockHashMap.get(stringBlockHeight);
         if(blockHashTemp == null){
@@ -80,12 +82,12 @@ public class BlockchainBranchHandler {
         return !blockHashTemp.equals(blockHash);
     }
 
-    public int getNearBlockHeight(int blockHeight){
-        int nearBlockHeight = 0;
+    public BigInteger getNearBlockHeight(BigInteger blockHeight){
+        BigInteger nearBlockHeight = BigInteger.ZERO;
         Set<String> set = blockHeightBlockHashMap.keySet();
         for(String stringBlockHeight:set){
-            int intBlockHeight = Integer.valueOf(stringBlockHeight);
-            if(intBlockHeight < blockHeight && intBlockHeight > nearBlockHeight){
+            BigInteger intBlockHeight = new BigInteger(stringBlockHeight);
+            if(BigIntegerUtil.isLessThan(intBlockHeight,blockHeight)  && BigIntegerUtil.isGreateThan(intBlockHeight,nearBlockHeight)){
                 nearBlockHeight = intBlockHeight;
             }
         }

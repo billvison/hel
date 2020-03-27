@@ -8,6 +8,7 @@ import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.SubmitNormalTransactionResponse;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public interface BlockChainCoreService {
@@ -40,15 +41,15 @@ public interface BlockChainCoreService {
     /**
      * 根据区块高度获取区块DTO
      */
-    BlockDTO queryBlockDtoByBlockHeight(int blockHeight) throws Exception;
+    BlockDTO queryBlockDtoByBlockHeight(BigInteger blockHeight) throws Exception;
     /**
      * 根据区块高度获取区块Hash
      */
-    String queryBlockHashByBlockHeight(int blockHeight) throws Exception;
+    String queryBlockHashByBlockHeight(BigInteger blockHeight) throws Exception;
     /**
      * 获取区块链高度
      */
-    int queryBlockChainHeight() throws Exception;
+    BigInteger queryBlockChainHeight() throws Exception;
     /**
      * 查询挖矿中的交易
      */
@@ -56,5 +57,5 @@ public interface BlockChainCoreService {
 
     TransactionDTO queryMiningTransactionDtoByTransactionUUID(String transactionUUID) throws Exception;
 
-    void removeBlocksUtilBlockHeight(int blockHeight) throws Exception;
+    void removeBlocksUtilBlockHeight(BigInteger blockHeight) throws Exception;
 }

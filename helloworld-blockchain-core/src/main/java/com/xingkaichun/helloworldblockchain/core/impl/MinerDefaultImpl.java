@@ -5,6 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.Miner;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
 import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
 import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
@@ -91,13 +92,13 @@ public class MinerDefaultImpl extends Miner {
         }
         Block tailBlock = blockChainDataBase.findTailBlock();
         if(tailBlock == null){
-            if(block.getHeight() == 1){
+            if(BigIntegerUtil.isEquals(block.getHeight(),BigInteger.valueOf(1))){
                 return true;
             } else {
                 return false;
             }
         } else {
-            if(tailBlock.getHeight().equals(block.getHeight()-1) && tailBlock.getHash().equals(block.getPreviousHash())){
+            if(BigIntegerUtil.isEquals(tailBlock.getHeight().add(BigInteger.valueOf(1)),block.getHeight()) && tailBlock.getHash().equals(block.getPreviousHash())){
                 return true;
             }
             return false;
@@ -316,7 +317,7 @@ public class MinerDefaultImpl extends Miner {
             nonNonceBlock.setHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
             nonNonceBlock.setPreviousHash(BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH);
         } else {
-            nonNonceBlock.setHeight(tailBlock.getHeight()+1);
+            nonNonceBlock.setHeight(tailBlock.getHeight().add(BigInteger.valueOf(1)));
             nonNonceBlock.setPreviousHash(tailBlock.getHash());
         }
         nonNonceBlock.setTransactions(packingTransactionList);

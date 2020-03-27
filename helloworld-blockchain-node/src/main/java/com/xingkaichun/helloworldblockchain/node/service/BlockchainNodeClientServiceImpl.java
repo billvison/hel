@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.math.BigInteger;
 
 @Service
 public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientService {
@@ -74,7 +75,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
         }
     }
 
-    public ServiceResult<EmptyResponse> unicastLocalBlockChainHeight(SimpleNode node, int localBlockChainHeight) {
+    public ServiceResult<EmptyResponse> unicastLocalBlockChainHeight(SimpleNode node, BigInteger localBlockChainHeight) {
         try {
             String url = String.format("http://%s:%d%s",node.getIp(), node.getPort(), NodeServerApiRoute.ADD_OR_UPDATE_NODE);
             AddOrUpdateNodeRequest request = new AddOrUpdateNodeRequest();
@@ -97,7 +98,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
     }
 
     @Override
-    public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(Node node, int blockHeight) {
+    public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(Node node, BigInteger blockHeight) {
         try {
             String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeServerApiRoute.QUERY_BLOCK_HASH_BY_BLOCK_HEIGHT);
             QueryBlockHashByBlockHeightRequest request = new QueryBlockHashByBlockHeightRequest();
@@ -120,7 +121,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
     }
 
     @Override
-    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(Node node, int blockHeight) {
+    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(Node node, BigInteger blockHeight) {
         try {
             String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeServerApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT);
             QueryBlockDtoByBlockHeightRequest request = new QueryBlockDtoByBlockHeightRequest();

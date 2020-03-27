@@ -13,7 +13,7 @@ import java.util.List;
 public class BlockDTO implements Serializable {
     private long timestamp;
     private String previousHash;
-    private Integer height;
+    private BigInteger height;
     private List<TransactionDTO> transactions;
     private String merkleRoot;
     private BigInteger nonce;

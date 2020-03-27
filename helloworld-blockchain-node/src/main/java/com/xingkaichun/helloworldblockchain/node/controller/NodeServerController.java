@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -51,7 +52,7 @@ public class NodeServerController {
     public ServiceResult<PingResponse> ping(HttpServletRequest httpServletRequest, @RequestBody PingRequest request){
         try {
             List<Node> nodeList = nodeService.queryAllNoForkNodeList();
-            int blockChainHeight = blockChainCoreService.queryBlockChainHeight();
+            BigInteger blockChainHeight = blockChainCoreService.queryBlockChainHeight();
 
             //将ping的来路作为区块链节点
             if(configurationService.autoSearchNode()){

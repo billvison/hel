@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -91,6 +92,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{
+            fillBlockPropertity(block);
             boolean isBlockCanApplyToBlockChain = isBlockCanApplyToBlockChain(block);
             if(!isBlockCanApplyToBlockChain){
                 return false;
@@ -100,6 +102,19 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return true;
         }finally {
             writeLock.unlock();
+        }
+    }
+
+    //TODO 开关
+    private void fillBlockPropertity(Block block) throws Exception {
+
+        BigInteger sequenceNumberInBlock;
+        BigInteger sequenceNumberInBlockChain;
+        BigInteger blockHeight = block.getHeight();
+
+        Block tailBlock = findTailBlock();
+        if(tailBlock == null){
+
         }
     }
 
@@ -121,7 +136,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public void removeBlocksUtilBlockHeight(int blockHeight) throws Exception {
+    public void removeBlocksUtilBlockHeight(BigInteger blockHeight) throws Exception {
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{
@@ -130,7 +145,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 if(tailBlock == null){
                     return;
                 }
-                if(tailBlock.getHeight() < blockHeight){
+                if(BigIntegerUtil.isLessThan(tailBlock.getHeight(),blockHeight)){
                     return;
                 }
                 WriteBatch writeBatch = createWriteBatch(tailBlock,BlockChainActionEnum.DELETE_BLOCK);
@@ -146,18 +161,19 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //region 区块链提供的通用方法
     @Override
     public Block findTailBlock() throws Exception {
-        int blockChainHeight = obtainBlockChainHeight();
-        if(blockChainHeight <= 0){
+        BigInteger blockChainHeight = obtainBlockChainHeight();
+        if(BigIntegerUtil.isLessEqualThan(blockChainHeight,BigInteger.valueOf(0))){
             return null;
         }
         return findBlockByBlockHeight(blockChainHeight);
     }
 
     @Override
-    public int obtainBlockChainHeight() throws Exception {
+    public BigInteger obtainBlockChainHeight() throws Exception {
         byte[] bytesBlockChainHeight = LevelDBUtil.get(blockChainDB, buildBlockChainHeightKey());
         if(bytesBlockChainHeight == null){
-            return 0;
+            //TODO null
+            return BigInteger.valueOf(0);
         }
         return decodeBlockChainHeight(bytesBlockChainHeight);
     }
@@ -175,7 +191,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public Block findBlockByBlockHeight(int blockHeight) throws Exception {
+    public Block findBlockByBlockHeight(BigInteger blockHeight) throws Exception {
         byte[] bytesBlock = LevelDBUtil.get(blockChainDB, buildBlockHeightKey(blockHeight));
         if(bytesBlock==null){
             return null;
@@ -227,7 +243,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 return false;
             }
             //校验区块高度
-            if(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT != block.getHeight()){
+            if(!BigIntegerUtil.isEquals(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT,block.getHeight())){
                 return false;
             }
         } else {
@@ -240,7 +256,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 return false;
             }
             //校验区块高度是否连贯
-            if((tailBlock.getHeight()+1) != block.getHeight()){
+            if(BigIntegerUtil.isEquals(tailBlock.getHeight().add(BigInteger.valueOf(1)),block.getHeight())){
                 return false;
             }
         }
@@ -556,7 +572,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         String stringKey = UUID_PREFIX_FLAG + uuid;
         return LevelDBUtil.stringToBytes(stringKey);
     }
-    private byte[] buildBlockHeightKey(int blockHeight) {
+    private byte[] buildBlockHeightKey(BigInteger blockHeight) {
         String stringKey = BLOCK_HEIGHT_PREFIX_FLAG + blockHeight;
         return LevelDBUtil.stringToBytes(stringKey);
     }
@@ -627,7 +643,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
             writeBatch.put(blockChainHeightKey,encodeBlockChainHeight(block.getHeight()));
         }else{
-            writeBatch.put(blockChainHeightKey,encodeBlockChainHeight(block.getHeight()-1));
+            writeBatch.put(blockChainHeightKey,encodeBlockChainHeight(block.getHeight().subtract(BigInteger.valueOf(1))));
         }
 
         List<Transaction> transactionList = block.getTransactions();
@@ -800,12 +816,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         return true;
     }
-    private int decodeBlockChainHeight(byte[] bytesBlockChainHeight){
+    private BigInteger decodeBlockChainHeight(byte[] bytesBlockChainHeight){
         String strBlockChainHeight = LevelDBUtil.bytesToString(bytesBlockChainHeight);
-        Integer intBlockChainHeight = Integer.valueOf(strBlockChainHeight);
-        return intBlockChainHeight;
+        BigInteger blockChainHeight = new BigInteger(strBlockChainHeight);
+        return blockChainHeight;
     }
-    private byte[] encodeBlockChainHeight(int blockChainHeight){
+    private byte[] encodeBlockChainHeight(BigInteger blockChainHeight){
         return LevelDBUtil.stringToBytes(String.valueOf(blockChainHeight));
     }
 }

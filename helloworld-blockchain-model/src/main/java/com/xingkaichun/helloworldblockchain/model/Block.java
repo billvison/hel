@@ -32,7 +32,7 @@ public class Block implements Serializable {
      * 区块高度
      * 冗余字段，这个值可以由区块链计算出来
      */
-    private Integer height;
+    private BigInteger height;
     //区块里的交易
     private List<Transaction> transactions;
     /**

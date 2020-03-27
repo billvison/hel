@@ -9,6 +9,8 @@ import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingRes
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockDtoByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockHashByBlockHeightResponse;
 
+import java.math.BigInteger;
+
 public interface BlockchainNodeClientService {
 
     /**
@@ -24,16 +26,16 @@ public interface BlockchainNodeClientService {
     /**
      * 单播：将本地区块链高度传给指定节点
      */
-    ServiceResult<EmptyResponse> unicastLocalBlockChainHeight(SimpleNode node, int localBlockChainHeight) ;
+    ServiceResult<EmptyResponse> unicastLocalBlockChainHeight(SimpleNode node, BigInteger localBlockChainHeight) ;
 
     /**
      * 根据区块高度，获取对应的区块hash
      */
-    ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(Node node, int blockHeight);
+    ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(Node node, BigInteger blockHeight);
 
     /**
      * 根据区块高度，获取对应的区块
      */
-    ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(Node node, int blockHeight) ;
+    ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(Node node, BigInteger blockHeight) ;
 
 }

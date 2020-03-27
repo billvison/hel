@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.node.dao.BlockChainBranchDao;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,13 +49,7 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
             return;
         }
         blockchainBranchBlockEntityList.sort((o1,o2)->{
-            if(o1.getBlockHeight() == o2.getBlockHeight()){
-                return 0;
-            }else if(o1.getBlockHeight() > o2.getBlockHeight()){
-                return 1;
-            }else {
-                return -1;
-            }
+            return o1.getBlockHeight().compareTo(o2.getBlockHeight());
         });
         for(int i=0;i<blockchainBranchBlockEntityList.size();i++){
             BlockchainBranchBlockEntity entity = blockchainBranchBlockEntityList.get(i);
@@ -61,14 +57,14 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
             if(blockDTO == null){
                 continue;
             }
-            if(entity.getBlockHash().equals(blockDTO.getHash()) && entity.getBlockHeight()==blockDTO.getHeight()){
+            if(entity.getBlockHash().equals(blockDTO.getHash()) && BigIntegerUtil.isEquals(entity.getBlockHeight(),blockDTO.getHeight())){
                 return;
             }
-            int deleteBlockHeight = 0;
+            BigInteger deleteBlockHeight;
             if(i==0){
-                deleteBlockHeight = 1;
+                deleteBlockHeight = BigInteger.ONE;
             }else {
-                deleteBlockHeight = blockchainBranchBlockEntityList.get(i-1).getBlockHeight() + 1;
+                deleteBlockHeight = blockchainBranchBlockEntityList.get(i-1).getBlockHeight().add(BigInteger.ONE);
             }
             blockChainCoreService.removeBlocksUtilBlockHeight(deleteBlockHeight);
             return;

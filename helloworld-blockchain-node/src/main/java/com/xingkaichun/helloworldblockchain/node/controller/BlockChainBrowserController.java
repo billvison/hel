@@ -8,9 +8,6 @@ import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.dto.WalletDTO;
 import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.AdminConsoleApiRoute;
-import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.UpdateBlockchainBranchRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.UpdateBlockchainBranchResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.BlockChainApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
@@ -30,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.security.PrivateKey;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -210,7 +207,7 @@ public class BlockChainBrowserController {
     public ServiceResult<PingResponse> ping(@RequestBody PingRequest request){
         try {
             List<Node> nodeList = nodeService.queryAllNoForkNodeList();
-            int blockChainHeight = blockChainCoreService.queryBlockChainHeight();
+            BigInteger blockChainHeight = blockChainCoreService.queryBlockChainHeight();
             PingResponse response = new PingResponse();
             response.setNodeList(nodeList);
             response.setBlockChainHeight(blockChainHeight);

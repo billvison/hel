@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,7 +157,7 @@ public class NodeServiceImpl implements NodeService {
 
     private void fillNodeDefaultValue(Node node) {
         if(node.getBlockChainHeight() == null){
-            node.setBlockChainHeight(0);
+            node.setBlockChainHeight(BigInteger.ZERO);
         }
         if(node.getIsNodeAvailable() == null){
             node.setIsNodeAvailable(true);

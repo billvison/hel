@@ -3,13 +3,16 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
-import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
-import com.xingkaichun.helloworldblockchain.model.Block;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.EqualsUtils;
+import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.model.Block;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.math.BigInteger;
 
 public class SynchronizerDefaultImpl extends Synchronizer {
 
@@ -78,24 +81,27 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             return;
         }
 
-        int maxBlockHeight = synchronizerDataBase.getMaxBlockHeight(availableSynchronizeNodeId);
-        int targetBlockChainHeight = targetBlockChainDataBase.obtainBlockChainHeight();
-        if(targetBlockChainHeight != 0 && targetBlockChainHeight >= maxBlockHeight){
+        BigInteger maxBlockHeight = synchronizerDataBase.getMaxBlockHeight(availableSynchronizeNodeId);
+        if(maxBlockHeight == null){
+            return;
+        }
+        BigInteger targetBlockChainHeight = targetBlockChainDataBase.obtainBlockChainHeight();
+        if(!BigIntegerUtil.isEquals(targetBlockChainHeight,BigInteger.valueOf(0)) && BigIntegerUtil.isGreateEqualThan(targetBlockChainHeight,maxBlockHeight)){
             synchronizerDataBase.clear(availableSynchronizeNodeId);
             return;
         }
 
-        int minBlockHeight = synchronizerDataBase.getMinBlockHeight(availableSynchronizeNodeId);
+        BigInteger minBlockHeight = synchronizerDataBase.getMinBlockHeight(availableSynchronizeNodeId);
         BlockDTO blockDTO = synchronizerDataBase.getBlockDto(availableSynchronizeNodeId,minBlockHeight);
         if(blockDTO != null){
-            reduceBlockChain(temporaryBlockChainDataBase,blockDTO.getHeight()-1);
+            reduceBlockChain(temporaryBlockChainDataBase,blockDTO.getHeight().subtract(BigInteger.valueOf(1)));
             while(blockDTO != null){
                 Block block = DtoUtils.classCast(temporaryBlockChainDataBase,blockDTO);
                 boolean isAddBlockToBlockChainSuccess = temporaryBlockChainDataBase.addBlock(block);
                 if(!isAddBlockToBlockChainSuccess){
                     break;
                 }
-                minBlockHeight++;
+                minBlockHeight = minBlockHeight.add(BigInteger.ONE);
                 blockDTO = synchronizerDataBase.getBlockDto(availableSynchronizeNodeId,minBlockHeight);
             }
         }
@@ -122,13 +128,13 @@ public class SynchronizerDefaultImpl extends Synchronizer {
                 return;
             }
         }
-        if(targetBlockChainTailBlock.getHeight() >= temporaryBlockChainTailBlock.getHeight()){
+        if(BigIntegerUtil.isGreateEqualThan(targetBlockChainTailBlock.getHeight(),temporaryBlockChainTailBlock.getHeight())){
             return;
         }
         //未分叉区块高度
-        int noForkBlockHeight = targetBlockChainTailBlock.getHeight();
+        BigInteger noForkBlockHeight = targetBlockChainTailBlock.getHeight();
         while (true){
-            if(noForkBlockHeight <= 0){
+            if(BigIntegerUtil.isLessEqualThan(noForkBlockHeight,BigInteger.valueOf(0))){
                 break;
             }
             Block targetBlock = targetBlockChainDataBase.findBlockByBlockHeight(noForkBlockHeight);
@@ -143,9 +149,9 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             noForkBlockHeight = targetBlockChainTailBlock.getHeight();
         }
 
-        int targetBlockChainHeight = targetBlockChainDataBase.findTailBlock().getHeight() ;
+        BigInteger targetBlockChainHeight = targetBlockChainDataBase.findTailBlock().getHeight() ;
         while(true){
-            targetBlockChainHeight++;
+            targetBlockChainHeight = targetBlockChainHeight.add(BigInteger.valueOf(1));
             Block currentBlock = temporaryBlockChainDataBase.findBlockByBlockHeight(targetBlockChainHeight) ;
             if(currentBlock == null){
                 break;
@@ -185,9 +191,9 @@ public class SynchronizerDefaultImpl extends Synchronizer {
                 return;
             }
         }
-        int temporaryBlockChainHeight = temporaryBlockChainDataBase.obtainBlockChainHeight();
+        BigInteger temporaryBlockChainHeight = temporaryBlockChainDataBase.obtainBlockChainHeight();
         while(true){
-            temporaryBlockChainHeight++;
+            temporaryBlockChainHeight = temporaryBlockChainHeight.add(BigInteger.valueOf(1));
             Block currentBlock = targetBlockChainDataBase.findBlockByBlockHeight(temporaryBlockChainHeight) ;
             if(currentBlock == null){
                 break;
@@ -203,16 +209,16 @@ public class SynchronizerDefaultImpl extends Synchronizer {
      * @param blockChainDataBase 区块链
      * @param blockHeight 降低区块链高度到的位置
      */
-    private void reduceBlockChain(BlockChainDataBase blockChainDataBase, int blockHeight) throws Exception {
-        if(blockHeight < 0){
+    private void reduceBlockChain(BlockChainDataBase blockChainDataBase, BigInteger blockHeight) throws Exception {
+        if(BigIntegerUtil.isLessThan(blockHeight,BigInteger.valueOf(0))){
             return;
         }
         Block tailBlock = blockChainDataBase.findTailBlock();
         if(tailBlock == null){
             return;
         }
-        int currentBlockHeight = tailBlock.getHeight();
-        while(currentBlockHeight > blockHeight){
+        BigInteger currentBlockHeight = tailBlock.getHeight();
+        while(BigIntegerUtil.isGreateThan(currentBlockHeight,blockHeight)){
             blockChainDataBase.removeTailBlock();
             tailBlock = blockChainDataBase.findTailBlock();
             if(tailBlock == null){

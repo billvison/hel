@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 
@@ -47,7 +48,7 @@ public abstract class BlockChainDataBase {
     /**
      * 删除区块高度大于等于@blockHeight的的区块
      */
-    public abstract void removeBlocksUtilBlockHeight(int blockHeight) throws Exception ;
+    public abstract void removeBlocksUtilBlockHeight(BigInteger blockHeight) throws Exception ;
     //endregion
 
     //region 区块链提供的通用方法
@@ -59,7 +60,7 @@ public abstract class BlockChainDataBase {
     /**
      * 获取区块链的长度
      */
-    public abstract int obtainBlockChainHeight() throws Exception ;
+    public abstract BigInteger obtainBlockChainHeight() throws Exception ;
 
     /**
      * 在区块链中根据 UTXO ID 查找UTXO
@@ -71,7 +72,7 @@ public abstract class BlockChainDataBase {
      * 在区块链中根据区块高度查找区块
      * @param blockHeight 区块高度
      */
-    public abstract Block findBlockByBlockHeight(int blockHeight) throws Exception ;
+    public abstract Block findBlockByBlockHeight(BigInteger blockHeight) throws Exception ;
 
     /**
      * 在区块链中根据区块Hash查找区块

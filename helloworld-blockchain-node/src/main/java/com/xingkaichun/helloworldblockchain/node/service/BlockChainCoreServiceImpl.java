@@ -20,6 +20,7 @@ import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
@@ -141,7 +142,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public String queryBlockHashByBlockHeight(int blockHeight) throws Exception {
+    public String queryBlockHashByBlockHeight(BigInteger blockHeight) throws Exception {
         Block block = blockChainCore.getBlockChainDataBase().findBlockByBlockHeight(blockHeight);
         if(block == null){
             return null;
@@ -150,7 +151,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public BlockDTO queryBlockDtoByBlockHeight(int blockHeight) throws Exception {
+    public BlockDTO queryBlockDtoByBlockHeight(BigInteger blockHeight) throws Exception {
         Block block = blockChainCore.getBlockChainDataBase().findBlockByBlockHeight(blockHeight);
         if(block == null){
             return null;
@@ -160,7 +161,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public int queryBlockChainHeight() throws Exception {
+    public BigInteger queryBlockChainHeight() throws Exception {
         return blockChainCore.getBlockChainDataBase().obtainBlockChainHeight();
     }
 
@@ -177,7 +178,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public void removeBlocksUtilBlockHeight(int blockHeight) throws Exception {
+    public void removeBlocksUtilBlockHeight(BigInteger blockHeight) throws Exception {
         blockChainCore.getBlockChainDataBase().removeBlocksUtilBlockHeight(blockHeight);
     }
 }
