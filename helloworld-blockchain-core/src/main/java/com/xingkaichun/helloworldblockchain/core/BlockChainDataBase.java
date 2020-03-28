@@ -48,7 +48,7 @@ public abstract class BlockChainDataBase {
     /**
      * 删除区块高度大于等于@blockHeight的的区块
      */
-    public abstract void removeBlocksUtilBlockHeight(BigInteger blockHeight) throws Exception ;
+    public abstract void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) throws Exception ;
     //endregion
 
     //region 区块链提供的通用方法
@@ -56,7 +56,10 @@ public abstract class BlockChainDataBase {
      * 查找区块链上的最后一个区块
      */
     public abstract Block findTailBlock() throws Exception ;
-
+    /**
+     * 查找区块链上的最后一个区块，返回的区块不包含交易信息
+     */
+    public abstract Block findTailNoTransactionBlock() throws Exception ;
     /**
      * 获取区块链的长度
      */
@@ -73,6 +76,12 @@ public abstract class BlockChainDataBase {
      * @param blockHeight 区块高度
      */
     public abstract Block findBlockByBlockHeight(BigInteger blockHeight) throws Exception ;
+
+    /**
+     * 在区块链中根据区块高度查找【未存储交易信息】的区块
+     * @param blockHeight 区块高度
+     */
+    public abstract Block findNoTransactionBlockByBlockHeight(BigInteger blockHeight) throws Exception ;
 
     /**
      * 在区块链中根据区块Hash查找区块

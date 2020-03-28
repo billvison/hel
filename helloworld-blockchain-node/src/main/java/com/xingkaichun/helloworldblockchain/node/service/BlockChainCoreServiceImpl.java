@@ -143,7 +143,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
     @Override
     public String queryBlockHashByBlockHeight(BigInteger blockHeight) throws Exception {
-        Block block = blockChainCore.getBlockChainDataBase().findBlockByBlockHeight(blockHeight);
+        Block block = blockChainCore.getBlockChainDataBase().findNoTransactionBlockByBlockHeight(blockHeight);
         if(block == null){
             return null;
         }
@@ -178,7 +178,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public void removeBlocksUtilBlockHeight(BigInteger blockHeight) throws Exception {
-        blockChainCore.getBlockChainDataBase().removeBlocksUtilBlockHeight(blockHeight);
+    public void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) throws Exception {
+        blockChainCore.getBlockChainDataBase().removeBlocksUtilBlockHeightLessThan(blockHeight);
     }
 }

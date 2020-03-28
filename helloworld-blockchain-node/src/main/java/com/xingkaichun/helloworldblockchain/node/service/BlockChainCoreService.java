@@ -57,5 +57,5 @@ public interface BlockChainCoreService {
 
     TransactionDTO queryMiningTransactionDtoByTransactionUUID(String transactionUUID) throws Exception;
 
-    void removeBlocksUtilBlockHeight(BigInteger blockHeight) throws Exception;
+    void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) throws Exception;
 }

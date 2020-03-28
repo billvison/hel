@@ -57,6 +57,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private final static String TRANSACTION_SEQUENCE_NUMBER_IN_BLOCKCHIAN_PREFIX_FLAG  = "T_S_N_I_B_P_F";
     //区块高度标识：存储区块链高度到区块的映射
     private final static String BLOCK_HEIGHT_PREFIX_FLAG = "B_H_P_F_";
+    //区块高度标识：存储区块链高度到没有交易信息的区块的映射
+    private final static String BLOCK_HEIGHT_MAP_NO_TRANSACTION_BLOCK_PREFIX_FLAG = "B_H_M_N_T_B_P_F_";
     //区块Hash标识：存储区块链Hash到区块的映射
     private final static String BLOCK_HASH_PREFIX_FLAG = "B_HA_P_F_";
     //交易标识：存储交易UUID到交易的映射
@@ -164,7 +166,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public void removeBlocksUtilBlockHeight(BigInteger blockHeight) throws Exception {
+    public void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) throws Exception {
+        if(BigIntegerUtil.isLessEqualThan(blockHeight,BigInteger.ZERO)){
+            return;
+        }
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{
@@ -194,6 +199,14 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return null;
         }
         return findBlockByBlockHeight(blockChainHeight);
+    }
+    @Override
+    public Block findTailNoTransactionBlock() throws Exception {
+        BigInteger blockChainHeight = obtainBlockChainHeight();
+        if(BigIntegerUtil.isLessEqualThan(blockChainHeight,BigInteger.valueOf(0))){
+            return null;
+        }
+        return findNoTransactionBlockByBlockHeight(blockChainHeight);
     }
 
     @Override
@@ -226,7 +239,14 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         return EncodeDecode.decodeToBlock(bytesBlock);
     }
-
+    @Override
+    public Block findNoTransactionBlockByBlockHeight(BigInteger blockHeight) throws Exception {
+        byte[] bytesBlock = LevelDBUtil.get(blockChainDB, buildBlockHeightMapNoTransactionBlockKey(blockHeight));
+        if(bytesBlock==null){
+            return null;
+        }
+        return EncodeDecode.decodeToBlock(bytesBlock);
+    }
     @Override
     public Block findBlockByBlockHash(String blockHash) throws Exception {
         byte[] bytesBlock = LevelDBUtil.get(blockChainDB, buildBlockHashtKey(blockHash));
@@ -260,7 +280,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
         //校验区块的连贯性
-        Block tailBlock = findTailBlock();
+        Block tailBlock = findNoTransactionBlockByBlockHeight(obtainBlockChainHeight());
         if(tailBlock == null){
             //校验时间
             if(block.getTimestamp() >= System.currentTimeMillis()){
@@ -621,6 +641,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         String stringKey = BLOCK_HEIGHT_PREFIX_FLAG + blockHeight;
         return LevelDBUtil.stringToBytes(stringKey);
     }
+    private byte[] buildBlockHeightMapNoTransactionBlockKey(BigInteger blockHeight) {
+        String stringKey = BLOCK_HEIGHT_MAP_NO_TRANSACTION_BLOCK_PREFIX_FLAG + blockHeight;
+        return LevelDBUtil.stringToBytes(stringKey);
+    }
     private byte[] buildBlockHashtKey(String blockHash) {
         String stringKey = BLOCK_HASH_PREFIX_FLAG + blockHash;
         return LevelDBUtil.stringToBytes(stringKey);
@@ -697,6 +721,16 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             writeBatch.put(blockHeightKey, EncodeDecode.encode(block));
         }else{
             writeBatch.delete(blockHeightKey);
+        }
+        //存储无交易信息的区块
+        byte[] blockHeightMapNoTransactionBlockKey = buildBlockHeightMapNoTransactionBlockKey(block.getHeight());
+        if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
+            List<Transaction> transactions = block.getTransactions();
+            block.setTransactions(null);
+            writeBatch.put(blockHeightMapNoTransactionBlockKey, EncodeDecode.encode(block));
+            block.setTransactions(transactions);
+        }else{
+            writeBatch.delete(blockHeightMapNoTransactionBlockKey);
         }
         //更新交易数量
         BigInteger transactionQuantity = queryTransactionQuantity();

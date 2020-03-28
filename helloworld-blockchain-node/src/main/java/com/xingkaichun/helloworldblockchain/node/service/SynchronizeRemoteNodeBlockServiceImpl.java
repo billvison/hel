@@ -68,7 +68,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
         //每次支持同步区块数
         //TODO 配置
         BigInteger synchronizationBlockSize = BigInteger.valueOf(100);
-        Block tailBlock = blockChainDataBase.findTailBlock();
+        Block tailBlock = blockChainDataBase.findTailNoTransactionBlock();
         BigInteger localBlockChainHeight = tailBlock==null?BigInteger.ZERO:tailBlock.getHeight();
 
         boolean fork = false;
@@ -119,7 +119,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                     forkNodeHandler(node,synchronizerDataBase);
                     return;
                 }
-                Block localBlock = blockChainDataBase.findBlockByBlockHeight(tempBlockHeight);
+                Block localBlock = blockChainDataBase.findNoTransactionBlockByBlockHeight(tempBlockHeight);
                 if(localBlock.getHash().equals(blockDTO.getHash())){
                     return;
                 }

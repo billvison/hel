@@ -74,7 +74,7 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
                     byte[] byteKey = entry.getKey();
                     String key = LevelDBUtil.bytesToString(byteKey);
                     byte[] byteTransaction = entry.getValue();
-                    if(byteTransaction == null){
+                    if(byteTransaction == null || byteTransaction.length == 0){
                         continue;
                     }
                     TransactionDTO transactionDTO = null;

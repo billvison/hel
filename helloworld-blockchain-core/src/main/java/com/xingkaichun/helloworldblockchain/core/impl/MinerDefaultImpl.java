@@ -90,7 +90,7 @@ public class MinerDefaultImpl extends Miner {
         if(block == null){
             return false;
         }
-        Block tailBlock = blockChainDataBase.findTailBlock();
+        Block tailBlock = blockChainDataBase.findTailNoTransactionBlock();
         if(tailBlock == null){
             if(BigIntegerUtil.isEquals(block.getHeight(),BigInteger.valueOf(1))){
                 return true;
@@ -311,7 +311,7 @@ public class MinerDefaultImpl extends Miner {
      * 构建挖矿区块
      */
     public Block buildNextMineBlock(BlockChainDataBase blockChainDataBase, List<Transaction> packingTransactionList) throws Exception {
-        Block tailBlock = blockChainDataBase.findTailBlock();
+        Block tailBlock = blockChainDataBase.findTailNoTransactionBlock();
         Block nonNonceBlock = new Block();
         if(tailBlock == null){
             nonNonceBlock.setHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);

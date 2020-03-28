@@ -66,7 +66,7 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
             }else {
                 deleteBlockHeight = blockchainBranchBlockEntityList.get(i-1).getBlockHeight().add(BigInteger.ONE);
             }
-            blockChainCoreService.removeBlocksUtilBlockHeight(deleteBlockHeight);
+            blockChainCoreService.removeBlocksUtilBlockHeightLessThan(deleteBlockHeight);
             return;
         }
     }
