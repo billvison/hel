@@ -185,7 +185,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     public BigInteger obtainBlockChainHeight() throws Exception {
         byte[] bytesBlockChainHeight = LevelDBUtil.get(blockChainDB, buildBlockChainHeightKey());
         if(bytesBlockChainHeight == null){
-            //TODO null
+            //区块链没有区块高度默认为0
             return BigInteger.valueOf(0);
         }
         return decode(bytesBlockChainHeight);
