@@ -137,7 +137,7 @@ public class MinerDefaultImpl extends Miner {
     private MiningBlock obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
         MiningBlock miningBlock = new MiningBlock();
         //TODO 如果交易里有一笔挖矿交易
-        List<TransactionDTO> forMineBlockTransactionDtoList = minerTransactionDtoDataBase.selectTransactionDtoList(blockChainDataBase,0,10000);
+        List<TransactionDTO> forMineBlockTransactionDtoList = minerTransactionDtoDataBase.selectTransactionDtoList(blockChainDataBase,1,10000);
         List<Transaction> forMineBlockTransactionList = new ArrayList<>();
         if(forMineBlockTransactionDtoList != null){
             for(TransactionDTO transactionDTO:forMineBlockTransactionDtoList){

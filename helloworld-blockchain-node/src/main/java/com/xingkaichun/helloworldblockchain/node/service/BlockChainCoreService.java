@@ -6,6 +6,9 @@ import com.xingkaichun.helloworldblockchain.dto.WalletDTO;
 import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryMiningTransactionListRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryTxosByAddressRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryUtxosByAddressRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.SubmitNormalTransactionResponse;
 
 import java.math.BigInteger;
@@ -24,11 +27,11 @@ public interface BlockChainCoreService {
     /**
      * 根据地址获取UTXO
      */
-    List<TransactionOutput> queryUtxoListByAddress(String address) throws Exception;
+    List<TransactionOutput> queryUtxoListByAddress(QueryUtxosByAddressRequest request) throws Exception;
     /**
      * 根据地址获取TXO
      */
-    List<TransactionOutput> queryTxoListByAddress(String address) throws Exception;
+    List<TransactionOutput> queryTxoListByAddress(QueryTxosByAddressRequest request) throws Exception;
     /**
      * 提交交易到区块链网络
      */
@@ -53,7 +56,7 @@ public interface BlockChainCoreService {
     /**
      * 查询挖矿中的交易
      */
-    List<TransactionDTO> queryMiningTransactionList() throws Exception;
+    List<TransactionDTO> queryMiningTransactionList(QueryMiningTransactionListRequest request) throws Exception;
 
     TransactionDTO queryMiningTransactionDtoByTransactionUUID(String transactionUUID) throws Exception;
 

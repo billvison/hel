@@ -13,9 +13,13 @@ import com.xingkaichun.helloworldblockchain.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryMiningTransactionListRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryTxosByAddressRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryUtxosByAddressRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.SubmitNormalTransactionResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.common.EmptyResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.node.dto.common.page.PageCondition;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,16 +62,24 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public List<TransactionOutput> queryUtxoListByAddress(String address) throws Exception {
-        StringAddress stringAddress = new StringAddress(address);
-        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().querUnspendTransactionOuputListByAddress(stringAddress);
+    public List<TransactionOutput> queryUtxoListByAddress(QueryUtxosByAddressRequest request) throws Exception {
+        PageCondition pageCondition = request.getPageCondition();
+        if(pageCondition == null){
+            pageCondition = PageCondition.defaultPageCondition;
+        }
+        StringAddress stringAddress = new StringAddress(request.getAddress());
+        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().querUnspendTransactionOuputListByAddress(stringAddress,pageCondition.getFrom(),pageCondition.getSize());
         return utxo;
     }
 
     @Override
-    public List<TransactionOutput> queryTxoListByAddress(String address) throws Exception {
-        StringAddress stringAddress = new StringAddress(address);
-        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryTransactionOuputListByAddress(stringAddress);
+    public List<TransactionOutput> queryTxoListByAddress(QueryTxosByAddressRequest request) throws Exception {
+        PageCondition pageCondition = request.getPageCondition();
+        if(pageCondition == null){
+            pageCondition = PageCondition.defaultPageCondition;
+        }
+        StringAddress stringAddress = new StringAddress(request.getAddress());
+        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryTransactionOuputListByAddress(stringAddress,pageCondition.getFrom(),pageCondition.getSize());
         return utxo;
     }
 
@@ -166,8 +178,12 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public List<TransactionDTO> queryMiningTransactionList() throws Exception {
-        List<TransactionDTO> transactionDtoList = blockChainCore.getMiner().getMinerTransactionDtoDataBase().selectTransactionDtoList(blockChainCore.getBlockChainDataBase(),0,100);
+    public List<TransactionDTO> queryMiningTransactionList(QueryMiningTransactionListRequest request) throws Exception {
+        PageCondition pageCondition = request.getPageCondition();
+        if(pageCondition == null){
+            pageCondition = PageCondition.defaultPageCondition;
+        }
+        List<TransactionDTO> transactionDtoList = blockChainCore.getMiner().getMinerTransactionDtoDataBase().selectTransactionDtoList(blockChainCore.getBlockChainDataBase(),pageCondition.getFrom(),pageCondition.getSize());
         return transactionDtoList;
     }
 

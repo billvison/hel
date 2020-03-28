@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionDtoDataBase {
 
@@ -62,38 +61,25 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     }
 
     @Override
-    public List<TransactionDTO> selectTransactionDtoList(BlockChainDataBase blockChainDataBase,int from, int size) throws Exception {
+    public List<TransactionDTO> selectTransactionDtoList(BlockChainDataBase blockChainDataBase,long from, long size) throws Exception {
         synchronized (BlockChainDataBase.class){
             List<TransactionDTO> transactionDtoList = new ArrayList<>();
-            List<byte[]> deleteKeyList = new ArrayList<>();
-            DBIterator dbIterator = this.transactionPoolDB.iterator();
-            int index = 0;
-            while (dbIterator.hasNext()){
-                if(index>=from && index<from+size){
-                    Map.Entry<byte[],byte[]> entry =  dbIterator.next();
-                    byte[] byteKey = entry.getKey();
-                    String key = LevelDBUtil.bytesToString(byteKey);
-                    byte[] byteTransaction = entry.getValue();
-                    if(byteTransaction == null || byteTransaction.length == 0){
-                        continue;
-                    }
-                    TransactionDTO transactionDTO = null;
-                    try {
-                        transactionDTO = decodeToTransactionDTO(byteTransaction);
-                        transactionDtoList.add(transactionDTO);
-                    } catch (Exception e) {
-                        logger.error("反序列出错",e);
-                        deleteKeyList.add(byteKey);
-                    }
-                    index++;
-                } else {
+            int cunrrentFrom = 0;
+            int cunrrentSize = 0;
+            for (DBIterator iterator = this.transactionPoolDB.iterator(); iterator.hasNext(); iterator.next()) {
+                byte[] byteValue = iterator.peekNext().getValue();
+                if(byteValue == null || byteValue.length==0){
+                    continue;
+                }
+                cunrrentFrom++;
+                if(cunrrentFrom>=from && cunrrentSize<size){
+                    TransactionDTO transactionDTO = decodeToTransactionDTO(byteValue);
+                    transactionDtoList.add(transactionDTO);
+                    cunrrentSize++;
+                }
+                if(cunrrentSize>=size){
                     break;
                 }
-            }
-            for(byte[] byteKey:deleteKeyList){
-                LevelDBUtil.delete(transactionPoolDB,byteKey);
-                //transactionPoolDB.compactRange(byteKey,null);
-                transactionPoolDB.suspendCompactions();
             }
             return transactionDtoList;
         }

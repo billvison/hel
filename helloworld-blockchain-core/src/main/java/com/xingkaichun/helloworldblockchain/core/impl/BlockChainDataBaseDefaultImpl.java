@@ -847,28 +847,58 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
     }
 
-    public List<TransactionOutput> querUnspendTransactionOuputListByAddress(StringAddress stringAddress) throws Exception {
+    public List<TransactionOutput> querUnspendTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
         byte[] addressToUnspendTransactionOuputListKey = buildAddressToUnspendTransactionOuputListKey(stringAddress.getValue());
+        int cunrrentFrom = 0;
+        int cunrrentSize = 0;
         for (iterator.seek(addressToUnspendTransactionOuputListKey); iterator.hasNext(); iterator.next()) {
-            TransactionOutput transactionOutput = EncodeDecode.decodeToTransactionOutput(iterator.peekNext().getValue());
-            transactionOutputList.add(transactionOutput);
+            byte[] byteKey = iterator.peekNext().getKey();
+            if(Bytes.indexOf(byteKey,addressToUnspendTransactionOuputListKey) != 0){
+                break;
+            }
+            byte[] byteValue = iterator.peekNext().getValue();
+            if(byteValue == null || byteValue.length==0){
+                continue;
+            }
+            cunrrentFrom++;
+            if(cunrrentFrom>=from && cunrrentSize<size){
+                TransactionOutput transactionOutput = EncodeDecode.decodeToTransactionOutput(byteValue);
+                transactionOutputList.add(transactionOutput);
+                cunrrentSize++;
+            }
+            if(cunrrentSize>=size){
+                break;
+            }
         }
         return transactionOutputList;
     }
 
-    public List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress) throws Exception {
+    public List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
         byte[] addressToTransactionOuputListKey = buildAddressToTransactionOuputListKey(stringAddress.getValue());
+        int cunrrentFrom = 0;
+        int cunrrentSize = 0;
         for (iterator.seek(addressToTransactionOuputListKey); iterator.hasNext(); iterator.next()) {
             byte[] byteKey = iterator.peekNext().getKey();
             if(Bytes.indexOf(byteKey,addressToTransactionOuputListKey) != 0){
                 break;
             }
-            TransactionOutput transactionOutput = EncodeDecode.decodeToTransactionOutput(iterator.peekNext().getValue());
-            transactionOutputList.add(transactionOutput);
+            byte[] byteValue = iterator.peekNext().getValue();
+            if(byteValue == null || byteValue.length==0){
+                continue;
+            }
+            cunrrentFrom++;
+            if(cunrrentFrom>=from && cunrrentSize<size){
+                TransactionOutput transactionOutput = EncodeDecode.decodeToTransactionOutput(byteValue);
+                transactionOutputList.add(transactionOutput);
+                cunrrentSize++;
+            }
+            if(cunrrentSize>=size){
+                break;
+            }
         }
         return transactionOutputList;
     }

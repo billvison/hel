@@ -166,7 +166,7 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.QUERY_UTXOS_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryUtxosByAddressResponse> queryUtxosByAddress(@RequestBody QueryUtxosByAddressRequest request){
         try {
-            List<TransactionOutput> utxoList = blockChainCoreService.queryUtxoListByAddress(request.getAddress());
+            List<TransactionOutput> utxoList = blockChainCoreService.queryUtxoListByAddress(request);
 
             QueryUtxosByAddressResponse response = new QueryUtxosByAddressResponse();
             response.setUtxos(utxoList);
@@ -185,7 +185,7 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.QUERY_TXOS_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryTxosByAddressResponse> queryTxosByAddress(@RequestBody QueryTxosByAddressRequest request){
         try {
-            List<TransactionOutput> txoList = blockChainCoreService.queryTxoListByAddress(request.getAddress());
+            List<TransactionOutput> txoList = blockChainCoreService.queryTxoListByAddress(request);
             if(txoList == null){
                 return ServiceResult.createFailServiceResult(String.format("地址[%s]没有对应的交易输出列表。",request.getAddress()));
             }
@@ -226,7 +226,7 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.QUERY_MINING_TRANSACTION_LIST,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryMiningTransactionListResponse> queryMiningTransactionList(@RequestBody QueryMiningTransactionListRequest request){
         try {
-            List<TransactionDTO> transactionDtoList = blockChainCoreService.queryMiningTransactionList();
+            List<TransactionDTO> transactionDtoList = blockChainCoreService.queryMiningTransactionList(request);
             QueryMiningTransactionListResponse response = new QueryMiningTransactionListResponse();
             response.setTransactionDtoList(transactionDtoList);
             return ServiceResult.createSuccessServiceResult("查询挖矿中的交易成功",response);

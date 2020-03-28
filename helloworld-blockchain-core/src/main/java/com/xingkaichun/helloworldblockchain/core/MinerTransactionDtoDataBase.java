@@ -25,7 +25,7 @@ public abstract class  MinerTransactionDtoDataBase {
     /**
      * 获取交易
      */
-    public abstract List<TransactionDTO> selectTransactionDtoList(BlockChainDataBase blockChainDataBase,int from, int size) throws Exception ;
+    public abstract List<TransactionDTO> selectTransactionDtoList(BlockChainDataBase blockChainDataBase,long from, long size) throws Exception ;
 
     /**
      * 删除交易

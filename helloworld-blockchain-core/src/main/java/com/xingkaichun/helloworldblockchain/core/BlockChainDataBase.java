@@ -111,12 +111,12 @@ public abstract class BlockChainDataBase {
     /**
      * 根据地址查询未花费交易输出
      */
-    public abstract List<TransactionOutput> querUnspendTransactionOuputListByAddress(StringAddress stringAddress) throws Exception ;
+    public abstract List<TransactionOutput> querUnspendTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception ;
 
     /**
      * 根据地址查询交易输出
      */
-    public abstract List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress) throws Exception ;
+    public abstract List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception ;
 
     //region 校验交易金额
     /**
