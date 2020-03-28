@@ -37,11 +37,11 @@ public class LevelDBUtil {
         return db.get(byteskey);
     }
 
-    public static void delete(DB db,String key) throws DBException{
+    public static void delete(DB db,String key) throws DBException, InterruptedException {
         db.delete(stringToBytes(key));
     }
 
-    public static void delete(DB db,byte[] byteskey) throws DBException{
+    public static void delete(DB db,byte[] byteskey) throws DBException, InterruptedException {
         db.delete(byteskey);
     }
 

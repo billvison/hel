@@ -72,7 +72,11 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
                 if(index>=from && index<from+size){
                     Map.Entry<byte[],byte[]> entry =  dbIterator.next();
                     byte[] byteKey = entry.getKey();
+                    String key = LevelDBUtil.bytesToString(byteKey);
                     byte[] byteTransaction = entry.getValue();
+                    if(byteTransaction == null){
+                        continue;
+                    }
                     TransactionDTO transactionDTO = null;
                     try {
                         transactionDTO = decodeToTransactionDTO(byteTransaction);
@@ -81,13 +85,15 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
                         logger.error("反序列出错",e);
                         deleteKeyList.add(byteKey);
                     }
+                    index++;
                 } else {
                     break;
                 }
-                index++;
             }
             for(byte[] byteKey:deleteKeyList){
                 LevelDBUtil.delete(transactionPoolDB,byteKey);
+                //transactionPoolDB.compactRange(byteKey,null);
+                transactionPoolDB.suspendCompactions();
             }
             return transactionDtoList;
         }

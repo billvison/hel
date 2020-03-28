@@ -33,20 +33,18 @@ public class Transaction implements Serializable {
     private String signature;
 
     /**
-     * 交易序列号
-     * 冗余【丰富区块链浏览器展示】
-     * 在交易所在区块中的的排序号
+     * 在区块中的交易序列号
+     * 冗余
      */
     private BigInteger transactionSequenceNumberInBlock;
     /**
-     * 交易序列号
-     * 冗余【丰富区块链浏览器展示】
-     * 在整个区块链系统所有交易中的排序号
+     * 在区块链中交易序列号
+     * 冗余
      */
     private BigInteger transactionSequenceNumberInBlockChain;
     /**
      * 交易所在区块的区块高度
-     * 冗余【丰富区块链浏览器展示】
+     * 冗余
      */
     private BigInteger blockHeight;
 }

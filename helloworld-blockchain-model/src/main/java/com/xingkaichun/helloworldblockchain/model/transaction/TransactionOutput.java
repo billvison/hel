@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * 交易输出
@@ -26,4 +27,21 @@ public class TransactionOutput implements Serializable {
     //交易输出的金额
     private BigDecimal value;
 
+    /**
+     * 交易所在区块的区块高度
+     * 冗余
+     */
+    private BigInteger blockHeight;
+    /**
+     * 交易输出在的交易在所在的区块中的交易序列号
+     * 冗余
+     * 在这个交易区块中的的排序号
+     */
+    private BigInteger transactionSequenceNumberInBlock;
+    /**
+     * 交易输出序列号
+     * 冗余
+     * 在这个交易中的的排序号
+     */
+    private BigInteger transactionOutputSequence;
 }

@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
+import com.google.common.primitives.Bytes;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
@@ -15,6 +16,7 @@ import com.xingkaichun.helloworldblockchain.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionType;
 import org.iq80.leveldb.DB;
+import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.WriteBatch;
 import org.iq80.leveldb.impl.WriteBatchImpl;
 import org.slf4j.Logger;
@@ -24,7 +26,10 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.spec.InvalidKeySpecException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -128,6 +133,16 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             transaction.setBlockHeight(blockHeight);
             transaction.setTransactionSequenceNumberInBlock(transactionSequenceNumberInBlock);
             transaction.setTransactionSequenceNumberInBlockChain(transactionSequenceNumberInBlockChain);
+
+            List<TransactionOutput> outputs = transaction.getOutputs();
+            if(outputs != null){
+                for (int i=0; i <outputs.size(); i++){
+                    TransactionOutput transactionOutput = outputs.get(i);
+                    transactionOutput.setBlockHeight(blockHeight);
+                    transactionOutput.setTransactionOutputSequence(BigInteger.valueOf(i));
+                    transactionOutput.setTransactionSequenceNumberInBlock(transaction.getTransactionSequenceNumberInBlock());
+                }
+            }
         }
     }
 
@@ -622,8 +637,20 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         String stringKey = UNSPEND_TRANSACTION_OUPUT_UUID_PREFIX_FLAG + transactionOutputUUID;
         return LevelDBUtil.stringToBytes(stringKey);
     }
+    private byte[] buildAddressToTransactionOuputListKey(TransactionOutput transactionOutput) {
+        String address = transactionOutput.getStringAddress().getValue();
+        String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
+        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + transactionOutputUUID;
+        return LevelDBUtil.stringToBytes(stringKey);
+    }
     private byte[] buildAddressToTransactionOuputListKey(String address) {
         String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address;
+        return LevelDBUtil.stringToBytes(stringKey);
+    }
+    private byte[] buildAddressToUnspendTransactionOuputListKey(TransactionOutput transactionOutput) {
+        String address = transactionOutput.getStringAddress().getValue();
+        String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
+        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + transactionOutputUUID;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToUnspendTransactionOuputListKey(String address) {
@@ -747,99 +774,69 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 }
             }
         }
+
         addAboutAddressWriteBatch(writeBatch,block,blockChainActionEnum);
     }
 
     private void addAboutAddressWriteBatch(WriteBatch writeBatch, Block block, BlockChainActionEnum blockChainActionEnum) throws Exception {
-        Map<String,List<TransactionOutput>> addressUtxoList = new HashMap<>();
-        Map<String,List<TransactionOutput>> addressTxoList = new HashMap<>();
-
         for(Transaction transaction : block.getTransactions()){
+            if(transaction == null){
+                return;
+            }
             List<TransactionInput> inputs = transaction.getInputs();
-            if(inputs!=null){
+            if(inputs != null){
                 for (TransactionInput transactionInput:inputs){
                     TransactionOutput utxo = transactionInput.getUnspendTransactionOutput();
-                    List<TransactionOutput> txList = queryUnspendTransactionOuputListByAddress(addressUtxoList,utxo.getStringAddress());
-                    //区块数据
+                    byte[] addressToUnspendTransactionOuputListKey = buildAddressToUnspendTransactionOuputListKey(utxo);
                     if(blockChainActionEnum == BlockChainActionEnum.ADD_BLOCK){
-                        txList.removeIf(txo -> txo.getTransactionOutputUUID().equals(utxo.getTransactionOutputUUID()));
+                        writeBatch.delete(addressToUnspendTransactionOuputListKey);
                     }else{
-                        txList.add(utxo);
+                        writeBatch.put(addressToUnspendTransactionOuputListKey,EncodeDecode.encode(utxo));
                     }
                 }
             }
+
             List<TransactionOutput> outputs = transaction.getOutputs();
-            for (TransactionOutput transactionOutput:outputs){
-                List<TransactionOutput> utxoList = queryUnspendTransactionOuputListByAddress(addressUtxoList,transactionOutput.getStringAddress());
-                if(blockChainActionEnum == BlockChainActionEnum.ADD_BLOCK){
-                    utxoList.add(transactionOutput);
-                }else{
-                    utxoList.removeIf(txo -> txo.getTransactionOutputUUID().equals(transactionOutput.getTransactionOutputUUID()));
+            if(outputs != null){
+                for (TransactionOutput transactionOutput:outputs){
+                    byte[] addressToTransactionOuputListKey = buildAddressToTransactionOuputListKey(transactionOutput);
+                    byte[] addressToUnspendTransactionOuputListKey = buildAddressToUnspendTransactionOuputListKey(transactionOutput);
+                    if(blockChainActionEnum == BlockChainActionEnum.ADD_BLOCK){
+                        byte[] byteTransactionOutput = EncodeDecode.encode(transactionOutput);
+                        writeBatch.put(addressToTransactionOuputListKey,byteTransactionOutput);
+                        writeBatch.put(addressToUnspendTransactionOuputListKey,byteTransactionOutput);
+                    }else{
+                        writeBatch.delete(addressToTransactionOuputListKey);
+                    }
                 }
-                List<TransactionOutput> txoList = queryTransactionOuputListByAddress(addressTxoList,transactionOutput.getStringAddress());
-                if(blockChainActionEnum == BlockChainActionEnum.ADD_BLOCK){
-                    txoList.add(transactionOutput);
-                }else{
-                    txoList.removeIf(txo -> txo.getTransactionOutputUUID().equals(transactionOutput.getTransactionOutputUUID()));
-                }
             }
         }
-
-        for(Map.Entry<String,List<TransactionOutput>> entry:addressUtxoList.entrySet()){
-            String address = entry.getKey();
-            List<TransactionOutput> utxoList = entry.getValue();
-            writeBatch.put(buildAddressToUnspendTransactionOuputListKey(address),EncodeDecode.encode(utxoList));
-        }
-
-        for(Map.Entry<String,List<TransactionOutput>> entry:addressTxoList.entrySet()){
-            String address = entry.getKey();
-            List<TransactionOutput> txoList = entry.getValue();
-            writeBatch.put(buildAddressToTransactionOuputListKey(address),EncodeDecode.encode(txoList));
-        }
-    }
-
-    private List<TransactionOutput> queryUnspendTransactionOuputListByAddress(Map<String, List<TransactionOutput>> addressUtxoList, StringAddress stringAddress) throws Exception {
-        List<TransactionOutput> transactionOutputList = addressUtxoList.get(stringAddress.getValue());
-        if(transactionOutputList == null){
-            transactionOutputList = querUnspendTransactionOuputListByAddress(stringAddress);
-            if(transactionOutputList == null){
-                transactionOutputList = new ArrayList<>();
-            }
-            addressUtxoList.put(stringAddress.getValue(),transactionOutputList);
-        }
-        return transactionOutputList;
-    }
-
-    private List<TransactionOutput> queryTransactionOuputListByAddress(Map<String, List<TransactionOutput>> addressUtxoList, StringAddress stringAddress) throws Exception {
-        List<TransactionOutput> transactionOutputList = addressUtxoList.get(stringAddress.getValue());
-        if(transactionOutputList == null){
-            transactionOutputList = queryTransactionOuputListByAddress(stringAddress);
-            if(transactionOutputList == null){
-                transactionOutputList = new ArrayList<>();
-            }
-            addressUtxoList.put(stringAddress.getValue(),transactionOutputList);
-        }
-        return transactionOutputList;
     }
 
     public List<TransactionOutput> querUnspendTransactionOuputListByAddress(StringAddress stringAddress) throws Exception {
-        byte[] byteTxo = LevelDBUtil.get(blockChainDB, buildAddressToUnspendTransactionOuputListKey(stringAddress.getValue()));
-        if(byteTxo==null){
-            return null;
-        }else {
-            List<TransactionOutput> transactionOutputList = EncodeDecode.decodeToTransactionOutputList(byteTxo);
-            return transactionOutputList;
+        List<TransactionOutput> transactionOutputList = new ArrayList<>();
+        DBIterator iterator = blockChainDB.iterator();
+        byte[] addressToUnspendTransactionOuputListKey = buildAddressToUnspendTransactionOuputListKey(stringAddress.getValue());
+        for (iterator.seek(addressToUnspendTransactionOuputListKey); iterator.hasNext(); iterator.next()) {
+            TransactionOutput transactionOutput = EncodeDecode.decodeToTransactionOutput(iterator.peekNext().getValue());
+            transactionOutputList.add(transactionOutput);
         }
+        return transactionOutputList;
     }
 
     public List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress) throws Exception {
-        byte[] byteTxo = LevelDBUtil.get(blockChainDB, buildAddressToTransactionOuputListKey(stringAddress.getValue()));
-        if(byteTxo == null){
-            return null;
-        }else {
-            List<TransactionOutput> transactionOutputList = EncodeDecode.decodeToTransactionOutputList(byteTxo);
-            return transactionOutputList;
+        List<TransactionOutput> transactionOutputList = new ArrayList<>();
+        DBIterator iterator = blockChainDB.iterator();
+        byte[] addressToTransactionOuputListKey = buildAddressToTransactionOuputListKey(stringAddress.getValue());
+        for (iterator.seek(addressToTransactionOuputListKey); iterator.hasNext(); iterator.next()) {
+            byte[] byteKey = iterator.peekNext().getKey();
+            if(Bytes.indexOf(byteKey,addressToTransactionOuputListKey) != 0){
+                break;
+            }
+            TransactionOutput transactionOutput = EncodeDecode.decodeToTransactionOutput(iterator.peekNext().getValue());
+            transactionOutputList.add(transactionOutput);
         }
+        return transactionOutputList;
     }
     //endregion
     //endregion
