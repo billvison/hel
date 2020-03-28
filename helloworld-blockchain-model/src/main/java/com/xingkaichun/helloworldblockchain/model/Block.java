@@ -41,8 +41,13 @@ public class Block implements Serializable {
      * 既然这个字段是有由交易列表生成的，这个字段每次需要时完全可以自己生成？为什么需要这个字段？请参考SPV。
      */
     private String merkleRoot;
-    //区块随机数
-    //这个随机数用于共识。
+
+    /**
+     * 区块随机数
+     * 这个随机数用于共识。
+     * nonce的数据类型需要满足能承载足够大的数字，以确保用户能够计算出符合要求的nonce值。
+     * nonce的值不宜过大，不然恶意用户可能计算出位数超级大的nonce值，但这个nonce又是符合计算要求的值，因此需要限制nonce的值的范围。
+     */
     private BigInteger nonce;
     /**
      * 区块哈希：由timestamp、previousHash、height、nonce、merkleRoot共同作用使用Hash算法生成。
@@ -69,4 +74,22 @@ public class Block implements Serializable {
      * 这个字段是冗余的。可以通过区块链系统计算出来。
      */
     private ConsensusTarget consensusTarget;
+
+    /**
+     * 交易笔数
+     * 冗余字段
+     */
+    private BigInteger transactionQuantity;
+
+    /**
+     * 区块中第一笔交易的的序列号
+     * 冗余字段
+     */
+    private BigInteger startTransactionSequenceNumberInBlockChain;
+
+    /**
+     * 区块中最后一笔交易的的序列号
+     * 冗余字段
+     */
+    private BigInteger endTransactionSequenceNumberInBlockChain;
 }

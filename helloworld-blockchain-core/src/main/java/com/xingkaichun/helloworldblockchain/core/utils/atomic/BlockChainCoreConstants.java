@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.utils.atomic;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.util.Collections;
 
 /**
  * 常亮工具类
@@ -36,4 +37,8 @@ public class BlockChainCoreConstants {
     public final static long TRANSACTION_TEXT_MAX_SIZE = 10240;
     //区块最多含有的交易数量
     public final static long BLOCK_MAX_TRANSACTION_SIZE = 10000;
+    //nonce最大值
+    public final static BigInteger MAX_NONCE = new BigInteger(String.join("", Collections.nCopies(50, "9")));
+    //nonce最小值
+    public final static BigInteger MIN_NONCE = BigInteger.ZERO;
 }
