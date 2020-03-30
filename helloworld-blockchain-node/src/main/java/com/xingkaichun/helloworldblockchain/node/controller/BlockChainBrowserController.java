@@ -6,7 +6,9 @@ import com.xingkaichun.helloworldblockchain.core.utils.atomic.NumberUtil;
 import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.dto.WalletDTO;
+import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.BlockChainApiRoute;
@@ -14,6 +16,7 @@ import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTra
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.*;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.node.dto.common.page.PageCondition;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainBranchService;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainCoreService;
@@ -138,6 +141,30 @@ public class BlockChainBrowserController {
     }
 
     /**
+     * 根据交易高度查询交易
+     */
+    @ResponseBody
+    @RequestMapping(value = BlockChainApiRoute.QUERY_TRANSACTION_BY_TRANSACTION_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryTransactionByTransactionHeightResponse> queryTransactionByTransactionHeight(@RequestBody QueryTransactionByTransactionHeightRequest request){
+        try {
+            if(request.getPageCondition()==null){
+                request.setPageCondition(PageCondition.defaultPageCondition);
+            }
+            List<Transaction> transactionList = blockChainCoreService.queryTransactionByTransactionHeight(request.getPageCondition());
+            if(transactionList == null){
+                return ServiceResult.createFailServiceResult(String.format("区块链中不存在交易高度[%s]，请检查输入的交易UUID。",request.getPageCondition().getFrom()));
+            }
+            QueryTransactionByTransactionHeightResponse response = new QueryTransactionByTransactionHeightResponse();
+            response.setTransactionList(transactionList);
+            return ServiceResult.createSuccessServiceResult("根据交易高度查询交易成功",response);
+        } catch (Exception e){
+            String message = "根据交易高度查询交易失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
      * 根据交易UUID查询挖矿中交易
      */
     @ResponseBody
@@ -244,15 +271,36 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(@RequestBody QueryBlockDtoByBlockHeightRequest request){
         try {
-            BlockDTO blockDTO = blockChainCoreService.queryBlockDtoByBlockHeight(request.getBlockHeight());
-            if(blockDTO == null){
+            Block block = blockChainCoreService.queryNoTransactionBlockDtoByBlockHeight(request.getBlockHeight());
+            if(block == null){
                 return ServiceResult.createFailServiceResult(String.format("区块链中不存在区块高度[%d]，请检查输入高度。",request.getBlockHeight()));
             }
             QueryBlockDtoByBlockHeightResponse response = new QueryBlockDtoByBlockHeightResponse();
-            response.setBlockDTO(blockDTO);
+            response.setBlock(block);
             return ServiceResult.createSuccessServiceResult("成功获取区块",response);
         } catch (Exception e){
             String message = "查询获取失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 根据区块高度查询区块
+     */
+    @ResponseBody
+    @RequestMapping(value = BlockChainApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HASH,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryBlockDtoByBlockHashResponse> queryBlockDtoByBlockHash(@RequestBody QueryBlockDtoByBlockHashRequest request){
+        try {
+            Block block = blockChainCoreService.queryBlockDtoByBlockHash(request.getBlockHash());
+            if(block == null){
+                return ServiceResult.createFailServiceResult(String.format("区块链中不存在区块哈希[%d]，请检查输入高度。",request.getBlockHash()));
+            }
+            QueryBlockDtoByBlockHashResponse response = new QueryBlockDtoByBlockHashResponse();
+            response.setBlock(block);
+            return ServiceResult.createSuccessServiceResult("成功获取区块",response);
+        } catch (Exception e){
+            String message = "根据区块高度查询区块失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

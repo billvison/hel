@@ -141,7 +141,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 for (int i=0; i <outputs.size(); i++){
                     TransactionOutput transactionOutput = outputs.get(i);
                     transactionOutput.setBlockHeight(blockHeight);
-                    transactionOutput.setTransactionOutputSequence(BigInteger.valueOf(i));
+                    transactionOutput.setTransactionOutputSequence(BigInteger.valueOf(i).add(BigInteger.ONE));
                     transactionOutput.setTransactionSequenceNumberInBlock(transaction.getTransactionSequenceNumberInBlock());
                 }
             }
@@ -873,6 +873,19 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             }
         }
         return transactionOutputList;
+    }
+
+    public List<Transaction> queryTransactionByTransactionHeight(BigInteger from,BigInteger size) throws Exception {
+        List<Transaction> transactionList = new ArrayList<>();
+        for(int i=0;BigIntegerUtil.isLessThan(BigInteger.valueOf(i),size);i++){
+            byte[] byteTransaction = LevelDBUtil.get(blockChainDB,buildTransactionSequenceNumberInBlockChainKey(from.add(BigInteger.valueOf(i))));
+            if(byteTransaction == null){
+                break;
+            }
+            Transaction transaction = EncodeDecode.decodeToTransaction(byteTransaction);
+            transactionList.add(transaction);
+        }
+        return transactionList;
     }
 
     public List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception {

@@ -114,6 +114,11 @@ public abstract class BlockChainDataBase {
     public abstract List<TransactionOutput> querUnspendTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception ;
 
     /**
+     * 根据交易高度查询交易
+     */
+    public abstract List<Transaction> queryTransactionByTransactionHeight(BigInteger from,BigInteger size) throws Exception ;
+
+    /**
      * 根据地址查询交易输出
      */
     public abstract List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception ;

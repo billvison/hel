@@ -1,6 +1,7 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
+import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
@@ -59,6 +60,13 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         }
         TransactionDTO transactionDTO = DtoUtils.classCast(transaction);
         return transactionDTO;
+    }
+
+    @Override
+    public List<Transaction> queryTransactionByTransactionHeight(PageCondition pageCondition) throws Exception {
+        BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
+        List<Transaction>  transactionList = blockChainDataBase.queryTransactionByTransactionHeight(BigInteger.valueOf(pageCondition.getFrom()),BigInteger.valueOf(pageCondition.getSize()));
+        return transactionList;
     }
 
     @Override
@@ -170,6 +178,18 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         }
         BlockDTO blockDTO = DtoUtils.classCast(block);
         return blockDTO;
+    }
+
+    @Override
+    public Block queryBlockDtoByBlockHash(String blockHash) throws Exception {
+        Block block = blockChainCore.getBlockChainDataBase().findBlockByBlockHash(blockHash);
+        return block;
+    }
+
+    @Override
+    public Block queryNoTransactionBlockDtoByBlockHeight(BigInteger blockHeight) throws Exception {
+        Block block = blockChainCore.getBlockChainDataBase().findNoTransactionBlockByBlockHeight(blockHeight);
+        return block;
     }
 
     @Override

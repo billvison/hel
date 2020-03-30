@@ -3,13 +3,16 @@ package com.xingkaichun.helloworldblockchain.node.service;
 import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.dto.WalletDTO;
+import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryMiningTransactionListRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryTxosByAddressRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryUtxosByAddressRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.SubmitNormalTransactionResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.common.page.PageCondition;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -24,6 +27,10 @@ public interface BlockChainCoreService {
      * 根据交易UUID获取交易
      */
     TransactionDTO queryTransactionDtoByTransactionUUID(String transactionUUID) throws Exception;
+    /**
+     * 根据交易高度获取交易
+     */
+    List<Transaction> queryTransactionByTransactionHeight(PageCondition pageCondition) throws Exception;
     /**
      * 根据地址获取UTXO
      */
@@ -45,6 +52,14 @@ public interface BlockChainCoreService {
      * 根据区块高度获取区块DTO
      */
     BlockDTO queryBlockDtoByBlockHeight(BigInteger blockHeight) throws Exception;
+    /**
+     * 根据区块哈希获取区块
+     */
+    Block queryBlockDtoByBlockHash(String blockHash) throws Exception;
+    /**
+     * 根据区块高度获取区块DTO
+     */
+    Block queryNoTransactionBlockDtoByBlockHeight(BigInteger blockHeight) throws Exception;
     /**
      * 根据区块高度获取区块Hash
      */
