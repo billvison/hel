@@ -19,29 +19,49 @@
 			<li><a href="transaction.html">交易</a></li>
 			<li><a href="my.html" class="on">个人</a></li>
 		</ul>
+		<div class="login" id="user_login"></div>
 	</div>
 </div>
 <div class="container main">
+	<ul class="my_menu">
+		<li><a href="my.html" class="on">个人信息</a></li>
+		<li><a href="my/my_node.html">节点管理</a></li>
+		<li><a href="my/my_branch.html">分叉管理</a></li>
+		<li><a href="my/my_password.html">修改账户</a></li>
+	</ul>
 	<div class="my_miner">
-		<div>
+		<div class="my_info">
+			矿工地址：<span id="miner_address"></span>
+			<button id="" class="btn_important" onclick="modifyMinerAddress()">修改地址</button>		
+		</div>
+		<div class="my_info">
 			挖矿状态：<span id="miner_status"></span>
 			<button id="miner_handle" class="btn_important" onclick="toggleUnits('miner')"></button>		
 		</div>
-		<div>
+		<div class="my_info">
 			同步状态：<span id="syn_status"></span>
 			<button id="syn_handle" class="btn_important" onclick="toggleUnits('syn')"></button>
 		</div>
-		<div><button class="btn_normal" onclick="addNodes()">添加节点</button></div>
+		<div class="my_info">
+			自动搜索节点：<span id="node_status"></span>
+			<button id="node_handle" class="btn_important" onclick="toggleUnits('node')"></button>
+		</div>
 	</div>
-	<div class="my_wallet">
+	<!-- <div class="my_wallet">
 		<button class="btn_normal"  id="generate_wallet">生成钱包</button>
-	</div>
+	</div> -->
 </div>
 
 
 </body>
 <script type="text/javascript" src="js/jQuery.js"></script>
 <script type="text/javascript" src="js/template.js"></script>
+<script type="text/javascript" src="js/islogin.js"></script>
 <script type="text/javascript" src="js/common.js"></script>
 <script type="text/javascript" src="js/my.js"></script>
+<script type="text/javascript">
+	if(login_state.state == "FAIL"){
+		window.location = "login.html";
+	}
+</script>
 </html>

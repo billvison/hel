@@ -1,20 +1,24 @@
-
-//信息提示框、确认框
-//type:0  信息提示框:点击确定后关闭弹出框，没有下一步事务
-//type:1  确认框:点击确定后，执行下一步事务,需要手动添加下一步事务
+//公共信息提示框、确认框
 //不兼容IE8以下
+//msg:弹出框内容
+//type: 弹出框类型
+	//type:0  信息提示框:点击确定后关闭弹出框，没有下一步事务
+	//type:1  确认框:点击确定后，执行下一步事务,需要手动添加下一步事务
+//affair: 点击确定后下一步要处理的业务
 var popBox = {
-    create_box: function (msg,type) {
+	fn:null,
+    createBox: function (msg,type,next_affair) {
+		popBox.fn = next_affair;
         var body = document.querySelector("body");
         var oDiv = document.createElement("div");
         oDiv.id = "n_popbox";
         var cancel,confirm;
         if (type == 0){
             cancel = "";
-            confirm = "popBox.clear_box()";
+            confirm = "popBox.clearBox()";
         }else if (type == 1){
-            cancel = "<button class=\"n_popbox_btn\" onclick=\"popBox.clear_box()\">取消</button>";
-            confirm = "popBox.next_affair()";
+            cancel = "<button class=\"n_popbox_btn\" onclick=\"popBox.clearBox()\">取消</button>";
+            confirm = "popBox.nextAffair()";
         }
         oDiv.innerHTML =
             "<div class=\"n_popbox_cont\">" +
@@ -23,13 +27,13 @@ var popBox = {
             "</div>"+
             "<div  class=\"n_popbox_bg\"></div>";
         body.appendChild(oDiv);
-        this.fade_in("n_popbox");
+        this.fadeIn("n_popbox");	
     },
-    clear_box: function () {
+    clearBox: function () {
         var body = document.querySelector("body");
         body.removeChild(body.lastChild);
     },
-    fade_in: function (para) {
+    fadeIn: function (para) {
         var o = document.getElementById(para);
         var n = 0;
         var k = window.setInterval(function () {
@@ -42,9 +46,10 @@ var popBox = {
             }
         }, 3)
     },
-    next_affair: function () {
-        popBox.clear_box();
-        //关闭弹出框后，下一步想要做的事放在这
+	//关闭弹出框后，下一步想要做的事放在这
+    nextAffair: function () { 
+		popBox.fn();
+        popBox.clearBox();
     }
 }
 
@@ -58,5 +63,12 @@ var popBox = {
 //     popBox.create_box("你确定删除吗",1);
 // });
 
-
+//字符串true/flase反转
+function reverseBoolean(para){
+	if (para=="true") {
+		return "false";
+	} else{
+		return "true";
+	}
+}
 
