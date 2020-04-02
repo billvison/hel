@@ -7,5 +7,6 @@ import java.math.BigInteger;
 @Data
 public class AddOrUpdateNodeRequest {
 
+    private int port;
     private BigInteger blockChainHeight;
 }

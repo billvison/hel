@@ -15,6 +15,7 @@ import com.xingkaichun.helloworldblockchain.node.util.NetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,6 +32,9 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
 
     @Autowired
     private Gson gson;
+
+    @Value("${server.port}")
+    private int serverPort;
 
     @Override
     public ServiceResult<EmptyResponse> sumiteTransaction(SimpleNode node, TransactionDTO transactionDTO) throws Exception {
@@ -58,7 +62,9 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
     public ServiceResult<PingResponse> pingNode(SimpleNode node) {
         try {
             String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeServerApiRoute.PING);
-            String html = NetUtil.getHtml(url,new PingRequest());
+            PingRequest pingRequest = new PingRequest();
+            pingRequest.setPort(serverPort);
+            String html = NetUtil.getHtml(url,pingRequest);
             Type jsonType = new TypeToken<ServiceResult<PingResponse>>() {}.getType();
             ServiceResult<PingResponse> pingResponseServiceResult = gson.fromJson(html,jsonType);
             if(ServiceResult.isSuccess(pingResponseServiceResult)){
@@ -79,6 +85,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
         try {
             String url = String.format("http://%s:%d%s",node.getIp(), node.getPort(), NodeServerApiRoute.ADD_OR_UPDATE_NODE);
             AddOrUpdateNodeRequest request = new AddOrUpdateNodeRequest();
+            request.setPort(serverPort);
             request.setBlockChainHeight(localBlockChainHeight);
             String html = NetUtil.getHtml(url,request);
             Type jsonType = new TypeToken<ServiceResult<AddOrUpdateNodeResponse>>() {}.getType();

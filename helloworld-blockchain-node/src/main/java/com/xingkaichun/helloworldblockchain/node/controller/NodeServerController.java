@@ -55,15 +55,14 @@ public class NodeServerController {
             BigInteger blockChainHeight = blockChainCoreService.queryBlockChainHeight();
 
             //将ping的来路作为区块链节点
-            if(configurationService.autoSearchNode()){
+           if(configurationService.autoSearchNode()){
                 Node node = new Node();
                 String ip = httpServletRequest.getRemoteHost();
-                int port = httpServletRequest.getRemotePort();
                 node.setIp(ip);
-                node.setPort(port);
+                node.setPort(request.getPort());
                 node.setIsNodeAvailable(true);
                 nodeService.addOrUpdateNode(node);
-                logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,port));
+                logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,request.getPort()));
             }
 
             PingResponse response = new PingResponse();
@@ -82,13 +81,12 @@ public class NodeServerController {
      */
     @ResponseBody
     @RequestMapping(value = NodeServerApiRoute.ADD_OR_UPDATE_NODE,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<AddOrUpdateNodeResponse> addOrUpdateNode(HttpServletRequest httpServletRequest, AddOrUpdateNodeRequest request){
+    public ServiceResult<AddOrUpdateNodeResponse> addOrUpdateNode(HttpServletRequest httpServletRequest, @RequestBody AddOrUpdateNodeRequest request){
         try {
             Node node = new Node();
             String ip = httpServletRequest.getRemoteHost();
-            int port = httpServletRequest.getRemotePort();
             node.setIp(ip);
-            node.setPort(port);
+            node.setPort(request.getPort());
             node.setIsNodeAvailable(true);
             node.setBlockChainHeight(request.getBlockChainHeight());
             node.setErrorConnectionTimes(0);
@@ -98,7 +96,7 @@ public class NodeServerController {
                 if(nodeInDb == null){
                     return ServiceResult.createSuccessServiceResult("你不是该节点的授信节点。",null);
                 }
-                logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,port));
+                logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,request.getPort()));
             }
 
             nodeService.addOrUpdateNode(node);
