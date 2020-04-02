@@ -21,4 +21,7 @@ public class AdminConsoleApiRoute {
     public static final String SET_MINER_ADDRESS = "/Api/AdminConsole/SetMinerAddress";
     public static final String IS_AUTO_SEARCH_NODE = "/Api/AdminConsole/IsAutoSearchNode";
     public static final String SET_AUTO_SEARCH_NODE = "/Api/AdminConsole/SetAutoSearchNode";
+
+
+    public static final String REMOVE_BLOCK = "/Api/AdminConsole/RemoveBlock";
 }

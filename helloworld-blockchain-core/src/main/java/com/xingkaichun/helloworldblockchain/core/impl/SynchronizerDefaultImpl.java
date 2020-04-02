@@ -146,7 +146,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
                 break;
             }
             targetBlockChainDataBase.removeTailBlock();
-            noForkBlockHeight = targetBlockChainTailBlock.getHeight();
+            noForkBlockHeight = targetBlockChainDataBase.obtainBlockChainHeight();
         }
 
         BigInteger targetBlockChainHeight = targetBlockChainDataBase.obtainBlockChainHeight() ;

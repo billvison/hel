@@ -89,10 +89,9 @@ public class TimerService {
         new Thread(()->{
             while (true){
                 try {
-                    if(!blockChainCore.getSynchronizer().isActive()){
-                        return;
+                    if(blockChainCore.getSynchronizer().isActive()){
+                        searchNewBlocks();
                     }
-                    searchNewBlocks();
                 } catch (Exception e) {
                     logger.error("在区块链网络中同步其它节点的区块出现异常",e);
                 }

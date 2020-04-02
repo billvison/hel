@@ -121,7 +121,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 }
                 Block localBlock = blockChainDataBase.findNoTransactionBlockByBlockHeight(tempBlockHeight);
                 if(localBlock.getHash().equals(blockDTO.getHash())){
-                    return;
+                    break;
                 }
                 synchronizerDataBase.addBlockDTO(nodeId,blockDTO);
                 tempBlockHeight = tempBlockHeight.subtract(BigInteger.ONE);

@@ -167,6 +167,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     @Override
     public void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) throws Exception {
+        if(blockHeight == null){
+            throw new NullPointerException("区块高度不能为空");
+        }
         if(BigIntegerUtil.isLessEqualThan(blockHeight,BigInteger.ZERO)){
             return;
         }

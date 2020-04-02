@@ -33,6 +33,9 @@ public class AdminConsoleController {
     private AdminConsoleService adminConsoleService;
 
     @Autowired
+    private BlockChainCoreService blockChainCoreService;
+
+    @Autowired
     private BlockChainBranchService blockChainBranchService;
 
     @Autowired
@@ -338,6 +341,26 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("设置否允许自动搜索区块链节点开关成功",response);
         } catch (Exception e){
             String message = "设置否允许自动搜索区块链节点开关失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 删除区块
+     */
+    @ResponseBody
+    @RequestMapping(value = AdminConsoleApiRoute.REMOVE_BLOCK,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<RemoveBlockResponse> removeBlock(@RequestBody RemoveBlockRequest request){
+        try {
+            if(request.getBlockHeight() == null){
+                return ServiceResult.createFailServiceResult("删除区块失败，区块高度不能空。");
+            }
+            blockChainCoreService.removeBlocksUtilBlockHeightLessThan(request.getBlockHeight());
+            RemoveBlockResponse response = new RemoveBlockResponse();
+            return ServiceResult.createSuccessServiceResult("删除区块成功",response);
+        } catch (Exception e){
+            String message = "删除区块失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

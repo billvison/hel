@@ -62,7 +62,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
             Type jsonType = new TypeToken<ServiceResult<PingResponse>>() {}.getType();
             ServiceResult<PingResponse> pingResponseServiceResult = gson.fromJson(html,jsonType);
             if(ServiceResult.isSuccess(pingResponseServiceResult)){
-                return ServiceResult.createSuccessServiceResult("");
+                return pingResponseServiceResult;
             } else {
                 return ServiceResult.createFailServiceResult(pingResponseServiceResult.getMessage());
             }
