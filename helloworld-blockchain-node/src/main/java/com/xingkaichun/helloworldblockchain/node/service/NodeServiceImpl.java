@@ -17,14 +17,14 @@ import java.util.List;
 @Service
 public class NodeServiceImpl implements NodeService {
 
-    @Value("${node.errorConnectionTimesRemoveThreshold}")
-    private int errorConnectionTimesRemoveThreshold;
-
     @Autowired
     private NodeDao nodeDao;
 
     @Autowired
     private BlockChainCore blockChainCore;
+
+    @Autowired
+    private ConfigurationService configurationService;
 
     @Override
     public List<Node> queryAllNoForkNodeList() {
@@ -61,7 +61,7 @@ public class NodeServiceImpl implements NodeService {
             return;
         }
         int errorConnectionTimes = nodeEntity.getErrorConnectionTimes()+1;
-        if(errorConnectionTimes >= errorConnectionTimesRemoveThreshold){
+        if(errorConnectionTimes >= configurationService.getNodeErrorConnectionTimesRemoveThreshold()){
             nodeDao.deleteNode(simpleNode);
         } else {
             nodeEntity.setErrorConnectionTimes(errorConnectionTimes);

@@ -1,7 +1,5 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
-import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.AddNodeRequest;
-
 public interface AdminConsoleService {
 
     /**

@@ -42,15 +42,6 @@ public class TimerService {
     @Autowired
     private ConfigurationService configurationService;
 
-    @Value("${node.searchNewNodeTimeInterval}")
-    private long searchNewNodeTimeInterval;
-
-    @Value("${node.searchNewBlocksTimeInterval}")
-    private long searchNewBlocksTimeInterval;
-
-    @Value("${node.checkLocalBlockChainHeightIsHighTimeInterval}")
-    private long checkLocalBlockChainHeightIsHighTimeInterval;
-
     @Autowired
     private Gson gson;
 
@@ -66,7 +57,7 @@ public class TimerService {
                     logger.error("在区块链网络中搜索新的节点出现异常",e);
                 }
                 try {
-                    Thread.sleep(searchNewNodeTimeInterval);
+                    Thread.sleep(configurationService.getNodeSearchNewNodeTimeInterval());
                 } catch (InterruptedException e) {
                 }
             }
@@ -80,7 +71,7 @@ public class TimerService {
                     logger.error("在区块链网络中广播自己的区块高度出现异常",e);
                 }
                 try {
-                    Thread.sleep(checkLocalBlockChainHeightIsHighTimeInterval);
+                    Thread.sleep(configurationService.getCheckLocalBlockChainHeightIsHighTimeInterval());
                 } catch (InterruptedException e) {
                 }
             }
@@ -96,7 +87,7 @@ public class TimerService {
                     logger.error("在区块链网络中同步其它节点的区块出现异常",e);
                 }
                 try {
-                    Thread.sleep(searchNewBlocksTimeInterval);
+                    Thread.sleep(configurationService.getSearchNewBlocksTimeInterval());
                 } catch (InterruptedException e) {
                 }
             }

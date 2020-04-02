@@ -1,6 +1,8 @@
 package com.xingkaichun.helloworldblockchain.node.controller;
 
 import com.google.common.base.Strings;
+import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
+import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.AdminConsoleApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.*;
@@ -46,6 +48,9 @@ public class AdminConsoleController {
 
     @Autowired
     private NodeService nodeService;
+
+    @Autowired
+    private BlockChainCore blockChainCore;
 
     /**
      * 矿工是否激活
@@ -214,9 +219,13 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.SET_MINER_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<SetMinerAddressResponse> setMinerAddress(@RequestBody SetMinerAddressRequest request){
         try {
-            configurationService.writeMinerAddress(request.getMinerAddress());
+            if(adminConsoleService.isMinerActive()){
+                return ServiceResult.createFailServiceResult("矿工正在挖矿，请先暂停挖矿，再设置矿工钱包地址");
+            }
+            blockChainCore.getMiner().setMinerStringAddress(new StringAddress(request.getMinerAddress()));
+            configurationService.setMinerAddress(request.getMinerAddress());
             SetMinerAddressResponse response = new SetMinerAddressResponse();
-            return ServiceResult.createSuccessServiceResult("重置矿工的地址成功，配置将在下次重启应用后生效！",response);
+            return ServiceResult.createSuccessServiceResult("成功重置矿工的钱包地址！",response);
         } catch (Exception e){
             String message = "重置矿工的地址失败";
             logger.error(message,e);
@@ -336,7 +345,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.SET_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<SetAutoSearchNodeResponse> setAutoSearchNode(@RequestBody SetAutoSearchNodeRequest request){
         try {
-            configurationService.writeAutoSearchNode(request.isAutoSearchNode());
+            configurationService.setAutoSearchNode(request.isAutoSearchNode());
             SetAutoSearchNodeResponse response = new SetAutoSearchNodeResponse();
             return ServiceResult.createSuccessServiceResult("设置否允许自动搜索区块链节点开关成功",response);
         } catch (Exception e){
