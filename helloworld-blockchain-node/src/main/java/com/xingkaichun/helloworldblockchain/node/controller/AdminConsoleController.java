@@ -184,7 +184,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.UPDATE_ADMIN_USER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<UpdateAdminUserResponse> updateAdminUserRequest(@RequestBody UpdateAdminUserRequest request){
         try {
-            userService.updateAdminUser(request.getUserDto());
+            userService.updateUser(request.getUserDto());
             UpdateAdminUserResponse response = new UpdateAdminUserResponse();
             return ServiceResult.createSuccessServiceResult("更新系统用户成功",response);
         } catch (Exception e){

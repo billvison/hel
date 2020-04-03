@@ -7,11 +7,8 @@ import java.util.List;
 public interface UserService {
 
 
-    List<UserDto> queryAllUser();
-
-    UserDto queryUserByUserId(int userId);
+    long queryUserSize();
     UserDto queryUserByUserName(String userName);
-
-    void newAdminUser(UserDto userDto);
-    void updateAdminUser(UserDto userDto);
+    void addUser(UserDto userDto);
+    void updateUser(UserDto userDto);
 }

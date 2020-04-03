@@ -11,15 +11,11 @@ import java.util.List;
 @Component
 public interface UserDao {
 
-    List<UserEntity> queryAllUser();
-
     void addUser(UserEntity userEntity);
 
     UserEntity queryUserByUserName(@Param("userName") String userName);
 
-    void deleteAllUser();
-
     void updateUser(UserEntity userEntity);
 
-    UserEntity queryUserByUserId(@Param("userId") int userId);
+    long queryUserSize();
 }

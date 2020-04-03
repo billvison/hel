@@ -12,28 +12,15 @@
         userId, userName, password
     </sql>
 
-    <select id="queryAllUser" resultMap="BaseResultMap">
-        select * from User
-    </select>
-
     <select id="queryUserByUserName" resultMap="BaseResultMap">
         select *
         from User where userName = #{userName,jdbcType=VARCHAR}
-    </select>
-
-    <select id="queryUserByUserId" resultMap="BaseResultMap">
-        select *
-        from User where userName = #{userId,jdbcType=VARCHAR}
     </select>
 
     <insert id="addUser" parameterType="com.xingkaichun.helloworldblockchain.node.model.UserEntity">
         INSERT INTO User (userName, password)
         VALUES (#{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR})
     </insert>
-
-    <delete id="deleteAllUser">
-        delete from User
-    </delete>
 
     <update id="updateUser" parameterType="com.xingkaichun.helloworldblockchain.node.model.UserEntity">
         UPDATE User SET
@@ -47,4 +34,8 @@
         </trim>
         where userId = #{userId,jdbcType=INTEGER}
     </update>
+
+    <select id="queryUserSize" resultType="java.lang.Long">
+        select count(*) from User
+    </select>
 </mapper>
