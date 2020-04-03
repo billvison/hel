@@ -16,7 +16,7 @@ helloworld-blockchain-model：区块链系统内部使用的model类，字段有
 helloworld-blockchain-node模块的打包与发布  
 打包  
 cd helloworld-blockchain-node  
-mvn -Dmaven.test.skip=true clean package install spring-boot:repackage assembly:single  
+mvn -P package-profile -Dmaven.test.skip=true clean package install spring-boot:repackage assembly:single  
 启动  
 cd target  
 tar -zxvf helloworld-blockchain-node-*.tar.gz  

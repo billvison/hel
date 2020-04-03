@@ -17,7 +17,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * 初始化钱包
+ * 初始化矿工钱包地址。系统每次启动，会校验是否配置了矿工钱包地址。
+ * 若是没有配置，则系统自动生成一个矿工钱包地址，并且将公钥、私钥、地址写入外部文件供系统使用者查看矿工钱包地址。
  */
 public class InitMinerHandler {
 
@@ -41,11 +42,18 @@ public class InitMinerHandler {
             //将钱包的地址当做矿工的地址写入数据库
             configurationService.setMinerAddress(walletDTO.getAddress());
 
-            //将钱包写入到文本 TODO 删除 由管理页面查看
+            //将钱包写入到外部文件
             FileWriter fileWriter = null;
             try {
+                String minerWalletInfo = String.format("由于您是第一次启动系统，系统自动为您分配了矿工钱包地址。\n" +
+                                "钱包私钥是[%s]\n" +
+                                "钱包公钥是[%s]\n" +
+                                "钱包地址是[%s]\n" +
+                                "为保安全，请另在其它地方妥善保存您的矿工钱包私钥、公钥、地址，并删除此文件。"
+                        ,walletDTO.getPrivateKey(),walletDTO.getPublicKey(),walletDTO.getAddress());
+
                 fileWriter = new FileWriter(new File("InitMiner.txt"));
-                fileWriter.write(gson.toJson(walletDTO));
+                fileWriter.write(minerWalletInfo);
                 fileWriter.close();
             } catch (IOException e) {
                 logger.error("创建用户出错",e);
