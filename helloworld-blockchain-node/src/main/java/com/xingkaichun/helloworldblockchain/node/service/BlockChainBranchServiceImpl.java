@@ -47,6 +47,7 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
         return !blockHashTemp.equals(blockHash);
     }
 
+    //TODO 不合理
     @Override
     public BigInteger getNearBlockHeight(BigInteger blockHeight){
         BigInteger nearBlockHeight = BigInteger.ZERO;
@@ -83,10 +84,10 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
             BlockchainBranchBlockEntity entity = blockchainBranchBlockEntityList.get(i);
             BlockDTO blockDTO = blockChainCoreService.queryBlockDtoByBlockHeight(entity.getBlockHeight());
             if(blockDTO == null){
-                continue;
+                return;
             }
             if(entity.getBlockHash().equals(blockDTO.getHash()) && BigIntegerUtil.isEquals(entity.getBlockHeight(),blockDTO.getHeight())){
-                return;
+                continue;
             }
             BigInteger deleteBlockHeight;
             if(i==0){
@@ -110,13 +111,14 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
 
     @Transactional
     @Override
-    public void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList) {
+    public void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList) throws Exception {
         blockChainBranchDao.removeAll();
         for(BlockchainBranchBlockDto blockchainBranchBlockDto:blockList){
             BlockchainBranchBlockEntity entity = classCast(blockchainBranchBlockDto);
             blockChainBranchDao.add(entity);
         }
         refreshCache();
+        branchchainBranchHandler();
     }
 
     private List<BlockchainBranchBlockDto> classCast(List<BlockchainBranchBlockEntity> blockchainBranchBlockEntityList) {

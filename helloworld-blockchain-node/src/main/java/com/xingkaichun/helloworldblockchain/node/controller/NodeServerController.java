@@ -24,7 +24,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * 节点之间交换信息的控制器
+ * 负责节点与节点通信的控制器
  */
 @Controller
 @RequestMapping

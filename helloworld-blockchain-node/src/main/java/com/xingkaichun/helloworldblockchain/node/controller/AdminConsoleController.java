@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 /**
- * admin控制台：用于控制本地区块链节点，如激活矿工、停用矿工、同步其它节点数据等。
+ * 管理员控制台的控制器：用于控制本地区块链节点，如激活矿工、停用矿工、同步其它节点数据等。
  */
 @Controller
 @RequestMapping

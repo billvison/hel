@@ -18,7 +18,7 @@ import java.util.List;
 
 
 /**
- * 注入一些配置类
+ * WebMvcConfigurer
  * @author 邢开春
  */
 @Configuration

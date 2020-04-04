@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 用户Controller
+ * 用户相关功能的控制器
  */
 @Controller
 @RequestMapping

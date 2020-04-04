@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -32,7 +31,7 @@ public class BlockchainBranchHandler {
     public final static String INIT_BLOCKCHAIN_BRANCH_FILE_NAME = "InitBlockchainBranch.txt";
 
     @PostConstruct
-    private void startThread() throws IOException {
+    private void startThread() throws Exception {
 
         if(!blockChainBranchService.isBlockchainConfirmABranch()){
             URL url = Thread.currentThread().getContextClassLoader().getResource(INIT_BLOCKCHAIN_BRANCH_FILE_NAME);

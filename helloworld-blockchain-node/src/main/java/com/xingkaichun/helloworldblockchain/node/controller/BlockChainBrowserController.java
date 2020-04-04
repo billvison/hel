@@ -3,7 +3,6 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.NumberUtil;
-import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.dto.WalletDTO;
 import com.xingkaichun.helloworldblockchain.model.Block;
@@ -34,7 +33,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 /**
- * 区块链浏览器
+ * 区块链浏览器控制器
  */
 @Controller
 @RequestMapping

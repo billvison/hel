@@ -11,7 +11,7 @@ public interface BlockChainBranchService {
     BigInteger getNearBlockHeight(BigInteger blockHeight);
 
     boolean isBlockchainConfirmABranch();
-    void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList);
+    void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList) throws Exception;
     void branchchainBranchHandler() throws Exception;
     List<BlockchainBranchBlockDto> queryBlockchainBranch();
 }
