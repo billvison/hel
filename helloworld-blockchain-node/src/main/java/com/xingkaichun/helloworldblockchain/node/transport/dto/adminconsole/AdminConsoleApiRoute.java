@@ -25,18 +25,9 @@ public class AdminConsoleApiRoute {
 
     public static final String REMOVE_BLOCK = "/Api/AdminConsole/RemoveBlock";
 
-    public static final String GET_NODE_ERROR_CONNECTION_TIMES_REMOVE_THRESHOLD = "/Api/AdminConsole/GetNodeErrorConnectionTimesRemoveThreshold";
-    public static final String SET_NODE_ERROR_CONNECTION_TIMES_REMOVE_THRESHOLD = "/Api/AdminConsole/SetNodeErrorConnectionTimesRemoveThreshold";
 
-    public static final String GET_NODE_SEARCH_NEW_NODE_TIME_INTERVAL = "/Api/AdminConsole/GetNodeSearchNewNodeTimeInterval";
-    public static final String SET_NODE_SEARCH_NEW_NODE_TIME_INTERVAL = "/Api/AdminConsole/SetNodeSearchNewNodeTimeInterval";
-
-    public static final String GET_SEARCH_NEW_BLOCKS_TIME_INTERVAL = "/Api/AdminConsole/GetSearchNewBlocksTimeInterval";
-    public static final String SET_SEARCH_NEW_BLOCKS_TIME_INTERVAL = "/Api/AdminConsole/SetSearchNewBlocksTimeInterval";
-
-    public static final String GET_CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL = "/Api/AdminConsole/GetCheckLocalBlockChainHeightIsHighTimeInterval";
-    public static final String SET_CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL = "/Api/AdminConsole/SetCheckLocalBlockChainHeightIsHighTimeInterval";
-
+    public static final String GET_CONFIGURATION_BY_CONFIGURATION_KEY_KEY = "/Api/AdminConsole/GetConfigurationByConfigurationKey";
+    public static final String SET_CONFIGURATION = "/Api/AdminConsole/SetConfiguration";
 
 
 }

@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.req
 import lombok.Data;
 
 @Data
-public class GetSearchNewBlocksTimeIntervalRequest {
+public class GetConfigurationByConfigurationKeyRequest {
 
+    private String confKey;
 }

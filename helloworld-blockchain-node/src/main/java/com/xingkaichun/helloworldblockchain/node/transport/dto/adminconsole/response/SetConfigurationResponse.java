@@ -3,7 +3,6 @@ package com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.res
 import lombok.Data;
 
 @Data
-public class IsAutoSearchNode4Response {
+public class SetConfigurationResponse {
 
-    private long checkLocalBlockChainHeightIsHighTimeInterval;
 }

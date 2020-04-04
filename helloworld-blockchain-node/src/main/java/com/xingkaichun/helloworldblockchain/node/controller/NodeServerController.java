@@ -1,6 +1,8 @@
 package com.xingkaichun.helloworldblockchain.node.controller;
 
 import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.NodeServerApiRoute;
@@ -55,7 +57,8 @@ public class NodeServerController {
             BigInteger blockChainHeight = blockChainCoreService.queryBlockChainHeight();
 
             //将ping的来路作为区块链节点
-           if(configurationService.autoSearchNode()){
+            ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
+           if(Boolean.valueOf(configurationDto.getConfValue())){
                 Node node = new Node();
                 String ip = httpServletRequest.getRemoteHost();
                 node.setIp(ip);
@@ -91,7 +94,8 @@ public class NodeServerController {
             node.setBlockChainHeight(request.getBlockChainHeight());
             node.setErrorConnectionTimes(0);
 
-            if(!configurationService.autoSearchNode()){
+            ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
+            if(!Boolean.valueOf(configurationDto.getConfValue())){
                 Node nodeInDb = nodeService.queryNode(node);
                 if(nodeInDb == null){
                     return ServiceResult.createSuccessServiceResult("你不是该节点的授信节点。",null);

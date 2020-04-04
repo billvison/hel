@@ -136,10 +136,17 @@ public class MinerDefaultImpl extends Miner {
      */
     private MiningBlock obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
         MiningBlock miningBlock = new MiningBlock();
-        //TODO 如果交易里有一笔挖矿交易
         List<TransactionDTO> forMineBlockTransactionDtoList = minerTransactionDtoDataBase.selectTransactionDtoList(blockChainDataBase,1,10000);
         List<Transaction> forMineBlockTransactionList = new ArrayList<>();
         if(forMineBlockTransactionDtoList != null){
+            Iterator<TransactionDTO> iterator = forMineBlockTransactionDtoList.iterator();
+            //TODO 写在这里位置不合理
+            while (iterator.hasNext()){
+                TransactionDTO transactionDTO = iterator.next();
+                if(TransactionType.MINER.equals(transactionDTO.getTransactionType())){
+                    iterator.remove();
+                }
+            }
             for(TransactionDTO transactionDTO:forMineBlockTransactionDtoList){
                 try {
                     Transaction transaction = NodeTransportUtils.classCast(blockChainDataBase,transactionDTO);

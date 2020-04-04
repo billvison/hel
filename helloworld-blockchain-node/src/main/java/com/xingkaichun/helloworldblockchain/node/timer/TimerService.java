@@ -3,10 +3,12 @@ package com.xingkaichun.helloworldblockchain.node.timer;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.node.service.*;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.response.PingResponse;
-import com.xingkaichun.helloworldblockchain.node.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +58,8 @@ public class TimerService {
                     logger.error("在区块链网络中搜索新的节点出现异常",e);
                 }
                 try {
-                    Thread.sleep(configurationService.getNodeSearchNewNodeTimeInterval());
+                    ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.NODE_SEARCH__NEW_NODE_TIME_INTERVAL.name());
+                    Thread.sleep(Long.parseLong(configurationDto.getConfValue()));
                 } catch (InterruptedException e) {
                 }
             }
@@ -70,7 +73,8 @@ public class TimerService {
                     logger.error("在区块链网络中广播自己的区块高度出现异常",e);
                 }
                 try {
-                    Thread.sleep(configurationService.getCheckLocalBlockChainHeightIsHighTimeInterval());
+                    ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL.name());
+                    Thread.sleep(Long.parseLong(configurationDto.getConfValue()));
                 } catch (InterruptedException e) {
                 }
             }
@@ -86,7 +90,8 @@ public class TimerService {
                     logger.error("在区块链网络中同步其它节点的区块出现异常",e);
                 }
                 try {
-                    Thread.sleep(configurationService.getSearchNewBlocksTimeInterval());
+                    ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.SEARCH_NEW_BLOCKS_TIME_INTERVAL.name());
+                    Thread.sleep(Long.parseLong(configurationDto.getConfValue()));
                 } catch (InterruptedException e) {
                 }
             }
@@ -98,12 +103,14 @@ public class TimerService {
      */
     public void searchNewNodes() {
         //TODO 性能调整，并发
-        if(!configurationService.autoSearchNode()){
+        ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
+        if(!Boolean.valueOf(configurationDto.getConfValue())){
             return;
         }
         List<Node> nodes = nodeService.queryAllNoForkNodeList();
         for(Node node:nodes){
-            if(!configurationService.autoSearchNode()){
+            configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
+            if(!Boolean.valueOf(configurationDto.getConfValue())){
                 return;
             }
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);

@@ -2,10 +2,12 @@ package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.node.dao.NodeDao;
+import com.xingkaichun.helloworldblockchain.node.model.NodeEntity;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.request.QueryNodeListRequest;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.SimpleNode;
-import com.xingkaichun.helloworldblockchain.node.model.NodeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +62,8 @@ public class NodeServiceImpl implements NodeService {
             return;
         }
         int errorConnectionTimes = nodeEntity.getErrorConnectionTimes()+1;
-        if(errorConnectionTimes >= configurationService.getNodeErrorConnectionTimesRemoveThreshold()){
+        ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.NODE_ERROR_CONNECTION_TIMES_REMOVE_THRESHOLD.name());
+        if(errorConnectionTimes >= Long.parseLong(configurationDto.getConfValue())){
             nodeDao.deleteNode(simpleNode);
         } else {
             nodeEntity.setErrorConnectionTimes(errorConnectionTimes);

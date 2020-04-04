@@ -3,14 +3,16 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
+import com.xingkaichun.helloworldblockchain.node.service.*;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.AdminConsoleApiRoute;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.request.*;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.response.*;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.user.request.UpdateAdminUserRequest;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.user.response.UpdateAdminUserResponse;
-import com.xingkaichun.helloworldblockchain.node.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -327,9 +329,9 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.IS_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsAutoSearchNodeResponse> isAutoSearchNewNode(@RequestBody IsAutoSearchNodeRequest request){
         try {
-            boolean autoSearchNode = configurationService.autoSearchNode();
+            ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
             IsAutoSearchNodeResponse response = new IsAutoSearchNodeResponse();
-            response.setAutoSearchNewNode(autoSearchNode);
+            response.setAutoSearchNewNode(Boolean.valueOf(configurationDto.getConfValue()));
             return ServiceResult.createSuccessServiceResult("查询是否允许自动搜索区块链节点成功",response);
         } catch (Exception e){
             String message = "查询是否允许自动搜索区块链节点失败";
@@ -345,7 +347,10 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.SET_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<SetAutoSearchNodeResponse> setAutoSearchNode(@RequestBody SetAutoSearchNodeRequest request){
         try {
-            configurationService.setAutoSearchNode(request.isAutoSearchNode());
+            ConfigurationDto configurationDto = new ConfigurationDto();
+            configurationDto.setConfKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
+            configurationDto.setConfValue(String.valueOf(request.isAutoSearchNode()));
+            configurationService.setConfiguration(configurationDto);
             SetAutoSearchNodeResponse response = new SetAutoSearchNodeResponse();
             return ServiceResult.createSuccessServiceResult("设置否允许自动搜索区块链节点开关成功",response);
         } catch (Exception e){
@@ -375,166 +380,42 @@ public class AdminConsoleController {
         }
     }
 
-
-
-
-    //region 配置
     /**
-     * 本地节点发现某一个节点错误次数过多，则删除该节点。获取这个次数阈值。
+     * 根据配置Key获取配置
      */
     @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.GET_NODE_ERROR_CONNECTION_TIMES_REMOVE_THRESHOLD,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<GetNodeErrorConnectionTimesRemoveThresholdResponse> getNodeErrorConnectionTimesRemoveThreshold(@RequestBody GetNodeErrorConnectionTimesRemoveThresholdRequest request){
+    @RequestMapping(value = AdminConsoleApiRoute.GET_CONFIGURATION_BY_CONFIGURATION_KEY_KEY,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<GetConfigurationByConfigurationKeyResponse> getConfigurationByConfigurationKey(@RequestBody GetConfigurationByConfigurationKeyRequest request){
         try {
-            long nodeErrorConnectionTimesRemoveThreshold = configurationService.getNodeErrorConnectionTimesRemoveThreshold();
-            GetNodeErrorConnectionTimesRemoveThresholdResponse response = new GetNodeErrorConnectionTimesRemoveThresholdResponse();
-            response.setNodeErrorConnectionTimesRemoveThreshold(nodeErrorConnectionTimesRemoveThreshold);
-            return ServiceResult.createSuccessServiceResult("本地节点发现某一个节点错误次数过多，则删除该节点。获取这个次数阈值成功",response);
-        } catch (Exception e){
-            String message = "本地节点发现某一个节点错误次数过多，则删除该节点。获取这个次数阈值失败";
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
-    /**
-     * 本地节点发现某一个节点错误次数过多，则删除该节点。设置这个次数阈值。
-     */
-    @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.SET_NODE_ERROR_CONNECTION_TIMES_REMOVE_THRESHOLD,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<SetNodeErrorConnectionTimesRemoveThresholdResponse> setNodeErrorConnectionTimesRemoveThreshold(@RequestBody SetNodeErrorConnectionTimesRemoveThresholdRequest request){
-        try {
-            long nodeErrorConnectionTimesRemoveThreshold = request.getNodeErrorConnectionTimesRemoveThreshold();
-            if(nodeErrorConnectionTimesRemoveThreshold <= 0){
-                return ServiceResult.createFailServiceResult("参数必须为正整数");
+            String confKey = request.getConfKey();
+            if(Strings.isNullOrEmpty(confKey)){
+                return ServiceResult.createFailServiceResult("查询的配置Key不能为空。");
             }
-            configurationService.setNodeErrorConnectionTimesRemoveThreshold(request.getNodeErrorConnectionTimesRemoveThreshold());
-            SetNodeErrorConnectionTimesRemoveThresholdResponse response = new SetNodeErrorConnectionTimesRemoveThresholdResponse();
-            return ServiceResult.createSuccessServiceResult("本地节点发现某一个节点错误次数过多，则删除该节点。设置这个次数阈值成功",response);
+            ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(confKey);
+            GetConfigurationByConfigurationKeyResponse response = new GetConfigurationByConfigurationKeyResponse();
+            response.setConfigurationDto(configurationDto);
+            return ServiceResult.createSuccessServiceResult(String.format("查询配置[%s]成功",request.getConfKey()),response);
         } catch (Exception e){
-            String message = "本地节点发现某一个节点错误次数过多，则删除该节点。设置这个次数阈值失败";
+            String message = String.format("查询配置[%s]失败",request.getConfKey());
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
-
 
     /**
-     * 获取[在区块链网络中自动搜寻新的节点]的间隔时间
+     * 配置
      */
     @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.GET_NODE_SEARCH_NEW_NODE_TIME_INTERVAL,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<GetNodeSearchNewNodeTimeIntervalResponse> getNodeSearchNewNodeTimeInterval(@RequestBody GetNodeSearchNewNodeTimeIntervalRequest request){
+    @RequestMapping(value = AdminConsoleApiRoute.SET_CONFIGURATION,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<SetConfigurationResponse> setConfiguration(@RequestBody SetConfigurationRequest request){
         try {
-            long nodeSearchNewNodeTimeInterval = configurationService.getNodeSearchNewNodeTimeInterval();
-            GetNodeSearchNewNodeTimeIntervalResponse response = new GetNodeSearchNewNodeTimeIntervalResponse();
-            response.setNodeSearchNewNodeTimeInterval(nodeSearchNewNodeTimeInterval);
-            return ServiceResult.createSuccessServiceResult("获取[在区块链网络中自动搜寻新的节点]的间隔时间成功",response);
+            configurationService.setConfiguration(request.getConfigurationDto());
+            SetConfigurationResponse response = new SetConfigurationResponse();
+            return ServiceResult.createSuccessServiceResult("配置成功",response);
         } catch (Exception e){
-            String message = "获取[在区块链网络中自动搜寻新的节点]的间隔时间节点失败";
+            String message = "配置失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
-    /**
-     * 设置[在区块链网络中自动搜寻新的节点]的间隔时间
-     */
-    @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.SET_SEARCH_NEW_BLOCKS_TIME_INTERVAL,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<SetSearchNewBlocksTimeIntervalResponse> setSearchNewBlocksTimeInterval(@RequestBody SetSearchNewBlocksTimeIntervalRequest request){
-        try {
-            long searchNewBlocksTimeInterval = request.getSearchNewBlocksTimeInterval();
-            if(searchNewBlocksTimeInterval <= 0){
-                return ServiceResult.createFailServiceResult("参数必须为正整数");
-            }
-            configurationService.setSearchNewBlocksTimeInterval(searchNewBlocksTimeInterval);
-            SetSearchNewBlocksTimeIntervalResponse response = new SetSearchNewBlocksTimeIntervalResponse();
-            return ServiceResult.createSuccessServiceResult("设置[在区块链网络中自动搜寻新的节点]的间隔时间成功",response);
-        } catch (Exception e){
-            String message = "设置[在区块链网络中自动搜寻新的节点]的间隔时间失败";
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
-
-
-    /**
-     * 获取[在区块链网络中自动搜寻新的区块]的间隔时间
-     */
-    @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.GET_SEARCH_NEW_BLOCKS_TIME_INTERVAL,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<GetSearchNewBlocksTimeIntervalResponse> getSearchNewBlocksTimeInterval(@RequestBody GetSearchNewBlocksTimeIntervalRequest request){
-        try {
-            long searchNewBlocksTimeInterval = configurationService.getSearchNewBlocksTimeInterval();
-            GetSearchNewBlocksTimeIntervalResponse response = new GetSearchNewBlocksTimeIntervalResponse();
-            response.setSearchNewBlocksTimeInterval(searchNewBlocksTimeInterval);
-            return ServiceResult.createSuccessServiceResult("查询[在区块链网络中自动搜寻新的区块]的间隔时间成功",response);
-        } catch (Exception e){
-            String message = "查询[在区块链网络中自动搜寻新的区块]的间隔时间失败";
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
-    /**
-     * 设置[在区块链网络中自动搜寻新的区块]的间隔时间
-     */
-    @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.SET_NODE_SEARCH_NEW_NODE_TIME_INTERVAL,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<SetNodeSearchNewNodeTimeIntervalResponse> setNodeSearchNewNodeTimeInterval(@RequestBody SetNodeSearchNewNodeTimeIntervalRequest request){
-        try {
-            long nodeSearchNewNodeTimeInterval = request.getNodeSearchNewNodeTimeInterval();
-            if(nodeSearchNewNodeTimeInterval <= 0){
-                return ServiceResult.createFailServiceResult("参数必须为正整数");
-            }
-            configurationService.setNodeSearchNewNodeTimeInterval(nodeSearchNewNodeTimeInterval);
-            SetNodeSearchNewNodeTimeIntervalResponse response = new SetNodeSearchNewNodeTimeIntervalResponse();
-            return ServiceResult.createSuccessServiceResult("设置[在区块链网络中自动搜寻新的区块]的间隔时间成功",response);
-        } catch (Exception e){
-            String message = "设置[在区块链网络中自动搜寻新的区块]的间隔时间失败";
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
-
-
-    /**
-     * 获取时间间隔
-     * 检查自己的区块链高度在区块链网络中是否是最大的高度的时间间隔
-     */
-    @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.GET_CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<IsAutoSearchNode4Response> getCheckLocalBlockChainHeightIsHighTimeInterval(@RequestBody IsAutoSearchNode4Request request){
-        try {
-            long checkLocalBlockChainHeightIsHighTimeInterval = configurationService.getCheckLocalBlockChainHeightIsHighTimeInterval();
-            IsAutoSearchNode4Response response = new IsAutoSearchNode4Response();
-            response.setCheckLocalBlockChainHeightIsHighTimeInterval(checkLocalBlockChainHeightIsHighTimeInterval);
-            return ServiceResult.createSuccessServiceResult("查询[检查自己的区块链高度在区块链网络中是否是最大的高度]的时间间隔",response);
-        } catch (Exception e){
-            String message = "查询[检查自己的区块链高度在区块链网络中是否是最大的高度]的时间间隔失败";
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
-    /**
-     * 设置时间间隔
-     * [检查自己的区块链高度在区块链网络中是否是最大的高度]的时间间隔
-     */
-    @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.SET_CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<SetCheckLocalBlockChainHeightIsHighTimeIntervalResponse> setCheckLocalBlockChainHeightIsHighTimeInterval(@RequestBody SetCheckLocalBlockChainHeightIsHighTimeIntervalRequest request){
-        try {
-            long checkLocalBlockChainHeightIsHighTimeInterval = request.getCheckLocalBlockChainHeightIsHighTimeInterval();
-            if(checkLocalBlockChainHeightIsHighTimeInterval <= 0){
-                return ServiceResult.createFailServiceResult("参数必须为正整数");
-            }
-            configurationService.setCheckLocalBlockChainHeightIsHighTimeInterval(checkLocalBlockChainHeightIsHighTimeInterval);
-            SetCheckLocalBlockChainHeightIsHighTimeIntervalResponse response = new SetCheckLocalBlockChainHeightIsHighTimeIntervalResponse();
-            return ServiceResult.createSuccessServiceResult("查询[检查自己的区块链高度在区块链网络中是否是最大的高度]的时间间隔成功",response);
-        } catch (Exception e){
-            String message = "查询[检查自己的区块链高度在区块链网络中是否是最大的高度]的时间间隔失败";
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
-    //endregion
-
 }
