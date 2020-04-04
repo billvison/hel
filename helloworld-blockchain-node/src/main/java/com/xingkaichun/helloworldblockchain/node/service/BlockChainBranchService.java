@@ -1,21 +1,17 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.InitBlockHash;
-import com.xingkaichun.helloworldblockchain.node.timer.BlockchainBranchHandler;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public interface BlockChainBranchService {
 
+    boolean isFork(BigInteger blockHeight, String blockHash);
+    BigInteger getNearBlockHeight(BigInteger blockHeight);
 
-    boolean isConfirmBlockchainBranch();
-
-    void update(InitBlockHash initBlockHash);
-
-    void checkBlockchainBranch() throws Exception;
-
-    List<BlockchainBranchBlockDto> queryBlockchainBranch();
-
+    boolean isBlockchainConfirmABranch();
     void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList);
+    void branchchainBranchHandler() throws Exception;
+    List<BlockchainBranchBlockDto> queryBlockchainBranch();
 }

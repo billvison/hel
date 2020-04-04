@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class InitBlockHash {
+public class BlockchainBranchDto {
 
     private List<BlockchainBranchBlockDto> blockList;
 }

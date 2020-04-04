@@ -15,7 +15,6 @@ import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockDtoByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockHashByBlockHeightResponse;
-import com.xingkaichun.helloworldblockchain.node.timer.BlockchainBranchHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     private NodeService nodeService;
 
     @Autowired
-    private BlockchainBranchHandler blockchainBranchHandler;
+    private BlockChainBranchService blockChainBranchService;
 
     @Autowired
     private BlockchainNodeClientService blockchainNodeClientService;
@@ -81,7 +80,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 return;
             }
             String blockHash = queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash();
-            if(blockchainBranchHandler.isFork(localBlockChainHeight,blockHash)){
+            if(blockChainBranchService.isFork(localBlockChainHeight,blockHash)){
                 forkNodeHandler(node,synchronizerDataBase);
                 return;
             }
@@ -115,7 +114,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 if(blockDTO == null){
                     break;
                 }
-                if(blockchainBranchHandler.isFork(tempBlockHeight,blockDTO.getHash())){
+                if(blockChainBranchService.isFork(tempBlockHeight,blockDTO.getHash())){
                     forkNodeHandler(node,synchronizerDataBase);
                     return;
                 }
@@ -136,7 +135,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 if(blockDTO == null){
                     break;
                 }
-                if(blockchainBranchHandler.isFork(tempBlockHeight,blockDTO.getHash())){
+                if(blockChainBranchService.isFork(tempBlockHeight,blockDTO.getHash())){
                     forkNodeHandler(node,synchronizerDataBase);
                     return;
                 }
@@ -156,7 +155,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                     synchronizerDataBase.clear(nodeId);
                     return;
                 }
-                if(blockchainBranchHandler.isFork(tempBlockHeight,blockDTO.getHash())){
+                if(blockChainBranchService.isFork(tempBlockHeight,blockDTO.getHash())){
                     forkNodeHandler(node,synchronizerDataBase);
                     return;
                 }
@@ -200,7 +199,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
         if(BigIntegerUtil.isLessEqualThan(blockChainHeight,BigInteger.ZERO)){
             return false;
         }
-        BigInteger nearBlockHeight = blockchainBranchHandler.getNearBlockHeight(blockChainHeight);
+        BigInteger nearBlockHeight = blockChainBranchService.getNearBlockHeight(blockChainHeight);
         if(BigIntegerUtil.isLessEqualThan(nearBlockHeight,BigInteger.ZERO)){
             return false;
         }
@@ -208,7 +207,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
         if(!ServiceResult.isSuccess(queryBlockHashByBlockHeightResponseServiceResult)){
             return false;
         }
-        return blockchainBranchHandler.isFork(nearBlockHeight,queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash());
+        return blockChainBranchService.isFork(nearBlockHeight,queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash());
     }
 
 
