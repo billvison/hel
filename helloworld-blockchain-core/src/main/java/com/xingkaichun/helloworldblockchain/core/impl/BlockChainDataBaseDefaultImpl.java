@@ -49,6 +49,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //区块链数据库
     private DB blockChainDB;
 
+    //TODO 可以选择关闭区块浏览器的功能，若是关闭的话，则会节约很多的磁盘空间。
+
     //区块链高度key：它对应的值是区块链的高度
     private final static String BLOCK_CHAIN_HEIGHT_KEY = "B_C_H_K";
     //区块链中总的交易数量
@@ -59,8 +61,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private final static String BLOCK_HEIGHT_PREFIX_FLAG = "B_H_P_F_";
     //区块高度标识：存储区块链高度到没有交易信息的区块的映射
     private final static String BLOCK_HEIGHT_MAP_NO_TRANSACTION_BLOCK_PREFIX_FLAG = "B_H_M_N_T_B_P_F_";
-    //区块Hash标识：存储区块链Hash到区块的映射
-    private final static String BLOCK_HASH_PREFIX_FLAG = "B_HA_P_F_";
+    //标识：存储区块链Hash到区块高度的映射
+    private final static String BLOCK_HASH_BLOCK_HEIGHT_PREFIX_FLAG = "B_HA_B_H_P_F_";
     //交易标识：存储交易UUID到交易的映射
     private final static String TRANSACTION_UUID_PREFIX_FLAG = "T_U_P_F_";
     //交易输出标识：存储交易输出UUID到交易输出的映射
@@ -244,6 +246,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
     @Override
     public Block findNoTransactionBlockByBlockHeight(BigInteger blockHeight) throws Exception {
+        if(blockHeight == null){
+            return null;
+        }
         byte[] bytesBlock = LevelDBUtil.get(blockChainDB, buildBlockHeightMapNoTransactionBlockKey(blockHeight));
         if(bytesBlock==null){
             return null;
@@ -251,12 +256,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return EncodeDecode.decodeToBlock(bytesBlock);
     }
     @Override
-    public Block findBlockByBlockHash(String blockHash) throws Exception {
-        byte[] bytesBlock = LevelDBUtil.get(blockChainDB, buildBlockHashtKey(blockHash));
-        if(bytesBlock == null){
+    public BigInteger findBlockHeightByBlockHash(String blockHash) throws Exception {
+        byte[] bytesBlockHeight = LevelDBUtil.get(blockChainDB, buildBlockHashtBlockHeightKey(blockHash));
+        if(bytesBlockHeight == null){
             return null;
         }
-        return EncodeDecode.decodeToBlock(bytesBlock);
+        return new BigInteger(LevelDBUtil.bytesToString(bytesBlockHeight));
     }
 
     @Override
@@ -331,7 +336,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验区块Hash是否已经被使用了
-        if(findBlockByBlockHash(block.getHash()) != null){
+        if(findBlockHeightByBlockHash(block.getHash()) != null){
             logger.error("区块数据异常，区块Hash已经被使用了。");
             return false;
         }
@@ -648,8 +653,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         String stringKey = BLOCK_HEIGHT_MAP_NO_TRANSACTION_BLOCK_PREFIX_FLAG + blockHeight;
         return LevelDBUtil.stringToBytes(stringKey);
     }
-    private byte[] buildBlockHashtKey(String blockHash) {
-        String stringKey = BLOCK_HASH_PREFIX_FLAG + blockHash;
+    private byte[] buildBlockHashtBlockHeightKey(String blockHash) {
+        String stringKey = BLOCK_HASH_BLOCK_HEIGHT_PREFIX_FLAG + blockHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildTransactionUuidKey(String transactionUUID) {
@@ -743,12 +748,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }else{
             writeBatch.put(totalTransactionQuantityKey, encode(transactionQuantity.subtract(BigInteger.valueOf(block.getTransactions().size()))));
         }
-        //更新区块Hash与区块的值
-        byte[] blockHashKey = buildBlockHashtKey(block.getHash());
+        //区块Hash到区块高度的映射
+        byte[] blockHashBlockHeightKey = buildBlockHashtBlockHeightKey(block.getHash());
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-            writeBatch.put(blockHashKey, EncodeDecode.encode(block));
+            writeBatch.put(blockHashBlockHeightKey, LevelDBUtil.stringToBytes(String.valueOf(block.getHeight())));
         }else{
-            writeBatch.delete(blockHashKey);
+            writeBatch.delete(blockHashBlockHeightKey);
         }
         //更新区块链的高度
         byte[] blockChainHeightKey = buildBlockChainHeightKey();

@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 public class QueryTxosByAddressResponse {
 
-    private List<TransactionOutput> utxos;
+    private List<TransactionOutput> txos;
 }

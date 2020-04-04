@@ -1,14 +1,12 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 import com.google.gson.Gson;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.EncodeDecode;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.LevelDBUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.NumberUtil;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
 import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.NumberUtil;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,10 +82,10 @@ public abstract class BlockChainDataBase {
     public abstract Block findNoTransactionBlockByBlockHeight(BigInteger blockHeight) throws Exception ;
 
     /**
-     * 在区块链中根据区块Hash查找区块
+     * 根据区块Hash查找区块高度
      * @param blockHash 区块Hash
      */
-    public abstract Block findBlockByBlockHash(String blockHash) throws Exception ;
+    public abstract BigInteger findBlockHeightByBlockHash(String blockHash) throws Exception ;
 
     /**
      * 在区块链中根据交易ID查找交易

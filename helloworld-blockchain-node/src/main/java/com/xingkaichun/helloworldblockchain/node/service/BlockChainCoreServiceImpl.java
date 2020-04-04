@@ -181,8 +181,13 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public Block queryBlockDtoByBlockHash(String blockHash) throws Exception {
-        Block block = blockChainCore.getBlockChainDataBase().findBlockByBlockHash(blockHash);
+    public Block queryNoTransactionBlockDtoByBlockHash(String blockHash) throws Exception {
+        BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
+        BigInteger blockHeight = blockChainDataBase.findBlockHeightByBlockHash(blockHash);
+        if(blockHeight == null){
+            return null;
+        }
+        Block block = blockChainDataBase.findNoTransactionBlockByBlockHeight(blockHeight);
         return block;
     }
 

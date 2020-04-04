@@ -55,7 +55,7 @@ public interface BlockChainCoreService {
     /**
      * 根据区块哈希获取区块
      */
-    Block queryBlockDtoByBlockHash(String blockHash) throws Exception;
+    Block queryNoTransactionBlockDtoByBlockHash(String blockHash) throws Exception;
     /**
      * 根据区块高度获取区块DTO
      */

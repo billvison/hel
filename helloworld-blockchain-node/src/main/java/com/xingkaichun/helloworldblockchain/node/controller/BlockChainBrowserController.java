@@ -205,7 +205,7 @@ public class BlockChainBrowserController {
     }
 
     /**
-     * 根据地址获取未花费交易输出
+     * 根据地址获取交易输出
      */
     @ResponseBody
     @RequestMapping(value = BlockChainApiRoute.QUERY_TXOS_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
@@ -216,10 +216,10 @@ public class BlockChainBrowserController {
                 return ServiceResult.createFailServiceResult(String.format("地址[%s]没有对应的交易输出列表。",request.getAddress()));
             }
             QueryTxosByAddressResponse response = new QueryTxosByAddressResponse();
-            response.setUtxos(txoList);
-            return ServiceResult.createSuccessServiceResult("根据地址获取未花费交易输出成功",response);
+            response.setTxos(txoList);
+            return ServiceResult.createSuccessServiceResult("[根据地址获取交易输出]成功",response);
         } catch (Exception e){
-            String message = "根据地址获取未花费交易输出失败";
+            String message = "[根据地址获取交易输出]失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
@@ -285,21 +285,21 @@ public class BlockChainBrowserController {
     }
 
     /**
-     * 根据区块高度查询区块
+     * 根据区块哈希查询区块
      */
     @ResponseBody
     @RequestMapping(value = BlockChainApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HASH,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryBlockDtoByBlockHashResponse> queryBlockDtoByBlockHash(@RequestBody QueryBlockDtoByBlockHashRequest request){
         try {
-            Block block = blockChainCoreService.queryBlockDtoByBlockHash(request.getBlockHash());
+            Block block = blockChainCoreService.queryNoTransactionBlockDtoByBlockHash(request.getBlockHash());
             if(block == null){
                 return ServiceResult.createFailServiceResult(String.format("区块链中不存在区块哈希[%d]，请检查输入高度。",request.getBlockHash()));
             }
             QueryBlockDtoByBlockHashResponse response = new QueryBlockDtoByBlockHashResponse();
             response.setBlock(block);
-            return ServiceResult.createSuccessServiceResult("成功获取区块",response);
+            return ServiceResult.createSuccessServiceResult("[根据区块哈希查询区块]成功",response);
         } catch (Exception e){
-            String message = "根据区块高度查询区块失败";
+            String message = "[根据区块哈希查询区块]失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
