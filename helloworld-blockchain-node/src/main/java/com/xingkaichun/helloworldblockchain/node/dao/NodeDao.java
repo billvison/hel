@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.dao;
 
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.SimpleNode;
 import com.xingkaichun.helloworldblockchain.node.model.NodeEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;

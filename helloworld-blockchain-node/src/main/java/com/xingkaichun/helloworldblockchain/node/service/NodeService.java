@@ -1,8 +1,8 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
-import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.QueryNodeListRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.request.QueryNodeListRequest;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.SimpleNode;
 
 import java.util.List;
 

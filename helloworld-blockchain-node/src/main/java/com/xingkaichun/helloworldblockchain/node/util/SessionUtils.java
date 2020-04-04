@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.util;
 
-import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.user.UserDto;
 
 import javax.servlet.http.HttpServletRequest;
 

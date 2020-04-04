@@ -1,13 +1,13 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
-import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.node.dto.common.EmptyResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockDtoByBlockHeightResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockHashByBlockHeightResponse;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.common.EmptyResponse;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.response.PingResponse;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.response.QueryBlockDtoByBlockHeightResponse;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.response.QueryBlockHashByBlockHeightResponse;
 
 import java.math.BigInteger;
 

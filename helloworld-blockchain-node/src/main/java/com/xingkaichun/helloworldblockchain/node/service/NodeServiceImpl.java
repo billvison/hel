@@ -2,12 +2,11 @@ package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.node.dao.NodeDao;
-import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.QueryNodeListRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.request.QueryNodeListRequest;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.SimpleNode;
 import com.xingkaichun.helloworldblockchain.node.model.NodeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;

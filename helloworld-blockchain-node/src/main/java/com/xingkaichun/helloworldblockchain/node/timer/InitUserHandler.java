@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.node.timer;
 
 import com.google.gson.Gson;
-import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.user.UserDto;
 import com.xingkaichun.helloworldblockchain.node.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,6 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 
 /**

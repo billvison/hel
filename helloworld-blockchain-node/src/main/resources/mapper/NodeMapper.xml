@@ -15,7 +15,7 @@
         ip, port, blockChainHeight, isNodeAvailable, errorConnectionTimes, fork
     </sql>
 
-    <select id="queryNode" parameterType="com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode" resultMap="BaseResultMap">
+    <select id="queryNode" parameterType="com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.SimpleNode" resultMap="BaseResultMap">
         select * from Node WHERE ip = #{ip,jdbcType=VARCHAR} and port = #{port,jdbcType=INTEGER}
     </select>
 
@@ -31,7 +31,7 @@
         select * from Node WHERE isNodeAvailable = 1 and fork = 0
     </select>
 
-    <delete id="deleteNode" parameterType="com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode" >
+    <delete id="deleteNode" parameterType="com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.SimpleNode" >
         delete from Node WHERE ip = #{ip,jdbcType=VARCHAR} and port = #{port,jdbcType=INTEGER}
     </delete>
 

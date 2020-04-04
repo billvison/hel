@@ -5,16 +5,16 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
-import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
+import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
-import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.node.dao.NodeDao;
-import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockDtoByBlockHeightResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBlockHashByBlockHeightResponse;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.response.PingResponse;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.response.QueryBlockDtoByBlockHeightResponse;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.response.QueryBlockHashByBlockHeightResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,7 +159,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                     forkNodeHandler(node,synchronizerDataBase);
                     return;
                 }
-                Block block = DtoUtils.classCast(blockChainDataBase,blockDTO);
+                Block block = NodeTransportUtils.classCast(blockChainDataBase,blockDTO);
                 boolean isAddBlockSuccess = blockChainDataBase.addBlock(block);
                 if(!isAddBlockSuccess){
                     synchronizerDataBase.clear(nodeId);

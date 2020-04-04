@@ -1,8 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
-import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
-
-import java.util.List;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.user.UserDto;
 
 public interface UserService {
 

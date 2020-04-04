@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>com.xingkaichun.helloworldblockchain</groupId>
-            <artifactId>helloworld-blockchain-dto</artifactId>
+            <artifactId>helloworld-blockchain-node-transport-dto</artifactId>
         </dependency>
         <dependency>
             <groupId>com.xingkaichun.helloworldblockchain</groupId>

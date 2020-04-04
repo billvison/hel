@@ -2,12 +2,11 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
 import com.xingkaichun.helloworldblockchain.core.TransactionDataBase;
-import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
 import java.math.BigInteger;
 import java.sql.*;
@@ -61,7 +60,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         preparedStatement.setString(1,nodeId);
         //TODO 类型转换失真
         preparedStatement.setInt(2,blockDTO.getHeight().intValue());
-        preparedStatement.setString(3, DtoUtils.encode(blockDTO));
+        preparedStatement.setString(3, NodeTransportUtils.encode(blockDTO));
         preparedStatement.setLong(4,System.currentTimeMillis());
         preparedStatement.executeUpdate();
         return true;
@@ -104,7 +103,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()){
             String stringBlockDto = resultSet.getString("blockDto");
-            return DtoUtils.decodeToBlockDTO(stringBlockDto);
+            return NodeTransportUtils.decodeToBlockDTO(stringBlockDto);
         }
         return null;
     }

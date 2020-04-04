@@ -1,7 +1,5 @@
 package com.xingkaichun.helloworldblockchain.node.interceptors;
 
-import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
-import com.xingkaichun.helloworldblockchain.node.util.SessionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 

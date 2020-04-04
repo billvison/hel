@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.node.timer;
 import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchDto;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.blockchainbranch.BlockchainBranchDto;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainBranchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

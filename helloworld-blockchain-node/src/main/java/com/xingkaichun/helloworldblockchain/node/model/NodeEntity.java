@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.model;
 
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.SimpleNode;
 import lombok.Data;
 
 import java.math.BigInteger;

@@ -2,26 +2,26 @@ package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
-import com.xingkaichun.helloworldblockchain.core.utils.DtoUtils;
+import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.WalletUtil;
-import com.xingkaichun.helloworldblockchain.dto.*;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.*;
 import com.xingkaichun.helloworldblockchain.model.Block;
 import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
 import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryMiningTransactionListRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryTxosByAddressRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryUtxosByAddressRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.SubmitNormalTransactionResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.common.EmptyResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.node.dto.common.page.PageCondition;
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.blockchainbrowser.NormalTransactionDto;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.blockchainbrowser.request.QueryMiningTransactionListRequest;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.blockchainbrowser.request.QueryTxosByAddressRequest;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.blockchainbrowser.request.QueryUtxosByAddressRequest;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.blockchainbrowser.response.SubmitNormalTransactionResponse;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.common.EmptyResponse;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.common.page.PageCondition;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.nodeserver.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +49,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public WalletDTO generateWalletDTO() {
         Wallet wallet = WalletUtil.generateWallet();
-        return DtoUtils.classCast(wallet);
+        return NodeTransportUtils.classCast(wallet);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         if(transaction == null){
             return null;
         }
-        TransactionDTO transactionDTO = DtoUtils.classCast(transaction);
+        TransactionDTO transactionDTO = NodeTransportUtils.classCast(transaction);
         return transactionDTO;
     }
 
@@ -146,7 +146,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(currentTimeMillis);
         transactionDTO.setTransactionUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
-        transactionDTO.setTransactionType(TransactionTypeDTO.NORMAL);
+        transactionDTO.setTransactionType(TransactionTypeDTO.NORMAL.name());
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
         signatureTransactionDTO(transactionDTO,new StringPrivateKey(privateKey));
@@ -156,7 +156,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
     @Override
     public TransactionDTO signatureTransactionDTO(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) throws Exception {
-        String signature = DtoUtils.signature(transactionDTO,stringPrivateKey);
+        String signature = NodeTransportUtils.signature(transactionDTO,stringPrivateKey);
         transactionDTO.setSignature(signature);
         return transactionDTO;
     }
@@ -176,7 +176,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         if(block == null){
             return null;
         }
-        BlockDTO blockDTO = DtoUtils.classCast(block);
+        BlockDTO blockDTO = NodeTransportUtils.classCast(block);
         return blockDTO;
     }
 

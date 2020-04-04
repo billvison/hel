@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core;
 
-import com.xingkaichun.helloworldblockchain.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 
 /**
  * 保存一定时间内(例如一年之内)产生的[所有已知的(已经被放进区块链)或是(未来可能放进区块链)]的交易。
