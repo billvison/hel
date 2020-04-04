@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
 
-import com.xingkaichun.helloworldblockchain.node.transport.dto.adminconsole.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationDto;
 
 public interface ConfigurationService {
 

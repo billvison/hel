@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.node.configurations;
 
 import com.google.gson.Gson;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.interceptors.SecurityInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

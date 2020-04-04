@@ -1,0 +1,10 @@
+package com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request;
+
+import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
+import lombok.Data;
+
+@Data
+public class ReceiveTransactionRequest {
+
+    private TransactionDTO transactionDTO;
+}

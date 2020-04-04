@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
-import com.xingkaichun.helloworldblockchain.node.transport.dto.blockchainbranch.BlockchainBranchBlockDto;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
 
 import java.math.BigInteger;
 import java.util.List;
