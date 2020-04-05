@@ -1,25 +1,23 @@
-这是一个Helloworld级别的区块链系统，即一个简单的数字货币系统。
+这是一个Helloworld级别的区块链公链系统。
 
-它包含了四个模块。  
-helloworld-blockchain-node：  
-区块链的节点模块。启动区块链节点后，在浏览器输入 http://localhost:8444 进入区块链系统的控制面板，在控制面板即可从揽全局，并控制这个区块链系统。  
-node节点主要有两个功能，  
-一是管理员身份控制本地区块链系统，例如增删节点、激活矿工（挖矿）、停用矿工、激活同步器(同步其它节点的区块数据)。  
-二是集成了区块链浏览器的功能，提交交易至区块链网络、查询未花费交易输出、查询区块等。  
-区块链节点，主要负责与其它节点沟通。启动区块链节点后，自动在整个区块链网络中寻找/发布：节点、区块、交易。  
-helloworld-blockchain-core：该模块是整个区块链系统的核心：实现了秘钥体系、挖矿、区块校验、同步其它节点的区块的逻辑。  
-helloworld-blockchain-dto：DTO包，该包中的类都是以字段最少为设计目标，用于在区块链网络中的不同节点传输区块数据。  
-helloworld-blockchain-model：区块链系统内部使用的model类，字段有冗余，但是用起来十分方便。
+它包含四个模块。 
+helloworld-blockchain-node： 它集成了四个角色的功能，一是作为区块链浏览器的角色，对外提供了查询交易、查询区块、查询区块链网络节点、查询未花费输出等功能。二是作为区块链节点的角色，主要负责与其它节点沟通，并自动的在整个区块链网络中寻找/发布：节点、区块、交易。三是作为节点管理员的角色，为用户提供管理本地节点的功能，例如增删节点、激活矿工（挖矿）、停用矿工、激活同步器(同步其它节点的区块数据)。。四是开发调试角色，为开发人员提供了十分便利的调试功能。
+
+启动区块链节点后(项目打包、部署在文档下方)，在浏览器输入 http://localhost:8444 进入区块链系统的控制面板，在控制面板即可从揽全局，控制这个区块链系统，体验区块链浏览器、区块链节点、节点管理员、开发调试等功能。
 
 
+helloworld-blockchain-core：该模块是整个区块链系统的核心，它代表着一条区块链，且对外提供了大量的接口。为了精简，设计之初，它就被设计为不含有网络模块。除了网络模块，它含有一个区块链系统应有的功能，并在底层维护着一条区块链的区块数据，对外提供的功能包含1.秘钥生成2.挖矿3.交易验证4.区块验证4.分叉处理5.区块回滚6.新增区块7.区块查询8.交易查询等等。
 
-helloworld-blockchain-node模块的打包与发布  
-打包  
-cd helloworld-blockchain-node  
-mvn -P package-profile -Dmaven.test.skip=true clean package install spring-boot:repackage assembly:single  
-启动  
-cd target  
-tar -zxvf helloworld-blockchain-node-*.tar.gz  
-cd HelloworldBlockchainNode  
+helloworld-blockchain-crypto：封装加密相关的类。1.生成私钥、公钥、地址。2.签名与签名校验。3.消息摘要。4.base58编码。等等。
+
+helloworld-blockchain-node-transport-dto：该包用于存放【节点之间数据传输使用的】dto类，不存在任何业务逻辑。该包中的dto类以字段精简【节约节点之间数据的传输流量】、类型简单【方便多种编程语言转换】为设计目标。 
+
+helloworld-blockchain-node模块的打包与发布 
+使用maven打包有两个步骤：一是进入目录，二是运行打包命令。详细命令如下:
+cd helloworld-blockchain-node 
+mvn -P package-profile -Dmaven.test.skip=true clean package install spring-boot:repackage assembly:single 
+发布项目有两个步骤：一是进入打包结果目录，二是解压，三是进入解压文件目录，四是运行启动脚本
+cd target 
+tar -zxvf helloworld-blockchain-node-*.tar.gz 
+cd HelloworldBlockchainNode 
 ./start.sh restart
-
