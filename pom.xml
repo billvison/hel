@@ -13,6 +13,7 @@
     <module>helloworld-blockchain-core</module>
     <module>helloworld-blockchain-node</module>
     <module>helloworld-blockchain-node-transport-dto</module>
+    <module>helloworld-blockchain-crypto</module>
   </modules>
 
   <name>HelloworldBlockchain-Parent</name>
