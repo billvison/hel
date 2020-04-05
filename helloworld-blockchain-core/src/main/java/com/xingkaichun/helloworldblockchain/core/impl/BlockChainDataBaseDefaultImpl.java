@@ -7,14 +7,15 @@ import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.*;
-import com.xingkaichun.helloworldblockchain.model.Block;
-import com.xingkaichun.helloworldblockchain.model.enums.BlockChainActionEnum;
-import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
-import com.xingkaichun.helloworldblockchain.model.key.StringPublicKey;
-import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.model.transaction.TransactionInput;
-import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.crypto.EcKeyUtil;
+import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.core.model.enums.BlockChainActionEnum;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.WriteBatch;
@@ -507,7 +508,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             for(TransactionInput transactionInput : inputs) {
                 StringPublicKey stringPublicKey = transactionInput.getStringPublicKey();
                 StringAddress stringAddress = transactionInput.getUnspendTransactionOutput().getStringAddress();
-                if(!KeyUtil.isStringPublicKeyEqualStringAddress(stringPublicKey,stringAddress)){
+                if(!EcKeyUtil.isStringPublicKeyEqualStringAddress(stringPublicKey,stringAddress)){
                     return false;
                 }
             }

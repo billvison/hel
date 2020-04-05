@@ -1,7 +1,7 @@
-package com.xingkaichun.helloworldblockchain.model.transaction;
+package com.xingkaichun.helloworldblockchain.core.model.transaction;
 
 
-import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import lombok.Data;
 
 import java.io.Serializable;

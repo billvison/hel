@@ -1,14 +1,13 @@
 package com.xingkaichun.helloworldblockchain.core.utils.atomic;
 
-import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.model.key.StringPublicKey;
-import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.model.transaction.TransactionInput;
-import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.crypto.CipherUtil;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 
 import java.math.BigDecimal;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -98,8 +97,7 @@ public class TransactionUtil {
      * 交易签名
      */
     public static String signature(Transaction transaction, StringPrivateKey stringPrivateKey) throws Exception {
-        PrivateKey privateKey = KeyUtil.convertStringPrivateKeyToPrivateKey(stringPrivateKey);
-        byte[] bytesSignature = CipherUtil.applyECDSASig(privateKey,signatureData(transaction));
+        byte[] bytesSignature = CipherUtil.applyECDSASig(stringPrivateKey,signatureData(transaction));
         String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
         return strSignature;
     }
@@ -109,10 +107,9 @@ public class TransactionUtil {
      */
     public static boolean verifySignature(Transaction transaction) throws Exception {
         StringPublicKey senderStringPublicKey = getSenderStringPublicKey(transaction);
-        PublicKey publicKey = KeyUtil.convertStringPublicKeyToPublicKey(senderStringPublicKey);
         String strSignature = transaction.getSignature();
         byte[] bytesSignature = Base64.getDecoder().decode(strSignature);
-        return CipherUtil.verifyECDSASig(publicKey,signatureData(transaction),bytesSignature);
+        return CipherUtil.verifyECDSASig(senderStringPublicKey,signatureData(transaction),bytesSignature);
     }
 
     public static List<String> getInputUtxoIds(Transaction transaction){

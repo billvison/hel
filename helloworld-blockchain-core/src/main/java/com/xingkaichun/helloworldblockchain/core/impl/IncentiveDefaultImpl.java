@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
-import com.xingkaichun.helloworldblockchain.model.Block;
+import com.xingkaichun.helloworldblockchain.core.model.Block;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

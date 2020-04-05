@@ -3,23 +3,21 @@ package com.xingkaichun.helloworldblockchain.core.utils;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.CipherUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.TransactionUtil;
+import com.xingkaichun.helloworldblockchain.crypto.CipherUtil;
+import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
+import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.*;
-import com.xingkaichun.helloworldblockchain.model.Block;
-import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
-import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.model.key.StringPublicKey;
-import com.xingkaichun.helloworldblockchain.model.key.Wallet;
-import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.model.transaction.TransactionInput;
-import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.model.transaction.TransactionType;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -195,8 +193,7 @@ public class NodeTransportUtils {
      * 交易签名
      */
     public static String signature(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) throws Exception {
-        PrivateKey privateKey = KeyUtil.convertStringPrivateKeyToPrivateKey(stringPrivateKey);
-        byte[] bytesSignature = CipherUtil.applyECDSASig(privateKey,signatureData(transactionDTO));
+        byte[] bytesSignature = CipherUtil.applyECDSASig(stringPrivateKey,signatureData(transactionDTO));
         String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
         return strSignature;
     }

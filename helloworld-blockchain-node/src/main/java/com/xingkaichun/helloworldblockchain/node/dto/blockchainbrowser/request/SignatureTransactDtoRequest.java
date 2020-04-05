@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request;
 
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import lombok.Data;
 
 @Data

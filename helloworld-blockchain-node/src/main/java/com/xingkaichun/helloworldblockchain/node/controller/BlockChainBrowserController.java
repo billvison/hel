@@ -1,25 +1,24 @@
 package com.xingkaichun.helloworldblockchain.node.controller;
 
 import com.google.common.base.Strings;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.NumberUtil;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.*;
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.*;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.WalletDTO;
-import com.xingkaichun.helloworldblockchain.model.Block;
-import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.crypto.EcKeyUtil;
+import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.BlockChainApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.*;
+import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.*;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.common.page.PageCondition;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainBranchService;
 import com.xingkaichun.helloworldblockchain.node.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.node.service.NodeService;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.WalletDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +80,7 @@ public class BlockChainBrowserController {
                 return ServiceResult.createFailServiceResult("私钥不能为空");
             }
             try {
-                KeyUtil.convertStringPrivateKeyToPrivateKey(new StringPrivateKey(privateKey));
+                EcKeyUtil.fromEncodePrivateKey(privateKey);
             } catch (Exception e){
                 return ServiceResult.createFailServiceResult("私钥不正确，请检查输入的私钥");
             }

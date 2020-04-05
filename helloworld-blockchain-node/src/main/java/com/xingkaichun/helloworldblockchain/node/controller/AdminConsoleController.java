@@ -2,7 +2,7 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 
 import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
-import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.*;
 import com.xingkaichun.helloworldblockchain.node.service.*;

@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.core.utils.atomic;
+package com.xingkaichun.helloworldblockchain.crypto;
 
 import java.util.Arrays;
 

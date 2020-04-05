@@ -3,8 +3,8 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
-import com.xingkaichun.helloworldblockchain.model.Block;
-import com.xingkaichun.helloworldblockchain.model.ConsensusTarget;
+import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.core.model.ConsensusTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

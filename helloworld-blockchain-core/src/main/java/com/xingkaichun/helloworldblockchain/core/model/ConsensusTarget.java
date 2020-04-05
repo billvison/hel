@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.model;
+package com.xingkaichun.helloworldblockchain.core.model;
 
 import lombok.Data;
 

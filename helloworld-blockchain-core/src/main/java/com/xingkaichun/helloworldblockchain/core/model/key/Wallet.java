@@ -1,5 +1,8 @@
-package com.xingkaichun.helloworldblockchain.model.key;
+package com.xingkaichun.helloworldblockchain.core.model.key;
 
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import lombok.Data;
 
 /**

@@ -1,7 +1,7 @@
-package com.xingkaichun.helloworldblockchain.model;
+package com.xingkaichun.helloworldblockchain.core.model;
 
 
-import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import lombok.Data;
 
 import java.io.Serializable;

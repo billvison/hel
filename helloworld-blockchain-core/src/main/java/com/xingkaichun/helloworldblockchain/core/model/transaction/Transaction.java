@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.model.transaction;
+package com.xingkaichun.helloworldblockchain.core.model.transaction;
 
 
 import lombok.Data;

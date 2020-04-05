@@ -3,16 +3,16 @@ package com.xingkaichun.helloworldblockchain.node.service;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.KeyUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.WalletUtil;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.*;
-import com.xingkaichun.helloworldblockchain.model.Block;
-import com.xingkaichun.helloworldblockchain.model.key.StringAddress;
-import com.xingkaichun.helloworldblockchain.model.key.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.model.key.Wallet;
-import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.crypto.EcKeyUtil;
+import com.xingkaichun.helloworldblockchain.crypto.HelloWorldEcKey;
+import com.xingkaichun.helloworldblockchain.core.utils.WalletUtil;
+import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryMiningTransactionListRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryTxosByAddressRequest;
@@ -22,12 +22,11 @@ import com.xingkaichun.helloworldblockchain.node.dto.common.EmptyResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.common.page.PageCondition;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,8 +118,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
     private TransactionDTO classCast(NormalTransactionDto normalTransactionDto) throws Exception {
         String privateKey = normalTransactionDto.getPrivateKey();
-        ECPublicKey ecPublicKey = KeyUtil.publicFromPrivate((ECPrivateKey) KeyUtil.convertStringPrivateKeyToPrivateKey(new StringPrivateKey(privateKey)));
-
+        HelloWorldEcKey helloWorldEcKey = EcKeyUtil.fromEncodePrivateKey(privateKey);
         long currentTimeMillis = System.currentTimeMillis();
 
         List<NormalTransactionDto.Output> outputs = normalTransactionDto.getOutputs();
@@ -139,7 +137,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         for(String input:inputs){
             TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
             transactionInputDTO.setUnspendTransactionOutputUUID(input);
-            transactionInputDTO.setPublicKey(KeyUtil.convertPublicKeyToStringPublicKey(ecPublicKey).getValue());
+            transactionInputDTO.setPublicKey(helloWorldEcKey.getHelloWorldPublicEcKey().getEncodePublicKey());
             transactionInputDtoList.add(transactionInputDTO);
         }
 

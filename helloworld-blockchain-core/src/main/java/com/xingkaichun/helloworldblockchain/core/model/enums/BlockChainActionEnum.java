@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.model.enums;
+package com.xingkaichun.helloworldblockchain.core.model.enums;
 
 public enum BlockChainActionEnum {
 

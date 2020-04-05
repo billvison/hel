@@ -1,4 +1,7 @@
-package com.xingkaichun.helloworldblockchain.core.utils.atomic;
+package com.xingkaichun.helloworldblockchain.crypto;
+
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 
 import java.security.MessageDigest;
 import java.security.PrivateKey;
@@ -13,10 +16,10 @@ public class CipherUtil {
     /**
      * hash
      */
-    public static String applySha256(String input) {
+    public static String applySha256(byte[] input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(input.getBytes(BlockChainCoreConstants.CHARSET_UTF_8));
+            byte[] hash = digest.digest(input);
             StringBuffer hexString = new StringBuffer();
             for (int i = 0; i < hash.length; i++) {
                 String hex = Integer.toHexString(0xff & hash[i]);
@@ -46,10 +49,28 @@ public class CipherUtil {
     }
 
     /**
+     * ECDSA签名
+     */
+    public static byte[] applyECDSASig(StringPrivateKey stringPrivateKey, String data) {
+        try {
+            PrivateKey privateKey = EcKeyUtil.convertStringPrivateKeyToPrivateKey(stringPrivateKey);
+            Signature signature = Signature.getInstance("ECDSA", "BC");
+            signature.initSign(privateKey);
+            byte[] strByte = data.getBytes();
+            signature.update(strByte);
+            byte[] sign = signature.sign();
+            return sign;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * ECDSA签名验证
      */
-    public static boolean verifyECDSASig(PublicKey publicKey, String data, byte[] signature) {
+    public static boolean verifyECDSASig(StringPublicKey senderStringPublicKey, String data, byte[] signature) {
         try {
+            PublicKey publicKey = EcKeyUtil.convertStringPublicKeyToPublicKey(senderStringPublicKey);
             Signature ecdsaVerify = Signature.getInstance("ECDSA", "BC");
             ecdsaVerify.initVerify(publicKey);
             ecdsaVerify.update(data.getBytes());
@@ -58,7 +79,6 @@ public class CipherUtil {
             throw new RuntimeException(e);
         }
     }
-
     /**
      * RipeMD160消息摘要
      */
@@ -69,5 +89,9 @@ public class CipherUtil {
     public static String ripeMD160(String data) throws Exception{
         MessageDigest md = MessageDigest.getInstance("RipeMD160");
         return new String(md.digest(data.getBytes()));
+    }
+
+    public static String applySha256(String inputs) {
+        return applySha256(inputs.getBytes());
     }
 }

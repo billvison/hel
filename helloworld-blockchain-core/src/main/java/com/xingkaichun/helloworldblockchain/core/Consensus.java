@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core;
 
-import com.xingkaichun.helloworldblockchain.model.Block;
-import com.xingkaichun.helloworldblockchain.model.ConsensusTarget;
+import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.core.model.ConsensusTarget;
 import lombok.Data;
 
 /**

@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response;
 
-import com.xingkaichun.helloworldblockchain.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import lombok.Data;
 
 import java.util.List;
