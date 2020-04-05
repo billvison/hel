@@ -1,8 +1,7 @@
 这是一个Helloworld级别的区块链公链系统。
 
-它包含四个模块。 
+它包含四个模块。  
 helloworld-blockchain-node： 它集成了四个角色的功能，一是作为区块链浏览器的角色，对外提供了查询交易、查询区块、查询区块链网络节点、查询未花费输出等功能。二是作为区块链节点的角色，主要负责与其它节点沟通，并自动的在整个区块链网络中寻找/发布：节点、区块、交易。三是作为节点管理员的角色，为用户提供管理本地节点的功能，例如增删节点、激活矿工（挖矿）、停用矿工、激活同步器(同步其它节点的区块数据)。。四是开发调试角色，为开发人员提供了十分便利的调试功能。
-
 启动区块链节点后(项目打包、部署在文档下方)，在浏览器输入 http://localhost:8444 进入区块链系统的控制面板，在控制面板即可从揽全局，控制这个区块链系统，体验区块链浏览器、区块链节点、节点管理员、开发调试等功能。
 
 
@@ -12,12 +11,12 @@ helloworld-blockchain-crypto：封装加密相关的类。1.生成私钥、公�
 
 helloworld-blockchain-node-transport-dto：该包用于存放【节点之间数据传输使用的】dto类，不存在任何业务逻辑。该包中的dto类以字段精简【节约节点之间数据的传输流量】、类型简单【方便多种编程语言转换】为设计目标。 
 
-helloworld-blockchain-node模块的打包与发布 
-使用maven打包有两个步骤：一是进入目录，二是运行打包命令。详细命令如下:
-cd helloworld-blockchain-node 
-mvn -P package-profile -Dmaven.test.skip=true clean package install spring-boot:repackage assembly:single 
-发布项目有两个步骤：一是进入打包结果目录，二是解压，三是进入解压文件目录，四是运行启动脚本
-cd target 
-tar -zxvf helloworld-blockchain-node-*.tar.gz 
-cd HelloworldBlockchainNode 
-./start.sh restart
+helloworld-blockchain-node模块的打包与发布  
+使用maven打包有两个步骤：一是进入目录，二是运行打包命令。详细命令如下:  
+cd helloworld-blockchain-node  
+mvn -P package-profile -Dmaven.test.skip=true clean package install spring-boot:repackage assembly:single  
+发布项目有两个步骤：一是进入打包结果目录，二是解压，三是进入解压文件目录，四是运行启动脚本  
+cd target  
+tar -zxvf helloworld-blockchain-node-*.tar.gz  
+cd HelloworldBlockchainNode  
+./start.sh restart  
