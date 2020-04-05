@@ -61,8 +61,14 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.IS_MINER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsMinerActiveResponse> isMineActive(@RequestBody IsMinerActiveRequest request){
         try {
+            ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_MINER_ACTIVE.name());
+            boolean isMineActiveByDatabase = Boolean.valueOf(configurationDto.getConfValue());
             boolean isMineActive = adminConsoleService.isMinerActive();
-
+            if(isMineActiveByDatabase != isMineActive){
+                String message = String.format("配置%s与真实运行情况不一致，请检查原因。",ConfigurationEnum.IS_MINER_ACTIVE.name());
+                logger.error(message);
+                return ServiceResult.createFailServiceResult(message);
+            }
             IsMinerActiveResponse response = new IsMinerActiveResponse();
             response.setMinerInActiveState(isMineActive);
             return ServiceResult.createSuccessServiceResult("查询矿工是否处于激活状态成功",response);
@@ -80,7 +86,11 @@ public class AdminConsoleController {
     public ServiceResult<ActiveMinerResponse> activeMiner(@RequestBody ActiveMinerRequest request){
         try {
             adminConsoleService.activeMiner();
+
+            ConfigurationDto configurationDto = new ConfigurationDto(ConfigurationEnum.IS_MINER_ACTIVE.name(),String.valueOf(true));
+            configurationService.setConfiguration(configurationDto);
             ActiveMinerResponse response = new ActiveMinerResponse();
+
             response.setActiveMinerSuccess(true);
             return ServiceResult.createSuccessServiceResult("激活矿工成功",response);
         } catch (Exception e){
@@ -97,7 +107,11 @@ public class AdminConsoleController {
     public ServiceResult<DeactiveMinerResponse> deactiveMiner(@RequestBody DeactiveMinerRequest request){
         try {
             adminConsoleService.deactiveMiner();
+
+            ConfigurationDto configurationDto = new ConfigurationDto(ConfigurationEnum.IS_MINER_ACTIVE.name(),String.valueOf(false));
+            configurationService.setConfiguration(configurationDto);
             DeactiveMinerResponse response = new DeactiveMinerResponse();
+
             response.setDeactiveMinerSuccess(true);
             return ServiceResult.createSuccessServiceResult("停用矿工成功",response);
         } catch (Exception e){
@@ -116,8 +130,14 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.IS_SYNCHRONIZER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsSynchronizerActiveResponse> isSynchronizerActive(@RequestBody IsSynchronizerActiveRequest request){
         try {
+            ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_SYNCHRONIZER_ACTIVE.name());
+            boolean isSynchronizerActiveByDatabase = Boolean.valueOf(configurationDto.getConfValue());
             boolean isSynchronizerActive = adminConsoleService.isSynchronizerActive();
-
+            if(isSynchronizerActiveByDatabase != isSynchronizerActive){
+                String message = String.format("配置%s与真实运行情况不一致，请检查原因。",ConfigurationEnum.IS_SYNCHRONIZER_ACTIVE.name());
+                logger.error(message);
+                return ServiceResult.createFailServiceResult(message);
+            }
             IsSynchronizerActiveResponse response = new IsSynchronizerActiveResponse();
             response.setSynchronizerInActiveState(isSynchronizerActive);
             return ServiceResult.createSuccessServiceResult("查询同步器是否激活成功",response);
@@ -135,7 +155,11 @@ public class AdminConsoleController {
     public ServiceResult<ActiveSynchronizerResponse> activeSynchronizer(@RequestBody ActiveSynchronizerRequest request){
         try {
             adminConsoleService.activeSynchronizer();
+
+            ConfigurationDto configurationDto = new ConfigurationDto(ConfigurationEnum.IS_SYNCHRONIZER_ACTIVE.name(),String.valueOf(true));
+            configurationService.setConfiguration(configurationDto);
             ActiveSynchronizerResponse response = new ActiveSynchronizerResponse();
+
             response.setActiveSynchronizerSuccess(true);
             return ServiceResult.createSuccessServiceResult("激活同步器成功",response);
         } catch (Exception e){
@@ -152,7 +176,11 @@ public class AdminConsoleController {
     public ServiceResult<DeactiveSynchronizerResponse> deactiveSynchronizer(@RequestBody DeactiveSynchronizerRequest request){
         try {
             adminConsoleService.deactiveSynchronizer();
+
+            ConfigurationDto configurationDto = new ConfigurationDto(ConfigurationEnum.IS_SYNCHRONIZER_ACTIVE.name(),String.valueOf(false));
+            configurationService.setConfiguration(configurationDto);
             DeactiveSynchronizerResponse response = new DeactiveSynchronizerResponse();
+
             response.setDeactiveSynchronizerSuccess(true);
             return ServiceResult.createSuccessServiceResult("停用同步器成功",response);
         } catch (Exception e){

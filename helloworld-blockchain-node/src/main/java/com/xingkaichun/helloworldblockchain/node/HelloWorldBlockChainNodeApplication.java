@@ -48,10 +48,27 @@ public class HelloWorldBlockChainNodeApplication {
 			blockchainDataPath = new File(path,"blockchaindata").getAbsolutePath();
 		}
 		System.out.println(String.format("区块链数据存放的路径是%s",blockchainDataPath));
+
+		//矿工钱包地址
 		ConfigurationDto minerAddressConfigurationDto =  configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
 		BlockChainCore blockChainCore = new BlockChainCoreFactory().createBlockChainCore(blockchainDataPath,minerAddressConfigurationDto.getConfValue());
-		blockChainCore.getMiner().deactive();
-		blockChainCore.getSynchronizer().deactive();
+
+		//是否激活矿工
+		ConfigurationDto isMinerActiveConfigurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_MINER_ACTIVE.name());
+		if(Boolean.valueOf(isMinerActiveConfigurationDto.getConfValue())){
+			blockChainCore.getMiner().active();
+		}else {
+			blockChainCore.getMiner().deactive();
+		}
+
+		//是否激活同步者
+		ConfigurationDto isSynchronizerActiveConfigurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_SYNCHRONIZER_ACTIVE.name());
+		if(Boolean.valueOf(isSynchronizerActiveConfigurationDto.getConfValue())){
+			blockChainCore.getSynchronizer().active();
+		}else {
+			blockChainCore.getSynchronizer().deactive();
+		}
+
 		new Thread(()->{
 			try {
 				blockChainCore.start();
