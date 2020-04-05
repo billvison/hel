@@ -203,9 +203,9 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.QUERY_MINER_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryMinerAddressResponse> queryMinerAddress(@RequestBody QueryMinerAddressRequest request){
         try {
-            String minerAddress = configurationService.getMinerAddress();
+            ConfigurationDto minerAddressConfigurationDto =  configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
             QueryMinerAddressResponse response = new QueryMinerAddressResponse();
-            response.setMinerAddress(minerAddress);
+            response.setMinerAddress(minerAddressConfigurationDto.getConfValue());
             return ServiceResult.createSuccessServiceResult("查询矿工的地址成功",response);
         } catch (Exception e){
             String message = "查询矿工的地址失败";
@@ -225,7 +225,10 @@ public class AdminConsoleController {
                 return ServiceResult.createFailServiceResult("矿工正在挖矿，请先暂停挖矿，再设置矿工钱包地址");
             }
             blockChainCore.getMiner().setMinerStringAddress(new StringAddress(request.getMinerAddress()));
-            configurationService.setMinerAddress(request.getMinerAddress());
+            ConfigurationDto configurationDto = new ConfigurationDto();
+            configurationDto.setConfKey(ConfigurationEnum.MINER_ADDRESS.name());
+            configurationDto.setConfValue(request.getMinerAddress());
+            configurationService.setConfiguration(configurationDto);
             SetMinerAddressResponse response = new SetMinerAddressResponse();
             return ServiceResult.createSuccessServiceResult("成功重置矿工的钱包地址！",response);
         } catch (Exception e){

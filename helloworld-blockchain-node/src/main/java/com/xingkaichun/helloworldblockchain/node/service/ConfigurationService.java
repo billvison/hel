@@ -6,15 +6,6 @@ import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationD
 public interface ConfigurationService {
 
     /**
-     * 获取矿工钱包地址
-     */
-    String getMinerAddress();
-    /**
-     * 设置矿工钱包地址
-     */
-    void setMinerAddress(String address);
-
-    /**
      * 根据配置Key获取配置
      */
     ConfigurationDto getConfigurationByConfigurationKey(String confKey);

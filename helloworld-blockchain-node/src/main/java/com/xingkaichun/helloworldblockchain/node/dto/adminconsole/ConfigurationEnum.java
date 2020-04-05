@@ -1,6 +1,7 @@
 package com.xingkaichun.helloworldblockchain.node.dto.adminconsole;
 
 public enum ConfigurationEnum {
+    MINER_ADDRESS("","矿工钱包的地址。"),
     AUTO_SEARCH_NODE("true","是否允许节点自动在区块链网络中搜索节点。"),
     FORK_BLOCK_SIZE("100","两个区块链有分叉时，区块差异个数大于这个值，则真的分叉了。"),
     NODE_ERROR_CONNECTION_TIMES_REMOVE_THRESHOLD("100","本地节点发现某一个节点错误次数过多，则删除该节点。这个阈值配置。"),

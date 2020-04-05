@@ -6,6 +6,8 @@ import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCoreFactory;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.node.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.node.timer.BlockchainBranchHandler;
 import com.xingkaichun.helloworldblockchain.node.timer.InitMinerHandler;
@@ -30,24 +32,24 @@ public class HelloWorldBlockChainNodeApplication {
 	@Value("${blockchainDataPath:}")
 	private String blockchainDataPath;
 
-	@Autowired
-	private ConfigurationService configurationService;
-
 
 	public static void main(String[] args) throws Exception {
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 		SpringApplication.run(HelloWorldBlockChainNodeApplication.class, args);
 	}
 
+	@Autowired
+	private ConfigurationService configurationService;
 
 	@Bean
-	public BlockChainCore buildBlockChainCore(InitMinerHandler initMinerHandler) throws Exception {
+	public BlockChainCore buildBlockChainCore(/*先初始化*/InitMinerHandler initMinerHandler) throws Exception {
 		if(Strings.isNullOrEmpty(blockchainDataPath)){
 			String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
 			blockchainDataPath = new File(path,"blockchaindata").getAbsolutePath();
 		}
 		System.out.println(String.format("区块链数据存放的路径是%s",blockchainDataPath));
-		BlockChainCore blockChainCore = new BlockChainCoreFactory().createBlockChainCore(blockchainDataPath,configurationService.getMinerAddress());
+		ConfigurationDto minerAddressConfigurationDto =  configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
+		BlockChainCore blockChainCore = new BlockChainCoreFactory().createBlockChainCore(blockchainDataPath,minerAddressConfigurationDto.getConfValue());
 		blockChainCore.getMiner().deactive();
 		blockChainCore.getSynchronizer().deactive();
 		new Thread(()->{

@@ -2,11 +2,13 @@ package com.xingkaichun.helloworldblockchain.node.timer;
 
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
+import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.WalletUtil;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.WalletDTO;
-import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.node.service.ConfigurationService;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.WalletDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +35,16 @@ public class InitMinerHandler {
 
     @PostConstruct
     private void startThread() throws IOException {
-
-        if(Strings.isNullOrEmpty(configurationService.getMinerAddress())){
+        ConfigurationDto minerAddressConfigurationDto =  configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
+        if(Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             //创建钱包
             Wallet wallet = WalletUtil.generateWallet();
             WalletDTO walletDTO =  NodeTransportUtils.classCast(wallet);
 
             //将钱包的地址当做矿工的地址写入数据库
-            configurationService.setMinerAddress(walletDTO.getAddress());
+            minerAddressConfigurationDto.setConfKey(ConfigurationEnum.MINER_ADDRESS.name());
+            minerAddressConfigurationDto.setConfValue(walletDTO.getAddress());
+            configurationService.setConfiguration(minerAddressConfigurationDto);
 
             //将钱包写入到外部文件
             FileWriter fileWriter = null;
