@@ -18,7 +18,7 @@ helloworld-blockchain-node： 它集成了四个角色的功能。启动区块�
 ### helloworld-blockchain-node-transport-dto  
 该包用于存放【节点之间数据传输使用的】dto类，不存在任何业务逻辑。该包中的dto类以字段精简【节约节点之间数据的传输流量】、类型简单【方便多种编程语言转换】为设计目标。 
 
-### helloworld-blockchain-node模块的打包与发布  
+### 打包与发布  
 使用maven打包有两个步骤：一是进入目录，二是运行打包命令。详细命令如下:  
 ```  
 cd helloworld-blockchain-node  
