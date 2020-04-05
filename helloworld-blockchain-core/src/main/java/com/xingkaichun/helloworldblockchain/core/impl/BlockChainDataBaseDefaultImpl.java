@@ -5,17 +5,17 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
-import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.*;
-import com.xingkaichun.helloworldblockchain.crypto.EcKeyUtil;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.enums.BlockChainActionEnum;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.*;
+import com.xingkaichun.helloworldblockchain.crypto.EcKeyUtil;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.WriteBatch;
@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -555,9 +554,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                     logger.error("交易校验失败：校验交易签名失败。不合法的交易。");
                     return false;
                 }
-            }catch (InvalidKeySpecException invalidKeySpecException){
-                logger.error("交易校验失败：校验交易签名失败。不合法的交易。",invalidKeySpecException);
-                return false;
             }catch (Exception e){
                 logger.error("交易校验失败：校验交易签名失败。不合法的交易。",e);
                 return false;

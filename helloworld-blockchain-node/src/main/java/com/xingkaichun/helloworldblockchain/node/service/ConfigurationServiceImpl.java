@@ -51,7 +51,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         //默认值
         for (ConfigurationEnum configurationEnum:ConfigurationEnum.values()){
             if(configurationEnum.name().equals(confKey)){
-                configurationDto.setConfValue(configurationEnum.getConfValue());
+                configurationDto.setConfValue(configurationEnum.getDefaultConfValue());
+                return configurationDto;
             }
         }
         throw new RuntimeException(String.format("系统中不存在配置%s",confKey));

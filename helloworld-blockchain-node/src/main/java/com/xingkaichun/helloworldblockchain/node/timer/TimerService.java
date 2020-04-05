@@ -58,7 +58,7 @@ public class TimerService {
                     logger.error("在区块链网络中搜索新的节点出现异常",e);
                 }
                 try {
-                    ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.NODE_SEARCH__NEW_NODE_TIME_INTERVAL.name());
+                    ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.NODE_SEARCH_NEW_NODE_TIME_INTERVAL.name());
                     Thread.sleep(Long.parseLong(configurationDto.getConfValue()));
                 } catch (InterruptedException e) {
                 }

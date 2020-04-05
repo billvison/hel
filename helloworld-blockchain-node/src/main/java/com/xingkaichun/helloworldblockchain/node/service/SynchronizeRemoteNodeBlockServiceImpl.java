@@ -7,6 +7,8 @@ import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
 import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.node.dao.NodeDao;
@@ -44,6 +46,9 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     private BlockchainNodeClientService blockchainNodeClientService;
 
     @Autowired
+    private ConfigurationService configurationService;
+
+    @Autowired
     private Gson gson;
 
     @Override
@@ -61,12 +66,9 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
         String nodeId = buildNodeId(node);
         //这里直接清除老旧的数据，这里希望同步的操作可以在进程没有退出之前完成。
         synchronizerDataBase.clear(nodeId);
-        //最大支持的回滚的区块个数。
-        //TODO 配置
-        BigInteger rollBlockSizeAllow = BigInteger.valueOf(100);
-        //每次支持同步区块数
-        //TODO 配置
-        BigInteger synchronizationBlockSize = BigInteger.valueOf(100);
+        //分叉参数
+        ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.FORK_BLOCK_SIZE.name());
+        BigInteger forkBlockSize = new BigInteger(configurationDto.getConfValue());
         Block tailBlock = blockChainDataBase.findTailNoTransactionBlock();
         BigInteger localBlockChainHeight = tailBlock==null?BigInteger.ZERO:tailBlock.getHeight();
 
@@ -106,7 +108,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 if(BigIntegerUtil.isLessEqualThan(tempBlockHeight,BigInteger.ZERO)){
                     break;
                 }
-                if(BigIntegerUtil.isGreateThan(localBlockChainHeight,tempBlockHeight.add(rollBlockSizeAllow))){
+                if(BigIntegerUtil.isGreateThan(localBlockChainHeight,tempBlockHeight.add(forkBlockSize))){
                     forkNodeHandler(node,synchronizerDataBase);
                     return;
                 }
@@ -141,8 +143,8 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 }
                 synchronizerDataBase.addBlockDTO(nodeId,blockDTO);
                 tempBlockHeight = tempBlockHeight.add(BigInteger.ONE);
-                if(BigIntegerUtil.isGreateEqualThan(tempBlockHeight,localBlockChainHeight.add(synchronizationBlockSize))){
-                    //一次不要同步过多
+                //若是有分叉时，一次同步的最后一个区块至少要比本地区块链的高度大于1
+                if(BigIntegerUtil.isGreateEqualThan(tempBlockHeight,localBlockChainHeight.add(BigInteger.ONE))){
                     break;
                 }
             }
