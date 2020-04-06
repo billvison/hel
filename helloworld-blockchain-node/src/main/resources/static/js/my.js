@@ -11,11 +11,9 @@ var miner_status = document.getElementById('miner_status');//获取矿工状态
 var miner_handle = document.getElementById('miner_handle');//获取激活按钮
 var syn_status = document.getElementById('syn_status');//获取同步状态
 var syn_handle = document.getElementById('syn_handle');//获取同步按钮
-var node_status = document.getElementById('node_status');//获取节点状态
-var node_handle = document.getElementById('node_handle');//获取节点按钮
+var miner_address = document.getElementById('miner_address');//获取矿工地址
 //获取矿工地址
-function getMinerAddress() {
-	var miner_address = document.getElementById('miner_address');
+function getMinerAddress() {   
     $.ajax({
         type: "post",
         url: url + "/Api/AdminConsole/QueryMinerAddress",
@@ -24,9 +22,8 @@ function getMinerAddress() {
         dataType: "json",
         async: false,
         success: function (data) {
-			if(data.serviceCode = "SUCCESS"){
-				miner_address.innerHTML = data.result.minerAddress;
-			}   
+            miner_address.textContent = data.result.minerAddress;
+			// console.log(data.result.minerAddress);
         },
         error: function (e) {
         }
@@ -220,35 +217,6 @@ function toggleUnits(para){
 		activeMiner(para);
 	}
 }
-//生成钱包
-// function generateWallet(){
-// 	var wallet = {};
-// 	$.ajax({
-// 	    type: "post",
-// 	    url: url + "/Api/BlockChain/GenerateWalletDTO",
-// 	    contentType: "application/json",
-// 	    data: `{}`,
-// 	    dataType: "json",
-// 	    async: false,
-// 	    success: function (data) {
-// 	        wallet.walletDTO = data.result.walletDTO;
-// 			// wallet.privateKey = data.result.walletDTO.privateKey;
-// 	    },
-// 	    error: function (e) {
-// 	    }
-// 	});
-// 	return wallet.walletDTO;
-// }
-// var generate_wallet = document.getElementById("generate_wallet");
 
-// generate_wallet.addEventListener('click',function () {
-// 	// console.log(generateWallet().privateKey);
-// 	var wallet = generateWallet();
-// 	var a = '<h1>注意: 以下内容为自动生成,请妥善保管,丢失一律不负责</h1>'+
-// 			'<div><b>私钥</b>: '+ wallet.privateKey + '</div>' +
-// 			'<div><b>公钥</b>: '+ wallet.publicKey + '</div>' +
-// 			'<div><b>地址</b>: '+ wallet.address + '</div>' ;
-//     popBox.createBox(a,0);
-// });
 
 

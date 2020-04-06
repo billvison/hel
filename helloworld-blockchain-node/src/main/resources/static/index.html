@@ -17,6 +17,7 @@
 			<li><a href="index.html" class="on">首页</a></li>
 			<li><a href="search.html">搜索</a></li>
 			<li><a href="transaction.html">交易</a></li>
+			<li><a href="wallet.html">钱包</a></li>
 			<li><a href="my.html">个人</a></li>
 		</ul>
 		<div class="login" id="user_login"></div>
@@ -31,9 +32,9 @@
 		<li>
 			<span>地址：{{item.ip}}</span>
 			<span>端口：{{item.port}}</span>
-			<!-- <span>区块高度：{{item.blockChainHeight}}</span> -->
+			<span>区块高度：{{item.blockChainHeight}}</span>
 			<span>连接失败：{{item.errorConnectionTimes}}</span>
-			<span>节点状态：{{item.nodeAvailable}}</span>
+			<span>节点状态：{{item.isNodeAvailable}}</span>
 		</li>
 		{{/each}}
 	</ul>
@@ -44,5 +45,5 @@
 <script type="text/javascript" src="js/jQuery.js"></script>
 <script type="text/javascript" src="js/template.js"></script>
 <script type="text/javascript" src="js/islogin.js"></script>
-<script type="text/javascript" src="js/js.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
 </html>

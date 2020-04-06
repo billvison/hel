@@ -16,31 +16,16 @@
 		<ul class="nav_menu">
 			<li><a href="index.html">首页</a></li>
 			<li><a href="search.html">搜索</a></li>
-			<li><a href="transaction.html" class="on">交易</a></li>
-			<li><a href="wallet.html">钱包</a></li>
+			<li><a href="transaction.html">交易</a></li>
+			<li><a href="wallet.html" class="on">钱包</a></li>
 			<li><a href="my.html">个人</a></li>
 		</ul>
 		<div class="login" id="user_login"></div>
 	</div>
 </div>
-<div class="container main">
-	<div class="my_trans" id="input_val">
-		<ul>
-			<li><input type="text" class="c_txt" name="privatekey" placeholder="请输入私钥"></li>
-		</ul>
-		<ul id="uuid">	
-			<li><input type="text" class="c_txt" name="uuid" placeholder="请输入交易输出的UUID"><span onclick="addText(1)" class="add_btn">添加</span></li>
-		</ul>
-		<div id="output">
-			<dl>
-				<dd><input type="text" class="c_txt" placeholder="输出地址"></dd>
-				<dd><input type="text" class="c_txt" placeholder="输出金额"><span onclick="addText(2)" class="add_btn">添加</span></dd>
-			</dl>
-		</div>
-	</div>
-	<div class="submit_trans_btn"><button class="btn_important" onclick="submitTrans()">提交交易到区块链网络</button></div>
+<div class="container main uniform">
+	<div class="wallet"><button type="button" class="btn_important" onclick="generateWallet()">生成钱包</button></div>
 </div>
-
 
 
 </body>
@@ -48,5 +33,5 @@
 <script type="text/javascript" src="js/template.js"></script>
 <script type="text/javascript" src="js/islogin.js"></script>
 <script type="text/javascript" src="js/common.js"></script>
-<script type="text/javascript" src="js/transaction.js"></script>
+<script type="text/javascript" src="js/wallet.js"></script>
 </html>
