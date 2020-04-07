@@ -7,11 +7,64 @@ var url = "";
 var miner = {};//矿工信息
 var syn = {};//同步信息
 var node = {};//节点信息
+var block_heght = document.getElementById('block_heght');//获取区块高度
 var miner_status = document.getElementById('miner_status');//获取矿工状态
 var miner_handle = document.getElementById('miner_handle');//获取激活按钮
 var syn_status = document.getElementById('syn_status');//获取同步状态
 var syn_handle = document.getElementById('syn_handle');//获取同步按钮
 var miner_address = document.getElementById('miner_address');//获取矿工地址
+var fork_block_size = document.getElementById('fork_block_size');//硬分叉区块个数
+var node_error_delete = document.getElementById('node_error_delete');//删除节点连接错误阈值
+var node_search_interval = document.getElementById('node_search_interval');//主动寻找节点的时间间隔
+var search_new_block = document.getElementById('search_new_block');//主动寻找新的区块的时间间隔
+var check_local_block = document.getElementById('check_local_block');//主动检测自身是否是区块链网络区块链长度最大的时间间隔
+//获取区块高度
+function queryBlockHeight() {   
+    $.ajax({
+        type: "post",
+        url: url + "/Api/BlockChain/Ping",
+        contentType: "application/json",
+        data: `{}`,
+        dataType: "json",
+        async: false,
+        success: function (data) {
+            block_heght.textContent = data.result.blockChainHeight;			
+        },
+        error: function (e) {
+        }
+    });
+}
+queryBlockHeight();
+//删除区块
+function removeBlock() {
+	var getContent = '<dl><dt><h2>删除区块</h2></dt>' +
+				     '<dd><font>输入区块高度:</font><input name="block_height" type="text" class="c_txt"></dd></dl>';
+	var nextStaff = function(){
+		remveBlockAjax();
+	}
+	popBox.createBox(getContent,1,nextStaff);
+	function remveBlockAjax(){
+		var height = $(".n_popbox_msg input[name=block_height]").val();
+		$.ajax({
+		    type: "post",
+		    url: url + "/Api/AdminConsole/RemoveBlock",
+		    contentType: "application/json",
+		    data: `{
+				"blockHeight":"${height}"
+			}`,
+		    dataType: "json",
+		    async: false,
+		    success: function (data) {
+				if(data.serviceCode = "SUCCESS"){
+					alert(data.message);
+					queryBlockHeight();
+				}   
+		    },
+		    error: function (e) {
+		    }
+		});
+	}
+}
 //获取矿工地址
 function getMinerAddress() {   
     $.ajax({
@@ -35,10 +88,10 @@ function modifyMinerAddress() {
 	var getContent = '<dl><dt><h2>修改地址地址</h2></dt>' +
 				     '<dd><font>请输入新地址:</font><input name="address" type="text" class="c_txt"></dd></dl>';
 	var nextStaff = function(){
-		modifyAddress();
+		modifyAddressAjax();
 	}
 	popBox.createBox(getContent,1,nextStaff);
-	function modifyAddress(){
+	function modifyAddressAjax(){
 		var address = $(".n_popbox_msg input[name=address]").val();
 		$.ajax({
 		    type: "post",
@@ -202,7 +255,7 @@ function deactiveMiner(para) {
     });
 }
 
-//双向操控
+//开关按钮双向操控
 function toggleUnits(para){
 	if(para == 'miner'){
 		var i = getMinerStatus();
@@ -217,6 +270,69 @@ function toggleUnits(para){
 		activeMiner(para);
 	}
 }
-
-
+//获取配置信息
+function getConfig(){
+	var ary = [
+		"FORK_BLOCK_SIZE",
+		"NODE_ERROR_CONNECTION_TIMES_REMOVE_THRESHOLD",
+		"NODE_SEARCH_NEW_NODE_TIME_INTERVAL",
+		"SEARCH_NEW_BLOCKS_TIME_INTERVAL",
+		"CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL"
+	];
+	for (var i=0; i<ary.length; i++) {
+		var ospan = document.getElementById(ary[i]);
+		$.ajax({
+		    type: "post",
+		    url: url + "/Api/AdminConsole/GetConfigurationByConfigurationKey",
+		    contentType: "application/json",
+		    data: `{
+				"confKey":"${ary[i]}"
+			}`,
+		    dataType: "json",
+		    async: false,
+		    success: function (data) {
+				ospan.textContent = data.result.configurationDto.confValue;
+		    },
+		    error: function (e) {
+		    }
+		});
+	}
+}
+//配置
+getConfig();
+function setConfig(){
+	var cur_btn = event.srcElement ? event.srcElement : event.target;
+	var id = cur_btn.previousElementSibling.id;
+	console.log(id);
+	var getContent = '<dl><dt><h2>设置</h2></dt>' +
+				     '<dd><font>输入数字:</font><input name="value" type="text" class="c_txt"></dd></dl>';
+	var nextStaff = function(){
+		setConfigAjax();
+	}
+	popBox.createBox(getContent,1,nextStaff);
+	function setConfigAjax(){
+		var value = $(".n_popbox_msg input[name=value]").val();
+		$.ajax({
+		    type: "post",
+		    url: url + "/Api/AdminConsole/SetConfiguration",
+		    contentType: "application/json",
+		    data: `{
+				"configurationDto":{
+						"confKey":"${id}",
+						"confValue":"${value}"
+					}
+			}`,
+		    dataType: "json",
+		    async: false,
+		    success: function (data) {
+				if(data.serviceCode = "SUCCESS"){
+					alert(data.message);
+					cur_btn.previousElementSibling.textContent = value;
+				}  
+		    },
+		    error: function (e) {
+		    }
+		});
+	}	
+}
 

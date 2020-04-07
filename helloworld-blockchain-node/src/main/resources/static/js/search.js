@@ -250,7 +250,7 @@ function showTransList(){
 	    data: `{
 			"pageCondition":{
 			  "from":${delay_load_index},
-			  "size":1
+			  "size":2
 			 }
 		}`,
 	    dataType: "json",
@@ -265,7 +265,7 @@ function showTransList(){
 			} else{
 				result = data.result;
 				char = tempTransList(result);
-				delay_load_index++;
+				delay_load_index +=2;
 			}
 	    },
 	    error: function (e) {

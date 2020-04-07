@@ -1,5 +1,22 @@
+//获取用户账号信息
+function getUserInfo() {	
+    $.ajax({
+        type: "post",
+        url: "/Api/User/QueryLoginUserInfo",
+        contentType: "application/json",
+        data: `{}`,
+        dataType: "json",
+        async: false,
+        success: function (data) {
+			$(".modify_info input[name=id]").val(data.result.userDto.userId);
+			$(".modify_info input[name=name]").val(data.result.userDto.userName);
+        },
+        error: function (e) {
+        }
+    });
+}
+getUserInfo();
 //修改密码
-// var url = "";
 function modifyInfo() {
     var user = {};
 	user.id = $(".modify_info input[name=id]").val();

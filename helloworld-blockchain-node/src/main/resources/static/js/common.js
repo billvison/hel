@@ -5,6 +5,8 @@
 	//type:0  信息提示框:点击确定后关闭弹出框，没有下一步事务
 	//type:1  确认框:点击确定后，执行下一步事务,需要手动添加下一步事务
 //affair: 点击确定后下一步要处理的业务
+var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+var clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
 var popBox = {
 	fn:null,
     createBox: function (msg,type,next_affair) {
@@ -21,13 +23,13 @@ var popBox = {
             confirm = "popBox.nextAffair()";
         }
         oDiv.innerHTML =
-            "<div class=\"n_popbox_cont\">" +
+            "<div class=\"n_popbox_cont\" id=\"n_popbox_cont\">" +
             "<div  class=\"n_popbox_msg\">"+msg+"</div>"+
             cancel+"<button class=\"n_popbox_btn btn2\" onclick="+confirm+">确定</button>"+
-            "</div>"+
-            "<div  class=\"n_popbox_bg\"></div>";
+            "</div>";
         body.appendChild(oDiv);
-        this.fadeIn("n_popbox");	
+        this.fadeIn("n_popbox");
+		
     },
     clearBox: function () {
         var body = document.querySelector("body");
@@ -35,6 +37,9 @@ var popBox = {
     },
     fadeIn: function (para) {
         var o = document.getElementById(para);
+		o.style.height = clientHeight + "px";
+		o.style.width = clientWidth + "px";
+		o.firstChild.style.marginTop = clientHeight / 4 + "px";		
         var n = 0;
         var k = window.setInterval(function () {
             n = n+1;
@@ -52,7 +57,6 @@ var popBox = {
         popBox.clearBox();
     }
 }
-
 //调用弹出框
 // var btn1 = document.getElementById("btn1");
 // var btn2 = document.getElementById("btn2");
