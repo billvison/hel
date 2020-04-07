@@ -4,6 +4,12 @@ var click_times = 0;
 var search_result = document.getElementById("search_result"); //获取输出到的父容器
 //选择搜索类型
 $("#search_select").change(function() {
+	//重置状态
+	$("#search_result").empty();
+    delay_load_index =0;
+    address_index = 1;
+	click_times = 0;
+
 	var value = $("#search_select option:selected").val();
 	switch (value) {
 		case "block_byheight":
@@ -37,14 +43,21 @@ $("#search_select").change(function() {
 });
 //公共函数:搜索
 function searchUnit() {
+    //重置状态
+    delay_load_index =0;
+    address_index = 1;
+	click_times = 0;
+
+    $("#search_result").empty();
+    innerSearchUnit();
+}
+function innerSearchUnit() {
 	var url = "/Api/BlockChain",
 		address = "",
 		data = "",
 		result = {};
 	var type = $("#search_select option:selected").val(); //获取搜索类型
 	var input_val = $("#search_input").val(); //获取搜索输入内容
-	var search_title = document.getElementById("search_title");
-	search_title.style.display = "block";
 	switch (type) {
 		case "block_byheight": //根据高度搜索区块
 			address = "/QueryBlockDtoByBlockHeight";
@@ -72,7 +85,7 @@ function searchUnit() {
 			break;
 		case "minning_byall": //查询挖矿中的交易
 			address = "/QueryMiningTransactionList";
-			data = '"pageCondition":{"from":'+address_index+',"size":3}';
+			data = '"pageCondition":{"from":'+address_index+',"size":50}';
 			break;
 	}	
 	$.ajax({
@@ -84,31 +97,47 @@ function searchUnit() {
 		}`,
 		dataType: "json",
 		async: false,
-		success: function(data) {	
+		success: function(data) {
 			if (data.serviceCode=="SUCCESS") {
-				if (data.result.utxos && data.result.utxos.length == 0) {
-					noMore();
-				} else if(data.result.transactionDtoList && data.result.transactionDtoList.length == 0){
-					noMore();
-				} else{
-					console.log(data);
-					result = data.result;
-					var odiv = document.createElement("div");
-					odiv.className = "result_list";
-					odiv.id = "result_list";
-					odiv.innerHTML = resultTemp(result,type); //调用模板函数,传入返回数据和类型,生成搜索结果页面
-					if (click_times == 0) {
-						search_result.appendChild(odiv); //结果输出到页面
-					} else {
-						console.log("第二次点击");
-						search_result.removeChild(search_result.firstChild.nextElementSibling);
-						search_result.appendChild(odiv); //结果输出到页面
-					}
-					click_times = 1;
-				}
-				
+			    if(click_times == 0){
+                    if (data.result.txos && data.result.txos.length == 0) {
+                        click_times += 1;
+                        showSearchEmptyResult();
+                        return;
+                    } else if (data.result.utxos && data.result.utxos.length == 0) {
+                    	click_times += 1;
+                        showSearchEmptyResult();
+                        return;
+                    } else if(data.result.transactionDtoList && data.result.transactionDtoList.length == 0){
+                        click_times += 1;
+                        showSearchEmptyResult();
+                        return;
+                    }
+			    }else{
+                    if (data.result.txos && data.result.txos.length == 0) {
+                        click_times += 1;
+                        noMore();
+                        return;
+                    } else if (data.result.utxos && data.result.utxos.length == 0) {
+                    click_times += 1;
+                       noMore();
+                       return;
+                   } else if(data.result.transactionDtoList && data.result.transactionDtoList.length == 0){
+                        click_times += 1;
+                        noMore();
+                        return;
+                    }
+			    }
+                console.log(data);
+                result = data.result;
+                var odiv = document.createElement("div");
+                odiv.className = "result_list";
+                odiv.id = "result_list";
+                odiv.innerHTML = resultTemp(result,type); //调用模板函数,传入返回数据和类型,生成搜索结果页面
+                search_result.appendChild(odiv); //结果输出到页面
+                click_times += 1;
 			} else{
-				search_result.textContent = "暂无内容";
+				showSearchEmptyResult();
 			}
 		},
 		error: function(e) {}
@@ -129,7 +158,7 @@ function resultTemp(result,type){
 			show_result = txosByAddress(result);
 			break;
 		case "utxos_byaddress":
-			show_result = txosByAddress(result);
+			show_result = utxosByAddress(result);
 			break;
 		case "trans_byuuid":
 			show_result = transByUuid(result);
@@ -170,13 +199,31 @@ function blockByHeight(result){
 //展示搜索结果(根据地址搜索未花费交易输出)
 function txosByAddress(result){
 	var temp = "";
-	for (var i=0; i<result.utxos.length; i++) {
-		temp += '<dl><dd>transactionOutputUUID: ' + result.utxos[i].transactionOutputUUID + '</dd>' +
-				'<dd>stringAddress: ' + result.utxos[i].stringAddress.value + '</dd>' +
-				'<dd>value: ' + result.utxos[i].value + '</dd>' +
-				'<dd>blockHeight: ' + result.utxos[i].blockHeight + '</dd>' +
-				'<dd>transactionSequenceNumberInBlock: ' + result.utxos[i].transactionSequenceNumberInBlock + '</dd>' +
-				'<dd>transactionOutputSequence: ' + result.utxos[i].transactionOutputSequence + '</dd></dl>';
+	if(!result.txos || result.txos.length==0){
+	} else {
+        for (var i=0; i<result.txos.length; i++) {
+            temp += '<dl><dd>transactionOutputUUID: ' + result.txos[i].transactionOutputUUID + '</dd>' +
+                    '<dd>stringAddress: ' + result.txos[i].stringAddress.value + '</dd>' +
+                    '<dd>value: ' + result.txos[i].value + '</dd>' +
+                    '<dd>blockHeight: ' + result.txos[i].blockHeight + '</dd>' +
+                    '<dd>transactionSequenceNumberInBlock: ' + result.txos[i].transactionSequenceNumberInBlock + '</dd>' +
+                    '<dd>transactionOutputSequence: ' + result.txos[i].transactionOutputSequence + '</dd></dl>';
+        }
+	}
+	return temp;
+}
+function utxosByAddress(result){
+	var temp = "";
+	if(!result.utxos || result.utxos.length==0){
+	} else {
+        for (var i=0; i<result.utxos.length; i++) {
+            temp += '<dl><dd>transactionOutputUUID: ' + result.utxos[i].transactionOutputUUID + '</dd>' +
+                    '<dd>stringAddress: ' + result.utxos[i].stringAddress.value + '</dd>' +
+                    '<dd>value: ' + result.utxos[i].value + '</dd>' +
+                    '<dd>blockHeight: ' + result.utxos[i].blockHeight + '</dd>' +
+                    '<dd>transactionSequenceNumberInBlock: ' + result.utxos[i].transactionSequenceNumberInBlock + '</dd>' +
+                    '<dd>transactionOutputSequence: ' + result.utxos[i].transactionOutputSequence + '</dd></dl>';
+        }
 	}
 	return temp;
 }
@@ -250,7 +297,7 @@ function showTransList(){
 	    data: `{
 			"pageCondition":{
 			  "from":${delay_load_index},
-			  "size":2
+			  "size":1
 			 }
 		}`,
 	    dataType: "json",
@@ -265,7 +312,7 @@ function showTransList(){
 			} else{
 				result = data.result;
 				char = tempTransList(result);
-				delay_load_index +=2;
+				delay_load_index +=1;
 			}
 	    },
 	    error: function (e) {
@@ -344,15 +391,15 @@ window.onscroll = function(){
 				break;
 			case "txos_byaddress": //根据地址搜索交易输出
 				address_index = address_index + 5;
-				searchUnit();
+				innerSearchUnit();
 				break;
 			case "utxos_byaddress": //根据地址搜索未花费交易输出
 				address_index = address_index + 5;
-				searchUnit();
+				innerSearchUnit();
 				break;
 			case "minning_byall": //查询挖矿中的交易
 				address_index = address_index + 3;
-				searchUnit();
+				innerSearchUnit();
 				break;
 		}
 	}
@@ -362,6 +409,13 @@ function noMore(){
 	var frag = document.createElement("div");
 	frag.id = "nomore";
 	frag.innerHTML = "没有更多了";
+	search_result.appendChild(frag);
+}
+//显示没有搜索到内容
+function showSearchEmptyResult(){
+	var frag = document.createElement("div");
+	frag.id = "nomore";
+	frag.innerHTML = "没有搜索到内容";
 	search_result.appendChild(frag);
 }
 
