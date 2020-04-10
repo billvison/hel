@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
 import com.xingkaichun.helloworldblockchain.crypto.EcKeyUtil;
-import com.xingkaichun.helloworldblockchain.crypto.HelloWorldEcKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.HelloWorldEcKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;

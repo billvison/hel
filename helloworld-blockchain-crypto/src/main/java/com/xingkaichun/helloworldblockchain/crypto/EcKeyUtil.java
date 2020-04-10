@@ -1,8 +1,6 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
-import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.*;
 
 import java.security.*;
 import java.security.interfaces.ECPrivateKey;

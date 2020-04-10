@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
 import com.xingkaichun.helloworldblockchain.crypto.EcKeyUtil;
-import com.xingkaichun.helloworldblockchain.crypto.HelloWorldEcKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.HelloWorldEcKey;
 import com.xingkaichun.helloworldblockchain.core.utils.WalletUtil;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;

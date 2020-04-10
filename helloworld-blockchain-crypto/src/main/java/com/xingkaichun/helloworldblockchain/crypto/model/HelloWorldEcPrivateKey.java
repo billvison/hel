@@ -1,7 +1,6 @@
-package com.xingkaichun.helloworldblockchain.crypto;
+package com.xingkaichun.helloworldblockchain.crypto.model;
 
 
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import lombok.Data;
 
 import java.security.PrivateKey;
