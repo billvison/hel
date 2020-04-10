@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
-import com.xingkaichun.helloworldblockchain.crypto.model.StringKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 
@@ -14,34 +14,7 @@ import java.util.Collections;
 
 public class KeyUtil {
 
-    public static byte[] decode(String key) {
-        return Base64.getDecoder().decode(key);
-    }
-
-
-    public static PublicKey convertStringPublicKeyToPublicKey(StringPublicKey stringPublicKey) {
-        return KeyUtil.convertStringPublicKeyToPublicKey(stringPublicKey.getValue());
-    }
-
-    public static PrivateKey convertStringPrivateKeyToPrivateKey(StringPrivateKey stringPrivateKey) {
-        return KeyUtil.convertStringPrivateKeyToPrivateKey(stringPrivateKey.getValue());
-    }
-
-    public static PublicKey convertStringPublicKeyToPublicKey(String stringPublicKey) {
-        try {
-            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-            byte[] bytesPublicKey = decode(stringPublicKey);
-
-            final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
-            final X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(bytesPublicKey);
-            final PublicKey pubKey = kf.generatePublic(pubKeySpec);
-            return pubKey;
-        }catch(Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static PrivateKey convertStringPrivateKeyToPrivateKey(String stringPrivateKey) {
+    public static PrivateKey privateKeyFrom(StringPrivateKey stringPrivateKey) {
         try {
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
             byte[] bytesPrivateKey = decode(stringPrivateKey);
@@ -55,18 +28,99 @@ public class KeyUtil {
         }
     }
 
-    public static String encodePublicKey(PublicKey publicKey) {
+    public static PublicKey publicKeyFrom(StringPublicKey stringPublicKey) {
+        try {
+            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+            byte[] bytesPublicKey = decode(stringPublicKey);
+
+            final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
+            final X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(bytesPublicKey);
+            final PublicKey pubKey = kf.generatePublic(pubKeySpec);
+            return pubKey;
+        }catch(Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static StringPublicKey stringPublicKeyFrom(PublicKey publicKey) {
         String encode = Base64.getEncoder().encodeToString(publicKey.getEncoded());
-        return encode;
+        return new StringPublicKey(encode);
     }
 
-    public static String encodePrivateKey(PrivateKey privateKey) {
+    public static StringPrivateKey stringPrivateKeyFrom(PrivateKey privateKey) {
         String encode = Base64.getEncoder().encodeToString(privateKey.getEncoded());
-        return encode;
+        return new StringPrivateKey(encode);
+    }
+
+    public static StringKey stringKeyFrom(StringPrivateKey stringPrivateKey) throws Exception {
+        PrivateKey ecPrivateKey = KeyUtil.privateKeyFrom(stringPrivateKey);
+        PublicKey ecPublicKey = publicFromPrivate((ECPrivateKey) ecPrivateKey);
+        StringKey stringKey = new StringKey();
+
+        StringPublicKey stringPublicKey = stringPublicKeyFrom(ecPublicKey);
+        StringAddress stringAddress = stringAddressFrom(stringPublicKey);
+        stringKey.setStringPrivateKey(stringPrivateKey);
+        stringKey.setStringPublicKey(stringPublicKey);
+        stringKey.setStringAddress(stringAddress);
+        return stringKey;
+    }
+
+    public static StringKey randomStringKey() throws Exception {
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA","BC");
+        SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+        ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256k1");
+        keyGen.initialize(ecSpec, random);
+        KeyPair keyPair = keyGen.generateKeyPair();
+        PrivateKey privateKey = keyPair.getPrivate();
+        PublicKey publicKey = keyPair.getPublic();
+
+        StringKey stringKey = new StringKey();
+        StringPrivateKey stringPrivateKey = stringPrivateKeyFrom(privateKey);
+        StringPublicKey stringPublicKey = stringPublicKeyFrom(publicKey);
+        StringAddress stringAddress = stringAddressFrom(stringPublicKey);
+        stringKey.setStringPrivateKey(stringPrivateKey);
+        stringKey.setStringPublicKey(stringPublicKey);
+        stringKey.setStringAddress(stringAddress);
+        return stringKey;
+    }
+
+    public static StringAddress stringAddressFrom(StringPublicKey stringPublicKey) throws Exception {
+        String version = "00";
+        String publicKeyHash =  CipherUtil.ripeMD160(CipherUtil.applySha256(stringPublicKey.getValue()));
+        String check = CipherUtil.applySha256(CipherUtil.applySha256((version+publicKeyHash))).substring(0,4);
+        String address = Base58Util.encode((version+publicKeyHash+check).getBytes());
+        return new StringAddress(address);
+    }
+
+    public static boolean isStringPublicKeyEqualStringAddress(StringPublicKey stringPublicKey, StringAddress stringAddress) {
+        try {
+            StringAddress tempStringAddress = stringAddressFrom(stringPublicKey);
+            return stringAddress.getValue().equals(tempStringAddress.getValue());
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 
-    public static ECPublicKey publicFromPrivate(ECPrivateKey privateKey) throws Exception {
+
+
+
+
+
+
+
+
+
+    private static byte[] decode(StringPrivateKey stringPrivateKey) {
+        return Base64.getDecoder().decode(stringPrivateKey.getValue());
+    }
+
+    private static byte[] decode(StringPublicKey stringPublicKey) {
+        return Base64.getDecoder().decode(stringPublicKey.getValue());
+    }
+
+    private static ECPublicKey publicFromPrivate(ECPrivateKey privateKey) throws Exception {
         ECParameterSpec params = privateKey.getParams();
         org.bouncycastle.jce.spec.ECParameterSpec bcSpec = org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util
                 .convertSpec(params, false);
@@ -82,7 +136,7 @@ public class KeyUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static ECParameterSpec tryFindNamedCurveSpec(ECParameterSpec params) {
+    private static ECParameterSpec tryFindNamedCurveSpec(ECParameterSpec params) {
         org.bouncycastle.jce.spec.ECParameterSpec bcSpec
                 = org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util.convertSpec(params, false);
         for (Object name : Collections.list(org.bouncycastle.jce.ECNamedCurveTable.getNames())) {
@@ -102,55 +156,5 @@ public class KeyUtil {
             }
         }
         return params;
-    }
-
-    public static StringKey fromEncodePrivateKey(StringPrivateKey stringPrivateKey) throws Exception {
-        PrivateKey ecPrivateKey = KeyUtil.convertStringPrivateKeyToPrivateKey(stringPrivateKey);
-        PublicKey ecPublicKey = publicFromPrivate((ECPrivateKey) ecPrivateKey);
-        StringKey stringKey = new StringKey();
-
-        StringPublicKey stringPublicKey = new StringPublicKey(encodePublicKey(ecPublicKey));
-        StringAddress stringAddress = convertStringPublicKeyToStringAddress(stringPublicKey);
-        stringKey.setStringPrivateKey(stringPrivateKey);
-        stringKey.setStringPublicKey(stringPublicKey);
-        stringKey.setStringAddress(stringAddress);
-        return stringKey;
-    }
-
-    public static StringKey randomHelloWorldEcKey() throws Exception {
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA","BC");
-        SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-        ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256k1");
-        keyGen.initialize(ecSpec, random);
-        KeyPair keyPair = keyGen.generateKeyPair();
-        PrivateKey privateKey = keyPair.getPrivate();
-        PublicKey publicKey = keyPair.getPublic();
-
-        StringKey stringKey = new StringKey();
-        StringPrivateKey stringPrivateKey = new StringPrivateKey(encodePrivateKey(privateKey));
-        StringPublicKey stringPublicKey = new StringPublicKey(encodePublicKey(publicKey));
-        StringAddress stringAddress = convertStringPublicKeyToStringAddress(stringPublicKey);
-        stringKey.setStringPrivateKey(stringPrivateKey);
-        stringKey.setStringPublicKey(stringPublicKey);
-        stringKey.setStringAddress(stringAddress);
-        return stringKey;
-    }
-
-    public static boolean isStringPublicKeyEqualStringAddress(StringPublicKey stringPublicKey, StringAddress stringAddress) {
-        try {
-            StringAddress tempStringAddress = convertStringPublicKeyToStringAddress(stringPublicKey);
-            return stringAddress.getValue().equals(tempStringAddress.getValue());
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public static StringAddress convertStringPublicKeyToStringAddress(StringPublicKey stringPublicKey) throws Exception {
-        String version = "00";
-        String publicKeyHash =  CipherUtil.ripeMD160(CipherUtil.applySha256(stringPublicKey.getValue()));
-        String check = CipherUtil.applySha256(CipherUtil.applySha256((version+publicKeyHash))).substring(0,4);
-        String address = Base58Util.encode((version+publicKeyHash+check).getBytes());
-        return new StringAddress(address);
     }
 }

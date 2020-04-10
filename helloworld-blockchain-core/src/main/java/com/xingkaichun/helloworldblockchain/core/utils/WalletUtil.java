@@ -20,7 +20,7 @@ public class WalletUtil {
 
     public static Wallet generateWallet(){
         try {
-            StringKey stringKey = KeyUtil.randomHelloWorldEcKey();
+            StringKey stringKey = KeyUtil.randomStringKey();
             StringPublicKey stringPublicKey = stringKey.getStringPublicKey();
             StringPrivateKey stringPrivateKey = stringKey.getStringPrivateKey();
             StringAddress stringAddress = stringKey.getStringAddress();

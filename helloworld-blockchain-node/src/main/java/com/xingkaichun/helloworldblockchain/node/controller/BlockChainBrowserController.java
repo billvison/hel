@@ -81,7 +81,7 @@ public class BlockChainBrowserController {
                 return ServiceResult.createFailServiceResult("私钥不能为空");
             }
             try {
-                KeyUtil.fromEncodePrivateKey(new StringPrivateKey(privateKey));
+                KeyUtil.stringKeyFrom(new StringPrivateKey(privateKey));
             } catch (Exception e){
                 return ServiceResult.createFailServiceResult("私钥不正确，请检查输入的私钥");
             }

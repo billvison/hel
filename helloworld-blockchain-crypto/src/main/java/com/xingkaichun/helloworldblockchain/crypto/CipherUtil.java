@@ -19,7 +19,7 @@ public class CipherUtil {
      */
     public static String applyECDSASig(StringPrivateKey stringPrivateKey, String data) {
         try {
-            PrivateKey privateKey = KeyUtil.convertStringPrivateKeyToPrivateKey(stringPrivateKey);
+            PrivateKey privateKey = KeyUtil.privateKeyFrom(stringPrivateKey);
             byte[] bytesSignature = applyECDSASig(privateKey,data.getBytes());
             String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
             return strSignature;
@@ -34,7 +34,7 @@ public class CipherUtil {
     public static boolean verifyECDSASig(StringPublicKey senderStringPublicKey, String data, String strSignature) {
         try {
             byte[] bytesSignature = Base64.getDecoder().decode(strSignature);
-            PublicKey publicKey = KeyUtil.convertStringPublicKeyToPublicKey(senderStringPublicKey);
+            PublicKey publicKey = KeyUtil.publicKeyFrom(senderStringPublicKey);
             return verifyECDSASig(publicKey,data.getBytes(),bytesSignature);
         }catch(Exception e) {
             throw new RuntimeException(e);
