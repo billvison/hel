@@ -109,10 +109,10 @@ public class EcKeyUtil {
         HelloWorldEcKey helloWorldEcKey = new HelloWorldEcKey();
         HelloWorldEcPrivateKey helloWorldEcPrivateKey = new HelloWorldEcPrivateKey();
         helloWorldEcPrivateKey.setPrivateKey(ecPrivateKey);
-        helloWorldEcPrivateKey.setEncodePrivateKey(encodePrivateKey);
+        helloWorldEcPrivateKey.setStringPrivateKey(new StringPrivateKey(encodePrivateKey));
         HelloWorldPublicEcKey helloWorldPublicEcKey = new HelloWorldPublicEcKey();
         helloWorldPublicEcKey.setPublicKey(ecPublicKey);
-        helloWorldPublicEcKey.setEncodePublicKey(EcKeyUtil.encodePublicKey(ecPublicKey));
+        helloWorldPublicEcKey.setStringPublicKey(new StringPublicKey(EcKeyUtil.encodePublicKey(ecPublicKey)));
         helloWorldEcKey.setHelloWorldEcPrivateKey(helloWorldEcPrivateKey);
         helloWorldEcKey.setHelloWorldPublicEcKey(helloWorldPublicEcKey);
         return helloWorldEcKey;
@@ -131,10 +131,10 @@ public class EcKeyUtil {
         HelloWorldEcKey helloWorldEcKey = new HelloWorldEcKey();
         HelloWorldEcPrivateKey helloWorldEcPrivateKey = new HelloWorldEcPrivateKey();
         helloWorldEcPrivateKey.setPrivateKey(privateKey);
-        helloWorldEcPrivateKey.setEncodePrivateKey(encodePrivateKey(privateKey));
+        helloWorldEcPrivateKey.setStringPrivateKey(new StringPrivateKey(encodePrivateKey(privateKey)));
         HelloWorldPublicEcKey helloWorldPublicEcKey = new HelloWorldPublicEcKey();
         helloWorldPublicEcKey.setPublicKey(publicKey);
-        helloWorldPublicEcKey.setEncodePublicKey(encodePublicKey(publicKey));
+        helloWorldPublicEcKey.setStringPublicKey(new StringPublicKey(encodePublicKey(publicKey)));
         helloWorldEcKey.setHelloWorldEcPrivateKey(helloWorldEcPrivateKey);
         helloWorldEcKey.setHelloWorldPublicEcKey(helloWorldPublicEcKey);
         return helloWorldEcKey;

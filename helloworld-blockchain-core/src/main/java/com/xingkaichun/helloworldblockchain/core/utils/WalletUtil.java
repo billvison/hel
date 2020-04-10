@@ -21,8 +21,8 @@ public class WalletUtil {
     public static Wallet generateWallet(){
         try {
             HelloWorldEcKey helloWorldEcKey = EcKeyUtil.randomHelloWorldEcKey();
-            StringPublicKey stringPublicKey = new StringPublicKey(helloWorldEcKey.getHelloWorldPublicEcKey().getEncodePublicKey());
-            StringPrivateKey stringPrivateKey = new StringPrivateKey(helloWorldEcKey.getHelloWorldEcPrivateKey().getEncodePrivateKey());
+            StringPublicKey stringPublicKey = helloWorldEcKey.getHelloWorldPublicEcKey().getStringPublicKey();
+            StringPrivateKey stringPrivateKey = helloWorldEcKey.getHelloWorldEcPrivateKey().getStringPrivateKey();
             StringAddress stringAddress = EcKeyUtil.convertStringPublicKeyToStringAddress(stringPublicKey);
             Wallet wallet = new Wallet(stringPrivateKey,stringPublicKey,stringAddress);
             return wallet;

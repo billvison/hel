@@ -137,7 +137,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         for(String input:inputs){
             TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
             transactionInputDTO.setUnspendTransactionOutputUUID(input);
-            transactionInputDTO.setPublicKey(helloWorldEcKey.getHelloWorldPublicEcKey().getEncodePublicKey());
+            transactionInputDTO.setPublicKey(helloWorldEcKey.getHelloWorldPublicEcKey().getStringPublicKey().getValue());
             transactionInputDtoList.add(transactionInputDTO);
         }
 
