@@ -1,6 +1,9 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
-import com.xingkaichun.helloworldblockchain.crypto.model.*;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 
 import java.security.*;
 import java.security.interfaces.ECPrivateKey;
@@ -9,7 +12,7 @@ import java.security.spec.*;
 import java.util.Base64;
 import java.util.Collections;
 
-public class EcKeyUtil {
+public class KeyUtil {
 
     public static byte[] decode(String key) {
         return Base64.getDecoder().decode(key);
@@ -17,11 +20,11 @@ public class EcKeyUtil {
 
 
     public static PublicKey convertStringPublicKeyToPublicKey(StringPublicKey stringPublicKey) {
-        return EcKeyUtil.convertStringPublicKeyToPublicKey(stringPublicKey.getValue());
+        return KeyUtil.convertStringPublicKeyToPublicKey(stringPublicKey.getValue());
     }
 
     public static PrivateKey convertStringPrivateKeyToPrivateKey(StringPrivateKey stringPrivateKey) {
-        return EcKeyUtil.convertStringPrivateKeyToPrivateKey(stringPrivateKey.getValue());
+        return KeyUtil.convertStringPrivateKeyToPrivateKey(stringPrivateKey.getValue());
     }
 
     public static PublicKey convertStringPublicKeyToPublicKey(String stringPublicKey) {
@@ -101,22 +104,20 @@ public class EcKeyUtil {
         return params;
     }
 
-    public static HelloWorldEcKey fromEncodePrivateKey(String encodePrivateKey) throws Exception {
-        PrivateKey ecPrivateKey = EcKeyUtil.convertStringPrivateKeyToPrivateKey(new StringPrivateKey(encodePrivateKey));
+    public static StringKey fromEncodePrivateKey(StringPrivateKey stringPrivateKey) throws Exception {
+        PrivateKey ecPrivateKey = KeyUtil.convertStringPrivateKeyToPrivateKey(stringPrivateKey);
         PublicKey ecPublicKey = publicFromPrivate((ECPrivateKey) ecPrivateKey);
-        HelloWorldEcKey helloWorldEcKey = new HelloWorldEcKey();
-        HelloWorldEcPrivateKey helloWorldEcPrivateKey = new HelloWorldEcPrivateKey();
-        helloWorldEcPrivateKey.setPrivateKey(ecPrivateKey);
-        helloWorldEcPrivateKey.setStringPrivateKey(new StringPrivateKey(encodePrivateKey));
-        HelloWorldPublicEcKey helloWorldPublicEcKey = new HelloWorldPublicEcKey();
-        helloWorldPublicEcKey.setPublicKey(ecPublicKey);
-        helloWorldPublicEcKey.setStringPublicKey(new StringPublicKey(EcKeyUtil.encodePublicKey(ecPublicKey)));
-        helloWorldEcKey.setHelloWorldEcPrivateKey(helloWorldEcPrivateKey);
-        helloWorldEcKey.setHelloWorldPublicEcKey(helloWorldPublicEcKey);
-        return helloWorldEcKey;
+        StringKey stringKey = new StringKey();
+
+        StringPublicKey stringPublicKey = new StringPublicKey(encodePublicKey(ecPublicKey));
+        StringAddress stringAddress = convertStringPublicKeyToStringAddress(stringPublicKey);
+        stringKey.setStringPrivateKey(stringPrivateKey);
+        stringKey.setStringPublicKey(stringPublicKey);
+        stringKey.setStringAddress(stringAddress);
+        return stringKey;
     }
 
-    public static HelloWorldEcKey randomHelloWorldEcKey() throws Exception {
+    public static StringKey randomHelloWorldEcKey() throws Exception {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA","BC");
         SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
@@ -126,16 +127,14 @@ public class EcKeyUtil {
         PrivateKey privateKey = keyPair.getPrivate();
         PublicKey publicKey = keyPair.getPublic();
 
-        HelloWorldEcKey helloWorldEcKey = new HelloWorldEcKey();
-        HelloWorldEcPrivateKey helloWorldEcPrivateKey = new HelloWorldEcPrivateKey();
-        helloWorldEcPrivateKey.setPrivateKey(privateKey);
-        helloWorldEcPrivateKey.setStringPrivateKey(new StringPrivateKey(encodePrivateKey(privateKey)));
-        HelloWorldPublicEcKey helloWorldPublicEcKey = new HelloWorldPublicEcKey();
-        helloWorldPublicEcKey.setPublicKey(publicKey);
-        helloWorldPublicEcKey.setStringPublicKey(new StringPublicKey(encodePublicKey(publicKey)));
-        helloWorldEcKey.setHelloWorldEcPrivateKey(helloWorldEcPrivateKey);
-        helloWorldEcKey.setHelloWorldPublicEcKey(helloWorldPublicEcKey);
-        return helloWorldEcKey;
+        StringKey stringKey = new StringKey();
+        StringPrivateKey stringPrivateKey = new StringPrivateKey(encodePrivateKey(privateKey));
+        StringPublicKey stringPublicKey = new StringPublicKey(encodePublicKey(publicKey));
+        StringAddress stringAddress = convertStringPublicKeyToStringAddress(stringPublicKey);
+        stringKey.setStringPrivateKey(stringPrivateKey);
+        stringKey.setStringPublicKey(stringPublicKey);
+        stringKey.setStringAddress(stringAddress);
+        return stringKey;
     }
 
     public static boolean isStringPublicKeyEqualStringAddress(StringPublicKey stringPublicKey, StringAddress stringAddress) {
@@ -149,8 +148,8 @@ public class EcKeyUtil {
 
     public static StringAddress convertStringPublicKeyToStringAddress(StringPublicKey stringPublicKey) throws Exception {
         String version = "00";
-        String publicKeyHash =  CipherUtil.ripeMD160(CipherUtil.applySha256(stringPublicKey.getValue().getBytes()));
-        String check = CipherUtil.applySha256(CipherUtil.applySha256((version+publicKeyHash).getBytes()).getBytes()).substring(0,4);
+        String publicKeyHash =  CipherUtil.ripeMD160(CipherUtil.applySha256(stringPublicKey.getValue()));
+        String check = CipherUtil.applySha256(CipherUtil.applySha256((version+publicKeyHash))).substring(0,4);
         String address = Base58Util.encode((version+publicKeyHash+check).getBytes());
         return new StringAddress(address);
     }

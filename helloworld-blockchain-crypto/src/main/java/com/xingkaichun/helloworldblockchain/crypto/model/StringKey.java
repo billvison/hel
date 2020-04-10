@@ -3,11 +3,10 @@ package com.xingkaichun.helloworldblockchain.crypto.model;
 
 import lombok.Data;
 
-import java.security.PublicKey;
-
 @Data
-public class HelloWorldPublicEcKey {
+public class StringKey {
 
+    private StringPrivateKey stringPrivateKey;
     private StringPublicKey stringPublicKey;
-    private PublicKey publicKey;
+    private StringAddress stringAddress;
 }

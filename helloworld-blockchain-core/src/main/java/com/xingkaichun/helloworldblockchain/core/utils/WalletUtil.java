@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
-import com.xingkaichun.helloworldblockchain.crypto.EcKeyUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.HelloWorldEcKey;
+import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
@@ -20,10 +20,10 @@ public class WalletUtil {
 
     public static Wallet generateWallet(){
         try {
-            HelloWorldEcKey helloWorldEcKey = EcKeyUtil.randomHelloWorldEcKey();
-            StringPublicKey stringPublicKey = helloWorldEcKey.getHelloWorldPublicEcKey().getStringPublicKey();
-            StringPrivateKey stringPrivateKey = helloWorldEcKey.getHelloWorldEcPrivateKey().getStringPrivateKey();
-            StringAddress stringAddress = EcKeyUtil.convertStringPublicKeyToStringAddress(stringPublicKey);
+            StringKey stringKey = KeyUtil.randomHelloWorldEcKey();
+            StringPublicKey stringPublicKey = stringKey.getStringPublicKey();
+            StringPrivateKey stringPrivateKey = stringKey.getStringPrivateKey();
+            StringAddress stringAddress = stringKey.getStringAddress();
             Wallet wallet = new Wallet(stringPrivateKey,stringPublicKey,stringAddress);
             return wallet;
         }catch(Exception e) {

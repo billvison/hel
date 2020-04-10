@@ -97,8 +97,7 @@ public class TransactionUtil {
      * 交易签名
      */
     public static String signature(Transaction transaction, StringPrivateKey stringPrivateKey) throws Exception {
-        byte[] bytesSignature = CipherUtil.applyECDSASig(stringPrivateKey,signatureData(transaction));
-        String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
+        String strSignature = CipherUtil.applyECDSASig(stringPrivateKey,signatureData(transaction));
         return strSignature;
     }
 
@@ -108,8 +107,7 @@ public class TransactionUtil {
     public static boolean verifySignature(Transaction transaction) throws Exception {
         StringPublicKey senderStringPublicKey = getSenderStringPublicKey(transaction);
         String strSignature = transaction.getSignature();
-        byte[] bytesSignature = Base64.getDecoder().decode(strSignature);
-        return CipherUtil.verifyECDSASig(senderStringPublicKey,signatureData(transaction),bytesSignature);
+        return CipherUtil.verifyECDSASig(senderStringPublicKey,signatureData(transaction),strSignature);
     }
 
     public static List<String> getInputUtxoIds(Transaction transaction){

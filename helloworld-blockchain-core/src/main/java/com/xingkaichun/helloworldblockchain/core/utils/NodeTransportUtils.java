@@ -193,8 +193,7 @@ public class NodeTransportUtils {
      * 交易签名
      */
     public static String signature(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) throws Exception {
-        byte[] bytesSignature = CipherUtil.applyECDSASig(stringPrivateKey,signatureData(transactionDTO));
-        String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
+        String strSignature = CipherUtil.applyECDSASig(stringPrivateKey,signatureData(transactionDTO));
         return strSignature;
     }
 

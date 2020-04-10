@@ -13,7 +13,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.*;
-import com.xingkaichun.helloworldblockchain.crypto.EcKeyUtil;
+import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import org.iq80.leveldb.DB;
@@ -507,7 +507,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             for(TransactionInput transactionInput : inputs) {
                 StringPublicKey stringPublicKey = transactionInput.getStringPublicKey();
                 StringAddress stringAddress = transactionInput.getUnspendTransactionOutput().getStringAddress();
-                if(!EcKeyUtil.isStringPublicKeyEqualStringAddress(stringPublicKey,stringAddress)){
+                if(!KeyUtil.isStringPublicKeyEqualStringAddress(stringPublicKey,stringAddress)){
                     return false;
                 }
             }

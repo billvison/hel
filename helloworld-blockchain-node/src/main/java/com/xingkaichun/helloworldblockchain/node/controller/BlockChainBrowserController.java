@@ -2,10 +2,11 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 
 import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.NumberUtil;
-import com.xingkaichun.helloworldblockchain.crypto.EcKeyUtil;
+import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.BlockChainApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
@@ -80,7 +81,7 @@ public class BlockChainBrowserController {
                 return ServiceResult.createFailServiceResult("私钥不能为空");
             }
             try {
-                EcKeyUtil.fromEncodePrivateKey(privateKey);
+                KeyUtil.fromEncodePrivateKey(new StringPrivateKey(privateKey));
             } catch (Exception e){
                 return ServiceResult.createFailServiceResult("私钥不正确，请检查输入的私钥");
             }
