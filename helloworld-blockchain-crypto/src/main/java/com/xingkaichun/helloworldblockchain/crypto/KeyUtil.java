@@ -87,8 +87,8 @@ public class KeyUtil {
 
     public static StringAddress stringAddressFrom(StringPublicKey stringPublicKey) throws Exception {
         String version = "00";
-        String publicKeyHash =  CipherUtil.ripeMD160(CipherUtil.applySha256(stringPublicKey.getValue()));
-        String check = CipherUtil.applySha256(CipherUtil.applySha256((version+publicKeyHash))).substring(0,4);
+        String publicKeyHash =  RipeMD160Util.ripeMD160(SHA256Util.applySha256(stringPublicKey.getValue()));
+        String check = SHA256Util.applySha256(SHA256Util.applySha256((version+publicKeyHash))).substring(0,4);
         String address = Base58Util.encode((version+publicKeyHash+check).getBytes());
         return new StringAddress(address);
     }
@@ -101,6 +101,32 @@ public class KeyUtil {
             return false;
         }
     }
+    /**
+     * ECDSA签名
+     */
+    public static String applyECDSASig(StringPrivateKey stringPrivateKey, String data) {
+        try {
+            PrivateKey privateKey = privateKeyFrom(stringPrivateKey);
+            byte[] bytesSignature = applyECDSASig(privateKey,data.getBytes());
+            String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
+            return strSignature;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * ECDSA签名验证
+     */
+    public static boolean verifyECDSASig(StringPublicKey senderStringPublicKey, String data, String strSignature) {
+        try {
+            byte[] bytesSignature = Base64.getDecoder().decode(strSignature);
+            PublicKey publicKey = publicKeyFrom(senderStringPublicKey);
+            return verifyECDSASig(publicKey,data.getBytes(),bytesSignature);
+        }catch(Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 
@@ -110,7 +136,26 @@ public class KeyUtil {
 
 
 
+    /**
+     * ECDSA签名
+     */
+    private static byte[] applyECDSASig(PrivateKey privateKey, byte[] data) throws Exception {
+        Signature signature = Signature.getInstance("ECDSA", "BC");
+        signature.initSign(privateKey);
+        signature.update(data);
+        byte[] sign = signature.sign();
+        return sign;
+    }
 
+    /**
+     * ECDSA签名验证
+     */
+    private static boolean verifyECDSASig(PublicKey publicKey, byte[] data, byte[] signature) throws Exception {
+        Signature ecdsaVerify = Signature.getInstance("ECDSA", "BC");
+        ecdsaVerify.initVerify(publicKey);
+        ecdsaVerify.update(data);
+        return ecdsaVerify.verify(signature);
+    }
 
     private static byte[] decode(StringPrivateKey stringPrivateKey) {
         return Base64.getDecoder().decode(stringPrivateKey.getValue());

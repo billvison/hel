@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
-import com.xingkaichun.helloworldblockchain.crypto.CipherUtil;
+import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 
@@ -13,7 +13,7 @@ public class BlockUtils {
      * @param block 区块
      */
     public static String calculateBlockHash(Block block) {
-        return CipherUtil.applySha256(block.getTimestamp()+block.getPreviousHash()+block.getHeight()+block.getMerkleRoot()+block.getNonce())+ "-" + block.getTimestamp();
+        return SHA256Util.applySha256(block.getTimestamp()+block.getPreviousHash()+block.getHeight()+block.getMerkleRoot()+block.getNonce())+ "-" + block.getTimestamp();
     }
 
     /**

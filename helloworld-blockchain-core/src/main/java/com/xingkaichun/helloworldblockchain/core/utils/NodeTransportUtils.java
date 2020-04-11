@@ -3,23 +3,22 @@ package com.xingkaichun.helloworldblockchain.core.utils;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.TransactionUtil;
-import com.xingkaichun.helloworldblockchain.crypto.CipherUtil;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.TransactionUtil;
+import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 public class NodeTransportUtils {
@@ -193,7 +192,7 @@ public class NodeTransportUtils {
      * 交易签名
      */
     public static String signature(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) throws Exception {
-        String strSignature = CipherUtil.applyECDSASig(stringPrivateKey,signatureData(transactionDTO));
+        String strSignature = KeyUtil.applyECDSASig(stringPrivateKey,signatureData(transactionDTO));
         return strSignature;
     }
 
