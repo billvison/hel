@@ -47,6 +47,7 @@ public class Block implements Serializable {
      * 这个随机数用于共识。
      * nonce的数据类型需要满足能承载足够大的数字，以确保用户能够计算出符合要求的nonce值。
      * nonce的值不宜过大，不然恶意用户可能计算出位数超级大的nonce值，但这个nonce又是符合计算要求的值，因此需要限制nonce的值的范围。
+     * //TODO 共识值 不一定非是数值共识
      */
     private BigInteger nonce;
     /**
@@ -70,7 +71,7 @@ public class Block implements Serializable {
     private String hash;
 
     /**
-     * 挖矿难度。
+     * 共识目标。
      * 这个字段是冗余的。可以通过区块链系统计算出来。
      */
     private ConsensusTarget consensusTarget;

@@ -1,7 +1,5 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
-import org.bouncycastle.util.encoders.Base64;
-
 import java.security.MessageDigest;
 
 /**
