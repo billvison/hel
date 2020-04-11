@@ -192,7 +192,7 @@ public class NodeTransportUtils {
      * 交易签名
      */
     public static String signature(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) throws Exception {
-        String strSignature = KeyUtil.applyECDSASig(stringPrivateKey,signatureData(transactionDTO));
+        String strSignature = KeyUtil.signature(stringPrivateKey,signatureData(transactionDTO));
         return strSignature;
     }
 

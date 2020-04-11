@@ -5,9 +5,9 @@ import com.xingkaichun.helloworldblockchain.crypto.model.StringKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.DERInteger;
-import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.DERSequenceGenerator;
+import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -79,32 +79,32 @@ public class KeyUtil {
      * 公钥生成地址
      */
     public static StringAddress stringAddressFrom(StringPublicKey stringPublicKey) throws Exception {
-        byte[] pubK = HexUtil.hexStringToBytes(stringPublicKey.getValue());
-        return new StringAddress(base58AddressFrom(pubK));
+        byte[] bytePublicKey = HexUtil.hexStringToBytes(stringPublicKey.getValue());
+        return new StringAddress(base58AddressFrom(bytePublicKey));
     }
 
     /**
-     * ECDSA签名
+     * 签名
      */
-    public static String applyECDSASig(StringPrivateKey stringPrivateKey, String data) {
+    public static String signature(StringPrivateKey stringPrivateKey, String data) {
        try {
-           BigInteger priv = privateKeyFrom(stringPrivateKey);
-           byte[] bytesSignature = applyECDSASig(data.getBytes(),priv);
-           String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
-           return strSignature;
+           BigInteger bigIntegerPrivateKey = privateKeyFrom(stringPrivateKey);
+           byte[] bytesSignature = signature(bigIntegerPrivateKey,data.getBytes());
+           String stringSignature = Base64.getEncoder().encodeToString(bytesSignature);
+           return stringSignature;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * ECDSA签名验证
+     * 验证签名
      */
-    public static boolean verifyECDSASig(StringPublicKey stringPublicKey, String data, String strSignature) {
+    public static boolean verifySignature(StringPublicKey stringPublicKey, String data, String stringSignature) {
         try {
             byte[] bytePublicKey = publicKeyFrom(stringPublicKey);
-            byte[] bytesSignature = Base64.getDecoder().decode(strSignature);
-            return verifyECDSASig(bytePublicKey,data.getBytes(),bytesSignature);
+            byte[] bytesSignature = Base64.getDecoder().decode(stringSignature);
+            return verifySignature(bytePublicKey,data.getBytes(),bytesSignature);
         }catch(Exception e) {
             throw new RuntimeException(e);
         }
@@ -165,9 +165,9 @@ public class KeyUtil {
     }
 
     /**
-     * ECDSA签名
+     * 签名
      */
-    private static byte[] applyECDSASig(byte[] input,BigInteger bigIntegerPrivateKey) {
+    private static byte[] signature(BigInteger bigIntegerPrivateKey, byte[] input) {
         ECDSASigner signer = new ECDSASigner();
         ECPrivateKeyParameters ecPrivateKeyParameters = new ECPrivateKeyParameters(bigIntegerPrivateKey, ecParams);
         signer.init(true, ecPrivateKeyParameters);
@@ -175,8 +175,8 @@ public class KeyUtil {
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             DERSequenceGenerator seq = new DERSequenceGenerator(bos);
-            seq.addObject(new DERInteger(sigs[0]));
-            seq.addObject(new DERInteger(sigs[1]));
+            seq.addObject(new ASN1Integer(sigs[0]));
+            seq.addObject(new ASN1Integer(sigs[1]));
             seq.close();
             return bos.toByteArray();
         } catch (IOException e) {
@@ -185,17 +185,17 @@ public class KeyUtil {
     }
 
     /**
-     * ECDSA签名验证
+     * 验证签名
      */
-    private static boolean verifyECDSASig(byte[] data, byte[] signature, byte[] pub) {
+    private static boolean verifySignature(byte[] pub, byte[] data, byte[] signature) {
         ECDSASigner signer = new ECDSASigner();
-        ECPublicKeyParameters params = new ECPublicKeyParameters(ecParams.getCurve().decodePoint(pub), ecParams);
-        signer.init(false, params);
+        ECPublicKeyParameters ecPublicKeyParameters = new ECPublicKeyParameters(ecParams.getCurve().decodePoint(pub), ecParams);
+        signer.init(false, ecPublicKeyParameters);
         try {
             ASN1InputStream decoder = new ASN1InputStream(signature);
-            DERSequence seq = (DERSequence) decoder.readObject();
-            DERInteger r = (DERInteger) seq.getObjectAt(0);
-            DERInteger s = (DERInteger) seq.getObjectAt(1);
+            DLSequence seq = (DLSequence) decoder.readObject();
+            ASN1Integer r = (ASN1Integer) seq.getObjectAt(0);
+            ASN1Integer s = (ASN1Integer) seq.getObjectAt(1);
             decoder.close();
             return signer.verifySignature(data, r.getValue(), s.getValue());
         } catch (IOException e) {
@@ -211,22 +211,22 @@ public class KeyUtil {
         byte[] pubKSha256RipeMD160 = RipeMD160Util.ripeMD160(pubKSha256);
 
         //地址
-        byte[] addressBytes = new byte[1 + 20 + 4];
+        byte[] byteAddress = new byte[1 + 20 + 4];
 
         //将地址的版本号0x00加到地址最前方
-        addressBytes[0] = 0x00;
-        System.arraycopy(pubKSha256RipeMD160, 0, addressBytes, 1, 20);
+        byteAddress[0] = 0x00;
+        System.arraycopy(pubKSha256RipeMD160, 0, byteAddress, 1, 20);
 
         //计算公钥Hash
-        byte[] check1 = new byte[21];
-        System.arraycopy(addressBytes, 0, check1, 0, 21);
-        byte[] doubleSHA256 = SHA256Util.applySha256(SHA256Util.applySha256(check1));
+        byte[] versionAndPubKSha256RipeMD160 = new byte[21];
+        System.arraycopy(byteAddress, 0, versionAndPubKSha256RipeMD160, 0, 21);
+        byte[] doubleSHA256 = SHA256Util.applySha256(SHA256Util.applySha256(versionAndPubKSha256RipeMD160));
 
-        //取公钥hash的前四位作为地址校验码，将校验码前四位加到地址的末四位
-        System.arraycopy(doubleSHA256, 0, addressBytes, 21, 4);
+        //取前四位作为地址校验码，将校验码前四位加到地址的末四位
+        System.arraycopy(doubleSHA256, 0, byteAddress, 21, 4);
 
         //Base58编码
-        String base58Address = Base58Util.encode(addressBytes);
+        String base58Address = Base58Util.encode(byteAddress);
         return base58Address;
     }
 }
