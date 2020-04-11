@@ -507,7 +507,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             for(TransactionInput transactionInput : inputs) {
                 StringPublicKey stringPublicKey = transactionInput.getStringPublicKey();
                 StringAddress stringAddress = transactionInput.getUnspendTransactionOutput().getStringAddress();
-                if(!KeyUtil.isStringPublicKeyEqualStringAddress(stringPublicKey,stringAddress)){
+                if(!KeyUtil.isEquals(stringPublicKey,stringAddress)){
                     return false;
                 }
             }

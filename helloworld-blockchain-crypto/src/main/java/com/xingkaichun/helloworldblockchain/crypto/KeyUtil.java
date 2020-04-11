@@ -55,11 +55,18 @@ public class KeyUtil {
         return new StringAddress(address);
     }
 
-    //TODO 多余
-    public static boolean isStringPublicKeyEqualStringAddress(StringPublicKey stringPublicKey, StringAddress stringAddress) {
+    public static boolean isEquals(StringPublicKey stringPublicKey, StringAddress stringAddress) {
         try {
             StringAddress tempStringAddress = stringAddressFrom(stringPublicKey);
-            return stringAddress.getValue().equals(tempStringAddress.getValue());
+            return isEquals(stringAddress,tempStringAddress);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static boolean isEquals(StringAddress stringAddress1, StringAddress stringAddress2) {
+        try {
+            return stringAddress1.getValue().equals(stringAddress2.getValue());
         } catch (Exception e) {
             return false;
         }
