@@ -27,13 +27,13 @@ public class MerkleUtils {
         while(count > 1) {
             treeLayer = new ArrayList<>();
             for(int i=1; i < previousTreeLayer.size(); i+=2) {
-                treeLayer.add(SHA256Util.applySha256(previousTreeLayer.get(i-1) + previousTreeLayer.get(i)));
+                treeLayer.add(SHA256Util.applySha256HexString(previousTreeLayer.get(i-1) + previousTreeLayer.get(i)));
             }
             count = treeLayer.size();
             previousTreeLayer = treeLayer;
         }
 
-        String merkleRoot = (treeLayer.size() == 1) ? SHA256Util.applySha256(treeLayer.get(0)) : "";
+        String merkleRoot = (treeLayer.size() == 1) ? SHA256Util.applySha256HexString(treeLayer.get(0)) : "";
         return merkleRoot;
     }
 }

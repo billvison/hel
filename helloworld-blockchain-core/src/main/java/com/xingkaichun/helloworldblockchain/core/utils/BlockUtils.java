@@ -13,7 +13,7 @@ public class BlockUtils {
      * @param block 区块
      */
     public static String calculateBlockHash(Block block) {
-        return SHA256Util.applySha256(block.getTimestamp()+block.getPreviousHash()+block.getHeight()+block.getMerkleRoot()+block.getNonce())+ "-" + block.getTimestamp();
+        return SHA256Util.applySha256HexString(block.getTimestamp()+block.getPreviousHash()+block.getHeight()+block.getMerkleRoot()+block.getNonce())+ "-" + block.getTimestamp();
     }
 
     /**

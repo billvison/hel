@@ -80,7 +80,7 @@ public class TransactionUtil {
             }
         }
         String data = timestamp + transactionUUID + inputs + outputs;
-        String sha256Data = SHA256Util.applySha256(data);
+        String sha256Data = SHA256Util.applySha256HexString(data);
         return sha256Data;
     }
 

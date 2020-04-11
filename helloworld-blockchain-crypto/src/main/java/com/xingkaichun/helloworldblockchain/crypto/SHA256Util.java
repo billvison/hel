@@ -10,11 +10,11 @@ import java.security.MessageDigest;
 public class SHA256Util {
 
     /**
-     * sha256消息摘要
+     * 首先应用sha256生成消息摘要，然后将摘要转为十六进制字符串
      */
-    public static String applySha256(String inputs) {
+    public static String applySha256HexString(String inputs) {
         byte[] sha256Digest = applySha256(inputs.getBytes());
-        return Base64.toBase64String(sha256Digest);
+        return HexUtil.bytesToHexString(sha256Digest);
     }
 
     /**
