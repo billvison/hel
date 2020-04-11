@@ -1,5 +1,7 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
+import org.bouncycastle.util.encoders.Base64;
+
 import java.security.MessageDigest;
 
 /**
@@ -11,15 +13,15 @@ public class RipeMD160Util {
      * RipeMD160消息摘要
      */
     public static String ripeMD160(String data) throws Exception{
-        byte[] ripeMD160Data = ripeMD160(data.getBytes());
-        return new String(ripeMD160Data);
+        byte[] ripeMD160Digest = ripeMD160(data.getBytes());
+        return Base64.toBase64String(ripeMD160Digest);
     }
 
     /**
      * RipeMD160消息摘要
      */
-    private static byte[] ripeMD160(byte[] data) throws Exception{
-        MessageDigest md = MessageDigest.getInstance("RipeMD160");
-        return md.digest(data);
+    public static byte[] ripeMD160(byte[] data) throws Exception{
+        MessageDigest ripeMD160Digest = MessageDigest.getInstance("RipeMD160");
+        return ripeMD160Digest.digest(data);
     }
 }

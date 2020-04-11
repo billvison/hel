@@ -4,29 +4,54 @@ import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.DERInteger;
+import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.DERSequenceGenerator;
+import org.bouncycastle.asn1.sec.SECNamedCurves;
+import org.bouncycastle.asn1.x9.X9ECParameters;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
+import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.signers.ECDSASigner;
 
-import java.security.*;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
-import java.security.spec.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.Collections;
 
 public class KeyUtil {
 
+    private static final ECDomainParameters ecParams;
+    private static final SecureRandom secureRandom;
+
+    static {
+        X9ECParameters params = SECNamedCurves.getByName("secp256k1");
+        ecParams = new ECDomainParameters(params.getCurve(), params.getG(), params.getN(),  params.getH());
+        secureRandom = new SecureRandom();
+    }
+
+    /**
+     * 随机生成一个秘钥
+     */
     public static StringKey randomStringKey() throws Exception {
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA","BC");
-        SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-        ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256k1");
-        keyGen.initialize(ecSpec, random);
-        KeyPair keyPair = keyGen.generateKeyPair();
-        PrivateKey privateKey = keyPair.getPrivate();
-        PublicKey publicKey = keyPair.getPublic();
+        ECKeyPairGenerator generator = new ECKeyPairGenerator();
+        ECKeyGenerationParameters keygenParams = new ECKeyGenerationParameters(ecParams, secureRandom);
+        generator.init(keygenParams);
+        AsymmetricCipherKeyPair keypair = generator.generateKeyPair();
+        ECPrivateKeyParameters privParams = (ECPrivateKeyParameters) keypair.getPrivate();
+        ECPublicKeyParameters pubParams = (ECPublicKeyParameters) keypair.getPublic();
+        BigInteger priv = privParams.getD();
+        // The public key is an encoded point on the elliptic curve. It has no meaning independent of the curve.
+        byte[] pub = pubParams.getQ().getEncoded();
 
         StringKey stringKey = new StringKey();
-        StringPrivateKey stringPrivateKey = stringPrivateKeyFrom(privateKey);
-        StringPublicKey stringPublicKey = stringPublicKeyFrom(publicKey);
+        StringPrivateKey stringPrivateKey = stringPrivateKeyFrom(priv);
+        StringPublicKey stringPublicKey = stringPublicKeyFrom(pub);
         StringAddress stringAddress = stringAddressFrom(stringPublicKey);
         stringKey.setStringPrivateKey(stringPrivateKey);
         stringKey.setStringPublicKey(stringPublicKey);
@@ -34,9 +59,12 @@ public class KeyUtil {
         return stringKey;
     }
 
+    /**
+     * 私钥生成秘钥
+     */
     public static StringKey stringKeyFrom(StringPrivateKey stringPrivateKey) throws Exception {
-        PrivateKey ecPrivateKey = KeyUtil.privateKeyFrom(stringPrivateKey);
-        PublicKey ecPublicKey = publicFromPrivate((ECPrivateKey) ecPrivateKey);
+        BigInteger priv = privateKeyFrom(stringPrivateKey);
+        byte[] ecPublicKey = publicFromPrivate(priv);
         StringKey stringKey = new StringKey();
 
         StringPublicKey stringPublicKey = stringPublicKeyFrom(ecPublicKey);
@@ -47,12 +75,39 @@ public class KeyUtil {
         return stringKey;
     }
 
+    /**
+     * 公钥生成地址
+     */
     public static StringAddress stringAddressFrom(StringPublicKey stringPublicKey) throws Exception {
-        String version = "00";
-        String publicKeyHash =  RipeMD160Util.ripeMD160(SHA256Util.applySha256(stringPublicKey.getValue()));
-        String check = SHA256Util.applySha256(SHA256Util.applySha256((version+publicKeyHash))).substring(0,4);
-        String address = Base58Util.encode((version+publicKeyHash+check).getBytes());
-        return new StringAddress(address);
+        byte[] pubK = HexUtil.hexStringToBytes(stringPublicKey.getValue());
+        return new StringAddress(base58AddressFrom(pubK));
+    }
+
+    /**
+     * ECDSA签名
+     */
+    public static String applyECDSASig(StringPrivateKey stringPrivateKey, String data) {
+       try {
+           BigInteger priv = privateKeyFrom(stringPrivateKey);
+           byte[] bytesSignature = applyECDSASig(data.getBytes(),priv);
+           String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
+           return strSignature;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * ECDSA签名验证
+     */
+    public static boolean verifyECDSASig(StringPublicKey stringPublicKey, String data, String strSignature) {
+        try {
+            byte[] bytePublicKey = publicKeyFrom(stringPublicKey);
+            byte[] bytesSignature = Base64.getDecoder().decode(strSignature);
+            return verifyECDSASig(bytePublicKey,data.getBytes(),bytesSignature);
+        }catch(Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static boolean isEquals(StringPublicKey stringPublicKey, StringAddress stringAddress) {
@@ -71,150 +126,107 @@ public class KeyUtil {
             return false;
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private static byte[] publicFromPrivate(BigInteger bigIntegerPrivateKey) {
+        byte[] bytePublicKey = ecParams.getG().multiply(bigIntegerPrivateKey).getEncoded();
+        return bytePublicKey;
+    }
+
+    private static BigInteger privateKeyFrom(StringPrivateKey stringPrivateKey) {
+        BigInteger bigIntegerPrivateKey = new BigInteger(stringPrivateKey.getValue(),16);
+        return bigIntegerPrivateKey;
+    }
+
+    private static byte[] publicKeyFrom(StringPublicKey stringPublicKey) {
+        byte[] bytePublicKey = HexUtil.hexStringToBytes(stringPublicKey.getValue());
+        return bytePublicKey;
+    }
+
+    private static StringPrivateKey stringPrivateKeyFrom(BigInteger bigIntegerPrivateKey) {
+        String hexPrivateKey = HexUtil.bytesToHexString(bigIntegerPrivateKey.toByteArray());
+        return new StringPrivateKey(hexPrivateKey);
+    }
+
+    private static StringPublicKey stringPublicKeyFrom(byte[] bytePublicKey) {
+        String hexPublicKey = HexUtil.bytesToHexString(bytePublicKey);
+        return new StringPublicKey(hexPublicKey);
+    }
+
     /**
      * ECDSA签名
      */
-    public static String applyECDSASig(StringPrivateKey stringPrivateKey, String data) {
+    private static byte[] applyECDSASig(byte[] input,BigInteger bigIntegerPrivateKey) {
+        ECDSASigner signer = new ECDSASigner();
+        ECPrivateKeyParameters ecPrivateKeyParameters = new ECPrivateKeyParameters(bigIntegerPrivateKey, ecParams);
+        signer.init(true, ecPrivateKeyParameters);
+        BigInteger[] sigs = signer.generateSignature(input);
         try {
-            PrivateKey privateKey = privateKeyFrom(stringPrivateKey);
-            byte[] bytesSignature = applyECDSASig(privateKey,data.getBytes());
-            String strSignature = Base64.getEncoder().encodeToString(bytesSignature);
-            return strSignature;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            DERSequenceGenerator seq = new DERSequenceGenerator(bos);
+            seq.addObject(new DERInteger(sigs[0]));
+            seq.addObject(new DERInteger(sigs[1]));
+            seq.close();
+            return bos.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);  // Cannot happen.
         }
     }
 
     /**
      * ECDSA签名验证
      */
-    public static boolean verifyECDSASig(StringPublicKey senderStringPublicKey, String data, String strSignature) {
+    private static boolean verifyECDSASig(byte[] data, byte[] signature, byte[] pub) {
+        ECDSASigner signer = new ECDSASigner();
+        ECPublicKeyParameters params = new ECPublicKeyParameters(ecParams.getCurve().decodePoint(pub), ecParams);
+        signer.init(false, params);
         try {
-            byte[] bytesSignature = Base64.getDecoder().decode(strSignature);
-            PublicKey publicKey = publicKeyFrom(senderStringPublicKey);
-            return verifyECDSASig(publicKey,data.getBytes(),bytesSignature);
-        }catch(Exception e) {
+            ASN1InputStream decoder = new ASN1InputStream(signature);
+            DERSequence seq = (DERSequence) decoder.readObject();
+            DERInteger r = (DERInteger) seq.getObjectAt(0);
+            DERInteger s = (DERInteger) seq.getObjectAt(1);
+            decoder.close();
+            return signer.verifySignature(data, r.getValue(), s.getValue());
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * ECDSA签名
-     */
-    private static byte[] applyECDSASig(PrivateKey privateKey, byte[] data) throws Exception {
-        Signature signature = Signature.getInstance("ECDSA", "BC");
-        signature.initSign(privateKey);
-        signature.update(data);
-        byte[] sign = signature.sign();
-        return sign;
     }
 
     /**
-     * ECDSA签名验证
+     * 公钥生成base58格式地址
      */
-    private static boolean verifyECDSASig(PublicKey publicKey, byte[] data, byte[] signature) throws Exception {
-        Signature ecdsaVerify = Signature.getInstance("ECDSA", "BC");
-        ecdsaVerify.initVerify(publicKey);
-        ecdsaVerify.update(data);
-        return ecdsaVerify.verify(signature);
-    }
+    private static String base58AddressFrom(byte[] bytePublicKey) throws Exception {
+        byte[] pubKSha256 = SHA256Util.applySha256(bytePublicKey);
+        byte[] pubKSha256RipeMD160 = RipeMD160Util.ripeMD160(pubKSha256);
 
-    private static byte[] decode(StringPrivateKey stringPrivateKey) {
-        return Base64.getDecoder().decode(stringPrivateKey.getValue());
-    }
+        //地址
+        byte[] addressBytes = new byte[1 + 20 + 4];
 
-    private static byte[] decode(StringPublicKey stringPublicKey) {
-        return Base64.getDecoder().decode(stringPublicKey.getValue());
-    }
+        //将地址的版本号0x00加到地址最前方
+        addressBytes[0] = 0x00;
+        System.arraycopy(pubKSha256RipeMD160, 0, addressBytes, 1, 20);
 
-    private static ECPublicKey publicFromPrivate(ECPrivateKey privateKey) throws Exception {
-        ECParameterSpec params = privateKey.getParams();
-        org.bouncycastle.jce.spec.ECParameterSpec bcSpec = org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util
-                .convertSpec(params, false);
-        org.bouncycastle.math.ec.ECPoint q = bcSpec.getG().multiply(privateKey.getS());
-        org.bouncycastle.math.ec.ECPoint bcW = bcSpec.getCurve().decodePoint(q.getEncoded(false));
-        ECPoint w = new ECPoint(
-                bcW.getAffineXCoord().toBigInteger(),
-                bcW.getAffineYCoord().toBigInteger());
-        ECPublicKeySpec keySpec = new ECPublicKeySpec(w, tryFindNamedCurveSpec(params));
-        return (ECPublicKey) KeyFactory
-                .getInstance("EC", org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME)
-                .generatePublic(keySpec);
-    }
+        //计算公钥Hash
+        byte[] check1 = new byte[21];
+        System.arraycopy(addressBytes, 0, check1, 0, 21);
+        byte[] doubleSHA256 = SHA256Util.applySha256(SHA256Util.applySha256(check1));
 
-    @SuppressWarnings("unchecked")
-    private static ECParameterSpec tryFindNamedCurveSpec(ECParameterSpec params) {
-        org.bouncycastle.jce.spec.ECParameterSpec bcSpec
-                = org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util.convertSpec(params, false);
-        for (Object name : Collections.list(org.bouncycastle.jce.ECNamedCurveTable.getNames())) {
-            org.bouncycastle.jce.spec.ECNamedCurveParameterSpec bcNamedSpec
-                    = org.bouncycastle.jce.ECNamedCurveTable.getParameterSpec((String) name);
-            if (bcNamedSpec.getN().equals(bcSpec.getN())
-                    && bcNamedSpec.getH().equals(bcSpec.getH())
-                    && bcNamedSpec.getCurve().equals(bcSpec.getCurve())
-                    && bcNamedSpec.getG().equals(bcSpec.getG())) {
-                return new org.bouncycastle.jce.spec.ECNamedCurveSpec(
-                        bcNamedSpec.getName(),
-                        bcNamedSpec.getCurve(),
-                        bcNamedSpec.getG(),
-                        bcNamedSpec.getN(),
-                        bcNamedSpec.getH(),
-                        bcNamedSpec.getSeed());
-            }
-        }
-        return params;
-    }
+        //取公钥hash的前四位作为地址校验码，将校验码前四位加到地址的末四位
+        System.arraycopy(doubleSHA256, 0, addressBytes, 21, 4);
 
-    private static PrivateKey privateKeyFrom(StringPrivateKey stringPrivateKey) {
-        try {
-            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-            byte[] bytesPrivateKey = decode(stringPrivateKey);
-
-            final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
-            final PKCS8EncodedKeySpec encPrivKeySpec = new PKCS8EncodedKeySpec(bytesPrivateKey);
-            final PrivateKey privKey = kf.generatePrivate(encPrivKeySpec);
-            return privKey;
-        }catch(Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static PublicKey publicKeyFrom(StringPublicKey stringPublicKey) {
-        try {
-            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-            byte[] bytesPublicKey = decode(stringPublicKey);
-
-            final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
-            final X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(bytesPublicKey);
-            final PublicKey pubKey = kf.generatePublic(pubKeySpec);
-            return pubKey;
-        }catch(Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static StringPublicKey stringPublicKeyFrom(PublicKey publicKey) {
-        String encode = Base64.getEncoder().encodeToString(publicKey.getEncoded());
-        return new StringPublicKey(encode);
-    }
-
-    private static StringPrivateKey stringPrivateKeyFrom(PrivateKey privateKey) {
-        String encode = Base64.getEncoder().encodeToString(privateKey.getEncoded());
-        return new StringPrivateKey(encode);
+        //Base58编码
+        String base58Address = Base58Util.encode(addressBytes);
+        return base58Address;
     }
 }
