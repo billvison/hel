@@ -14,57 +14,6 @@ import java.util.Collections;
 
 public class KeyUtil {
 
-    public static PrivateKey privateKeyFrom(StringPrivateKey stringPrivateKey) {
-        try {
-            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-            byte[] bytesPrivateKey = decode(stringPrivateKey);
-
-            final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
-            final PKCS8EncodedKeySpec encPrivKeySpec = new PKCS8EncodedKeySpec(bytesPrivateKey);
-            final PrivateKey privKey = kf.generatePrivate(encPrivKeySpec);
-            return privKey;
-        }catch(Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static PublicKey publicKeyFrom(StringPublicKey stringPublicKey) {
-        try {
-            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-            byte[] bytesPublicKey = decode(stringPublicKey);
-
-            final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
-            final X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(bytesPublicKey);
-            final PublicKey pubKey = kf.generatePublic(pubKeySpec);
-            return pubKey;
-        }catch(Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static StringPublicKey stringPublicKeyFrom(PublicKey publicKey) {
-        String encode = Base64.getEncoder().encodeToString(publicKey.getEncoded());
-        return new StringPublicKey(encode);
-    }
-
-    public static StringPrivateKey stringPrivateKeyFrom(PrivateKey privateKey) {
-        String encode = Base64.getEncoder().encodeToString(privateKey.getEncoded());
-        return new StringPrivateKey(encode);
-    }
-
-    public static StringKey stringKeyFrom(StringPrivateKey stringPrivateKey) throws Exception {
-        PrivateKey ecPrivateKey = KeyUtil.privateKeyFrom(stringPrivateKey);
-        PublicKey ecPublicKey = publicFromPrivate((ECPrivateKey) ecPrivateKey);
-        StringKey stringKey = new StringKey();
-
-        StringPublicKey stringPublicKey = stringPublicKeyFrom(ecPublicKey);
-        StringAddress stringAddress = stringAddressFrom(stringPublicKey);
-        stringKey.setStringPrivateKey(stringPrivateKey);
-        stringKey.setStringPublicKey(stringPublicKey);
-        stringKey.setStringAddress(stringAddress);
-        return stringKey;
-    }
-
     public static StringKey randomStringKey() throws Exception {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA","BC");
@@ -85,6 +34,19 @@ public class KeyUtil {
         return stringKey;
     }
 
+    public static StringKey stringKeyFrom(StringPrivateKey stringPrivateKey) throws Exception {
+        PrivateKey ecPrivateKey = KeyUtil.privateKeyFrom(stringPrivateKey);
+        PublicKey ecPublicKey = publicFromPrivate((ECPrivateKey) ecPrivateKey);
+        StringKey stringKey = new StringKey();
+
+        StringPublicKey stringPublicKey = stringPublicKeyFrom(ecPublicKey);
+        StringAddress stringAddress = stringAddressFrom(stringPublicKey);
+        stringKey.setStringPrivateKey(stringPrivateKey);
+        stringKey.setStringPublicKey(stringPublicKey);
+        stringKey.setStringAddress(stringAddress);
+        return stringKey;
+    }
+
     public static StringAddress stringAddressFrom(StringPublicKey stringPublicKey) throws Exception {
         String version = "00";
         String publicKeyHash =  RipeMD160Util.ripeMD160(SHA256Util.applySha256(stringPublicKey.getValue()));
@@ -93,6 +55,7 @@ public class KeyUtil {
         return new StringAddress(address);
     }
 
+    //TODO 多余
     public static boolean isStringPublicKeyEqualStringAddress(StringPublicKey stringPublicKey, StringAddress stringAddress) {
         try {
             StringAddress tempStringAddress = stringAddressFrom(stringPublicKey);
@@ -127,6 +90,13 @@ public class KeyUtil {
             throw new RuntimeException(e);
         }
     }
+
+
+
+
+
+
+
 
 
 
@@ -201,5 +171,43 @@ public class KeyUtil {
             }
         }
         return params;
+    }
+
+    private static PrivateKey privateKeyFrom(StringPrivateKey stringPrivateKey) {
+        try {
+            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+            byte[] bytesPrivateKey = decode(stringPrivateKey);
+
+            final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
+            final PKCS8EncodedKeySpec encPrivKeySpec = new PKCS8EncodedKeySpec(bytesPrivateKey);
+            final PrivateKey privKey = kf.generatePrivate(encPrivKeySpec);
+            return privKey;
+        }catch(Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static PublicKey publicKeyFrom(StringPublicKey stringPublicKey) {
+        try {
+            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+            byte[] bytesPublicKey = decode(stringPublicKey);
+
+            final KeyFactory kf = KeyFactory.getInstance("ECDSA", "BC");
+            final X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(bytesPublicKey);
+            final PublicKey pubKey = kf.generatePublic(pubKeySpec);
+            return pubKey;
+        }catch(Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static StringPublicKey stringPublicKeyFrom(PublicKey publicKey) {
+        String encode = Base64.getEncoder().encodeToString(publicKey.getEncoded());
+        return new StringPublicKey(encode);
+    }
+
+    private static StringPrivateKey stringPrivateKeyFrom(PrivateKey privateKey) {
+        String encode = Base64.getEncoder().encodeToString(privateKey.getEncoded());
+        return new StringPrivateKey(encode);
     }
 }
