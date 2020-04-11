@@ -24,6 +24,9 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+/**
+ * 秘钥工具类
+ */
 public class KeyUtil {
 
     private static final ECDomainParameters ecParams;
@@ -31,7 +34,7 @@ public class KeyUtil {
 
     static {
         X9ECParameters params = SECNamedCurves.getByName("secp256k1");
-        ecParams = new ECDomainParameters(params.getCurve(), params.getG(), params.getN(),  params.getH());
+        ecParams = new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH());
         secureRandom = new SecureRandom();
     }
 
@@ -47,8 +50,7 @@ public class KeyUtil {
         ECPublicKeyParameters pubParams = (ECPublicKeyParameters) keypair.getPublic();
         BigInteger priv = privParams.getD();
         // The public key is an encoded point on the elliptic curve. It has no meaning independent of the curve.
-        byte[] pub = pubParams.getQ().getEncoded();
-
+        byte[] pub = pubParams.getQ().getEncoded(false);
         StringKey stringKey = new StringKey();
         StringPrivateKey stringPrivateKey = stringPrivateKeyFrom(priv);
         StringPublicKey stringPublicKey = stringPublicKeyFrom(pub);
@@ -110,6 +112,9 @@ public class KeyUtil {
         }
     }
 
+    /**
+     * 判断公钥与地址是否等价
+     */
     public static boolean isEquals(StringPublicKey stringPublicKey, StringAddress stringAddress) {
         try {
             StringAddress tempStringAddress = stringAddressFrom(stringPublicKey);
@@ -119,6 +124,9 @@ public class KeyUtil {
         }
     }
 
+    /**
+     * 判断地址是否等价
+     */
     public static boolean isEquals(StringAddress stringAddress1, StringAddress stringAddress2) {
         try {
             return stringAddress1.getValue().equals(stringAddress2.getValue());
@@ -128,37 +136,39 @@ public class KeyUtil {
     }
 
 
+    
 
-
-
-
-
-
-
-
-
-
-
+    /**
+     * 由原始私钥推导出原始公钥
+     */
     private static byte[] publicFromPrivate(BigInteger bigIntegerPrivateKey) {
         byte[] bytePublicKey = ecParams.getG().multiply(bigIntegerPrivateKey).getEncoded();
         return bytePublicKey;
     }
-
+    /**
+     * 由编码私钥解码出原始私钥
+     */
     private static BigInteger privateKeyFrom(StringPrivateKey stringPrivateKey) {
         BigInteger bigIntegerPrivateKey = new BigInteger(stringPrivateKey.getValue(),16);
         return bigIntegerPrivateKey;
     }
-
+    /**
+     * 由编码公钥解码出原始公钥
+     */
     private static byte[] publicKeyFrom(StringPublicKey stringPublicKey) {
         byte[] bytePublicKey = HexUtil.hexStringToBytes(stringPublicKey.getValue());
         return bytePublicKey;
     }
-
+    /**
+     * 将原始私钥进行编码操作，生成编码私钥
+     */
     private static StringPrivateKey stringPrivateKeyFrom(BigInteger bigIntegerPrivateKey) {
         String hexPrivateKey = HexUtil.bytesToHexString(bigIntegerPrivateKey.toByteArray());
         return new StringPrivateKey(hexPrivateKey);
     }
-
+    /**
+     * 将原始公钥进行编码操作，生成编码公钥
+     */
     private static StringPublicKey stringPublicKeyFrom(byte[] bytePublicKey) {
         String hexPublicKey = HexUtil.bytesToHexString(bytePublicKey);
         return new StringPublicKey(hexPublicKey);
@@ -210,10 +220,10 @@ public class KeyUtil {
         byte[] pubKSha256 = SHA256Util.applySha256(bytePublicKey);
         byte[] pubKSha256RipeMD160 = RipeMD160Util.ripeMD160(pubKSha256);
 
-        //地址
+        //地址数组
         byte[] byteAddress = new byte[1 + 20 + 4];
 
-        //将地址的版本号0x00加到地址最前方
+        //将地址的版本号0x00存储进地址数组
         byteAddress[0] = 0x00;
         System.arraycopy(pubKSha256RipeMD160, 0, byteAddress, 1, 20);
 
@@ -222,10 +232,10 @@ public class KeyUtil {
         System.arraycopy(byteAddress, 0, versionAndPubKSha256RipeMD160, 0, 21);
         byte[] doubleSHA256 = SHA256Util.applySha256(SHA256Util.applySha256(versionAndPubKSha256RipeMD160));
 
-        //取前四位作为地址校验码，将校验码前四位加到地址的末四位
+        //取前四位作为地址校验码，将校验码前四位加到地址数组的末四位
         System.arraycopy(doubleSHA256, 0, byteAddress, 21, 4);
 
-        //Base58编码
+        //用Base58编码地址数组
         String base58Address = Base58Util.encode(byteAddress);
         return base58Address;
     }

@@ -7,6 +7,7 @@ import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
+import org.bouncycastle.util.encoders.Base64;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -80,8 +81,8 @@ public class TransactionUtil {
             }
         }
         String data = timestamp + transactionUUID + inputs + outputs;
-        String sha256Data = SHA256Util.applySha256HexString(data);
-        return sha256Data;
+        byte[] byteSha256 = SHA256Util.applySha256(data.getBytes());
+        return Base64.toBase64String(byteSha256);
     }
 
     public static StringPublicKey getSenderStringPublicKey(Transaction transaction) {

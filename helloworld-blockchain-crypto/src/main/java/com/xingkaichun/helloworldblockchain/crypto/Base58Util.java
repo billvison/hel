@@ -2,6 +2,9 @@ package com.xingkaichun.helloworldblockchain.crypto;
 
 import java.util.Arrays;
 
+/**
+ * Base58工具类
+ */
 public class Base58Util {
 
     // Bsae58 编码表

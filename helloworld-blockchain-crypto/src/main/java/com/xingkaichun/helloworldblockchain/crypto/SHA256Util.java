@@ -3,17 +3,9 @@ package com.xingkaichun.helloworldblockchain.crypto;
 import java.security.MessageDigest;
 
 /**
- * 密码学工具类
+ * Sha256消息摘要工具类
  */
 public class SHA256Util {
-
-    /**
-     * 首先应用sha256生成消息摘要，然后将摘要转为十六进制字符串
-     */
-    public static String applySha256HexString(String inputs) {
-        byte[] sha256Digest = applySha256(inputs.getBytes());
-        return HexUtil.bytesToHexString(sha256Digest);
-    }
 
     /**
      * Sha256消息摘要

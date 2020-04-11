@@ -1,5 +1,8 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
+/**
+ * 十六进制工具类
+ */
 public class HexUtil {
 
     /**

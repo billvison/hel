@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.crypto;
 import java.security.MessageDigest;
 
 /**
- * 密码学工具类
+ * RipeMD160消息摘要工具类
  */
 public class RipeMD160Util {
 
