@@ -14,5 +14,6 @@ public class TransactionInputDTO implements Serializable {
     private String unspendTransactionOutputUUID;
     //交易的输入对应的公钥
     private String publicKey;
-
+    //交易签名
+    private String signature;
 }

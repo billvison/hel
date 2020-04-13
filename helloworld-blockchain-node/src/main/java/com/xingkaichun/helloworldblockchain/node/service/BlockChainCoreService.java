@@ -43,10 +43,6 @@ public interface BlockChainCoreService {
      * 提交交易到区块链网络
      */
     SubmitNormalTransactionResponse sumiteTransaction(NormalTransactionDto transactionDTO) throws Exception;
-    /**
-     * 给打上签名交易
-     */
-    TransactionDTO signatureTransactionDTO(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) throws Exception;
 
     /**
      * 根据区块高度获取区块DTO

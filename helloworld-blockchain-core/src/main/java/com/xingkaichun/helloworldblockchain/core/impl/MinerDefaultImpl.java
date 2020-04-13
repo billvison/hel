@@ -303,9 +303,9 @@ public class MinerDefaultImpl extends Miner {
         BigDecimal award = blockChainDataBase.getIncentive().mineAward(blockChainDataBase,block);
 
         TransactionOutput output = new TransactionOutput();
-        output.setTransactionOutputUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
         output.setStringAddress(minerStringAddress);
         output.setValue(award);
+        output.setTransactionOutputUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
 
         outputs.add(output);
         transaction.setOutputs(outputs);

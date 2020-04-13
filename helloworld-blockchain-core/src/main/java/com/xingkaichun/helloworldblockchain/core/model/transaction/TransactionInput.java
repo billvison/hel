@@ -16,4 +16,7 @@ public class TransactionInput implements Serializable {
     //TODO 完善对象信息
     //交易输入对应的公钥
     private StringPublicKey stringPublicKey;
+
+    //交易签名 签名应当能代表一个交易
+    private String signature;
 }

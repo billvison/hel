@@ -91,6 +91,7 @@ public class NodeTransportUtils {
                 TransactionInput transactionInput = new TransactionInput();
                 transactionInput.setStringPublicKey(new StringPublicKey(transactionInputDTO.getPublicKey()));
                 transactionInput.setUnspendTransactionOutput(transactionOutput);
+                transactionInput.setSignature(transactionInputDTO.getSignature());
                 inputs.add(transactionInput);
             }
         }
@@ -111,7 +112,6 @@ public class NodeTransportUtils {
         transaction.setTransactionType(TransactionType.valueOf(transactionTypeDto));
         transaction.setInputs(inputs);
         transaction.setOutputs(outputs);
-        transaction.setSignature(transactionDTO.getSignature());
         return transaction;
     }
 
@@ -127,6 +127,7 @@ public class NodeTransportUtils {
                 TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
                 transactionInputDTO.setUnspendTransactionOutputUUID(unspendTransactionOutput.getTransactionOutputUUID());
                 transactionInputDTO.setPublicKey(transactionInput.getStringPublicKey().getValue());
+                transactionInputDTO.setSignature(transactionInput.getSignature());
                 inputs.add(transactionInputDTO);
             }
         }
@@ -146,7 +147,6 @@ public class NodeTransportUtils {
         transactionDTO.setTransactionType(transaction.getTransactionType().name());
         transactionDTO.setInputs(inputs);
         transactionDTO.setOutputs(outputs);
-        transactionDTO.setSignature(transaction.getSignature());
         return transactionDTO;
     }
 

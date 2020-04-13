@@ -22,7 +22,5 @@ public class TransactionDTO implements Serializable {
     private List<TransactionInputDTO> inputs;
     //交易输出
     private List<TransactionOutputDTO> outputs;
-    //交易签名
-    private String signature;
 
 }

@@ -29,8 +29,6 @@ public class Transaction implements Serializable {
     private List<TransactionInput> inputs;
     //交易输出
     private List<TransactionOutput> outputs;
-    //交易签名
-    private String signature;
 
     /**
      * 在区块中的交易序列号

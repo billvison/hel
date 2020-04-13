@@ -59,6 +59,7 @@ public class TransactionUtil {
      * @return
      */
     public static String signatureData(Transaction transaction) throws Exception {
+        //TODO 保证签名的数据包含所有有作用的数据
         String data = signatureData(transaction.getTimestamp(),transaction.getTransactionUUID(),getInputUtxoIds(transaction),getOutpuUtxoIds(transaction));
         return data;
     }
@@ -106,9 +107,17 @@ public class TransactionUtil {
      * 签名验证
      */
     public static boolean verifySignature(Transaction transaction) throws Exception {
-        StringPublicKey senderStringPublicKey = getSenderStringPublicKey(transaction);
-        String strSignature = transaction.getSignature();
-        return KeyUtil.verifySignature(senderStringPublicKey,signatureData(transaction),strSignature);
+        List<TransactionInput> inputs = transaction.getInputs();
+        if(inputs != null && inputs.size()!=0){
+            for(TransactionInput transactionInput:inputs){
+                StringPublicKey stringPublicKey = transactionInput.getStringPublicKey();
+                String stringSignature = transactionInput.getSignature();
+                if(!KeyUtil.verifySignature(stringPublicKey,signatureData(transaction),stringSignature)){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public static List<String> getInputUtxoIds(Transaction transaction){

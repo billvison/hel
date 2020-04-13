@@ -126,9 +126,9 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         if(outputs != null){
             for(NormalTransactionDto.Output o:outputs){
                 TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-                transactionOutputDTO.setTransactionOutputUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
                 transactionOutputDTO.setAddress(o.getAddress());
                 transactionOutputDTO.setValue(o.getValue());
+                transactionOutputDTO.setTransactionOutputUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
                 transactionOutputDtoList.add(transactionOutputDTO);
             }
         }
@@ -147,16 +147,16 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         transactionDTO.setTransactionType(TransactionTypeDTO.NORMAL.name());
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
-        signatureTransactionDTO(transactionDTO,new StringPrivateKey(privateKey));
+
+        for(TransactionInputDTO transactionInputDTO:transactionInputDtoList){
+            transactionInputDTO.setSignature(signatureTransactionDTO(transactionDTO,new StringPrivateKey(privateKey)));
+        }
         return transactionDTO;
     }
 
-
-    @Override
-    public TransactionDTO signatureTransactionDTO(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) throws Exception {
+    public String signatureTransactionDTO(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) throws Exception {
         String signature = NodeTransportUtils.signature(transactionDTO,stringPrivateKey);
-        transactionDTO.setSignature(signature);
-        return transactionDTO;
+        return signature;
     }
 
     @Override
