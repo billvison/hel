@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
+import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
@@ -13,6 +14,7 @@ import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryMiningTransactionListRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryTxosByAddressRequest;
@@ -128,6 +130,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
                 TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
                 transactionOutputDTO.setAddress(o.getAddress());
                 transactionOutputDTO.setValue(o.getValue());
+                transactionOutputDTO.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(o.getAddress()));
                 transactionOutputDTO.setTransactionOutputUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
                 transactionOutputDtoList.add(transactionOutputDTO);
             }
@@ -137,7 +140,6 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         for(String input:inputs){
             TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
             transactionInputDTO.setUnspendTransactionOutputUUID(input);
-            transactionInputDTO.setPublicKey(stringKey.getStringPublicKey().getValue());
             transactionInputDtoList.add(transactionInputDTO);
         }
 
@@ -149,7 +151,9 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         transactionDTO.setOutputs(transactionOutputDtoList);
 
         for(TransactionInputDTO transactionInputDTO:transactionInputDtoList){
-            transactionInputDTO.setSignature(signatureTransactionDTO(transactionDTO,new StringPrivateKey(privateKey)));
+            StringPublicKey stringPublicKey = stringKey.getStringPublicKey();
+            String signature = signatureTransactionDTO(transactionDTO,new StringPrivateKey(privateKey));
+            transactionInputDTO.setScriptKey(ScriptMachine.createPayToClassicAddressInputScript(signature,stringPublicKey.getValue()));
         }
         return transactionDTO;
     }

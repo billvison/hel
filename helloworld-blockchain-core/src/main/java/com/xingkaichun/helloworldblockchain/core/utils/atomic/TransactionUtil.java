@@ -3,10 +3,12 @@ package com.xingkaichun.helloworldblockchain.core.utils.atomic;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
+import com.xingkaichun.helloworldblockchain.core.script.Script;
+import com.xingkaichun.helloworldblockchain.core.script.ScriptExecuteResult;
+import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
+import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import org.bouncycastle.util.encoders.Base64;
 
 import java.math.BigDecimal;
@@ -86,15 +88,6 @@ public class TransactionUtil {
         return Base64.toBase64String(byteSha256);
     }
 
-    public static StringPublicKey getSenderStringPublicKey(Transaction transaction) {
-        List<TransactionInput> inputs = transaction.getInputs();
-        if(inputs == null || inputs.size() == 0){
-            return null;
-        }
-        StringPublicKey senderStringPublicKey = inputs.get(0).getStringPublicKey();
-        return senderStringPublicKey;
-    }
-
     /**
      * 交易签名
      */
@@ -110,11 +103,10 @@ public class TransactionUtil {
         List<TransactionInput> inputs = transaction.getInputs();
         if(inputs != null && inputs.size()!=0){
             for(TransactionInput transactionInput:inputs){
-                StringPublicKey stringPublicKey = transactionInput.getStringPublicKey();
-                String stringSignature = transactionInput.getSignature();
-                if(!KeyUtil.verifySignature(stringPublicKey,signatureData(transaction),stringSignature)){
-                    return false;
-                }
+                Script payToClassicAddressScript = ScriptMachine.createPayToClassicAddressScript(transactionInput.getScriptKey(),transactionInput.getUnspendTransactionOutput().getScriptLock());
+                ScriptMachine scriptMachine = new ScriptMachine();
+                ScriptExecuteResult scriptExecuteResult = scriptMachine.executeScript(transaction,payToClassicAddressScript);
+                return Boolean.valueOf(scriptExecuteResult.pop());
             }
         }
         return true;
@@ -139,17 +131,5 @@ public class TransactionUtil {
             ids.add(transactionOutput.getTransactionOutputUUID());
         }
         return ids;
-    }
-
-    public static boolean isSpendOwnUtxo(Transaction transaction){
-        StringPublicKey senderStringPublicKey = getSenderStringPublicKey(transaction);
-        List<TransactionInput> inputs = transaction.getInputs();
-        for(TransactionInput input:inputs){
-            boolean eq = senderStringPublicKey.getValue().equals(input.getStringPublicKey().getValue());
-            if(!eq){
-                return false;
-            }
-        }
-        return true;
     }
 }

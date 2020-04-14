@@ -502,16 +502,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 }
             }
         }
-        //
-        if(inputs != null){
-            for(TransactionInput transactionInput : inputs) {
-                StringPublicKey stringPublicKey = transactionInput.getStringPublicKey();
-                StringAddress stringAddress = transactionInput.getUnspendTransactionOutput().getStringAddress();
-                if(!KeyUtil.isEquals(stringPublicKey,stringAddress)){
-                    return false;
-                }
-            }
-        }
+
         //校验交易输出的金额是否满足区块链系统对金额数字的的强制要求
         if(outputs != null){
             for(TransactionOutput o : outputs) {
@@ -541,11 +532,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             BigDecimal outputsValue = TransactionUtil.getOutputsValue(transaction);
             if(inputsValue.compareTo(outputsValue) < 0) {
                 logger.error("交易校验失败：交易的输入少于交易的输出。不合法的交易。");
-                return false;
-            }
-            //校验 付款方是同一个用户[公钥] 用户花的钱是自己的钱
-            if(!TransactionUtil.isSpendOwnUtxo(transaction)){
-                logger.error("交易校验失败：交易的付款方有多个。不合法的交易。");
                 return false;
             }
             //校验签名验证

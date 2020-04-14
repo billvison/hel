@@ -5,6 +5,8 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
+import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
+import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
@@ -89,9 +91,8 @@ public class NodeTransportUtils {
                     throw new BlockChainCoreException("TransactionOutput不应该是null。");
                 }
                 TransactionInput transactionInput = new TransactionInput();
-                transactionInput.setStringPublicKey(new StringPublicKey(transactionInputDTO.getPublicKey()));
                 transactionInput.setUnspendTransactionOutput(transactionOutput);
-                transactionInput.setSignature(transactionInputDTO.getSignature());
+                transactionInput.setScriptKey(scriptKeyFrom(transactionInputDTO.getScriptKey()));
                 inputs.add(transactionInput);
             }
         }
@@ -115,6 +116,27 @@ public class NodeTransportUtils {
         return transaction;
     }
 
+    private static ScriptKey scriptKeyFrom(List<String> scriptKey) {
+        if(scriptKey == null){
+            return null;
+        }
+        ScriptKey sKey = new ScriptKey();
+        for(String script:scriptKey){
+            sKey.add(script);
+        }
+        return sKey;
+    }
+
+    private static ScriptLock scriptLockFrom(List<String> scriptLock) {
+        if(scriptLock == null){
+            return null;
+        }
+        ScriptLock sLock = new ScriptLock();
+        for(String script:scriptLock){
+            sLock.add(script);
+        }
+        return sLock;
+    }
     /**
      * 类型转换
      */
@@ -126,8 +148,7 @@ public class NodeTransportUtils {
                 TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
                 TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
                 transactionInputDTO.setUnspendTransactionOutputUUID(unspendTransactionOutput.getTransactionOutputUUID());
-                transactionInputDTO.setPublicKey(transactionInput.getStringPublicKey().getValue());
-                transactionInputDTO.setSignature(transactionInput.getSignature());
+                transactionInputDTO.setScriptKey(transactionInput.getScriptKey());
                 inputs.add(transactionInputDTO);
             }
         }
@@ -158,8 +179,10 @@ public class NodeTransportUtils {
         transactionOutput.setTransactionOutputUUID(transactionOutputDTO.getTransactionOutputUUID());
         transactionOutput.setStringAddress(new StringAddress(transactionOutputDTO.getAddress()));
         transactionOutput.setValue(new BigDecimal(transactionOutputDTO.getValue()));
+        transactionOutput.setScriptLock(scriptLockFrom(transactionOutputDTO.getScriptLock()));
         return transactionOutput;
     }
+
     /**
      * 类型转换
      */
@@ -168,6 +191,7 @@ public class NodeTransportUtils {
         transactionOutputDTO.setTransactionOutputUUID(transactionOutput.getTransactionOutputUUID());
         transactionOutputDTO.setAddress(transactionOutput.getStringAddress().getValue());
         transactionOutputDTO.setValue(transactionOutput.getValue().toPlainString());
+        transactionOutputDTO.setScriptLock(transactionOutput.getScriptLock());
         return transactionOutputDTO;
     }
 

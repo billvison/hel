@@ -4,6 +4,7 @@ package com.xingkaichun.helloworldblockchain.node.transport.dto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 交易输出
@@ -17,5 +18,6 @@ public class TransactionOutputDTO implements Serializable {
     private String address;
     //交易输出的金额
     private String value;
-
+    //脚本锁
+    private List<String> scriptLock;
 }

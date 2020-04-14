@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Miner;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
+import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
@@ -306,6 +307,7 @@ public class MinerDefaultImpl extends Miner {
         output.setStringAddress(minerStringAddress);
         output.setValue(award);
         output.setTransactionOutputUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
+        output.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(minerStringAddress.getValue()));
 
         outputs.add(output);
         transaction.setOutputs(outputs);

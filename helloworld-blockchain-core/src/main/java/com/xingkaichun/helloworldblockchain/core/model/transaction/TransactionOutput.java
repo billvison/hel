@@ -1,6 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core.model.transaction;
 
 
+import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import lombok.Data;
 
@@ -25,6 +26,8 @@ public class TransactionOutput implements Serializable {
     private String transactionOutputUUID;
     //交易输出的地址
     private StringAddress stringAddress;
+    //脚本锁
+    private ScriptLock scriptLock;
     //交易输出的金额
     private BigDecimal value;
 
