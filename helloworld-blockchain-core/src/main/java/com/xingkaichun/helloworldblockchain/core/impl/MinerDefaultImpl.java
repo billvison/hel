@@ -296,7 +296,6 @@ public class MinerDefaultImpl extends Miner {
 
         Transaction transaction = new Transaction();
         transaction.setTimestamp(currentTimeMillis);
-        transaction.setTransactionUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
         transaction.setTransactionType(TransactionType.MINER);
         transaction.setInputs(null);
 
@@ -306,11 +305,12 @@ public class MinerDefaultImpl extends Miner {
         TransactionOutput output = new TransactionOutput();
         output.setStringAddress(minerStringAddress);
         output.setValue(award);
-        output.setTransactionOutputUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
         output.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(minerStringAddress.getValue()));
-
+        output.setTransactionOutputUUID(BlockchainUuidUtil.calculateTransactionOutputUUID(output,currentTimeMillis));
         outputs.add(output);
+
         transaction.setOutputs(outputs);
+        transaction.setTransactionUUID(BlockchainUuidUtil.calculateTransactioUUID(transaction));
         return transaction;
     }
     //endregion

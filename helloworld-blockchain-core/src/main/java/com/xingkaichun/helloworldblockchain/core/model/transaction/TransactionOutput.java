@@ -22,14 +22,15 @@ public class TransactionOutput implements Serializable {
      * 这里建议它的构成是时间戳+一串字符。
      * 最近的区块只包含最近产生的交易，因此只要有最近的区块就可校验它的唯一性。
      * //TODO UUID考虑将交易输出的信息给包含在内
+     * 为了简单校验UUID唯一，建议它的格式里含有当前交易输出产生的时间
      */
     private String transactionOutputUUID;
     //交易输出的地址
     private StringAddress stringAddress;
-    //脚本锁
-    private ScriptLock scriptLock;
     //交易输出的金额
     private BigDecimal value;
+    //脚本锁
+    private ScriptLock scriptLock;
 
     /**
      * 交易所在区块的区块高度

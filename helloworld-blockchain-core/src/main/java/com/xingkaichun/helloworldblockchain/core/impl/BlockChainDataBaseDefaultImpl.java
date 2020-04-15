@@ -13,9 +13,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.*;
-import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.WriteBatch;
@@ -23,6 +21,7 @@ import org.iq80.leveldb.impl.WriteBatchImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -278,33 +277,219 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 检测区块是否可以被应用到区块链上
      * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
      */
-    public boolean isBlockCanApplyToBlockChain(Block block) throws Exception {
-        if(block == null){
-            throw new BlockChainCoreException("区块校验失败：区块不能为null。");
-        }
+    public boolean isBlockCanApplyToBlockChain(@Nonnull Block block) throws Exception {
+
+        //校验区块大小
         if(!isBlcokTransactionSizeLegal(block)){
-            logger.error(String.format("区块数据异常，区块里包含的交易数量超过限制值%d。",
+            logger.debug(String.format("区块数据异常，区块里包含的交易数量超过限制值%d。",
                     BlockChainCoreConstants.BLOCK_MAX_TRANSACTION_SIZE));
             return false;
         }
+
+        //校验区块写入的属性值
+        if(!isBlockWriteRight(block)){
+            logger.debug("区块校验失败：区块的属性写入值与实际计算结果不一致。");
+            return false;
+        }
+
         //校验区块的连贯性
-        Block tailBlock = findNoTransactionBlockByBlockHeight(obtainBlockChainHeight());
-        if(tailBlock == null){
-            //校验时间
-            if(block.getTimestamp() >= System.currentTimeMillis()){
+        if(!isBlockHashBlockHeightBlockTimestampRight(block)){
+            logger.debug("区块校验失败：区块连贯性校验失败。");
+            return false;
+        }
+
+        //校验共识
+        boolean isReachConsensus = consensus.isReachConsensus(this,block);
+        if(!isReachConsensus){
+            return false;
+        }
+
+        //校验主键的唯一性
+        if(!isNewPrimaryKeyRight(block)){
+            logger.debug("区块数据异常，区块中占用的部分主键已经被使用了。");
+            return false;
+        }
+
+        //激励校验
+        if(!isIncentiveRight(block)){
+            logger.debug("区块数据异常，激励异常。");
+            return false;
+        }
+
+        //双花校验
+        if(isDoubleSpendAttackHappen(block)){
+            logger.debug("区块数据异常，检测到双花攻击。");
+            return false;
+        }
+
+        //从交易角度校验每一笔交易
+        for(Transaction tx : block.getTransactions()){
+            boolean transactionCanAddToNextBlock = isTransactionCanAddToNextBlock(block,tx);
+            if(!transactionCanAddToNextBlock){
+                logger.debug("区块数据异常，交易异常。");
                 return false;
             }
-            //校验区块Previous Hash
+        }
+        return true;
+    }
+
+    /**
+     * 是否有双花攻击
+     */
+    private boolean isDoubleSpendAttackHappen(Block block) {
+        //在不同的交易中，UUID(交易的UUID、交易输入UUID、交易输出UUID)不应该被使用两次或是两次以上
+        Set<String> uuidSet = new HashSet<>();
+        for(Transaction transaction : block.getTransactions()){
+            List<TransactionInput> inputs = transaction.getInputs();
+            if(inputs != null){
+                for(TransactionInput transactionInput : inputs) {
+                    TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
+                    String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
+                    if(uuidSet.contains(unspendTransactionOutputUUID)){
+                        return true;
+                    }
+                    uuidSet.add(unspendTransactionOutputUUID);
+                }
+            }
+        }
+        return false;
+    }
+    /**
+     * 是否有双花攻击
+     */
+    private boolean isDoubleSpendAttackHappen(@Nonnull Transaction transaction) {
+        List<TransactionInput> inputs = transaction.getInputs();
+        if(inputs == null || inputs.size()==0){
+            return false;
+        }
+        Set<String> uuidSet = new HashSet<>();
+        for(TransactionInput transactionInput : inputs) {
+            TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
+            String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
+            if(uuidSet.contains(unspendTransactionOutputUUID)){
+                return true;
+            }
+            uuidSet.add(unspendTransactionOutputUUID);
+        }
+        return false;
+    }
+
+    /**
+     * 校验激励
+     */
+    private boolean isIncentiveRight(Block block) throws Exception {
+        //校验奖励交易有且只能有一笔
+        //挖矿交易笔数
+        int minerTransactionNumber = 0;
+        for(Transaction tx : block.getTransactions()){
+            if(tx.getTransactionType() == TransactionType.MINER){
+                minerTransactionNumber++;
+            }
+        }
+        if(minerTransactionNumber == 0){
+            logger.debug("区块数据异常，没有检测到挖矿奖励交易。");
+            return false;
+        }
+        if(minerTransactionNumber > 1){
+            logger.debug("区块数据异常，一个区块只能有一笔挖矿奖励。");
+            return false;
+        }
+
+        //校验奖励交易
+        for(Transaction tx : block.getTransactions()){
+            if(tx.getTransactionType() == TransactionType.MINER){
+                boolean transactionCanAddToNextBlock = isTransactionCanAddToNextBlock(block,tx);
+                if(!transactionCanAddToNextBlock){
+                    logger.debug("区块数据异常，激励交易异常。");
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 校验区块中新产生的主键是否正确
+     * 正确的条件是：
+     * 主键不能已经被使用过了
+     * 主键不能被连续使用一次以上
+     * 主键符合约束
+     */
+    private boolean isNewPrimaryKeyRight(Block block) throws Exception {
+        //校验区块Hash是否已经被使用了
+        if(findBlockHeightByBlockHash(block.getHash()) != null){
+            logger.error("区块数据异常，区块Hash已经被使用了。");
+            return false;
+        }
+        //在不同的交易中，新生产的UUID(交易的UUID、交易输出UUID)不应该被使用两次或是两次以上
+        Set<String> uuidSet = new HashSet<>();
+        for(Transaction transaction : block.getTransactions()){
+            String transactionUUID = transaction.getTransactionUUID();
+            if(!saveUuid(uuidSet,transactionUUID)){
+                return false;
+            }
+            List<TransactionOutput> outputs = transaction.getOutputs();
+            if(outputs != null){
+                for(TransactionOutput transactionOutput : outputs) {
+                    String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
+                    if(!saveUuid(uuidSet,transactionOutputUUID)){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    private boolean isNewPrimaryKeyRight(Transaction transaction) {
+        //校验：只从交易对象层面校验，交易中新产生的UUID是否有重复
+        Set<String> uuidSet = new HashSet<>();
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        if(outputs != null){
+            for(TransactionOutput transactionOutput : outputs) {
+                String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
+                if(uuidSet.contains(transactionOutputUUID)){
+                    return false;
+                }
+                uuidSet.add(transactionOutputUUID);
+            }
+        }
+        //交易UUID是否已经被使用了
+        String transactionUUID = transaction.getTransactionUUID();
+        if(isUuidExist(transactionUUID)){
+            return false;
+        }
+        //交易输出UUID是否已经被使用了
+        if(outputs != null){
+            for(TransactionOutput transactionOutput : outputs) {
+                String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
+                if(isUuidExist(transactionOutputUUID)){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+
+    /**
+     * 简单的校验Block的连贯性:从高度、哈希、时间戳三个方面检查
+     */
+    private boolean isBlockHashBlockHeightBlockTimestampRight(Block block) throws Exception {
+        Block tailBlock = findNoTransactionBlockByBlockHeight(obtainBlockChainHeight());
+        if(tailBlock == null){
+            //校验区块Hash是否连贯
             if(!BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousHash())){
                 return false;
             }
-            //校验区块高度
+            //校验区块高度是否连贯
             if(!BigIntegerUtil.isEquals(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT,block.getHeight())){
                 return false;
             }
         } else {
-            //校验时间
-            if(block.getTimestamp() <= tailBlock.getTimestamp() || block.getTimestamp() >= System.currentTimeMillis()){
+            //校验区块时间戳
+            if(block.getTimestamp() <= tailBlock.getTimestamp()){
                 return false;
             }
             //校验区块Hash是否连贯
@@ -316,8 +501,26 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 return false;
             }
         }
+
+        //校验区块时间戳 TODO 配置
+        if(block.getTimestamp()>System.currentTimeMillis()+3600*1000){
+            logger.debug("区块校验失败：区块的时间戳太滞后了。");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 区块中的某些属性是由其它属性计算得出，区块对象可能是由外部节点同步过来的。
+     * 这里对区块对象中写入的属性值进行严格的校验，通过实际的计算一遍属性值与写入值进行比较，如果不同，则说明区块属性值不正确。
+     */
+    private boolean isBlockWriteRight(Block block) {
         //校验写入的Hash是否与计算得来的一致
         if(!isNonceValueRangeRight(block)){
+            return false;
+        }
+        //校验交易的属性是否与计算得来的一致
+        if(!BlockUtils.isBlockTransactionWriteRight(block)){
             return false;
         }
         //校验写入的MerkleRoot是否与计算得来的一致
@@ -327,78 +530,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //校验写入的Hash是否与计算得来的一致
         if(!BlockUtils.isBlockWriteHashRight(block)){
             return false;
-        }
-
-        //校验共识
-        boolean isReachConsensus = consensus.isReachConsensus(this,block);
-        if(!isReachConsensus){
-            return false;
-        }
-
-        //校验区块Hash是否已经被使用了
-        if(findBlockHeightByBlockHash(block.getHash()) != null){
-            logger.error("区块数据异常，区块Hash已经被使用了。");
-            return false;
-        }
-
-        //校验奖励交易有且只能有一笔
-        //挖矿交易笔数
-        int minerTransactionNumber = 0;
-        for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() == TransactionType.MINER){
-                minerTransactionNumber++;
-            }
-        }
-        if(minerTransactionNumber == 0){
-            logger.error("区块数据异常，没有检测到挖矿奖励交易。");
-            return false;
-        }
-        if(minerTransactionNumber > 1){
-            logger.error("区块数据异常，一个区块只能有一笔挖矿奖励。");
-            return false;
-        }
-
-        //在不同的交易中，UUID(交易的UUID、交易输入UUID、交易输出UUID)不应该被使用两次或是两次以上
-        Set<String> uuidSet = new HashSet<>();
-        for(Transaction transaction : block.getTransactions()){
-            if(!isTransactionUuidFormatRight(transaction)){
-                return false;
-            }
-            String transactionUUID = transaction.getTransactionUUID();
-            if(!saveUuid(uuidSet,transactionUUID)){
-                return false;
-            }
-            List<TransactionInput> inputs = transaction.getInputs();
-            if(inputs != null){
-                for(TransactionInput transactionInput : inputs) {
-                    TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
-                    String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
-                    if(!saveUuid(uuidSet,unspendTransactionOutputUUID)){
-                        return false;
-                    }
-                }
-            }
-            List<TransactionOutput> outputs = transaction.getOutputs();
-            if(outputs != null){
-                for(TransactionOutput transactionOutput : outputs) {
-                    if(!isTransactionOutputUUIDFormatRight(transaction,transactionOutput)){
-                        return false;
-                    }
-                    String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                    if(!saveUuid(uuidSet,transactionOutputUUID)){
-                        return false;
-                    }
-                }
-            }
-        }
-
-        //从交易角度校验每一笔交易
-        for(Transaction tx : block.getTransactions()){
-            boolean transactionCanAddToNextBlock = isTransactionCanAddToNextBlock(block,tx);
-            if(!transactionCanAddToNextBlock){
-                logger.error("区块数据异常，交易异常。");
-                return false;
-            }
         }
         return true;
     }
@@ -417,69 +548,104 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return true;
     }
 
-    /**
-     * 校验交易输出的UUID的格式是否正确
-     */
-    private boolean isTransactionOutputUUIDFormatRight(Transaction transaction,TransactionOutput transactionOutput) {
-        String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-        if(!BlockchainUuidUtil.isBlockchainUuidFormatRight(transactionOutputUUID)){
-            return false;
-        }
-        return transactionOutputUUID.endsWith(String.valueOf(transaction.getTimestamp()));
-    }
-    /**
-     * 校验交易的UUID的格式是否正确
-     */
-    private boolean isTransactionUuidFormatRight(Transaction transaction) {
-        String transactionUUID = transaction.getTransactionUUID();
-        if(!BlockchainUuidUtil.isBlockchainUuidFormatRight(transactionUUID)){
-            return false;
-        }
-        return transactionUUID.endsWith(String.valueOf(transaction.getTimestamp()));
-    }
-
     public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception{
-        //TODO 一定时间内的交易
-        if(block != null){
-            if(transaction.getTransactionType() == TransactionType.MINER){
-                if(block.getTimestamp() != transaction.getTimestamp()){
-                    logger.error("交易校验失败：挖矿激励交易时间戳应当等于区块产生的时间。");
-                    return false;
-                }
-            }else if(block.getTimestamp() <= transaction.getTimestamp()){
-                logger.error("交易校验失败：区块产生的时间应当在普通交易的时间之后。");
+        //校验交易类型
+        TransactionType transactionType = transaction.getTransactionType();
+        if(transactionType != TransactionType.NORMAL && transactionType != TransactionType.MINER){
+            logger.error("交易校验失败：不能识别的交易类型。");
+            return false;
+        }
+
+        //校验交易的属性是否与计算得来的一致
+        if(!BlockUtils.isTransactionWriteRight(block,transaction)){
+            return false;
+        }
+
+        //校验交易时间戳 TODO 配置
+        if(transaction.getTimestamp() > System.currentTimeMillis()+3600*1000){
+            logger.debug("交易校验失败：交易的时间戳太滞后了。");
+            return false;
+        }
+
+        //校验主键的唯一性
+        if(!isNewPrimaryKeyRight(transaction)){
+            logger.debug("校验数据异常，校验中占用的部分主键已经被使用了。");
+            return false;
+        }
+
+        //检查交易输入是否都是未花费交易输出
+        if(!isUnspendTransactionOutput(transaction.getInputs())){
+            logger.debug("区块数据异常：交易输入有不是未花费交易输出。");
+            return false;
+        }
+
+        //校验：是否双花
+        if(isDoubleSpendAttackHappen(transaction)){
+            logger.debug("区块数据异常，检测到双花攻击。");
+            return false;
+        }
+
+        //校验交易输出的金额是否满足区块链系统对金额数字的的强制要求
+        if(!isTransactionAmountLegal(transaction)){
+            return false;
+        }
+
+        List<TransactionInput> inputs = transaction.getInputs();
+        if(transaction.getTransactionType() == TransactionType.MINER){
+            if(!isBlockWriteMineAwardRight(block)){
+                logger.debug("交易校验失败：挖矿交易的输出金额不正确。");
                 return false;
             }
-        }
-
-
-
-        //校验：只从交易对象层面校验，交易中使用的UUID是否有重复
-        Set<String> uuidSet = new HashSet<>();
-        String transactionUUID = transaction.getTransactionUUID();
-        if(!saveUuid(uuidSet,transactionUUID)){
+            return true;
+        } else if(transaction.getTransactionType() == TransactionType.NORMAL){
+            if(inputs==null || inputs.size()==0){
+                logger.debug("交易校验失败：交易的输入不能为空。不合法的交易。");
+                return false;
+            }
+            BigDecimal inputsValue = TransactionUtil.getInputsValue(transaction);
+            BigDecimal outputsValue = TransactionUtil.getOutputsValue(transaction);
+            if(inputsValue.compareTo(outputsValue) < 0) {
+                logger.debug("交易校验失败：交易的输入少于交易的输出。不合法的交易。");
+                return false;
+            }
+            //脚本校验
+            try{
+                if(!TransactionUtil.verifySignature(transaction)) {
+                    logger.debug("交易校验失败：校验交易签名失败。不合法的交易。");
+                    return false;
+                }
+            }catch (Exception e){
+                logger.debug("交易校验失败：校验交易签名失败。不合法的交易。",e);
+                return false;
+            }
+            return true;
+        } else {
+            logger.debug("区块数据异常，不能识别的交易类型。");
             return false;
         }
-        List<TransactionInput> inputs = transaction.getInputs();
-        if(inputs != null){
-            for(TransactionInput transactionInput : inputs) {
-                TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
-                String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
-                if(!saveUuid(uuidSet,unspendTransactionOutputUUID)){
-                    return false;
-                }
-            }
-        }
+    }
+
+    /**
+     * 校验交易输出的金额是否满足区块链系统对金额数字的的强制要求
+     */
+    private boolean isTransactionAmountLegal(Transaction transaction) {
         List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs != null){
-            for(TransactionOutput transactionOutput : outputs) {
-                String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                if(!saveUuid(uuidSet,transactionOutputUUID)){
+            for(TransactionOutput o : outputs) {
+                if(!isTransactionAmountLegal(o.getValue())){
+                    logger.debug("交易校验失败：交易金额不合法");
                     return false;
                 }
             }
         }
-        //校验：交易输入UTXO的UUID存在于区块链
+        return true;
+    }
+
+    /**
+     * 检查交易输入是否都是未花费交易输出
+     */
+    private boolean isUnspendTransactionOutput(List<TransactionInput> inputs) throws Exception {
+        //校验：交易输入是否是UTXO
         if(inputs != null){
             for(TransactionInput transactionInput : inputs) {
                 TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
@@ -490,65 +656,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 }
             }
         }
-        //校验：交易UUID和交易输出的UUID不能已经被区块链占用
-        if(isUuidExist(transactionUUID)){
-            return false;
-        }
-        if(outputs != null){
-            for(TransactionOutput transactionOutput : outputs) {
-                String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                if(isUuidExist(transactionOutputUUID)){
-                    return false;
-                }
-            }
-        }
-
-        //校验交易输出的金额是否满足区块链系统对金额数字的的强制要求
-        if(outputs != null){
-            for(TransactionOutput o : outputs) {
-                if(!isTransactionAmountLegal(o.getValue())){
-                    logger.error(String.format("交易校验失败：交易金额不合法，可能的原因：①交易金额小于限制值%s；" +
-                            "②交易金额大于限制值%s；③交易金额小数点位数超过了%d位限制。",
-                            BlockChainCoreConstants.TRANSACTION_MIN_AMOUNT,
-                            BlockChainCoreConstants.TRANSACTION_MAX_AMOUNT,
-                            BlockChainCoreConstants.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES));
-                    return false;
-                }
-            }
-        }
-
-        if(transaction.getTransactionType() == TransactionType.MINER){
-            if(!isBlockWriteMineAwardRight(block)){
-                logger.error("交易校验失败：挖矿交易的输出金额不正确。");
-                return false;
-            }
-            return true;
-        } else if(transaction.getTransactionType() == TransactionType.NORMAL){
-            if(inputs==null || inputs.size()==0){
-                logger.error("交易校验失败：交易的输入不能为空。不合法的交易。");
-                return false;
-            }
-            BigDecimal inputsValue = TransactionUtil.getInputsValue(transaction);
-            BigDecimal outputsValue = TransactionUtil.getOutputsValue(transaction);
-            if(inputsValue.compareTo(outputsValue) < 0) {
-                logger.error("交易校验失败：交易的输入少于交易的输出。不合法的交易。");
-                return false;
-            }
-            //校验签名验证
-            try{
-                if(!TransactionUtil.verifySignature(transaction)) {
-                    logger.error("交易校验失败：校验交易签名失败。不合法的交易。");
-                    return false;
-                }
-            }catch (Exception e){
-                logger.error("交易校验失败：校验交易签名失败。不合法的交易。",e);
-                return false;
-            }
-            return true;
-        } else {
-            logger.error("区块数据异常，不能识别的交易类型。");
-            return false;
-        }
+        return true;
     }
 
     /**

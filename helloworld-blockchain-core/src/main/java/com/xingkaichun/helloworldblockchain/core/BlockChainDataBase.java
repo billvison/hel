@@ -128,19 +128,23 @@ public abstract class BlockChainDataBase {
     public boolean isTransactionAmountLegal(BigDecimal transactionAmount) {
         try {
             if(transactionAmount == null){
+                logger.debug("交易金额不合法：交易金额不能为空");
                 return false;
             }
             //校验交易金额最小值
             if(transactionAmount.compareTo(BlockChainCoreConstants.TRANSACTION_MIN_AMOUNT) < 0){
+                logger.debug("交易金额不合法：交易金额不能小于系统默认交易金额最小值");
                 return false;
             }
             //校验交易金额最大值
             if(transactionAmount.compareTo(BlockChainCoreConstants.TRANSACTION_MAX_AMOUNT) > 0){
+                logger.debug("交易金额不合法：交易金额不能大于系统默认交易金额最大值");
                 return false;
             }
             //校验小数位数
             long decimalPlaces = NumberUtil.decimalPlaces(transactionAmount);
             if(decimalPlaces > BlockChainCoreConstants.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES){
+                logger.debug("交易金额不合法：交易金额的小数位数过多，大于系统默认小说最高精度");
                 return false;
             }
             return true;

@@ -2,12 +2,20 @@ package com.xingkaichun.helloworldblockchain.core.utils;
 
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class BlockUtils {
+
+    private final static Logger logger = LoggerFactory.getLogger(BlockUtils.class);
 
     /**
      * 计算区块的Hash值
@@ -42,6 +50,49 @@ public class BlockUtils {
     public static boolean isBlockWriteMerkleRootRight(Block block){
         String targetMerkleRoot = calculateBlockMerkleRoot(block);
         return targetMerkleRoot.equals(block.getMerkleRoot());
+    }
+
+    /**
+     * 校验交易的属性是否与计算得来的一致
+     */
+    public static boolean isBlockTransactionWriteRight(@Nonnull Block block) {
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions == null || transactions.size()==0){
+            return true;
+        }
+        for(Transaction transaction:transactions){
+            if(!isTransactionWriteRight(block, transaction)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 校验交易的属性是否与计算得来的一致
+     */
+    public static boolean isTransactionWriteRight(Block block, @Nonnull Transaction transaction) {
+        //校验挖矿交易的时间戳
+        if(block != null){
+            if(transaction.getTransactionType() == TransactionType.MINER){
+                if(block.getTimestamp() != transaction.getTimestamp()){
+                    return false;
+                }
+            }
+        }
+        if(!BlockchainUuidUtil.isTransactionUuidRight(transaction)){
+            return false;
+        }
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        if(outputs == null || outputs.size()==0){
+            return true;
+        }
+        for(TransactionOutput transactionOutput:outputs){
+            if(!BlockchainUuidUtil.isTransactionOutputUuidRight(transaction,transactionOutput)){
+                return false;
+            }
+        }
+        return true;
     }
     //endregion
 }

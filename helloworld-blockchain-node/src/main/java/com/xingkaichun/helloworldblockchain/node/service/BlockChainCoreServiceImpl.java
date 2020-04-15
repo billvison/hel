@@ -131,7 +131,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
                 transactionOutputDTO.setAddress(o.getAddress());
                 transactionOutputDTO.setValue(o.getValue());
                 transactionOutputDTO.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(o.getAddress()));
-                transactionOutputDTO.setTransactionOutputUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
+                transactionOutputDTO.setTransactionOutputUUID(BlockchainUuidUtil.calculateTransactionOutputUUID(transactionOutputDTO,currentTimeMillis));
                 transactionOutputDtoList.add(transactionOutputDTO);
             }
         }
@@ -145,10 +145,10 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(currentTimeMillis);
-        transactionDTO.setTransactionUUID(BlockchainUuidUtil.randomBlockchainUUID(currentTimeMillis));
         transactionDTO.setTransactionType(TransactionTypeDTO.NORMAL.name());
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
+        transactionDTO.setTransactionUUID(BlockchainUuidUtil.calculateTransactioUUID(transactionDTO));
 
         for(TransactionInputDTO transactionInputDTO:transactionInputDtoList){
             StringPublicKey stringPublicKey = stringKey.getStringPublicKey();

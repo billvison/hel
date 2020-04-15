@@ -1,25 +1,85 @@
 package com.xingkaichun.helloworldblockchain.core.utils.atomic;
 
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.common.base.Joiner;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.crypto.Base58Util;
+import com.xingkaichun.helloworldblockchain.crypto.Base64Util;
+import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionOutputDTO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlockchainUuidUtil {
 
     /**
-     * 8-4-4-4-12-13的格式
+     * 校验交易的UUID的格式是否正确
      */
-    private static final Pattern UUID_PATTERN = Pattern.compile("[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}-[0-9]{13}");
-
-    /**
-     * 判断一个字符串是否是格式正确的UUID
-     */
-    public static boolean isBlockchainUuidFormatRight(String uuid) {
-        Matcher matcher = UUID_PATTERN.matcher(uuid);
-        return matcher.matches();
+    public static boolean isTransactionUuidRight(Transaction transaction) {
+        String transactionUUID = transaction.getTransactionUUID();
+        if(!transactionUUID.endsWith(String.valueOf(transaction.getTimestamp()))){
+            return false;
+        }
+        String targetTransactionUUID = calculateTransactioUUID(transaction);
+        return transactionUUID.equals(targetTransactionUUID);
     }
 
-    public static String randomBlockchainUUID(long timestamp){
-        return UUID.randomUUID().toString() + "-" + timestamp ;
+    /**
+     * 校验交易输出的UUID的格式是否正确
+     */
+    public static boolean isTransactionOutputUuidRight(Transaction transaction,TransactionOutput output) {
+        String transactionOutputUUID = output.getTransactionOutputUUID();
+        if(!transactionOutputUUID.endsWith(String.valueOf(transaction.getTimestamp()))){
+            return false;
+        }
+        String targetTransactionOutputUUID = calculateTransactionOutputUUID(output,transaction.getTimestamp());
+        return transactionOutputUUID.equals(targetTransactionOutputUUID);
+    }
+
+    public static String calculateTransactioUUID(Transaction transaction){
+        List<String> outputUuidList = new ArrayList<>();
+        for(TransactionOutput transactionOutput:transaction.getOutputs()){
+            outputUuidList.add(transactionOutput.getTransactionOutputUUID());
+        }
+        return calculateTransactioUUID(transaction.getTimestamp(),transaction.getTransactionType().name(),outputUuidList);
+    }
+
+    public static String calculateTransactioUUID(TransactionDTO transaction){
+        List<String> outputUuidList = new ArrayList<>();
+        for(TransactionOutputDTO transactionOutputDTO:transaction.getOutputs()){
+            outputUuidList.add(transactionOutputDTO.getTransactionOutputUUID());
+        }
+        return calculateTransactioUUID(transaction.getTimestamp(),transaction.getTransactionType(),outputUuidList);
+    }
+
+    public static String calculateTransactioUUID(long currentTimeMillis,String transactionType,List<String> outputUuidList){
+        String forHash = "";
+        forHash += "[" + currentTimeMillis + "]";
+        forHash += "[" + transactionType + "]";
+        forHash += "[" + Joiner.on(" ").join(outputUuidList) + "]";
+        byte[] sha256 = SHA256Util.applySha256(forHash.getBytes());
+        String base64Encode = Base64Util.encode(sha256);
+        return base64Encode + currentTimeMillis;
+    }
+
+    public static String calculateTransactionOutputUUID(TransactionOutput output, long currentTimeMillis) {
+        return calculateTransactionOutputUUID(currentTimeMillis,output.getStringAddress().getValue(),output.getValue().toPlainString(),output.getScriptLock());
+    }
+
+    public static String calculateTransactionOutputUUID(TransactionOutputDTO transactionOutputDTO, long currentTimeMillis) {
+        return calculateTransactionOutputUUID(currentTimeMillis,transactionOutputDTO.getAddress(),transactionOutputDTO.getValue(),transactionOutputDTO.getScriptLock());
+    }
+
+    public static String calculateTransactionOutputUUID(long currentTimeMillis, String address, String value, List<String> scriptLock) {
+        String forHash = "";
+        forHash += "[" + currentTimeMillis + "]";
+        forHash += "[" + address + "]";
+        forHash += "[" + value + "]";
+        forHash += "[" + Joiner.on(" ").join(scriptLock) + "]";
+        byte[] sha256 = SHA256Util.applySha256(forHash.getBytes());
+        String base58Encode = Base58Util.encode(sha256);
+        return base58Encode + currentTimeMillis;
     }
 }
