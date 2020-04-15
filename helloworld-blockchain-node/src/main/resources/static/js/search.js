@@ -234,8 +234,7 @@ function transByUuid(result){
 			'<dd>transactionUUID: ' + result.transactionDTO.transactionUUID + '</dd>' +
 			'<dd>transactionType: ' + result.transactionDTO.transactionType + '</dd>' +
 			'<dd><b>inputs:</b> ' + inputs() + '</dd>' +
-			'<dd><b>outputs:</b> ' + outputs() + '</dd>' +
-			'<dd>signature: ' + result.transactionDTO.signature + '</dd></dl>';
+			'<dd><b>outputs:</b> ' + outputs() + '</dd></dl>';
 	function inputs(){
 		var char = "";
 		for (var i=0; i<result.transactionDTO.inputs.length; i++) {
@@ -263,8 +262,7 @@ function transByAll(result){
 				'<dd>transactionUUID: ' + result.transactionDtoList[j].transactionUUID + '</dd>' +
 				'<dd>transactionType: ' + result.transactionDtoList[j].transactionType + '</dd>' +
 				'<dd><b>inputs:</b> ' + inputs() + '</dd>' +
-				'<dd><b>outputs:</b> ' + outputs() + '</dd>' +
-				'<dd>signature: ' + result.transactionDtoList[j].signature + '</dd></dl>';
+				'<dd><b>outputs:</b> ' + outputs() + '</dd></dl>';
 		function inputs(){
 			var char = "";
 			for (var i=0; i<result.transactionDtoList[j].inputs.length; i++) {
@@ -328,7 +326,6 @@ function tempTransList(result){
 				'<dd>transactionType: ' + result.transactionList[j].transactionType + '</dd>' +
 				'<dd><b>inputs:</b> ' + inputs() + '</dd>' +
 				'<dd><b>outputs:</b> ' + outputs() + '</dd>' +
-				'<dd>signature: ' + result.transactionList[j].signature + '</dd>' +
 				'<dd>transactionSequenceNumberInBlock: ' + result.transactionList[j].transactionSequenceNumberInBlock + '</dd>' +
 				'<dd>transactionSequenceNumberInBlockChain: ' + result.transactionList[j].transactionSequenceNumberInBlockChain + '</dd>' +
 				'<dd>blockHeight: ' + result.transactionList[j].blockHeight + '</dd></dl>';
@@ -336,13 +333,14 @@ function tempTransList(result){
 			var char = "";
 			if (result.transactionList[j].inputs !== null) {
 				for (var i=0; i<result.transactionList[j].inputs.length; i++) {
-					char += '<dl class="child"><dd>unspendTransactionOutputUUID: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.unspendTransactionOutputUUID + '</dd>' +
+					char += '<dl class="child"><dd>unspendTransactionOutputUUID: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.transactionOutputUUID + '</dd>' +
 							'<dd>stringAddress: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.stringAddress.value + '</dd>' +
 							'<dd>value: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.value + '</dd>' +
 							'<dd>blockHeight: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.blockHeight + '</dd>' +
 							'<dd>transactionSequenceNumberInBlock: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.transactionSequenceNumberInBlock + '</dd>' +
 							'<dd>transactionOutputSequence: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.transactionOutputSequence + '</dd>' +
-							'<dd>publicKey: ' + result.transactionList[j].inputs[i].stringPublicKey.publicKey + '</dd></dl>';
+							'<dd>scriptLock: ' + JSON.stringify(result.transactionList[j].inputs[i].unspendTransactionOutput.scriptLock)+ '</dd>' +
+							'<dd>scriptKey: ' + JSON.stringify(result.transactionList[j].inputs[i].scriptKey)+ '</dd></dl>';
 				}
 			} else{
 				char = null;
@@ -356,6 +354,7 @@ function tempTransList(result){
 					char += '<dl class="child"><dd>transactionOutputUUID: ' + result.transactionList[j].outputs[i].transactionOutputUUID + '</dd>' +
 							'<dd>stringAddress: ' + result.transactionList[j].outputs[i].stringAddress.value + '</dd>' +
 							'<dd>value: ' + result.transactionList[j].outputs[i].value + '</dd>' +
+							'<dd>scriptLock: ' + JSON.stringify(result.transactionList[j].outputs[i].scriptLock) + '</dd>' +
 							'<dd>blockHeight: ' + result.transactionList[j].outputs[i].blockHeight + '</dd>' +
 							'<dd>transactionSequenceNumberInBlock: ' + result.transactionList[j].outputs[i].transactionSequenceNumberInBlock + '</dd>' +
 							'<dd>transactionOutputSequence: ' + result.transactionList[j].outputs[i].transactionOutputSequence + '</dd></dl>';
