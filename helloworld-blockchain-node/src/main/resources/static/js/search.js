@@ -205,6 +205,7 @@ function txosByAddress(result){
             temp += '<dl><dd>transactionOutputUUID: ' + result.txos[i].transactionOutputUUID + '</dd>' +
                     '<dd>stringAddress: ' + result.txos[i].stringAddress.value + '</dd>' +
                     '<dd>value: ' + result.txos[i].value + '</dd>' +
+                    '<dd>scriptLock: ' + JSON.stringify(result.txos[i].scriptLock)+ '</dd>' +
                     '<dd>blockHeight: ' + result.txos[i].blockHeight + '</dd>' +
                     '<dd>transactionSequenceNumberInBlock: ' + result.txos[i].transactionSequenceNumberInBlock + '</dd>' +
                     '<dd>transactionOutputSequence: ' + result.txos[i].transactionOutputSequence + '</dd></dl>';
@@ -220,6 +221,7 @@ function utxosByAddress(result){
             temp += '<dl><dd>transactionOutputUUID: ' + result.utxos[i].transactionOutputUUID + '</dd>' +
                     '<dd>stringAddress: ' + result.utxos[i].stringAddress.value + '</dd>' +
                     '<dd>value: ' + result.utxos[i].value + '</dd>' +
+                    '<dd>scriptLock: ' + JSON.stringify(result.utxos[i].scriptLock)+ '</dd>' +
                     '<dd>blockHeight: ' + result.utxos[i].blockHeight + '</dd>' +
                     '<dd>transactionSequenceNumberInBlock: ' + result.utxos[i].transactionSequenceNumberInBlock + '</dd>' +
                     '<dd>transactionOutputSequence: ' + result.utxos[i].transactionOutputSequence + '</dd></dl>';
@@ -239,7 +241,7 @@ function transByUuid(result){
 		var char = "";
 		for (var i=0; i<result.transactionDTO.inputs.length; i++) {
 			char += '<dl class="child"><dd>unspendTransactionOutputUUID: ' + result.transactionDTO.inputs[i].unspendTransactionOutputUUID + '</dd>' +
-					'<dd>publicKey: ' + result.transactionDTO.inputs[i].publicKey + '</dd></dl>';
+                    '<dd>scriptKey: ' + JSON.stringify(result.transactionDTO.inputs[i].scriptKey)+ '</dd></dl>';
 		}
 		return char;
 	}
@@ -248,7 +250,8 @@ function transByUuid(result){
 		for (var i=0; i<result.transactionDTO.outputs.length; i++) {
 			char += '<dl class="child"><dd>transactionOutputUUID: ' + result.transactionDTO.outputs[i].transactionOutputUUID + '</dd>' +
 					'<dd>address: ' + result.transactionDTO.outputs[i].value + '</dd>' +
-					'<dd>value: ' + result.transactionDTO.outputs[i].value + '</dd></dl>';
+					'<dd>value: ' + result.transactionDTO.outputs[i].value + '</dd>' +
+					'<dd>value: ' + result.transactionDTO.outputs[i].scriptLock + '</dd></dl>';
 		}
 		return char;
 	}

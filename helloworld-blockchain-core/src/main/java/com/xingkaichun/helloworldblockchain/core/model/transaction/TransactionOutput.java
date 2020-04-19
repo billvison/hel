@@ -23,6 +23,9 @@ public class TransactionOutput implements Serializable {
      * 最近的区块只包含最近产生的交易，因此只要有最近的区块就可校验它的唯一性。
      * //TODO UUID考虑将交易输出的信息给包含在内
      * 为了简单校验UUID唯一，建议它的格式里含有当前交易输出产生的时间
+     * 这个字段可以用来表示一张独一无二编号的支票
+     *
+     * 还有另外一个独一无二的编号，区块高度+交易在区块中的编号+交易输出在交易中编号，这个编号有个缺点，只能在区块完全确定后，才能确定这个编号
      */
     private String transactionOutputUUID;
     //交易输出的地址
