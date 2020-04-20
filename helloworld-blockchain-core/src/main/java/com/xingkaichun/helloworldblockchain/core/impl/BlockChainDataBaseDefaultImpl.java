@@ -552,8 +552,14 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //校验交易类型
         TransactionType transactionType = transaction.getTransactionType();
         if(transactionType != TransactionType.NORMAL && transactionType != TransactionType.MINER){
-            logger.error("交易校验失败：不能识别的交易类型。");
+            logger.debug("交易校验失败：不能识别的交易类型。");
             return false;
+        }
+        if(transactionType == TransactionType.MINER){
+            if(block == null){
+                logger.debug("交易校验失败：激励交易需要交易所在区块的信息用于验证激励交易。");
+                return false;
+            }
         }
 
         //校验交易的属性是否与计算得来的一致

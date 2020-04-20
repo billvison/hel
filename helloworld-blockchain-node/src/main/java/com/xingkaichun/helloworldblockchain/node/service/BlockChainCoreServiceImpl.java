@@ -145,7 +145,6 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(currentTimeMillis);
-        transactionDTO.setTransactionType(TransactionTypeDTO.NORMAL.name());
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
         transactionDTO.setTransactionUUID(BlockchainUuidUtil.calculateTransactioUUID(transactionDTO));

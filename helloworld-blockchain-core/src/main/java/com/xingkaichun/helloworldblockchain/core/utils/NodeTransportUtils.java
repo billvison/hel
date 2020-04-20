@@ -38,7 +38,6 @@ public class NodeTransportUtils {
                 transactionList.add(transaction);
             }
         }
-        //TODO 缩减dto字段 用区块链系统直接计算可以计算出来的值
         Block block = new Block();
         block.setTimestamp(blockDTO.getTimestamp());
         block.setPreviousHash(blockDTO.getPreviousHash());
@@ -106,14 +105,21 @@ public class NodeTransportUtils {
             }
         }
 
-        String transactionTypeDto = transactionDTO.getTransactionType();
         Transaction transaction = new Transaction();
         transaction.setTimestamp(transactionDTO.getTimestamp());
         transaction.setTransactionUUID(transactionDTO.getTransactionUUID());
-        transaction.setTransactionType(TransactionType.valueOf(transactionTypeDto));
         transaction.setInputs(inputs);
         transaction.setOutputs(outputs);
+        TransactionType transactionType = transactionTypeFromTransactionDTO(transactionDTO);
+        transaction.setTransactionType(transactionType);
         return transaction;
+    }
+
+    private static TransactionType transactionTypeFromTransactionDTO(TransactionDTO transactionDTO) {
+        if(transactionDTO.getInputs() == null || transactionDTO.getInputs().size()==0){
+            return TransactionType.MINER;
+        }
+        return TransactionType.NORMAL;
     }
 
     private static ScriptKey scriptKeyFrom(List<String> scriptKey) {
@@ -165,7 +171,6 @@ public class NodeTransportUtils {
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(transaction.getTimestamp());
         transactionDTO.setTransactionUUID(transaction.getTransactionUUID());
-        transactionDTO.setTransactionType(transaction.getTransactionType().name());
         transactionDTO.setInputs(inputs);
         transactionDTO.setOutputs(outputs);
         return transactionDTO;

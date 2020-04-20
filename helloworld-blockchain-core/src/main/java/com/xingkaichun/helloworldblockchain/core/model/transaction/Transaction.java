@@ -23,7 +23,10 @@ public class Transaction implements Serializable {
      * 最近的区块只包含最近产生的交易，因此只要有最近的区块就可校验它的唯一性。
      */
     private String transactionUUID;
-    //交易类型
+    /**
+     * 交易类型
+     * 冗余
+     */
     private TransactionType transactionType;
     //交易输入
     private List<TransactionInput> inputs;

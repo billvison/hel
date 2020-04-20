@@ -16,8 +16,6 @@ public class TransactionDTO implements Serializable {
     private long timestamp;
     //交易ID
     private String transactionUUID;
-    //交易类型
-    private String transactionType;
     //交易输入
     private List<TransactionInputDTO> inputs;
     //交易输出

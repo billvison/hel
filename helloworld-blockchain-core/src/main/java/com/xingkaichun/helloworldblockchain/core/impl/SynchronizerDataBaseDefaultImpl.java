@@ -16,7 +16,7 @@ import java.util.List;
 public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
     private Logger logger = LoggerFactory.getLogger(SynchronizerDataBaseDefaultImpl.class);
-//TODO 数值类型用无线大的类型
+//TODO 数值类型用无限大的类型
 
     private static final String NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME = "NodeSynchronizeDatabase";
     private static final String NODE_SYNCHRONIZE_DATABASE_File_Name = "NodeSynchronize.db";

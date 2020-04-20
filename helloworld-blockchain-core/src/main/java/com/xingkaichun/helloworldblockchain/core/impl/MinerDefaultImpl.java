@@ -140,14 +140,6 @@ public class MinerDefaultImpl extends Miner {
         List<TransactionDTO> forMineBlockTransactionDtoList = minerTransactionDtoDataBase.selectTransactionDtoList(blockChainDataBase,1,10000);
         List<Transaction> forMineBlockTransactionList = new ArrayList<>();
         if(forMineBlockTransactionDtoList != null){
-            Iterator<TransactionDTO> iterator = forMineBlockTransactionDtoList.iterator();
-            //TODO 写在这里位置不合理
-            while (iterator.hasNext()){
-                TransactionDTO transactionDTO = iterator.next();
-                if(TransactionType.MINER.equals(transactionDTO.getTransactionType())){
-                    iterator.remove();
-                }
-            }
             for(TransactionDTO transactionDTO:forMineBlockTransactionDtoList){
                 try {
                     Transaction transaction = NodeTransportUtils.classCast(blockChainDataBase,transactionDTO);
@@ -235,14 +227,13 @@ public class MinerDefaultImpl extends Miner {
             exceptionTransactionList.addAll(exceptionTransactionList_PointOfTransactionView);
         }
 
-        //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
-        //校验UUID的唯一性
         Set<String> uuidSet = new HashSet<>();
         Iterator<Transaction> iterator = packingTransactionList.iterator();
         while (iterator.hasNext()){
             Transaction tx = iterator.next();
             List<TransactionInput> inputs = tx.getInputs();
             boolean multiTimeUseOneUTXO = false;
+            //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
             for(TransactionInput input:inputs){
                 String unspendTransactionOutputUUID = input.getUnspendTransactionOutput().getTransactionOutputUUID();
                 if(!uuidSet.add(unspendTransactionOutputUUID)){
@@ -250,6 +241,7 @@ public class MinerDefaultImpl extends Miner {
                     break;
                 }
             }
+            //校验新产生的UUID的唯一性
             List<TransactionOutput> outputs = tx.getOutputs();
             for(TransactionOutput transactionOutput:outputs){
                 String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
@@ -261,7 +253,7 @@ public class MinerDefaultImpl extends Miner {
             if(multiTimeUseOneUTXO){
                 iterator.remove();
                 exceptionTransactionList.add(tx);
-                System.out.println("交易校验失败：交易的输入中同一个UTXO被多次使用。不合法的交易。");
+                logger.debug("交易校验失败：交易的输入中同一个UTXO被多次使用。不合法的交易。");
             }
         }
         return exceptionTransactionList;

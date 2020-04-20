@@ -43,7 +43,7 @@ public class BlockchainUuidUtil {
         for(TransactionOutput transactionOutput:transaction.getOutputs()){
             outputUuidList.add(transactionOutput.getTransactionOutputUUID());
         }
-        return calculateTransactioUUID(transaction.getTimestamp(),transaction.getTransactionType().name(),outputUuidList);
+        return calculateTransactioUUID(transaction.getTimestamp(),outputUuidList);
     }
 
     public static String calculateTransactioUUID(TransactionDTO transaction){
@@ -51,13 +51,12 @@ public class BlockchainUuidUtil {
         for(TransactionOutputDTO transactionOutputDTO:transaction.getOutputs()){
             outputUuidList.add(transactionOutputDTO.getTransactionOutputUUID());
         }
-        return calculateTransactioUUID(transaction.getTimestamp(),transaction.getTransactionType(),outputUuidList);
+        return calculateTransactioUUID(transaction.getTimestamp(),outputUuidList);
     }
 
-    public static String calculateTransactioUUID(long currentTimeMillis,String transactionType,List<String> outputUuidList){
+    public static String calculateTransactioUUID(long currentTimeMillis,List<String> outputUuidList){
         String forHash = "";
         forHash += "[" + currentTimeMillis + "]";
-        forHash += "[" + transactionType + "]";
         forHash += "[" + Joiner.on(" ").join(outputUuidList) + "]";
         byte[] sha256 = SHA256Util.applySha256(forHash.getBytes());
         String base64Encode = Base64Util.encode(sha256);
