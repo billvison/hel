@@ -43,7 +43,7 @@ public class NodeTransportUtils {
         block.setPreviousHash(blockDTO.getPreviousHash());
         block.setHeight(blockDTO.getHeight());
         block.setTransactions(transactionList);
-        block.setMerkleRoot(blockDTO.getMerkleRoot());
+        block.setMerkleRoot(BlockUtils.calculateBlockMerkleRoot(block));
         block.setNonce(blockDTO.getNonce());
         block.setHash(blockDTO.getHash());
         block.setConsensusTarget(blockChainDataBase.getConsensus().calculateConsensusTarget(blockChainDataBase,block));
@@ -70,7 +70,6 @@ public class NodeTransportUtils {
         blockDTO.setPreviousHash(block.getPreviousHash());
         blockDTO.setHeight(block.getHeight());
         blockDTO.setTransactions(transactionDtoList);
-        blockDTO.setMerkleRoot(block.getMerkleRoot());
         blockDTO.setNonce(block.getNonce());
         blockDTO.setHash(block.getHash());
         return blockDTO;
