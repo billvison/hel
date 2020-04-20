@@ -33,6 +33,8 @@ public class BlockChainCoreConstants {
     public final static BigDecimal TRANSACTION_MAX_AMOUNT = new BigDecimal("1000000000000000000000000");
     //最小交易金额
     public final static BigDecimal TRANSACTION_MIN_AMOUNT = new BigDecimal("0.00000001");
+    //最小交易手续费
+    public final static BigDecimal MIN_TRANSACTION_FEE = new BigDecimal("0.01");
     //交易文本字符串最大长度值
     public final static long TRANSACTION_TEXT_MAX_SIZE = 10240;
     //区块最多含有的交易数量

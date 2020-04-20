@@ -608,6 +608,11 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 logger.debug("交易校验失败：交易的输入少于交易的输出。不合法的交易。");
                 return false;
             }
+            //交易手续费
+            if(inputsValue.subtract(outputsValue).compareTo(BlockChainCoreConstants.MIN_TRANSACTION_FEE)<0){
+                logger.debug(String.format("交易校验失败：交易手续费不能小于%s。不合法的交易。",BlockChainCoreConstants.MIN_TRANSACTION_FEE));
+                return false;
+            }
             //脚本校验
             try{
                 if(!TransactionUtil.verifySignature(transaction)) {
