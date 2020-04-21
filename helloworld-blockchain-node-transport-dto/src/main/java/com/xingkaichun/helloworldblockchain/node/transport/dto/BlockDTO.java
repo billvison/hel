@@ -13,11 +13,11 @@ import java.util.List;
 public class BlockDTO implements Serializable {
     //TODO 持续检查缩减dto字段
     private long timestamp;
+    private BigInteger height;
     private String previousHash;
     private List<TransactionDTO> transactions;
     private BigInteger nonce;
 
-    //TODO 可以移除吗？
-    private BigInteger height;
+    //TODO 移除
     private String hash;
 }
