@@ -57,14 +57,14 @@ public class IncentiveDefaultImpl extends Incentive {
                 List<TransactionInput> inputs = transaction.getInputs();
                 if(inputs != null){
                     for(TransactionInput txInput:inputs){
-                        input.add(txInput.getUnspendTransactionOutput().getValue());
+                        input = input.add(txInput.getUnspendTransactionOutput().getValue());
                     }
                 }
                 BigDecimal output = BigDecimal.ZERO;
                 List<TransactionOutput> outputs = transaction.getOutputs();
                 if(outputs != null){
                     for(TransactionOutput txOutput:outputs){
-                        output.add(txOutput.getValue());
+                        output = output.add(txOutput.getValue());
                     }
                 }
                 BigDecimal fee = input.subtract(output);
