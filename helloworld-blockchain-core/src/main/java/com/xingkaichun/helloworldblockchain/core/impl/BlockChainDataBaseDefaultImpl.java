@@ -377,6 +377,25 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 校验激励
      */
     private boolean isIncentiveRight(Block block) throws Exception {
+        //奖励交易有且只有一笔，且是区块的最后一笔交易
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions == null || transactions.size()==0){
+            logger.debug("区块数据异常，没有检测到挖矿奖励交易。");
+            return false;
+        }
+        for(int i=0; i<transactions.size()-1; i++){
+            Transaction tx = transactions.get(i);
+            if(tx.getTransactionType() == TransactionType.MINER){
+                logger.debug("区块数据异常，挖矿奖励应当是区块中最后一笔交易。");
+                return false;
+            }
+        }
+        Transaction transaction = transactions.get(transactions.size()-1);
+        if(transaction.getTransactionType() != TransactionType.MINER){
+            logger.debug("区块数据异常，区块中最后一笔交易不是挖矿交易。");
+            return false;
+        }
+
         //校验奖励交易有且只能有一笔
         //挖矿交易笔数
         int minerTransactionNumber = 0;
