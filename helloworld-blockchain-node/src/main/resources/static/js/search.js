@@ -30,11 +30,11 @@ $("#search_select").change(function() {
 			break;
 		case "trans_byuuid":
 			$("#search_input").css("display","block");
-			$("#search_input").attr("placeholder","请输入UUID");
+			$("#search_input").attr("placeholder","请输入Hash");
 			break;
 		case "minning_byuuid":
 			$("#search_input").css("display","block");
-			$("#search_input").attr("placeholder","请输入UUID");
+			$("#search_input").attr("placeholder","请输入Hash");
 			break;
 		case "minning_byall":
 			$("#search_input").css("display","none");
@@ -75,13 +75,13 @@ function innerSearchUnit() {
 			address = "/QueryUtxosByAddress";
 			data = '"address":"' + input_val + '",' + '"pageCondition":{"from":'+address_index+',"size":5}';
 			break;
-		case "trans_byuuid": //根据交易UUID搜索交易
-			address = "/QueryTransactionByTransactionUUID";
-			data = '"transactionUUID":"' + input_val + '"';
+		case "trans_byuuid": //根据交易Hash搜索交易
+			address = "/QueryTransactionByTransactionHash";
+			data = '"transactionHash":"' + input_val + '"';
 			break;
-		case "minning_byuuid": //根据交易UUID搜索挖矿中交易
-			address = "/QueryMiningTransactionByTransactionUUID";
-			data = '"transactionUUID":"' + input_val + '"';
+		case "minning_byuuid": //根据交易Hash搜索挖矿中交易
+			address = "/QueryMiningTransactionByTransactionHash";
+			data = '"transactionHash":"' + input_val + '"';
 			break;
 		case "minning_byall": //查询挖矿中的交易
 			address = "/QueryMiningTransactionList";
@@ -202,7 +202,7 @@ function txosByAddress(result){
 	if(!result.txos || result.txos.length==0){
 	} else {
         for (var i=0; i<result.txos.length; i++) {
-            temp += '<dl><dd>transactionOutputUUID: ' + result.txos[i].transactionOutputUUID + '</dd>' +
+            temp += '<dl><dd>transactionOutputHash: ' + result.txos[i].transactionOutputHash + '</dd>' +
                     '<dd>stringAddress: ' + result.txos[i].stringAddress.value + '</dd>' +
                     '<dd>value: ' + result.txos[i].value + '</dd>' +
                     '<dd>scriptLock: ' + JSON.stringify(result.txos[i].scriptLock)+ '</dd>' +
@@ -218,7 +218,7 @@ function utxosByAddress(result){
 	if(!result.utxos || result.utxos.length==0){
 	} else {
         for (var i=0; i<result.utxos.length; i++) {
-            temp += '<dl><dd>transactionOutputUUID: ' + result.utxos[i].transactionOutputUUID + '</dd>' +
+            temp += '<dl><dd>transactionOutputHash: ' + result.utxos[i].transactionOutputHash + '</dd>' +
                     '<dd>stringAddress: ' + result.utxos[i].stringAddress.value + '</dd>' +
                     '<dd>value: ' + result.utxos[i].value + '</dd>' +
                     '<dd>scriptLock: ' + JSON.stringify(result.utxos[i].scriptLock)+ '</dd>' +
@@ -229,18 +229,18 @@ function utxosByAddress(result){
 	}
 	return temp;
 }
-//展示搜索结果(根据交易UUID搜索交易,根据交易UUID搜索挖矿中交易)
+//展示搜索结果(根据交易Hash搜索交易,根据交易Hash搜索挖矿中交易)
 function transByUuid(result){
 	var temp =
 			'<dl><dd>timestamp: ' + result.transactionDTO.timestamp + '</dd>' +
-			'<dd>transactionUUID: ' + result.transactionDTO.transactionUUID + '</dd>' +
+			'<dd>transactionHash: ' + result.transactionDTO.transactionHash + '</dd>' +
 			'<dd>transactionType: ' + result.transactionDTO.transactionType + '</dd>' +
 			'<dd><b>inputs:</b> ' + inputs() + '</dd>' +
 			'<dd><b>outputs:</b> ' + outputs() + '</dd></dl>';
 	function inputs(){
 		var char = "";
 		for (var i=0; i<result.transactionDTO.inputs.length; i++) {
-			char += '<dl class="child"><dd>unspendTransactionOutputUUID: ' + result.transactionDTO.inputs[i].unspendTransactionOutputUUID + '</dd>' +
+			char += '<dl class="child"><dd>unspendTransactionOutputHash: ' + result.transactionDTO.inputs[i].unspendTransactionOutputHash + '</dd>' +
                     '<dd>scriptKey: ' + JSON.stringify(result.transactionDTO.inputs[i].scriptKey)+ '</dd></dl>';
 		}
 		return char;
@@ -248,7 +248,7 @@ function transByUuid(result){
 	function outputs(){
 		var char = "";
 		for (var i=0; i<result.transactionDTO.outputs.length; i++) {
-			char += '<dl class="child"><dd>transactionOutputUUID: ' + result.transactionDTO.outputs[i].transactionOutputUUID + '</dd>' +
+			char += '<dl class="child"><dd>transactionOutputHash: ' + result.transactionDTO.outputs[i].transactionOutputHash + '</dd>' +
 					'<dd>address: ' + result.transactionDTO.outputs[i].value + '</dd>' +
 					'<dd>value: ' + result.transactionDTO.outputs[i].value + '</dd>' +
 					'<dd>value: ' + result.transactionDTO.outputs[i].scriptLock + '</dd></dl>';
@@ -262,14 +262,14 @@ function transByAll(result){
 	var temp =  '';
 	for (var j=0; j<result.transactionDtoList.length; j++) {				
 		temp += '<dl><dd>timestamp: ' + result.transactionDtoList[j].timestamp + '</dd>' +
-				'<dd>transactionUUID: ' + result.transactionDtoList[j].transactionUUID + '</dd>' +
+				'<dd>transactionHash: ' + result.transactionDtoList[j].transactionHash + '</dd>' +
 				'<dd>transactionType: ' + result.transactionDtoList[j].transactionType + '</dd>' +
 				'<dd><b>inputs:</b> ' + inputs() + '</dd>' +
 				'<dd><b>outputs:</b> ' + outputs() + '</dd></dl>';
 		function inputs(){
 			var char = "";
 			for (var i=0; i<result.transactionDtoList[j].inputs.length; i++) {
-				char += '<dl class="child"><dd>unspendTransactionOutputUUID: ' + result.transactionDtoList[j].inputs[i].unspendTransactionOutputUUID + '</dd>' +
+				char += '<dl class="child"><dd>unspendTransactionOutputHash: ' + result.transactionDtoList[j].inputs[i].unspendTransactionOutputHash + '</dd>' +
 						'<dd>publicKey: ' + result.transactionDtoList[j].inputs[i].publicKey + '</dd></dl>';
 			}
 			return char;
@@ -277,7 +277,7 @@ function transByAll(result){
 		function outputs(){
 			var char = "";
 			for (var i=0; i<result.transactionDtoList[j].outputs.length; i++) {
-				char += '<dl class="child"><dd>transactionOutputUUID: ' + result.transactionDtoList[j].outputs[i].transactionOutputUUID + '</dd>' +
+				char += '<dl class="child"><dd>transactionOutputHash: ' + result.transactionDtoList[j].outputs[i].transactionOutputHash + '</dd>' +
 						'<dd>address: ' + result.transactionDtoList[j].outputs[i].value + '</dd>' +
 						'<dd>value: ' + result.transactionDtoList[j].outputs[i].value + '</dd></dl>';
 			}
@@ -325,7 +325,7 @@ function tempTransList(result){
 	var temp = "";
 	for (var j=0; j<result.transactionList.length; j++) {				
 		temp += '<dl><dd>timestamp: ' + result.transactionList[j].timestamp + '</dd>' +
-				'<dd>transactionUUID: ' + result.transactionList[j].transactionUUID + '</dd>' +
+				'<dd>transactionHash: ' + result.transactionList[j].transactionHash + '</dd>' +
 				'<dd>transactionType: ' + result.transactionList[j].transactionType + '</dd>' +
 				'<dd><b>inputs:</b> ' + inputs() + '</dd>' +
 				'<dd><b>outputs:</b> ' + outputs() + '</dd>' +
@@ -336,7 +336,7 @@ function tempTransList(result){
 			var char = "";
 			if (result.transactionList[j].inputs !== null) {
 				for (var i=0; i<result.transactionList[j].inputs.length; i++) {
-					char += '<dl class="child"><dd>unspendTransactionOutputUUID: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.transactionOutputUUID + '</dd>' +
+					char += '<dl class="child"><dd>unspendTransactionOutputHash: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.transactionOutputHash + '</dd>' +
 							'<dd>stringAddress: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.stringAddress.value + '</dd>' +
 							'<dd>value: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.value + '</dd>' +
 							'<dd>blockHeight: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.blockHeight + '</dd>' +
@@ -354,7 +354,7 @@ function tempTransList(result){
 			var char = "";
 			if (result.transactionList[j].outputs !== null) {
 				for (var i=0; i<result.transactionList[j].outputs.length; i++) {
-					char += '<dl class="child"><dd>transactionOutputUUID: ' + result.transactionList[j].outputs[i].transactionOutputUUID + '</dd>' +
+					char += '<dl class="child"><dd>transactionOutputHash: ' + result.transactionList[j].outputs[i].transactionOutputHash + '</dd>' +
 							'<dd>stringAddress: ' + result.transactionList[j].outputs[i].stringAddress.value + '</dd>' +
 							'<dd>value: ' + result.transactionList[j].outputs[i].value + '</dd>' +
 							'<dd>scriptLock: ' + JSON.stringify(result.transactionList[j].outputs[i].scriptLock) + '</dd>' +

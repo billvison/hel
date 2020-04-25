@@ -64,10 +64,9 @@ public abstract class BlockChainDataBase {
     public abstract BigInteger obtainBlockChainHeight() throws Exception ;
 
     /**
-     * 在区块链中根据 UTXO ID 查找UTXO
-     * @param transactionOutputUUID UTXO ID
+     * 在区块链中根据 UTXO 哈希 查找UTXO
      */
-    public abstract TransactionOutput findUtxoByUtxoUuid(String transactionOutputUUID) throws Exception ;
+    public abstract TransactionOutput findUtxoByUtxoHash(String transactionOutputHash) throws Exception ;
 
     /**
      * 在区块链中根据区块高度查找区块
@@ -89,9 +88,8 @@ public abstract class BlockChainDataBase {
 
     /**
      * 在区块链中根据交易ID查找交易
-     * @param transactionUUID 交易ID
      */
-    public abstract Transaction findTransactionByTransactionUuid(String transactionUUID) throws Exception ;
+    public abstract Transaction findTransactionByTransactionHash(String transactionHash) throws Exception ;
     //endregion
 
     /**

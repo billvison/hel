@@ -21,7 +21,7 @@ public class MerkleUtils {
 
         List<String> previousTreeLayer = new ArrayList<>();
         for(Transaction transaction : transactions) {
-            previousTreeLayer.add(transaction.getTransactionUUID());
+            previousTreeLayer.add(transaction.getTransactionHash());
         }
         List<String> treeLayer = previousTreeLayer;
 

@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainHashUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import org.slf4j.Logger;
@@ -80,7 +80,7 @@ public class BlockUtils {
                 }
             }
         }
-        if(!BlockchainUuidUtil.isTransactionUuidRight(transaction)){
+        if(!BlockchainHashUtil.isTransactionHashRight(transaction)){
             return false;
         }
         List<TransactionOutput> outputs = transaction.getOutputs();
@@ -88,7 +88,7 @@ public class BlockUtils {
             return true;
         }
         for(TransactionOutput transactionOutput:outputs){
-            if(!BlockchainUuidUtil.isTransactionOutputUuidRight(transaction,transactionOutput)){
+            if(!BlockchainHashUtil.isTransactionOutputHashRight(transaction,transactionOutput)){
                 return false;
             }
         }

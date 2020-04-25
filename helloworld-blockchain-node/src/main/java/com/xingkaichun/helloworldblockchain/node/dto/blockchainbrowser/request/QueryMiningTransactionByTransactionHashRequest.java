@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request;
 import lombok.Data;
 
 @Data
-public class QueryTransactionByTransactionUuidRequest {
+public class QueryMiningTransactionByTransactionHashRequest {
 
-    private String transactionUUID;
+    private String transactionHash;
 }

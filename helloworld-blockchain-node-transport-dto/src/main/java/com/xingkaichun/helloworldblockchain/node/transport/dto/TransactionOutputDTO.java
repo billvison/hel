@@ -13,7 +13,7 @@ import java.util.List;
 public class TransactionOutputDTO implements Serializable {
 
     //交易输出的ID
-    private String transactionOutputUUID;
+    private String transactionOutputHash;
     //交易输出的地址
     private String address;
     //交易输出的金额

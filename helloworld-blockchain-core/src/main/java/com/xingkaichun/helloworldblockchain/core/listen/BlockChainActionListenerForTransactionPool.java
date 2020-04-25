@@ -36,10 +36,9 @@ public class BlockChainActionListenerForTransactionPool implements BlockChainAct
                 for(Block deleteBlock:deleteBlockList){
                     for(Transaction transaction:deleteBlock.getTransactions()){
                         if(transaction.getTransactionType() != TransactionType.MINER){
-                            String key = transaction.getTransactionUUID();
-                            byte[] byteTransaction = new byte[0];
+                            String key = transaction.getTransactionHash();
                             try {
-                                byteTransaction = EncodeDecode.encode(transaction);
+                                byte[] byteTransaction = EncodeDecode.encode(transaction);
                                 LevelDBUtil.put(transactionPool_DB,key,byteTransaction);
                             } catch (Exception e) {
                                 //跳过异常

@@ -62,14 +62,14 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private final static String BLOCK_HEIGHT_MAP_NO_TRANSACTION_BLOCK_PREFIX_FLAG = "B_H_M_N_T_B_P_F_";
     //标识：存储区块链Hash到区块高度的映射
     private final static String BLOCK_HASH_BLOCK_HEIGHT_PREFIX_FLAG = "B_HA_B_H_P_F_";
-    //交易标识：存储交易UUID到交易的映射
-    private final static String TRANSACTION_UUID_PREFIX_FLAG = "T_U_P_F_";
-    //交易输出标识：存储交易输出UUID到交易输出的映射
-    private final static String TRANSACTION_OUTPUT_UUID_PREFIX_FLAG = "T_O_U_P_F_";
-    //未花费的交易输出标识：存储未花费交易输出UUID到未花费交易输出的映射
-    private final static String UNSPEND_TRANSACTION_OUPUT_UUID_PREFIX_FLAG = "U_T_O_U_P_F_";
-    //UUID标识：UUID(交易UUID、交易输出UUID)的前缀，这里希望系统中所有使用到的UUID都是不同的
-    private final static String UUID_PREFIX_FLAG = "U_F_";
+    //交易标识：存储交易哈希到交易的映射
+    private final static String TRANSACTION_HASH_PREFIX_FLAG = "T_U_P_F_";
+    //交易输出标识：存储交易输出哈希到交易输出的映射
+    private final static String TRANSACTION_OUTPUT_HASH_PREFIX_FLAG = "T_O_U_P_F_";
+    //未花费的交易输出标识：存储未花费交易输出哈希到未花费交易输出的映射
+    private final static String UNSPEND_TRANSACTION_OUPUT_HASH_PREFIX_FLAG = "U_T_O_U_P_F_";
+    //哈希标识：哈希(交易哈希、交易输出哈希)的前缀，这里希望系统中所有使用到的哈希都是不同的
+    private final static String HASH_PREFIX_FLAG = "U_F_";
     //地址标识：存储地址到交易输出的映射
     private final static String ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG = "A_T_T_O_P_F_";
     //地址标识：存储地址到未花费交易输出的映射
@@ -224,11 +224,11 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public TransactionOutput findUtxoByUtxoUuid(String transactionOutputUUID) throws Exception {
-        if(transactionOutputUUID==null || "".equals(transactionOutputUUID)){
+    public TransactionOutput findUtxoByUtxoHash(String transactionOutputHash) throws Exception {
+        if(transactionOutputHash==null || "".equals(transactionOutputHash)){
             return null;
         }
-        byte[] bytesUtxo = LevelDBUtil.get(blockChainDB, buildUnspendTransactionOutputUuidKey(transactionOutputUUID));
+        byte[] bytesUtxo = LevelDBUtil.get(blockChainDB, buildUnspendTransactionOutputHashKey(transactionOutputHash));
         if(bytesUtxo == null){
             return null;
         }
@@ -264,8 +264,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public Transaction findTransactionByTransactionUuid(String transactionUUID) throws Exception {
-        byte[] bytesTransaction = LevelDBUtil.get(blockChainDB, buildTransactionUuidKey(transactionUUID));
+    public Transaction findTransactionByTransactionHash(String transactionHash) throws Exception {
+        byte[] bytesTransaction = LevelDBUtil.get(blockChainDB, buildTransactionHashKey(transactionHash));
         if(bytesTransaction==null){
             return null;
         }
@@ -337,18 +337,18 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 是否有双花攻击
      */
     private boolean isDoubleSpendAttackHappen(Block block) {
-        //在不同的交易中，UUID(交易的UUID、交易输入UUID、交易输出UUID)不应该被使用两次或是两次以上
-        Set<String> uuidSet = new HashSet<>();
+        //在不同的交易中，哈希(交易的哈希、交易输入哈希、交易输出哈希)不应该被使用两次或是两次以上
+        Set<String> hashSet = new HashSet<>();
         for(Transaction transaction : block.getTransactions()){
             List<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null){
                 for(TransactionInput transactionInput : inputs) {
                     TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
-                    String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
-                    if(uuidSet.contains(unspendTransactionOutputUUID)){
+                    String unspendTransactionOutputHash = unspendTransactionOutput.getTransactionOutputHash();
+                    if(hashSet.contains(unspendTransactionOutputHash)){
                         return true;
                     }
-                    uuidSet.add(unspendTransactionOutputUUID);
+                    hashSet.add(unspendTransactionOutputHash);
                 }
             }
         }
@@ -362,14 +362,14 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(inputs == null || inputs.size()==0){
             return false;
         }
-        Set<String> uuidSet = new HashSet<>();
+        Set<String> hashSet = new HashSet<>();
         for(TransactionInput transactionInput : inputs) {
             TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
-            String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
-            if(uuidSet.contains(unspendTransactionOutputUUID)){
+            String unspendTransactionOutputHash = unspendTransactionOutput.getTransactionOutputHash();
+            if(hashSet.contains(unspendTransactionOutputHash)){
                 return true;
             }
-            uuidSet.add(unspendTransactionOutputUUID);
+            hashSet.add(unspendTransactionOutputHash);
         }
         return false;
     }
@@ -422,18 +422,18 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             logger.error("区块数据异常，区块Hash已经被使用了。");
             return false;
         }
-        //在不同的交易中，新生产的UUID(交易的UUID、交易输出UUID)不应该被使用两次或是两次以上
-        Set<String> uuidSet = new HashSet<>();
+        //在不同的交易中，新生产的哈希(交易的哈希、交易输出哈希)不应该被使用两次或是两次以上
+        Set<String> hashSet = new HashSet<>();
         for(Transaction transaction : block.getTransactions()){
-            String transactionUUID = transaction.getTransactionUUID();
-            if(!saveUuid(uuidSet,transactionUUID)){
+            String transactionHash = transaction.getTransactionHash();
+            if(!saveHash(hashSet,transactionHash)){
                 return false;
             }
             List<TransactionOutput> outputs = transaction.getOutputs();
             if(outputs != null){
                 for(TransactionOutput transactionOutput : outputs) {
-                    String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                    if(!saveUuid(uuidSet,transactionOutputUUID)){
+                    String transactionOutputHash = transactionOutput.getTransactionOutputHash();
+                    if(!saveHash(hashSet,transactionOutputHash)){
                         return false;
                     }
                 }
@@ -442,28 +442,28 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return true;
     }
     private boolean isNewPrimaryKeyRight(Transaction transaction) {
-        //校验：只从交易对象层面校验，交易中新产生的UUID是否有重复
-        Set<String> uuidSet = new HashSet<>();
+        //校验：只从交易对象层面校验，交易中新产生的哈希是否有重复
+        Set<String> hashSet = new HashSet<>();
         List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs != null){
             for(TransactionOutput transactionOutput : outputs) {
-                String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                if(uuidSet.contains(transactionOutputUUID)){
+                String transactionOutputHash = transactionOutput.getTransactionOutputHash();
+                if(hashSet.contains(transactionOutputHash)){
                     return false;
                 }
-                uuidSet.add(transactionOutputUUID);
+                hashSet.add(transactionOutputHash);
             }
         }
-        //交易UUID是否已经被使用了
-        String transactionUUID = transaction.getTransactionUUID();
-        if(isUuidExist(transactionUUID)){
+        //交易哈希是否已经被使用了
+        String transactionHash = transaction.getTransactionHash();
+        if(isHashExist(transactionHash)){
             return false;
         }
-        //交易输出UUID是否已经被使用了
+        //交易输出哈希是否已经被使用了
         if(outputs != null){
             for(TransactionOutput transactionOutput : outputs) {
-                String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                if(isUuidExist(transactionOutputUUID)){
+                String transactionOutputHash = transactionOutput.getTransactionOutputHash();
+                if(isHashExist(transactionOutputHash)){
                     return false;
                 }
             }
@@ -660,8 +660,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(inputs != null){
             for(TransactionInput transactionInput : inputs) {
                 TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
-                String unspendTransactionOutputUUID = unspendTransactionOutput.getTransactionOutputUUID();
-                TransactionOutput tx = findUtxoByUtxoUuid(unspendTransactionOutputUUID);
+                String unspendTransactionOutputHash = unspendTransactionOutput.getTransactionOutputHash();
+                TransactionOutput tx = findUtxoByUtxoHash(unspendTransactionOutputHash);
                 if(tx == null){
                     return false;
                 }
@@ -743,8 +743,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         String stringKey = BLOCK_CHAIN_HEIGHT_KEY;
         return LevelDBUtil.stringToBytes(stringKey);
     }
-    private byte[] buildUuidKey(String uuid) {
-        String stringKey = UUID_PREFIX_FLAG + uuid;
+    private byte[] buildHashKey(String hash) {
+        String stringKey = HASH_PREFIX_FLAG + hash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildBlockHeightKey(BigInteger blockHeight) {
@@ -759,22 +759,22 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         String stringKey = BLOCK_HASH_BLOCK_HEIGHT_PREFIX_FLAG + blockHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
-    private byte[] buildTransactionUuidKey(String transactionUUID) {
-        String stringKey = TRANSACTION_UUID_PREFIX_FLAG + transactionUUID;
+    private byte[] buildTransactionHashKey(String transactionHash) {
+        String stringKey = TRANSACTION_HASH_PREFIX_FLAG + transactionHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
-    private byte[] buildTransactionOutputUuidKey(String transactionOutputUUID) {
-        String stringKey = TRANSACTION_OUTPUT_UUID_PREFIX_FLAG + transactionOutputUUID;
+    private byte[] buildTransactionOutputHashKey(String transactionOutputHash) {
+        String stringKey = TRANSACTION_OUTPUT_HASH_PREFIX_FLAG + transactionOutputHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
-    private byte[] buildUnspendTransactionOutputUuidKey(String transactionOutputUUID) {
-        String stringKey = UNSPEND_TRANSACTION_OUPUT_UUID_PREFIX_FLAG + transactionOutputUUID;
+    private byte[] buildUnspendTransactionOutputHashKey(String transactionOutputHash) {
+        String stringKey = UNSPEND_TRANSACTION_OUPUT_HASH_PREFIX_FLAG + transactionOutputHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToTransactionOuputListKey(TransactionOutput transactionOutput) {
         String address = transactionOutput.getStringAddress().getValue();
-        String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + transactionOutputUUID;
+        String transactionOutputHash = transactionOutput.getTransactionOutputHash();
+        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + transactionOutputHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToTransactionOuputListKey(String address) {
@@ -783,8 +783,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
     private byte[] buildAddressToUnspendTransactionOuputListKey(TransactionOutput transactionOutput) {
         String address = transactionOutput.getStringAddress().getValue();
-        String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + transactionOutputUUID;
+        String transactionOutputHash = transactionOutput.getTransactionOutputHash();
+        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + transactionOutputHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToUnspendTransactionOuputListKey(String address) {
@@ -868,19 +868,18 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         List<Transaction> transactionList = block.getTransactions();
         if(transactionList != null){
             for(Transaction transaction:transactionList){
-                //UUID数据
-                byte[] uuidKey = buildUuidKey(transaction.getTransactionUUID());
+                byte[] hashKey = buildHashKey(transaction.getTransactionHash());
                 //更新交易数据
-                byte[] transactionUuidKey = buildTransactionUuidKey(transaction.getTransactionUUID());
+                byte[] transactionHashKey = buildTransactionHashKey(transaction.getTransactionHash());
                 //更新区块链中的交易序列号数据
                 byte[] transactionSequenceNumberInBlockChainKey = buildTransactionSequenceNumberInBlockChainKey(transaction.getTransactionSequenceNumberInBlockChain());
                 if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                    writeBatch.put(uuidKey, uuidKey);
-                    writeBatch.put(transactionUuidKey, EncodeDecode.encode(transaction));
+                    writeBatch.put(hashKey, hashKey);
+                    writeBatch.put(transactionHashKey, EncodeDecode.encode(transaction));
                     writeBatch.put(transactionSequenceNumberInBlockChainKey, EncodeDecode.encode(transaction));
                 } else {
-                    writeBatch.delete(uuidKey);
-                    writeBatch.delete(transactionUuidKey);
+                    writeBatch.delete(hashKey);
+                    writeBatch.delete(transactionHashKey);
                     writeBatch.delete(transactionSequenceNumberInBlockChainKey);
                 }
                 List<TransactionInput> inputs = transaction.getInputs();
@@ -888,31 +887,30 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                     for(TransactionInput txInput:inputs){
                         //更新UTXO数据
                         TransactionOutput unspendTransactionOutput = txInput.getUnspendTransactionOutput();
-                        byte[] unspendTransactionOutputUuidKey = buildUnspendTransactionOutputUuidKey(unspendTransactionOutput.getTransactionOutputUUID());
+                        byte[] unspendTransactionOutputHashKey = buildUnspendTransactionOutputHashKey(unspendTransactionOutput.getTransactionOutputHash());
                         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                            writeBatch.delete(unspendTransactionOutputUuidKey);
+                            writeBatch.delete(unspendTransactionOutputHashKey);
                         } else {
-                            writeBatch.put(unspendTransactionOutputUuidKey,EncodeDecode.encode(unspendTransactionOutput));
+                            writeBatch.put(unspendTransactionOutputHashKey,EncodeDecode.encode(unspendTransactionOutput));
                         }
                     }
                 }
                 List<TransactionOutput> outputs = transaction.getOutputs();
                 if(outputs!=null){
                     for(TransactionOutput output:outputs){
-                        //UUID数据
-                        byte[] uuidKey2 = buildUuidKey(output.getTransactionOutputUUID());
+                        byte[] hashKey2 = buildHashKey(output.getTransactionOutputHash());
                         //更新所有的交易输出
-                        byte[] transactionOutputUuidKey = buildTransactionOutputUuidKey(output.getTransactionOutputUUID());
+                        byte[] transactionOutputHashKey = buildTransactionOutputHashKey(output.getTransactionOutputHash());
                         //更新UTXO数据
-                        byte[] unspendTransactionOutputUuidKey = buildUnspendTransactionOutputUuidKey(output.getTransactionOutputUUID());
+                        byte[] unspendTransactionOutputHashKey = buildUnspendTransactionOutputHashKey(output.getTransactionOutputHash());
                         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-                            writeBatch.put(uuidKey2, uuidKey2);
-                            writeBatch.put(transactionOutputUuidKey, EncodeDecode.encode(output));
-                            writeBatch.put(unspendTransactionOutputUuidKey, EncodeDecode.encode(output));
+                            writeBatch.put(hashKey2, hashKey2);
+                            writeBatch.put(transactionOutputHashKey, EncodeDecode.encode(output));
+                            writeBatch.put(unspendTransactionOutputHashKey, EncodeDecode.encode(output));
                         } else {
-                            writeBatch.delete(uuidKey2);
-                            writeBatch.delete(transactionOutputUuidKey);
-                            writeBatch.delete(unspendTransactionOutputUuidKey);
+                            writeBatch.delete(hashKey2);
+                            writeBatch.delete(transactionOutputHashKey);
+                            writeBatch.delete(unspendTransactionOutputHashKey);
                         }
                     }
                 }
@@ -1030,25 +1028,23 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
 
     /**
-     * UUID是否已经存在于区块链之中？
-     * @param uuid uuid
+     * 哈希是否已经存在于区块链之中？
      */
-    private boolean isUuidExist(String uuid){
-        byte[] bytesUuid = LevelDBUtil.get(blockChainDB, buildUuidKey(uuid));
-        return bytesUuid != null;
+    private boolean isHashExist(String hash){
+        byte[] bytesHash = LevelDBUtil.get(blockChainDB, buildHashKey(hash));
+        return bytesHash != null;
     }
 
     /**
-     * 将UUID保存进Set
-     * 如果UUID格式不正确，则返回false
-     * 如果Set里已经包含了UUID，返回false
-     * 否则，将UUID保存进Set，返回true
+     * 将hash保存进Set
+     * 如果Set里已经包含了hash，返回false
+     * 否则，将hash保存进Set，返回true
      */
-    private boolean saveUuid(Set<String> uuidSet, String uuid) {
-        if(uuidSet.contains(uuid)){
+    private boolean saveHash(Set<String> hashSet, String hash) {
+        if(hashSet.contains(hash)){
             return false;
         } else {
-            uuidSet.add(uuid);
+            hashSet.add(hash);
         }
         return true;
     }

@@ -8,7 +8,7 @@ import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainHashUtil;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.ConsensusTarget;
@@ -74,8 +74,8 @@ public class MinerDefaultImpl extends Miner {
                     continue;
                 }
                 //将使用过的交易从挖矿交易数据库中交易
-                minerTransactionDtoDataBase.deleteTransactionDtoListByTransactionUuidList(getTransactionUuidList(miningBlock.getForMineBlockTransactionList()));
-                minerTransactionDtoDataBase.deleteTransactionDtoListByTransactionUuidList(getTransactionUuidList(miningBlock.getExceptionTransactionList()));
+                minerTransactionDtoDataBase.deleteTransactionDtoListByTransactionHashList(getTransactionHashList(miningBlock.getForMineBlockTransactionList()));
+                minerTransactionDtoDataBase.deleteTransactionDtoListByTransactionHashList(getTransactionHashList(miningBlock.getExceptionTransactionList()));
             }
         }
     }
@@ -106,15 +106,15 @@ public class MinerDefaultImpl extends Miner {
         }
     }
 
-    private List<String> getTransactionUuidList(List<Transaction> transactionList) {
+    private List<String> getTransactionHashList(List<Transaction> transactionList) {
         if(transactionList == null){
             return null;
         }
-        List<String> transactionUuidList = new ArrayList<>();
+        List<String> transactionHashList = new ArrayList<>();
         for(Transaction transaction:transactionList){
-            transactionUuidList.add(transaction.getTransactionUUID());
+            transactionHashList.add(transaction.getTransactionHash());
         }
-        return transactionUuidList;
+        return transactionHashList;
     }
 
     @Override
@@ -146,7 +146,7 @@ public class MinerDefaultImpl extends Miner {
                     forMineBlockTransactionList.add(transaction);
                 } catch (Exception e) {
                     logger.info("类型转换异常,将从挖矿交易数据库中删除该交易",e);
-                    minerTransactionDtoDataBase.deleteTransactionDtoByTransactionUUID(transactionDTO.getTransactionUUID());
+                    minerTransactionDtoDataBase.deleteTransactionDtoByTransactionHash(transactionDTO.getTransactionHash());
                 }
             }
         }
@@ -227,7 +227,7 @@ public class MinerDefaultImpl extends Miner {
             exceptionTransactionList.addAll(exceptionTransactionList_PointOfTransactionView);
         }
 
-        Set<String> uuidSet = new HashSet<>();
+        Set<String> hashSet = new HashSet<>();
         Iterator<Transaction> iterator = packingTransactionList.iterator();
         while (iterator.hasNext()){
             Transaction tx = iterator.next();
@@ -235,17 +235,17 @@ public class MinerDefaultImpl extends Miner {
             boolean multiTimeUseOneUTXO = false;
             //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
             for(TransactionInput input:inputs){
-                String unspendTransactionOutputUUID = input.getUnspendTransactionOutput().getTransactionOutputUUID();
-                if(!uuidSet.add(unspendTransactionOutputUUID)){
+                String unspendTransactionOutputHash = input.getUnspendTransactionOutput().getTransactionOutputHash();
+                if(!hashSet.add(unspendTransactionOutputHash)){
                     multiTimeUseOneUTXO = true;
                     break;
                 }
             }
-            //校验新产生的UUID的唯一性
+            //校验新产生的哈希的唯一性
             List<TransactionOutput> outputs = tx.getOutputs();
             for(TransactionOutput transactionOutput:outputs){
-                String transactionOutputUUID = transactionOutput.getTransactionOutputUUID();
-                if(!uuidSet.add(transactionOutputUUID)){
+                String transactionOutputHash = transactionOutput.getTransactionOutputHash();
+                if(!hashSet.add(transactionOutputHash)){
                     multiTimeUseOneUTXO = true;
                     break;
                 }
@@ -298,11 +298,11 @@ public class MinerDefaultImpl extends Miner {
         output.setStringAddress(minerStringAddress);
         output.setValue(award);
         output.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(minerStringAddress.getValue()));
-        output.setTransactionOutputUUID(BlockchainUuidUtil.calculateTransactionOutputUUID(transaction,output));
+        output.setTransactionOutputHash(BlockchainHashUtil.calculateTransactionOutputHash(transaction,output));
         outputs.add(output);
 
         transaction.setOutputs(outputs);
-        transaction.setTransactionUUID(BlockchainUuidUtil.calculateTransactionUUID(transaction));
+        transaction.setTransactionHash(BlockchainHashUtil.calculateTransactionHash(transaction));
         return transaction;
     }
     //endregion

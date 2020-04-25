@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import lombok.Data;
 
 @Data
-public class QueryTransactionByTransactionUuidResponse {
+public class QueryTransactionByTransactionHashResponse {
 
     private TransactionDTO transactionDTO;
 }

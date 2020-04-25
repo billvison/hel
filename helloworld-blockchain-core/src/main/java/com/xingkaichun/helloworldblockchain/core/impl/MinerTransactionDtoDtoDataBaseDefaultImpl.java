@@ -45,7 +45,7 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
 
         //交易已经持久化进交易池数据库 丢弃交易
         synchronized (BlockChainDataBase.class){
-            LevelDBUtil.put(transactionPoolDB,transactionDTO.getTransactionUUID(), encode(transactionDTO));
+            LevelDBUtil.put(transactionPoolDB,transactionDTO.getTransactionHash(), encode(transactionDTO));
         }
     }
 
@@ -53,7 +53,7 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     public void insertTransactionDtoList(List<TransactionDTO> transactionDTOList) throws Exception {
         WriteBatch writeBatch = new WriteBatchImpl();
         for(TransactionDTO transactionDTO:transactionDTOList){
-            writeBatch.put(LevelDBUtil.stringToBytes(transactionDTO.getTransactionUUID()),encode(transactionDTO));
+            writeBatch.put(LevelDBUtil.stringToBytes(transactionDTO.getTransactionHash()),encode(transactionDTO));
         }
         synchronized (BlockChainDataBase.class){
             LevelDBUtil.write(transactionPoolDB, writeBatch);
@@ -86,25 +86,25 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     }
 
     @Override
-    public void deleteTransactionDtoByTransactionUUID(String transactionUUID) throws Exception {
-        LevelDBUtil.delete(transactionPoolDB,transactionUUID);
+    public void deleteTransactionDtoByTransactionHash(String transactionHash) throws Exception {
+        LevelDBUtil.delete(transactionPoolDB,transactionHash);
     }
 
     @Override
-    public void deleteTransactionDtoListByTransactionUuidList(List<String> transactionUuidList) throws Exception {
-        if(transactionUuidList == null || transactionUuidList.size()==0){
+    public void deleteTransactionDtoListByTransactionHashList(List<String> transactionHashList) throws Exception {
+        if(transactionHashList == null || transactionHashList.size()==0){
             return;
         }
         WriteBatch writeBatch = new WriteBatchImpl();
-        for(String transactionUuid:transactionUuidList){
-            writeBatch.delete(LevelDBUtil.stringToBytes(transactionUuid));
+        for(String transactionHash:transactionHashList){
+            writeBatch.delete(LevelDBUtil.stringToBytes(transactionHash));
         }
         LevelDBUtil.write(transactionPoolDB,writeBatch);
     }
 
     @Override
-    public TransactionDTO selectTransactionDtoByTransactionUUID(String transactionUUID) throws Exception {
-        byte[] byteTransactionDTO = LevelDBUtil.get(transactionPoolDB,transactionUUID);
+    public TransactionDTO selectTransactionDtoByTransactionHash(String transactionHash) throws Exception {
+        byte[] byteTransactionDTO = LevelDBUtil.get(transactionPoolDB,transactionHash);
         if(byteTransactionDTO == null){
             return null;
         }

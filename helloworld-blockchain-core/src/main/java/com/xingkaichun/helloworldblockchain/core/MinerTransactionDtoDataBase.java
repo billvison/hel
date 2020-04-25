@@ -30,15 +30,15 @@ public abstract class  MinerTransactionDtoDataBase {
     /**
      * 删除交易
      */
-    public abstract void deleteTransactionDtoByTransactionUUID(String transactionUUID) throws Exception ;
+    public abstract void deleteTransactionDtoByTransactionHash(String transactionHash) throws Exception ;
 
     /**
      * 删除交易
      */
-    public abstract void deleteTransactionDtoListByTransactionUuidList(List<String> transactionUuidList) throws Exception ;
+    public abstract void deleteTransactionDtoListByTransactionHashList(List<String> transactionHashList) throws Exception ;
 
     /**
      * 查询交易
      */
-    public abstract TransactionDTO selectTransactionDtoByTransactionUUID(String transactionUUID) throws Exception;
+    public abstract TransactionDTO selectTransactionDtoByTransactionHash(String transactionHash) throws Exception;
 }

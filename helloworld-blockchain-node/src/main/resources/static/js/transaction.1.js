@@ -5,7 +5,7 @@ function addText(para){
 	var par = cur_btn.parentNode.parentNode;
 	if(para == 1){
 		var odiv = document.createElement("li");
-		odiv.innerHTML = "<input type=\"text\" class=\"c_txt\" name=\"uuid\" placeholder=\"请输入交易输出的UUID\"><span onclick=\"removeLi(1)\" class=\"add_btn\">删除</span>";
+		odiv.innerHTML = "<input type=\"text\" class=\"c_txt\" name=\"uuid\" placeholder=\"请输入交易输出的Hash\"><span onclick=\"removeLi(1)\" class=\"add_btn\">删除</span>";
 		par.appendChild(odiv);
 	}else if(para ==2){
 		var odiv = document.createElement("ul");
@@ -85,11 +85,10 @@ function submitTrans() {
         dataType: "json",
         async: false,
         success: function (data) {
-            transaction.trans = data.result.transactionDTO.transactionUUID;
+            transaction.trans = data.result.transactionDTO.transactionHash;
 			console.log(transaction.trans);
         },
         error: function (e) {
         }
     });
-    // return transaction.transactionUUID;
 }

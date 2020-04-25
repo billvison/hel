@@ -81,8 +81,8 @@ public class NodeTransportUtils {
         List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getInputs();
         if(transactionInputDtoList!=null){
             for (TransactionInputDTO transactionInputDTO:transactionInputDtoList){
-                String unspendTransactionOutputUUID = transactionInputDTO.getUnspendTransactionOutputUUID();
-                TransactionOutput transactionOutput = blockChainDataBase.findUtxoByUtxoUuid(unspendTransactionOutputUUID);
+                String unspendTransactionOutputHash = transactionInputDTO.getUnspendTransactionOutputHash();
+                TransactionOutput transactionOutput = blockChainDataBase.findUtxoByUtxoHash(unspendTransactionOutputHash);
                 if(transactionOutput == null){
                     throw new BlockChainCoreException("TransactionOutput不应该是null。");
                 }
@@ -104,7 +104,7 @@ public class NodeTransportUtils {
 
         Transaction transaction = new Transaction();
         transaction.setTimestamp(transactionDTO.getTimestamp());
-        transaction.setTransactionUUID(transactionDTO.getTransactionUUID());
+        transaction.setTransactionHash(transactionDTO.getTransactionHash());
         transaction.setInputs(inputs);
         transaction.setOutputs(outputs);
         TransactionType transactionType = transactionTypeFromTransactionDTO(transactionDTO);
@@ -150,7 +150,7 @@ public class NodeTransportUtils {
             for (TransactionInput transactionInput:transactionInputList){
                 TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
                 TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
-                transactionInputDTO.setUnspendTransactionOutputUUID(unspendTransactionOutput.getTransactionOutputUUID());
+                transactionInputDTO.setUnspendTransactionOutputHash(unspendTransactionOutput.getTransactionOutputHash());
                 transactionInputDTO.setScriptKey(transactionInput.getScriptKey());
                 inputs.add(transactionInputDTO);
             }
@@ -167,7 +167,7 @@ public class NodeTransportUtils {
 
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(transaction.getTimestamp());
-        transactionDTO.setTransactionUUID(transaction.getTransactionUUID());
+        transactionDTO.setTransactionHash(transaction.getTransactionHash());
         transactionDTO.setInputs(inputs);
         transactionDTO.setOutputs(outputs);
         return transactionDTO;
@@ -178,7 +178,7 @@ public class NodeTransportUtils {
      */
     public static TransactionOutput classCast(TransactionOutputDTO transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
-        transactionOutput.setTransactionOutputUUID(transactionOutputDTO.getTransactionOutputUUID());
+        transactionOutput.setTransactionOutputHash(transactionOutputDTO.getTransactionOutputHash());
         transactionOutput.setStringAddress(new StringAddress(transactionOutputDTO.getAddress()));
         transactionOutput.setValue(new BigDecimal(transactionOutputDTO.getValue()));
         transactionOutput.setScriptLock(scriptLockFrom(transactionOutputDTO.getScriptLock()));
@@ -190,7 +190,7 @@ public class NodeTransportUtils {
      */
     public static TransactionOutputDTO classCast(TransactionOutput transactionOutput) {
         TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-        transactionOutputDTO.setTransactionOutputUUID(transactionOutput.getTransactionOutputUUID());
+        transactionOutputDTO.setTransactionOutputHash(transactionOutput.getTransactionOutputHash());
         transactionOutputDTO.setAddress(transactionOutput.getStringAddress().getValue());
         transactionOutputDTO.setValue(transactionOutput.getValue().toPlainString());
         transactionOutputDTO.setScriptLock(transactionOutput.getScriptLock());
@@ -226,7 +226,7 @@ public class NodeTransportUtils {
      * 用于签名的数据数据
      */
     public static String signatureData(TransactionDTO transactionDTO) {
-        String data = transactionDTO.getTransactionUUID();
+        String data = transactionDTO.getTransactionHash();
         return data;
     }
 

@@ -59,7 +59,7 @@ public class TransactionUtil {
      */
     public static String signatureData(Transaction transaction) {
         //TODO 保证签名的数据包含所有有作用的数据
-        String data = transaction.getTransactionUUID();
+        String data = transaction.getTransactionHash();
         return data;
     }
 

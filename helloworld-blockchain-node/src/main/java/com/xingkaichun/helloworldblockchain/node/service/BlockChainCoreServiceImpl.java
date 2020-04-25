@@ -9,7 +9,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.WalletUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainHashUtil;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringKey;
@@ -53,8 +53,8 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public TransactionDTO queryTransactionDtoByTransactionUUID(String transactionUUID) throws Exception {
-        Transaction transaction = blockChainCore.getBlockChainDataBase().findTransactionByTransactionUuid(transactionUUID);
+    public TransactionDTO queryTransactionDtoByTransactionHash(String transactionHash) throws Exception {
+        Transaction transaction = blockChainCore.getBlockChainDataBase().findTransactionByTransactionHash(transactionHash);
         if(transaction == null){
             return null;
         }
@@ -124,7 +124,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         List<TransactionInputDTO> transactionInputDtoList = new ArrayList<>();
         for(String input:inputs){
             TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
-            transactionInputDTO.setUnspendTransactionOutputUUID(input);
+            transactionInputDTO.setUnspendTransactionOutputHash(input);
             transactionInputDtoList.add(transactionInputDTO);
         }
 
@@ -146,11 +146,10 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         transactionDTO.setOutputs(transactionOutputDtoList);
 
         for(TransactionOutputDTO transactionOutputDTO:transactionOutputDtoList){
-            transactionOutputDTO.setTransactionOutputUUID(BlockchainUuidUtil.calculateTransactionOutputUUID(transactionDTO,transactionOutputDTO));
+            transactionOutputDTO.setTransactionOutputHash(BlockchainHashUtil.calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
         }
 
-        transactionDTO.setTransactionUUID(BlockchainUuidUtil.calculateTransactionUUID(transactionDTO));
-
+        transactionDTO.setTransactionHash(BlockchainHashUtil.calculateTransactionHash(transactionDTO));
 
         String privateKey = normalTransactionDto.getPrivateKey();
         StringKey stringKey = KeyUtil.stringKeyFrom(new StringPrivateKey(privateKey));
@@ -218,8 +217,8 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public TransactionDTO queryMiningTransactionDtoByTransactionUUID(String transactionUUID) throws Exception {
-        TransactionDTO transactionDTO = blockChainCore.getMiner().getMinerTransactionDtoDataBase().selectTransactionDtoByTransactionUUID(transactionUUID);
+    public TransactionDTO queryMiningTransactionDtoByTransactionHash(String transactionHash) throws Exception {
+        TransactionDTO transactionDTO = blockChainCore.getMiner().getMinerTransactionDtoDataBase().selectTransactionDtoByTransactionHash(transactionHash);
         return transactionDTO;
     }
 

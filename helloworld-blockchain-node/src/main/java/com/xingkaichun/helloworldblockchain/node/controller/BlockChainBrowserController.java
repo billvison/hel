@@ -119,21 +119,21 @@ public class BlockChainBrowserController {
     }
 
     /**
-     * 根据交易UUID查询交易
+     * 根据交易Hash查询交易
      */
     @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.QUERY_TRANSACTION_BY_TRANSACTION_UUID,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryTransactionByTransactionUuidResponse> queryTransactionByTransactionUUID(@RequestBody QueryTransactionByTransactionUuidRequest request){
+    @RequestMapping(value = BlockChainApiRoute.QUERY_TRANSACTION_BY_TRANSACTION_HASH,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryTransactionByTransactionHashResponse> queryTransactionByTransactionHash(@RequestBody QueryTransactionByTransactionHashRequest request){
         try {
-            TransactionDTO transactionDTO = blockChainCoreService.queryTransactionDtoByTransactionUUID(request.getTransactionUUID());
+            TransactionDTO transactionDTO = blockChainCoreService.queryTransactionDtoByTransactionHash(request.getTransactionHash());
             if(transactionDTO == null){
-                return ServiceResult.createFailServiceResult(String.format("区块链中不存在交易UUID[%s]，请检查输入的交易UUID。",request.getTransactionUUID()));
+                return ServiceResult.createFailServiceResult(String.format("区块链中不存在交易哈希[%s]，请检查输入的交易哈希。",request.getTransactionHash()));
             }
-            QueryTransactionByTransactionUuidResponse response = new QueryTransactionByTransactionUuidResponse();
+            QueryTransactionByTransactionHashResponse response = new QueryTransactionByTransactionHashResponse();
             response.setTransactionDTO(transactionDTO);
-            return ServiceResult.createSuccessServiceResult("根据交易UUID查询交易成功",response);
+            return ServiceResult.createSuccessServiceResult("根据交易哈希查询交易成功",response);
         } catch (Exception e){
-            String message = "根据交易UUID查询交易失败";
+            String message = "根据交易哈希查询交易失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
@@ -151,7 +151,7 @@ public class BlockChainBrowserController {
             }
             List<Transaction> transactionList = blockChainCoreService.queryTransactionByTransactionHeight(request.getPageCondition());
             if(transactionList == null){
-                return ServiceResult.createFailServiceResult(String.format("区块链中不存在交易高度[%s]，请检查输入的交易UUID。",request.getPageCondition().getFrom()));
+                return ServiceResult.createFailServiceResult(String.format("区块链中不存在交易高度[%s]，请检查输入的交易哈希。",request.getPageCondition().getFrom()));
             }
             QueryTransactionByTransactionHeightResponse response = new QueryTransactionByTransactionHeightResponse();
             response.setTransactionList(transactionList);
@@ -164,22 +164,22 @@ public class BlockChainBrowserController {
     }
 
     /**
-     * 根据交易UUID查询挖矿中交易
+     * 根据交易哈希查询挖矿中交易
      */
     @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.QUERY_MINING_TRANSACTION_BY_TRANSACTION_UUID,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryMiningTransactionByTransactionUuidResponse> queryMiningTransactionByTransactionUUID(@RequestBody QueryMiningTransactionByTransactionUuidRequest request){
+    @RequestMapping(value = BlockChainApiRoute.QUERY_MINING_TRANSACTION_BY_TRANSACTION_HASH,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryMiningTransactionByTransactionHashResponse> queryMiningTransactionByTransactionHash(@RequestBody QueryMiningTransactionByTransactionHashRequest request){
         try {
-            TransactionDTO transactionDTO = blockChainCoreService.queryMiningTransactionDtoByTransactionUUID(request.getTransactionUUID());
+            TransactionDTO transactionDTO = blockChainCoreService.queryMiningTransactionDtoByTransactionHash(request.getTransactionHash());
             if(transactionDTO == null){
-                return ServiceResult.createFailServiceResult(String.format("交易UUID[%s]不是正在被挖矿的交易。",request.getTransactionUUID()));
+                return ServiceResult.createFailServiceResult(String.format("交易哈希[%s]不是正在被挖矿的交易。",request.getTransactionHash()));
             }
 
-            QueryMiningTransactionByTransactionUuidResponse response = new QueryMiningTransactionByTransactionUuidResponse();
+            QueryMiningTransactionByTransactionHashResponse response = new QueryMiningTransactionByTransactionHashResponse();
             response.setTransactionDTO(transactionDTO);
-            return ServiceResult.createSuccessServiceResult("根据交易UUID查询挖矿中交易成功",response);
+            return ServiceResult.createSuccessServiceResult("根据交易哈希查询挖矿中交易成功",response);
         } catch (Exception e){
-            String message = "根据交易UUID查询挖矿中交易失败";
+            String message = "根据交易哈希查询挖矿中交易失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

@@ -24,9 +24,9 @@ public interface BlockChainCoreService {
      */
     WalletDTO generateWalletDTO();
     /**
-     * 根据交易UUID获取交易
+     * 根据交易哈希获取交易
      */
-    TransactionDTO queryTransactionDtoByTransactionUUID(String transactionUUID) throws Exception;
+    TransactionDTO queryTransactionDtoByTransactionHash(String transactionHash) throws Exception;
     /**
      * 根据交易高度获取交易
      */
@@ -69,7 +69,7 @@ public interface BlockChainCoreService {
      */
     List<TransactionDTO> queryMiningTransactionList(QueryMiningTransactionListRequest request) throws Exception;
 
-    TransactionDTO queryMiningTransactionDtoByTransactionUUID(String transactionUUID) throws Exception;
+    TransactionDTO queryMiningTransactionDtoByTransactionHash(String transactionHash) throws Exception;
 
     void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) throws Exception;
 }
