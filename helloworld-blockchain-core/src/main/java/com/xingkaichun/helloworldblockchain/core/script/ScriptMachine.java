@@ -7,41 +7,68 @@ import com.xingkaichun.helloworldblockchain.core.utils.atomic.TransactionUtil;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 
+/**
+ * 脚本机器
+ */
 public class ScriptMachine {
 
+    //操作码前缀
+    public static final String OPERATION_CODE_PREFIX = "0";
+    //操作数前缀
+    public static final String OPERATION_DATA_PREFIX = "1";
 
-    public static final String OP_PREFIX = "OP_";
-    public static final String DATA_PREFIX = "DATA_";
+    /**
+     * 将栈顶的元素复制一份，并放入栈。
+     */
+    public static final String OPERATION_CODE_DUPLICATE = OPERATION_CODE_PREFIX + "1";
+    /**
+     * 把栈顶元素当做公钥，求地址。然后删除栈顶元素，然后将地址放入栈。
+     */
+    public static final String OPERATION_CODE_PUBLIC_KEY_TO_CLASSIC_ADDRESS = OPERATION_CODE_PREFIX + "2";
+    /**
+     * 比较栈顶的前两个元素是否相等，不等抛出异常。
+     * 无论是否相等，最后从栈顶移除这两个元素。
+     */
+    public static final String OPERATION_CODE_EQUAL_VERIFY = OPERATION_CODE_PREFIX + "3";
+    /**
+     * 栈顶第一个元素是公钥
+     * 栈顶第二个元素是交易签名
+     * 通过公钥校验交易签名是否正确。
+     * 如果校验成功，先从栈中移除这两个元素，然后将true放入栈。
+     * 如果校验失败，抛出异常。
+     * 无论如何，栈中一定要移除这两个元素。
+     */
+    public static final String OPERATION_CODE_CHECK_SIGN = OPERATION_CODE_PREFIX + "4";
 
-    public static final String OP_DUP = OP_PREFIX + "DUP";
-    public static final String OP_HASH160 = OP_PREFIX + "HASH160";
-    public static final String OP_EQUALVERIFY = OP_PREFIX + "EQUALVERIFY";
-    public static final String OP_CHECKSIG = OP_PREFIX + "CHECKSIG";
-
-    public ScriptExecuteResult executeScript(Transaction transaction, Script script) throws Exception {
+    /**
+     * 执行脚本
+     */
+    public ScriptExecuteResult executeScript(Transaction transactionEnvironment, Script script) throws Exception {
         ScriptExecuteResult stack = new ScriptExecuteResult();
         for(int i=0;i<script.size();i++){
             String command = script.get(i);
             //数据
-            if(command.startsWith(DATA_PREFIX)){
-                stack.push(getData(command));
-            }else if(command.startsWith(OP_PREFIX)){
-                if(OP_DUP.equals(command)){
-                    stack.push(stack.peek());//复制栈顶元素放入栈
-                }else if(OP_HASH160.equals(command)){
-                    //对栈顶元素求地址，并将结果放入栈顶
-                    String top = stack.pop();//TODO 公钥hash 不是地址
-                    String hash160 = KeyUtil.stringAddressFrom(new StringPublicKey(top)).getValue();
-                    stack.push(hash160);
-                }else if(OP_EQUALVERIFY.equals(command)){
-                    //比较栈顶的前两个元素是否相等，不等则报错，相等，则移除这两个元素
+            if(command.startsWith(OPERATION_DATA_PREFIX)){
+                stack.push(getDataFromOperationData(command));
+            }else if(command.startsWith(OPERATION_CODE_PREFIX)){
+                if(OPERATION_CODE_DUPLICATE.equals(command)){
+                    stack.push(stack.peek());
+                }else if(OPERATION_CODE_PUBLIC_KEY_TO_CLASSIC_ADDRESS.equals(command)){
+                    String top = stack.peek();
+                    String address = KeyUtil.stringAddressFrom(new StringPublicKey(top)).getValue();
+                    stack.pop();
+                    stack.push(address);
+                }else if(OPERATION_CODE_EQUAL_VERIFY.equals(command)){
                     if(!stack.pop().equals(stack.pop())){
                         throw new RuntimeException("脚本执行失败");
                     }
-                }else if(OP_CHECKSIG.equals(command)){
+                }else if(OPERATION_CODE_CHECK_SIGN.equals(command)){
                     String publicKey = stack.pop();
-                    String sig = stack.pop();
-                    KeyUtil.verifySignature(new StringPublicKey(publicKey), TransactionUtil.signatureData(transaction),sig);
+                    String sign = stack.pop();
+                    boolean verifySignatureSuccess = KeyUtil.verifySignature(new StringPublicKey(publicKey), TransactionUtil.signatureData(transactionEnvironment),sign);
+                    if(!verifySignatureSuccess){
+                        throw new RuntimeException("脚本执行失败");
+                    }
                     stack.push(String.valueOf(Boolean.TRUE));
                 }else {
                     throw new RuntimeException("没有指令");
@@ -53,44 +80,42 @@ public class ScriptMachine {
         return stack;
     }
 
-    public static String getData(String dataCommand){
-        return dataCommand.substring(DATA_PREFIX.length());
-    }
-    public static String getDataCommand(String data){
-        return DATA_PREFIX + data;
+    /**
+     * 操作数移除操作数前缀，返回真实的操作数
+     */
+    private static String getDataFromOperationData(String operationData){
+        return operationData.substring(OPERATION_DATA_PREFIX.length());
     }
 
-/*    public static Script createPayToClassicAddressScript(String sign,String publicKey,String address) {
-        Script script = new Script();
-        script.add(getDataCommand(sign));//将签名入栈
-        script.add(getDataCommand(publicKey));//将公钥入栈
-        script.add(OP_DUP);//复制公钥
-        script.add(OP_HASH160);//hash
-        script.add(getDataCommand(address));//地址入栈
-        script.add(OP_EQUALVERIFY);
-        script.add(OP_CHECKSIG);
-        return script;
-    }*/
+    /**
+     * 将操作数前缀加到真实的操作数前面
+     */
+    private static String getOperationDataFromData(String data){
+        return OPERATION_DATA_PREFIX + data;
+    }
+
+
     public static Script createPayToClassicAddressScript(ScriptKey scriptKey, ScriptLock scriptLock) {
         Script script = new Script();
         script.addAll(scriptKey);
         script.addAll(scriptLock);
         return script;
     }
+
     public static ScriptKey createPayToClassicAddressInputScript(String sign,String publicKey) {
         ScriptKey script = new ScriptKey();
-        script.add(getDataCommand(sign));//将签名入栈
-        script.add(getDataCommand(publicKey));//将公钥入栈
+        script.add(getOperationDataFromData(sign));
+        script.add(getOperationDataFromData(publicKey));
         return script;
     }
 
     public static ScriptLock createPayToClassicAddressOutputScript(String address) {
         ScriptLock script = new ScriptLock();
-        script.add(OP_DUP);//复制公钥
-        script.add(OP_HASH160);//hash
-        script.add(getDataCommand(address));//地址入栈
-        script.add(OP_EQUALVERIFY);
-        script.add(OP_CHECKSIG);
+        script.add(OPERATION_CODE_DUPLICATE);
+        script.add(OPERATION_CODE_PUBLIC_KEY_TO_CLASSIC_ADDRESS);
+        script.add(getOperationDataFromData(address));
+        script.add(OPERATION_CODE_EQUAL_VERIFY);
+        script.add(OPERATION_CODE_CHECK_SIGN);
         return script;
     }
 }
