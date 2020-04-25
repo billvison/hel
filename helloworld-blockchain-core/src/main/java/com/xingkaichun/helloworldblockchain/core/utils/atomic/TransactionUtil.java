@@ -7,12 +7,9 @@ import com.xingkaichun.helloworldblockchain.core.script.Script;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptExecuteResult;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
-import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
-import org.bouncycastle.util.encoders.Base64;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionUtil {
@@ -23,7 +20,7 @@ public class TransactionUtil {
     public static BigDecimal getInputsValue(List<TransactionInput> inputs) {
         BigDecimal total = new BigDecimal("0");
         for(TransactionInput i : inputs) {
-            if(i.getUnspendTransactionOutput() == null) continue; //if Transaction can't be found skip it, This behavior may not be optimal.
+            if(i.getUnspendTransactionOutput() == null) continue;
             total = total.add(i.getUnspendTransactionOutput().getValue());
         }
         return total;
@@ -60,38 +57,16 @@ public class TransactionUtil {
      * 用于签名的数据数据
      * @return
      */
-    public static String signatureData(Transaction transaction) throws Exception {
+    public static String signatureData(Transaction transaction) {
         //TODO 保证签名的数据包含所有有作用的数据
-        String data = signatureData(transaction.getTimestamp(),transaction.getTransactionUUID(),getInputUtxoIds(transaction),getOutpuUtxoIds(transaction));
+        String data = transaction.getTransactionUUID();
         return data;
-    }
-
-    /**
-     * 用于签名的数据数据
-     * @return
-     */
-    public static String signatureData(long timestamp,String transactionUUID,List<String> inputUtxoUuidList,List<String> outputUtxoUuidList) throws Exception {
-        String inputs = "";
-        if(inputUtxoUuidList != null){
-            for(String input:inputUtxoUuidList){
-                inputs += input;
-            }
-        }
-        String outputs = "";
-        if(outputUtxoUuidList != null){
-            for(String output:outputUtxoUuidList){
-                outputs += output;
-            }
-        }
-        String data = timestamp + transactionUUID + inputs + outputs;
-        byte[] byteSha256 = SHA256Util.applySha256(data.getBytes());
-        return Base64.toBase64String(byteSha256);
     }
 
     /**
      * 交易签名
      */
-    public static String signature(Transaction transaction, StringPrivateKey stringPrivateKey) throws Exception {
+    public static String signature(Transaction transaction, StringPrivateKey stringPrivateKey) {
         String strSignature = KeyUtil.signature(stringPrivateKey,signatureData(transaction));
         return strSignature;
     }
@@ -110,26 +85,5 @@ public class TransactionUtil {
             }
         }
         return true;
-    }
-
-    public static List<String> getInputUtxoIds(Transaction transaction){
-        List<String> ids = new ArrayList<>();
-        if(transaction.getInputs()==null){return ids;}
-        for(TransactionInput transactionInput:transaction.getInputs()){
-            ids.add(transactionInput.getUnspendTransactionOutput().getTransactionOutputUUID());
-        }
-        return ids;
-    }
-
-    public static List<String> getOutpuUtxoIds(Transaction transaction){
-        List<String> ids = new ArrayList<>();
-        List<TransactionOutput> outputs = transaction.getOutputs();
-        if(outputs==null){
-            return ids;
-        }
-        for(TransactionOutput transactionOutput:outputs){
-            ids.add(transactionOutput.getTransactionOutputUUID());
-        }
-        return ids;
     }
 }

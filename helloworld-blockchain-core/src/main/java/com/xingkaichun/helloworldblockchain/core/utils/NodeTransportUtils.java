@@ -11,14 +11,12 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.TransactionUtil;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.*;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -219,7 +217,7 @@ public class NodeTransportUtils {
     /**
      * 交易签名
      */
-    public static String signature(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) throws Exception {
+    public static String signature(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) {
         String strSignature = KeyUtil.signature(stringPrivateKey,signatureData(transactionDTO));
         return strSignature;
     }
@@ -227,41 +225,22 @@ public class NodeTransportUtils {
     /**
      * 用于签名的数据数据
      */
-    public static String signatureData(TransactionDTO transactionDTO) throws Exception {
-        String data = TransactionUtil.signatureData(transactionDTO.getTimestamp(),transactionDTO.getTransactionUUID(),getInputUtxoIds(transactionDTO),getOutpuUtxoIds(transactionDTO));
+    public static String signatureData(TransactionDTO transactionDTO) {
+        String data = transactionDTO.getTransactionUUID();
         return data;
     }
 
-    private static List<String> getInputUtxoIds(TransactionDTO transactionDTO){
-        List<String> ids = new ArrayList<>();
-        List<TransactionInputDTO> inputs = transactionDTO.getInputs();
-        if(inputs == null){
-            return ids;
-        }
-        for(TransactionInputDTO transactionInputDTO:inputs){
-            ids.add(transactionInputDTO.getUnspendTransactionOutputUUID());
-        }
-        return ids;
-    }
-
-    private static List<String> getOutpuUtxoIds(TransactionDTO transactionDTO){
-        List<String> ids = new ArrayList<>();
-        List<TransactionOutputDTO> output = transactionDTO.getOutputs();
-        if(output == null){
-            return ids;
-        }
-        for(TransactionOutputDTO transactionOutputDTO:output){
-            ids.add(transactionOutputDTO.getTransactionOutputUUID());
-        }
-        return ids;
-    }
-
-    public static String encode(BlockDTO blockDTO) throws IOException {
+    /**
+     * 编码 BlockDTO
+     */
+    public static String encode(BlockDTO blockDTO) {
         return gson.toJson(blockDTO);
     }
 
-    public static BlockDTO decodeToBlockDTO(String stringBlockDTO) throws IOException, ClassNotFoundException {
+    /**
+     * 解码 BlockDTO
+     */
+    public static BlockDTO decodeToBlockDTO(String stringBlockDTO) {
         return gson.fromJson(stringBlockDTO,BlockDTO.class);
     }
-
 }

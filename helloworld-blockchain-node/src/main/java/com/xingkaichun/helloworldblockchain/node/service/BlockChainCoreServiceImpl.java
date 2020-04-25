@@ -2,19 +2,18 @@ package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
-import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
-import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
-import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringKey;
-import com.xingkaichun.helloworldblockchain.core.utils.WalletUtil;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
+import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
+import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
+import com.xingkaichun.helloworldblockchain.core.utils.WalletUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainUuidUtil;
+import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryMiningTransactionListRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryTxosByAddressRequest;
@@ -119,9 +118,15 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     private TransactionDTO classCast(NormalTransactionDto normalTransactionDto) throws Exception {
-        String privateKey = normalTransactionDto.getPrivateKey();
-        StringKey stringKey = KeyUtil.stringKeyFrom(new StringPrivateKey(privateKey));
         long currentTimeMillis = System.currentTimeMillis();
+
+        List<String> inputs = normalTransactionDto.getInputs();
+        List<TransactionInputDTO> transactionInputDtoList = new ArrayList<>();
+        for(String input:inputs){
+            TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
+            transactionInputDTO.setUnspendTransactionOutputUUID(input);
+            transactionInputDtoList.add(transactionInputDTO);
+        }
 
         List<NormalTransactionDto.Output> outputs = normalTransactionDto.getOutputs();
         List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();
@@ -131,33 +136,32 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
                 transactionOutputDTO.setAddress(o.getAddress());
                 transactionOutputDTO.setValue(o.getValue());
                 transactionOutputDTO.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(o.getAddress()));
-                transactionOutputDTO.setTransactionOutputUUID(BlockchainUuidUtil.calculateTransactionOutputUUID(transactionOutputDTO,currentTimeMillis));
                 transactionOutputDtoList.add(transactionOutputDTO);
             }
-        }
-        List<String> inputs = normalTransactionDto.getInputs();
-        List<TransactionInputDTO> transactionInputDtoList = new ArrayList<>();
-        for(String input:inputs){
-            TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
-            transactionInputDTO.setUnspendTransactionOutputUUID(input);
-            transactionInputDtoList.add(transactionInputDTO);
         }
 
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(currentTimeMillis);
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
-        transactionDTO.setTransactionUUID(BlockchainUuidUtil.calculateTransactioUUID(transactionDTO));
 
+        for(TransactionOutputDTO transactionOutputDTO:transactionOutputDtoList){
+            transactionOutputDTO.setTransactionOutputUUID(BlockchainUuidUtil.calculateTransactionOutputUUID(transactionDTO,transactionOutputDTO));
+        }
+
+        transactionDTO.setTransactionUUID(BlockchainUuidUtil.calculateTransactionUUID(transactionDTO));
+
+
+        String privateKey = normalTransactionDto.getPrivateKey();
+        StringKey stringKey = KeyUtil.stringKeyFrom(new StringPrivateKey(privateKey));
         for(TransactionInputDTO transactionInputDTO:transactionInputDtoList){
-            StringPublicKey stringPublicKey = stringKey.getStringPublicKey();
-            String signature = signatureTransactionDTO(transactionDTO,new StringPrivateKey(privateKey));
-            transactionInputDTO.setScriptKey(ScriptMachine.createPayToClassicAddressInputScript(signature,stringPublicKey.getValue()));
+            String signature = signatureTransactionDTO(transactionDTO,stringKey.getStringPrivateKey());
+            transactionInputDTO.setScriptKey(ScriptMachine.createPayToClassicAddressInputScript(signature,stringKey.getStringPublicKey().getValue()));
         }
         return transactionDTO;
     }
 
-    public String signatureTransactionDTO(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) throws Exception {
+    public String signatureTransactionDTO(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) {
         String signature = NodeTransportUtils.signature(transactionDTO,stringPrivateKey);
         return signature;
     }

@@ -298,11 +298,11 @@ public class MinerDefaultImpl extends Miner {
         output.setStringAddress(minerStringAddress);
         output.setValue(award);
         output.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(minerStringAddress.getValue()));
-        output.setTransactionOutputUUID(BlockchainUuidUtil.calculateTransactionOutputUUID(output,currentTimeMillis));
+        output.setTransactionOutputUUID(BlockchainUuidUtil.calculateTransactionOutputUUID(transaction,output));
         outputs.add(output);
 
         transaction.setOutputs(outputs);
-        transaction.setTransactionUUID(BlockchainUuidUtil.calculateTransactioUUID(transaction));
+        transaction.setTransactionUUID(BlockchainUuidUtil.calculateTransactionUUID(transaction));
         return transaction;
     }
     //endregion
