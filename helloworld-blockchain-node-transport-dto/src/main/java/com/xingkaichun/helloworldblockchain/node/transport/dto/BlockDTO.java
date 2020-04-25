@@ -11,7 +11,6 @@ import java.util.List;
  */
 @Data
 public class BlockDTO implements Serializable {
-    //TODO 持续检查缩减dto字段
     private long timestamp;
     private BigInteger height;
     private String previousHash;
