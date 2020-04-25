@@ -117,7 +117,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
     }
 
-    //TODO 开关
     private void fillBlockPropertity(Block block) throws Exception {
 
         BigInteger transactionSequenceNumberInBlock = BigInteger.ZERO;

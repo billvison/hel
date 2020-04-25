@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
-import com.xingkaichun.helloworldblockchain.core.TransactionDataBase;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.LevelDBUtil;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import org.iq80.leveldb.DB;
@@ -22,12 +21,10 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
 
     private final static String MinerTransaction_DataBase_DirectName = "MinerTransactionDtoDataBase";
     private DB transactionPoolDB;
-    private TransactionDataBase transactionDataBase;
 
-    public MinerTransactionDtoDtoDataBaseDefaultImpl(String blockchainDataPath, TransactionDataBase transactionDataBase) throws Exception {
+    public MinerTransactionDtoDtoDataBaseDefaultImpl(String blockchainDataPath) throws Exception {
 
         this.transactionPoolDB = LevelDBUtil.createDB(new File(blockchainDataPath,MinerTransaction_DataBase_DirectName));
-        this.transactionDataBase = transactionDataBase;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -39,10 +36,6 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     }
 
     public void insertTransactionDTO(TransactionDTO transactionDTO) throws Exception {
-
-        //校验签名 防止签名错误的交易加入交易池
-        transactionDataBase.insertTransaction(transactionDTO);
-
         //交易已经持久化进交易池数据库 丢弃交易
         synchronized (BlockChainDataBase.class){
             LevelDBUtil.put(transactionPoolDB,transactionDTO.getTransactionHash(), encode(transactionDTO));

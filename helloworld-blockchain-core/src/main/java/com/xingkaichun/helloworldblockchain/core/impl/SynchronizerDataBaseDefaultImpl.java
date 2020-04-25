@@ -1,7 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
-import com.xingkaichun.helloworldblockchain.core.TransactionDataBase;
 import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
 import org.slf4j.Logger;
@@ -22,12 +21,10 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
     private static final String NODE_SYNCHRONIZE_DATABASE_File_Name = "NodeSynchronize.db";
 
     private String blockchainDataPath;
-    private TransactionDataBase transactionDataBase;
     private Connection connection;
 
-    public SynchronizerDataBaseDefaultImpl(String blockchainDataPath, TransactionDataBase transactionDataBase) throws Exception {
+    public SynchronizerDataBaseDefaultImpl(String blockchainDataPath) throws Exception {
         this.blockchainDataPath = blockchainDataPath;
-        this.transactionDataBase = transactionDataBase;
         init();
     }
 
@@ -51,8 +48,6 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
     @Override
     public boolean addBlockDTO(String nodeId, BlockDTO blockDTO) throws Exception {
-
-        transactionDataBase.insertBlockDTO(blockDTO);
 
         String sql = "INSERT INTO DATA (nodeId,blockHeight,blockDto,insertTime) " +
                 "VALUES (?,?,?,?);";
