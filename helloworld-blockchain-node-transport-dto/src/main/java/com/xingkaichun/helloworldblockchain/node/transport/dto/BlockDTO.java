@@ -17,7 +17,4 @@ public class BlockDTO implements Serializable {
     private String previousHash;
     private List<TransactionDTO> transactions;
     private BigInteger nonce;
-
-    //TODO 移除
-    private String hash;
 }

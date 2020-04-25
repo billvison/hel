@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
+import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.node.dao.BlockChainBranchDao;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.node.model.BlockchainBranchBlockEntity;
@@ -82,11 +82,11 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
         blockchainBranchBlockEntityList.sort(Comparator.comparing(BlockchainBranchBlockEntity::getBlockHeight));
         for(int i=0;i<blockchainBranchBlockEntityList.size();i++){
             BlockchainBranchBlockEntity entity = blockchainBranchBlockEntityList.get(i);
-            BlockDTO blockDTO = blockChainCoreService.queryBlockDtoByBlockHeight(entity.getBlockHeight());
-            if(blockDTO == null){
+            Block block = blockChainCoreService.queryNoTransactionBlockDtoByBlockHeight(entity.getBlockHeight());
+            if(block == null){
                 return;
             }
-            if(entity.getBlockHash().equals(blockDTO.getHash()) && BigIntegerUtil.isEquals(entity.getBlockHeight(),blockDTO.getHeight())){
+            if(entity.getBlockHash().equals(block.getHash()) && BigIntegerUtil.isEquals(entity.getBlockHeight(),block.getHeight())){
                 continue;
             }
             BigInteger deleteBlockHeight;
