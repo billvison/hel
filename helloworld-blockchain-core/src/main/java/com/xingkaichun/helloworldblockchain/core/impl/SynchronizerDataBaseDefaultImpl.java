@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import java.util.List;
 public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
     private Logger logger = LoggerFactory.getLogger(SynchronizerDataBaseDefaultImpl.class);
-//TODO 数值类型用无限大的类型
 
     private static final String NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME = "NodeSynchronizeDatabase";
     private static final String NODE_SYNCHRONIZE_DATABASE_File_Name = "NodeSynchronize.db";
@@ -39,7 +39,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         String createTable1Sql2 = "CREATE TABLE IF NOT EXISTS DATA " +
                 "(" +
                 "nodeId CHAR(100) NOT NULL," +
-                "blockHeight INTEGER NOT NULL," +
+                "blockHeight NUMERIC NOT NULL," +
                 "blockDto TEXT NOT NULL," +
                 "insertTime INTEGER NOT NULL" +
                 ")";
@@ -55,8 +55,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         try {
             preparedStatement = connection().prepareStatement(sql);
             preparedStatement.setString(1,nodeId);
-            //TODO 类型转换失真
-            preparedStatement.setInt(2,blockDTO.getHeight().intValue());
+            preparedStatement.setBigDecimal(2,new BigDecimal(blockDTO.getHeight().toString()));
             preparedStatement.setString(3, NodeTransportUtils.encode(blockDTO));
             preparedStatement.setLong(4,System.currentTimeMillis());
             preparedStatement.executeUpdate();
@@ -78,9 +77,8 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             preparedStatement.setString(1,nodeId);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                int blockHeight = resultSet.getInt("minBlockHeight");
-                //TODO 精度
-                return BigInteger.valueOf(blockHeight);
+                BigDecimal blockHeight = resultSet.getBigDecimal("minBlockHeight");
+                return new BigInteger(blockHeight.toPlainString());
             }
         } finally {
             if(preparedStatement != null){
@@ -103,8 +101,8 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             preparedStatement.setString(1,nodeId);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                int blockHeight = resultSet.getInt("maxBlockHeight");
-                return BigInteger.valueOf(blockHeight);
+                BigDecimal blockHeight = resultSet.getBigDecimal("maxBlockHeight");
+                return new BigInteger(blockHeight.toPlainString());
             }
         } finally {
             if(preparedStatement != null){
@@ -125,8 +123,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         try {
             preparedStatement = connection().prepareStatement(selectBlockDataSql);
             preparedStatement.setString(1,nodeId);
-            //TODO 精度
-            preparedStatement.setInt(2,blockHeight.intValue());
+            preparedStatement.setBigDecimal(2,new BigDecimal(blockHeight.toString()));
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
                 String stringBlockDto = resultSet.getString("blockDto");
