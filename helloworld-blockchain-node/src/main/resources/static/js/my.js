@@ -133,8 +133,8 @@ function getMinerStatus() {
 		miner_status.innerHTML = "挖矿中";
 		miner_handle.innerHTML = "停止挖矿";
 	}else{
-		miner_status.innerHTML = " 休息中";
-		miner_handle.innerHTML = "挖矿";
+		miner_status.innerHTML = "休息中";
+		miner_handle.innerHTML = "开启挖矿";
 	}	
     return miner.staus;
 }
@@ -155,11 +155,11 @@ function getSynStatus() {
         }
     });
 	if (syn.staus){
-		syn_status.innerHTML = "已同步";
+		syn_status.innerHTML = "同步中";
 		syn_handle.innerHTML = "停止同步";
 	}else{
-		syn_status.innerHTML = "未同步";
-		syn_handle.innerHTML = "同步";
+		syn_status.innerHTML = "休息中";
+		syn_handle.innerHTML = "开启同步";
 	}	
     return syn.staus;
 }
