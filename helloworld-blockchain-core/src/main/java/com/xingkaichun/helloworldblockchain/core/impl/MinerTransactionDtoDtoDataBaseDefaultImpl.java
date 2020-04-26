@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainHashUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.LevelDBUtil;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import org.iq80.leveldb.DB;
@@ -38,7 +39,8 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     public void insertTransactionDTO(TransactionDTO transactionDTO) throws Exception {
         //交易已经持久化进交易池数据库 丢弃交易
         synchronized (BlockChainDataBase.class){
-            LevelDBUtil.put(transactionPoolDB,transactionDTO.getTransactionHash(), encode(transactionDTO));
+            String transactionHash = BlockchainHashUtil.calculateTransactionHash(transactionDTO);
+            LevelDBUtil.put(transactionPoolDB,transactionHash, encode(transactionDTO));
         }
     }
 
@@ -46,7 +48,8 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     public void insertTransactionDtoList(List<TransactionDTO> transactionDTOList) throws Exception {
         WriteBatch writeBatch = new WriteBatchImpl();
         for(TransactionDTO transactionDTO:transactionDTOList){
-            writeBatch.put(LevelDBUtil.stringToBytes(transactionDTO.getTransactionHash()),encode(transactionDTO));
+            String transactionHash = BlockchainHashUtil.calculateTransactionHash(transactionDTO);
+            writeBatch.put(LevelDBUtil.stringToBytes(transactionHash),encode(transactionDTO));
         }
         synchronized (BlockChainDataBase.class){
             LevelDBUtil.write(transactionPoolDB, writeBatch);
@@ -79,7 +82,8 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     }
 
     @Override
-    public void deleteTransactionDtoByTransactionHash(String transactionHash) throws Exception {
+    public void deleteTransactionDto(TransactionDTO transactionDTO) throws Exception {
+        String transactionHash = BlockchainHashUtil.calculateTransactionHash(transactionDTO);
         LevelDBUtil.delete(transactionPoolDB,transactionHash);
     }
 

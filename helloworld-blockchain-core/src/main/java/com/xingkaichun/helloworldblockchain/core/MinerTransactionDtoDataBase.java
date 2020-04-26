@@ -30,7 +30,7 @@ public abstract class  MinerTransactionDtoDataBase {
     /**
      * 删除交易
      */
-    public abstract void deleteTransactionDtoByTransactionHash(String transactionHash) throws Exception ;
+    public abstract void deleteTransactionDto(TransactionDTO transactionDTO) throws Exception ;
 
     /**
      * 删除交易
