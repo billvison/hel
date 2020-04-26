@@ -14,5 +14,5 @@ public class BlockDTO implements Serializable {
     private long timestamp;
     private BigInteger height;
     private List<TransactionDTO> transactions;
-    private BigInteger nonce;
+    private String consensusValue;
 }

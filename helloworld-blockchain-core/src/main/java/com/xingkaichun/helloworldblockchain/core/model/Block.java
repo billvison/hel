@@ -41,17 +41,15 @@ public class Block implements Serializable {
      * 既然这个字段是有由交易列表生成的，这个字段每次需要时完全可以自己生成？为什么需要这个字段？请参考SPV。
      */
     private String merkleRoot;
-
     /**
-     * 区块随机数
-     * 这个随机数用于共识。
-     * nonce的数据类型需要满足能承载足够大的数字，以确保用户能够计算出符合要求的nonce值。
-     * nonce的值不宜过大，不然恶意用户可能计算出位数超级大的nonce值，但这个nonce又是符合计算要求的值，因此需要限制nonce的值的范围。
-     * //TODO 共识值 不一定非是数值共识
+     * 共识值
+     * 区块链是个分布式账本，每个人都拥有记账的权利。如果每个人都去记账，账本就会特别达成一致。
+     * 一般情况下，想要记账请解答一个难题，从而减少每个人获取记账权利的成功率。
+     * 而这个共识值就是难题的答案。难题的答案可能并不是唯一，一般情况下，很难获取答案。
      */
-    private BigInteger nonce;
+    private String consensusValue;
     /**
-     * 区块哈希：由timestamp、previousHash、height、nonce、merkleRoot共同作用使用Hash算法生成。
+     * 区块哈希：由timestamp、previousHash、height、consensusValue、merkleRoot共同作用使用Hash算法生成。
      * 为什么需要哈希这个字段？
      * 区块哈希确定了，反过来说其它字段的值也是确定的，也就是说区块的数据是确定的。
      * 我们知道区块链的区块需要指向上一个区块？怎么指向？
@@ -73,6 +71,7 @@ public class Block implements Serializable {
     /**
      * 共识目标。
      * 这个字段是冗余的。可以通过区块链系统计算出来。
+     * //TODO consensusValue扔进去，应当可以返回共识值是否正确
      */
     private ConsensusTarget consensusTarget;
 

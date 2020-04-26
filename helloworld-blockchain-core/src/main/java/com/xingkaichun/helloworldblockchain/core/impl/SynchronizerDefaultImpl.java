@@ -215,7 +215,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
         if(EqualsUtils.isEquals(block1.getPreviousHash(),block2.getPreviousHash())
                 && EqualsUtils.isEquals(block1.getHeight(),block2.getHeight())
                 && EqualsUtils.isEquals(block1.getMerkleRoot(),block2.getMerkleRoot())
-                && EqualsUtils.isEquals(block1.getNonce(),block2.getNonce())
+                && EqualsUtils.isEquals(block1.getConsensusValue(),block2.getConsensusValue())
                 && EqualsUtils.isEquals(block1.getHash(),block2.getHash())){
             return true;
         }

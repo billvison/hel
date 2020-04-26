@@ -177,13 +177,13 @@ public class MinerDefaultImpl extends Miner {
             if(nextNonce.subtract(startNonce).compareTo(tryNonceSizeEveryBatch)>0){
                 break;
             }
-            block.setNonce(nextNonce);
+            block.setConsensusValue(nextNonce.toString());
             block.setHash(BlockUtils.calculateBlockHash(block));
             if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
                 miningBlock.setMiningSuccess(true);
                 break;
             }
-            block.setNonce(null);
+            block.setConsensusValue(null);
             miningBlock.setNextNonce(nextNonce.add(new BigInteger("1")));
         }
     }

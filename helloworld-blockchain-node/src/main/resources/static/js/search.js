@@ -187,7 +187,7 @@ function blockByHeight(result){
 			'<dd>前哈希: ' + result.block.previousHash + '</dd>' +
 			'<dd>区块高度: ' + result.block.height + '</dd>' +		
 			'<dd>merkleRoot: ' + result.block.merkleRoot + '</dd>' +
-			'<dd>nonce: ' + result.block.nonce + '</dd>' +
+			'<dd>consensusValue: ' + result.block.consensusValue + '</dd>' +
 			'<dd>哈希: ' + result.block.hash + '</dd>' +
 			'<dd>consensusTarget: ' + result.block.consensusTarget.value + '</dd>' +
 			'<dd>transactionQuantity: ' + result.block.transactionQuantity + '</dd>' +

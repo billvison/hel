@@ -22,7 +22,7 @@ public class BlockUtils {
      * @param block 区块
      */
     public static String calculateBlockHash(Block block) {
-        String input = block.getTimestamp()+block.getPreviousHash()+block.getHeight()+block.getMerkleRoot()+block.getNonce();
+        String input = block.getTimestamp()+block.getPreviousHash()+block.getHeight()+block.getMerkleRoot()+block.getConsensusValue();
         byte[] sha256Digest = SHA256Util.applySha256(input.getBytes());
         return HexUtil.bytesToHexString(sha256Digest) + block.getTimestamp();
     }

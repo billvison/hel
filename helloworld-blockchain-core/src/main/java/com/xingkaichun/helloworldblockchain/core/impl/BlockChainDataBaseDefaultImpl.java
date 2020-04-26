@@ -556,7 +556,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * nonce取值范围是否正确
      */
     private boolean isNonceValueRangeRight(Block block) {
-        BigInteger nonce = block.getNonce();
+        BigInteger nonce = new BigInteger(block.getConsensusValue());
         if(BigIntegerUtil.isLessThan(nonce,BlockChainCoreConstants.MIN_NONCE)){
             return false;
         }
