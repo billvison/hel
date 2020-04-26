@@ -13,6 +13,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainHashUtil;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
@@ -116,7 +117,7 @@ public class NodeTransportUtils {
         List<TransactionOutputDTO> dtoOutputs = transactionDTO.getOutputs();
         if(dtoOutputs!=null && dtoOutputs.size()!=0){
             for(TransactionOutputDTO transactionOutputDTO:dtoOutputs){
-                TransactionOutput transactionOutput = classCast(transactionOutputDTO);
+                TransactionOutput transactionOutput = classCast(transactionDTO,transactionOutputDTO);
                 outputs.add(transactionOutput);
             }
         }
@@ -195,9 +196,9 @@ public class NodeTransportUtils {
     /**
      * 类型转换
      */
-    public static TransactionOutput classCast(TransactionOutputDTO transactionOutputDTO) {
+    public static TransactionOutput classCast(TransactionDTO transactionDTO, TransactionOutputDTO transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
-        transactionOutput.setTransactionOutputHash(transactionOutputDTO.getTransactionOutputHash());
+        transactionOutput.setTransactionOutputHash(BlockchainHashUtil.calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
         transactionOutput.setStringAddress(new StringAddress(transactionOutputDTO.getAddress()));
         transactionOutput.setValue(new BigDecimal(transactionOutputDTO.getValue()));
         transactionOutput.setScriptLock(scriptLockFrom(transactionOutputDTO.getScriptLock()));
@@ -209,7 +210,6 @@ public class NodeTransportUtils {
      */
     public static TransactionOutputDTO classCast(TransactionOutput transactionOutput) {
         TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-        transactionOutputDTO.setTransactionOutputHash(transactionOutput.getTransactionOutputHash());
         transactionOutputDTO.setAddress(transactionOutput.getStringAddress().getValue());
         transactionOutputDTO.setValue(transactionOutput.getValue().toPlainString());
         transactionOutputDTO.setScriptLock(transactionOutput.getScriptLock());

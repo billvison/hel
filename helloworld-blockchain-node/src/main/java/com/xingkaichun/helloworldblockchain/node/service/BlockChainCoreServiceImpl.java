@@ -144,11 +144,6 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         transactionDTO.setTimestamp(currentTimeMillis);
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
-
-        for(TransactionOutputDTO transactionOutputDTO:transactionOutputDtoList){
-            transactionOutputDTO.setTransactionOutputHash(BlockchainHashUtil.calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
-        }
-
         transactionDTO.setTransactionHash(BlockchainHashUtil.calculateTransactionHash(transactionDTO));
 
         String privateKey = normalTransactionDto.getPrivateKey();

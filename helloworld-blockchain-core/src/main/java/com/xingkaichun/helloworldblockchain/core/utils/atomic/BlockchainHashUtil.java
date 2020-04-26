@@ -61,20 +61,20 @@ public class BlockchainHashUtil {
     /**
      * 计算交易哈希
      */
-    public static String calculateTransactionHash(TransactionDTO transaction){
+    public static String calculateTransactionHash(TransactionDTO transactionDTO){
         List<String> inputHashList = new ArrayList<>();
-        List<TransactionInputDTO> inputs = transaction.getInputs();
+        List<TransactionInputDTO> inputs = transactionDTO.getInputs();
         if(inputs != null && inputs.size()!=0){
             for(TransactionInputDTO transactionInputDTO:inputs){
                 inputHashList.add(transactionInputDTO.getUnspendTransactionOutputHash());
             }
         }
         List<String> outputHashList = new ArrayList<>();
-        List<TransactionOutputDTO> outputs = transaction.getOutputs();
+        List<TransactionOutputDTO> outputs = transactionDTO.getOutputs();
         for(TransactionOutputDTO transactionOutputDTO:outputs){
-            outputHashList.add(transactionOutputDTO.getTransactionOutputHash());
+            outputHashList.add(BlockchainHashUtil.calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
         }
-        return calculateTransactionHash(transaction.getTimestamp(),inputHashList,outputHashList);
+        return calculateTransactionHash(transactionDTO.getTimestamp(),inputHashList,outputHashList);
     }
 
     /**
