@@ -11,6 +11,8 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
@@ -18,6 +20,7 @@ import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.*;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +31,10 @@ public class NodeTransportUtils {
      * 类型转换
      */
     public static Block classCast(BlockChainDataBase blockChainDataBase, BlockDTO blockDTO) throws Exception {
+        if(BigIntegerUtil.isLessThan(blockDTO.getHeight(),BigInteger.ONE)){
+            throw new BlockChainCoreException("区块的高度不能少于1");
+        }
+
         List<Transaction> transactionList = new ArrayList<>();
         List<TransactionDTO> transactionDtoList = blockDTO.getTransactions();
         if(transactionDtoList != null){
@@ -36,9 +43,23 @@ public class NodeTransportUtils {
                 transactionList.add(transaction);
             }
         }
+
+        //求上一个区块的hash
+        String previousHash = null;
+        BigInteger height = blockDTO.getHeight();
+        if(BigIntegerUtil.isEquals(height,BigInteger.ONE)){
+            previousHash = BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH;
+        } else {
+            Block previousBlock = blockChainDataBase.findNoTransactionBlockByBlockHeight(height.subtract(BigInteger.ONE));
+            if(previousBlock == null){
+                throw new BlockChainCoreException("上一个区块不应该为null");
+            }
+            previousHash = previousBlock.getHash();
+        }
+
         Block block = new Block();
         block.setTimestamp(blockDTO.getTimestamp());
-        block.setPreviousHash(blockDTO.getPreviousHash());
+        block.setPreviousHash(previousHash);
         block.setHeight(blockDTO.getHeight());
         block.setTransactions(transactionList);
         block.setMerkleRoot(BlockUtils.calculateBlockMerkleRoot(block));
@@ -65,7 +86,6 @@ public class NodeTransportUtils {
 
         BlockDTO blockDTO = new BlockDTO();
         blockDTO.setTimestamp(block.getTimestamp());
-        blockDTO.setPreviousHash(block.getPreviousHash());
         blockDTO.setHeight(block.getHeight());
         blockDTO.setTransactions(transactionDtoList);
         blockDTO.setNonce(block.getNonce());
