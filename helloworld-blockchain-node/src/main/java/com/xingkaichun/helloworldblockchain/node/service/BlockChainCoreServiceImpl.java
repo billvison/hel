@@ -22,7 +22,12 @@ import com.xingkaichun.helloworldblockchain.node.dto.common.EmptyResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.common.page.PageCondition;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.*;
+import com.xingkaichun.helloworldblockchain.node.dto.wallet.WalletDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionInputDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionOutputDTO;
+import com.xingkaichun.helloworldblockchain.node.util.WalletDtoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +53,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public WalletDTO generateWalletDTO() {
         Wallet wallet = WalletUtil.generateWallet();
-        return NodeTransportUtils.classCast(wallet);
+        return WalletDtoUtil.classCast(wallet);
     }
 
     @Override

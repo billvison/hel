@@ -3,12 +3,12 @@ package com.xingkaichun.helloworldblockchain.node.timer;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
-import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.WalletUtil;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationEnum;
+import com.xingkaichun.helloworldblockchain.node.dto.wallet.WalletDTO;
 import com.xingkaichun.helloworldblockchain.node.service.ConfigurationService;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.WalletDTO;
+import com.xingkaichun.helloworldblockchain.node.util.WalletDtoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class InitMinerHandler {
         if(Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             //创建钱包
             Wallet wallet = WalletUtil.generateWallet();
-            WalletDTO walletDTO =  NodeTransportUtils.classCast(wallet);
+            WalletDTO walletDTO =  WalletDtoUtil.classCast(wallet);
 
             //将钱包的地址当做矿工的地址写入数据库
             minerAddressConfigurationDto.setConfKey(ConfigurationEnum.MINER_ADDRESS.name());

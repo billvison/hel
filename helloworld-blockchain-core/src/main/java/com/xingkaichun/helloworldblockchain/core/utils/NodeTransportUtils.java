@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
@@ -17,8 +16,10 @@ import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainHashUtil
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.*;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionInputDTO;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionOutputDTO;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -213,23 +214,6 @@ public class NodeTransportUtils {
         transactionOutputDTO.setValue(transactionOutput.getValue().toPlainString());
         transactionOutputDTO.setScriptLock(transactionOutput.getScriptLock());
         return transactionOutputDTO;
-    }
-
-    /**
-     * 类型转换
-     */
-    public static WalletDTO classCast(Wallet wallet){
-        WalletDTO walletDTO = new WalletDTO(wallet.getStringPrivateKey().getValue(),wallet.getStringPublicKey().getValue(),wallet.getStringAddress().getValue());
-        return walletDTO;
-    }
-    /**
-     * 类型转换
-     */
-    public static Wallet classCast(WalletDTO walletDTO){
-        Wallet wallet = new Wallet(new StringPrivateKey(walletDTO.getPrivateKey()),
-                new StringPublicKey(walletDTO.getPublicKey()),
-                new StringAddress(walletDTO.getAddress()));
-        return wallet;
     }
 
     /**

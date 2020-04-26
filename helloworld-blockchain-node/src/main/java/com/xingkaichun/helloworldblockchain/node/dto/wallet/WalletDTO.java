@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.node.transport.dto;
+package com.xingkaichun.helloworldblockchain.node.dto.wallet;
 
 import lombok.Data;
 
