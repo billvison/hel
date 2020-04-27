@@ -218,7 +218,7 @@ public class KeyUtil {
      */
     private static String base58AddressFrom(byte[] bytePublicKey) throws Exception {
         byte[] pubKSha256 = SHA256Util.applySha256(bytePublicKey);
-        byte[] pubKSha256RipeMD160 = RipeMD160Util.ripeMD160(pubKSha256);
+        byte[] pubKSha256RipeMD160 = RipeMD160Util.applyRipeMD160(pubKSha256);
 
         //地址数组
         byte[] byteAddress = new byte[1 + 20 + 4];

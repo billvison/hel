@@ -1,8 +1,8 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.crypto.Base64Util;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
-import org.bouncycastle.util.encoders.Base64;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +40,6 @@ public class MerkleUtils {
 
     private static String sha256Base64(String inputs) {
         byte[] sha256Digest = SHA256Util.applySha256(inputs.getBytes());
-        return Base64.toBase64String(sha256Digest);
+        return Base64Util.encode(sha256Digest);
     }
 }
