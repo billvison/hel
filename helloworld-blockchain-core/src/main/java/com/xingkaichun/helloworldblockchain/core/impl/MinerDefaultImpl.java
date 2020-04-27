@@ -178,7 +178,7 @@ public class MinerDefaultImpl extends Miner {
             }
             block.setConsensusValue(nextNonce.toString());
             block.setHash(BlockUtils.calculateBlockHash(block));
-            if(block.getConsensusTarget().isReachConsensus(block)){
+            if(block.getConsensusTarget().isReachConsensus()){
                 miningBlock.setMiningSuccess(true);
                 break;
             }

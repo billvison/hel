@@ -16,12 +16,13 @@ public class ProofOfWorkConsensus extends Consensus {
         //目标难度
         final String targetDifficult = BlockChainCoreConstants.INIT_GENERATE_BLOCK_DIFFICULTY_STRING;
         ConsensusTarget consensusTarget = new ConsensusTarget(){
+            private Block consensusBlock = block;
             @Override
-            public boolean isReachConsensus(Block block) {
+            public boolean isReachConsensus() {
                 //区块Hash
-                String hash = block.getHash();
+                String hash = consensusBlock.getHash();
                 if(hash == null){
-                    hash = BlockUtils.calculateBlockHash(block);
+                    hash = BlockUtils.calculateBlockHash(consensusBlock);
                 }
                 return hash.startsWith(targetDifficult);
             }

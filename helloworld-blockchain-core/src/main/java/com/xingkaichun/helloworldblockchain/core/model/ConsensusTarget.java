@@ -15,9 +15,8 @@ public abstract class ConsensusTarget implements Serializable {
      */
     private String explain;
     /**
-     * 这个区块写入的nonce达成共识了吗？
-     *
-     * @param block 需要被验证是否共识的区块
+     * 达成共识了吗？
+     * //TODO model不存放方法
      */
-    public abstract boolean isReachConsensus(Block block) throws Exception;
+    public abstract boolean isReachConsensus() throws Exception;
 }
