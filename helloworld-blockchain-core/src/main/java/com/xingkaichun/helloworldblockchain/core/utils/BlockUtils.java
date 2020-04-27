@@ -42,7 +42,7 @@ public class BlockUtils {
      */
     public static String calculateBlockMerkleRoot(Block block) {
         List<Transaction> transactionList = block.getTransactions();
-        return MerkleUtils.getMerkleRoot(transactionList);
+        return MerkleUtils.calculateTransactionMerkleRoot(transactionList);
     }
     /**
      * 区块中写入的默克尔树根是否正确
