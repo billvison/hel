@@ -165,7 +165,6 @@ public class MinerDefaultImpl extends Miner {
 
     public void miningBlock(MiningBlock miningBlock) throws Exception {
         //TODO 改善型功能 这里可以利用多处理器的性能进行计算 还可以进行矿池挖矿
-        BlockChainDataBase blockChainDataBase = miningBlock.getBlockChainDataBase();
         Block block = miningBlock.getBlock();
         BigInteger startNonce = miningBlock.getNextNonce();
         BigInteger tryNonceSizeEveryBatch = miningBlock.getTryNonceSizeEveryBatch();
@@ -179,7 +178,7 @@ public class MinerDefaultImpl extends Miner {
             }
             block.setConsensusValue(nextNonce.toString());
             block.setHash(BlockUtils.calculateBlockHash(block));
-            if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
+            if(block.getConsensusTarget().isReachConsensus(block)){
                 miningBlock.setMiningSuccess(true);
                 break;
             }

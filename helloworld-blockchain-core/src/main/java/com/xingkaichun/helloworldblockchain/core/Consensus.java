@@ -4,6 +4,8 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.ConsensusTarget;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 挖矿共识
  * 区块链是一个分布式的数据库。任何节点都可以产生下一个区块，如果同时有多个节点都产生了下一个区块，
@@ -15,15 +17,7 @@ import lombok.Data;
  * 这个问题，就让他们继续竞争下去，看谁能产生下下个区块。
  */
 @Data
-public abstract class Consensus {
-
-    /**
-     * 这个区块写入的nonce达成共识了吗？
-     *
-     * @param blockChainDataBase 区块链
-     * @param block              需要被验证nonce是否已经达成了共识的区块
-     */
-    public abstract boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
+public abstract class Consensus implements Serializable {
 
     /**
      * 共识目标

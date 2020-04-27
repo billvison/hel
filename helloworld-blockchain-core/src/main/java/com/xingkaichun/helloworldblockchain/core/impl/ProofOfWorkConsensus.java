@@ -2,31 +2,31 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.ConsensusTarget;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
 
 /**
  * 工作量证明实现
  */
 public class ProofOfWorkConsensus extends Consensus {
 
-    private Logger logger = LoggerFactory.getLogger(ProofOfWorkConsensus.class);
-
-    @Override
-    public boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
-        //区块中写入的区块Hash
-        String hash = block.getHash();
-        //挖矿难度
-        String stringConsensusTarget = block.getConsensusTarget().getValue();
-        return hash.startsWith(stringConsensusTarget);
-    }
-
-    public ConsensusTarget calculateConsensusTarget(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
-        ConsensusTarget consensusTarget = new ConsensusTarget();
-        consensusTarget.setValue(BlockChainCoreConstants.INIT_GENERATE_BLOCK_DIFFICULTY_STRING);
+    public ConsensusTarget calculateConsensusTarget(BlockChainDataBase blockChainDataBase, Block block) {
+        //目标难度
+        final String targetDifficult = BlockChainCoreConstants.INIT_GENERATE_BLOCK_DIFFICULTY_STRING;
+        ConsensusTarget consensusTarget = new ConsensusTarget(){
+            @Override
+            public boolean isReachConsensus(Block block) {
+                //区块Hash
+                String hash = block.getHash();
+                if(hash == null){
+                    hash = BlockUtils.calculateBlockHash(block);
+                }
+                return hash.startsWith(targetDifficult);
+            }
+        };
+        consensusTarget.setExplain("挖矿难度是"+targetDifficult);
         return consensusTarget;
 /*
         int blockHeight = block.getHeight();

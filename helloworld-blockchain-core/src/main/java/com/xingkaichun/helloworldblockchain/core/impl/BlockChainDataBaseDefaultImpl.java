@@ -298,7 +298,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验共识
-        boolean isReachConsensus = consensus.isReachConsensus(this,block);
+        boolean isReachConsensus = block.getConsensusTarget().isReachConsensus(block);
         if(!isReachConsensus){
             return false;
         }
