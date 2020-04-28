@@ -189,7 +189,7 @@ function blockByHeight(result){
 			'<dd>merkleRoot: ' + result.block.merkleRoot + '</dd>' +
 			'<dd>consensusValue: ' + result.block.consensusValue + '</dd>' +
 			'<dd>哈希: ' + result.block.hash + '</dd>' +
-			'<dd>consensusTarget: ' + result.block.consensusTarget.explain + '</dd>' +
+			'<dd>explain: ' + result.block.consensusVariableHolder.explain + '</dd>' +
 			'<dd>transactionQuantity: ' + result.block.transactionQuantity + '</dd>' +
 			'<dd>startTransactionSequenceNumberInBlockChain: ' + result.block.startTransactionSequenceNumberInBlockChain + '</dd>' +
 			'<dd>endTransactionSequenceNumberInBlockChain: ' + result.block.endTransactionSequenceNumberInBlockChain + '</dd>' +

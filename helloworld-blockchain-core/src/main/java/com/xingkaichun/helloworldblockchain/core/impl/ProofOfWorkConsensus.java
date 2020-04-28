@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.ConsensusTarget;
+import com.xingkaichun.helloworldblockchain.core.model.ConsensusVariableHolder;
 import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
 
@@ -12,23 +12,36 @@ import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreCons
  */
 public class ProofOfWorkConsensus extends Consensus {
 
-    public ConsensusTarget calculateConsensusTarget(BlockChainDataBase blockChainDataBase, Block block) {
+    private final static String EXPLAIN = "explain";
+    private final static String TARGET_DIFFICULT = "targetDifficult";
+
+    @Override
+    public boolean isReachConsensus(BlockChainDataBase blockChainDataBase,Block block) {
+        ConsensusVariableHolder consensusVariableHolder = block.getConsensusVariableHolder();
+        if(consensusVariableHolder == null){
+            consensusVariableHolder = calculateConsensusVariableHolder(blockChainDataBase,block);
+            block.setConsensusVariableHolder(consensusVariableHolder);
+        }
+        String targetDifficult = consensusVariableHolder.get(TARGET_DIFFICULT);
+        //区块Hash
+        String hash = block.getHash();
+        if(hash == null){
+            hash = BlockUtils.calculateBlockHash(block);
+        }
+        return hash.startsWith(targetDifficult);
+    }
+
+
+    public ConsensusVariableHolder calculateConsensusVariableHolder(BlockChainDataBase blockChainDataBase, Block block) {
+
+        ConsensusVariableHolder consensusVariableHolder = new ConsensusVariableHolder();
+        block.setConsensusVariableHolder(consensusVariableHolder);
+
         //目标难度
         final String targetDifficult = BlockChainCoreConstants.INIT_GENERATE_BLOCK_DIFFICULTY_STRING;
-        ConsensusTarget consensusTarget = new ConsensusTarget(){
-            private Block consensusBlock = block;
-            @Override
-            public boolean isReachConsensus() {
-                //区块Hash
-                String hash = consensusBlock.getHash();
-                if(hash == null){
-                    hash = BlockUtils.calculateBlockHash(consensusBlock);
-                }
-                return hash.startsWith(targetDifficult);
-            }
-        };
-        consensusTarget.setExplain("挖矿难度是"+targetDifficult);
-        return consensusTarget;
+        consensusVariableHolder.put(EXPLAIN,targetDifficult);
+        consensusVariableHolder.put(TARGET_DIFFICULT,targetDifficult);
+        return consensusVariableHolder;
 /*
         int blockHeight = block.getHeight();
         if(blockHeight <= 2){

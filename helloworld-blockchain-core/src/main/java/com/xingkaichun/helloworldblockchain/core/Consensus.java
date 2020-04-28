@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.ConsensusTarget;
+import com.xingkaichun.helloworldblockchain.core.model.ConsensusVariableHolder;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -20,10 +20,15 @@ import java.io.Serializable;
 public abstract class Consensus implements Serializable {
 
     /**
+     * 达成共识了吗？
+     */
+    public abstract boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
+
+    /**
      * 共识目标
      * @param blockChainDataBase 区块链
      * @param block              目标区块
      */
-    public abstract ConsensusTarget calculateConsensusTarget(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
+    public abstract ConsensusVariableHolder calculateConsensusVariableHolder(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
 }
 

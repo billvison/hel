@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Miner;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.ConsensusTarget;
+import com.xingkaichun.helloworldblockchain.core.model.ConsensusVariableHolder;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
@@ -63,7 +63,7 @@ public class MinerDefaultImpl extends Miner {
                 miningBlock = obtainWrapperBlockForMining(blockChainDataBase);
                 miningBlockThreadLocal.set(miningBlock);
             }
-            miningBlock(miningBlock);
+            miningBlock(blockChainDataBase,miningBlock);
             //挖矿成功
             if(miningBlock.getMiningSuccess()){
                 miningBlockThreadLocal.remove();
@@ -163,7 +163,7 @@ public class MinerDefaultImpl extends Miner {
         return miningBlock;
     }
 
-    public void miningBlock(MiningBlock miningBlock) throws Exception {
+    public void miningBlock(BlockChainDataBase blockChainDataBase, MiningBlock miningBlock) throws Exception {
         //TODO 改善型功能 这里可以利用多处理器的性能进行计算 还可以进行矿池挖矿
         Block block = miningBlock.getBlock();
         BigInteger startNonce = miningBlock.getNextNonce();
@@ -178,7 +178,7 @@ public class MinerDefaultImpl extends Miner {
             }
             block.setConsensusValue(nextNonce.toString());
             block.setHash(BlockUtils.calculateBlockHash(block));
-            if(block.getConsensusTarget().isReachConsensus()){
+            if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
                 miningBlock.setMiningSuccess(true);
                 break;
             }
@@ -332,8 +332,8 @@ public class MinerDefaultImpl extends Miner {
         String merkleRoot = BlockUtils.calculateBlockMerkleRoot(nonNonceBlock);
         nonNonceBlock.setMerkleRoot(merkleRoot);
 
-        ConsensusTarget consensusTarget = blockChainDataBase.getConsensus().calculateConsensusTarget(blockChainDataBase,nonNonceBlock);
-        nonNonceBlock.setConsensusTarget(consensusTarget);
+        ConsensusVariableHolder consensusVariableHolder = blockChainDataBase.getConsensus().calculateConsensusVariableHolder(blockChainDataBase,nonNonceBlock);
+        nonNonceBlock.setConsensusVariableHolder(consensusVariableHolder);
         return nonNonceBlock;
     }
     //endregion

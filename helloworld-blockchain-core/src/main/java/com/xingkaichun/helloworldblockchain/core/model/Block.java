@@ -69,11 +69,10 @@ public class Block implements Serializable {
     private String hash;
 
     /**
-     * 共识目标。
-     * 这个字段是冗余的。可以通过区块链系统计算出来。
-     * //TODO consensusValue扔进去，应当可以返回共识值是否正确
+     * 共识变量持有者。
+     * 这个字段是冗余的。可以通过区块链系统计算出来。辅助共识计算。
      */
-    private ConsensusTarget consensusTarget;
+    private ConsensusVariableHolder consensusVariableHolder;
 
     /**
      * 交易笔数
