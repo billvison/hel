@@ -586,6 +586,18 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验交易时间戳 TODO 配置
+        if(block != null){
+            if(transaction.getTimestamp() < block.getTimestamp() - 24*3600*1000){
+                logger.debug("交易校验失败：交易的时间戳太老旧了。");
+                return false;
+            }
+        }else {
+            if(transaction.getTimestamp() < System.currentTimeMillis() - 12*3600*1000){
+                logger.debug("交易校验失败：交易的时间戳太老旧了。");
+                return false;
+            }
+        }
+
         if(transaction.getTimestamp() > System.currentTimeMillis()+3600*1000){
             logger.debug("交易校验失败：交易的时间戳太滞后了。");
             return false;
