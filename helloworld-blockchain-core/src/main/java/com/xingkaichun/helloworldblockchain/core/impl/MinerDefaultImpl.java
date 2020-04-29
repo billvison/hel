@@ -59,7 +59,10 @@ public class MinerDefaultImpl extends Miner {
                 continue;
             }
             MiningBlock miningBlock = miningBlockThreadLocal.get();
-            if(!isMiningBlockRight(blockChainDataBase,miningBlock)){
+            //重新组装挖矿Block
+            //挖矿超过1小时还没有挖到矿
+            //
+            if(isObtainMiningBlockAgain(blockChainDataBase,miningBlock)){
                 miningBlock = obtainWrapperBlockForMining(blockChainDataBase);
                 miningBlockThreadLocal.set(miningBlock);
             }
@@ -83,26 +86,28 @@ public class MinerDefaultImpl extends Miner {
     /**
      * 校验MiningBlock是否正确
      */
-    private boolean isMiningBlockRight(BlockChainDataBase blockChainDataBase, MiningBlock miningBlock) throws Exception {
+    private boolean isObtainMiningBlockAgain(BlockChainDataBase blockChainDataBase, MiningBlock miningBlock) throws Exception {
         if(miningBlock == null){
-            return false;
+            return true;
+        }
+        //挖矿超过一定时长还没有挖矿成功，这时重新打包交易，对自己来说，可以获取更多的奖励，对交易发送者来说，可以让自己的交易更快的写进区块链
+        //TODO 配置
+        if(System.currentTimeMillis() > miningBlock.getStartTimestamp()+60*60*1000){
+            return true;
         }
         Block block = miningBlock.getBlock();
         if(block == null){
-            return false;
+            return true;
         }
         Block tailBlock = blockChainDataBase.findTailNoTransactionBlock();
         if(tailBlock == null){
-            if(BigIntegerUtil.isEquals(block.getHeight(),BigInteger.valueOf(1))){
-                return true;
-            } else {
-                return false;
-            }
+            //第一个区块，除了创始人，其它矿工没有机会走到这里
+            return false;
         } else {
             if(BigIntegerUtil.isEquals(tailBlock.getHeight().add(BigInteger.valueOf(1)),block.getHeight()) && tailBlock.getHash().equals(block.getPreviousHash())){
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
     }
 
@@ -155,6 +160,7 @@ public class MinerDefaultImpl extends Miner {
         miningBlock.setForMineBlockTransactionList(forMineBlockTransactionList);
         Block nextMineBlock = buildNextMineBlock(blockChainDataBase,forMineBlockTransactionList);
 
+        miningBlock.setStartTimestamp(System.currentTimeMillis());
         miningBlock.setBlockChainDataBase(blockChainDataBase);
         miningBlock.setBlock(nextMineBlock);
         miningBlock.setNextNonce(new BigInteger("0"));
@@ -194,6 +200,8 @@ public class MinerDefaultImpl extends Miner {
      */
     @Data
     public static class MiningBlock {
+        //挖矿开始的时间戳
+        private long startTimestamp;
         //矿工挖矿的区块链
         private BlockChainDataBase blockChainDataBase;
         //矿工要挖矿的区块
