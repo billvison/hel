@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 
 /**
- * 常亮工具类
+ * 常量工具类
  */
 public class BlockChainCoreConstants {
 
@@ -19,6 +19,10 @@ public class BlockChainCoreConstants {
     public final static String FIRST_BLOCK_PREVIOUS_HASH = "xingkaichun";
     //区块链的链ID
     public final static String BLOCK_CHAIN_ID = "0001";
+    //区块链版本 约束最大区块  强制升级
+    public final static int BLOCK_CHAIN_VERSION = 1;
+
+
     //产生区块的平均时间
     public final static long GENERATE_BLOCK_AVERAGE_TIMESTAMP = 2 *  60 * 1000;
     //初始化产生区块的难度
