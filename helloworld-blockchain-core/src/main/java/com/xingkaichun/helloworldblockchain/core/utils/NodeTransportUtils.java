@@ -125,11 +125,12 @@ public class NodeTransportUtils {
 
         Transaction transaction = new Transaction();
         transaction.setTimestamp(transactionDTO.getTimestamp());
+        TransactionType transactionType = transactionTypeFromTransactionDTO(transactionDTO);
+        transaction.setTransactionType(transactionType);
         transaction.setTransactionHash(BlockchainHashUtil.calculateTransactionHash(transactionDTO));
         transaction.setInputs(inputs);
         transaction.setOutputs(outputs);
-        TransactionType transactionType = transactionTypeFromTransactionDTO(transactionDTO);
-        transaction.setTransactionType(transactionType);
+        transaction.setMessages(transactionDTO.getMessages());
         return transaction;
     }
 
@@ -193,6 +194,7 @@ public class NodeTransportUtils {
         transactionDTO.setTransactionTypeCode(transaction.getTransactionType().getCode());
         transactionDTO.setInputs(inputs);
         transactionDTO.setOutputs(outputs);
+        transactionDTO.setMessages(transaction.getMessages());
         return transactionDTO;
     }
 

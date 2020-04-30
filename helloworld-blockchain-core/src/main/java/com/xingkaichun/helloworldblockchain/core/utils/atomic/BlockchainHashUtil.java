@@ -55,7 +55,7 @@ public class BlockchainHashUtil {
                 outputHashList.add(transactionOutput.getTransactionOutputHash());
             }
         }
-        return calculateTransactionHash(transaction.getTimestamp(),transaction.getTransactionType().getCode(),inputHashList,outputHashList);
+        return calculateTransactionHash(transaction.getTimestamp(),transaction.getTransactionType().getCode(),inputHashList,outputHashList,transaction.getMessages());
     }
 
     /**
@@ -74,13 +74,13 @@ public class BlockchainHashUtil {
         for(TransactionOutputDTO transactionOutputDTO:outputs){
             outputHashList.add(BlockchainHashUtil.calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
         }
-        return calculateTransactionHash(transactionDTO.getTimestamp(),transactionDTO.getTransactionTypeCode(),inputHashList,outputHashList);
+        return calculateTransactionHash(transactionDTO.getTimestamp(),transactionDTO.getTransactionTypeCode(),inputHashList,outputHashList,transactionDTO.getMessages());
     }
 
     /**
      * 计算交易哈希
      */
-    private static String calculateTransactionHash(long currentTimeMillis,int transactionTypeCode,List<String> inputHashList,List<String> outputHashList){
+    private static String calculateTransactionHash(long currentTimeMillis,int transactionTypeCode,List<String> inputHashList,List<String> outputHashList,List<String> messageList){
         String data = "";
         data += "[" + transactionTypeCode + "]";
         if(inputHashList != null && inputHashList.size()!=0){
@@ -88,6 +88,9 @@ public class BlockchainHashUtil {
         }
         if(outputHashList != null && outputHashList.size()!=0){
             data += "[" + Joiner.on(",").join(outputHashList) + "]";
+        }
+        if(messageList != null && messageList.size()!=0){
+            data += "[" + Joiner.on(",").join(messageList) + "]";
         }
         byte[] byteSha256 = SHA256Util.applySha256(data.getBytes());
         String base64Encode = Base64Util.encode(byteSha256);

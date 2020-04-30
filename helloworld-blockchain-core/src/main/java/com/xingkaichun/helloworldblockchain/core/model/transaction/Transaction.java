@@ -37,7 +37,10 @@ public class Transaction implements Serializable {
     private List<TransactionInput> inputs;
     //交易输出
     private List<TransactionOutput> outputs;
-
+    //附加消息
+    //当是跨链交易时，可以将跨链的地址写在这里
+    //尽量不使用这个字段
+    private List<String> messages;
     /**
      * 在区块中的交易序列号
      * 冗余

@@ -20,5 +20,6 @@ public class TransactionDTO implements Serializable {
     private List<TransactionInputDTO> inputs;
     //交易输出
     private List<TransactionOutputDTO> outputs;
-
+    //附加消息
+    private List<String> messages;
 }
