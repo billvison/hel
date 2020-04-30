@@ -17,7 +17,8 @@ public class BlockChainCoreConstants {
     public final static BigInteger FIRST_BLOCK_HEIGHT = BigInteger.ONE;
     //第一个区块的PREVIOUS_HASH
     public final static String FIRST_BLOCK_PREVIOUS_HASH = "xingkaichun";
-
+    //区块链的链ID
+    public final static String BLOCK_CHAIN_ID = "0001";
     //产生区块的平均时间
     public final static long GENERATE_BLOCK_AVERAGE_TIMESTAMP = 2 *  60 * 1000;
     //初始化产生区块的难度
