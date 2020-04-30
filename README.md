@@ -1,5 +1,8 @@
 ### 欢迎来到HelloworldBlockchain  
-这是一个Helloworld级别的区块链公链系统。
+这是一个Helloworld级别的区块链公链系统。  
+
+### 使命  
+探索与实践区块链技术。  
 
 ### 模块。  
 ### helloworld-blockchain-node  
