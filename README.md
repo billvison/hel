@@ -2,7 +2,10 @@
 这是一个Helloworld级别的区块链公链系统。  
 
 ### 使命  
-探索与实践区块链技术。  
+探索与实践区块链技术。   
+
+### 案例  
+http://139.9.125.122:8444/index.html  
 
 ### 模块。  
 ### helloworld-blockchain-node  
