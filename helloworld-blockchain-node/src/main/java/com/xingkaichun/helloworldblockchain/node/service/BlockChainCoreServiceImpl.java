@@ -6,6 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
 import com.xingkaichun.helloworldblockchain.core.utils.WalletUtil;
@@ -146,6 +147,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(currentTimeMillis);
+        transactionDTO.setTransactionTypeCode(TransactionType.NORMAL.getCode());
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
 

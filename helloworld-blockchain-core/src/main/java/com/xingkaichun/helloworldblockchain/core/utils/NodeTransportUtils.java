@@ -134,10 +134,12 @@ public class NodeTransportUtils {
     }
 
     private static TransactionType transactionTypeFromTransactionDTO(TransactionDTO transactionDTO) {
-        if(transactionDTO.getInputs() == null || transactionDTO.getInputs().size()==0){
-            return TransactionType.MINER;
+        for(TransactionType transactionType:TransactionType.values()){
+            if(transactionType.getCode() == transactionDTO.getTransactionTypeCode()){
+                return transactionType;
+            }
         }
-        return TransactionType.NORMAL;
+        throw new BlockChainCoreException("交易类型不存在");
     }
 
     private static ScriptKey scriptKeyFrom(List<String> scriptKey) {
@@ -188,6 +190,7 @@ public class NodeTransportUtils {
 
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(transaction.getTimestamp());
+        transactionDTO.setTransactionTypeCode(transaction.getTransactionType().getCode());
         transactionDTO.setInputs(inputs);
         transactionDTO.setOutputs(outputs);
         return transactionDTO;
