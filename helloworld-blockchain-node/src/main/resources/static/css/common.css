@@ -168,10 +168,11 @@ a.c_btn_imp:visited{
 	overflow: hidden;
 }
 .nav h1{
-	color: #3568e9;
-	line-height: 50px;
-	font-size: 30px;
+	color: #FFFFFF;
+	line-height: 54px;
+	font-size: 16px;
 	float: left;
+	font-weight: 300;
 }
 .nav_menu{
 	float: left;
