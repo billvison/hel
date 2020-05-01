@@ -304,7 +304,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验主键的唯一性
-        if(!isNewPrimaryKeyRight(block)){
+        if(!isNewGenerateHashRight(block)){
             logger.debug("区块数据异常，区块中占用的部分主键已经被使用了。");
             return false;
         }
@@ -489,9 +489,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 主键不能被连续使用一次以上
      * 主键符合约束
      */
-    private boolean isNewPrimaryKeyRight(Block block) throws Exception {
+    private boolean isNewGenerateHashRight(Block block) throws Exception {
         //校验区块Hash是否已经被使用了
-        if(findBlockHeightByBlockHash(block.getHash()) != null){
+        if(isHashExist(block.getHash())){
             logger.error("区块数据异常，区块Hash已经被使用了。");
             return false;
         }
@@ -512,23 +512,34 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 }
             }
         }
+        //校验每一笔交易新产生的Hash是否正确
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
+                if(!isNewGenerateHashRight(transaction)){
+                    return false;
+                }
+            }
+        }
         return true;
     }
-    private boolean isNewPrimaryKeyRight(Transaction transaction) {
+    private boolean isNewGenerateHashRight(Transaction transaction) {
+        String transactionHash = transaction.getTransactionHash();
         //校验：只从交易对象层面校验，交易中新产生的哈希是否有重复
         Set<String> hashSet = new HashSet<>();
+        if(!saveHash(hashSet,transactionHash)){
+            return false;
+        }
         List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs != null){
             for(TransactionOutput transactionOutput : outputs) {
                 String transactionOutputHash = transactionOutput.getTransactionOutputHash();
-                if(hashSet.contains(transactionOutputHash)){
+                if(!saveHash(hashSet,transactionOutputHash)){
                     return false;
                 }
-                hashSet.add(transactionOutputHash);
             }
         }
         //交易哈希是否已经被使用了
-        String transactionHash = transaction.getTransactionHash();
         if(isHashExist(transactionHash)){
             return false;
         }
@@ -663,7 +674,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验主键的唯一性
-        if(!isNewPrimaryKeyRight(transaction)){
+        if(!isNewGenerateHashRight(transaction)){
             logger.debug("校验数据异常，校验中占用的部分主键已经被使用了。");
             return false;
         }
