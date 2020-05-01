@@ -76,6 +76,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //地址标识：存储地址到未花费交易输出的映射
     private final static String ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG = "A_T_U_T_O_P_F_";
 
+    //钱包地址截止标记
+    private final static String ADDRESS_END_FLAG = "#" ;
+
     /**
      * 锁:保证对区块链增区块、删区块的操作是同步的。
      * 查询区块操作不需要加锁，原因是，只有对区块链进行区块的增删才会改变区块链的数据。
@@ -928,21 +931,21 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private byte[] buildAddressToTransactionOuputListKey(TransactionOutput transactionOutput) {
         String address = transactionOutput.getStringAddress().getValue();
         String transactionOutputHash = transactionOutput.getTransactionOutputHash();
-        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + "#" + transactionOutputHash;
+        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG + transactionOutputHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToTransactionOuputListKey(String address) {
-        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address+ "#";
+        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToUnspendTransactionOuputListKey(TransactionOutput transactionOutput) {
         String address = transactionOutput.getStringAddress().getValue();
         String transactionOutputHash = transactionOutput.getTransactionOutputHash();
-        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + "#" + transactionOutputHash;
+        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG + transactionOutputHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToUnspendTransactionOuputListKey(String address) {
-        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + "#";
+        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildTotalTransactionQuantityKey() {
