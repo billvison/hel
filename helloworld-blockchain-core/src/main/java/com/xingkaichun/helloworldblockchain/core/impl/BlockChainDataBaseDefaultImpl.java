@@ -404,9 +404,13 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         if(outputs != null){
             for(TransactionOutput transactionOutput:outputs){
-                //长度33位
-                if(transactionOutput.getStringAddress().getValue().length()!=33){
-                    logger.debug("交易的地址长度过大");
+                StringAddress stringAddress =  transactionOutput.getStringAddress();
+                if(stringAddress.getValue().length()<=20){
+                    logger.debug("钱包地址长度过短");
+                    return false;
+                }
+                if(stringAddress.getValue().length()<=40){
+                    logger.debug("钱包地址长度过长");
                     return false;
                 }
                 if(!isTransactionAmountLegal(transactionOutput.getValue())){
