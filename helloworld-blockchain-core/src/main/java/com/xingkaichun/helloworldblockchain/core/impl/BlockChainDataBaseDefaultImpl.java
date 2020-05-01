@@ -521,8 +521,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             }
         }
 
-        //校验区块时间戳 TODO 配置
-        if(block.getTimestamp()>System.currentTimeMillis()+3600*1000){
+        //校验区块时间戳
+        if(block.getTimestamp()>System.currentTimeMillis()){
             logger.debug("区块校验失败：区块的时间戳太滞后了。");
             return false;
         }
