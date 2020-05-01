@@ -178,13 +178,14 @@ public abstract class BlockChainDataBase {
             return false;
         }
         //尽量少用这个字段 严格校验
-        if(transaction.getMessages()!=null || transaction.getMessages().size()!=0){
+        if(transaction.getMessages()!=null && transaction.getMessages().size()!=0){
             return false;
         }
         List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs != null && outputs.size()!=0){
             for(TransactionOutput transactionOutput:outputs){
-                if(transactionOutput.getStringAddress().getValue().length()>20){
+                //长度34位
+                if(transactionOutput.getStringAddress().getValue().length()!=34){
                     logger.debug("交易的地址长度过大");
                     return false;
                 }

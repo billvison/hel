@@ -41,7 +41,7 @@ public class BlockChainCoreConstants {
     //最小交易手续费
     public final static BigDecimal MIN_TRANSACTION_FEE = new BigDecimal("1");
     //交易文本字符串最大长度值
-    public final static long TRANSACTION_TEXT_MAX_SIZE = 10240;
+    public final static long TRANSACTION_TEXT_MAX_SIZE = 1024;
     //区块最多含有的交易数量
     public final static long BLOCK_MAX_TRANSACTION_SIZE = 10000;
     //nonce最大值
