@@ -1,6 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.google.common.primitives.Bytes;
+import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
@@ -87,7 +88,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         this.blockChainDB = LevelDBUtil.createDB(new File(blockchainDataPath,BlockChain_DataBase_DirectName));
         this.incentive = incentive ;
         this.consensus = consensus ;
-
+        this.gson = new Gson();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 blockChainDB.close();
@@ -581,7 +582,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验区块大小
-        if(!isTransactionCapacityLegal(transaction)){
+        if(!isTransactionTextLegal(transaction)){
             logger.debug("请校验交易的大小");
             return false;
         }
@@ -670,27 +671,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             logger.debug("区块数据异常，不能识别的交易类型。");
             return false;
         }
-    }
-
-    private boolean isTransactionCapacityLegal(Transaction transaction) {
-        //交易字符太大
-        if(gson.toJson(transaction).length()>1000){
-            return false;
-        }
-        //尽量少用这个字段 严格校验
-        if(transaction.getMessages()!=null || transaction.getMessages().size()!=0){
-            return false;
-        }
-        List<TransactionOutput> outputs = transaction.getOutputs();
-        if(outputs != null && outputs.size()!=0){
-            for(TransactionOutput transactionOutput:outputs){
-                if(transactionOutput.getStringAddress().getValue().length()>20){
-                    logger.debug("交易的地址长度过大");
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     /**

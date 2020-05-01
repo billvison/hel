@@ -167,19 +167,30 @@ public abstract class BlockChainDataBase {
     //endregion
 
     /**
-     * 校验交易文本大小是否合法：用来限制交易的文本大小，用于限制区块大小
+     * 校验交易文本是否合法：用来限制交易的文本大小，字段长度。
      */
-    public boolean isTransactionTextSizeLegal(Transaction transaction) {
+    public boolean isTransactionTextLegal(Transaction transaction) {
         if(transaction == null){
             return false;
         }
-        try {
-            String stringTransaction = gson.toJson(transaction);
-            return stringTransaction.length() <= BlockChainCoreConstants.TRANSACTION_TEXT_MAX_SIZE;
-        } catch (Exception e) {
-            logger.error("校验交易文本大小是否合法出现异常，请检查。",e);
+        //交易字符太大
+        if(gson.toJson(transaction).length()>BlockChainCoreConstants.TRANSACTION_TEXT_MAX_SIZE){
             return false;
         }
+        //尽量少用这个字段 严格校验
+        if(transaction.getMessages()!=null || transaction.getMessages().size()!=0){
+            return false;
+        }
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        if(outputs != null && outputs.size()!=0){
+            for(TransactionOutput transactionOutput:outputs){
+                if(transactionOutput.getStringAddress().getValue().length()>20){
+                    logger.debug("交易的地址长度过大");
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
