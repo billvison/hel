@@ -1,12 +1,12 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 import com.google.gson.Gson;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.NumberUtil;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
+import com.xingkaichun.helloworldblockchain.core.utils.atomic.NumberUtil;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,45 +167,12 @@ public abstract class BlockChainDataBase {
     //endregion
 
     /**
-     * 校验交易文本是否合法：用来限制交易的文本大小，字段长度。
+     * 校验区块的存储容量是否合法：用来限制区块所占存储空间的大小。
      */
-    public boolean isTransactionTextLegal(Transaction transaction) {
-        if(transaction == null){
-            return false;
-        }
-        //交易字符太大
-        //TODO 标准化计算字符个数
-        if(gson.toJson(transaction).length()>BlockChainCoreConstants.TRANSACTION_TEXT_MAX_SIZE){
-            return false;
-        }
-        //尽量少用这个字段 严格校验
-        if(transaction.getMessages()!=null && transaction.getMessages().size()!=0){
-            return false;
-        }
-        List<TransactionOutput> outputs = transaction.getOutputs();
-        if(outputs != null && outputs.size()!=0){
-            for(TransactionOutput transactionOutput:outputs){
-                //长度34位
-                if(transactionOutput.getStringAddress().getValue().length()!=34){
-                    logger.debug("交易的地址长度过大");
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+    public abstract boolean isBlockStorageCapacityLegal(Block block) ;
 
     /**
-     * 校验区块含有的交易数量是否合法：用来限制区块含有的交易数量，用于限制区块大小
+     * 校验交易的存储容量是否合法：用来限制交易的所占存储空间的大小。
      */
-    public boolean isBlcokTransactionSizeLegal(Block block) {
-        if(block == null){
-            return false;
-        }
-        List<Transaction> transactions = block.getTransactions();
-        if(transactions == null){
-            return true;
-        }
-        return transactions.size() <= BlockChainCoreConstants.BLOCK_MAX_TRANSACTION_SIZE;
-    }
+    public abstract boolean isTransactionStorageCapacityLegal(Transaction transaction) ;
 }

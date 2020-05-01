@@ -279,8 +279,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      */
     public boolean isBlockCanApplyToBlockChain(@Nonnull Block block) throws Exception {
 
-        //校验区块大小
-        if(!isBlcokTransactionSizeLegal(block)){
+        //校验区块文本：字段大小 取值范围等
+        if(!isBlockStorageCapacityLegal(block)){
             logger.debug(String.format("区块数据异常，区块里包含的交易数量超过限制值%d。",
                     BlockChainCoreConstants.BLOCK_MAX_TRANSACTION_SIZE));
             return false;
@@ -329,6 +329,61 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 logger.debug("区块数据异常，交易异常。");
                 return false;
             }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isBlockStorageCapacityLegal(Block block) {
+        //校验区块交易的字节容量范围
+        if(!isBlcokTransactionSizeLegal(block)){
+            logger.debug(String.format("区块数据异常，区块里包含的交易数量超过限制值%d。",
+                    BlockChainCoreConstants.BLOCK_MAX_TRANSACTION_SIZE));
+            return false;
+        }
+        //共识值的字节容量范围
+        if(!isConsensusValueRangeRight(block)){
+            return false;
+        }
+        //校验每一笔交易的容量是否合法
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
+                if(!isTransactionStorageCapacityLegal(transaction)){
+                    logger.debug("交易数据异常，交易的容量非法。");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean isTransactionStorageCapacityLegal(Transaction transaction) {
+        if(transaction == null){
+            return false;
+        }
+        //交易字符太大
+        //TODO 标准化计算字符个数
+        if(gson.toJson(transaction).length()>BlockChainCoreConstants.TRANSACTION_TEXT_MAX_SIZE){
+            return false;
+        }
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        if(outputs != null){
+            for(TransactionOutput transactionOutput:outputs){
+                //长度34位
+                if(transactionOutput.getStringAddress().getValue().length()!=34){
+                    logger.debug("交易的地址长度过大");
+                    return false;
+                }
+                if(!isTransactionAmountLegal(transactionOutput.getValue())){
+                    logger.debug("交易校验失败：交易金额不合法");
+                    return false;
+                }
+            }
+        }
+        //尽量少用这个字段 严格校验
+        if(transaction.getMessages()!=null && transaction.getMessages().size()!=0){
+            return false;
         }
         return true;
     }
@@ -534,10 +589,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 这里对区块对象中写入的属性值进行严格的校验，通过实际的计算一遍属性值与写入值进行比较，如果不同，则说明区块属性值不正确。
      */
     private boolean isBlockWriteRight(Block block) {
-        //校验写入的Hash是否与计算得来的一致
-        if(!isNonceValueRangeRight(block)){
-            return false;
-        }
+        //校验写入的可计算得到的值是否与计算得来的一致
         //校验交易的属性是否与计算得来的一致
         if(!BlockUtils.isBlockTransactionWriteRight(block)){
             return false;
@@ -556,7 +608,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * nonce取值范围是否正确
      */
-    private boolean isNonceValueRangeRight(Block block) {
+    private boolean isConsensusValueRangeRight(Block block) {
         BigInteger nonce = new BigInteger(block.getConsensusValue());
         if(BigIntegerUtil.isLessThan(nonce,BlockChainCoreConstants.MIN_NONCE)){
             return false;
@@ -565,6 +617,20 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 校验区块含有的交易数量是否合法：用来限制区块含有的交易数量，用于限制区块大小
+     */
+    private boolean isBlcokTransactionSizeLegal(Block block) {
+        if(block == null){
+            return false;
+        }
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions == null){
+            return true;
+        }
+        return transactions.size() <= BlockChainCoreConstants.BLOCK_MAX_TRANSACTION_SIZE;
     }
 
     public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception{
@@ -582,7 +648,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验区块大小
-        if(!isTransactionTextLegal(transaction)){
+        if(!isTransactionStorageCapacityLegal(transaction)){
             logger.debug("请校验交易的大小");
             return false;
         }
@@ -612,11 +678,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //校验：是否双花
         if(isDoubleSpendAttackHappen(transaction)){
             logger.debug("区块数据异常，检测到双花攻击。");
-            return false;
-        }
-
-        //校验交易输出的金额是否满足区块链系统对金额数字的的强制要求
-        if(!isTransactionAmountLegal(transaction)){
             return false;
         }
 
@@ -694,22 +755,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             if(transaction.getTimestamp() > System.currentTimeMillis() + 12*3600*1000){
                 logger.debug("交易校验失败：交易的时间戳太老旧了。");
                 return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 校验交易输出的金额是否满足区块链系统对金额数字的的强制要求
-     */
-    private boolean isTransactionAmountLegal(Transaction transaction) {
-        List<TransactionOutput> outputs = transaction.getOutputs();
-        if(outputs != null){
-            for(TransactionOutput o : outputs) {
-                if(!isTransactionAmountLegal(o.getValue())){
-                    logger.debug("交易校验失败：交易金额不合法");
-                    return false;
-                }
             }
         }
         return true;
