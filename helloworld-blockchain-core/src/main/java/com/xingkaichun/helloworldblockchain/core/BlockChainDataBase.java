@@ -174,6 +174,7 @@ public abstract class BlockChainDataBase {
             return false;
         }
         //交易字符太大
+        //TODO 标准化计算字符个数
         if(gson.toJson(transaction).length()>BlockChainCoreConstants.TRANSACTION_TEXT_MAX_SIZE){
             return false;
         }
