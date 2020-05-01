@@ -409,7 +409,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                     logger.debug("钱包地址长度过短");
                     return false;
                 }
-                if(stringAddress.getValue().length()<=40){
+                if(stringAddress.getValue().length()>=40){
                     logger.debug("钱包地址长度过长");
                     return false;
                 }
