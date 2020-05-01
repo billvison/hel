@@ -928,21 +928,21 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private byte[] buildAddressToTransactionOuputListKey(TransactionOutput transactionOutput) {
         String address = transactionOutput.getStringAddress().getValue();
         String transactionOutputHash = transactionOutput.getTransactionOutputHash();
-        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + transactionOutputHash;
+        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + "#" + transactionOutputHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToTransactionOuputListKey(String address) {
-        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address;
+        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address+ "#";
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToUnspendTransactionOuputListKey(TransactionOutput transactionOutput) {
         String address = transactionOutput.getStringAddress().getValue();
         String transactionOutputHash = transactionOutput.getTransactionOutputHash();
-        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + transactionOutputHash;
+        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + "#" + transactionOutputHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToUnspendTransactionOuputListKey(String address) {
-        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address;
+        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + "#";
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildTotalTransactionQuantityKey() {
