@@ -279,15 +279,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      */
     public boolean isBlockCanApplyToBlockChain(@Nonnull Block block) throws Exception {
 
-        //校验区块文本：字段大小 取值范围等
+        //校验区块的存储容量是否合法
         if(!isBlockStorageCapacityLegal(block)){
             logger.debug("区块存储容量非法。");
-            return false;
-        }
-
-        //校验区块写入的属性值
-        if(!isBlockWriteRight(block)){
-            logger.debug("区块校验失败：区块的属性写入值与实际计算结果不一致。");
             return false;
         }
 
@@ -297,9 +291,15 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
 
-        //校验共识
-        boolean isReachConsensus = consensus.isReachConsensus(this,block);
-        if(!isReachConsensus){
+        //校验区块写入的属性值
+        if(!isBlockWriteRight(block)){
+            logger.debug("区块校验失败：区块的属性写入值与实际计算结果不一致。");
+            return false;
+        }
+
+        //双花校验
+        if(isDoubleSpendAttackHappen(block)){
+            logger.debug("区块数据异常，检测到双花攻击。");
             return false;
         }
 
@@ -309,15 +309,15 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
 
-        //激励校验
-        if(!isIncentiveRight(block)){
-            logger.debug("区块数据异常，激励异常。");
+        //校验共识
+        boolean isReachConsensus = consensus.isReachConsensus(this,block);
+        if(!isReachConsensus){
             return false;
         }
 
-        //双花校验
-        if(isDoubleSpendAttackHappen(block)){
-            logger.debug("区块数据异常，检测到双花攻击。");
+        //激励校验
+        if(!isIncentiveRight(block)){
+            logger.debug("区块数据异常，激励异常。");
             return false;
         }
 
@@ -361,12 +361,47 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(transaction == null){
             return false;
         }
+
+        TransactionType transactionType = transaction.getTransactionType();
+        List<TransactionInput> inputs = transaction.getInputs();
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        List<String> messages = transaction.getMessages();
+
+        if(transactionType == TransactionType.NORMAL){
+            if(inputs == null || inputs.size()==0){
+                logger.debug("交易校验失败：普通交易必须有交易输入。");
+                return false;
+            }
+            if(outputs == null || outputs.size()==0){
+                logger.debug("交易校验失败：普通交易必须有交易输出。");
+                return false;
+            }
+            if(messages != null && messages.size()>0){
+                logger.debug("交易校验失败：普通交易不能有附加信息。");
+                return false;
+            }
+        }else if(transactionType == TransactionType.MINER){
+            if(inputs != null && inputs.size()!=0){
+                logger.debug("交易校验失败：激励交易不能有交易输入。");
+                return false;
+            }
+            if(outputs == null || outputs.size()==0){
+                logger.debug("交易校验失败：激励交易必须有交易输出。");
+                return false;
+            }
+            if(messages != null && messages.size()>0){
+                logger.debug("交易校验失败：激励交易不能有附加信息。");
+                return false;
+            }
+        }else {
+            throw new BlockChainCoreException("未实现逻辑交易类型");
+        }
+
         //交易字符太大
         //TODO 标准化计算字符个数
         if(gson.toJson(transaction).length()>BlockChainCoreConstants.TRANSACTION_TEXT_MAX_SIZE){
             return false;
         }
-        List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs != null){
             for(TransactionOutput transactionOutput:outputs){
                 //长度33位
@@ -379,10 +414,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                     return false;
                 }
             }
-        }
-        //尽量少用这个字段 严格校验
-        if(transaction.getMessages()!=null && transaction.getMessages().size()!=0){
-            return false;
         }
         return true;
     }
@@ -652,12 +683,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         if(transactionType == TransactionType.MINER){
             if(block == null){
-                logger.debug("交易校验失败：激励交易需要交易所在区块的信息用于验证激励交易。");
+                logger.debug("交易校验失败：验证激励交易必须区块参数不能为空。");
                 return false;
             }
         }
 
-        //校验区块大小
+        //校验区块存储
         if(!isTransactionStorageCapacityLegal(transaction)){
             logger.debug("请校验交易的大小");
             return false;
@@ -668,14 +699,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
 
+        //验证交易时间
         if(!isTransactionTimestampLegal(block,transaction)){
             logger.debug("请校验交易的时间");
-            return false;
-        }
-
-        //校验主键的唯一性
-        if(!isNewGenerateHashRight(transaction)){
-            logger.debug("校验数据异常，校验中占用的部分主键已经被使用了。");
             return false;
         }
 
@@ -691,7 +717,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
 
-        List<TransactionInput> inputs = transaction.getInputs();
+        //校验新产生的Hash是否可用
+        if(!isNewGenerateHashRight(transaction)){
+            logger.debug("校验数据异常，校验中占用的部分主键已经被使用了。");
+            return false;
+        }
+
         if(transaction.getTransactionType() == TransactionType.MINER){
             if(!isBlockWriteMineAwardRight(block)){
                 logger.debug("交易校验失败：挖矿交易的输出金额不正确。");
@@ -699,6 +730,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             }
             return true;
         } else if(transaction.getTransactionType() == TransactionType.NORMAL){
+            List<TransactionInput> inputs = transaction.getInputs();
             if(inputs==null || inputs.size()==0){
                 logger.debug("交易校验失败：交易的输入不能为空。不合法的交易。");
                 return false;
