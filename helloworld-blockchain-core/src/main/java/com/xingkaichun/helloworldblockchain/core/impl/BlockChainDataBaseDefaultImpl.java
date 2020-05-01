@@ -727,7 +727,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private boolean isTransactionTimestampLegal(Block block, Transaction transaction) {
         //校验交易的时间是否合理
         //交易的时间不能太滞后于当前时间
-        if(transaction.getTimestamp() > System.currentTimeMillis() + 24*3600*1000){
+        if(transaction.getTimestamp() > System.currentTimeMillis() + BlockChainCoreConstants.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
             logger.debug("交易校验失败：交易的时间戳太滞后了。");
             return false;
         }
@@ -735,24 +735,24 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(block != null){
             //将区块放入区块链的时候，校验交易的逻辑
             //交易超前 区块生成时间
-            if(transaction.getTimestamp() < block.getTimestamp() - 24*3600*1000){
+            if(transaction.getTimestamp() < block.getTimestamp() - BlockChainCoreConstants.TRANSACTION_TIMESTAMP_MAX_BEFORE_CURRENT_TIMESTAMP){
                 logger.debug("交易校验失败：交易的时间戳太老旧了。");
                 return false;
             }
             //交易滞后 区块生成时间
-            if(transaction.getTimestamp() > block.getTimestamp() + 24*3600*1000){
+            if(transaction.getTimestamp() > block.getTimestamp() + BlockChainCoreConstants.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
                 logger.debug("交易校验失败：交易的时间戳太老旧了。");
                 return false;
             }
         }else {
             //挖矿时，校验交易的逻辑
             //交易超前 区块生成时间
-            if(transaction.getTimestamp() < System.currentTimeMillis() - 12*3600*1000){
+            if(transaction.getTimestamp() < System.currentTimeMillis() - BlockChainCoreConstants.TRANSACTION_TIMESTAMP_MAX_BEFORE_CURRENT_TIMESTAMP/2){
                 logger.debug("交易校验失败：交易的时间戳太老旧了。");
                 return false;
             }
             //交易滞后 区块生成时间
-            if(transaction.getTimestamp() > System.currentTimeMillis() + 12*3600*1000){
+            if(transaction.getTimestamp() > System.currentTimeMillis() + BlockChainCoreConstants.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP/2){
                 logger.debug("交易校验失败：交易的时间戳太老旧了。");
                 return false;
             }

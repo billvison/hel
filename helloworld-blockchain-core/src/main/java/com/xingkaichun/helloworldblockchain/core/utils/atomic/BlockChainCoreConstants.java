@@ -48,4 +48,16 @@ public class BlockChainCoreConstants {
     public final static BigInteger MAX_NONCE = new BigInteger(String.join("", Collections.nCopies(50, "9")));
     //nonce最小值
     public final static BigInteger MIN_NONCE = BigInteger.ZERO;
+
+
+    //挖矿设置
+    //每轮挖矿最大时长。挖矿时间太长，则新提交的交易就很延迟才能包含到区块里。
+    public final static long MAX_MINE_TIMESTAMP = 1 * 60 * 60 * 1000;
+
+    //交易时间设置
+    //交易最大滞后区块时间
+    public final static long TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP = 24 * 60 * 60 * 1000;
+    //交易最大超前区块时间
+    public final static long TRANSACTION_TIMESTAMP_MAX_BEFORE_CURRENT_TIMESTAMP = 24 * 60 * 60 * 1000;
+
 }

@@ -91,8 +91,8 @@ public class MinerDefaultImpl extends Miner {
             return true;
         }
         //挖矿超过一定时长还没有挖矿成功，这时重新打包交易，对自己来说，可以获取更多的奖励，对交易发送者来说，可以让自己的交易更快的写进区块链
-        //TODO 配置
-        if(System.currentTimeMillis() > miningBlock.getStartTimestamp()+60*60*1000){
+        //一定时间内还没有挖到矿，重新开始挖矿。
+        if(System.currentTimeMillis() > miningBlock.getStartTimestamp()+ BlockChainCoreConstants.MAX_MINE_TIMESTAMP){
             return true;
         }
         Block block = miningBlock.getBlock();
