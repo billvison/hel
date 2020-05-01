@@ -281,8 +281,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
         //校验区块文本：字段大小 取值范围等
         if(!isBlockStorageCapacityLegal(block)){
-            logger.debug(String.format("区块数据异常，区块里包含的交易数量超过限制值%d。",
-                    BlockChainCoreConstants.BLOCK_MAX_TRANSACTION_SIZE));
+            logger.debug("区块存储容量非法。");
             return false;
         }
 
@@ -370,8 +369,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs != null){
             for(TransactionOutput transactionOutput:outputs){
-                //长度34位
-                if(transactionOutput.getStringAddress().getValue().length()!=34){
+                //长度33位
+                if(transactionOutput.getStringAddress().getValue().length()!=33){
                     logger.debug("交易的地址长度过大");
                     return false;
                 }
