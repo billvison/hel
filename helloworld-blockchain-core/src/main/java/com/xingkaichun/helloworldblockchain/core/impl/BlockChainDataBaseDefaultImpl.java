@@ -284,6 +284,17 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
      */
     public boolean isBlockCanApplyToBlockChain(@Nonnull Block block) throws Exception {
+        //校验区块时间
+        if(!isBlockTimestampLegal(block)){
+            logger.debug("区块生成的时间太滞后。");
+            return false;
+        }
+
+        //检查系统版本是否支持
+        if(!BlockChainCoreConstants.isVersionLegal(block.getTimestamp())){
+            logger.debug("系统版本过低，不支持校验区块，请尽快升级系统。");
+            return false;
+        }
 
         //校验区块的存储容量是否合法
         if(!isBlockStorageCapacityLegal(block)){
@@ -596,8 +607,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return true;
     }
 
-
-
     /**
      * 简单的校验Block的连贯性:从高度、哈希、时间戳三个方面检查
      */
@@ -625,12 +634,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             if(!BigIntegerUtil.isEquals(tailBlock.getHeight().add(BigInteger.valueOf(1)),block.getHeight())){
                 return false;
             }
-        }
-
-        //校验区块时间戳
-        if(block.getTimestamp()>System.currentTimeMillis()){
-            logger.debug("区块校验失败：区块的时间戳太滞后了。");
-            return false;
         }
         return true;
     }
@@ -771,6 +774,16 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             logger.debug("区块数据异常，不能识别的交易类型。");
             return false;
         }
+    }
+
+    /**
+     * 交易的时间是否合法
+     */
+    private boolean isBlockTimestampLegal(Block block) {
+        if(block.getTimestamp() > System.currentTimeMillis()){
+            return false;
+        }
+        return true;
     }
 
     /**

@@ -14,15 +14,14 @@ public class BlockChainCoreConstants {
 
     //字符集
     public static final Charset CHARSET_UTF_8 = Charset.forName("UTF-8");
+    //区块链的链ID
+    public final static String BLOCK_CHAIN_ID = "0001";
+
 
     //第一个区块的高度
     public final static BigInteger FIRST_BLOCK_HEIGHT = BigInteger.ONE;
     //第一个区块的PREVIOUS_HASH
     public final static String FIRST_BLOCK_PREVIOUS_HASH = "xingkaichun";
-    //区块链的链ID
-    public final static String BLOCK_CHAIN_ID = "0001";
-    //区块链版本 约束最大区块  强制升级
-    public final static int BLOCK_CHAIN_VERSION = 1;
 
 
     //产生区块的平均时间
@@ -62,4 +61,21 @@ public class BlockChainCoreConstants {
     //交易最大超前区块时间
     public final static long TRANSACTION_TIMESTAMP_MAX_BEFORE_CURRENT_TIMESTAMP = 24 * 60 * 60 * 1000;
 
+
+
+
+
+    //区块链历史版本时间戳
+    //部分配置需要根据版本时间戳去获取
+    public final static long BLOCK_CHAIN_VERSION_1_TIMESTAMP = 1342435;
+
+    /**
+     * 检查系统版本是否支持。
+     */
+    public static boolean isVersionLegal(long timestamp){
+        if(timestamp > BLOCK_CHAIN_VERSION_1_TIMESTAMP){
+            return false;
+        }
+        return true;
+    }
 }
