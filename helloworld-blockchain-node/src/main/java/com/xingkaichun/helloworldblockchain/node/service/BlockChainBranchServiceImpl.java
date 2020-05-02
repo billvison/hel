@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.node.dao.BlockChainBranchDao;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.node.model.BlockchainBranchBlockEntity;

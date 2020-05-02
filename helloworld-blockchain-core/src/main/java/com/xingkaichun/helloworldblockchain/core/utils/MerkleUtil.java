@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class MerkleUtils {
+public class MerkleUtil {
 
     public static String calculateTransactionMerkleRoot(List<Transaction> transactions) {
         List<String> hashList = new ArrayList<>();

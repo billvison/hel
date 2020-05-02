@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class SessionUtils {
+public class SessionUtil {
 
     private final static String ADMIN_USER_KEY = "ADMIN_USER";
 

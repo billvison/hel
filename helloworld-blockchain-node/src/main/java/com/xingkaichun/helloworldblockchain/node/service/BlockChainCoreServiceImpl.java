@@ -8,7 +8,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
-import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
+import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.WalletUtil;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
@@ -67,7 +67,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         if(transaction == null){
             return null;
         }
-        TransactionDTO transactionDTO = NodeTransportUtils.classCast(transaction);
+        TransactionDTO transactionDTO = NodeTransportUtil.classCast(transaction);
         return transactionDTO;
     }
 
@@ -165,7 +165,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     public String signatureTransactionDTO(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) {
-        String signature = NodeTransportUtils.signature(transactionDTO,stringPrivateKey);
+        String signature = NodeTransportUtil.signature(transactionDTO,stringPrivateKey);
         return signature;
     }
 
@@ -184,7 +184,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         if(block == null){
             return null;
         }
-        BlockDTO blockDTO = NodeTransportUtils.classCast(block);
+        BlockDTO blockDTO = NodeTransportUtil.classCast(block);
         return blockDTO;
     }
 

@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.core.utils.atomic;
+package com.xingkaichun.helloworldblockchain.core.utils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

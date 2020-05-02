@@ -11,7 +11,7 @@ import com.xingkaichun.helloworldblockchain.node.dto.user.response.LoginResponse
 import com.xingkaichun.helloworldblockchain.node.dto.user.response.QueryLoginUserInfoResponse;
 import com.xingkaichun.helloworldblockchain.node.dto.user.response.UserExitResponse;
 import com.xingkaichun.helloworldblockchain.node.service.UserService;
-import com.xingkaichun.helloworldblockchain.node.util.SessionUtils;
+import com.xingkaichun.helloworldblockchain.node.util.SessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +62,7 @@ public class UserController {
             loginUserDto.setUserId(userDto.getUserId());
             loginUserDto.setUserName(userDto.getUserName());
             response.setUserDto(loginUserDto);
-            SessionUtils.saveAdminUser(httpServletRequest,userDto);
+            SessionUtil.saveAdminUser(httpServletRequest,userDto);
             return ServiceResult.createSuccessServiceResult("登录成功",response);
         } catch (Exception e){
             String message = "登录失败";
@@ -78,7 +78,7 @@ public class UserController {
     @RequestMapping(value = UserApiRoute.QUERY_LOGIN_USER_INFO,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryLoginUserInfoResponse> queryLoginUserInfo(@RequestBody QueryLoginUserInfoRequest request, HttpServletRequest httpServletRequest){
         try {
-            UserDto userDto = SessionUtils.getAdminUser(httpServletRequest);
+            UserDto userDto = SessionUtil.getAdminUser(httpServletRequest);
             if(userDto == null){
                 return ServiceResult.createFailServiceResult("获取登录信息失败，用户未登录。");
             }
@@ -102,7 +102,7 @@ public class UserController {
     @RequestMapping(value = UserApiRoute.USER_EXIT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<UserExitResponse> userExit(@RequestBody UserExitRequest request, HttpServletRequest httpServletRequest){
         try {
-            SessionUtils.clearAdminUser(httpServletRequest);
+            SessionUtil.clearAdminUser(httpServletRequest);
             UserExitResponse response = new UserExitResponse();
             return ServiceResult.createSuccessServiceResult("用户退出成功",response);
         } catch (Exception e){

@@ -10,11 +10,11 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionIn
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
-import com.xingkaichun.helloworldblockchain.core.utils.BlockUtils;
-import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainHashUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.BlockUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstants;
+import com.xingkaichun.helloworldblockchain.core.utils.BlockchainHashUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import lombok.Data;
@@ -152,7 +152,7 @@ public class MinerDefaultImpl extends Miner {
         if(forMineBlockTransactionDtoList != null){
             for(TransactionDTO transactionDTO:forMineBlockTransactionDtoList){
                 try {
-                    Transaction transaction = NodeTransportUtils.classCast(blockChainDataBase,transactionDTO);
+                    Transaction transaction = NodeTransportUtil.classCast(blockChainDataBase,transactionDTO);
                     forMineBlockTransactionList.add(transaction);
                 } catch (Exception e) {
                     logger.info("类型转换异常,将从挖矿交易数据库中删除该交易",e);
@@ -188,7 +188,7 @@ public class MinerDefaultImpl extends Miner {
                 break;
             }
             block.setConsensusValue(nextNonce.toString());
-            block.setHash(BlockUtils.calculateBlockHash(block));
+            block.setHash(BlockUtil.calculateBlockHash(block));
             if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
                 miningBlock.setMiningSuccess(true);
                 break;
@@ -342,7 +342,7 @@ public class MinerDefaultImpl extends Miner {
         //这个挖矿时间不需要特别精确，没必要非要挖出矿的前一霎那时间。省去了挖矿时实时更新这个时间的繁琐。
         nonNonceBlock.setTimestamp(mineAwardTransaction.getTimestamp());
 
-        String merkleRoot = BlockUtils.calculateBlockMerkleRoot(nonNonceBlock);
+        String merkleRoot = BlockUtil.calculateBlockMerkleRoot(nonNonceBlock);
         nonNonceBlock.setMerkleRoot(merkleRoot);
 
         ConsensusVariableHolder consensusVariableHolder = blockChainDataBase.getConsensus().calculateConsensusVariableHolder(blockChainDataBase,nonNonceBlock);

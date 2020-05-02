@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.core.utils.atomic;
+package com.xingkaichun.helloworldblockchain.core.utils;
 
 import java.math.BigInteger;
 
@@ -7,7 +7,7 @@ import java.math.BigInteger;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class EqualsUtils {
+public class EqualsUtil {
 
     public static boolean isEquals(String obj1,String obj2){
         if(obj1 == obj2){

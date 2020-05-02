@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.NumberUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;

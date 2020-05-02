@@ -2,8 +2,8 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainHashUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.LevelDBUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.BlockchainHashUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.LevelDBUtil;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;

@@ -4,7 +4,6 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainHashUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import org.slf4j.Logger;
@@ -18,9 +17,9 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class BlockUtils {
+public class BlockUtil {
 
-    private final static Logger logger = LoggerFactory.getLogger(BlockUtils.class);
+    private final static Logger logger = LoggerFactory.getLogger(BlockUtil.class);
 
     /**
      * 计算区块的Hash值
@@ -47,7 +46,7 @@ public class BlockUtils {
      */
     public static String calculateBlockMerkleRoot(Block block) {
         List<Transaction> transactionList = block.getTransactions();
-        return MerkleUtils.calculateTransactionMerkleRoot(transactionList);
+        return MerkleUtil.calculateTransactionMerkleRoot(transactionList);
     }
     /**
      * 区块中写入的默克尔树根是否正确

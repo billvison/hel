@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.core.utils.atomic;
+package com.xingkaichun.helloworldblockchain.core.utils;
 
 import com.google.common.base.Joiner;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;

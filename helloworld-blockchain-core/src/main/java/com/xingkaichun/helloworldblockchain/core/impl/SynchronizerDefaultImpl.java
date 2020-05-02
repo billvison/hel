@@ -3,10 +3,10 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
-import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtils;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.EqualsUtils;
+import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstants;
+import com.xingkaichun.helloworldblockchain.core.utils.EqualsUtil;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import org.slf4j.Logger;
@@ -101,7 +101,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
         if(blockDTO != null){
             temporaryBlockChainDataBase.removeBlocksUtilBlockHeightLessThan(blockDTO.getHeight());
             while(blockDTO != null){
-                Block block = NodeTransportUtils.classCast(temporaryBlockChainDataBase,blockDTO);
+                Block block = NodeTransportUtil.classCast(temporaryBlockChainDataBase,blockDTO);
                 boolean isAddBlockToBlockChainSuccess = temporaryBlockChainDataBase.addBlock(block);
                 if(!isAddBlockToBlockChainSuccess){
                     break;
@@ -217,11 +217,11 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             return false;
         }
         //不严格校验,这里没有具体校验每一笔交易
-        if(EqualsUtils.isEquals(block1.getPreviousHash(),block2.getPreviousHash())
-                && EqualsUtils.isEquals(block1.getHeight(),block2.getHeight())
-                && EqualsUtils.isEquals(block1.getMerkleRoot(),block2.getMerkleRoot())
-                && EqualsUtils.isEquals(block1.getConsensusValue(),block2.getConsensusValue())
-                && EqualsUtils.isEquals(block1.getHash(),block2.getHash())){
+        if(EqualsUtil.isEquals(block1.getPreviousHash(),block2.getPreviousHash())
+                && EqualsUtil.isEquals(block1.getHeight(),block2.getHeight())
+                && EqualsUtil.isEquals(block1.getMerkleRoot(),block2.getMerkleRoot())
+                && EqualsUtil.isEquals(block1.getConsensusValue(),block2.getConsensusValue())
+                && EqualsUtil.isEquals(block1.getHash(),block2.getHash())){
             return true;
         }
         return false;

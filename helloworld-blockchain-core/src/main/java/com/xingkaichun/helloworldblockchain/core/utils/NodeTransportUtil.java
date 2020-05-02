@@ -10,9 +10,6 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreConstants;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockchainHashUtil;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
@@ -31,7 +28,7 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class NodeTransportUtils {
+public class NodeTransportUtil {
 
     private static Gson gson = new Gson();
     /**
@@ -69,9 +66,9 @@ public class NodeTransportUtils {
         block.setPreviousHash(previousHash);
         block.setHeight(blockDTO.getHeight());
         block.setTransactions(transactionList);
-        block.setMerkleRoot(BlockUtils.calculateBlockMerkleRoot(block));
+        block.setMerkleRoot(BlockUtil.calculateBlockMerkleRoot(block));
         block.setConsensusValue(blockDTO.getConsensusValue());
-        block.setHash(BlockUtils.calculateBlockHash(block));
+        block.setHash(BlockUtil.calculateBlockHash(block));
         block.setConsensusVariableHolder(blockChainDataBase.getConsensus().calculateConsensusVariableHolder(blockChainDataBase,block));
         return block;
     }

@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.script;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.TransactionUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.TransactionUtil;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 

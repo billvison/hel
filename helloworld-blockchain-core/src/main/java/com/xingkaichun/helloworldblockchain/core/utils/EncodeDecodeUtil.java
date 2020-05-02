@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.core.utils.atomic;
+package com.xingkaichun.helloworldblockchain.core.utils;
 
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class EncodeDecode {
+public class EncodeDecodeUtil {
 
     public static byte[] encode(Transaction transaction) throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

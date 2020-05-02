@@ -2,7 +2,7 @@ package com.xingkaichun.helloworldblockchain.node.timer;
 
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
-import com.xingkaichun.helloworldblockchain.core.utils.atomic.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.node.service.*;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationEnum;

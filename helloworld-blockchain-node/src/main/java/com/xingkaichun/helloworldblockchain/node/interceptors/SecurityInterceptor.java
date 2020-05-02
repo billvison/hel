@@ -16,7 +16,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
-/*		UserDto userDto = SessionUtils.getUser(httpServletRequest);
+/*		UserDto userDto = SessionUtil.getUser(httpServletRequest);
 		if(userDto == null){
 			throw new RuntimeException("用户未登录，无操作权限，请登录!");
 		}*/
