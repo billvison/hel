@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class NodeTransportUtil {
+public class NodeTransportDtoUtil {
 
     private static Gson gson = new Gson();
     /**

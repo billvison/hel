@@ -11,7 +11,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.core.utils.BlockUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportDtoUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstants;
 import com.xingkaichun.helloworldblockchain.core.utils.BlockchainHashUtil;
@@ -152,7 +152,7 @@ public class MinerDefaultImpl extends Miner {
         if(forMineBlockTransactionDtoList != null){
             for(TransactionDTO transactionDTO:forMineBlockTransactionDtoList){
                 try {
-                    Transaction transaction = NodeTransportUtil.classCast(blockChainDataBase,transactionDTO);
+                    Transaction transaction = NodeTransportDtoUtil.classCast(blockChainDataBase,transactionDTO);
                     forMineBlockTransactionList.add(transaction);
                 } catch (Exception e) {
                     logger.info("类型转换异常,将从挖矿交易数据库中删除该交易",e);
