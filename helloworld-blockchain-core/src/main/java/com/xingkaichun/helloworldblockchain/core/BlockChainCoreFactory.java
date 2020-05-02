@@ -28,7 +28,7 @@ public class BlockChainCoreFactory {
         BlockChainDataBase temporaryBlockChainDataBase = new BlockChainDataBaseDefaultImpl(new File(blockchainDataPath,"TemporaryBlockChainDataBase").getAbsolutePath(),incentive,consensus);
         Synchronizer synchronizer = new SynchronizerDefaultImpl(blockChainDataBase,temporaryBlockChainDataBase, synchronizerDataBase);
 
-        BlockChainCore blockChainCore = new BlockChainCoreImpl(new ArrayList<>());
+        BlockChainCore blockChainCore = new BlockChainCoreImpl();
         blockChainCore.setMiner(miner);
         blockChainCore.setSynchronizer(synchronizer);
         blockChainCore.setBlockChainDataBase(blockChainDataBase);

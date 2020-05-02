@@ -1,10 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core;
 
-import com.xingkaichun.helloworldblockchain.core.listen.BlockChainActionData;
-import com.xingkaichun.helloworldblockchain.core.listen.BlockChainActionListener;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * 区块链Core，代表一个完成的区块链核心系统。
@@ -25,29 +21,9 @@ public abstract class BlockChainCore {
     //区块链同步器
     protected Synchronizer synchronizer;
 
-    //监听区块链上区块的增删动作
-    protected List<BlockChainActionListener> blockChainActionListenerList;
-
     /**
      * 启动。激活矿工、区块链同步器。
      */
     public abstract void start();
 
-    //region 监听器
-    /**
-     * 注册监听器
-     */
-    public void registerBlockChainActionListener(BlockChainActionListener blockChainActionListener){
-        blockChainActionListenerList.add(blockChainActionListener);
-    }
-
-    /**
-     * 调用监听器
-     */
-    public void notifyBlockChainActionListener(List<BlockChainActionData> dataList) {
-        for (BlockChainActionListener listener: blockChainActionListenerList) {
-            listener.addOrDeleteBlock(dataList);
-        }
-    }
-    //endregion
 }

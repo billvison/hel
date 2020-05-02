@@ -1,11 +1,8 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
-import com.xingkaichun.helloworldblockchain.core.listen.BlockChainActionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * 默认实现
@@ -15,10 +12,6 @@ import java.util.List;
 public class BlockChainCoreImpl extends BlockChainCore {
 
     private Logger logger = LoggerFactory.getLogger(BlockChainCoreImpl.class);
-
-    public BlockChainCoreImpl(List<BlockChainActionListener> blockChainActionListenerList) throws Exception {
-        this.blockChainActionListenerList = blockChainActionListenerList;
-    }
 
     @Override
     public void start() {
