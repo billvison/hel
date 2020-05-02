@@ -50,18 +50,6 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     }
 
     @Override
-    public void insertTransactionDtoList(List<TransactionDTO> transactionDTOList) throws Exception {
-        WriteBatch writeBatch = new WriteBatchImpl();
-        for(TransactionDTO transactionDTO:transactionDTOList){
-            String transactionHash = BlockchainHashUtil.calculateTransactionHash(transactionDTO);
-            writeBatch.put(LevelDBUtil.stringToBytes(transactionHash),encode(transactionDTO));
-        }
-        synchronized (BlockChainDataBase.class){
-            LevelDBUtil.write(transactionPoolDB, writeBatch);
-        }
-    }
-
-    @Override
     public List<TransactionDTO> selectTransactionDtoList(BlockChainDataBase blockChainDataBase,long from, long size) throws Exception {
         synchronized (BlockChainDataBase.class){
             List<TransactionDTO> transactionDtoList = new ArrayList<>();

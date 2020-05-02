@@ -12,17 +12,12 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public abstract class  MinerTransactionDtoDataBase {
+public abstract class MinerTransactionDtoDataBase {
 
     /**
      * 新增交易
      */
     public abstract void insertTransactionDTO(TransactionDTO transactionDTO) throws Exception ;
-
-    /**
-     * 新增交易
-     */
-    public abstract void insertTransactionDtoList(List<TransactionDTO> transactionDTOList) throws Exception ;
 
     /**
      * 获取交易
