@@ -291,7 +291,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //检查系统版本是否支持
-        if(!BlockChainCoreConstants.isVersionLegal(block.getTimestamp())){
+        if(!BlockChainCoreConstant.isVersionLegal(block.getTimestamp())){
             logger.debug("系统版本过低，不支持校验区块，请尽快升级系统。");
             return false;
         }
@@ -354,7 +354,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //校验区块交易的字节容量范围
         if(!isBlcokTransactionSizeLegal(block)){
             logger.debug(String.format("区块数据异常，区块里包含的交易数量超过限制值%d。",
-                    BlockChainCoreConstants.BLOCK_MAX_TRANSACTION_SIZE));
+                    BlockChainCoreConstant.BLOCK_MAX_TRANSACTION_SIZE));
             return false;
         }
         //共识值的字节容量范围
@@ -416,7 +416,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
         //交易字符太大
         //TODO 标准化计算字符个数
-        if(gson.toJson(transaction).length()>BlockChainCoreConstants.TRANSACTION_TEXT_MAX_SIZE){
+        if(gson.toJson(transaction).length()> BlockChainCoreConstant.TRANSACTION_TEXT_MAX_SIZE){
             return false;
         }
         if(outputs != null){
@@ -614,11 +614,11 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         Block tailBlock = findNoTransactionBlockByBlockHeight(obtainBlockChainHeight());
         if(tailBlock == null){
             //校验区块Hash是否连贯
-            if(!BlockChainCoreConstants.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousHash())){
+            if(!BlockChainCoreConstant.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousHash())){
                 return false;
             }
             //校验区块高度是否连贯
-            if(!BigIntegerUtil.isEquals(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT,block.getHeight())){
+            if(!BigIntegerUtil.isEquals(BlockChainCoreConstant.FIRST_BLOCK_HEIGHT,block.getHeight())){
                 return false;
             }
         } else {
@@ -664,10 +664,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      */
     private boolean isConsensusValueRangeRight(Block block) {
         BigInteger nonce = new BigInteger(block.getConsensusValue());
-        if(BigIntegerUtil.isLessThan(nonce,BlockChainCoreConstants.MIN_NONCE)){
+        if(BigIntegerUtil.isLessThan(nonce, BlockChainCoreConstant.MIN_NONCE)){
             return false;
         }
-        if(BigIntegerUtil.isGreateThan(nonce,BlockChainCoreConstants.MAX_NONCE)){
+        if(BigIntegerUtil.isGreateThan(nonce, BlockChainCoreConstant.MAX_NONCE)){
             return false;
         }
         return true;
@@ -684,7 +684,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(transactions == null){
             return true;
         }
-        return transactions.size() <= BlockChainCoreConstants.BLOCK_MAX_TRANSACTION_SIZE;
+        return transactions.size() <= BlockChainCoreConstant.BLOCK_MAX_TRANSACTION_SIZE;
     }
 
     public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception{
@@ -755,8 +755,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 return false;
             }
             //交易手续费
-            if(inputsValue.subtract(outputsValue).compareTo(BlockChainCoreConstants.MIN_TRANSACTION_FEE)<0){
-                logger.debug(String.format("交易校验失败：交易手续费不能小于%s。不合法的交易。",BlockChainCoreConstants.MIN_TRANSACTION_FEE));
+            if(inputsValue.subtract(outputsValue).compareTo(BlockChainCoreConstant.MIN_TRANSACTION_FEE)<0){
+                logger.debug(String.format("交易校验失败：交易手续费不能小于%s。不合法的交易。", BlockChainCoreConstant.MIN_TRANSACTION_FEE));
                 return false;
             }
             //脚本校验
@@ -792,7 +792,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private boolean isTransactionTimestampLegal(Block block, Transaction transaction) {
         //校验交易的时间是否合理
         //交易的时间不能太滞后于当前时间
-        if(transaction.getTimestamp() > System.currentTimeMillis() + BlockChainCoreConstants.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
+        if(transaction.getTimestamp() > System.currentTimeMillis() + BlockChainCoreConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
             logger.debug("交易校验失败：交易的时间戳太滞后了。");
             return false;
         }
@@ -800,24 +800,24 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(block != null){
             //将区块放入区块链的时候，校验交易的逻辑
             //交易超前 区块生成时间
-            if(transaction.getTimestamp() < block.getTimestamp() - BlockChainCoreConstants.TRANSACTION_TIMESTAMP_MAX_BEFORE_CURRENT_TIMESTAMP){
+            if(transaction.getTimestamp() < block.getTimestamp() - BlockChainCoreConstant.TRANSACTION_TIMESTAMP_MAX_BEFORE_CURRENT_TIMESTAMP){
                 logger.debug("交易校验失败：交易的时间戳太老旧了。");
                 return false;
             }
             //交易滞后 区块生成时间
-            if(transaction.getTimestamp() > block.getTimestamp() + BlockChainCoreConstants.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
+            if(transaction.getTimestamp() > block.getTimestamp() + BlockChainCoreConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
                 logger.debug("交易校验失败：交易的时间戳太老旧了。");
                 return false;
             }
         }else {
             //挖矿时，校验交易的逻辑
             //交易超前 区块生成时间
-            if(transaction.getTimestamp() < System.currentTimeMillis() - BlockChainCoreConstants.TRANSACTION_TIMESTAMP_MAX_BEFORE_CURRENT_TIMESTAMP/2){
+            if(transaction.getTimestamp() < System.currentTimeMillis() - BlockChainCoreConstant.TRANSACTION_TIMESTAMP_MAX_BEFORE_CURRENT_TIMESTAMP/2){
                 logger.debug("交易校验失败：交易的时间戳太老旧了。");
                 return false;
             }
             //交易滞后 区块生成时间
-            if(transaction.getTimestamp() > System.currentTimeMillis() + BlockChainCoreConstants.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP/2){
+            if(transaction.getTimestamp() > System.currentTimeMillis() + BlockChainCoreConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP/2){
                 logger.debug("交易校验失败：交易的时间戳太老旧了。");
                 return false;
             }
@@ -1245,18 +1245,18 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 return false;
             }
             //校验交易金额最小值
-            if(transactionAmount.compareTo(BlockChainCoreConstants.TRANSACTION_MIN_AMOUNT) < 0){
+            if(transactionAmount.compareTo(BlockChainCoreConstant.TRANSACTION_MIN_AMOUNT) < 0){
                 logger.debug("交易金额不合法：交易金额不能小于系统默认交易金额最小值");
                 return false;
             }
             //校验交易金额最大值
-            if(transactionAmount.compareTo(BlockChainCoreConstants.TRANSACTION_MAX_AMOUNT) > 0){
+            if(transactionAmount.compareTo(BlockChainCoreConstant.TRANSACTION_MAX_AMOUNT) > 0){
                 logger.debug("交易金额不合法：交易金额不能大于系统默认交易金额最大值");
                 return false;
             }
             //校验小数位数
             long decimalPlaces = NumberUtil.decimalPlaces(transactionAmount);
-            if(decimalPlaces > BlockChainCoreConstants.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES){
+            if(decimalPlaces > BlockChainCoreConstant.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES){
                 logger.debug("交易金额不合法：交易金额的小数位数过多，大于系统默认小说最高精度");
                 return false;
             }

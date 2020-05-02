@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.utils;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class BlockChainCoreConstants {
+public class BlockChainCoreConstant {
 
     //字符集
     public static final Charset CHARSET_UTF_8 = Charset.forName("UTF-8");
@@ -70,7 +71,7 @@ public class BlockChainCoreConstants {
     //部分配置需要根据版本时间戳去获取
     //第一版本只支持运行至北京时间2020-06-01 00:00:00，到时间后必须升级系统
     public final static long BLOCK_CHAIN_VERSION_1 = 1590940800000L;
-    public final static List<Long> BLOCK_CHAIN_VERSION_LIST = null;
+    public final static List<Long> BLOCK_CHAIN_VERSION_LIST = new ArrayList<>();
     static {
         BLOCK_CHAIN_VERSION_LIST.add(BLOCK_CHAIN_VERSION_1);
     }

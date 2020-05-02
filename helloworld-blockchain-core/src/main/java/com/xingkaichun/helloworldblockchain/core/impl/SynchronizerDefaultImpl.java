@@ -3,9 +3,9 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
+import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstant;
 import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportDtoUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstants;
 import com.xingkaichun.helloworldblockchain.core.utils.EqualsUtil;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
@@ -127,7 +127,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             return;
         }
         if(targetBlockChainTailBlock == null){
-            Block block = temporaryBlockChainDataBase.findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
+            Block block = temporaryBlockChainDataBase.findBlockByBlockHeight(BlockChainCoreConstant.FIRST_BLOCK_HEIGHT);
             boolean isAddBlockToBlockChainSuccess = targetBlockChainDataBase.addBlock(block);
             if(!isAddBlockToBlockChainSuccess){
                 return;
@@ -190,7 +190,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             temporaryBlockChainTailBlock = temporaryBlockChainDataBase.findTailNoTransactionBlock();
         }
         if(temporaryBlockChainTailBlock == null){
-            Block block = targetBlockChainDataBase.findBlockByBlockHeight(BlockChainCoreConstants.FIRST_BLOCK_HEIGHT);
+            Block block = targetBlockChainDataBase.findBlockByBlockHeight(BlockChainCoreConstant.FIRST_BLOCK_HEIGHT);
             boolean isAddBlockToBlockChainSuccess = temporaryBlockChainDataBase.addBlock(block);
             if(!isAddBlockToBlockChainSuccess){
                 return;
