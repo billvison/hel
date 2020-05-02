@@ -14,6 +14,13 @@ import java.util.ArrayList;
 public class BlockChainCoreFactory {
 
 
+    /**
+     * 创建BlockChainCore实例
+     *
+     * @param blockchainDataPath 区块链数据存放位置
+     * @param minerAddress 矿工钱包地址
+     * @author 邢开春 xingkaichun@qq.com
+     */
     public BlockChainCore createBlockChainCore(String blockchainDataPath,String minerAddress) throws Exception {
 
         Incentive incentive = new IncentiveDefaultImpl();
