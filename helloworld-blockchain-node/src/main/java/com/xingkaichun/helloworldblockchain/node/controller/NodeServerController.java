@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.controller;
 
+import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstants;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.*;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
@@ -73,6 +74,8 @@ public class NodeServerController {
             PingResponse response = new PingResponse();
             response.setNodeList(nodeList);
             response.setBlockChainHeight(blockChainHeight);
+            response.setBlockChainId(BlockChainCoreConstants.BLOCK_CHAIN_ID);
+            response.setBlockChainVersion(BlockChainCoreConstants.obtainVersion());
             return ServiceResult.createSuccessServiceResult("查询节点信息成功",response);
         } catch (Exception e){
             String message = "查询节点信息成功失败";

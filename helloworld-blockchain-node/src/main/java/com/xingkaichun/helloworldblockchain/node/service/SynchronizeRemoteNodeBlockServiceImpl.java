@@ -5,6 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
+import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstants;
 import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportDtoUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationDto;
@@ -57,7 +58,9 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
 
     @Override
     public void synchronizeRemoteNodeBlock(Node node) throws Exception {
-        
+        if(!isBlockChainIdRight(node)){
+            nodeService.deleteNode(node);
+        }
         BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
         Synchronizer synchronizer = blockChainCore.getSynchronizer();
         SynchronizerDataBase synchronizerDataBase = synchronizer.getSynchronizerDataBase();
@@ -213,6 +216,19 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 synchronizerDataBase.clear(nodeId);
             }
         }
+    }
+
+    /**
+     * 区块链ID是否正确
+     */
+    private boolean isBlockChainIdRight(Node node) {
+        String currentBlockChainId = BlockChainCoreConstants.BLOCK_CHAIN_ID;
+        ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
+        if(!ServiceResult.isSuccess(pingResponseServiceResult)){
+            return false;
+        }
+        String blockChainId = pingResponseServiceResult.getResult().getBlockChainId();
+        return currentBlockChainId.equals(blockChainId);
     }
 
     private boolean isFork(Node node) {

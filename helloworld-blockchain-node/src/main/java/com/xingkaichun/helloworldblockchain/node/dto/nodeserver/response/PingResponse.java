@@ -13,6 +13,8 @@ import java.util.List;
 @Data
 public class PingResponse {
 
+    private String blockChainId;
+    private Long blockChainVersion;
     private BigInteger blockChainHeight ;
     private List<Node> nodeList;
 }

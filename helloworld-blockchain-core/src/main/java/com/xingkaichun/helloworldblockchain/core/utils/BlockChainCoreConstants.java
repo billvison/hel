@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * 常量工具类
@@ -68,15 +69,25 @@ public class BlockChainCoreConstants {
     //区块链历史版本时间戳
     //部分配置需要根据版本时间戳去获取
     //第一版本只支持运行至北京时间2020-06-01 00:00:00，到时间后必须升级系统
-    public final static long BLOCK_CHAIN_VERSION_1_TIMESTAMP = 1590940800000L;
+    public final static long BLOCK_CHAIN_VERSION_1 = 1590940800000L;
+    public final static List<Long> BLOCK_CHAIN_VERSION_LIST = null;
+    static {
+        BLOCK_CHAIN_VERSION_LIST.add(BLOCK_CHAIN_VERSION_1);
+    }
 
     /**
      * 检查系统版本是否支持。
      */
     public static boolean isVersionLegal(long timestamp){
-        if(timestamp > BLOCK_CHAIN_VERSION_1_TIMESTAMP){
+        if(timestamp > BLOCK_CHAIN_VERSION_1){
             return false;
         }
         return true;
+    }
+    /**
+     * 获得系统版本。
+     */
+    public static long obtainVersion(){
+        return BLOCK_CHAIN_VERSION_LIST.get(BLOCK_CHAIN_VERSION_LIST.size()-1);
     }
 }
