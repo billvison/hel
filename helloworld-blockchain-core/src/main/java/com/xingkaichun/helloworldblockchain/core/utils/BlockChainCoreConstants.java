@@ -67,7 +67,8 @@ public class BlockChainCoreConstants {
 
     //区块链历史版本时间戳
     //部分配置需要根据版本时间戳去获取
-    public final static long BLOCK_CHAIN_VERSION_1_TIMESTAMP = 1342435;
+    //第一版本只支持运行至北京时间2020-06-01 00:00:00，到时间后必须升级系统
+    public final static long BLOCK_CHAIN_VERSION_1_TIMESTAMP = 1590940800000L;
 
     /**
      * 检查系统版本是否支持。
