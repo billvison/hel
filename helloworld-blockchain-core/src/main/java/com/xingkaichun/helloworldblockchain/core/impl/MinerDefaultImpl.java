@@ -68,7 +68,7 @@ public class MinerDefaultImpl extends Miner {
             //挖矿超过1小时还没有挖到矿
             //
             if(isObtainMiningBlockAgain(blockChainDataBase,miningBlock)){
-                miningBlock = obtainWrapperBlockForMining(blockChainDataBase);
+                miningBlock = obtainMiningBlock(blockChainDataBase);
                 miningBlockThreadLocal.set(miningBlock);
             }
             miningBlock(blockChainDataBase,miningBlock);
@@ -143,9 +143,9 @@ public class MinerDefaultImpl extends Miner {
     }
 
     /**
-     * 获取正在挖矿中的对象
+     * 获取挖矿中的区块对象
      */
-    private MiningBlock obtainWrapperBlockForMining(BlockChainDataBase blockChainDataBase) throws Exception {
+    private MiningBlock obtainMiningBlock(BlockChainDataBase blockChainDataBase) throws Exception {
         MiningBlock miningBlock = new MiningBlock();
         List<TransactionDTO> forMineBlockTransactionDtoList = minerTransactionDtoDataBase.selectTransactionDtoList(blockChainDataBase,1,10000);
         List<Transaction> forMineBlockTransactionList = new ArrayList<>();
