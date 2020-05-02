@@ -22,6 +22,10 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 @Service
 public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientService {
 

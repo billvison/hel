@@ -4,6 +4,11 @@ import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreExcepti
 
 import java.math.BigDecimal;
 
+/**
+ * Number工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class NumberUtil {
 
     /**

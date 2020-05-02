@@ -7,6 +7,11 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * 网络工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class NetUtil {
 
     private static Gson gson = new Gson();

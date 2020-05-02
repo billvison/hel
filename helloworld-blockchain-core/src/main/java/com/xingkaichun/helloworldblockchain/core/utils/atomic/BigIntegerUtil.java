@@ -2,6 +2,11 @@ package com.xingkaichun.helloworldblockchain.core.utils.atomic;
 
 import java.math.BigInteger;
 
+/**
+ * BigInteger工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class BigIntegerUtil {
 
 

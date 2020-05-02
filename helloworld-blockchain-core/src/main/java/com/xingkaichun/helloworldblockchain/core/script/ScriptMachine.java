@@ -9,6 +9,8 @@ import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 
 /**
  * 脚本机器
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class ScriptMachine {
 

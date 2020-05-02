@@ -24,6 +24,11 @@ import org.springframework.context.annotation.Configuration;
 import java.io.File;
 import java.security.Security;
 
+/**
+ * 启动入口
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 @Configuration
 @SpringBootApplication
 @ServletComponentScan

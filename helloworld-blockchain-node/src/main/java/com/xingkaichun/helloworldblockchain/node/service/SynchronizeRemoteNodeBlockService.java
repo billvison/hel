@@ -2,6 +2,11 @@ package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 
+/**
+ * 同步节点数据service
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public interface SynchronizeRemoteNodeBlockService {
 
     /**

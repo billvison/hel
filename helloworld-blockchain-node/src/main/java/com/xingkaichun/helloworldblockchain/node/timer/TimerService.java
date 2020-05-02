@@ -20,6 +20,8 @@ import java.util.List;
 
 /**
  * 定时执行：广播自身区块高度、节点寻找、区块寻找
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class TimerService {
 

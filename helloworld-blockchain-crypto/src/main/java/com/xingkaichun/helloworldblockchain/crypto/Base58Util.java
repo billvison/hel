@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 /**
  * Base58工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class Base58Util {
 

@@ -36,6 +36,10 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 @Service
 public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 

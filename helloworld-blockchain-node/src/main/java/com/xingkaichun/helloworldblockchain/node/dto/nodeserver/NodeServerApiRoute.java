@@ -1,5 +1,9 @@
 package com.xingkaichun.helloworldblockchain.node.dto.nodeserver;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class NodeServerApiRoute {
 
     public static final String PING = "/Api/NodeServer/Ping";

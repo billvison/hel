@@ -16,6 +16,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
+/**
+ * 默认实现
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class IncentiveDefaultImpl extends Incentive {
 
     private Logger logger = LoggerFactory.getLogger(IncentiveDefaultImpl.class);

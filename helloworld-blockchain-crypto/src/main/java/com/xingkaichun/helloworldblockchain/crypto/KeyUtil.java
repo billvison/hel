@@ -26,6 +26,8 @@ import java.util.Base64;
 
 /**
  * 秘钥工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class KeyUtil {
 

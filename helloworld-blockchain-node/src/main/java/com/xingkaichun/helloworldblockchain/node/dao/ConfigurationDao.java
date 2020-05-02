@@ -5,6 +5,11 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
+/**
+ * 配置dao
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 @Mapper
 @Component
 public interface ConfigurationDao {

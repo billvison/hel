@@ -2,6 +2,8 @@ package com.xingkaichun.helloworldblockchain.crypto;
 
 /**
  * 十六进制工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class HexUtil {
 

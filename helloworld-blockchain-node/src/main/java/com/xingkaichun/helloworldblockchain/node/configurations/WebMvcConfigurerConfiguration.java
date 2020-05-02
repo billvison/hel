@@ -19,7 +19,8 @@ import java.util.List;
 
 /**
  * WebMvcConfigurer
- * @author 邢开春
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Configuration
 public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {

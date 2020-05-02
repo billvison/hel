@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 /**
  * 地址
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Data
 public class StringAddress implements Serializable {

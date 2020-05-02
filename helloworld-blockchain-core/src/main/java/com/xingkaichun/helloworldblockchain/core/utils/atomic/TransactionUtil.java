@@ -12,6 +12,11 @@ import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Transaction工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class TransactionUtil {
 
     /**

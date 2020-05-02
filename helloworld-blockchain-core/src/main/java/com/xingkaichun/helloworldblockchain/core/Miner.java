@@ -7,6 +7,8 @@ import lombok.Data;
 
 /**
  * 矿工:挖矿、分配挖矿奖励
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Data
 public abstract class Miner {

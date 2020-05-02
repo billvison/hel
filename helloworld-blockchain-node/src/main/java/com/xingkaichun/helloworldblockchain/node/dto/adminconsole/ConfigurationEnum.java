@@ -1,5 +1,9 @@
 package com.xingkaichun.helloworldblockchain.node.dto.adminconsole;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public enum ConfigurationEnum {
     IS_MINER_ACTIVE("false","矿工是否处于激活状态？"),
     IS_SYNCHRONIZER_ACTIVE("false","同步者是否处于激活状态？"),

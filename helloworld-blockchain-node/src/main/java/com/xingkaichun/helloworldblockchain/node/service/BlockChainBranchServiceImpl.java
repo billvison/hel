@@ -12,6 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.util.*;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 @Service
 public class BlockChainBranchServiceImpl implements BlockChainBranchService {
 

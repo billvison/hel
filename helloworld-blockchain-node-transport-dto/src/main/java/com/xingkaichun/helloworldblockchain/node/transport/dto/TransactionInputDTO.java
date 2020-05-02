@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * 交易输入
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Data
 public class TransactionInputDTO implements Serializable {

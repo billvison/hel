@@ -1,5 +1,9 @@
 package com.xingkaichun.helloworldblockchain.node.dto.adminconsole;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class AdminConsoleApiRoute {
 
     public static final String IS_MINER_ACTIVE = "/Api/AdminConsole/IsMinerActive";

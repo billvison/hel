@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 
 /**
  * 挖矿激励
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public abstract class Incentive {
 

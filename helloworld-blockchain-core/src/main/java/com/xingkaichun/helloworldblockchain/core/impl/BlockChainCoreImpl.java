@@ -7,6 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * 默认实现
+ * 
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class BlockChainCoreImpl extends BlockChainCore {
 
     private Logger logger = LoggerFactory.getLogger(BlockChainCoreImpl.class);

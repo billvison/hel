@@ -10,6 +10,8 @@ import java.util.List;
 
 /**
  * 区块
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Data
 public class Block implements Serializable {

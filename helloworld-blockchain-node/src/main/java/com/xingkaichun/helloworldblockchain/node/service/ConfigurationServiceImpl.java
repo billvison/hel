@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 @Service
 public class ConfigurationServiceImpl implements ConfigurationService {
 

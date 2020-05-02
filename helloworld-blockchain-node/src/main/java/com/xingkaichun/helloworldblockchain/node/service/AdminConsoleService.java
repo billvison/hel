@@ -1,5 +1,10 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
+/**
+ * 管理员控制台service
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public interface AdminConsoleService {
 
     /**

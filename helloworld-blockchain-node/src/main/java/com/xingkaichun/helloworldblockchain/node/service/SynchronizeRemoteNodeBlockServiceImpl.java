@@ -25,6 +25,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigInteger;
 import java.util.List;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 @Service
 public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteNodeBlockService {
 

@@ -11,6 +11,8 @@ import java.math.BigInteger;
 
 /**
  * 交易输出
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Data
 public class TransactionOutput implements Serializable {

@@ -16,6 +16,8 @@ import java.util.List;
 
 /**
  * 哈希工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class BlockchainHashUtil {
 

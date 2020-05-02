@@ -7,6 +7,8 @@ import java.util.Collections;
 
 /**
  * 常量工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class BlockChainCoreConstants {
 

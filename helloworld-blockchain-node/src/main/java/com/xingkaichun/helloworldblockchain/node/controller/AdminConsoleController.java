@@ -26,6 +26,8 @@ import java.util.List;
 
 /**
  * 管理员控制台的控制器：用于控制本地区块链节点，如激活矿工、停用矿工、同步其它节点数据等。
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Controller
 @RequestMapping

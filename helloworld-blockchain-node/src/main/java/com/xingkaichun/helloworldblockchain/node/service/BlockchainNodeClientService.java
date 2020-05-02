@@ -11,6 +11,11 @@ import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.QueryBl
 
 import java.math.BigInteger;
 
+/**
+ * 区块链节点客户端service
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public interface BlockchainNodeClientService {
 
     /**

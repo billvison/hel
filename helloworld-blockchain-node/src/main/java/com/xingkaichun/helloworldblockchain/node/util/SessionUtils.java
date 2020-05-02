@@ -4,6 +4,11 @@ import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * session工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class SessionUtils {
 
     private final static String ADMIN_USER_KEY = "ADMIN_USER";

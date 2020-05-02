@@ -2,6 +2,8 @@ package com.xingkaichun.helloworldblockchain.core.model.transaction;
 
 /**
  * 交易类型
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public enum TransactionType {
 

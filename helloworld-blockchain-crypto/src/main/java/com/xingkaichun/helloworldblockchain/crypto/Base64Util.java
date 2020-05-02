@@ -4,6 +4,8 @@ import java.util.Base64;
 
 /**
  * Base64工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class Base64Util {
 

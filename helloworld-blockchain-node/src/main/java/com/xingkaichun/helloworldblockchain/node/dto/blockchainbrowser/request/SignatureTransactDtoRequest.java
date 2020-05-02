@@ -4,6 +4,10 @@ import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import lombok.Data;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 @Data
 public class SignatureTransactDtoRequest {
 

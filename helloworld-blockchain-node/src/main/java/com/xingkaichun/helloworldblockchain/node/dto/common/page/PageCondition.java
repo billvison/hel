@@ -2,6 +2,10 @@ package com.xingkaichun.helloworldblockchain.node.dto.common.page;
 
 import lombok.Data;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 @Data
 public class PageCondition {
 

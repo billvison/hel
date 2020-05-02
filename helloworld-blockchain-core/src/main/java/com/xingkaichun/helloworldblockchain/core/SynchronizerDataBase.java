@@ -44,6 +44,8 @@ import java.util.List;
  * 根据节点ID可获取传输过来的完整数据。(循环获取节点下一个Block，直至获取结果为null)。在这一步中，
  * 因为获取到了传输的数据，所以可以做自己的业务逻辑了。
  * 使用完毕后，删除节点ID传输数据，清除节点ID的数据传输完毕标识。
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public abstract class  SynchronizerDataBase {
 

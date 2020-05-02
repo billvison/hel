@@ -7,6 +7,11 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 @Data
 public class BlockChainActionData {
 

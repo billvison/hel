@@ -10,6 +10,8 @@ import java.util.List;
 
 /**
  * 默克尔树工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class MerkleUtils {
 

@@ -25,6 +25,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
+/**
+ * 默认实现
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class MinerDefaultImpl extends Miner {
 
     private Logger logger = LoggerFactory.getLogger(MinerDefaultImpl.class);

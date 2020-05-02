@@ -13,6 +13,11 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.util.List;
 
+/**
+ * 区块工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class BlockUtils {
 
     private final static Logger logger = LoggerFactory.getLogger(BlockUtils.class);

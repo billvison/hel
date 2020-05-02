@@ -5,6 +5,11 @@ import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.Blockchain
 import java.math.BigInteger;
 import java.util.List;
 
+/**
+ * 区块链分叉service
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public interface BlockChainBranchService {
 
     boolean isFork(BigInteger blockHeight, String blockHash);

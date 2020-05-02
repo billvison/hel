@@ -1,5 +1,10 @@
 package com.xingkaichun.helloworldblockchain.core.exception;
 
+/**
+ * 异常
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class BlockChainCoreException extends RuntimeException {
 
     public BlockChainCoreException() {

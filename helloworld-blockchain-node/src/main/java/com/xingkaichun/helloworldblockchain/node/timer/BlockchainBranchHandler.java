@@ -17,6 +17,8 @@ import java.net.URL;
 
 /**
  * 区块链分叉处理
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class BlockchainBranchHandler {
 

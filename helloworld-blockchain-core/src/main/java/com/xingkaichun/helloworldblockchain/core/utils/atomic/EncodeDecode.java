@@ -10,6 +10,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
+/**
+ * EncodeDecode工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class EncodeDecode {
 
     public static byte[] encode(Transaction transaction) throws Exception {

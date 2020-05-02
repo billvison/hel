@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Security过滤器
- * @author 邢开春
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Component
 public class SecurityInterceptor implements HandlerInterceptor {

@@ -6,6 +6,11 @@ import org.iq80.leveldb.impl.Iq80DBFactory;
 import java.io.File;
 import java.nio.charset.Charset;
 
+/**
+ * LevelDB工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class LevelDBUtil {
 
     private static final Charset CHARSET_UTF_8 = Charset.forName("UTF-8");

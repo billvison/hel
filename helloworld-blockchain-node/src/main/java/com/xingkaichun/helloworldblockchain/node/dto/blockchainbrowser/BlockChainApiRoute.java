@@ -1,5 +1,9 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class BlockChainApiRoute {
 
     public static final String GENERATE_WALLETDTO = "/Api/BlockChain/GenerateWalletDTO";

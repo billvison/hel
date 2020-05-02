@@ -6,6 +6,11 @@ import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ * 创建BlockChainCore的工厂
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class BlockChainCoreFactory {
 
 

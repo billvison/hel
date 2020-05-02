@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 /**
  * 私钥
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Data
 public class StringPrivateKey implements Serializable {

@@ -15,6 +15,8 @@ import java.io.Serializable;
  * 因此节点之间应当达成一个共识：下一个区块应当是什么样的？这样，下一个区块不是随意生成的了。
  * 当然，即使有了区块产生的共识，也有可能多个节点都产生了下一个区块(有了共识，产生的下一个区块少了很多很多)。
  * 这个问题，就让他们继续竞争下去，看谁能产生下下个区块。
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Data
 public abstract class Consensus implements Serializable {

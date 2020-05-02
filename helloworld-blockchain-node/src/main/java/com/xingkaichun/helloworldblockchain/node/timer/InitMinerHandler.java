@@ -21,6 +21,8 @@ import java.io.IOException;
 /**
  * 初始化矿工钱包地址。系统每次启动，会校验是否配置了矿工钱包地址。
  * 若是没有配置，则系统自动生成一个矿工钱包地址，并且将公钥、私钥、地址写入外部文件供系统使用者查看矿工钱包地址。
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class InitMinerHandler {
 

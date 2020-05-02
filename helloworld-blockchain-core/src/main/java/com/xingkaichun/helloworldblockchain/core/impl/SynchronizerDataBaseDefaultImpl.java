@@ -13,6 +13,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 默认实现
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
     private Logger logger = LoggerFactory.getLogger(SynchronizerDataBaseDefaultImpl.class);

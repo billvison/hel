@@ -12,6 +12,8 @@ import java.util.List;
  * 区块链数据库：用于持久化本地区块链的数据
  * 矿工系统：可以收集交易，挖矿，将新挖取的矿放进区块链数据库
  * 区块链同步器系统：区块链是一个分布式的数据库，同步器可以同步其它节点的区块链数据。
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Data
 public abstract class BlockChainCore {

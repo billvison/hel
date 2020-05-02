@@ -9,6 +9,8 @@ import com.xingkaichun.helloworldblockchain.core.utils.atomic.BlockChainCoreCons
 
 /**
  * 工作量证明实现
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class ProofOfWorkConsensus extends Consensus {
 

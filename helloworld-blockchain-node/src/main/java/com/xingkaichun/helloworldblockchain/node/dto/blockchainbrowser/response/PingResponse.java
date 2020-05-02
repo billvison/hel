@@ -6,6 +6,10 @@ import lombok.Data;
 import java.math.BigInteger;
 import java.util.List;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 @Data
 public class PingResponse {
 

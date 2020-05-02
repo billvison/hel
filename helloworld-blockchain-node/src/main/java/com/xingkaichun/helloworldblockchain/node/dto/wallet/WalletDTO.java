@@ -4,6 +4,8 @@ import lombok.Data;
 
 /**
  * 钱包
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Data
 public class WalletDTO {

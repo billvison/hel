@@ -1,5 +1,9 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 import lombok.Data;
 
 import java.util.List;

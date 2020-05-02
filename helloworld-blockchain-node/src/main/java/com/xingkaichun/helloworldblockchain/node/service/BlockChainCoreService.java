@@ -16,6 +16,11 @@ import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import java.math.BigInteger;
 import java.util.List;
 
+/**
+ * 区块链core service
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public interface BlockChainCoreService {
 
     /**

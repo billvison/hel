@@ -2,6 +2,11 @@ package com.xingkaichun.helloworldblockchain.core.utils.atomic;
 
 import java.math.BigInteger;
 
+/**
+ * Equals工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class EqualsUtils {
 
     public static boolean isEquals(String obj1,String obj2){

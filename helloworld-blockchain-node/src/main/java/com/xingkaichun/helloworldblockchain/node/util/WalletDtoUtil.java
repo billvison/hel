@@ -6,6 +6,11 @@ import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.node.dto.wallet.WalletDTO;
 
+/**
+ * 钱包工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class WalletDtoUtil {
 
     /**

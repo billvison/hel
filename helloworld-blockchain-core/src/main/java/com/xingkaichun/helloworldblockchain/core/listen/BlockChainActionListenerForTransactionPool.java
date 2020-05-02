@@ -11,7 +11,9 @@ import org.iq80.leveldb.DB;
 import java.util.List;
 
 /**
- *  同步别的节点的区块时，若删除了自己的的区块，被删除区块的交易信息应当再次加入到交易池
+ * 同步别的节点的区块时，若删除了自己的的区块，被删除区块的交易信息应当再次加入到交易池
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class BlockChainActionListenerForTransactionPool implements BlockChainActionListener{
 

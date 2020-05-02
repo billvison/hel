@@ -14,6 +14,11 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 
+/**
+ * 默认实现
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class SynchronizerDefaultImpl extends Synchronizer {
 
     private Logger logger = LoggerFactory.getLogger(SynchronizerDefaultImpl.class);

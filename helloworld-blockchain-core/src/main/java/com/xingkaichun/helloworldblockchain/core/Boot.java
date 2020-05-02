@@ -1,6 +1,10 @@
 package com.xingkaichun.helloworldblockchain.core;
 
-
+/**
+ * 启动类
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class Boot {
 
 

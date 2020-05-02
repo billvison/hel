@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 /**
  * 交易输入
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Data
 public class TransactionInput implements Serializable {

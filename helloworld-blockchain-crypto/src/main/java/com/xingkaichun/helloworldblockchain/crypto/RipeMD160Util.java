@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 
 /**
  * RipeMD160消息摘要工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 public class RipeMD160Util {
 

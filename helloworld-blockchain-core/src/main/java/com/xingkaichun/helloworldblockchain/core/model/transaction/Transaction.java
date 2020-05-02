@@ -9,6 +9,8 @@ import java.util.List;
 
 /**
  * 交易
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Data
 public class Transaction implements Serializable {

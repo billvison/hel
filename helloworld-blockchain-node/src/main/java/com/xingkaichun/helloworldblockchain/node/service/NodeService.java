@@ -6,6 +6,11 @@ import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
 
 import java.util.List;
 
+/**
+ * 节点service
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public interface NodeService {
     /**
      * 查询node

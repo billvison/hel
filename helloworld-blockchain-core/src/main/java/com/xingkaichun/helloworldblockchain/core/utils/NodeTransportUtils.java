@@ -26,6 +26,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 节点传输工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class NodeTransportUtils {
 
     private static Gson gson = new Gson();

@@ -27,6 +27,8 @@ import java.util.List;
 
 /**
  * 负责节点与节点通信的控制器
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Controller
 @RequestMapping

@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户相关功能的控制器
+ *
+ * @author 邢开春 xingkaichun@qq.com
  */
 @Controller
 @RequestMapping

@@ -5,6 +5,10 @@ import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 @Service
 public class BlockchainNodeServerServiceImpl implements BlockchainNodeServerService {
 
