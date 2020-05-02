@@ -79,17 +79,9 @@ public abstract class  SynchronizerDataBase {
      */
     public abstract void clear(String nodeId) throws Exception ;
     /**
-     * 清空数据库
-     */
-    public abstract void clearDB() throws Exception ;
-    /**
      * 获取一个有数据传输完成标识的节点ID
      */
     public abstract String getDataTransferFinishFlagNodeId() throws Exception ;
-    /**
-     * 获取一个节点ID
-     */
-    public abstract String getNodeId() throws Exception ;
     /**
      * 获取一个节点ID
      */

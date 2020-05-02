@@ -193,29 +193,6 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
     }
 
     @Override
-    public String getNodeId() throws Exception {
-        String sql = "SELECT * FROM NODE limit 0,1";
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        try {
-            preparedStatement = connection().prepareStatement(sql);
-            resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                String nodeId = resultSet.getString("nodeId");
-                return nodeId;
-            }
-        } finally {
-            if(preparedStatement != null){
-                preparedStatement.close();
-            }
-            if(resultSet != null){
-                resultSet.close();
-            }
-        }
-        return null;
-    }
-
-    @Override
     public List<String> getAllNodeId() throws Exception {
         String sql = "SELECT * FROM NODE";
         List<String> nodeList = new ArrayList<>();
@@ -298,27 +275,6 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             preparedStatement1.executeUpdate();
             preparedStatement2 = connection().prepareStatement(sql2);
             preparedStatement2.setString(1,nodeId);
-            preparedStatement2.executeUpdate();
-        } finally {
-            if(preparedStatement1 != null){
-                preparedStatement1.close();
-            }
-            if(preparedStatement2 != null){
-                preparedStatement2.close();
-            }
-        }
-    }
-
-    @Override
-    public void clearDB() throws Exception {
-        String sql = "DELETE FROM DATA";
-        PreparedStatement preparedStatement1 = null;
-        String sql2 = "DELETE FROM NODE";
-        PreparedStatement preparedStatement2 = null;
-        try {
-            preparedStatement1 = connection().prepareStatement(sql);
-            preparedStatement1.executeUpdate();
-            preparedStatement2 = connection().prepareStatement(sql2);
             preparedStatement2.executeUpdate();
         } finally {
             if(preparedStatement1 != null){
