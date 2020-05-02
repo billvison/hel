@@ -108,7 +108,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{
-            fillBlockPropertity(block);
             boolean isBlockCanApplyToBlockChain = isBlockCanApplyToBlockChain(block);
             if(!isBlockCanApplyToBlockChain){
                 return false;
@@ -121,6 +120,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
     }
 
+    /**
+     * 补充区块的属性
+     */
     private void fillBlockPropertity(Block block) throws Exception {
 
         BigInteger transactionSequenceNumberInBlock = BigInteger.ZERO;
@@ -964,6 +966,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 将区块信息组装成WriteBatch对象
      */
     private WriteBatch createWriteBatch(Block block, BlockChainActionEnum blockChainActionEnum) throws Exception {
+        fillBlockPropertity(block);
         WriteBatch writeBatch = new WriteBatchImpl();
         fillWriteBatch(writeBatch,block,blockChainActionEnum);
         return writeBatch;
