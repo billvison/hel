@@ -225,7 +225,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             //区块链没有区块高度默认为0
             return BigInteger.valueOf(0);
         }
-        return decode(bytesBlockChainHeight);
+        return BigIntegerUtil.decode(bytesBlockChainHeight);
     }
 
     @Override
@@ -1006,9 +1006,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         BigInteger transactionQuantity = queryTransactionQuantity();
         byte[] totalTransactionQuantityKey = buildTotalTransactionQuantityKey();
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-            writeBatch.put(totalTransactionQuantityKey, encode(transactionQuantity.add(BigInteger.valueOf(block.getTransactions().size()))));
+            writeBatch.put(totalTransactionQuantityKey, BigIntegerUtil.encode(transactionQuantity.add(BigInteger.valueOf(block.getTransactions().size()))));
         }else{
-            writeBatch.put(totalTransactionQuantityKey, encode(transactionQuantity.subtract(BigInteger.valueOf(block.getTransactions().size()))));
+            writeBatch.put(totalTransactionQuantityKey, BigIntegerUtil.encode(transactionQuantity.subtract(BigInteger.valueOf(block.getTransactions().size()))));
         }
         //区块Hash到区块高度的映射
         byte[] blockHashBlockHeightKey = buildBlockHashtBlockHeightKey(block.getHash());
@@ -1020,9 +1020,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //更新区块链的高度
         byte[] blockChainHeightKey = buildBlockChainHeightKey();
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-            writeBatch.put(blockChainHeightKey,encode(block.getHeight()));
+            writeBatch.put(blockChainHeightKey,BigIntegerUtil.encode(block.getHeight()));
         }else{
-            writeBatch.put(blockChainHeightKey,encode(block.getHeight().subtract(BigInteger.valueOf(1))));
+            writeBatch.put(blockChainHeightKey,BigIntegerUtil.encode(block.getHeight().subtract(BigInteger.valueOf(1))));
         }
 
         List<Transaction> transactionList = block.getTransactions();
@@ -1208,14 +1208,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         return true;
     }
-    private BigInteger decode(byte[] bytesBlockChainHeight){
-        String strBlockChainHeight = LevelDBUtil.bytesToString(bytesBlockChainHeight);
-        BigInteger blockChainHeight = new BigInteger(strBlockChainHeight);
-        return blockChainHeight;
-    }
-    private byte[] encode(BigInteger blockChainHeight){
-        return LevelDBUtil.stringToBytes(String.valueOf(blockChainHeight));
-    }
 
     /**
      * 查询区块链中总的交易数量
@@ -1225,14 +1217,14 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(byteTotalTransactionQuantity == null){
             return BigInteger.ZERO;
         }
-        return decode(byteTotalTransactionQuantity);
+        return BigIntegerUtil.decode(byteTotalTransactionQuantity);
     }
 
     //region 校验交易金额
     /**
      * 是否是一个合法的交易金额：这里用于限制交易金额的最大值、最小值、小数保留位置
      */
-    public boolean isTransactionAmountLegal(BigDecimal transactionAmount) {
+    private boolean isTransactionAmountLegal(BigDecimal transactionAmount) {
         try {
             if(transactionAmount == null){
                 logger.debug("交易金额不合法：交易金额不能为空");
@@ -1263,7 +1255,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * 重载，见其它同名函数
      */
-    public boolean isTransactionAmountLegal(String transactionAmount) {
+    private boolean isTransactionAmountLegal(String transactionAmount) {
         if(transactionAmount == null){
             return false;
         }

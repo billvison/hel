@@ -31,4 +31,14 @@ public class BigIntegerUtil {
     public static boolean isGreateEqualThan(BigInteger bigInteger1, BigInteger bigInteger2) {
         return bigInteger1.compareTo(bigInteger2) >= 0;
     }
+
+
+    public static BigInteger decode(byte[] bytesBlockChainHeight){
+        String strBlockChainHeight = new String(bytesBlockChainHeight,BlockChainCoreConstants.CHARSET_UTF_8);
+        BigInteger blockChainHeight = new BigInteger(strBlockChainHeight);
+        return blockChainHeight;
+    }
+    public static byte[] encode(BigInteger blockChainHeight){
+        return String.valueOf(blockChainHeight).getBytes(BlockChainCoreConstants.CHARSET_UTF_8);
+    }
 }
