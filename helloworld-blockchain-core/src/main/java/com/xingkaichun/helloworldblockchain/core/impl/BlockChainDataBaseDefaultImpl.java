@@ -1,6 +1,5 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
-import com.google.common.base.Joiner;
 import com.google.common.primitives.Bytes;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
@@ -91,6 +90,11 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     private static Gson gson = new Gson();
+
+    //起源时间戳
+    //北京时间2016-01-01 00:00:00的时间戳是1556640000000L
+    //2016年创始人第一次接触区块链的时间
+    private static long originTimestamp = 1556640000000L;
     //endregion
 
     //region 构造函数
@@ -355,7 +359,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     public boolean isBlockStorageCapacityLegal(Block block) {
         //校验时间戳占用存储空间
         long timestamp = block.getTimestamp();
-        if(timestamp<BlockChainCoreConstant.BLOCK_CHAIN_VERSION_1 || timestamp>System.currentTimeMillis()){
+        if(timestamp<originTimestamp || timestamp>System.currentTimeMillis()){
             return false;
         }
 
@@ -407,9 +411,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         List<TransactionInput> inputs = transaction.getInputs();
         List<TransactionOutput> outputs = transaction.getOutputs();
         List<String> messages = transaction.getMessages();
-
         //校验时间戳
-        if(timestamp<BlockChainCoreConstant.BLOCK_CHAIN_VERSION_1 || timestamp>System.currentTimeMillis()+BlockChainCoreConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
+        if(timestamp<originTimestamp || timestamp>System.currentTimeMillis()+BlockChainCoreConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
             return false;
         }
 
