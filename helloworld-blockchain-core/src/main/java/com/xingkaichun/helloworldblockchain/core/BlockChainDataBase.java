@@ -115,7 +115,7 @@ public abstract class BlockChainDataBase {
     /**
      * 在区块链中根据 交易输出哈希 查找未花费交易输出
      */
-    public abstract TransactionOutput findUnspendTransactionOuputByUtxoHash(String transactionOutputHash) throws Exception ;
+    public abstract TransactionOutput findUnspendTransactionOuputByTransactionOuputHash(String transactionOutputHash) throws Exception ;
     /**
      * 根据地址查询未花费交易输出
      */

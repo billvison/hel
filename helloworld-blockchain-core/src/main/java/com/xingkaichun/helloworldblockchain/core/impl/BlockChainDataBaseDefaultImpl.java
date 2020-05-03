@@ -232,7 +232,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public TransactionOutput findUnspendTransactionOuputByUtxoHash(String transactionOutputHash) throws Exception {
+    public TransactionOutput findUnspendTransactionOuputByTransactionOuputHash(String transactionOutputHash) throws Exception {
         if(transactionOutputHash==null || "".equals(transactionOutputHash)){
             return null;
         }
@@ -860,7 +860,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             for(TransactionInput transactionInput : inputs) {
                 TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
                 String unspendTransactionOutputHash = unspendTransactionOutput.getTransactionOutputHash();
-                TransactionOutput tx = findUnspendTransactionOuputByUtxoHash(unspendTransactionOutputHash);
+                TransactionOutput tx = findUnspendTransactionOuputByTransactionOuputHash(unspendTransactionOutputHash);
                 if(tx == null){
                     return false;
                 }
