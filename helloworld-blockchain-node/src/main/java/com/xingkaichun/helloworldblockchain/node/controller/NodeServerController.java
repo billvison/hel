@@ -66,9 +66,11 @@ public class NodeServerController {
                 String ip = httpServletRequest.getRemoteHost();
                 node.setIp(ip);
                 node.setPort(request.getPort());
-                node.setIsNodeAvailable(true);
-                nodeService.addOrUpdateNode(node);
-                logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,request.getPort()));
+               if(nodeService.queryNode(node) == null){
+                   node.setIsNodeAvailable(true);
+                   nodeService.addNode(node);
+                   logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,request.getPort()));
+               }
             }
 
             PingResponse response = new PingResponse();
