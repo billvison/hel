@@ -56,6 +56,15 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     @Autowired
     private Gson gson;
 
+    /**
+     * 若是有分叉时，一次同步的最后一个区块的高度至少要比本地区块链的高度大于N个。
+     * 假设本地区块链挖矿过快，等外部区块通过网络传输到本节点后，在加入本地区块链做校验的时候，
+     * 可能发现同步过来的区块的最大高度已经小于本地区块链的高度了。
+     * 所以可以尝试一次多同步几个区块，至少保证本地计算能力达不到同步过来的高度。
+     */
+    private BigInteger SYNCHRONIZE_BLOCK_SIZE_FROM_LOCAL_BLOCKCHAIN_HEIGHT = new BigInteger("10");
+
+
     @Override
     public void synchronizeRemoteNodeBlock(Node node) throws Exception {
         if(!isBlockChainIdRight(node)){
@@ -163,8 +172,8 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 }
                 synchronizerDataBase.addBlockDTO(nodeId,blockDTO);
                 tempBlockHeight = tempBlockHeight.add(BigInteger.ONE);
-                //若是有分叉时，一次同步的最后一个区块至少要比本地区块链的高度大于N个 TODO 配置
-                if(BigIntegerUtil.isGreateEqualThan(tempBlockHeight,localBlockChainHeight.add(new BigInteger("10")))){
+                //若是有分叉时，一次同步的最后一个区块至少要比本地区块链的高度大于N个
+                if(BigIntegerUtil.isGreateEqualThan(tempBlockHeight,localBlockChainHeight.add(SYNCHRONIZE_BLOCK_SIZE_FROM_LOCAL_BLOCKCHAIN_HEIGHT))){
                     break;
                 }
             }
