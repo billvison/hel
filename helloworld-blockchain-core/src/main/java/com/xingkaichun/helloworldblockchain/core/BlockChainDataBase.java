@@ -1,12 +1,9 @@
 package com.xingkaichun.helloworldblockchain.core;
 
-import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -19,12 +16,11 @@ import java.util.List;
  */
 public abstract class BlockChainDataBase {
 
-    private Logger logger = LoggerFactory.getLogger(BlockChainDataBase.class);
-
     protected Incentive incentive ;
     protected Consensus consensus ;
 
-    protected static Gson gson;
+
+
 
     //region 区块增加与删除
     /**
@@ -46,49 +42,9 @@ public abstract class BlockChainDataBase {
     public abstract void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) throws Exception ;
     //endregion
 
-    //region 区块链提供的通用方法
-    /**
-     * 查找区块链上的最后一个区块
-     */
-    public abstract Block findTailBlock() throws Exception ;
-    /**
-     * 查找区块链上的最后一个区块，返回的区块不包含交易信息
-     */
-    public abstract Block findTailNoTransactionBlock() throws Exception ;
-    /**
-     * 获取区块链的长度
-     */
-    public abstract BigInteger obtainBlockChainHeight() throws Exception ;
 
-    /**
-     * 在区块链中根据 UTXO 哈希 查找UTXO
-     */
-    public abstract TransactionOutput findUtxoByUtxoHash(String transactionOutputHash) throws Exception ;
 
-    /**
-     * 在区块链中根据区块高度查找区块
-     * @param blockHeight 区块高度
-     */
-    public abstract Block findBlockByBlockHeight(BigInteger blockHeight) throws Exception ;
-
-    /**
-     * 在区块链中根据区块高度查找【未存储交易信息】的区块
-     * @param blockHeight 区块高度
-     */
-    public abstract Block findNoTransactionBlockByBlockHeight(BigInteger blockHeight) throws Exception ;
-
-    /**
-     * 根据区块Hash查找区块高度
-     * @param blockHash 区块Hash
-     */
-    public abstract BigInteger findBlockHeightByBlockHash(String blockHash) throws Exception ;
-
-    /**
-     * 在区块链中根据交易ID查找交易
-     */
-    public abstract Transaction findTransactionByTransactionHash(String transactionHash) throws Exception ;
-    //endregion
-
+    //region 校验区块、交易
     /**
      * 检测区块是否可以被应用到区块链上
      * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
@@ -100,22 +56,11 @@ public abstract class BlockChainDataBase {
      * 如果校验的是奖励交易，则需要整个区块的信息，因此这个函数包含了两个参数：交易所在的区块、交易
      */
     public abstract boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception ;
+    //endregion
 
-    /**
-     * 根据地址查询未花费交易输出
-     */
-    public abstract List<TransactionOutput> querUnspendTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception ;
 
-    /**
-     * 根据交易高度查询交易
-     */
-    public abstract List<Transaction> queryTransactionByTransactionHeight(BigInteger from,BigInteger size) throws Exception ;
 
-    /**
-     * 根据地址查询交易输出
-     */
-    public abstract List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception ;
-
+    //region 校验存储容量
     /**
      * 校验区块的存储容量是否合法：用来限制区块所占存储空间的大小。
      */
@@ -125,12 +70,75 @@ public abstract class BlockChainDataBase {
      * 校验交易的存储容量是否合法：用来限制交易的所占存储空间的大小。
      */
     public abstract boolean isTransactionStorageCapacityLegal(Transaction transaction) ;
+    //endregion
+
+
+
+
+    //region 区块链提供的通用方法
+    /**
+     * 获取区块链的长度
+     */
+    public abstract BigInteger obtainBlockChainHeight() throws Exception ;
+
+
+    /**
+     * 查找区块链上的最后一个区块
+     */
+    public abstract Block findTailBlock() throws Exception ;
+    /**
+     * 在区块链中根据区块高度查找区块
+     * @param blockHeight 区块高度
+     */
+    public abstract Block findBlockByBlockHeight(BigInteger blockHeight) throws Exception ;
+    /**
+     * 查找区块链上的最后一个区块，返回的区块不包含交易信息
+     */
+    public abstract Block findTailNoTransactionBlock() throws Exception ;
+    /**
+     * 在区块链中根据区块高度查找【未存储交易信息】的区块
+     * @param blockHeight 区块高度
+     */
+    public abstract Block findNoTransactionBlockByBlockHeight(BigInteger blockHeight) throws Exception ;
+
+
+    /**
+     * 在区块链中根据交易ID查找交易
+     */
+    public abstract Transaction findTransactionByTransactionHash(String transactionHash) throws Exception ;
+    /**
+     * 根据交易高度查询交易
+     */
+    public abstract List<Transaction> queryTransactionByTransactionHeight(BigInteger from,BigInteger size) throws Exception ;
+
+
+    /**
+     * 在区块链中根据 交易输出哈希 查找未花费交易输出
+     */
+    public abstract TransactionOutput findUnspendTransactionOuputByUtxoHash(String transactionOutputHash) throws Exception ;
+    /**
+     * 根据地址查询未花费交易输出
+     */
+    public abstract List<TransactionOutput> querUnspendTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception ;
+
+
+    /**
+     * 根据地址查询交易输出
+     */
+    public abstract List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception ;
+
+
+    /**
+     * 根据区块Hash查找区块高度
+     * @param blockHash 区块Hash
+     */
+    public abstract BigInteger findBlockHeightByBlockHash(String blockHash) throws Exception ;
+    //endregion
 
 
 
 
     //region get set
-
     public Incentive getIncentive() {
         return incentive;
     }
@@ -146,6 +154,5 @@ public abstract class BlockChainDataBase {
     public void setConsensus(Consensus consensus) {
         this.consensus = consensus;
     }
-
     //endregion
 }

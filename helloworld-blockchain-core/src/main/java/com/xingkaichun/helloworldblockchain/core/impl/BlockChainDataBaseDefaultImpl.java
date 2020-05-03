@@ -89,6 +89,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 查询区块操作不需要加锁，原因是，只有对区块链进行区块的增删才会改变区块链的数据。
      */
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+
+    private static Gson gson = new Gson();
     //endregion
 
     //region 构造函数
@@ -96,7 +98,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         this.blockChainDB = LevelDBUtil.createDB(new File(blockchainDataPath,BlockChain_DataBase_DirectName));
         this.incentive = incentive ;
         this.consensus = consensus ;
-        this.gson = new Gson();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 blockChainDB.close();
@@ -231,7 +232,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public TransactionOutput findUtxoByUtxoHash(String transactionOutputHash) throws Exception {
+    public TransactionOutput findUnspendTransactionOuputByUtxoHash(String transactionOutputHash) throws Exception {
         if(transactionOutputHash==null || "".equals(transactionOutputHash)){
             return null;
         }
@@ -859,7 +860,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             for(TransactionInput transactionInput : inputs) {
                 TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
                 String unspendTransactionOutputHash = unspendTransactionOutput.getTransactionOutputHash();
-                TransactionOutput tx = findUtxoByUtxoHash(unspendTransactionOutputHash);
+                TransactionOutput tx = findUnspendTransactionOuputByUtxoHash(unspendTransactionOutputHash);
                 if(tx == null){
                     return false;
                 }

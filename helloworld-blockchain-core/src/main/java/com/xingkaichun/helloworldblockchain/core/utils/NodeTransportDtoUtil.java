@@ -105,7 +105,7 @@ public class NodeTransportDtoUtil {
         if(transactionInputDtoList!=null){
             for (TransactionInputDTO transactionInputDTO:transactionInputDtoList){
                 String unspendTransactionOutputHash = transactionInputDTO.getUnspendTransactionOutputHash();
-                TransactionOutput transactionOutput = blockChainDataBase.findUtxoByUtxoHash(unspendTransactionOutputHash);
+                TransactionOutput transactionOutput = blockChainDataBase.findUnspendTransactionOuputByUtxoHash(unspendTransactionOutputHash);
                 if(transactionOutput == null){
                     throw new BlockChainCoreException("TransactionOutput不应该是null。");
                 }
