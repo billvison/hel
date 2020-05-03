@@ -94,7 +94,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //起源时间戳
     //北京时间2016-01-01 00:00:00的时间戳是1556640000000L
     //2016年创始人第一次接触区块链的时间
-    private static long originTimestamp = 1556640000000L;
+    private final static long ORIGIN_TIMESTAMP = 1556640000000L;
     //endregion
 
     //region 构造函数
@@ -359,7 +359,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     public boolean isBlockStorageCapacityLegal(Block block) {
         //校验时间戳占用存储空间
         long timestamp = block.getTimestamp();
-        if(timestamp<originTimestamp || timestamp>System.currentTimeMillis()){
+        if(timestamp< ORIGIN_TIMESTAMP || timestamp>System.currentTimeMillis()){
             return false;
         }
 
@@ -412,7 +412,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         List<TransactionOutput> outputs = transaction.getOutputs();
         List<String> messages = transaction.getMessages();
         //校验时间戳
-        if(timestamp<originTimestamp || timestamp>System.currentTimeMillis()+BlockChainCoreConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
+        if(timestamp< ORIGIN_TIMESTAMP || timestamp>System.currentTimeMillis()+BlockChainCoreConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
             return false;
         }
 
