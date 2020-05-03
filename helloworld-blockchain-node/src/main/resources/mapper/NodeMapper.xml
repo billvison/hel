@@ -50,13 +50,13 @@
             <if test="port != null and port != 0">
                 port = #{port,jdbcType=INTEGER},
             </if>
-            <if test="blockChainHeight != null and blockChainHeight != 0">
+            <if test="blockChainHeight != null">
                 blockChainHeight = #{blockChainHeight,jdbcType=INTEGER},
             </if>
             <if test="isNodeAvailable != null">
                 isNodeAvailable = #{isNodeAvailable,jdbcType=INTEGER},
             </if>
-            <if test="errorConnectionTimes != null and errorConnectionTimes != ''">
+            <if test="errorConnectionTimes != null">
                 errorConnectionTimes = #{errorConnectionTimes,jdbcType=INTEGER},
             </if>
             <if test="fork != null">
