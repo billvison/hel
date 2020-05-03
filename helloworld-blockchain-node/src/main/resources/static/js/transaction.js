@@ -70,9 +70,7 @@ function submitTrans() {
                 alert(data.message);
                 return;
             }
-            var transaction={};
-            transaction.trans = data.result.transactionDTO.transactionHash;
-            alert("提交成功,交易Hash为:" + transaction.trans);
+            alert("提交成功,交易Hash为:" + data.result.transactionHash);
         },
         error: function (e) {
         }

@@ -10,6 +10,9 @@ import java.util.List;
  */
 public class SubmitNormalTransactionResponse {
 
+    //交易Hash
+    private String transactionHash;
+
     //经过处理后的交易
     private TransactionDTO transactionDTO;
 
@@ -84,5 +87,13 @@ public class SubmitNormalTransactionResponse {
         this.failSubmitNode = failSubmitNode;
     }
 
-    //endregion
+    public String getTransactionHash() {
+        return transactionHash;
+    }
+
+    public void setTransactionHash(String transactionHash) {
+        this.transactionHash = transactionHash;
+    }
+
+//endregion
 }
