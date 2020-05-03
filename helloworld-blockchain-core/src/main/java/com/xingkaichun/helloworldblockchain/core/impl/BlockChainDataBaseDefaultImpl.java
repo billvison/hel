@@ -177,9 +177,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(blockHeight == null){
             throw new NullPointerException("区块高度不能为空");
         }
-        if(BigIntegerUtil.isLessEqualThan(blockHeight,BigInteger.ZERO)){
-            return;
-        }
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{

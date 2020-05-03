@@ -174,8 +174,9 @@ public class SynchronizerDefaultImpl extends Synchronizer {
                                  BlockChainDataBase temporaryBlockChainDataBase) throws Exception {
         Block targetBlockChainTailBlock = targetBlockChainDataBase.findTailNoTransactionBlock() ;
         Block temporaryBlockChainTailBlock = temporaryBlockChainDataBase.findTailNoTransactionBlock() ;
-        //不需要调整
         if(targetBlockChainTailBlock == null){
+            //清空temporary
+            temporaryBlockChainDataBase.removeBlocksUtilBlockHeightLessThan(BigInteger.ONE);
             return;
         }
         //删除Temporary区块链直到尚未分叉位置停止
@@ -183,19 +184,14 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             if(temporaryBlockChainTailBlock == null){
                 break;
             }
-            if(isBlockEqual(targetBlockChainTailBlock,temporaryBlockChainTailBlock)){
+            Block targetBlockChainBlock = targetBlockChainDataBase.findNoTransactionBlockByBlockHeight(temporaryBlockChainTailBlock.getHeight());
+            if(isBlockEqual(targetBlockChainBlock,temporaryBlockChainTailBlock)){
                 break;
             }
             temporaryBlockChainDataBase.removeTailBlock();
             temporaryBlockChainTailBlock = temporaryBlockChainDataBase.findTailNoTransactionBlock();
         }
-        if(temporaryBlockChainTailBlock == null){
-            Block block = targetBlockChainDataBase.findBlockByBlockHeight(BlockChainCoreConstant.FIRST_BLOCK_HEIGHT);
-            boolean isAddBlockToBlockChainSuccess = temporaryBlockChainDataBase.addBlock(block);
-            if(!isAddBlockToBlockChainSuccess){
-                return;
-            }
-        }
+        //复制target数据至temporary
         BigInteger temporaryBlockChainHeight = temporaryBlockChainDataBase.obtainBlockChainHeight();
         while(true){
             temporaryBlockChainHeight = temporaryBlockChainHeight.add(BigInteger.valueOf(1));
