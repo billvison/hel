@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
+import com.google.common.base.Joiner;
 import com.google.common.primitives.Bytes;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
@@ -8,10 +9,13 @@ import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.enums.BlockChainActionEnum;
+import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
+import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.core.script.Script;
 import com.xingkaichun.helloworldblockchain.core.utils.*;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import org.iq80.leveldb.DB;
@@ -386,21 +390,36 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     public boolean isTransactionStorageCapacityLegal(Transaction transaction) {
         if(transaction == null){
+            logger.debug("交易数据异常，交易不能为空。");
             return false;
         }
 
+        //校验整笔交易所占存储空间
+        //TODO 标准化计算字符个数
+        if(gson.toJson(transaction).length()> BlockChainCoreConstant.TRANSACTION_TEXT_MAX_SIZE){
+            logger.debug("交易数据异常，交易所占存储空间太大。");
+            return false;
+        }
+
+        long timestamp = transaction.getTimestamp();
         TransactionType transactionType = transaction.getTransactionType();
         List<TransactionInput> inputs = transaction.getInputs();
         List<TransactionOutput> outputs = transaction.getOutputs();
         List<String> messages = transaction.getMessages();
 
+        //校验时间戳
+        if(timestamp<BlockChainCoreConstant.BLOCK_CHAIN_VERSION_1 || timestamp>System.currentTimeMillis()+BlockChainCoreConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
+            return false;
+        }
+
+        //校验交易类型
         if(transactionType == TransactionType.NORMAL){
+            /**
+             * 普通交易输出可以为空，这时代表用户将自己的币扔进了黑洞，强制销毁了。
+             */
+
             if(inputs == null || inputs.size()==0){
                 logger.debug("交易校验失败：普通交易必须有交易输入。");
-                return false;
-            }
-            if(outputs == null || outputs.size()==0){
-                logger.debug("交易校验失败：普通交易必须有交易输出。");
                 return false;
             }
             if(messages != null && messages.size()>0){
@@ -408,12 +427,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 return false;
             }
         }else if(transactionType == TransactionType.MINER){
+            /**
+             * 激励交易输出可以为空，这时代表矿工放弃了奖励、或者依据规则挖矿激励就是零奖励。
+             */
+
             if(inputs != null && inputs.size()!=0){
                 logger.debug("交易校验失败：激励交易不能有交易输入。");
-                return false;
-            }
-            if(outputs == null || outputs.size()==0){
-                logger.debug("交易校验失败：激励交易必须有交易输出。");
                 return false;
             }
             if(messages != null && messages.size()>0){
@@ -424,14 +443,19 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             throw new BlockChainCoreException("未实现逻辑交易类型");
         }
 
-        //交易字符太大
-        //TODO 标准化计算字符个数
-        if(gson.toJson(transaction).length()> BlockChainCoreConstant.TRANSACTION_TEXT_MAX_SIZE){
-            return false;
+        if(inputs != null){
+            for(TransactionInput transactionInput:inputs){
+                ScriptKey scriptKey = transactionInput.getScriptKey();
+                if(calculateScriptSize(scriptKey)>500){
+                    logger.debug("交易校验失败：交易输入脚本所占存储空间过大。");
+                    return false;
+                }
+            }
         }
+
         if(outputs != null){
             for(TransactionOutput transactionOutput:outputs){
-                StringAddress stringAddress =  transactionOutput.getStringAddress();
+                StringAddress stringAddress = transactionOutput.getStringAddress();
                 if(stringAddress.getValue().length()<=20){
                     logger.debug("钱包地址长度过短");
                     return false;
@@ -440,13 +464,32 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                     logger.debug("钱包地址长度过长");
                     return false;
                 }
-                if(!isTransactionAmountLegal(transactionOutput.getValue())){
+
+                BigDecimal value = transactionOutput.getValue();
+                if(!isTransactionAmountLegal(value)){
                     logger.debug("交易校验失败：交易金额不合法");
+                    return false;
+                }
+
+                ScriptLock scriptLock = transactionOutput.getScriptLock();
+                if(calculateScriptSize(scriptLock)>500){
+                    logger.debug("交易校验失败：交易输出脚本所占存储空间过大。");
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    /**
+     * 计算脚本长度
+     */
+    private long calculateScriptSize(Script script) {
+        if(script == null || script.size()==0){
+            return 0L;
+        }
+        String stringScript = Joiner.on(" ").join(script);
+        return stringScript.length();
     }
 
     /**
