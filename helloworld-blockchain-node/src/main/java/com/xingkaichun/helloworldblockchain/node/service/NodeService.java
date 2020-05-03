@@ -24,11 +24,6 @@ public interface NodeService {
      * 获取所有活着的节点
      */
     List<Node> queryAllNoForkAliveNodeList() ;
-    
-    /**
-     * 新增或者更新节点信息 TODO 职责不单一
-     */
-    boolean addOrUpdateNode(Node node) ;
     /**
      * 节点网络连接错误处理
      */

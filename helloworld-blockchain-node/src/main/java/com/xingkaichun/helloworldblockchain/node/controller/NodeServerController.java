@@ -109,8 +109,11 @@ public class NodeServerController {
                 }
                 logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,request.getPort()));
             }
-
-            nodeService.addOrUpdateNode(node);
+            if(nodeService.queryNode(node) == null){
+                nodeService.addNode(node);
+            }else {
+                nodeService.updateNode(node);
+            }
             AddOrUpdateNodeResponse response = new AddOrUpdateNodeResponse();
             return ServiceResult.createSuccessServiceResult("更新节点成功",response);
         } catch (Exception e){

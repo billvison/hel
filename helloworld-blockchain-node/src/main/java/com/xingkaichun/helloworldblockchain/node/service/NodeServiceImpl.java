@@ -2,12 +2,12 @@ package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.node.dao.NodeDao;
-import com.xingkaichun.helloworldblockchain.node.model.NodeEntity;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.QueryNodeListRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.node.model.NodeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,20 +43,6 @@ public class NodeServiceImpl implements NodeService {
         List<NodeEntity> nodeEntityList = nodeDao.queryAllNoForkAliveNodeList();
         List<Node> nodeList = classCast(nodeEntityList);
         return nodeList;
-    }
-
-    @Override
-    public boolean addOrUpdateNode(Node node) {
-        NodeEntity nodeEntity = nodeDao.queryNode(node);
-        if(nodeEntity == null){
-            fillNodeDefaultValue(node);
-            NodeEntity nodeEntityByPass = classCast(node);
-            nodeDao.addNode(nodeEntityByPass);
-        } else {
-            NodeEntity nodeEntityByPass = classCast(node);
-            nodeDao.updateNode(nodeEntityByPass);
-        }
-        return true;
     }
 
     @Override

@@ -4,12 +4,12 @@ import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstant;
-import com.xingkaichun.helloworldblockchain.node.service.*;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.response.PingResponse;
+import com.xingkaichun.helloworldblockchain.node.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,15 +121,20 @@ public class TimerService {
             node.setIsNodeAvailable(isPingSuccess);
             if(isPingSuccess){
                 PingResponse pingResponse = pingResponseServiceResult.getResult();
+                //链ID不同
                 if(!BlockChainCoreConstant.BLOCK_CHAIN_ID.equals(pingResponse.getBlockChainId())){
                     nodeService.deleteNode(node);
+                }else {
+                    node.setBlockChainHeight(pingResponse.getBlockChainHeight());
+                    node.setErrorConnectionTimes(0);
+                    if(nodeService.queryNode(node) == null){
+                        nodeService.addNode(node);
+                    }else {
+                        nodeService.updateNode(node);
+                    }
+                    //处理节点传输过来它所知道的节点列表
+                    addNewAvailableNodeToDatabase(pingResponse.getNodeList());
                 }
-                node.setBlockChainHeight(pingResponse.getBlockChainHeight());
-                node.setErrorConnectionTimes(0);
-                //更新节点
-                nodeService.addOrUpdateNode(node);
-                //处理节点传输过来它所知道的节点列表
-                addNewAvailableNodeToDatabase(pingResponse.getNodeList());
             } else {
                 nodeService.nodeErrorConnectionHandle(node);
             }
@@ -222,8 +227,12 @@ public class TimerService {
                 node.setIsNodeAvailable(true);
                 node.setBlockChainHeight(pingResponseServiceResult.getResult().getBlockChainHeight());
                 node.setErrorConnectionTimes(0);
-                nodeService.addOrUpdateNode(node);
-                logger.debug(String.format("自动发现节点[%s:%d]，节点已加入节点数据库。",node.getIp(),node.getPort()));
+                if(nodeService.queryNode(node) == null){
+                    nodeService.addNode(node);
+                    logger.debug(String.format("自动发现节点[%s:%d]，节点已加入节点数据库。",node.getIp(),node.getPort()));
+                }else {
+                    nodeService.updateNode(node);
+                }
             }
         }
     }
