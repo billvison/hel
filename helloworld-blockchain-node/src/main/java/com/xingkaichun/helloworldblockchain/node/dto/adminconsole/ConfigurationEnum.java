@@ -5,8 +5,8 @@ package com.xingkaichun.helloworldblockchain.node.dto.adminconsole;
  * @author 邢开春 xingkaichun@qq.com
  */
 public enum ConfigurationEnum {
-    IS_MINER_ACTIVE("false","矿工是否处于激活状态？"),
-    IS_SYNCHRONIZER_ACTIVE("false","同步者是否处于激活状态？"),
+    IS_MINER_ACTIVE("true","矿工是否处于激活状态？"),
+    IS_SYNCHRONIZER_ACTIVE("true","同步者是否处于激活状态？"),
     MINER_ADDRESS("","矿工钱包的地址。"),
     AUTO_SEARCH_NODE("true","是否允许节点自动在区块链网络中搜索节点。"),
     FORK_BLOCK_SIZE("100","两个区块链有分叉时，区块差异个数大于这个值，则真的分叉了。"),
