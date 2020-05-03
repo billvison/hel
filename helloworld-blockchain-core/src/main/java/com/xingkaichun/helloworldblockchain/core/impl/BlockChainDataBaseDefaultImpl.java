@@ -348,18 +348,31 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     @Override
     public boolean isBlockStorageCapacityLegal(Block block) {
-        //校验区块交易的字节容量范围
-        if(!isBlcokTransactionSizeLegal(block)){
+        //校验时间戳占用存储空间
+        long timestamp = block.getTimestamp();
+        if(timestamp<BlockChainCoreConstant.BLOCK_CHAIN_VERSION_1 || timestamp>System.currentTimeMillis()){
+            return false;
+        }
+
+        //校验共识占用存储空间
+        BigInteger nonce = new BigInteger(block.getConsensusValue());
+        if(BigIntegerUtil.isLessThan(nonce, BlockChainCoreConstant.MIN_NONCE)){
+            return false;
+        }
+        if(BigIntegerUtil.isGreateThan(nonce, BlockChainCoreConstant.MAX_NONCE)){
+            return false;
+        }
+
+        //校验区块中的交易占用的存储空间
+        //校验区块中交易的数量
+        List<Transaction> transactions = block.getTransactions();
+        long transactionsSize = transactions==null?0L:transactions.size();
+        if(transactionsSize > BlockChainCoreConstant.BLOCK_MAX_TRANSACTION_SIZE){
             logger.debug(String.format("区块数据异常，区块里包含的交易数量超过限制值%d。",
                     BlockChainCoreConstant.BLOCK_MAX_TRANSACTION_SIZE));
             return false;
         }
-        //共识值的字节容量范围
-        if(!isConsensusValueRangeRight(block)){
-            return false;
-        }
-        //校验每一笔交易的容量是否合法
-        List<Transaction> transactions = block.getTransactions();
+        //校验每一笔交易占用的存储空间
         if(transactions != null){
             for(Transaction transaction:transactions){
                 if(!isTransactionStorageCapacityLegal(transaction)){
@@ -654,34 +667,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
         return true;
-    }
-
-    /**
-     * nonce取值范围是否正确
-     */
-    private boolean isConsensusValueRangeRight(Block block) {
-        BigInteger nonce = new BigInteger(block.getConsensusValue());
-        if(BigIntegerUtil.isLessThan(nonce, BlockChainCoreConstant.MIN_NONCE)){
-            return false;
-        }
-        if(BigIntegerUtil.isGreateThan(nonce, BlockChainCoreConstant.MAX_NONCE)){
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 校验区块含有的交易数量是否合法：用来限制区块含有的交易数量，用于限制区块大小
-     */
-    private boolean isBlcokTransactionSizeLegal(Block block) {
-        if(block == null){
-            return false;
-        }
-        List<Transaction> transactions = block.getTransactions();
-        if(transactions == null){
-            return true;
-        }
-        return transactions.size() <= BlockChainCoreConstant.BLOCK_MAX_TRANSACTION_SIZE;
     }
 
     public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception{
