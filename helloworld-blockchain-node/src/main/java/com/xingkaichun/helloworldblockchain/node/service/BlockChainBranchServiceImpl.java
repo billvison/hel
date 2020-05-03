@@ -51,9 +51,8 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
         return !blockHashTemp.equals(blockHash);
     }
 
-    //TODO 不合理
     @Override
-    public BigInteger getNearBlockHeight(BigInteger blockHeight){
+    public BigInteger getFixBlockHashMaxBlockHeight(BigInteger blockHeight){
         BigInteger nearBlockHeight = BigInteger.ZERO;
         Set<String> set = blockHeightBlockHashMap.keySet();
         for(String stringBlockHeight:set){

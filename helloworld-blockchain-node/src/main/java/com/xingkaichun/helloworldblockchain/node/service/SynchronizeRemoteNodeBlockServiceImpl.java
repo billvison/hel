@@ -240,7 +240,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
         if(BigIntegerUtil.isLessEqualThan(blockChainHeight,BigInteger.ZERO)){
             return false;
         }
-        BigInteger nearBlockHeight = blockChainBranchService.getNearBlockHeight(blockChainHeight);
+        BigInteger nearBlockHeight = blockChainBranchService.getFixBlockHashMaxBlockHeight(blockChainHeight);
         if(BigIntegerUtil.isLessEqualThan(nearBlockHeight,BigInteger.ZERO)){
             return false;
         }
