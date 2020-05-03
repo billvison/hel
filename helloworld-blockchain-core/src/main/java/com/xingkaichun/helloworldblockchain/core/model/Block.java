@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.core.model;
 
 
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -13,7 +12,6 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class Block implements Serializable {
 
     /**
@@ -93,4 +91,99 @@ public class Block implements Serializable {
      * 冗余字段
      */
     private BigInteger endTransactionSequenceNumberInBlockChain;
+
+
+
+
+    //region get set
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getPreviousHash() {
+        return previousHash;
+    }
+
+    public void setPreviousHash(String previousHash) {
+        this.previousHash = previousHash;
+    }
+
+    public BigInteger getHeight() {
+        return height;
+    }
+
+    public void setHeight(BigInteger height) {
+        this.height = height;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    public String getMerkleRoot() {
+        return merkleRoot;
+    }
+
+    public void setMerkleRoot(String merkleRoot) {
+        this.merkleRoot = merkleRoot;
+    }
+
+    public String getConsensusValue() {
+        return consensusValue;
+    }
+
+    public void setConsensusValue(String consensusValue) {
+        this.consensusValue = consensusValue;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public ConsensusVariableHolder getConsensusVariableHolder() {
+        return consensusVariableHolder;
+    }
+
+    public void setConsensusVariableHolder(ConsensusVariableHolder consensusVariableHolder) {
+        this.consensusVariableHolder = consensusVariableHolder;
+    }
+
+    public BigInteger getTransactionQuantity() {
+        return transactionQuantity;
+    }
+
+    public void setTransactionQuantity(BigInteger transactionQuantity) {
+        this.transactionQuantity = transactionQuantity;
+    }
+
+    public BigInteger getStartTransactionSequenceNumberInBlockChain() {
+        return startTransactionSequenceNumberInBlockChain;
+    }
+
+    public void setStartTransactionSequenceNumberInBlockChain(BigInteger startTransactionSequenceNumberInBlockChain) {
+        this.startTransactionSequenceNumberInBlockChain = startTransactionSequenceNumberInBlockChain;
+    }
+
+    public BigInteger getEndTransactionSequenceNumberInBlockChain() {
+        return endTransactionSequenceNumberInBlockChain;
+    }
+
+    public void setEndTransactionSequenceNumberInBlockChain(BigInteger endTransactionSequenceNumberInBlockChain) {
+        this.endTransactionSequenceNumberInBlockChain = endTransactionSequenceNumberInBlockChain;
+    }
+
+    //endregion
 }

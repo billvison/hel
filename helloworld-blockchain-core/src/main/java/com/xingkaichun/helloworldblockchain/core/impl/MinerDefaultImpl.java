@@ -11,10 +11,8 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.core.utils.*;
-import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstant;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
-import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -200,7 +198,6 @@ public class MinerDefaultImpl extends Miner {
      * 挖矿中的区块对象
      * 为了辅助挖矿而创造的类，类里包含了一个需要挖矿的区块和一些辅助挖矿的对象。
      */
-    @Data
     public static class MiningBlock {
         //挖矿开始的时间戳
         private long startTimestamp;
@@ -216,6 +213,77 @@ public class MinerDefaultImpl extends Miner {
         private Boolean miningSuccess;
         private List<Transaction> forMineBlockTransactionList;
         private List<Transaction> exceptionTransactionList;
+
+
+
+
+        //region get set
+
+        public long getStartTimestamp() {
+            return startTimestamp;
+        }
+
+        public void setStartTimestamp(long startTimestamp) {
+            this.startTimestamp = startTimestamp;
+        }
+
+        public BlockChainDataBase getBlockChainDataBase() {
+            return blockChainDataBase;
+        }
+
+        public void setBlockChainDataBase(BlockChainDataBase blockChainDataBase) {
+            this.blockChainDataBase = blockChainDataBase;
+        }
+
+        public Block getBlock() {
+            return block;
+        }
+
+        public void setBlock(Block block) {
+            this.block = block;
+        }
+
+        public BigInteger getNextNonce() {
+            return nextNonce;
+        }
+
+        public void setNextNonce(BigInteger nextNonce) {
+            this.nextNonce = nextNonce;
+        }
+
+        public BigInteger getTryNonceSizeEveryBatch() {
+            return tryNonceSizeEveryBatch;
+        }
+
+        public void setTryNonceSizeEveryBatch(BigInteger tryNonceSizeEveryBatch) {
+            this.tryNonceSizeEveryBatch = tryNonceSizeEveryBatch;
+        }
+
+        public Boolean getMiningSuccess() {
+            return miningSuccess;
+        }
+
+        public void setMiningSuccess(Boolean miningSuccess) {
+            this.miningSuccess = miningSuccess;
+        }
+
+        public List<Transaction> getForMineBlockTransactionList() {
+            return forMineBlockTransactionList;
+        }
+
+        public void setForMineBlockTransactionList(List<Transaction> forMineBlockTransactionList) {
+            this.forMineBlockTransactionList = forMineBlockTransactionList;
+        }
+
+        public List<Transaction> getExceptionTransactionList() {
+            return exceptionTransactionList;
+        }
+
+        public void setExceptionTransactionList(List<Transaction> exceptionTransactionList) {
+            this.exceptionTransactionList = exceptionTransactionList;
+        }
+
+        //endregion
     }
     //endregion
 

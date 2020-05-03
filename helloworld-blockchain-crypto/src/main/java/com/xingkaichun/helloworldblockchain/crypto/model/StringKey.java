@@ -1,17 +1,45 @@
 package com.xingkaichun.helloworldblockchain.crypto.model;
 
 
-import lombok.Data;
-
 /**
  * 秘钥
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class StringKey {
 
     private StringPrivateKey stringPrivateKey;
     private StringPublicKey stringPublicKey;
     private StringAddress stringAddress;
+
+
+
+
+    //region get set
+
+    public StringPrivateKey getStringPrivateKey() {
+        return stringPrivateKey;
+    }
+
+    public void setStringPrivateKey(StringPrivateKey stringPrivateKey) {
+        this.stringPrivateKey = stringPrivateKey;
+    }
+
+    public StringPublicKey getStringPublicKey() {
+        return stringPublicKey;
+    }
+
+    public void setStringPublicKey(StringPublicKey stringPublicKey) {
+        this.stringPublicKey = stringPublicKey;
+    }
+
+    public StringAddress getStringAddress() {
+        return stringAddress;
+    }
+
+    public void setStringAddress(StringAddress stringAddress) {
+        this.stringAddress = stringAddress;
+    }
+
+    //endregion
 }

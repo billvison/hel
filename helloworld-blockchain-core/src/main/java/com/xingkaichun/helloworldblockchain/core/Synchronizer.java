@@ -1,7 +1,5 @@
 package com.xingkaichun.helloworldblockchain.core;
 
-import lombok.Data;
-
 /**
  * 区块链同步器。
  * 区块链是一个分布式的数据库。
@@ -9,7 +7,6 @@ import lombok.Data;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public abstract class Synchronizer {
 
     //节点同步数据库
@@ -38,5 +35,20 @@ public abstract class Synchronizer {
      * 停用同步器：设置同步器为非活动状态。
      */
     public abstract void deactive();
+    //endregion
+
+
+
+
+    //region get set
+
+    public SynchronizerDataBase getSynchronizerDataBase() {
+        return synchronizerDataBase;
+    }
+
+    public void setSynchronizerDataBase(SynchronizerDataBase synchronizerDataBase) {
+        this.synchronizerDataBase = synchronizerDataBase;
+    }
+
     //endregion
 }

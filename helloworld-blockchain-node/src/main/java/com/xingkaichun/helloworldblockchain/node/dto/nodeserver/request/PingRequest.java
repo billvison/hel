@@ -1,13 +1,25 @@
 package com.xingkaichun.helloworldblockchain.node.dto.nodeserver.request;
 
-import lombok.Data;
-
 /**
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class PingRequest {
 
     private int port;
+
+
+
+
+    //region get set
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    //endregion
 }

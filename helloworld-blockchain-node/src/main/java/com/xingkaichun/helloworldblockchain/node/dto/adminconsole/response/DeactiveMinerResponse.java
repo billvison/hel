@@ -1,13 +1,26 @@
 package com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response;
 
-import lombok.Data;
-
 /**
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class DeactiveMinerResponse {
 
     private boolean deactiveMinerSuccess;
+
+
+
+
+    //region get set
+
+    public boolean isDeactiveMinerSuccess() {
+        return deactiveMinerSuccess;
+    }
+
+    public void setDeactiveMinerSuccess(boolean deactiveMinerSuccess) {
+        this.deactiveMinerSuccess = deactiveMinerSuccess;
+    }
+
+
+    //endregion
 }

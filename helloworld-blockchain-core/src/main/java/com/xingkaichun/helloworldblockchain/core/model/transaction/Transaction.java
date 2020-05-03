@@ -1,8 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.model.transaction;
 
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
@@ -12,7 +10,6 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class Transaction implements Serializable {
 
     //交易时间戳
@@ -58,4 +55,83 @@ public class Transaction implements Serializable {
      * 冗余
      */
     private BigInteger blockHeight;
+
+
+
+
+    //region get set
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getTransactionHash() {
+        return transactionHash;
+    }
+
+    public void setTransactionHash(String transactionHash) {
+        this.transactionHash = transactionHash;
+    }
+
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
+    }
+
+    public List<TransactionInput> getInputs() {
+        return inputs;
+    }
+
+    public void setInputs(List<TransactionInput> inputs) {
+        this.inputs = inputs;
+    }
+
+    public List<TransactionOutput> getOutputs() {
+        return outputs;
+    }
+
+    public void setOutputs(List<TransactionOutput> outputs) {
+        this.outputs = outputs;
+    }
+
+    public List<String> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<String> messages) {
+        this.messages = messages;
+    }
+
+    public BigInteger getTransactionSequenceNumberInBlock() {
+        return transactionSequenceNumberInBlock;
+    }
+
+    public void setTransactionSequenceNumberInBlock(BigInteger transactionSequenceNumberInBlock) {
+        this.transactionSequenceNumberInBlock = transactionSequenceNumberInBlock;
+    }
+
+    public BigInteger getTransactionSequenceNumberInBlockChain() {
+        return transactionSequenceNumberInBlockChain;
+    }
+
+    public void setTransactionSequenceNumberInBlockChain(BigInteger transactionSequenceNumberInBlockChain) {
+        this.transactionSequenceNumberInBlockChain = transactionSequenceNumberInBlockChain;
+    }
+
+    public BigInteger getBlockHeight() {
+        return blockHeight;
+    }
+
+    public void setBlockHeight(BigInteger blockHeight) {
+        this.blockHeight = blockHeight;
+    }
+
+    //endregion
 }

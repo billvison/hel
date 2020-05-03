@@ -1,12 +1,16 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request;
 
-import lombok.Data;
-
 /**
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class GenerateWalletRequest {
+
+
+
+
+    //region get set
+
+    //endregion
 
 }

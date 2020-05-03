@@ -1,12 +1,9 @@
 package com.xingkaichun.helloworldblockchain.node.dto.adminconsole;
 
-import lombok.Data;
-
 /**
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class ConfigurationDto {
 
     private String confKey;
@@ -19,4 +16,25 @@ public class ConfigurationDto {
         this.confKey = confKey;
         this.confValue = confValue;
     }
+
+
+
+
+    //region get set
+    public String getConfKey() {
+        return confKey;
+    }
+
+    public void setConfKey(String confKey) {
+        this.confKey = confKey;
+    }
+
+    public String getConfValue() {
+        return confValue;
+    }
+
+    public void setConfValue(String confValue) {
+        this.confValue = confValue;
+    }
+    //endregion
 }

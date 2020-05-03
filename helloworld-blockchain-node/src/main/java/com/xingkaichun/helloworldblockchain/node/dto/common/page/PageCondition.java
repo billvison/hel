@@ -1,12 +1,9 @@
 package com.xingkaichun.helloworldblockchain.node.dto.common.page;
 
-import lombok.Data;
-
 /**
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class PageCondition {
 
     private Long from;
@@ -22,4 +19,26 @@ public class PageCondition {
     }
 
     public static PageCondition defaultPageCondition = new PageCondition(Long.valueOf(1),Long.valueOf(10));
+
+
+
+
+    //region get set
+
+    public Long getFrom() {
+        return from;
+    }
+
+    public void setFrom(Long from) {
+        this.from = from;
+    }
+
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+    //endregion
 }

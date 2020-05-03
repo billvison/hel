@@ -1,7 +1,5 @@
 package com.xingkaichun.helloworldblockchain.core;
 
-import lombok.Data;
-
 /**
  * 区块链Core，代表一个完成的区块链核心系统。
  * 区块链核心系统，由以下几部分组成：
@@ -11,7 +9,6 @@ import lombok.Data;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public abstract class BlockChainCore {
 
     //区块链数据库
@@ -26,4 +23,33 @@ public abstract class BlockChainCore {
      */
     public abstract void start();
 
+
+
+
+
+    //region get set
+    public BlockChainDataBase getBlockChainDataBase() {
+        return blockChainDataBase;
+    }
+
+    public void setBlockChainDataBase(BlockChainDataBase blockChainDataBase) {
+        this.blockChainDataBase = blockChainDataBase;
+    }
+
+    public Miner getMiner() {
+        return miner;
+    }
+
+    public void setMiner(Miner miner) {
+        this.miner = miner;
+    }
+
+    public Synchronizer getSynchronizer() {
+        return synchronizer;
+    }
+
+    public void setSynchronizer(Synchronizer synchronizer) {
+        this.synchronizer = synchronizer;
+    }
+    //endregion
 }

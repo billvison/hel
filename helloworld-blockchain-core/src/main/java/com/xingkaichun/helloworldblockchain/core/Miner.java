@@ -1,16 +1,14 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
-import lombok.Data;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 
 /**
  * 矿工:挖矿、分配挖矿奖励
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public abstract class Miner {
 
     //矿工地址
@@ -52,5 +50,35 @@ public abstract class Miner {
      * @param block 目标区块
      */
     public abstract Transaction buildMineAwardTransaction(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
+    //endregion
+
+
+
+
+
+    //region get set
+    public StringAddress getMinerStringAddress() {
+        return minerStringAddress;
+    }
+
+    public void setMinerStringAddress(StringAddress minerStringAddress) {
+        this.minerStringAddress = minerStringAddress;
+    }
+
+    public BlockChainDataBase getBlockChainDataBase() {
+        return blockChainDataBase;
+    }
+
+    public void setBlockChainDataBase(BlockChainDataBase blockChainDataBase) {
+        this.blockChainDataBase = blockChainDataBase;
+    }
+
+    public MinerTransactionDtoDataBase getMinerTransactionDtoDataBase() {
+        return minerTransactionDtoDataBase;
+    }
+
+    public void setMinerTransactionDtoDataBase(MinerTransactionDtoDataBase minerTransactionDtoDataBase) {
+        this.minerTransactionDtoDataBase = minerTransactionDtoDataBase;
+    }
     //endregion
 }

@@ -1,7 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response;
 
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import lombok.Data;
 
 import java.util.List;
 
@@ -9,8 +8,22 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class QueryUtxosByAddressResponse {
 
     private List<TransactionOutput> utxos;
+
+
+
+
+    //region get set
+
+    public List<TransactionOutput> getUtxos() {
+        return utxos;
+    }
+
+    public void setUtxos(List<TransactionOutput> utxos) {
+        this.utxos = utxos;
+    }
+
+    //endregion
 }

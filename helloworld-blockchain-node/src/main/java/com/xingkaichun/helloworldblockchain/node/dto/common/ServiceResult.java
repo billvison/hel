@@ -1,12 +1,9 @@
 package com.xingkaichun.helloworldblockchain.node.dto.common;
 
-import lombok.Data;
-
 /**
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class ServiceResult<T> {
 
     private ServiceCode serviceCode;
@@ -31,4 +28,35 @@ public class ServiceResult<T> {
     public static boolean isSuccess(ServiceResult serviceResult){
         return serviceResult!=null && serviceResult.getServiceCode() != null && serviceResult.getServiceCode() == ServiceCode.SUCCESS;
     }
+
+
+
+
+    //region get set
+
+    public ServiceCode getServiceCode() {
+        return serviceCode;
+    }
+
+    public void setServiceCode(ServiceCode serviceCode) {
+        this.serviceCode = serviceCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public T getResult() {
+        return result;
+    }
+
+    public void setResult(T result) {
+        this.result = result;
+    }
+
+    //endregion
 }

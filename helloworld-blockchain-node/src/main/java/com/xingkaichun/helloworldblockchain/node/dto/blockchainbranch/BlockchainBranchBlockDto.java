@@ -1,17 +1,37 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch;
 
 
-import lombok.Data;
-
 import java.math.BigInteger;
 
 /**
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class BlockchainBranchBlockDto {
 
     private BigInteger blockHeight;
     private String blockHash;
+
+
+
+
+    //region get set
+
+    public BigInteger getBlockHeight() {
+        return blockHeight;
+    }
+
+    public void setBlockHeight(BigInteger blockHeight) {
+        this.blockHeight = blockHeight;
+    }
+
+    public String getBlockHash() {
+        return blockHash;
+    }
+
+    public void setBlockHash(String blockHash) {
+        this.blockHash = blockHash;
+    }
+
+    //endregion
 }

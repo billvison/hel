@@ -5,7 +5,6 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
-import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +17,6 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public abstract class BlockChainDataBase {
 
     private Logger logger = LoggerFactory.getLogger(BlockChainDataBase.class);
@@ -127,4 +125,27 @@ public abstract class BlockChainDataBase {
      * 校验交易的存储容量是否合法：用来限制交易的所占存储空间的大小。
      */
     public abstract boolean isTransactionStorageCapacityLegal(Transaction transaction) ;
+
+
+
+
+    //region get set
+
+    public Incentive getIncentive() {
+        return incentive;
+    }
+
+    public void setIncentive(Incentive incentive) {
+        this.incentive = incentive;
+    }
+
+    public Consensus getConsensus() {
+        return consensus;
+    }
+
+    public void setConsensus(Consensus consensus) {
+        this.consensus = consensus;
+    }
+
+    //endregion
 }

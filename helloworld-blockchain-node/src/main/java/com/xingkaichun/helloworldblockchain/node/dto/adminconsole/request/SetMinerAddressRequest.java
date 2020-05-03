@@ -1,13 +1,23 @@
 package com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request;
 
-import lombok.Data;
-
 /**
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class SetMinerAddressRequest {
 
     private String minerAddress;
+
+
+
+
+    //region get set
+    public String getMinerAddress() {
+        return minerAddress;
+    }
+
+    public void setMinerAddress(String minerAddress) {
+        this.minerAddress = minerAddress;
+    }
+    //endregion
 }

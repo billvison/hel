@@ -1,13 +1,26 @@
 package com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response;
 
-import lombok.Data;
-
 /**
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class IsSynchronizerActiveResponse {
 
     private boolean synchronizerInActiveState;
+
+
+
+
+    //region get set
+
+    public boolean isSynchronizerInActiveState() {
+        return synchronizerInActiveState;
+    }
+
+    public void setSynchronizerInActiveState(boolean synchronizerInActiveState) {
+        this.synchronizerInActiveState = synchronizerInActiveState;
+    }
+
+
+    //endregion
 }

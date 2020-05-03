@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.core;
 
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.ConsensusVariableHolder;
-import lombok.Data;
 
 import java.io.Serializable;
 
@@ -18,7 +17,6 @@ import java.io.Serializable;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public abstract class Consensus implements Serializable {
 
     /**

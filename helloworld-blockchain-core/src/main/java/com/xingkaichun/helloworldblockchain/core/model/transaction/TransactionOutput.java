@@ -3,7 +3,6 @@ package com.xingkaichun.helloworldblockchain.core.model.transaction;
 
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -14,7 +13,6 @@ import java.math.BigInteger;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class TransactionOutput implements Serializable {
 
     /**
@@ -54,4 +52,67 @@ public class TransactionOutput implements Serializable {
      * 在这个交易中的的排序号
      */
     private BigInteger transactionOutputSequence;
+
+
+
+
+    //region get set
+
+    public String getTransactionOutputHash() {
+        return transactionOutputHash;
+    }
+
+    public void setTransactionOutputHash(String transactionOutputHash) {
+        this.transactionOutputHash = transactionOutputHash;
+    }
+
+    public StringAddress getStringAddress() {
+        return stringAddress;
+    }
+
+    public void setStringAddress(StringAddress stringAddress) {
+        this.stringAddress = stringAddress;
+    }
+
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public void setValue(BigDecimal value) {
+        this.value = value;
+    }
+
+    public ScriptLock getScriptLock() {
+        return scriptLock;
+    }
+
+    public void setScriptLock(ScriptLock scriptLock) {
+        this.scriptLock = scriptLock;
+    }
+
+    public BigInteger getBlockHeight() {
+        return blockHeight;
+    }
+
+    public void setBlockHeight(BigInteger blockHeight) {
+        this.blockHeight = blockHeight;
+    }
+
+    public BigInteger getTransactionSequenceNumberInBlock() {
+        return transactionSequenceNumberInBlock;
+    }
+
+    public void setTransactionSequenceNumberInBlock(BigInteger transactionSequenceNumberInBlock) {
+        this.transactionSequenceNumberInBlock = transactionSequenceNumberInBlock;
+    }
+
+    public BigInteger getTransactionOutputSequence() {
+        return transactionOutputSequence;
+    }
+
+    public void setTransactionOutputSequence(BigInteger transactionOutputSequence) {
+        this.transactionOutputSequence = transactionOutputSequence;
+    }
+
+    //endregion
 }

@@ -1,13 +1,25 @@
 package com.xingkaichun.helloworldblockchain.node.dto.common;
 
-import lombok.Data;
-
 /**
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Data
 public class CommonResponse<T> {
 
     private T data;
+
+
+
+
+    //region get set
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    //endregion
 }
