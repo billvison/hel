@@ -1259,7 +1259,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return BigIntegerUtil.decode(byteTotalTransactionQuantity);
     }
 
-    //region 校验交易金额
     /**
      * 是否是一个合法的交易金额：这里用于限制交易金额的最大值、最小值、小数保留位置
      */
@@ -1291,18 +1290,4 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
     }
-    /**
-     * 重载，见其它同名函数
-     */
-    private boolean isTransactionAmountLegal(String transactionAmount) {
-        if(transactionAmount == null){
-            return false;
-        }
-        if(!NumberUtil.isNumber(transactionAmount)){
-            return false;
-        }
-        BigDecimal bigDecimalTransactionAmount = new BigDecimal(transactionAmount);
-        return isTransactionAmountLegal(bigDecimalTransactionAmount);
-    }
-    //endregion
 }
