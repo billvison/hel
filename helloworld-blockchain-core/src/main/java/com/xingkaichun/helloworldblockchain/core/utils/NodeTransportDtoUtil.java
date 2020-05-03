@@ -138,10 +138,14 @@ public class NodeTransportDtoUtil {
 
     private static TransactionType transactionTypeFromTransactionDTO(TransactionDTO transactionDTO) {
         List<TransactionInputDTO> inputs = transactionDTO.getInputs();
-        if(inputs == null || inputs.size()==0){
-            return TransactionType.MINER;
+        List<String> messages = transactionDTO.getMessages();
+        if(messages == null || messages.size()==0){
+            if(inputs == null || inputs.size()==0){
+                return TransactionType.MINER;
+            }
+            return TransactionType.NORMAL;
         }
-        return TransactionType.NORMAL;
+        throw new BlockChainCoreException("找不到匹配的交易类型");
     }
 
     private static ScriptKey scriptKeyFrom(List<String> scriptKey) {
