@@ -396,8 +396,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验整笔交易所占存储空间
-        //TODO 标准化计算字符个数
-        if(gson.toJson(transaction).length()> BlockChainCoreConstant.TRANSACTION_TEXT_MAX_SIZE){
+
+        if(calculateTransactionSize(transaction) > BlockChainCoreConstant.TRANSACTION_TEXT_MAX_SIZE){
             logger.debug("交易数据异常，交易所占存储空间太大。");
             return false;
         }
@@ -482,16 +482,89 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return true;
     }
 
+    //region 计算文本大小
     /**
      * 计算脚本长度
      */
-    private long calculateScriptSize(Script script) {
-        if(script == null || script.size()==0){
+    private long calculateTransactionSize(Transaction transaction) {
+        long size = 0L;
+        long timestamp = transaction.getTimestamp();
+        size += String.valueOf(timestamp).length();
+        TransactionType transactionType = transaction.getTransactionType();
+        size += String.valueOf(transactionType.getCode()).length();
+        List<TransactionInput> inputs = transaction.getInputs();
+        size += calculateTransactionInputSize(inputs);
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        size += calculateTransactionOutputSize(outputs);
+        List<String> messages = transaction.getMessages();
+        size += calculateMessageSize(messages);
+        return size;
+    }
+    private long calculateMessageSize(List<String> messages) {
+        long size = 0L;
+        if(messages == null || messages.size()==0){
             return 0L;
         }
-        String stringScript = Joiner.on(" ").join(script);
-        return stringScript.length();
+        for(String message:messages){
+            size += message.length();
+        }
+        return size;
     }
+    private long calculateTransactionOutputSize(List<TransactionOutput> outputs) {
+        long size = 0L;
+        if(outputs == null || outputs.size()==0){
+            return size;
+        }
+        for(TransactionOutput transactionOutput:outputs){
+            size += calculateTransactionOutputSize(transactionOutput);
+        }
+        return size;
+    }
+    private long calculateTransactionOutputSize(TransactionOutput output) {
+        long size = 0L;
+        if(output == null){
+            return 0L;
+        }
+        StringAddress stringAddress = output.getStringAddress();
+        size += stringAddress.getValue().length();
+        BigDecimal bigDecimal = output.getValue();
+        size += bigDecimal.toPlainString().length();
+        ScriptLock scriptLock = output.getScriptLock();
+        size += calculateScriptSize(scriptLock);
+        return size;
+    }
+    private long calculateTransactionInputSize(List<TransactionInput> inputs) {
+        long size = 0L;
+        if(inputs == null || inputs.size()==0){
+            return size;
+        }
+        for(TransactionInput transactionInput:inputs){
+            size += calculateTransactionInputSize(transactionInput);
+        }
+        return size;
+    }
+    private long calculateTransactionInputSize(TransactionInput input) {
+        long size = 0L;
+        if(input == null){
+            return size;
+        }
+        TransactionOutput unspendTransactionOutput = input.getUnspendTransactionOutput();
+        size += calculateTransactionOutputSize(unspendTransactionOutput);
+        ScriptKey scriptKey = input.getScriptKey();
+        size += calculateScriptSize(scriptKey);
+        return size;
+    }
+    private long calculateScriptSize(Script script) {
+        long size = 0L;
+        if(script == null || script.size()==0){
+            return size;
+        }
+        for(String scriptCode:script){
+            size += scriptCode.length();
+        }
+        return size;
+    }
+    //endregion
 
     /**
      * 是否有双花攻击
