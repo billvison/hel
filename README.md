@@ -34,9 +34,12 @@ helloworld-blockchain-node： 它集成了四个角色的功能。启动区块�
 
 ### 集成开发环境搭建 
 #### eclipse  
+eclipse项目没有任何复杂依赖，请搜索idea如何导入已存在的maven项目。 
+成功将项目导入eclipse后，找到类文件com.xingkaichun.helloworldblockchain.node.HelloWorldBlockChainNodeApplication，右键运行，正常情况下则会启动成功。接下来，快乐的调试代码吧！项目的前端地址是：http://localhost:8444 。 
 
-#### intelliJ idea   
-
+#### intellij idea   
+HelloworldBlockchain项目没有任何复杂依赖，请搜索idea如何导入已存在的maven项目。 
+成功将项目导入idea后，找到类文件com.xingkaichun.helloworldblockchain.node.HelloWorldBlockChainNodeApplication，右键运行，正常情况下则会启动成功。接下来，快乐的调试代码吧！项目的前端地址是：http://localhost:8444 。 
 
 ### 打包与发布  
 使用maven打包有两个步骤：一是进入目录，二是运行打包命令。详细命令如下:  
