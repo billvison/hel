@@ -163,8 +163,8 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 }
                 synchronizerDataBase.addBlockDTO(nodeId,blockDTO);
                 tempBlockHeight = tempBlockHeight.add(BigInteger.ONE);
-                //若是有分叉时，一次同步的最后一个区块至少要比本地区块链的高度大于1
-                if(BigIntegerUtil.isGreateEqualThan(tempBlockHeight,localBlockChainHeight.add(BigInteger.ONE))){
+                //若是有分叉时，一次同步的最后一个区块至少要比本地区块链的高度大于N个 TODO 配置
+                if(BigIntegerUtil.isGreateEqualThan(tempBlockHeight,localBlockChainHeight.add(new BigInteger("10")))){
                     break;
                 }
             }
