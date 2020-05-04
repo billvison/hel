@@ -88,13 +88,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 查询区块操作不需要加锁，原因是，只有对区块链进行区块的增删才会改变区块链的数据。
      */
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-
-    private static Gson gson = new Gson();
-
-    //起源时间戳
-    //北京时间2016-01-01 00:00:00的时间戳是1556640000000L
-    //2016年创始人第一次接触区块链的时间
-    private final static long ORIGIN_TIMESTAMP = 1556640000000L;
     //endregion
 
     //region 构造函数
@@ -303,7 +296,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验区块的存储容量是否合法
-        if(!isBlockStorageCapacityLegal(block)){
+        if(!TextSizeRestrictionUtil.isBlockStorageCapacityLegal(block)){
             logger.debug("区块存储容量非法。");
             return false;
         }
@@ -355,219 +348,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return true;
     }
 
-    @Override
-    public boolean isBlockStorageCapacityLegal(Block block) {
-        //校验时间戳占用存储空间
-        long timestamp = block.getTimestamp();
-        if(timestamp< ORIGIN_TIMESTAMP || timestamp>System.currentTimeMillis()){
-            return false;
-        }
 
-        //校验共识占用存储空间
-        BigInteger nonce = new BigInteger(block.getConsensusValue());
-        if(BigIntegerUtil.isLessThan(nonce, TextSizeRestrictionUtil.MIN_NONCE)){
-            return false;
-        }
-        if(BigIntegerUtil.isGreateThan(nonce, TextSizeRestrictionUtil.MAX_NONCE)){
-            return false;
-        }
 
-        //校验区块中的交易占用的存储空间
-        //校验区块中交易的数量
-        List<Transaction> transactions = block.getTransactions();
-        long transactionsSize = transactions==null?0L:transactions.size();
-        if(transactionsSize > TextSizeRestrictionUtil.BLOCK_MAX_TRANSACTION_SIZE){
-            logger.debug(String.format("区块数据异常，区块里包含的交易数量超过限制值%d。",
-                    TextSizeRestrictionUtil.BLOCK_MAX_TRANSACTION_SIZE));
-            return false;
-        }
-        //校验每一笔交易占用的存储空间
-        if(transactions != null){
-            for(Transaction transaction:transactions){
-                if(!isTransactionStorageCapacityLegal(transaction)){
-                    logger.debug("交易数据异常，交易的容量非法。");
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
-    public boolean isTransactionStorageCapacityLegal(Transaction transaction) {
-        if(transaction == null){
-            logger.debug("交易数据异常，交易不能为空。");
-            return false;
-        }
 
-        //校验整笔交易所占存储空间
-
-        if(calculateTransactionSize(transaction) > TextSizeRestrictionUtil.TRANSACTION_TEXT_MAX_SIZE){
-            logger.debug("交易数据异常，交易所占存储空间太大。");
-            return false;
-        }
-
-        long timestamp = transaction.getTimestamp();
-        TransactionType transactionType = transaction.getTransactionType();
-        List<TransactionInput> inputs = transaction.getInputs();
-        List<TransactionOutput> outputs = transaction.getOutputs();
-        List<String> messages = transaction.getMessages();
-        //校验时间戳
-        if(timestamp< ORIGIN_TIMESTAMP || timestamp>System.currentTimeMillis()+BlockChainCoreConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
-            return false;
-        }
-
-        //校验交易类型
-        if(transactionType == TransactionType.NORMAL){
-            /**
-             * 普通交易输出可以为空，这时代表用户将自己的币扔进了黑洞，强制销毁了。
-             */
-
-            if(inputs == null || inputs.size()==0){
-                logger.debug("交易校验失败：普通交易必须有交易输入。");
-                return false;
-            }
-            if(messages != null && messages.size()>0){
-                logger.debug("交易校验失败：普通交易不能有附加信息。");
-                return false;
-            }
-        }else if(transactionType == TransactionType.MINER){
-            /**
-             * 激励交易输出可以为空，这时代表矿工放弃了奖励、或者依据规则挖矿激励就是零奖励。
-             */
-
-            if(inputs != null && inputs.size()!=0){
-                logger.debug("交易校验失败：激励交易不能有交易输入。");
-                return false;
-            }
-            if(messages != null && messages.size()>0){
-                logger.debug("交易校验失败：激励交易不能有附加信息。");
-                return false;
-            }
-        }else {
-            throw new BlockChainCoreException("未实现逻辑交易类型");
-        }
-
-        if(inputs != null){
-            for(TransactionInput transactionInput:inputs){
-                ScriptKey scriptKey = transactionInput.getScriptKey();
-                if(calculateScriptSize(scriptKey)>500){
-                    logger.debug("交易校验失败：交易输入脚本所占存储空间过大。");
-                    return false;
-                }
-            }
-        }
-
-        if(outputs != null){
-            for(TransactionOutput transactionOutput:outputs){
-                StringAddress stringAddress = transactionOutput.getStringAddress();
-                if(stringAddress.getValue().length()<=20){
-                    logger.debug("钱包地址长度过短");
-                    return false;
-                }
-                if(stringAddress.getValue().length()>=40){
-                    logger.debug("钱包地址长度过长");
-                    return false;
-                }
-
-                BigDecimal value = transactionOutput.getValue();
-                if(!isTransactionAmountLegal(value)){
-                    logger.debug("交易校验失败：交易金额不合法");
-                    return false;
-                }
-
-                ScriptLock scriptLock = transactionOutput.getScriptLock();
-                if(calculateScriptSize(scriptLock)>500){
-                    logger.debug("交易校验失败：交易输出脚本所占存储空间过大。");
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    //region 计算文本大小
-    /**
-     * 计算脚本长度
-     */
-    private long calculateTransactionSize(Transaction transaction) {
-        long size = 0L;
-        long timestamp = transaction.getTimestamp();
-        size += String.valueOf(timestamp).length();
-        TransactionType transactionType = transaction.getTransactionType();
-        size += String.valueOf(transactionType.getCode()).length();
-        List<TransactionInput> inputs = transaction.getInputs();
-        size += calculateTransactionInputSize(inputs);
-        List<TransactionOutput> outputs = transaction.getOutputs();
-        size += calculateTransactionOutputSize(outputs);
-        List<String> messages = transaction.getMessages();
-        size += calculateMessageSize(messages);
-        return size;
-    }
-    private long calculateMessageSize(List<String> messages) {
-        long size = 0L;
-        if(messages == null || messages.size()==0){
-            return 0L;
-        }
-        for(String message:messages){
-            size += message.length();
-        }
-        return size;
-    }
-    private long calculateTransactionOutputSize(List<TransactionOutput> outputs) {
-        long size = 0L;
-        if(outputs == null || outputs.size()==0){
-            return size;
-        }
-        for(TransactionOutput transactionOutput:outputs){
-            size += calculateTransactionOutputSize(transactionOutput);
-        }
-        return size;
-    }
-    private long calculateTransactionOutputSize(TransactionOutput output) {
-        long size = 0L;
-        if(output == null){
-            return 0L;
-        }
-        StringAddress stringAddress = output.getStringAddress();
-        size += stringAddress.getValue().length();
-        BigDecimal bigDecimal = output.getValue();
-        size += bigDecimal.toPlainString().length();
-        ScriptLock scriptLock = output.getScriptLock();
-        size += calculateScriptSize(scriptLock);
-        return size;
-    }
-    private long calculateTransactionInputSize(List<TransactionInput> inputs) {
-        long size = 0L;
-        if(inputs == null || inputs.size()==0){
-            return size;
-        }
-        for(TransactionInput transactionInput:inputs){
-            size += calculateTransactionInputSize(transactionInput);
-        }
-        return size;
-    }
-    private long calculateTransactionInputSize(TransactionInput input) {
-        long size = 0L;
-        if(input == null){
-            return size;
-        }
-        TransactionOutput unspendTransactionOutput = input.getUnspendTransactionOutput();
-        size += calculateTransactionOutputSize(unspendTransactionOutput);
-        ScriptKey scriptKey = input.getScriptKey();
-        size += calculateScriptSize(scriptKey);
-        return size;
-    }
-    private long calculateScriptSize(Script script) {
-        long size = 0L;
-        if(script == null || script.size()==0){
-            return size;
-        }
-        for(String scriptCode:script){
-            size += scriptCode.length();
-        }
-        return size;
-    }
-    //endregion
 
     /**
      * 是否有双花攻击
@@ -802,9 +586,15 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 return false;
             }
         }
+        //业务校验
+        //交易金额相关
+        if(!isTransactionAmountLegal(transaction)){
+            logger.debug("交易金额不合法");
+            return false;
+        }
 
-        //校验区块存储
-        if(!isTransactionStorageCapacityLegal(transaction)){
+        //校验交易存储
+        if(!TextSizeRestrictionUtil.isTransactionStorageCapacityLegal(transaction)){
             logger.debug("请校验交易的大小");
             return false;
         }
@@ -838,6 +628,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
 
+        //根据交易类型，做进一步的校验 TODO
         if(transaction.getTransactionType() == TransactionType.MINER){
             if(!isBlockWriteMineAwardRight(block)){
                 logger.debug("交易校验失败：挖矿交易的输出金额不正确。");
@@ -1231,7 +1022,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
     }
 
-    public List<TransactionOutput> querUnspendTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception {
+    @Override
+    public List<TransactionOutput> queryUnspendTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
         byte[] addressToUnspendTransactionOuputListKey = buildAddressToUnspendTransactionOuputListKey(stringAddress.getValue());
@@ -1334,6 +1126,22 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return BigInteger.ZERO;
         }
         return BigIntegerUtil.decode(byteTotalTransactionQuantity);
+    }
+
+    /**
+     * 交易中的金额是否符合系统的约束
+     */
+    private boolean isTransactionAmountLegal(Transaction transaction) {
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        if(outputs != null){
+            for(TransactionOutput output:outputs){
+                if(!isTransactionAmountLegal(output.getValue())){
+                    logger.debug("交易金额不合法");
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**

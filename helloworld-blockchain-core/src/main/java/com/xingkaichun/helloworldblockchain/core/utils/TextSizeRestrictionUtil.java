@@ -1,7 +1,22 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
+import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
+import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
+import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.core.script.Script;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * 存放有关存储容量有关的常量，例如区块最大的存储容量，交易最大的存储容量
@@ -9,6 +24,9 @@ import java.util.Collections;
  * @author 邢开春 xingkaichun@qq.com
  */
 public class TextSizeRestrictionUtil {
+
+    private final static Logger logger = LoggerFactory.getLogger(TextSizeRestrictionUtil.class);
+
 
     //交易文本字符串最大长度值
     public final static long TRANSACTION_TEXT_MAX_SIZE = 1024;
@@ -20,4 +38,249 @@ public class TextSizeRestrictionUtil {
     public final static BigInteger MAX_NONCE = new BigInteger(String.join("", Collections.nCopies(50, "9")));
     //nonce最小值
     public final static BigInteger MIN_NONCE = BigInteger.ZERO;
+
+    //起源时间戳
+    //北京时间2016-01-01 00:00:00的时间戳是1556640000000L
+    //2016年创始人第一次接触区块链的时间
+    private final static long ORIGIN_TIMESTAMP = 1556640000000L;
+    //region 校验存储容量
+    /**
+     * 校验区块的存储容量是否合法：用来限制区块所占存储空间的大小。
+     */
+    public static boolean isBlockStorageCapacityLegal(Block block) {
+        //校验时间戳占用存储空间
+        long timestamp = block.getTimestamp();
+        if(timestamp< ORIGIN_TIMESTAMP || timestamp>System.currentTimeMillis()){
+            return false;
+        }
+
+        //校验共识占用存储空间
+        BigInteger nonce = new BigInteger(block.getConsensusValue());
+        if(BigIntegerUtil.isLessThan(nonce, TextSizeRestrictionUtil.MIN_NONCE)){
+            return false;
+        }
+        if(BigIntegerUtil.isGreateThan(nonce, TextSizeRestrictionUtil.MAX_NONCE)){
+            return false;
+        }
+
+        //校验区块中的交易占用的存储空间
+        //校验区块中交易的数量
+        List<Transaction> transactions = block.getTransactions();
+        long transactionsSize = transactions==null?0L:transactions.size();
+        if(transactionsSize > TextSizeRestrictionUtil.BLOCK_MAX_TRANSACTION_SIZE){
+            logger.debug(String.format("区块数据异常，区块里包含的交易数量超过限制值%d。",
+                    TextSizeRestrictionUtil.BLOCK_MAX_TRANSACTION_SIZE));
+            return false;
+        }
+        //校验每一笔交易占用的存储空间
+        if(transactions != null){
+            for(Transaction transaction:transactions){
+                if(!isTransactionStorageCapacityLegal(transaction)){
+                    logger.debug("交易数据异常，交易的容量非法。");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 校验交易的存储容量是否合法：用来限制交易的所占存储空间的大小。
+     */
+    public static boolean isTransactionStorageCapacityLegal(Transaction transaction) {
+        if(transaction == null){
+            logger.debug("交易数据异常，交易不能为空。");
+            return false;
+        }
+
+        long timestamp = transaction.getTimestamp();
+        TransactionType transactionType = transaction.getTransactionType();
+        List<TransactionInput> inputs = transaction.getInputs();
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        List<String> messages = transaction.getMessages();
+
+        //校验时间戳
+        if(timestamp< ORIGIN_TIMESTAMP || timestamp>System.currentTimeMillis()+BlockChainCoreConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
+            return false;
+        }
+
+        //根据交易类型，判断交易的字段存储结构是否正确   TODO 位置有问题
+        if(transactionType == TransactionType.NORMAL){
+            /**
+             * 普通交易输出可以为空，这时代表用户将自己的币扔进了黑洞，强制销毁了。
+             */
+
+            if(inputs == null || inputs.size()==0){
+                logger.debug("交易校验失败：普通交易必须有交易输入。");
+                return false;
+            }
+            if(messages != null && messages.size()>0){
+                logger.debug("交易校验失败：普通交易不能有附加信息。");
+                return false;
+            }
+        }else if(transactionType == TransactionType.MINER){
+            /**
+             * 激励交易输出可以为空，这时代表矿工放弃了奖励、或者依据规则挖矿激励就是零奖励。
+             */
+
+            if(inputs != null && inputs.size()!=0){
+                logger.debug("交易校验失败：激励交易不能有交易输入。");
+                return false;
+            }
+            if(messages != null && messages.size()>0){
+                logger.debug("交易校验失败：激励交易不能有附加信息。");
+                return false;
+            }
+        }else {
+            throw new BlockChainCoreException("未实现逻辑交易类型");
+        }
+
+        //校验交易输入
+        if(inputs != null){
+            for(TransactionInput transactionInput:inputs){
+                ScriptKey scriptKey = transactionInput.getScriptKey();
+                if(calculateScriptSize(scriptKey)>500){
+                    logger.debug("交易校验失败：交易输入脚本所占存储空间过大。");
+                    return false;
+                }
+            }
+        }
+
+        //校验交易输出
+        if(outputs != null){
+            for(TransactionOutput transactionOutput:outputs){
+                StringAddress stringAddress = transactionOutput.getStringAddress();
+                if(stringAddress.getValue().length()<=20){
+                    logger.debug("钱包地址长度过短");
+                    return false;
+                }
+                if(stringAddress.getValue().length()>=40){
+                    logger.debug("钱包地址长度过长");
+                    return false;
+                }
+
+                BigDecimal value = transactionOutput.getValue();
+                if(obtainBigDecimalSize(value)>100){
+                    logger.debug("交易校验失败：交易金额长度超过存储限制");
+                    return false;
+                }
+
+                ScriptLock scriptLock = transactionOutput.getScriptLock();
+                if(calculateScriptSize(scriptLock)>500){
+                    logger.debug("交易校验失败：交易输出脚本所占存储空间过大。");
+                    return false;
+                }
+            }
+        }
+
+        //校验附加消息
+        if(messages != null){
+            for(String message:messages){
+                if(message == null || message.length()==0){
+                    logger.debug("交易校验失败：附加消息不能为空。");
+                    return false;
+                }
+                if(message.length()>100){
+                    logger.debug("交易校验失败：附加消息所占存储空间太大。");
+                    return false;
+                }
+            }
+        }
+
+        //校验整笔交易所占存储空间
+        if(calculateTransactionSize(transaction) > TextSizeRestrictionUtil.TRANSACTION_TEXT_MAX_SIZE){
+            logger.debug("交易数据异常，交易所占存储空间太大。");
+            return false;
+        }
+        return true;
+    }
+    //endregion
+
+    //region 计算文本大小
+    /**
+     * 计算脚本长度
+     */
+    private static long calculateTransactionSize(Transaction transaction) {
+        long size = 0L;
+        long timestamp = transaction.getTimestamp();
+        size += String.valueOf(timestamp).length();
+        TransactionType transactionType = transaction.getTransactionType();
+        size += String.valueOf(transactionType.getCode()).length();
+        List<TransactionInput> inputs = transaction.getInputs();
+        size += calculateTransactionInputSize(inputs);
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        size += calculateTransactionOutputSize(outputs);
+        List<String> messages = transaction.getMessages();
+        size += calculateMessageSize(messages);
+        return size;
+    }
+    private static long calculateMessageSize(List<String> messages) {
+        long size = 0L;
+        if(messages == null || messages.size()==0){
+            return 0L;
+        }
+        for(String message:messages){
+            size += message.length();
+        }
+        return size;
+    }
+    private static long calculateTransactionOutputSize(List<TransactionOutput> outputs) {
+        long size = 0L;
+        if(outputs == null || outputs.size()==0){
+            return size;
+        }
+        for(TransactionOutput transactionOutput:outputs){
+            size += calculateTransactionOutputSize(transactionOutput);
+        }
+        return size;
+    }
+    private static long calculateTransactionOutputSize(TransactionOutput output) {
+        long size = 0L;
+        if(output == null){
+            return 0L;
+        }
+        StringAddress stringAddress = output.getStringAddress();
+        size += stringAddress.getValue().length();
+        BigDecimal bigDecimal = output.getValue();
+        size += obtainBigDecimalSize(bigDecimal);
+        ScriptLock scriptLock = output.getScriptLock();
+        size += calculateScriptSize(scriptLock);
+        return size;
+    }
+    private static long calculateTransactionInputSize(List<TransactionInput> inputs) {
+        long size = 0L;
+        if(inputs == null || inputs.size()==0){
+            return size;
+        }
+        for(TransactionInput transactionInput:inputs){
+            size += calculateTransactionInputSize(transactionInput);
+        }
+        return size;
+    }
+    private static long calculateTransactionInputSize(TransactionInput input) {
+        long size = 0L;
+        if(input == null){
+            return size;
+        }
+        TransactionOutput unspendTransactionOutput = input.getUnspendTransactionOutput();
+        size += calculateTransactionOutputSize(unspendTransactionOutput);
+        ScriptKey scriptKey = input.getScriptKey();
+        size += calculateScriptSize(scriptKey);
+        return size;
+    }
+    private static long calculateScriptSize(Script script) {
+        long size = 0L;
+        if(script == null || script.size()==0){
+            return size;
+        }
+        for(String scriptCode:script){
+            size += scriptCode.length();
+        }
+        return size;
+    }
+    //endregion
+
+    private static long obtainBigDecimalSize(BigDecimal number){
+        return number.toPlainString().length();
+    }
 }

@@ -60,17 +60,7 @@ public abstract class BlockChainDataBase {
 
 
 
-    //region 校验存储容量
-    /**
-     * 校验区块的存储容量是否合法：用来限制区块所占存储空间的大小。
-     */
-    public abstract boolean isBlockStorageCapacityLegal(Block block) ;
 
-    /**
-     * 校验交易的存储容量是否合法：用来限制交易的所占存储空间的大小。
-     */
-    public abstract boolean isTransactionStorageCapacityLegal(Transaction transaction) ;
-    //endregion
 
 
 
@@ -119,7 +109,7 @@ public abstract class BlockChainDataBase {
     /**
      * 根据地址查询未花费交易输出
      */
-    public abstract List<TransactionOutput> querUnspendTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception ;
+    public abstract List<TransactionOutput> queryUnspendTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception ;
 
 
     /**

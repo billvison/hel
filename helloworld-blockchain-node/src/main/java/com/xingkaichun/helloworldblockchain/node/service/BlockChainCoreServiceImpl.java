@@ -86,7 +86,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
             pageCondition = PageCondition.defaultPageCondition;
         }
         StringAddress stringAddress = new StringAddress(request.getAddress());
-        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().querUnspendTransactionOuputListByAddress(stringAddress,pageCondition.getFrom(),pageCondition.getSize());
+        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryUnspendTransactionOuputListByAddress(stringAddress,pageCondition.getFrom(),pageCondition.getSize());
         return utxo;
     }
 
