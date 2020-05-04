@@ -1,20 +1,16 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.google.common.primitives.Bytes;
-import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.enums.BlockChainActionEnum;
-import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
-import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.script.Script;
 import com.xingkaichun.helloworldblockchain.core.utils.*;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import org.iq80.leveldb.DB;
@@ -282,6 +278,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 检测区块是否可以被应用到区块链上
      * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
      */
+    @Override
     public boolean isBlockCanApplyToBlockChain(@Nonnull Block block) throws Exception {
         //校验区块时间
         if(!isBlockTimestampLegal(block)){
@@ -573,6 +570,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return true;
     }
 
+    @Override
     public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception{
         //校验交易类型
         TransactionType transactionType = transaction.getTransactionType();
@@ -696,7 +694,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     /**
-     * 交易的时间是否合法
+     * 区块的时间是否合法
      */
     private boolean isBlockTimestampLegal(Block block) {
         if(block.getTimestamp() > System.currentTimeMillis()){
@@ -1077,6 +1075,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return transactionOutputList;
     }
 
+    @Override
     public List<Transaction> queryTransactionByTransactionHeight(BigInteger from,BigInteger size) throws Exception {
         List<Transaction> transactionList = new ArrayList<>();
         for(int i=0;BigIntegerUtil.isLessThan(BigInteger.valueOf(i),size);i++){
@@ -1090,6 +1089,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return transactionList;
     }
 
+    @Override
     public List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
