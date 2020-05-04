@@ -821,10 +821,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 }
             }
             if(mineAwardTransactionCount == 0){
-                throw new BlockChainCoreException("区块中没有奖励交易。");
+                logger.debug("区块中没有奖励交易。");
+                return false;
             }
             if(mineAwardTransactionCount > 1){
-                throw new BlockChainCoreException("区块中不能有两笔奖励交易。");
+                logger.debug("区块中不能有两笔奖励交易。");
+                return false;
             }
 
             //获取区块中写入的挖矿奖励交易
