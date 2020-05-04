@@ -55,6 +55,7 @@ public class InitUserHandler {
                         "登录网址是[localhost:%s]，请在浏览器中登录系统并修改您的密码。\n" +
                         "为保安全，请另在其它地方妥善保存您的账户，并删除此文件。"
                         ,userName,password,serverPort);
+            logger.info(userInfo);
             fileWriter = new FileWriter(new File("InitUser.txt"));
             fileWriter.write(userInfo);
             fileWriter.close();

@@ -56,7 +56,7 @@ public class InitMinerHandler {
                                 "钱包地址是[%s]\n" +
                                 "为保安全，请另在其它地方妥善保存您的矿工钱包私钥、公钥、地址，并删除此文件。"
                         ,walletDTO.getPrivateKey(),walletDTO.getAddress());
-
+                logger.info(minerWalletInfo);
                 fileWriter = new FileWriter(new File("InitMiner.txt"));
                 fileWriter.write(minerWalletInfo);
                 fileWriter.close();

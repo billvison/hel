@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,6 +53,21 @@ public class TimerService {
 
     @PostConstruct
     private void startThread(){
+
+        new Thread(()->{
+            while (true){
+                try {
+                    addSeedNodeToLocalBlockchain();
+                } catch (Exception e) {
+                    logger.error("定时将种子节点加入区块链网络",e);
+                }
+                try {
+                    ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.ADD_SEED_NODE_TO_LOCAL_BLOCKCHAIN_TIME_INTERVAL.name());
+                    Thread.sleep(Long.parseLong(configurationDto.getConfValue()));
+                } catch (InterruptedException e) {
+                }
+            }
+        }).start();
 
         new Thread(()->{
             while (true){
@@ -99,6 +115,23 @@ public class TimerService {
                 }
             }
         }).start();
+    }
+
+    private void addSeedNodeToLocalBlockchain() {
+        List<Node> nodeList = new ArrayList<>();
+        //TODO
+        Node node1 = new Node();
+        node1.setIp("139.9.125.122");
+        node1.setPort(8444);
+        nodeList.add(node1);
+        if(nodeList != null){
+            for(Node node:nodeList){
+                Node n = nodeService.queryNode(node);
+                if(n == null){
+                    nodeService.addNode(node);
+                }
+            }
+        }
     }
 
     /**
