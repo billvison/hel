@@ -17,27 +17,27 @@ import java.util.ArrayList;
  */
 public class MaintenanceTransactionUtil {
 
-    public static Transaction transaction(long timeMillis,BigInteger blockHeight){
+    public static Transaction transaction(long timestamp,BigInteger blockHeight){
         if(BigIntegerUtil.isEquals(blockHeight,new BigInteger("2"))){
-            return block2Transaction(timeMillis);
+            return block2Transaction(timestamp);
         }
         return null;
     }
 
-    public static boolean isTransactionRight(long timeMillis,BigInteger blockHeight,Transaction maintenanceTransaction){
+    public static boolean isTransactionRight(long timestamp,BigInteger blockHeight,Transaction maintenanceTransaction){
         if(BigIntegerUtil.isEquals(blockHeight,new BigInteger("2"))){
             if(maintenanceTransaction == null){
                 return false;
             }
-            Transaction transaction = block2Transaction(timeMillis);
+            Transaction transaction = block2Transaction(timestamp);
             return transaction.getTransactionHash().equals(maintenanceTransaction.getTransactionHash());
         }
         return true;
     }
 
-    public static Transaction block2Transaction(long timeMillis){
+    public static Transaction block2Transaction(long timestamp){
         Transaction transaction = new Transaction();
-        transaction.setTimestamp(timeMillis);
+        transaction.setTimestamp(timestamp);
         transaction.setTransactionType(TransactionType.COMMUNITY_MAINTENANCE);
         transaction.setInputs(null);
 
