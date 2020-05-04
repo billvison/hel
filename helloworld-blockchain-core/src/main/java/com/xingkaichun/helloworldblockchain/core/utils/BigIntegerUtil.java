@@ -39,11 +39,11 @@ public class BigIntegerUtil {
 
 
     public static BigInteger decode(byte[] bytesBlockChainHeight){
-        String strBlockChainHeight = new String(bytesBlockChainHeight, BlockChainCoreConstant.CHARSET_UTF_8);
+        String strBlockChainHeight = new String(bytesBlockChainHeight, BlockChainCoreConstant.GLOBAL_CHARSET);
         BigInteger blockChainHeight = new BigInteger(strBlockChainHeight);
         return blockChainHeight;
     }
     public static byte[] encode(BigInteger blockChainHeight){
-        return String.valueOf(blockChainHeight).getBytes(BlockChainCoreConstant.CHARSET_UTF_8);
+        return String.valueOf(blockChainHeight).getBytes(BlockChainCoreConstant.GLOBAL_CHARSET);
     }
 }

@@ -92,7 +92,7 @@ public class MinerDefaultImpl extends Miner {
         }
         //挖矿超过一定时长还没有挖矿成功，这时重新打包交易，对自己来说，可以获取更多的奖励，对交易发送者来说，可以让自己的交易更快的写进区块链
         //一定时间内还没有挖到矿，重新开始挖矿。
-        if(System.currentTimeMillis() > miningBlock.getStartTimestamp()+ BlockChainCoreConstant.MAX_MINE_TIMESTAMP){
+        if(System.currentTimeMillis() > miningBlock.getStartTimestamp()+ BlockChainCoreConstant.MinerConstant.MAX_MINE_TIMESTAMP){
             return true;
         }
         Block block = miningBlock.getBlock();
@@ -392,8 +392,8 @@ public class MinerDefaultImpl extends Miner {
         Block tailBlock = blockChainDataBase.findTailNoTransactionBlock();
         Block nonNonceBlock = new Block();
         if(tailBlock == null){
-            nonNonceBlock.setHeight(BlockChainCoreConstant.FIRST_BLOCK_HEIGHT);
-            nonNonceBlock.setPreviousHash(BlockChainCoreConstant.FIRST_BLOCK_PREVIOUS_HASH);
+            nonNonceBlock.setHeight(BlockChainCoreConstant.GenesisBlockConstant.FIRST_BLOCK_HEIGHT);
+            nonNonceBlock.setPreviousHash(BlockChainCoreConstant.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH);
         } else {
             nonNonceBlock.setHeight(tailBlock.getHeight().add(BigInteger.valueOf(1)));
             nonNonceBlock.setPreviousHash(tailBlock.getHash());

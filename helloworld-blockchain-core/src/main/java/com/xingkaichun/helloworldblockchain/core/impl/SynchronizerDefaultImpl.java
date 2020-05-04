@@ -127,7 +127,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             return;
         }
         if(targetBlockChainTailBlock == null){
-            Block block = temporaryBlockChainDataBase.findBlockByBlockHeight(BlockChainCoreConstant.FIRST_BLOCK_HEIGHT);
+            Block block = temporaryBlockChainDataBase.findBlockByBlockHeight(BlockChainCoreConstant.GenesisBlockConstant.FIRST_BLOCK_HEIGHT);
             boolean isAddBlockToBlockChainSuccess = targetBlockChainDataBase.addBlock(block);
             if(!isAddBlockToBlockChainSuccess){
                 return;

@@ -1,6 +1,5 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
-import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
@@ -39,10 +38,6 @@ public class TextSizeRestrictionUtil {
     //nonce最小值
     public final static BigInteger MIN_NONCE = BigInteger.ZERO;
 
-    //起源时间戳
-    //北京时间2016-01-01 00:00:00的时间戳是1556640000000L
-    //2016年创始人第一次接触区块链的时间
-    private final static long ORIGIN_TIMESTAMP = 1556640000000L;
     //region 校验存储容量
     /**
      * 校验区块的存储容量是否合法：用来限制区块所占存储空间的大小。
@@ -50,7 +45,7 @@ public class TextSizeRestrictionUtil {
     public static boolean isBlockStorageCapacityLegal(Block block) {
         //校验时间戳占用存储空间
         long timestamp = block.getTimestamp();
-        if(timestamp< ORIGIN_TIMESTAMP || timestamp>System.currentTimeMillis()){
+        if(String.valueOf(timestamp).length()>20){
             return false;
         }
 
@@ -94,13 +89,13 @@ public class TextSizeRestrictionUtil {
         }
 
         long timestamp = transaction.getTimestamp();
-        TransactionType transactionType = transaction.getTransactionType();
         List<TransactionInput> inputs = transaction.getInputs();
         List<TransactionOutput> outputs = transaction.getOutputs();
         List<String> messages = transaction.getMessages();
 
-        //校验时间戳
-        if(timestamp< ORIGIN_TIMESTAMP || timestamp>System.currentTimeMillis()+BlockChainCoreConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
+        //校验时间的长度
+        if(String.valueOf(timestamp).length()>20){
+            logger.debug("交易校验失败：交易时间戳所占存储空间不正确。");
             return false;
         }
 

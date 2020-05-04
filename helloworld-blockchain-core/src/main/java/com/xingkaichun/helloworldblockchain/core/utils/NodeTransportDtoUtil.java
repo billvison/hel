@@ -52,7 +52,7 @@ public class NodeTransportDtoUtil {
         String previousHash = null;
         BigInteger height = blockDTO.getHeight();
         if(BigIntegerUtil.isEquals(height,BigInteger.ONE)){
-            previousHash = BlockChainCoreConstant.FIRST_BLOCK_PREVIOUS_HASH;
+            previousHash = BlockChainCoreConstant.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH;
         } else {
             Block previousBlock = blockChainDataBase.findNoTransactionBlockByBlockHeight(height.subtract(BigInteger.ONE));
             if(previousBlock == null){

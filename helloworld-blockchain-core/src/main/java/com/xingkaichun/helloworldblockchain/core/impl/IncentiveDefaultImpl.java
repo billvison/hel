@@ -30,13 +30,13 @@ public class IncentiveDefaultImpl extends Incentive {
         //转账手续费
         BigDecimal fees = getFees(block);
         //区块固定奖励
-        BigDecimal mixedCoin = BlockChainCoreConstant.INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT;
+        BigDecimal mixedCoin = BlockChainCoreConstant.MinerConstant.INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT;
 
         BigInteger blockHeight = block.getHeight();
         if(BigIntegerUtil.isLessEqualThan(blockHeight,BigInteger.ONE)){
         }else {
             Block firstBlock = blockChainDataBase.findBlockByBlockHeight(BigInteger.valueOf(1));
-            long timestamp = BlockChainCoreConstant.MINE_BLOCK_INCENTIVE_REDUCE_BY_HALF_INTERVAL_TIMESTAMP;
+            long timestamp = BlockChainCoreConstant.MinerConstant.MINE_BLOCK_INCENTIVE_REDUCE_BY_HALF_INTERVAL_TIMESTAMP;
             long totalTimestamp = System.currentTimeMillis() - firstBlock.getTimestamp();
             long multiple = totalTimestamp / timestamp;
             while (multiple > 1){
@@ -46,7 +46,7 @@ public class IncentiveDefaultImpl extends Incentive {
         }
         BigDecimal total = mixedCoin.add(fees);
         //小数位数
-        BigDecimal setScaleTotal = total.setScale(BlockChainCoreConstant.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES,BigDecimal.ROUND_DOWN);
+        BigDecimal setScaleTotal = total.setScale(BlockChainCoreConstant.TransactionConstant.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES,BigDecimal.ROUND_DOWN);
         return setScaleTotal;
     }
 

@@ -241,7 +241,7 @@ public class BlockChainBrowserController {
             response.setNodeList(nodeList);
             response.setBlockChainHeight(blockChainHeight);
             response.setBlockChainId(BlockChainCoreConstant.BLOCK_CHAIN_ID);
-            response.setBlockChainVersion(BlockChainCoreConstant.obtainVersion());
+            response.setBlockChainVersion(BlockChainCoreConstant.SystemVersionConstant.obtainVersion());
             return ServiceResult.createSuccessServiceResult("查询节点信息成功",response);
         } catch (Exception e){
             String message = "查询节点信息失败";
