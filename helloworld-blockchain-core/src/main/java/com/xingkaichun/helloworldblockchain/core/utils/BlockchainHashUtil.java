@@ -57,7 +57,7 @@ public class BlockchainHashUtil {
                 outputHashList.add(transactionOutput.getTransactionOutputHash());
             }
         }
-        return calculateTransactionHash(transaction.getTimestamp(),inputHashList,outputHashList,transaction.getMessages());
+        return calculateTransactionHash(transaction.getTimestamp(),transaction.getTransactionType().getCode(),inputHashList,outputHashList,transaction.getMessages());
     }
 
     /**
@@ -76,14 +76,15 @@ public class BlockchainHashUtil {
         for(TransactionOutputDTO transactionOutputDTO:outputs){
             outputHashList.add(BlockchainHashUtil.calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
         }
-        return calculateTransactionHash(transactionDTO.getTimestamp(),inputHashList,outputHashList,transactionDTO.getMessages());
+        return calculateTransactionHash(transactionDTO.getTimestamp(),transactionDTO.getTransactionTypeCode(),inputHashList,outputHashList,transactionDTO.getMessages());
     }
 
     /**
      * 计算交易哈希
      */
-    private static String calculateTransactionHash(long currentTimeMillis,List<String> inputHashList,List<String> outputHashList,List<String> messageList){
+    private static String calculateTransactionHash(long currentTimeMillis,int transactionTypeCode,List<String> inputHashList,List<String> outputHashList,List<String> messageList){
         String data = "";
+        data += "[" + transactionTypeCode + "]";
         if(inputHashList != null && inputHashList.size()!=0){
             data += "[" + Joiner.on(",").join(inputHashList) + "]";
         }
