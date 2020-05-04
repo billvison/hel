@@ -9,7 +9,7 @@ public enum TransactionType {
 
     NORMAL(1,"普通交易"),
     MINER_AWARD(2,"挖矿奖励"),
-    COMMUNITY_AWARD(3,"社区奖励");
+    COMMUNITY_MAINTENANCE(3,"社区维护");
     //DESTORY(3,"销毁币");//TODO 实现
     // ACROSS_CHAIN(4,"跨链交易"),//TODO 实现
 

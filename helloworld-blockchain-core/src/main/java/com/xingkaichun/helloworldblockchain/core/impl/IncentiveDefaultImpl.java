@@ -55,7 +55,7 @@ public class IncentiveDefaultImpl extends Incentive {
         BigDecimal fees = BigDecimal.ZERO;
         if(transactions != null){
             for(Transaction transaction:transactions){
-                if(transaction.getTransactionType() == TransactionType.MINER_AWARD){
+                if(transaction.getTransactionType() != TransactionType.NORMAL){
                     continue;
                 }
                 BigDecimal input = BigDecimal.ZERO;

@@ -334,6 +334,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
 
+        //社区交易
+        if(!isMaintenanceTransactionRight(block)){
+            logger.debug("区块数据异常，社区维护的交易异常。");
+            return false;
+        }
+
         //从交易角度校验每一笔交易
         for(Transaction tx : block.getTransactions()){
             boolean transactionCanAddToNextBlock = isTransactionCanAddToNextBlock(block,tx);
@@ -346,8 +352,34 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
 
+    private boolean isMaintenanceTransactionRight(Block block) {
+        //社区维护的交易只能有一笔，也可以没有。
+        List<Transaction> transactions = block.getTransactions();
 
+        Transaction maintenanceTransaction = null;
+        //校验社区维护交易有且只能有一笔
+        //社区维护交易笔数
+        int minerTransactionNumber = 0;
+        if(transactions != null){
+            for(Transaction transaction : transactions){
+                if(transaction.getTransactionType() == TransactionType.COMMUNITY_MAINTENANCE){
+                    minerTransactionNumber++;
+                    maintenanceTransaction = transaction;
+                }
+            }
+        }
+        if(minerTransactionNumber > 1){
+            logger.debug("区块数据异常，一个区块社区维护的交易只能有一笔。");
+            return false;
+        }
 
+        //校验奖励交易
+        if(!MaintenanceTransactionUtil.isTransactionRight(block.getTimestamp(),block.getHeight(),maintenanceTransaction)){
+            logger.debug("交易校验失败：社区奖励交易验证失败。");
+            return false;
+        }
+        return true;
+    }
 
 
     /**
@@ -574,7 +606,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception{
         //校验交易类型
         TransactionType transactionType = transaction.getTransactionType();
-        if(transactionType != TransactionType.NORMAL && transactionType != TransactionType.MINER_AWARD){
+        if(transactionType != TransactionType.NORMAL
+                && transactionType != TransactionType.MINER_AWARD
+                && transactionType != TransactionType.COMMUNITY_MAINTENANCE
+        ){
             logger.debug("交易校验失败：不能识别的交易类型。");
             return false;
         }
@@ -679,6 +714,22 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 }
             }catch (Exception e){
                 logger.debug("交易校验失败：校验交易签名失败。不合法的交易。",e);
+                return false;
+            }
+            return true;
+        } else if(transaction.getTransactionType() == TransactionType.COMMUNITY_MAINTENANCE){
+            List<TransactionInput> inputs = transaction.getInputs();
+            List<String> messages = transaction.getMessages();
+            if(inputs != null && inputs.size()!=0){
+                logger.debug("交易校验失败：社区奖励交易不能有交易输入。");
+                return false;
+            }
+            if(messages != null && messages.size()>0){
+                logger.debug("交易校验失败：社区奖励交易不能有附加信息。");
+                return false;
+            }
+            if(!MaintenanceTransactionUtil.isTransactionRight(block.getTimestamp(),block.getHeight(),transaction)){
+                logger.debug("交易校验失败：社区奖励交易验证失败。");
                 return false;
             }
             return true;

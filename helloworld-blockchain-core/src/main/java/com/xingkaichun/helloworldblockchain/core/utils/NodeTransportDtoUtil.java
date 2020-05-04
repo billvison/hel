@@ -102,7 +102,7 @@ public class NodeTransportDtoUtil {
     public static Transaction classCast(BlockChainDataBase blockChainDataBase, TransactionDTO transactionDTO) throws Exception {
         List<TransactionInput> inputs = new ArrayList<>();
         List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getInputs();
-        if(transactionInputDtoList!=null){
+        if(transactionInputDtoList != null){
             for (TransactionInputDTO transactionInputDTO:transactionInputDtoList){
                 String unspendTransactionOutputHash = transactionInputDTO.getUnspendTransactionOutputHash();
                 TransactionOutput transactionOutput = blockChainDataBase.findUnspendTransactionOuputByTransactionOuputHash(unspendTransactionOutputHash);
@@ -118,7 +118,7 @@ public class NodeTransportDtoUtil {
 
         List<TransactionOutput> outputs = new ArrayList<>();
         List<TransactionOutputDTO> dtoOutputs = transactionDTO.getOutputs();
-        if(dtoOutputs!=null && dtoOutputs.size()!=0){
+        if(dtoOutputs != null){
             for(TransactionOutputDTO transactionOutputDTO:dtoOutputs){
                 TransactionOutput transactionOutput = classCast(transactionDTO,transactionOutputDTO);
                 outputs.add(transactionOutput);

@@ -400,8 +400,17 @@ public class MinerDefaultImpl extends Miner {
         }
         nonNonceBlock.setTransactions(packingTransactionList);
 
+
+
         //创建奖励交易，并将奖励加入区块
         Transaction mineAwardTransaction =  buildMineAwardTransaction(blockChainDataBase,nonNonceBlock);
+
+        //社区维护
+        Transaction maintenanceTransaction = MaintenanceTransactionUtil.transaction(mineAwardTransaction.getTimestamp(),nonNonceBlock.getHeight());
+        if(maintenanceTransaction != null){
+            packingTransactionList.add(maintenanceTransaction);
+        }
+
         packingTransactionList.add(mineAwardTransaction);
 
         //这个挖矿时间不需要特别精确，没必要非要挖出矿的前一霎那时间。省去了挖矿时实时更新这个时间的繁琐。
