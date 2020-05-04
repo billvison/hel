@@ -104,37 +104,6 @@ public class TextSizeRestrictionUtil {
             return false;
         }
 
-        //根据交易类型，判断交易的字段存储结构是否正确   TODO 位置有问题
-        if(transactionType == TransactionType.NORMAL){
-            /**
-             * 普通交易输出可以为空，这时代表用户将自己的币扔进了黑洞，强制销毁了。
-             */
-
-            if(inputs == null || inputs.size()==0){
-                logger.debug("交易校验失败：普通交易必须有交易输入。");
-                return false;
-            }
-            if(messages != null && messages.size()>0){
-                logger.debug("交易校验失败：普通交易不能有附加信息。");
-                return false;
-            }
-        }else if(transactionType == TransactionType.MINER){
-            /**
-             * 激励交易输出可以为空，这时代表矿工放弃了奖励、或者依据规则挖矿激励就是零奖励。
-             */
-
-            if(inputs != null && inputs.size()!=0){
-                logger.debug("交易校验失败：激励交易不能有交易输入。");
-                return false;
-            }
-            if(messages != null && messages.size()>0){
-                logger.debug("交易校验失败：激励交易不能有附加信息。");
-                return false;
-            }
-        }else {
-            throw new BlockChainCoreException("未实现逻辑交易类型");
-        }
-
         //校验交易输入
         if(inputs != null){
             for(TransactionInput transactionInput:inputs){
