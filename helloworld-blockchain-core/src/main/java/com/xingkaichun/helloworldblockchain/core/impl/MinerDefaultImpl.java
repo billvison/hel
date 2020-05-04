@@ -360,11 +360,9 @@ public class MinerDefaultImpl extends Miner {
     //region 挖矿奖励相关
 
     @Override
-    public Transaction buildMineAwardTransaction(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
-        long currentTimeMillis = System.currentTimeMillis();
-
+    public Transaction buildMineAwardTransaction(long timestamp, BlockChainDataBase blockChainDataBase, Block block) throws Exception {
         Transaction transaction = new Transaction();
-        transaction.setTimestamp(currentTimeMillis);
+        transaction.setTimestamp(timestamp);
         transaction.setTransactionType(TransactionType.MINER_AWARD);
         transaction.setInputs(null);
 
@@ -389,8 +387,13 @@ public class MinerDefaultImpl extends Miner {
      * 构建挖矿区块
      */
     public Block buildNextMineBlock(BlockChainDataBase blockChainDataBase, List<Transaction> packingTransactionList) throws Exception {
+        long timestamp = System.currentTimeMillis();
+
         Block tailBlock = blockChainDataBase.findTailNoTransactionBlock();
         Block nonNonceBlock = new Block();
+        //这个挖矿时间不需要特别精确，没必要非要挖出矿的前一霎那时间。省去了挖矿时实时更新这个时间的繁琐。
+        nonNonceBlock.setTimestamp(timestamp);
+
         if(tailBlock == null){
             nonNonceBlock.setHeight(BlockChainCoreConstant.GenesisBlockConstant.FIRST_BLOCK_HEIGHT);
             nonNonceBlock.setPreviousHash(BlockChainCoreConstant.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH);
@@ -400,21 +403,16 @@ public class MinerDefaultImpl extends Miner {
         }
         nonNonceBlock.setTransactions(packingTransactionList);
 
-
-
-        //创建奖励交易，并将奖励加入区块
-        Transaction mineAwardTransaction =  buildMineAwardTransaction(blockChainDataBase,nonNonceBlock);
-
         //社区维护
-        Transaction maintenanceTransaction = MaintenanceTransactionUtil.obtainMaintenanceTransaction(mineAwardTransaction.getTimestamp(),nonNonceBlock.getHeight());
+        Transaction maintenanceTransaction = MaintenanceTransactionUtil.obtainMaintenanceTransaction(timestamp,nonNonceBlock.getHeight());
         if(maintenanceTransaction != null){
             packingTransactionList.add(maintenanceTransaction);
         }
 
+        //创建挖矿奖励交易
+        Transaction mineAwardTransaction =  buildMineAwardTransaction(timestamp,blockChainDataBase,nonNonceBlock);
         packingTransactionList.add(mineAwardTransaction);
 
-        //这个挖矿时间不需要特别精确，没必要非要挖出矿的前一霎那时间。省去了挖矿时实时更新这个时间的繁琐。
-        nonNonceBlock.setTimestamp(mineAwardTransaction.getTimestamp());
 
         String merkleRoot = BlockUtil.calculateBlockMerkleRoot(nonNonceBlock);
         nonNonceBlock.setMerkleRoot(merkleRoot);
