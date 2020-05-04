@@ -68,13 +68,13 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //交易输出标识：存储交易输出哈希到交易输出的映射
     private final static String TRANSACTION_OUTPUT_HASH_PREFIX_FLAG = "T_O_U_P_F_";
     //未花费的交易输出标识：存储未花费交易输出哈希到未花费交易输出的映射
-    private final static String UNSPEND_TRANSACTION_OUPUT_HASH_PREFIX_FLAG = "U_T_O_U_P_F_";
+    private final static String UNSPEND_TRANSACTION_OUTPUT_HASH_PREFIX_FLAG = "U_T_O_U_P_F_";
     //哈希标识：哈希(交易哈希、交易输出哈希)的前缀，这里希望系统中所有使用到的哈希都是不同的
     private final static String HASH_PREFIX_FLAG = "U_F_";
     //地址标识：存储地址到交易输出的映射
-    private final static String ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG = "A_T_T_O_P_F_";
+    private final static String ADDRESS_TO_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG = "A_T_T_O_P_F_";
     //地址标识：存储地址到未花费交易输出的映射
-    private final static String ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG = "A_T_U_T_O_P_F_";
+    private final static String ADDRESS_TO_UNSPEND_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG = "A_T_U_T_O_P_F_";
 
     //钱包地址截止标记
     private final static String ADDRESS_END_FLAG = "#" ;
@@ -660,11 +660,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 logger.debug("交易校验失败：普通交易不能有附加信息。");
                 return false;
             }
-
-            if(inputs==null || inputs.size()==0){
-                logger.debug("交易校验失败：交易的输入不能为空。不合法的交易。");
-                return false;
-            }
             BigDecimal inputsValue = TransactionUtil.getInputsValue(transaction);
             BigDecimal outputsValue = TransactionUtil.getOutputsValue(transaction);
             if(inputsValue.compareTo(outputsValue) < 0) {
@@ -858,27 +853,27 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildUnspendTransactionOutputHashKey(String transactionOutputHash) {
-        String stringKey = UNSPEND_TRANSACTION_OUPUT_HASH_PREFIX_FLAG + transactionOutputHash;
+        String stringKey = UNSPEND_TRANSACTION_OUTPUT_HASH_PREFIX_FLAG + transactionOutputHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToTransactionOuputListKey(TransactionOutput transactionOutput) {
         String address = transactionOutput.getStringAddress().getValue();
         String transactionOutputHash = transactionOutput.getTransactionOutputHash();
-        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG + transactionOutputHash;
+        String stringKey = ADDRESS_TO_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG + transactionOutputHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToTransactionOuputListKey(String address) {
-        String stringKey = ADDRESS_TO_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG;
+        String stringKey = ADDRESS_TO_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG;
         return LevelDBUtil.stringToBytes(stringKey);
     }
-    private byte[] buildAddressToUnspendTransactionOuputListKey(TransactionOutput transactionOutput) {
+    private byte[] buildAddressToUnspendTransactionOutputListKey(TransactionOutput transactionOutput) {
         String address = transactionOutput.getStringAddress().getValue();
         String transactionOutputHash = transactionOutput.getTransactionOutputHash();
-        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG + transactionOutputHash;
+        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG + transactionOutputHash;
         return LevelDBUtil.stringToBytes(stringKey);
     }
-    private byte[] buildAddressToUnspendTransactionOuputListKey(String address) {
-        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG;
+    private byte[] buildAddressToUnspendTransactionOutputListKey(String address) {
+        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildTotalTransactionQuantityKey() {
@@ -1020,11 +1015,11 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             if(inputs != null){
                 for (TransactionInput transactionInput:inputs){
                     TransactionOutput utxo = transactionInput.getUnspendTransactionOutput();
-                    byte[] addressToUnspendTransactionOuputListKey = buildAddressToUnspendTransactionOuputListKey(utxo);
+                    byte[] addressToUnspendTransactionOutputListKey = buildAddressToUnspendTransactionOutputListKey(utxo);
                     if(blockChainActionEnum == BlockChainActionEnum.ADD_BLOCK){
-                        writeBatch.delete(addressToUnspendTransactionOuputListKey);
+                        writeBatch.delete(addressToUnspendTransactionOutputListKey);
                     }else{
-                        writeBatch.put(addressToUnspendTransactionOuputListKey, EncodeDecodeUtil.encode(utxo));
+                        writeBatch.put(addressToUnspendTransactionOutputListKey, EncodeDecodeUtil.encode(utxo));
                     }
                 }
             }
@@ -1032,14 +1027,14 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             List<TransactionOutput> outputs = transaction.getOutputs();
             if(outputs != null){
                 for (TransactionOutput transactionOutput:outputs){
-                    byte[] addressToTransactionOuputListKey = buildAddressToTransactionOuputListKey(transactionOutput);
-                    byte[] addressToUnspendTransactionOuputListKey = buildAddressToUnspendTransactionOuputListKey(transactionOutput);
+                    byte[] addressToTransactionOutputListKey = buildAddressToTransactionOuputListKey(transactionOutput);
+                    byte[] addressToUnspendTransactionOutputListKey = buildAddressToUnspendTransactionOutputListKey(transactionOutput);
                     if(blockChainActionEnum == BlockChainActionEnum.ADD_BLOCK){
                         byte[] byteTransactionOutput = EncodeDecodeUtil.encode(transactionOutput);
-                        writeBatch.put(addressToTransactionOuputListKey,byteTransactionOutput);
-                        writeBatch.put(addressToUnspendTransactionOuputListKey,byteTransactionOutput);
+                        writeBatch.put(addressToTransactionOutputListKey,byteTransactionOutput);
+                        writeBatch.put(addressToUnspendTransactionOutputListKey,byteTransactionOutput);
                     }else{
-                        writeBatch.delete(addressToTransactionOuputListKey);
+                        writeBatch.delete(addressToTransactionOutputListKey);
                     }
                 }
             }
@@ -1050,25 +1045,25 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     public List<TransactionOutput> queryUnspendTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
-        byte[] addressToUnspendTransactionOuputListKey = buildAddressToUnspendTransactionOuputListKey(stringAddress.getValue());
-        int cunrrentFrom = 0;
-        int cunrrentSize = 0;
-        for (iterator.seek(addressToUnspendTransactionOuputListKey); iterator.hasNext(); iterator.next()) {
+        byte[] addressToUnspendTransactionOutputListKey = buildAddressToUnspendTransactionOutputListKey(stringAddress.getValue());
+        int currentFrom = 0;
+        int currentSize = 0;
+        for (iterator.seek(addressToUnspendTransactionOutputListKey); iterator.hasNext(); iterator.next()) {
             byte[] byteKey = iterator.peekNext().getKey();
-            if(Bytes.indexOf(byteKey,addressToUnspendTransactionOuputListKey) != 0){
+            if(Bytes.indexOf(byteKey,addressToUnspendTransactionOutputListKey) != 0){
                 break;
             }
             byte[] byteValue = iterator.peekNext().getValue();
             if(byteValue == null || byteValue.length==0){
                 continue;
             }
-            cunrrentFrom++;
-            if(cunrrentFrom>=from && cunrrentSize<size){
+            currentFrom++;
+            if(currentFrom>=from && currentSize<size){
                 TransactionOutput transactionOutput = EncodeDecodeUtil.decodeToTransactionOutput(byteValue);
                 transactionOutputList.add(transactionOutput);
-                cunrrentSize++;
+                currentSize++;
             }
-            if(cunrrentSize>=size){
+            if(currentSize>=size){
                 break;
             }
         }
@@ -1093,25 +1088,25 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     public List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
-        byte[] addressToTransactionOuputListKey = buildAddressToTransactionOuputListKey(stringAddress.getValue());
-        int cunrrentFrom = 0;
-        int cunrrentSize = 0;
-        for (iterator.seek(addressToTransactionOuputListKey); iterator.hasNext(); iterator.next()) {
+        byte[] addressToTransactionOutputListKey = buildAddressToTransactionOuputListKey(stringAddress.getValue());
+        int currentFrom = 0;
+        int currentSize = 0;
+        for (iterator.seek(addressToTransactionOutputListKey); iterator.hasNext(); iterator.next()) {
             byte[] byteKey = iterator.peekNext().getKey();
-            if(Bytes.indexOf(byteKey,addressToTransactionOuputListKey) != 0){
+            if(Bytes.indexOf(byteKey,addressToTransactionOutputListKey) != 0){
                 break;
             }
             byte[] byteValue = iterator.peekNext().getValue();
             if(byteValue == null || byteValue.length==0){
                 continue;
             }
-            cunrrentFrom++;
-            if(cunrrentFrom>=from && cunrrentSize<size){
+            currentFrom++;
+            if(currentFrom>=from && currentSize<size){
                 TransactionOutput transactionOutput = EncodeDecodeUtil.decodeToTransactionOutput(byteValue);
                 transactionOutputList.add(transactionOutput);
-                cunrrentSize++;
+                currentSize++;
             }
-            if(cunrrentSize>=size){
+            if(currentSize>=size){
                 break;
             }
         }
