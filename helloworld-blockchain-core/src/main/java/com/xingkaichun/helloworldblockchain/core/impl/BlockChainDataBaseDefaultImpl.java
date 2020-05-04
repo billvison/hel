@@ -365,10 +365,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
         //校验共识占用存储空间
         BigInteger nonce = new BigInteger(block.getConsensusValue());
-        if(BigIntegerUtil.isLessThan(nonce, BlockChainCoreConstant.MIN_NONCE)){
+        if(BigIntegerUtil.isLessThan(nonce, TextSizeRestrictionUtil.MIN_NONCE)){
             return false;
         }
-        if(BigIntegerUtil.isGreateThan(nonce, BlockChainCoreConstant.MAX_NONCE)){
+        if(BigIntegerUtil.isGreateThan(nonce, TextSizeRestrictionUtil.MAX_NONCE)){
             return false;
         }
 
@@ -376,9 +376,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //校验区块中交易的数量
         List<Transaction> transactions = block.getTransactions();
         long transactionsSize = transactions==null?0L:transactions.size();
-        if(transactionsSize > BlockChainCoreConstant.BLOCK_MAX_TRANSACTION_SIZE){
+        if(transactionsSize > TextSizeRestrictionUtil.BLOCK_MAX_TRANSACTION_SIZE){
             logger.debug(String.format("区块数据异常，区块里包含的交易数量超过限制值%d。",
-                    BlockChainCoreConstant.BLOCK_MAX_TRANSACTION_SIZE));
+                    TextSizeRestrictionUtil.BLOCK_MAX_TRANSACTION_SIZE));
             return false;
         }
         //校验每一笔交易占用的存储空间
@@ -401,7 +401,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
         //校验整笔交易所占存储空间
 
-        if(calculateTransactionSize(transaction) > BlockChainCoreConstant.TRANSACTION_TEXT_MAX_SIZE){
+        if(calculateTransactionSize(transaction) > TextSizeRestrictionUtil.TRANSACTION_TEXT_MAX_SIZE){
             logger.debug("交易数据异常，交易所占存储空间太大。");
             return false;
         }

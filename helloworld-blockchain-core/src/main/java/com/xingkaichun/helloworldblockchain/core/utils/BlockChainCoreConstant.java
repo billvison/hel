@@ -35,6 +35,7 @@ public class BlockChainCoreConstant {
     //挖矿激励减产周期
     public final static long MINE_BLOCK_INCENTIVE_REDUCE_BY_HALF_INTERVAL_TIMESTAMP = 1 * 24 * 60 * 60 * 1000;
 
+    //region 交易金额
     //交易金额的小数点保留位数限制
     public final static int TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES = 8;
     //最大交易金额
@@ -43,14 +44,14 @@ public class BlockChainCoreConstant {
     public final static BigDecimal TRANSACTION_MIN_AMOUNT = new BigDecimal("0.00000001");
     //最小交易手续费
     public final static BigDecimal MIN_TRANSACTION_FEE = new BigDecimal("1");
-    //交易文本字符串最大长度值
-    public final static long TRANSACTION_TEXT_MAX_SIZE = 1024;
-    //区块最多含有的交易数量
-    public final static long BLOCK_MAX_TRANSACTION_SIZE = 10000;
-    //nonce最大值
-    public final static BigInteger MAX_NONCE = new BigInteger(String.join("", Collections.nCopies(50, "9")));
-    //nonce最小值
-    public final static BigInteger MIN_NONCE = BigInteger.ZERO;
+    //endregion
+
+
+
+
+
+
+
 
 
     //挖矿设置
@@ -80,7 +81,7 @@ public class BlockChainCoreConstant {
      * 检查系统版本是否支持。
      */
     public static boolean isVersionLegal(long timestamp){
-        if(timestamp > BLOCK_CHAIN_VERSION_1){
+        if(timestamp > BLOCK_CHAIN_VERSION_LIST.get(BLOCK_CHAIN_VERSION_LIST.size()-1)){
             return false;
         }
         return true;
