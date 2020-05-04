@@ -365,7 +365,7 @@ public class MinerDefaultImpl extends Miner {
 
         Transaction transaction = new Transaction();
         transaction.setTimestamp(currentTimeMillis);
-        transaction.setTransactionType(TransactionType.MINER);
+        transaction.setTransactionType(TransactionType.MINER_AWARD);
         transaction.setInputs(null);
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();

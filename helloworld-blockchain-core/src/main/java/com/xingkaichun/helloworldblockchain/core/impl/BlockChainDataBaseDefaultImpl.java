@@ -403,13 +403,13 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         for(int i=0; i<transactions.size()-1; i++){
             Transaction tx = transactions.get(i);
-            if(tx.getTransactionType() == TransactionType.MINER){
+            if(tx.getTransactionType() == TransactionType.MINER_AWARD){
                 logger.debug("区块数据异常，挖矿奖励应当是区块中最后一笔交易。");
                 return false;
             }
         }
         Transaction transaction = transactions.get(transactions.size()-1);
-        if(transaction.getTransactionType() != TransactionType.MINER){
+        if(transaction.getTransactionType() != TransactionType.MINER_AWARD){
             logger.debug("区块数据异常，区块中最后一笔交易不是挖矿交易。");
             return false;
         }
@@ -418,7 +418,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //挖矿交易笔数
         int minerTransactionNumber = 0;
         for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() == TransactionType.MINER){
+            if(tx.getTransactionType() == TransactionType.MINER_AWARD){
                 minerTransactionNumber++;
             }
         }
@@ -433,7 +433,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
         //校验奖励交易
         for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() == TransactionType.MINER){
+            if(tx.getTransactionType() == TransactionType.MINER_AWARD){
                 boolean transactionCanAddToNextBlock = isTransactionCanAddToNextBlock(block,tx);
                 if(!transactionCanAddToNextBlock){
                     logger.debug("区块数据异常，激励交易异常。");
@@ -574,11 +574,11 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception{
         //校验交易类型
         TransactionType transactionType = transaction.getTransactionType();
-        if(transactionType != TransactionType.NORMAL && transactionType != TransactionType.MINER){
+        if(transactionType != TransactionType.NORMAL && transactionType != TransactionType.MINER_AWARD){
             logger.debug("交易校验失败：不能识别的交易类型。");
             return false;
         }
-        if(transactionType == TransactionType.MINER){
+        if(transactionType == TransactionType.MINER_AWARD){
             if(block == null){
                 logger.debug("交易校验失败：验证激励交易必须区块参数不能为空。");
                 return false;
@@ -627,7 +627,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //根据交易类型，做进一步的校验
-        if(transaction.getTransactionType() == TransactionType.MINER){
+        if(transaction.getTransactionType() == TransactionType.MINER_AWARD){
             /**
              * 激励交易输出可以为空，这时代表矿工放弃了奖励、或者依据规则挖矿激励就是零奖励。
              */
@@ -765,7 +765,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             //校验奖励交易笔数
             int mineAwardTransactionCount = 0;
             for(Transaction tx : block.getTransactions()){
-                if(tx.getTransactionType() == TransactionType.MINER){
+                if(tx.getTransactionType() == TransactionType.MINER_AWARD){
                     mineAwardTransactionCount++;
                 }
             }
@@ -779,7 +779,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             //获取区块中写入的挖矿奖励交易
             Transaction mineAwardTransaction = null;
             for(Transaction tx : block.getTransactions()){
-                if(tx.getTransactionType() == TransactionType.MINER){
+                if(tx.getTransactionType() == TransactionType.MINER_AWARD){
                     mineAwardTransaction = tx;
                     break;
                 }
