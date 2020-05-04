@@ -17,25 +17,25 @@ import java.util.ArrayList;
  */
 public class MaintenanceTransactionUtil {
 
-    public static Transaction transaction(long timestamp,BigInteger blockHeight){
+    public static Transaction obtainMaintenanceTransaction(long timestamp, BigInteger blockHeight){
         if(BigIntegerUtil.isEquals(blockHeight,new BigInteger("2"))){
-            return block2Transaction(timestamp);
+            return block2MaintenanceTransaction(timestamp);
         }
         return null;
     }
 
-    public static boolean isTransactionRight(long timestamp,BigInteger blockHeight,Transaction maintenanceTransaction){
+    public static boolean isMaintenanceTransactionRight(long timestamp, BigInteger blockHeight, Transaction maintenanceTransaction){
         if(BigIntegerUtil.isEquals(blockHeight,new BigInteger("2"))){
             if(maintenanceTransaction == null){
                 return false;
             }
-            Transaction transaction = block2Transaction(timestamp);
+            Transaction transaction = block2MaintenanceTransaction(timestamp);
             return transaction.getTransactionHash().equals(maintenanceTransaction.getTransactionHash());
         }
         return true;
     }
 
-    public static Transaction block2Transaction(long timestamp){
+    private static Transaction block2MaintenanceTransaction(long timestamp){
         Transaction transaction = new Transaction();
         transaction.setTimestamp(timestamp);
         transaction.setTransactionType(TransactionType.COMMUNITY_MAINTENANCE);

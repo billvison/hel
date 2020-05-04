@@ -406,7 +406,7 @@ public class MinerDefaultImpl extends Miner {
         Transaction mineAwardTransaction =  buildMineAwardTransaction(blockChainDataBase,nonNonceBlock);
 
         //社区维护
-        Transaction maintenanceTransaction = MaintenanceTransactionUtil.transaction(mineAwardTransaction.getTimestamp(),nonNonceBlock.getHeight());
+        Transaction maintenanceTransaction = MaintenanceTransactionUtil.obtainMaintenanceTransaction(mineAwardTransaction.getTimestamp(),nonNonceBlock.getHeight());
         if(maintenanceTransaction != null){
             packingTransactionList.add(maintenanceTransaction);
         }
