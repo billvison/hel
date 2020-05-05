@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>HelloworldBlockchain使用手册</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+</head>
+<body>
+
+<h1>HelloworldBlockchain使用手册</h1>
+<a href="#GithubAddress">Github地址</a><br/>
+<a href="#Question">遇到问题</a><br/>
+<a href="#IDE">集成开发环境搭建</a><br/>
+<a href="#ProjectDeploy">项目打包与发布</a><br/>
+<a href="#InitUser">获取网站管理员的初始账户</a><br/>
+<a href="#Login">登录系统</a><br/>
+<a href="#WhatIsWallet">钱包地址是什么</a><br/>
+<a href="#HowToGenerateWallet">主动生成钱包</a><br/>
+<a href="#HowToTransaction">如何转账进行交易</a><br/>
+<a href="#InitMiner">默认矿工钱包</a><br/>
+<a href="#SettingMinerAddress">设置挖矿地址</a><br/>
+<a href="#SettingMinerStatus">启动/关闭挖矿</a><br/>
+<a href="#QueryBlockByHeight">查询区块信息</a><br/>
+<a href="#QueryUtxoByAddress">查询账户余额</a><br/><br/>
+
+
+
+
+<h3 id="GithubAddress">github地址</h3>
+https://github.com/xingkaichun/HelloworldBlockchain
+<h3 id="Question">遇到问题</h3>
+如果你遇到问题，可以加创始人微信(HelloworldBlockchain)一起探讨。<br/>
+<img src="image/Wechat_HelloworldBlockchain.jpg" style="width:200px;height:200px;"/><br/>
+<h3 id="IDE">集成开发环境搭建</h3>
+eclipse<br/>
+HelloworldBlockchain项目没有任何复杂依赖，请搜索eclipse如何导入已存在的maven项目。 成功将项目导入eclipse后，找到类文件com.xingkaichun.helloworldblockchain.node.HelloWorldBlockChainNodeApplication，右键运行，正常情况下则会启动成功。接下来，快乐的调试代码吧！项目的前端地址是：http://localhost:8444 。<br/>
+<br/>
+intellij idea<br/>
+HelloworldBlockchain项目没有任何复杂依赖，请搜索idea如何导入已存在的maven项目。 成功将项目导入idea后，找到类文件com.xingkaichun.helloworldblockchain.node.HelloWorldBlockChainNodeApplication，右键运行，正常情况下则会启动成功。接下来，快乐的调试代码吧！项目的前端地址是：http://localhost:8444 。<br/>
+<h3 id="ProjectDeploy">项目打包与发布</h3>
+使用maven打包有两个步骤：一是进入目录，二是运行打包命令。详细命令如下:<br/>
+cd helloworld-blockchain-node<br/>
+mvn -P package-profile -Dmaven.test.skip=true clean package install spring-boot:repackage assembly:single<br/>
+<br/>
+发布项目有四个步骤：一是进入打包结果目录，二是解压，三是进入解压文件目录，四是运行启动脚本<br/>
+cd target<br/>
+tar -zxvf helloworld-blockchain-node-*.tar.gz<br/>
+cd HelloworldBlockchainNode<br/>
+./start.sh restart<br/>
+<h3 id="InitUser">获取网站管理员的初始账户</h3>
+系统第一次启动后，会自动生成一个网站的管理员账户。密码账户保存在应用安装目录里的InitUser.txt文件里。<br/>
+<img src="image/InitUser.jpg"/><br/>
+<h3 id="Login">登录系统</h3>
+打开网址http://localhost:8444/login.html，输入管理员账号与密码。
+<h3 id="WhatIsWallet">钱包地址是什么</h3>
+在区块链网络里进行转账、收账的账号。就像银行卡的号码。
+<h3 id="HowToGenerateWallet">主动生成钱包</h3>
+打开网址http://localhost:8444/wallet.html，点击[生成钱包按钮]。
+<h3 id="HowToTransaction">如何转账进行交易？</h3>
+打开网址http://localhost:8444/transaction.html，按照要求操作，进行转账。
+<h3 id="InitMiner">默认矿工钱包</h3>
+系统第一次启动后，会自动生成一个钱包。钱包保存在应用安装目录里的InitMiner.txt文件里。<br/>
+矿工挖矿成功后，区块链网络会自动将奖励发送到矿工的钱包里。<br/>
+<img src="image/InitMiner.jpg"/><br/>
+<h3 id="SettingMinerAddress">设置挖矿地址</h3>
+系统默认分配了一个矿工钱包给用户，当然用户可以主动生成一个钱包作为矿工钱包。
+<img src="image/SettingMinerAddress.jpg"/><br/>
+<h3 id="SettingMinerStatus">启动/关闭挖矿</h3>
+<img src="image/SettingMinerStatus.jpg"/><br/>
+<h3 id="QueryBlockByHeight">查询区块信息</h3>
+<img src="image/QueryBlockByHeight.jpg"/><br/>
+<h3 id="QueryUtxoByAddress">查询账户余额</h3>
+<img src="image/QueryUtxoByAddress.jpg"/><br/>
+</body>
+</html>
