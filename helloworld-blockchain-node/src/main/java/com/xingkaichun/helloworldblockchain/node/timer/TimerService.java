@@ -53,9 +53,14 @@ public class TimerService {
 
     @PostConstruct
     private void startThread(){
-
+        //阻塞：将种子节点加入区块链
+        addSeedNodeToLocalBlockchain();
         new Thread(()->{
             while (true){
+                /**
+                 * 定时将种子节点加入区块链，因为有的种子节点可能会发生故障，然后本地节点链接不上种子节点，就将种子节点丢弃。
+                 * 能作为种子节点的服务器，肯定会很快被维护的。
+                 */
                 try {
                     addSeedNodeToLocalBlockchain();
                 } catch (Exception e) {
@@ -68,6 +73,8 @@ public class TimerService {
                 }
             }
         }).start();
+
+
 
         new Thread(()->{
             while (true){
@@ -84,6 +91,8 @@ public class TimerService {
             }
         }).start();
 
+
+
         new Thread(()->{
             while (true){
                 try {
@@ -98,6 +107,8 @@ public class TimerService {
                 }
             }
         }).start();
+
+
 
         new Thread(()->{
             while (true){
@@ -123,7 +134,10 @@ public class TimerService {
         Node node1 = new Node();
         node1.setIp("139.9.125.122");
         node1.setPort(8444);
-        nodeList.add(node1);
+        Node node2 = new Node();
+        node2.setIp("119.3.57.171");
+        node2.setPort(8444);
+        nodeList.add(node2);
         if(nodeList != null){
             for(Node node:nodeList){
                 Node n = nodeService.queryNode(node);
