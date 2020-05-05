@@ -487,7 +487,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private boolean isNewGenerateHashRight(Block block) throws Exception {
         //校验区块Hash是否已经被使用了
         if(isHashExist(block.getHash())){
-            logger.error("区块数据异常，区块Hash已经被使用了。");
+            logger.debug("区块数据异常，区块Hash已经被使用了。");
             return false;
         }
         //在不同的交易中，新生产的哈希(交易的哈希、交易输出哈希)不应该被使用两次或是两次以上
@@ -840,22 +840,22 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
             List<TransactionInput> inputs = mineAwardTransaction.getInputs();
             if(inputs!=null && inputs.size()!=0){
-                logger.error("区块数据异常：挖矿交易的输入只能为空。");
+                logger.debug("区块数据异常：挖矿交易的输入只能为空。");
                 return false;
             }
             List<TransactionOutput> outputs = mineAwardTransaction.getOutputs();
             if(outputs == null){
-                logger.error("区块数据异常：挖矿交易的输出不能为空。");
+                logger.debug("区块数据异常：挖矿交易的输出不能为空。");
                 return false;
             }
             if(outputs.size() != 1){
-                logger.error("区块数据异常：挖矿交易的输出有且只能有一笔。");
+                logger.debug("区块数据异常：挖矿交易的输出有且只能有一笔。");
                 return false;
             }
             //校验正反
             for(TransactionOutput output:outputs){
                 if(output.getValue().compareTo(new BigDecimal("0"))<0){
-                    logger.error("区块数据异常：挖矿交易的输出不能小于0。");
+                    logger.debug("区块数据异常：挖矿交易的输出不能小于0。");
                     return false;
                 }
             }
@@ -870,7 +870,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             BigDecimal targetMineAward = incentive.mineAward(this, block);
             return targetMineAward.compareTo(blockWritedMineAward) >= 0 ;
         } catch (Exception e){
-            logger.error("区块数据异常，挖矿奖励交易不正确。");
+            logger.debug("区块数据异常，挖矿奖励交易不正确。");
             return false;
         }
     }
@@ -1245,7 +1245,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             }
             return true;
         } catch (Exception e) {
-            logger.error("校验金额方法出现异常，请检查。",e);
+            logger.debug("校验金额方法出现异常，请检查。",e);
             return false;
         }
     }

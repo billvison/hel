@@ -55,10 +55,10 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
                 return ServiceResult.createFailServiceResult(pingResponseServiceResult.getMessage());
             }
         } catch (IOException e) {
-            logger.info(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
+            logger.debug(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
             return ServiceResult.createFailServiceResult(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()));
         } catch (Exception e) {
-            logger.error(String.format("提交交易[%s]至节点[%s:%d]出现异常",gson.toJson(transactionDTO),node.getIp(),node.getPort()),e);
+            logger.debug(String.format("提交交易[%s]至节点[%s:%d]出现异常",gson.toJson(transactionDTO),node.getIp(),node.getPort()),e);
             return ServiceResult.createFailServiceResult(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()));
         }
     }
@@ -77,10 +77,10 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
                 return ServiceResult.createFailServiceResult(pingResponseServiceResult.getMessage());
             }
         } catch (IOException e) {
-            logger.info(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
+            logger.debug(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
             return ServiceResult.createFailServiceResult(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()));
         } catch (Exception e) {
-            logger.error(String.format("Ping节点[%s:%d]出现异常",node.getIp(),node.getPort()),e);
+            logger.debug(String.format("Ping节点[%s:%d]出现异常",node.getIp(),node.getPort()),e);
             return ServiceResult.createFailServiceResult(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()));
         }
     }
@@ -100,10 +100,10 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
                 return ServiceResult.createFailServiceResult(pingResponseServiceResult.getMessage());
             }
         } catch (IOException e) {
-            logger.info(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
+            logger.debug(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
             return ServiceResult.createFailServiceResult(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()));
         } catch (Exception e) {
-            logger.error(String.format("将本地区块链高度单播给节点[%s:%d]出现异常",node.getIp(),node.getPort()),e);
+            logger.debug(String.format("将本地区块链高度单播给节点[%s:%d]出现异常",node.getIp(),node.getPort()),e);
             return ServiceResult.createFailServiceResult(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()));
         }
     }
@@ -123,10 +123,10 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
                 return ServiceResult.createFailServiceResult(serviceResult.getMessage());
             }
         } catch (IOException e) {
-            logger.info(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
+            logger.debug(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
             return ServiceResult.createFailServiceResult(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()));
         } catch (Exception e) {
-            logger.error(String.format("将本地区块链高度单播给节点[%s:%d]出现异常",node.getIp(),node.getPort()),e);
+            logger.debug(String.format("将本地区块链高度单播给节点[%s:%d]出现异常",node.getIp(),node.getPort()),e);
             return ServiceResult.createFailServiceResult(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()));
         }
     }
@@ -146,10 +146,10 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
                 return ServiceResult.createFailServiceResult(serviceResult.getMessage());
             }
         } catch (IOException e) {
-            logger.info(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
+            logger.debug(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()),e);
             return ServiceResult.createFailServiceResult(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()));
         } catch (Exception e) {
-            logger.error(String.format("将本地区块链高度单播给节点[%s:%d]出现异常",node.getIp(),node.getPort()),e);
+            logger.debug(String.format("将本地区块链高度单播给节点[%s:%d]出现异常",node.getIp(),node.getPort()),e);
             return ServiceResult.createFailServiceResult(String.format("节点%s:%d网络异常",node.getIp(),node.getPort()));
         }
     }

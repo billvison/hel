@@ -61,7 +61,7 @@ public class NodeServerController {
 
             //将ping的来路作为区块链节点
             ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
-           if(Boolean.valueOf(configurationDto.getConfValue())){
+            if(Boolean.valueOf(configurationDto.getConfValue())){
                 Node node = new Node();
                 String ip = httpServletRequest.getRemoteHost();
                 node.setIp(ip);
