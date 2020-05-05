@@ -88,15 +88,6 @@ public class BlockChainBrowserController {
             } catch (Exception e){
                 return ServiceResult.createFailServiceResult("私钥不正确，请检查输入的私钥");
             }
-            List<String> inputs = normalTransactionDto.getInputs();
-            if(inputs == null || inputs.size() == 0){
-                return ServiceResult.createFailServiceResult("交易输入不能为空。");
-            }
-            for(String input:inputs){
-                if(Strings.isNullOrEmpty(input)){
-                    return ServiceResult.createFailServiceResult("交易输入不能为空。");
-                }
-            }
             List<NormalTransactionDto.Output> outputs = normalTransactionDto.getOutputs();
             if(outputs == null || outputs.size() == 0){
                 return ServiceResult.createFailServiceResult("交易输出不能为空。");

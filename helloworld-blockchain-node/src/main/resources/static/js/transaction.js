@@ -28,12 +28,6 @@ function removeLi(para){
 function getInputVal(){
 	var all = {};
 	all.privatekey = $("#input_val input[name=privatekey]").val();//私钥
-	all.uuid = new Array();//input uuid
-	var uuid_ul = document.getElementById("uuid");
-	var uuid_li = uuid_ul.querySelectorAll("li");
-	for(var i=0; i<uuid_li.length;i++){
-		all.uuid.push(uuid_li[i].firstChild.value); 
-	}
 	all.output = new Array();//output
 	var output_div = document.getElementById("output");
 	var output_dl = output_div.querySelectorAll("dl");
@@ -59,8 +53,7 @@ function submitTrans() {
         data:`{
                 "normalTransactionDto":{
                 		"privateKey":"${getInputVal().privatekey}",
-                		"inputs":["${getInputVal().uuid}"],
-                		"outputs":[${getInputVal().char}]		
+                		"outputs":[${getInputVal().char}]
                 	}
         }`,
         dataType: "json",

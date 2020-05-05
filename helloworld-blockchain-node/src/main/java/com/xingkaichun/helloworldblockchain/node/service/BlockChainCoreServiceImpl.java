@@ -2,15 +2,14 @@ package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
+import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
-import com.xingkaichun.helloworldblockchain.core.utils.BlockchainHashUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportDtoUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.WalletUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.*;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringKey;
@@ -33,6 +32,7 @@ import com.xingkaichun.helloworldblockchain.node.util.WalletDtoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,16 +131,12 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     private TransactionDTO classCast(NormalTransactionDto normalTransactionDto) throws Exception {
         long currentTimeMillis = System.currentTimeMillis();
 
-        List<String> inputs = normalTransactionDto.getInputs();
-        List<TransactionInputDTO> transactionInputDtoList = new ArrayList<>();
-        for(String input:inputs){
-            TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
-            transactionInputDTO.setUnspendTransactionOutputHash(input);
-            transactionInputDtoList.add(transactionInputDTO);
-        }
+        StringKey stringKey = KeyUtil.stringKeyFrom(new StringPrivateKey(normalTransactionDto.getPrivateKey()));
 
         List<NormalTransactionDto.Output> outputs = normalTransactionDto.getOutputs();
         List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();
+        //理应支付总金额
+        BigDecimal values = BigDecimal.ZERO;
         if(outputs != null){
             for(NormalTransactionDto.Output o:outputs){
                 TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
@@ -148,8 +144,51 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
                 transactionOutputDTO.setValue(o.getValue());
                 transactionOutputDTO.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(o.getAddress()));
                 transactionOutputDtoList.add(transactionOutputDTO);
+                values = values.add(new BigDecimal(o.getValue()));
             }
         }
+        //手续费
+        values = values.add(BlockChainCoreConstant.TransactionConstant.MIN_TRANSACTION_FEE);
+
+        List<TransactionOutput> utxoList = blockChainCore.getBlockChainDataBase().queryUnspendTransactionOuputListByAddress(stringKey.getStringAddress(),0,100);
+        //交易输入列表
+        List<String> inputs = new ArrayList<>();
+        //交易输入总金额
+        BigDecimal useValues = BigDecimal.ZERO;
+        //找零
+        BigDecimal change = BigDecimal.ZERO;
+        boolean haveMoreMoneyToPay = false;
+        for(TransactionOutput transactionOutput:utxoList){
+            useValues = useValues.add(transactionOutput.getValue());
+            //交易输入
+            inputs.add(transactionOutput.getTransactionOutputHash());
+            if(useValues.compareTo(values)>=0){
+                haveMoreMoneyToPay = true;
+                break;
+            }
+        }
+
+        if(!haveMoreMoneyToPay){
+            throw new BlockChainCoreException("账户没有足够的金额去支付。");
+        }else {
+            //找零
+            change = useValues.subtract(values);
+            TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
+            transactionOutputDTO.setAddress(stringKey.getStringAddress().getValue());
+            transactionOutputDTO.setValue(change.toPlainString());
+            transactionOutputDTO.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(stringKey.getStringAddress().getValue()));
+            transactionOutputDtoList.add(transactionOutputDTO);
+        }
+
+
+        List<TransactionInputDTO> transactionInputDtoList = new ArrayList<>();
+        for(String input:inputs){
+            TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
+            transactionInputDTO.setUnspendTransactionOutputHash(input);
+            transactionInputDtoList.add(transactionInputDTO);
+        }
+
+
 
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(currentTimeMillis);
@@ -157,8 +196,6 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
 
-        String privateKey = normalTransactionDto.getPrivateKey();
-        StringKey stringKey = KeyUtil.stringKeyFrom(new StringPrivateKey(privateKey));
         for(TransactionInputDTO transactionInputDTO:transactionInputDtoList){
             String signature = signatureTransactionDTO(transactionDTO,stringKey.getStringPrivateKey());
             transactionInputDTO.setScriptKey(ScriptMachine.createPayToClassicAddressInputScript(signature,stringKey.getStringPublicKey().getValue()));

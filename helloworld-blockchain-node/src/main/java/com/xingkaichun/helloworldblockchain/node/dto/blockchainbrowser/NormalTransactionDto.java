@@ -10,8 +10,6 @@ import java.util.List;
 public class NormalTransactionDto {
 
     private String privateKey ;
-    //TODO 可以删除
-    private List<String> inputs ;
     private List<Output> outputs ;
 
     public static class Output{
@@ -53,14 +51,6 @@ public class NormalTransactionDto {
 
     public void setPrivateKey(String privateKey) {
         this.privateKey = privateKey;
-    }
-
-    public List<String> getInputs() {
-        return inputs;
-    }
-
-    public void setInputs(List<String> inputs) {
-        this.inputs = inputs;
     }
 
     public List<Output> getOutputs() {
