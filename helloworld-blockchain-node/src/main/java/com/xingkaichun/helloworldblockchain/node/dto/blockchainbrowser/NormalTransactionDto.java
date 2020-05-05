@@ -10,6 +10,7 @@ import java.util.List;
 public class NormalTransactionDto {
 
     private String privateKey ;
+    //TODO 可以删除
     private List<String> inputs ;
     private List<Output> outputs ;
 
