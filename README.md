@@ -7,11 +7,13 @@
 ### 区块链相关概念的学习
 在系统学习区块链前，可以关注抖音账号xingkaichun，视频都是几分钟一个，内容是作者讲解的区块链概念。建议学习完概念之后，在学习源码。
 
-### 作者(微信号HelloworldBlockchain)亲自授课讲解区块链，劲爆价格，不要9998，不要998，只要98。
+### 作者(微信号HelloworldBlockchain)承接辅导学习区块链
+这里因为作者要费精力，所以会收取一点费用。相信以多数开发的水平是不需要作者辅导的，直接跳过就行了。  
+作者(微信号HelloworldBlockchain)亲自授课讲解区块链，劲爆价格，不要9998，不要998，只要98。  
 学完之后，你可以掌握什么？  
 掌握数字货币、区块链等概念、技术。  
 能独立开发出一个新的类似比特币的数字货币。  
-作者(微信号HelloworldBlockchain)  
+扫二维码添加作者微信(微信号HelloworldBlockchain)  
 <img width="250" height="250" src="http://139.9.125.122:8444/document/image/Wechat_HelloworldBlockchain.jpg"/>
 
 ### 特色 
