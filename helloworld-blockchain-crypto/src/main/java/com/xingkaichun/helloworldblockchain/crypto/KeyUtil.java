@@ -43,97 +43,86 @@ public class KeyUtil {
     /**
      * 随机生成一个秘钥
      */
-    public static StringKey randomStringKey() throws Exception {
-        ECKeyPairGenerator generator = new ECKeyPairGenerator();
-        ECKeyGenerationParameters keygenParams = new ECKeyGenerationParameters(ecParams, secureRandom);
-        generator.init(keygenParams);
-        AsymmetricCipherKeyPair keypair = generator.generateKeyPair();
-        ECPrivateKeyParameters privParams = (ECPrivateKeyParameters) keypair.getPrivate();
-        ECPublicKeyParameters pubParams = (ECPublicKeyParameters) keypair.getPublic();
-        BigInteger priv = privParams.getD();
-        // The public key is an encoded point on the elliptic curve. It has no meaning independent of the curve.
-        byte[] pub = pubParams.getQ().getEncoded(false);
-        StringKey stringKey = new StringKey();
-        StringPrivateKey stringPrivateKey = stringPrivateKeyFrom(priv);
-        StringPublicKey stringPublicKey = stringPublicKeyFrom(pub);
-        StringAddress stringAddress = stringAddressFrom(stringPublicKey);
-        stringKey.setStringPrivateKey(stringPrivateKey);
-        stringKey.setStringPublicKey(stringPublicKey);
-        stringKey.setStringAddress(stringAddress);
-        return stringKey;
+    public static StringKey randomStringKey() {
+        try {
+            ECKeyPairGenerator generator = new ECKeyPairGenerator();
+            ECKeyGenerationParameters keygenParams = new ECKeyGenerationParameters(ecParams, secureRandom);
+            generator.init(keygenParams);
+            AsymmetricCipherKeyPair keypair = generator.generateKeyPair();
+            ECPrivateKeyParameters privParams = (ECPrivateKeyParameters) keypair.getPrivate();
+            ECPublicKeyParameters pubParams = (ECPublicKeyParameters) keypair.getPublic();
+            BigInteger priv = privParams.getD();
+            // The public key is an encoded point on the elliptic curve. It has no meaning independent of the curve.
+            byte[] pub = pubParams.getQ().getEncoded(false);
+            StringKey stringKey = new StringKey();
+            StringPrivateKey stringPrivateKey = stringPrivateKeyFrom(priv);
+            StringPublicKey stringPublicKey = stringPublicKeyFrom(pub);
+            StringAddress stringAddress = stringAddressFrom(stringPublicKey);
+            stringKey.setStringPrivateKey(stringPrivateKey);
+            stringKey.setStringPublicKey(stringPublicKey);
+            stringKey.setStringAddress(stringAddress);
+            return stringKey;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * 私钥生成秘钥
      */
-    public static StringKey stringKeyFrom(StringPrivateKey stringPrivateKey) throws Exception {
-        BigInteger priv = privateKeyFrom(stringPrivateKey);
-        byte[] ecPublicKey = publicFromPrivate(priv);
-        StringKey stringKey = new StringKey();
+    public static StringKey stringKeyFrom(StringPrivateKey stringPrivateKey) {
+        try {
+            BigInteger priv = privateKeyFrom(stringPrivateKey);
+            byte[] ecPublicKey = publicFromPrivate(priv);
+            StringKey stringKey = new StringKey();
 
-        StringPublicKey stringPublicKey = stringPublicKeyFrom(ecPublicKey);
-        StringAddress stringAddress = stringAddressFrom(stringPublicKey);
-        stringKey.setStringPrivateKey(stringPrivateKey);
-        stringKey.setStringPublicKey(stringPublicKey);
-        stringKey.setStringAddress(stringAddress);
-        return stringKey;
+            StringPublicKey stringPublicKey = stringPublicKeyFrom(ecPublicKey);
+            StringAddress stringAddress = stringAddressFrom(stringPublicKey);
+            stringKey.setStringPrivateKey(stringPrivateKey);
+            stringKey.setStringPublicKey(stringPublicKey);
+            stringKey.setStringAddress(stringAddress);
+            return stringKey;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * 公钥生成地址
      */
-    public static StringAddress stringAddressFrom(StringPublicKey stringPublicKey) throws Exception {
-        byte[] bytePublicKey = HexUtil.hexStringToBytes(stringPublicKey.getValue());
-        return new StringAddress(base58AddressFrom(bytePublicKey));
+    public static StringAddress stringAddressFrom(StringPublicKey stringPublicKey) {
+        try {
+            byte[] bytePublicKey = HexUtil.hexStringToBytes(stringPublicKey.getValue());
+            return new StringAddress(base58AddressFrom(bytePublicKey));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * 签名
      */
-    public static String signature(StringPrivateKey stringPrivateKey, String data) {
+    public static String signature(StringPrivateKey stringPrivateKey, String rawData) {
        try {
            BigInteger bigIntegerPrivateKey = privateKeyFrom(stringPrivateKey);
-           byte[] bytesSignature = signature(bigIntegerPrivateKey,data.getBytes());
+           byte[] bytesSignature = signature(bigIntegerPrivateKey,rawData.getBytes());
            String stringSignature = Base64.getEncoder().encodeToString(bytesSignature);
            return stringSignature;
-        } catch (Exception e) {
+       } catch (Exception e) {
             throw new RuntimeException(e);
-        }
+       }
     }
 
     /**
      * 验证签名
      */
-    public static boolean verifySignature(StringPublicKey stringPublicKey, String data, String stringSignature) {
+    public static boolean verifySignature(StringPublicKey stringPublicKey, String rawData, String stringSignature) {
         try {
             byte[] bytePublicKey = publicKeyFrom(stringPublicKey);
             byte[] bytesSignature = Base64.getDecoder().decode(stringSignature);
-            return verifySignature(bytePublicKey,data.getBytes(),bytesSignature);
+            return verifySignature(bytePublicKey,rawData.getBytes(),bytesSignature);
         }catch(Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * 判断公钥与地址是否等价
-     */
-    public static boolean isEquals(StringPublicKey stringPublicKey, StringAddress stringAddress) {
-        try {
-            StringAddress tempStringAddress = stringAddressFrom(stringPublicKey);
-            return isEquals(stringAddress,tempStringAddress);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * 判断地址是否等价
-     */
-    public static boolean isEquals(StringAddress stringAddress1, StringAddress stringAddress2) {
-        try {
-            return stringAddress1.getValue().equals(stringAddress2.getValue());
-        } catch (Exception e) {
-            return false;
         }
     }
 
@@ -199,7 +188,7 @@ public class KeyUtil {
     /**
      * 验证签名
      */
-    private static boolean verifySignature(byte[] pub, byte[] data, byte[] signature) {
+    private static boolean verifySignature(byte[] pub, byte[] rawData, byte[] signature) {
         ECDSASigner signer = new ECDSASigner();
         ECPublicKeyParameters ecPublicKeyParameters = new ECPublicKeyParameters(ecParams.getCurve().decodePoint(pub), ecParams);
         signer.init(false, ecPublicKeyParameters);
@@ -209,7 +198,7 @@ public class KeyUtil {
             ASN1Integer r = (ASN1Integer) seq.getObjectAt(0);
             ASN1Integer s = (ASN1Integer) seq.getObjectAt(1);
             decoder.close();
-            return signer.verifySignature(data, r.getValue(), s.getValue());
+            return signer.verifySignature(rawData, r.getValue(), s.getValue());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -218,7 +207,7 @@ public class KeyUtil {
     /**
      * 公钥生成base58格式地址
      */
-    private static String base58AddressFrom(byte[] bytePublicKey) throws Exception {
+    private static String base58AddressFrom(byte[] bytePublicKey) {
         byte[] pubKSha256 = SHA256Util.applySha256(bytePublicKey);
         byte[] pubKSha256RipeMD160 = RipeMD160Util.applyRipeMD160(pubKSha256);
 
