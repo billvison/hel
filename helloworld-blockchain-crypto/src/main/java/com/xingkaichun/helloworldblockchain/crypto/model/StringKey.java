@@ -1,12 +1,14 @@
 package com.xingkaichun.helloworldblockchain.crypto.model;
 
 
+import java.io.Serializable;
+
 /**
  * 秘钥
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class StringKey {
+public class StringKey implements Serializable {
 
     private StringPrivateKey stringPrivateKey;
     private StringPublicKey stringPublicKey;
