@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.crypto.model;
+package com.xingkaichun.helloworldblockchain.crypto.model.account;
 
 
 import java.io.Serializable;

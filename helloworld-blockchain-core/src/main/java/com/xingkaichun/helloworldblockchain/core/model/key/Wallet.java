@@ -1,8 +1,8 @@
 package com.xingkaichun.helloworldblockchain.core.model.key;
 
-import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
 
 /**
  * 钱包

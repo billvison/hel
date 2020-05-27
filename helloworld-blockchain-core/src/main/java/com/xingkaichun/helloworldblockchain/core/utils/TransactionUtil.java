@@ -7,7 +7,7 @@ import com.xingkaichun.helloworldblockchain.core.script.Script;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptExecuteResult;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 
 import java.math.BigDecimal;
 import java.util.List;

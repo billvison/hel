@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.utils.TransactionUtil;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
 
 /**
  * 脚本机器

@@ -1,9 +1,9 @@
 package com.xingkaichun.helloworldblockchain.node.util;
 
 import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.node.dto.wallet.WalletDTO;
 
 /**

@@ -1,10 +1,9 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 import com.xingkaichun.helloworldblockchain.core.impl.*;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * 创建BlockChainCore的工厂

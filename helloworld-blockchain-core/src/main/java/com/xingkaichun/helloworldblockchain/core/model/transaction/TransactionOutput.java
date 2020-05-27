@@ -2,7 +2,7 @@ package com.xingkaichun.helloworldblockchain.core.model.transaction;
 
 
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

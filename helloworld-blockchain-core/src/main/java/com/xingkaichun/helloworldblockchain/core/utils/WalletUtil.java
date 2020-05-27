@@ -1,10 +1,10 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringAccount;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 
 /**
