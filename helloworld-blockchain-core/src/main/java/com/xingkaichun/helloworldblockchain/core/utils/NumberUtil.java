@@ -1,7 +1,5 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
-import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
-
 import java.math.BigDecimal;
 
 /**
@@ -29,15 +27,12 @@ public class NumberUtil {
      * 获取小数位数
      * @return 如果是整数，返回0
      */
-    public static long decimalPlaces(BigDecimal transactionAmount){
-        if(transactionAmount.compareTo(BigDecimal.ZERO)<0){
-            throw new BlockChainCoreException("本方法不支持负数");
-        }
-        String stringTransactionAmount = transactionAmount.toString();
-        int indexOf = stringTransactionAmount.indexOf(".");
+    public static long decimalPlaces(BigDecimal bigDecimal){
+        String plainString = bigDecimal.toPlainString();
+        int indexOf = plainString.indexOf(".");
         if(indexOf < 0){
             return 0;
         }
-        return stringTransactionAmount.length() - 1 - indexOf;
+        return plainString.length() - 1 - indexOf;
     }
 }
