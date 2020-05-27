@@ -133,6 +133,7 @@ public class AccountUtil {
      * 由原始私钥推导出原始公钥
      */
     private static byte[] publicFromPrivate(BigInteger bigIntegerPrivateKey) {
+        //TODO
         byte[] bytePublicKey = ecParams.getG().multiply(bigIntegerPrivateKey).getEncoded();
         return bytePublicKey;
     }
