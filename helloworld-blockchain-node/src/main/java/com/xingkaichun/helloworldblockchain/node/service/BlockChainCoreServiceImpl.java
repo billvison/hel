@@ -131,7 +131,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     private TransactionDTO classCast(NormalTransactionDto normalTransactionDto) throws Exception {
         long currentTimeMillis = System.currentTimeMillis();
 
-        StringAccount stringAccount = KeyUtil.stringKeyFrom(new StringPrivateKey(normalTransactionDto.getPrivateKey()));
+        StringAccount stringAccount = KeyUtil.stringAccountFrom(new StringPrivateKey(normalTransactionDto.getPrivateKey()));
 
         List<NormalTransactionDto.Output> outputs = normalTransactionDto.getOutputs();
         List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();

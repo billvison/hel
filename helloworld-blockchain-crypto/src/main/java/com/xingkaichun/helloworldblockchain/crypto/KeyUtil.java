@@ -43,7 +43,7 @@ public class KeyUtil {
     /**
      * 随机生成一个秘钥
      */
-    public static StringAccount randomStringKey() {
+    public static StringAccount randomStringAccount() {
         try {
             ECKeyPairGenerator generator = new ECKeyPairGenerator();
             ECKeyGenerationParameters keygenParams = new ECKeyGenerationParameters(ecParams, secureRandom);
@@ -70,7 +70,7 @@ public class KeyUtil {
     /**
      * 私钥生成秘钥
      */
-    public static StringAccount stringKeyFrom(StringPrivateKey stringPrivateKey) {
+    public static StringAccount stringAccountFrom(StringPrivateKey stringPrivateKey) {
         try {
             BigInteger priv = privateKeyFrom(stringPrivateKey);
             byte[] ecPublicKey = publicFromPrivate(priv);

@@ -25,7 +25,7 @@ public class WalletUtil {
 
     public static Wallet generateWallet(){
         try {
-            StringAccount stringAccount = KeyUtil.randomStringKey();
+            StringAccount stringAccount = KeyUtil.randomStringAccount();
             StringPublicKey stringPublicKey = stringAccount.getStringPublicKey();
             StringPrivateKey stringPrivateKey = stringAccount.getStringPrivateKey();
             StringAddress stringAddress = stringAccount.getStringAddress();
