@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAccount;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPublicKey;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -43,7 +43,7 @@ public class KeyUtil {
     /**
      * 随机生成一个秘钥
      */
-    public static StringKey randomStringKey() {
+    public static StringAccount randomStringKey() {
         try {
             ECKeyPairGenerator generator = new ECKeyPairGenerator();
             ECKeyGenerationParameters keygenParams = new ECKeyGenerationParameters(ecParams, secureRandom);
@@ -54,14 +54,14 @@ public class KeyUtil {
             BigInteger priv = privParams.getD();
             // The public key is an encoded point on the elliptic curve. It has no meaning independent of the curve.
             byte[] pub = pubParams.getQ().getEncoded(false);
-            StringKey stringKey = new StringKey();
+            StringAccount stringAccount = new StringAccount();
             StringPrivateKey stringPrivateKey = stringPrivateKeyFrom(priv);
             StringPublicKey stringPublicKey = stringPublicKeyFrom(pub);
             StringAddress stringAddress = stringAddressFrom(stringPublicKey);
-            stringKey.setStringPrivateKey(stringPrivateKey);
-            stringKey.setStringPublicKey(stringPublicKey);
-            stringKey.setStringAddress(stringAddress);
-            return stringKey;
+            stringAccount.setStringPrivateKey(stringPrivateKey);
+            stringAccount.setStringPublicKey(stringPublicKey);
+            stringAccount.setStringAddress(stringAddress);
+            return stringAccount;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -70,18 +70,18 @@ public class KeyUtil {
     /**
      * 私钥生成秘钥
      */
-    public static StringKey stringKeyFrom(StringPrivateKey stringPrivateKey) {
+    public static StringAccount stringKeyFrom(StringPrivateKey stringPrivateKey) {
         try {
             BigInteger priv = privateKeyFrom(stringPrivateKey);
             byte[] ecPublicKey = publicFromPrivate(priv);
-            StringKey stringKey = new StringKey();
+            StringAccount stringAccount = new StringAccount();
 
             StringPublicKey stringPublicKey = stringPublicKeyFrom(ecPublicKey);
             StringAddress stringAddress = stringAddressFrom(stringPublicKey);
-            stringKey.setStringPrivateKey(stringPrivateKey);
-            stringKey.setStringPublicKey(stringPublicKey);
-            stringKey.setStringAddress(stringAddress);
-            return stringKey;
+            stringAccount.setStringPrivateKey(stringPrivateKey);
+            stringAccount.setStringPublicKey(stringPublicKey);
+            stringAccount.setStringAddress(stringAddress);
+            return stringAccount;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

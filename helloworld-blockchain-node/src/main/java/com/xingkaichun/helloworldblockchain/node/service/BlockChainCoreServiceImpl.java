@@ -12,7 +12,7 @@ import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.core.utils.*;
 import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringAddress;
-import com.xingkaichun.helloworldblockchain.crypto.model.StringKey;
+import com.xingkaichun.helloworldblockchain.crypto.model.StringAccount;
 import com.xingkaichun.helloworldblockchain.crypto.model.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.QueryMiningTransactionListRequest;
@@ -131,7 +131,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     private TransactionDTO classCast(NormalTransactionDto normalTransactionDto) throws Exception {
         long currentTimeMillis = System.currentTimeMillis();
 
-        StringKey stringKey = KeyUtil.stringKeyFrom(new StringPrivateKey(normalTransactionDto.getPrivateKey()));
+        StringAccount stringAccount = KeyUtil.stringKeyFrom(new StringPrivateKey(normalTransactionDto.getPrivateKey()));
 
         List<NormalTransactionDto.Output> outputs = normalTransactionDto.getOutputs();
         List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();
@@ -150,7 +150,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         //手续费
         values = values.add(BlockChainCoreConstant.TransactionConstant.MIN_TRANSACTION_FEE);
 
-        List<TransactionOutput> utxoList = blockChainCore.getBlockChainDataBase().queryUnspendTransactionOuputListByAddress(stringKey.getStringAddress(),0,100);
+        List<TransactionOutput> utxoList = blockChainCore.getBlockChainDataBase().queryUnspendTransactionOuputListByAddress(stringAccount.getStringAddress(),0,100);
         //交易输入列表
         List<String> inputs = new ArrayList<>();
         //交易输入总金额
@@ -174,9 +174,9 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
             //找零
             change = useValues.subtract(values);
             TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-            transactionOutputDTO.setAddress(stringKey.getStringAddress().getValue());
+            transactionOutputDTO.setAddress(stringAccount.getStringAddress().getValue());
             transactionOutputDTO.setValue(change.toPlainString());
-            transactionOutputDTO.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(stringKey.getStringAddress().getValue()));
+            transactionOutputDTO.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(stringAccount.getStringAddress().getValue()));
             transactionOutputDtoList.add(transactionOutputDTO);
         }
 
@@ -197,8 +197,8 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         transactionDTO.setOutputs(transactionOutputDtoList);
 
         for(TransactionInputDTO transactionInputDTO:transactionInputDtoList){
-            String signature = signatureTransactionDTO(transactionDTO,stringKey.getStringPrivateKey());
-            transactionInputDTO.setScriptKey(ScriptMachine.createPayToClassicAddressInputScript(signature,stringKey.getStringPublicKey().getValue()));
+            String signature = signatureTransactionDTO(transactionDTO, stringAccount.getStringPrivateKey());
+            transactionInputDTO.setScriptKey(ScriptMachine.createPayToClassicAddressInputScript(signature, stringAccount.getStringPublicKey().getValue()));
         }
         return transactionDTO;
     }

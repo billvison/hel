@@ -4,7 +4,7 @@ package com.xingkaichun.helloworldblockchain.crypto.model;
 import java.io.Serializable;
 
 /**
- * 字符串格式的区块链秘钥(等价于区块链账户)
+ * 字符串格式的数字货币的账户
  *
  * 通常情况下，数字货币的账户由一个非对称秘钥对（私钥、公钥）、一个地址构成。
  * 非对称秘钥由私钥、公钥构成。私钥可以推导出公钥。公钥不能逆推出私钥。
@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class StringKey implements Serializable {
+public class StringAccount implements Serializable {
 
     private StringPrivateKey stringPrivateKey;
     private StringPublicKey stringPublicKey;
