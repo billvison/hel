@@ -106,8 +106,8 @@ public class KeyUtil {
        try {
            BigInteger bigIntegerPrivateKey = privateKeyFrom(stringPrivateKey);
            byte[] bytesSignature = signature(bigIntegerPrivateKey,rawData.getBytes());
-           String stringSignature = Base64.getEncoder().encodeToString(bytesSignature);
-           return stringSignature;
+           String signature = Base64.getEncoder().encodeToString(bytesSignature);
+           return signature;
        } catch (Exception e) {
             throw new RuntimeException(e);
        }
@@ -116,10 +116,10 @@ public class KeyUtil {
     /**
      * 验证签名
      */
-    public static boolean verifySignature(StringPublicKey stringPublicKey, String rawData, String stringSignature) {
+    public static boolean verifySignature(StringPublicKey stringPublicKey, String rawData, String signature) {
         try {
             byte[] bytePublicKey = publicKeyFrom(stringPublicKey);
-            byte[] bytesSignature = Base64.getDecoder().decode(stringSignature);
+            byte[] bytesSignature = Base64.getDecoder().decode(signature);
             return verifySignature(bytePublicKey,rawData.getBytes(),bytesSignature);
         }catch(Exception e) {
             throw new RuntimeException(e);
