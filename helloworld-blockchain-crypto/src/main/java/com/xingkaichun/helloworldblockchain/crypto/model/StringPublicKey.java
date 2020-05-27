@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.crypto.model;
 import java.io.Serializable;
 
 /**
- * 公钥
+ * 字符串格式的公钥
  *
  * @author 邢开春 xingkaichun@qq.com
  */
