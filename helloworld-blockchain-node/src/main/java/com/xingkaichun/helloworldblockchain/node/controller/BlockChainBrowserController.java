@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstant;
 import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
-import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
+import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.BlockChainApiRoute;
@@ -84,7 +84,7 @@ public class BlockChainBrowserController {
                 return ServiceResult.createFailServiceResult("私钥不能为空");
             }
             try {
-                KeyUtil.stringAccountFrom(new StringPrivateKey(privateKey));
+                AccountUtil.stringAccountFrom(new StringPrivateKey(privateKey));
             } catch (Exception e){
                 return ServiceResult.createFailServiceResult("私钥不正确，请检查输入的私钥");
             }

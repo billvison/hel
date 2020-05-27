@@ -25,11 +25,11 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 /**
- * 秘钥工具类
+ * 账户工具类
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class KeyUtil {
+public class AccountUtil {
 
     private static final ECDomainParameters ecParams;
     private static final SecureRandom secureRandom;
@@ -41,7 +41,7 @@ public class KeyUtil {
     }
 
     /**
-     * 随机生成一个秘钥
+     * 随机生成一个账户
      */
     public static StringAccount randomStringAccount() {
         try {
@@ -68,7 +68,7 @@ public class KeyUtil {
     }
 
     /**
-     * 私钥生成秘钥
+     * 私钥生成账户
      */
     public static StringAccount stringAccountFrom(StringPrivateKey stringPrivateKey) {
         try {

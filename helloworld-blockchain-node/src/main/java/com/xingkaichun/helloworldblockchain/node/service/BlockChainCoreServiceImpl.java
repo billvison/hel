@@ -10,7 +10,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.core.utils.*;
-import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
+import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
@@ -131,7 +131,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     private TransactionDTO classCast(NormalTransactionDto normalTransactionDto) throws Exception {
         long currentTimeMillis = System.currentTimeMillis();
 
-        StringAccount stringAccount = KeyUtil.stringAccountFrom(new StringPrivateKey(normalTransactionDto.getPrivateKey()));
+        StringAccount stringAccount = AccountUtil.stringAccountFrom(new StringPrivateKey(normalTransactionDto.getPrivateKey()));
 
         List<NormalTransactionDto.Output> outputs = normalTransactionDto.getOutputs();
         List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();

@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.utils.TransactionUtil;
-import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
+import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
 
 /**
@@ -57,7 +57,7 @@ public class ScriptMachine {
                     stack.push(stack.peek());
                 }else if(OPERATION_CODE_PUBLIC_KEY_TO_CLASSIC_ADDRESS.equals(command)){
                     String top = stack.peek();
-                    String address = KeyUtil.stringAddressFrom(new StringPublicKey(top)).getValue();
+                    String address = AccountUtil.stringAddressFrom(new StringPublicKey(top)).getValue();
                     stack.pop();
                     stack.push(address);
                 }else if(OPERATION_CODE_EQUAL_VERIFY.equals(command)){
@@ -67,7 +67,7 @@ public class ScriptMachine {
                 }else if(OPERATION_CODE_CHECK_SIGN.equals(command)){
                     String publicKey = stack.pop();
                     String sign = stack.pop();
-                    boolean verifySignatureSuccess = KeyUtil.verifySignature(new StringPublicKey(publicKey), TransactionUtil.signatureData(transactionEnvironment),sign);
+                    boolean verifySignatureSuccess = AccountUtil.verifySignature(new StringPublicKey(publicKey), TransactionUtil.signatureData(transactionEnvironment),sign);
                     if(!verifySignatureSuccess){
                         throw new RuntimeException("脚本执行失败");
                     }

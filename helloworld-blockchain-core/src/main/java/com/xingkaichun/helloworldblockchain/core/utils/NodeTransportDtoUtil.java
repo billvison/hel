@@ -10,7 +10,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
+import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
@@ -227,7 +227,7 @@ public class NodeTransportDtoUtil {
      * 交易签名
      */
     public static String signature(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) {
-        String strSignature = KeyUtil.signature(stringPrivateKey,signatureData(transactionDTO));
+        String strSignature = AccountUtil.signature(stringPrivateKey,signatureData(transactionDTO));
         return strSignature;
     }
 

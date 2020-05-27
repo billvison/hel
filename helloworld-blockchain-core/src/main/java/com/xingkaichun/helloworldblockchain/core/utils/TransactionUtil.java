@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.script.Script;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptExecuteResult;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
-import com.xingkaichun.helloworldblockchain.crypto.KeyUtil;
+import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 
 import java.math.BigDecimal;
@@ -71,7 +71,7 @@ public class TransactionUtil {
      * 交易签名
      */
     public static String signature(Transaction transaction, StringPrivateKey stringPrivateKey) {
-        String strSignature = KeyUtil.signature(stringPrivateKey,signatureData(transaction));
+        String strSignature = AccountUtil.signature(stringPrivateKey,signatureData(transaction));
         return strSignature;
     }
 
