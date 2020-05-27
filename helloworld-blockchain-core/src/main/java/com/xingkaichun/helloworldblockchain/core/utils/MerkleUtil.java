@@ -1,6 +1,5 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
-import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.crypto.Base64Util;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
@@ -49,7 +48,7 @@ public class MerkleUtil {
             count = currentLayer.size();
         }
         if(count != 1){
-            throw new BlockChainCoreException("计算默克尔树根出错。");
+            throw new RuntimeException("计算默克尔树根出错。");
         }
         String merkleRoot = nextLayer.get(0);
         return merkleRoot;

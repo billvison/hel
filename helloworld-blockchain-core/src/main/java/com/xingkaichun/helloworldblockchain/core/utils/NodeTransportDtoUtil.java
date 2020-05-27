@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.core.utils;
 
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
-import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
@@ -36,7 +35,7 @@ public class NodeTransportDtoUtil {
      */
     public static Block classCast(BlockChainDataBase blockChainDataBase, BlockDTO blockDTO) throws Exception {
         if(BigIntegerUtil.isLessThan(blockDTO.getHeight(),BigInteger.ONE)){
-            throw new BlockChainCoreException("区块的高度不能少于1");
+            throw new ClassCastException("区块的高度不能少于1");
         }
 
         List<Transaction> transactionList = new ArrayList<>();
@@ -56,7 +55,7 @@ public class NodeTransportDtoUtil {
         } else {
             Block previousBlock = blockChainDataBase.findNoTransactionBlockByBlockHeight(height.subtract(BigInteger.ONE));
             if(previousBlock == null){
-                throw new BlockChainCoreException("上一个区块不应该为null");
+                throw new ClassCastException("上一个区块不应该为null");
             }
             previousHash = previousBlock.getHash();
         }
@@ -107,7 +106,7 @@ public class NodeTransportDtoUtil {
                 String unspendTransactionOutputHash = transactionInputDTO.getUnspendTransactionOutputHash();
                 TransactionOutput transactionOutput = blockChainDataBase.findUnspendTransactionOuputByTransactionOuputHash(unspendTransactionOutputHash);
                 if(transactionOutput == null){
-                    throw new BlockChainCoreException("TransactionOutput不应该是null。");
+                    throw new ClassCastException("TransactionOutput不应该是null。");
                 }
                 TransactionInput transactionInput = new TransactionInput();
                 transactionInput.setUnspendTransactionOutput(transactionOutput);
@@ -142,7 +141,7 @@ public class NodeTransportDtoUtil {
                 return transactionType;
             }
         }
-        throw new BlockChainCoreException("交易类型不存在");
+        throw new ClassCastException("交易类型不存在");
     }
 
     private static ScriptKey scriptKeyFrom(List<String> scriptKey) {

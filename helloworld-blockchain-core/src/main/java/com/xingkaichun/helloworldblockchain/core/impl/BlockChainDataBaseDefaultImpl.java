@@ -4,7 +4,6 @@ import com.google.common.primitives.Bytes;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
-import com.xingkaichun.helloworldblockchain.core.exception.BlockChainCoreException;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.enums.BlockChainActionEnum;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
@@ -956,13 +955,13 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      */
     private void fillWriteBatch(WriteBatch writeBatch, Block block, BlockChainActionEnum blockChainActionEnum) throws Exception {
         if(writeBatch == null){
-            throw new BlockChainCoreException("参数writeBatch没有初始化");
+            throw new NullPointerException("参数writeBatch没有初始化");
         }
         if(block == null){
-            throw new BlockChainCoreException("区块不能为空");
+            throw new NullPointerException("区块不能为空");
         }
         if(blockChainActionEnum == null){
-            throw new BlockChainCoreException("区块链动作不能为空");
+            throw new NullPointerException("区块链动作不能为空");
         }
         //更新区块数据
         byte[] blockHeightKey = buildBlockHeightKey(block.getHeight());
