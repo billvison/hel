@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import java.math.BigDecimal;
 
 /**
- * 挖矿激励
+ * 矿工挖矿激励
  *
  * @author 邢开春 xingkaichun@qq.com
  */

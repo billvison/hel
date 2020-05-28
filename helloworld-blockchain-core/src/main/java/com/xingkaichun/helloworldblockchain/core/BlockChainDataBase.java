@@ -16,7 +16,9 @@ import java.util.List;
  */
 public abstract class BlockChainDataBase {
 
+    //矿工激励
     protected Incentive incentive ;
+    //区块共识
     protected Consensus consensus ;
 
 
