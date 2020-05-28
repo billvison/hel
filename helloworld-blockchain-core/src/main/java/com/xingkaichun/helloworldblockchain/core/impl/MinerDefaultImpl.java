@@ -59,9 +59,7 @@ public class MinerDefaultImpl extends Miner {
                 continue;
             }
             MiningBlock miningBlock = miningBlockThreadLocal.get();
-            //重新组装挖矿Block
-            //挖矿超过1小时还没有挖到矿
-            //
+            //重新组装MiningBlock
             if(isObtainMiningBlockAgain(blockChainDataBase,miningBlock)){
                 miningBlock = obtainMiningBlock(blockChainDataBase);
                 miningBlockThreadLocal.set(miningBlock);
