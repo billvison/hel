@@ -23,7 +23,7 @@ public class BlockChainCoreFactory {
     public BlockChainCore createBlockChainCore(String blockchainDataPath,String minerAddress) throws Exception {
 
         Incentive incentive = new IncentiveDefaultImpl();
-        Consensus consensus = new ProofOfWorkConsensus();
+        Consensus consensus = new ProofOfWorkConsensusImpl();
         BlockChainDataBase blockChainDataBase = new BlockChainDataBaseDefaultImpl(blockchainDataPath,incentive,consensus);
 
         MinerTransactionDtoDataBase minerTransactionDtoDataBase = new MinerTransactionDtoDtoDataBaseDefaultImpl(blockchainDataPath);

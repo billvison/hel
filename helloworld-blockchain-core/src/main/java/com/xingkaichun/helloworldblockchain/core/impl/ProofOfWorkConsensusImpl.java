@@ -12,7 +12,7 @@ import com.xingkaichun.helloworldblockchain.core.utils.BlockUtil;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class ProofOfWorkConsensus extends Consensus {
+public class ProofOfWorkConsensusImpl extends Consensus {
 
     private final static String EXPLAIN = "explain";
     private final static String TARGET_DIFFICULT = "targetDifficult";
