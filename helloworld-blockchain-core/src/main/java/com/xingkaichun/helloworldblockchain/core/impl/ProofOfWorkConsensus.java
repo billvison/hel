@@ -37,8 +37,6 @@ public class ProofOfWorkConsensus extends Consensus {
     public ConsensusVariableHolder calculateConsensusVariableHolder(BlockChainDataBase blockChainDataBase, Block block) {
 
         ConsensusVariableHolder consensusVariableHolder = new ConsensusVariableHolder();
-        block.setConsensusVariableHolder(consensusVariableHolder);
-
         //目标难度
         final String targetDifficult = BlockChainCoreConstant.MinerConstant.INIT_GENERATE_BLOCK_DIFFICULTY_STRING;
         consensusVariableHolder.put(EXPLAIN,targetDifficult);

@@ -68,7 +68,6 @@ public class NodeTransportDtoUtil {
         block.setMerkleRoot(BlockUtil.calculateBlockMerkleRoot(block));
         block.setConsensusValue(blockDTO.getConsensusValue());
         block.setHash(BlockUtil.calculateBlockHash(block));
-        block.setConsensusVariableHolder(blockChainDataBase.getConsensus().calculateConsensusVariableHolder(blockChainDataBase,block));
         return block;
     }
     /**

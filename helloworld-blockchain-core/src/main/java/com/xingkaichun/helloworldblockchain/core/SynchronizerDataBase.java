@@ -47,7 +47,7 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public abstract class  SynchronizerDataBase {
+public abstract class SynchronizerDataBase {
 
     /**
      * 保存节点(nodeId)传输过来的数据

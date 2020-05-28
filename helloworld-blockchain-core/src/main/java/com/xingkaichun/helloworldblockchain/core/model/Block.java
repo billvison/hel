@@ -70,7 +70,9 @@ public class Block implements Serializable {
 
     /**
      * 共识变量持有者。
-     * 这个字段是冗余的。可以通过区块链系统计算出来。辅助共识计算。
+     * 这个字段是冗余的。可以通过区块链系统计算出来。用于辅助共识计算。
+     * 在做共识计算时，可能会产生很多的中间变量，如果每次都重新计算一次，比较浪费算力，
+     * 这里的设计是将计算好的中间变量保存到这个持有者中，下次计算共识，直接从持有者中获取中间变量。
      */
     private ConsensusVariableHolder consensusVariableHolder;
 

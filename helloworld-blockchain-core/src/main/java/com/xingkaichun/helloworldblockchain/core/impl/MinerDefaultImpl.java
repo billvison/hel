@@ -414,9 +414,6 @@ public class MinerDefaultImpl extends Miner {
 
         String merkleRoot = BlockUtil.calculateBlockMerkleRoot(nonNonceBlock);
         nonNonceBlock.setMerkleRoot(merkleRoot);
-
-        ConsensusVariableHolder consensusVariableHolder = blockChainDataBase.getConsensus().calculateConsensusVariableHolder(blockChainDataBase,nonNonceBlock);
-        nonNonceBlock.setConsensusVariableHolder(consensusVariableHolder);
         return nonNonceBlock;
     }
     //endregion
