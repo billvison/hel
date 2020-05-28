@@ -5,16 +5,16 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 
 /**
- * 矿工:挖矿、分配挖矿奖励
+ * 矿工:挖矿、分配挖矿奖励、将挖取的区块放入区块链
  *
  * @author 邢开春 xingkaichun@qq.com
  */
 public abstract class Miner {
 
-    //矿工地址
+    //矿工钱包地址
     protected StringAddress minerStringAddress;
-    // 矿工挖矿所在的区块链
-    protected BlockChainDataBase blockChainDataBase ;
+    //矿工挖矿所在的区块链
+    protected BlockChainDataBase blockChainDataBase;
     //矿工交易数据库：矿工从交易数据库里获取挖矿的原材料(交易数据)
     protected MinerTransactionDtoDataBase minerTransactionDtoDataBase;
 

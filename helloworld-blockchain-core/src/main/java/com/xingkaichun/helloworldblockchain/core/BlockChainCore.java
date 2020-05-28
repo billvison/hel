@@ -19,7 +19,7 @@ public abstract class BlockChainCore {
     protected Synchronizer synchronizer;
 
     /**
-     * 启动。激活矿工、区块链同步器。
+     * 启动。激活矿工、激活区块链同步器。
      */
     public abstract void start();
 
