@@ -1,5 +1,6 @@
 ### 欢迎来到HelloworldBlockchain  
-这是一个Helloworld级别的区块链公链系统。  
+HelloworldBlockchain是一个Helloworld级别的区块链公链系统。  
+HelloworldBlockchain是一个Helloworld级别的数字货币项目。  
 
 ### HelloworldBlockchain项目意义  
 探索与实践区块链技术。   
@@ -10,7 +11,7 @@ http://139.9.125.122:8444/index.html
 
 ### 区块链学习  
 #### 区块链相关概念的学习
-在系统学习区块链前，可以关注抖音账号xingkaichun，视频都是几分钟一个，内容是作者讲解的区块链理论与概念，不涉及到具体项目与代码。建议学习完概念之后，搭建本项目，最后再学习本项目源码。
+在系统学习区块链前，可以关注抖音账号xingkaichun，视频都是几分钟一个，内容是作者讲解的区块链理论与概念，不涉及到具体项目与代码。建议学习完概念之后，然后再搭建本项目，最后再学习本项目源码。
 
 #### 作者(微信号HelloworldBlockchain)承接辅导学员学习区块链
 这里因为作者要费精力，所以会收取一点费用，98元(几包烟钱)。相信以多数开发的水平是不需要作者辅导的，直接跳过就行了。  
@@ -31,7 +32,9 @@ Helloworld币总共发行100 0000 0000枚。由于HelloworldBlockchain是一个�
 
 ### HelloworldBlockchain社区共识  
 #### 如果您打算加入HelloworldBlockchain社区,意味着您已经同意了以下共识。      
-HelloworldBlockchain是一个多链系统。每条链完全独立，可以拥有自己的激励政策、游戏规则等。  
+HelloworldBlockchain是一个多链系统。  
+每条链完全独立，可以拥有自己的激励政策、游戏规则等。  
+
 为什么要设计成多链系统？  
 单链意味着 每秒交易笔数受到普通节点的机器的限制。  
 
@@ -69,7 +72,7 @@ HelloworldBlockchain项目没有任何复杂依赖，请搜索idea如何导入�
 成功将项目导入idea后，找到类文件com.xingkaichun.helloworldblockchain.node.HelloWorldBlockChainNodeApplication，右键运行，正常情况下则会启动成功。接下来，快乐的调试代码吧！项目的前端地址是：http://localhost:8444 。 
 
 ### 打包与发布项目  
-使用maven打包
+项目打包
 ```  
 进入目录  
 cd helloworld-blockchain-node  
