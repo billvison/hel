@@ -1,34 +1,36 @@
 ### 欢迎来到HelloworldBlockchain  
 这是一个Helloworld级别的区块链公链系统。  
 
-### 项目意义  
+### HelloworldBlockchain项目意义  
 探索与实践区块链技术。   
 
 ### 部署展示  
 http://139.9.125.122:8444/index.html  
 ![HellowordlBlockchain首页](https://vi1.xiu123.cn/live/2020/05/01/08/1003v1588292968004573842.jpg)  
 
-### 区块链相关概念的学习
-在系统学习区块链前，可以关注抖音账号xingkaichun，视频都是几分钟一个，内容是作者讲解的区块链概念。建议学习完概念之后，在学习源码。
+### 区块链学习  
+#### 区块链相关概念的学习
+在系统学习区块链前，可以关注抖音账号xingkaichun，视频都是几分钟一个，内容是作者讲解的区块链理论与概念，不涉及到具体项目与代码。建议学习完概念之后，搭建本项目，最后再学习本项目源码。
 
-### 作者(微信号HelloworldBlockchain)承接辅导学员学习区块链
+#### 作者(微信号HelloworldBlockchain)承接辅导学员学习区块链
 这里因为作者要费精力，所以会收取一点费用，98元(几包烟钱)。相信以多数开发的水平是不需要作者辅导的，直接跳过就行了。  
 学完之后，你可以掌握什么？  
 掌握数字货币、区块链等概念、技术。  
 能独立开发出一个新的类似比特币的数字货币。  
 扫二维码添加作者微信(微信号HelloworldBlockchain)  
-<img width="200" height="200" src="http://139.9.125.122:8444/document/image/Wechat_HelloworldBlockchain.jpg"/>
+<img width="150" height="150" src="http://139.9.125.122:8444/document/image/Wechat_HelloworldBlockchain.jpg"/>
 
-### 特色 
+### HelloworldBlockchain项目特色 
 多链系统：Helloworld区块链系统由多条链组成。每条链完全独立自主，例如可以拥有自己的共识策略、激励策略等。由于每条链完全独立，因此非常适合探索实践各种区块链技术。   
 无限大的每秒交易数量：部署足够多的链，就能够有承载每秒无限大交易数量的能力。   
 支持跨链交易  
 实时交易(已有想法，暂未代码实现)
 
-### 币分配与关于创始人的奖励 
+### 币分配 
 Helloworld币总共发行100 0000 0000枚。由于HelloworldBlockchain是一个多链系统，因此多条链的币加在一起是100 0000 0000枚。 
 
-### 一些共识，如果您打算加入HelloworldBlockchain社区,意味着您已经同意了以下共识。      
+### HelloworldBlockchain社区共识  
+#### 如果您打算加入HelloworldBlockchain社区,意味着您已经同意了以下共识。      
 HelloworldBlockchain是一个多链系统。每条链完全独立，可以拥有自己的激励政策、游戏规则等。  
 为什么要设计成多链系统？  
 单链意味着 每秒交易笔数受到普通节点的机器的限制。  
@@ -40,7 +42,7 @@ HelloworldBlockchain是一个多链系统。每条链完全独立，可以拥有
 多链如何有机的统一成一个区块链系统？链与链如何交互？各个链的币的总量加在一起如何保证是100 0000 0000枚？如何跨链交易？  
 多链的统一直接交于社区来实现。例如跨链，A链转账给B链，社区可以共识出一个时间点，硬编码B链，将A链的转账交于B链的账户。  
 
-### 模块组织  
+### HelloworldBlockchain项目模块组织  
 #### helloworld-blockchain-node  
 helloworld-blockchain-node： 它集成了四个角色的功能。启动区块链节点后(项目打包、部署在文档下方)，在浏览器输入 http://localhost:8444 进入区块链系统的前台，即可从揽全局，体验区块链浏览器、区块链节点、节点管理员、开发调试等功能。  
 * 一是作为区块链浏览器的角色，对外提供了查询交易、查询区块、查询区块链网络节点、查询未花费输出等功能。  
@@ -66,7 +68,27 @@ HelloworldBlockchain项目没有任何复杂依赖，请搜索eclipse如何导�
 HelloworldBlockchain项目没有任何复杂依赖，请搜索idea如何导入已存在的maven项目。 
 成功将项目导入idea后，找到类文件com.xingkaichun.helloworldblockchain.node.HelloWorldBlockChainNodeApplication，右键运行，正常情况下则会启动成功。接下来，快乐的调试代码吧！项目的前端地址是：http://localhost:8444 。 
 
-### 项目使用手册   
+### 打包与发布项目  
+使用maven打包
+```  
+进入目录  
+cd helloworld-blockchain-node  
+运行打包命令  
+mvn -P package-profile -Dmaven.test.skip=true clean package install spring-boot:repackage assembly:single  
+```  
+发布项目
+```  
+进入打包结果目录  
+cd target  
+解压  
+tar -zxvf helloworld-blockchain-node-*.tar.gz  
+进入解压文件目录  
+cd HelloworldBlockchainNode  
+运行启动脚本  
+./start.sh restart  
+```  
+
+### 项目使用手册 [跳转到手册](http://139.9.125.122:8444/document/index.html)    
 * 密码位置  
 * 登录系统  
 * 生成钱包  
@@ -76,17 +98,3 @@ HelloworldBlockchain项目没有任何复杂依赖，请搜索idea如何导入�
 * 启动/关闭挖矿  
 * 查询区块信息  
 * 查询账户余额      
-
-### 打包与发布  
-使用maven打包有两个步骤：一是进入目录，二是运行打包命令。详细命令如下:  
-```  
-cd helloworld-blockchain-node  
-mvn -P package-profile -Dmaven.test.skip=true clean package install spring-boot:repackage assembly:single  
-```  
-发布项目有四个步骤：一是进入打包结果目录，二是解压，三是进入解压文件目录，四是运行启动脚本  
-```  
-cd target  
-tar -zxvf helloworld-blockchain-node-*.tar.gz  
-cd HelloworldBlockchainNode  
-./start.sh restart  
-```  
