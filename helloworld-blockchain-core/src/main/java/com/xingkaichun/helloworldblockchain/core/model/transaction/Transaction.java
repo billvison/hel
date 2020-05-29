@@ -11,7 +11,7 @@ import java.util.List;
  * @author 邢开春 xingkaichun@qq.com
  */
 public class Transaction implements Serializable {
-
+    //TODO 无法固定交易的整体内容
     //交易时间戳
     private long timestamp;
     /**
