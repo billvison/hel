@@ -33,6 +33,8 @@ public class AccountUtil {
 
     private static final ECDomainParameters ecParams;
     private static final SecureRandom secureRandom;
+    //whether to generate a compressed point encoding
+    private static final boolean compressed = false;
 
     static {
         X9ECParameters params = SECNamedCurves.getByName("secp256k1");
@@ -53,7 +55,7 @@ public class AccountUtil {
             ECPublicKeyParameters pubParams = (ECPublicKeyParameters) keypair.getPublic();
             BigInteger priv = privParams.getD();
             // The public key is an encoded point on the elliptic curve. It has no meaning independent of the curve.
-            byte[] pub = pubParams.getQ().getEncoded(false);
+            byte[] pub = pubParams.getQ().getEncoded(compressed);
             StringAccount stringAccount = new StringAccount();
             StringPrivateKey stringPrivateKey = stringPrivateKeyFrom(priv);
             StringPublicKey stringPublicKey = stringPublicKeyFrom(pub);
@@ -133,8 +135,7 @@ public class AccountUtil {
      * 由原始私钥推导出原始公钥
      */
     private static byte[] publicFromPrivate(BigInteger bigIntegerPrivateKey) {
-        //TODO
-        byte[] bytePublicKey = ecParams.getG().multiply(bigIntegerPrivateKey).getEncoded();
+        byte[] bytePublicKey = ecParams.getG().multiply(bigIntegerPrivateKey).getEncoded(compressed);
         return bytePublicKey;
     }
     /**
