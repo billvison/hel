@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class Transaction implements Serializable {
     //TODO 无法固定交易的整体内容
+    //TODO BUG 交易输出可以作弊
+
     //交易时间戳
     private long timestamp;
     /**
