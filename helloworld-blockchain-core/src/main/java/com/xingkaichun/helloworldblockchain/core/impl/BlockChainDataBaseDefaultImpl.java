@@ -220,7 +220,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             //区块链没有区块高度默认为0
             return BigInteger.valueOf(0);
         }
-        return BigIntegerUtil.decode(bytesBlockChainHeight);
+        return EncodeDecodeUtil.decodeToBigInteger(bytesBlockChainHeight);
     }
 
     @Override
@@ -984,9 +984,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         BigInteger transactionQuantity = queryTransactionQuantity();
         byte[] totalTransactionQuantityKey = buildTotalTransactionQuantityKey();
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-            writeBatch.put(totalTransactionQuantityKey, BigIntegerUtil.encode(transactionQuantity.add(BigInteger.valueOf(block.getTransactions().size()))));
+            writeBatch.put(totalTransactionQuantityKey, EncodeDecodeUtil.encode(transactionQuantity.add(BigInteger.valueOf(block.getTransactions().size()))));
         }else{
-            writeBatch.put(totalTransactionQuantityKey, BigIntegerUtil.encode(transactionQuantity.subtract(BigInteger.valueOf(block.getTransactions().size()))));
+            writeBatch.put(totalTransactionQuantityKey, EncodeDecodeUtil.encode(transactionQuantity.subtract(BigInteger.valueOf(block.getTransactions().size()))));
         }
         //区块Hash到区块高度的映射
         byte[] blockHashBlockHeightKey = buildBlockHashtBlockHeightKey(block.getHash());
@@ -998,9 +998,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //更新区块链的高度
         byte[] blockChainHeightKey = buildBlockChainHeightKey();
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-            writeBatch.put(blockChainHeightKey,BigIntegerUtil.encode(block.getHeight()));
+            writeBatch.put(blockChainHeightKey,EncodeDecodeUtil.encode(block.getHeight()));
         }else{
-            writeBatch.put(blockChainHeightKey,BigIntegerUtil.encode(block.getHeight().subtract(BigInteger.valueOf(1))));
+            writeBatch.put(blockChainHeightKey,EncodeDecodeUtil.encode(block.getHeight().subtract(BigInteger.valueOf(1))));
         }
 
         List<Transaction> transactionList = block.getTransactions();
@@ -1198,7 +1198,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(byteTotalTransactionQuantity == null){
             return BigInteger.ZERO;
         }
-        return BigIntegerUtil.decode(byteTotalTransactionQuantity);
+        return EncodeDecodeUtil.decodeToBigInteger(byteTotalTransactionQuantity);
     }
 
     /**

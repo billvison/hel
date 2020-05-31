@@ -10,7 +10,6 @@ import java.math.BigInteger;
 public class BigIntegerUtil {
 
 
-
     public static boolean isEquals(BigInteger bigInteger1,BigInteger bigInteger2){
         if(bigInteger1 == bigInteger2){
             return true;
@@ -35,15 +34,5 @@ public class BigIntegerUtil {
 
     public static boolean isGreateEqualThan(BigInteger bigInteger1, BigInteger bigInteger2) {
         return bigInteger1.compareTo(bigInteger2) >= 0;
-    }
-
-
-    public static BigInteger decode(byte[] bytesBlockChainHeight){
-        String strBlockChainHeight = new String(bytesBlockChainHeight, BlockChainCoreConstant.GLOBAL_CHARSET);
-        BigInteger blockChainHeight = new BigInteger(strBlockChainHeight);
-        return blockChainHeight;
-    }
-    public static byte[] encode(BigInteger blockChainHeight){
-        return String.valueOf(blockChainHeight).getBytes(BlockChainCoreConstant.GLOBAL_CHARSET);
     }
 }
