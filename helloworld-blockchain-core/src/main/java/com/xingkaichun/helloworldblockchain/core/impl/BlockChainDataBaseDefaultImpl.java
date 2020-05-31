@@ -1237,7 +1237,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 return false;
             }
             //校验小数位数
-            long decimalPlaces = NumberUtil.decimalPlaces(transactionAmount);
+            long decimalPlaces = NumberUtil.obtainDecimalPlaces(transactionAmount);
             if(decimalPlaces > BlockChainCoreConstant.TransactionConstant.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES){
                 logger.debug("交易金额不合法：交易金额的小数位数过多，大于系统默认小说最高精度");
                 return false;

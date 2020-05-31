@@ -16,7 +16,7 @@ public class NumberUtil {
      */
     public static boolean isNumber(String str){
         try {
-            String reg = "^[0-9]+(.[0-9]+)?$";
+            String reg = "^-?[0-9]+(.[0-9]+)?$";
             return str.matches(reg);
         } catch (Exception e) {
             return false;
@@ -27,7 +27,7 @@ public class NumberUtil {
      * 获取小数位数
      * @return 如果是整数，返回0
      */
-    public static long decimalPlaces(BigDecimal bigDecimal){
+    public static long obtainDecimalPlaces(BigDecimal bigDecimal){
         String plainString = bigDecimal.toPlainString();
         int indexOf = plainString.indexOf(".");
         if(indexOf < 0){
