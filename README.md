@@ -7,7 +7,7 @@ HelloworldBlockchain是一个Helloworld级别的数字货币项目。
 
 ### 部署展示  
 http://139.9.125.122:8444/index.html  
-![HellowordlBlockchain首页](https://vi1.xiu123.cn/live/2020/05/01/08/1003v1588292968004573842.jpg)  
+![HellowordlBlockchain首页](http://139.9.125.122:8444/document/image/HelloworldBlockchainIndexPage.png)  
 
 ### 区块链学习  
 #### 区块链相关概念的学习
