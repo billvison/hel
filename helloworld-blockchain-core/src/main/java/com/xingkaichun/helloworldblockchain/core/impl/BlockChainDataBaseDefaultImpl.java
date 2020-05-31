@@ -707,9 +707,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 logger.debug(String.format("交易校验失败：交易手续费不能小于%s。不合法的交易。", GlobalSetting.TransactionConstant.MIN_TRANSACTION_FEE));
                 return false;
             }
-            //脚本校验
+            //脚本脚本
             try{
-                if(!TransactionUtil.verifySignature(transaction)) {
+                if(!TransactionUtil.verifyScript(transaction)) {
                     logger.debug("交易校验失败：校验交易签名失败。不合法的交易。");
                     return false;
                 }
@@ -855,14 +855,14 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             }
             //校验正反
             for(TransactionOutput output:outputs){
-                if(output.getValue().compareTo(new BigDecimal("0"))<0){
+                if(output.getValue().compareTo(BigDecimal.ZERO)<0){
                     logger.debug("区块数据异常：挖矿交易的输出不能小于0。");
                     return false;
                 }
             }
 
             //获取区块中写入的挖矿奖励金额
-            BigDecimal blockWritedMineAward = new BigDecimal("0");
+            BigDecimal blockWritedMineAward = BigDecimal.ZERO;
             for(TransactionOutput output:outputs){
                 blockWritedMineAward.add(output.getValue());
             }

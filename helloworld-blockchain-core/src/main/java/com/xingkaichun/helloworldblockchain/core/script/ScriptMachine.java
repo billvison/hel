@@ -68,7 +68,7 @@ public class ScriptMachine {
                 }else if(OPERATION_CODE_CHECK_SIGN.equals(command)){
                     String publicKey = stack.pop();
                     String sign = stack.pop();
-                    boolean verifySignatureSuccess = AccountUtil.verifySignature(new StringPublicKey(publicKey), TransactionUtil.signatureData(transactionEnvironment),sign);
+                    boolean verifySignatureSuccess = AccountUtil.verifySignature(new StringPublicKey(publicKey), TransactionUtil.getSignatureData(transactionEnvironment),sign);
                     if(!verifySignatureSuccess){
                         throw new ExecuteScriptException("脚本执行失败");
                     }
