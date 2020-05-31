@@ -213,7 +213,7 @@ public class TimerService {
             int broadcastNodeCount = 0;
             //排序节点
             Collections.sort(nodes,(Node node1,Node node2)->{
-                if(BigIntegerUtil.isGreateThan(node1.getBlockChainHeight(),node2.getBlockChainHeight())){
+                if(BigIntegerUtil.isGreatThan(node1.getBlockChainHeight(),node2.getBlockChainHeight())){
                     return -1;
                 } else if(node1.getBlockChainHeight() == node2.getBlockChainHeight()){
                     return 0;

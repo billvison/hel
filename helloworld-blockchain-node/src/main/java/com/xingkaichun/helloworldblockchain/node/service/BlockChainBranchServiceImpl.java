@@ -57,7 +57,7 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
         Set<String> set = blockHeightBlockHashMap.keySet();
         for(String stringBlockHeight:set){
             BigInteger intBlockHeight = new BigInteger(stringBlockHeight);
-            if(BigIntegerUtil.isLessThan(intBlockHeight,blockHeight)  && BigIntegerUtil.isGreateThan(intBlockHeight,nearBlockHeight)){
+            if(BigIntegerUtil.isLessThan(intBlockHeight,blockHeight)  && BigIntegerUtil.isGreatThan(intBlockHeight,nearBlockHeight)){
                 nearBlockHeight = intBlockHeight;
             }
         }

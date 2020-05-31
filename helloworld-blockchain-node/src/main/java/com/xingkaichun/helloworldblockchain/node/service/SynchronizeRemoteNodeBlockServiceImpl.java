@@ -124,7 +124,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 if(BigIntegerUtil.isLessEqualThan(tempBlockHeight,BigInteger.ZERO)){
                     break;
                 }
-                if(BigIntegerUtil.isGreateThan(localBlockChainHeight,tempBlockHeight.add(forkBlockSize))){
+                if(BigIntegerUtil.isGreatThan(localBlockChainHeight,tempBlockHeight.add(forkBlockSize))){
                     forkNodeHandler(node,synchronizerDataBase);
                     return;
                 }

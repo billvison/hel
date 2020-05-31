@@ -54,7 +54,7 @@ public class TextSizeRestrictionUtil {
         if(BigIntegerUtil.isLessThan(nonce, TextSizeRestrictionUtil.MIN_NONCE)){
             return false;
         }
-        if(BigIntegerUtil.isGreateThan(nonce, TextSizeRestrictionUtil.MAX_NONCE)){
+        if(BigIntegerUtil.isGreatThan(nonce, TextSizeRestrictionUtil.MAX_NONCE)){
             return false;
         }
 
