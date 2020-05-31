@@ -7,7 +7,7 @@ HelloworldBlockchain是一个Helloworld级别的数字货币项目。
 
 ### 部署展示  
 http://139.9.125.122:8444/index.html  
-![HellowordlBlockchain首页](http://139.9.125.122:8444/document/image/HelloworldBlockchainIndexPage.png)  
+![HellowordlBlockchain首页](http://139.9.125.122:8444/document/image/HelloworldBlockchainIndexPage.png)
 
 ### 区块链学习  
 #### 区块链相关概念的学习
@@ -27,7 +27,7 @@ http://139.9.125.122:8444/index.html
 支持跨链交易  
 实时交易(已有想法，暂未代码实现)
 
-### 币分配 
+### Helloworld币  
 Helloworld币总共发行100 0000 0000枚。由于HelloworldBlockchain是一个多链系统，因此多条链的币加在一起是100 0000 0000枚。 
 
 ### HelloworldBlockchain社区共识  
