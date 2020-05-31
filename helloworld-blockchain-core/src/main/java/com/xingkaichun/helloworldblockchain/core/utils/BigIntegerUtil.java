@@ -28,11 +28,11 @@ public class BigIntegerUtil {
         return bigInteger1.compareTo(bigInteger2) <= 0;
     }
 
-    public static boolean isGreatThan(BigInteger currentBlockHeight, BigInteger blockHeight) {
-        return currentBlockHeight.compareTo(blockHeight) > 0;
+    public static boolean isGreatThan(BigInteger bigInteger1, BigInteger bigInteger2) {
+        return bigInteger1.compareTo(bigInteger2) > 0;
     }
 
-    public static boolean isGreateEqualThan(BigInteger bigInteger1, BigInteger bigInteger2) {
+    public static boolean isGreatEqualThan(BigInteger bigInteger1, BigInteger bigInteger2) {
         return bigInteger1.compareTo(bigInteger2) >= 0;
     }
 }
