@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class NodeTransportDtoUtil {
+public class NodeTransportDtoTool {
 
     private static Gson gson = new Gson();
     /**
@@ -67,9 +67,9 @@ public class NodeTransportDtoUtil {
         block.setPreviousHash(previousHash);
         block.setHeight(blockDTO.getHeight());
         block.setTransactions(transactionList);
-        block.setMerkleRoot(BlockUtil.calculateBlockMerkleRoot(block));
+        block.setMerkleRoot(BlockTool.calculateBlockMerkleRoot(block));
         block.setConsensusValue(blockDTO.getConsensusValue());
-        block.setHash(BlockUtil.calculateBlockHash(block));
+        block.setHash(BlockTool.calculateBlockHash(block));
         return block;
     }
     /**
@@ -129,7 +129,7 @@ public class NodeTransportDtoUtil {
         transaction.setTimestamp(transactionDTO.getTimestamp());
         TransactionType transactionType = transactionTypeFromTransactionDTO(transactionDTO);
         transaction.setTransactionType(transactionType);
-        transaction.setTransactionHash(TransactionUtil.calculateTransactionHash(transactionDTO));
+        transaction.setTransactionHash(TransactionTool.calculateTransactionHash(transactionDTO));
         transaction.setInputs(inputs);
         transaction.setOutputs(outputs);
         transaction.setMessages(transactionDTO.getMessages());
@@ -169,7 +169,7 @@ public class NodeTransportDtoUtil {
     /**
      * 类型转换
      */
-    public static TransactionDTO classCast(Transaction transaction) throws Exception {
+    public static TransactionDTO classCast(Transaction transaction) {
         List<TransactionInputDTO> inputs = new ArrayList<>();
         List<TransactionInput> transactionInputList = transaction.getInputs();
         if(transactionInputList!=null){
@@ -205,7 +205,7 @@ public class NodeTransportDtoUtil {
      */
     public static TransactionOutput classCast(TransactionDTO transactionDTO, TransactionOutputDTO transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
-        transactionOutput.setTransactionOutputHash(TransactionUtil.calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
+        transactionOutput.setTransactionOutputHash(TransactionTool.calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
         transactionOutput.setStringAddress(new StringAddress(transactionOutputDTO.getAddress()));
         transactionOutput.setValue(new BigDecimal(transactionOutputDTO.getValue()));
         transactionOutput.setScriptLock(scriptLockFrom(transactionOutputDTO.getScriptLock()));
@@ -235,7 +235,7 @@ public class NodeTransportDtoUtil {
      * 用于签名的数据数据
      */
     public static String signatureData(TransactionDTO transactionDTO) {
-        String data = TransactionUtil.calculateTransactionHash(transactionDTO);
+        String data = TransactionTool.calculateTransactionHash(transactionDTO);
         return data;
     }
 

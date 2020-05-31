@@ -10,10 +10,10 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.core.tools.BlockUtil;
-import com.xingkaichun.helloworldblockchain.core.tools.CommunityMaintenanceTransactionUtil;
-import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoUtil;
-import com.xingkaichun.helloworldblockchain.core.tools.TransactionUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
+import com.xingkaichun.helloworldblockchain.core.tools.CommunityMaintenanceTransactionTool;
+import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
+import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
@@ -149,7 +149,7 @@ public class MinerDefaultImpl extends Miner {
         if(forMineBlockTransactionDtoList != null){
             for(TransactionDTO transactionDTO:forMineBlockTransactionDtoList){
                 try {
-                    Transaction transaction = NodeTransportDtoUtil.classCast(blockChainDataBase,transactionDTO);
+                    Transaction transaction = NodeTransportDtoTool.classCast(blockChainDataBase,transactionDTO);
                     forMineBlockTransactionList.add(transaction);
                 } catch (Exception e) {
                     logger.info("类型转换异常,将从挖矿交易数据库中删除该交易",e);
@@ -185,7 +185,7 @@ public class MinerDefaultImpl extends Miner {
                 break;
             }
             block.setConsensusValue(nextNonce.toString());
-            block.setHash(BlockUtil.calculateBlockHash(block));
+            block.setHash(BlockTool.calculateBlockHash(block));
             if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
                 miningBlock.setMiningSuccess(true);
                 break;
@@ -375,11 +375,11 @@ public class MinerDefaultImpl extends Miner {
         output.setStringAddress(minerStringAddress);
         output.setValue(award);
         output.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(minerStringAddress.getValue()));
-        output.setTransactionOutputHash(TransactionUtil.calculateTransactionOutputHash(transaction,output));
+        output.setTransactionOutputHash(TransactionTool.calculateTransactionOutputHash(transaction,output));
         outputs.add(output);
 
         transaction.setOutputs(outputs);
-        transaction.setTransactionHash(TransactionUtil.calculateTransactionHash(transaction));
+        transaction.setTransactionHash(TransactionTool.calculateTransactionHash(transaction));
         return transaction;
     }
     //endregion
@@ -406,7 +406,7 @@ public class MinerDefaultImpl extends Miner {
         nonNonceBlock.setTransactions(packingTransactionList);
 
         //社区维护
-        Transaction maintenanceTransaction = CommunityMaintenanceTransactionUtil.obtainMaintenanceTransaction(timestamp,nonNonceBlock.getHeight());
+        Transaction maintenanceTransaction = CommunityMaintenanceTransactionTool.obtainMaintenanceTransaction(timestamp,nonNonceBlock.getHeight());
         if(maintenanceTransaction != null){
             packingTransactionList.add(maintenanceTransaction);
         }
@@ -416,7 +416,7 @@ public class MinerDefaultImpl extends Miner {
         packingTransactionList.add(mineAwardTransaction);
 
 
-        String merkleRoot = BlockUtil.calculateBlockMerkleRoot(nonNonceBlock);
+        String merkleRoot = BlockTool.calculateBlockMerkleRoot(nonNonceBlock);
         nonNonceBlock.setMerkleRoot(merkleRoot);
         return nonNonceBlock;
     }

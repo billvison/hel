@@ -294,7 +294,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验区块的存储容量是否合法
-        if(!TextSizeRestrictionUtil.isBlockStorageCapacityLegal(block)){
+        if(!TextSizeRestrictionTool.isBlockStorageCapacityLegal(block)){
             logger.debug("区块存储容量非法。");
             return false;
         }
@@ -375,7 +375,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验奖励交易
-        if(!CommunityMaintenanceTransactionUtil.isMaintenanceTransactionRight(block.getTimestamp(),block.getHeight(),maintenanceTransaction)){
+        if(!CommunityMaintenanceTransactionTool.isMaintenanceTransactionRight(block.getTimestamp(),block.getHeight(),maintenanceTransaction)){
             logger.debug("交易校验失败：社区奖励交易验证失败。");
             return false;
         }
@@ -589,15 +589,15 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private boolean isBlockWriteRight(Block block) {
         //校验写入的可计算得到的值是否与计算得来的一致
         //校验交易的属性是否与计算得来的一致
-        if(!BlockUtil.isBlockTransactionWriteRight(block)){
+        if(!BlockTool.isBlockTransactionWriteRight(block)){
             return false;
         }
         //校验写入的MerkleRoot是否与计算得来的一致
-        if(!BlockUtil.isBlockWriteMerkleRootRight(block)){
+        if(!BlockTool.isBlockWriteMerkleRootRight(block)){
             return false;
         }
         //校验写入的Hash是否与计算得来的一致
-        if(!BlockUtil.isBlockWriteHashRight(block)){
+        if(!BlockTool.isBlockWriteHashRight(block)){
             return false;
         }
         return true;
@@ -628,13 +628,13 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验交易存储
-        if(!TextSizeRestrictionUtil.isTransactionStorageCapacityLegal(transaction)){
+        if(!TextSizeRestrictionTool.isTransactionStorageCapacityLegal(transaction)){
             logger.debug("请校验交易的大小");
             return false;
         }
 
         //校验交易的属性是否与计算得来的一致
-        if(!BlockUtil.isTransactionWriteRight(block,transaction)){
+        if(!BlockTool.isTransactionWriteRight(block,transaction)){
             return false;
         }
 
@@ -696,8 +696,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 logger.debug("交易校验失败：普通交易不能有附加信息。");
                 return false;
             }
-            BigDecimal inputsValue = TransactionUtil.getInputsValue(transaction);
-            BigDecimal outputsValue = TransactionUtil.getOutputsValue(transaction);
+            BigDecimal inputsValue = TransactionTool.getInputsValue(transaction);
+            BigDecimal outputsValue = TransactionTool.getOutputsValue(transaction);
             if(inputsValue.compareTo(outputsValue) < 0) {
                 logger.debug("交易校验失败：交易的输入少于交易的输出。不合法的交易。");
                 return false;
@@ -709,7 +709,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             }
             //脚本脚本
             try{
-                if(!TransactionUtil.verifyScript(transaction)) {
+                if(!TransactionTool.verifyScript(transaction)) {
                     logger.debug("交易校验失败：校验交易签名失败。不合法的交易。");
                     return false;
                 }
@@ -729,7 +729,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 logger.debug("交易校验失败：社区奖励交易不能有附加信息。");
                 return false;
             }
-            if(!CommunityMaintenanceTransactionUtil.isMaintenanceTransactionRight(block.getTimestamp(),block.getHeight(),transaction)){
+            if(!CommunityMaintenanceTransactionTool.isMaintenanceTransactionRight(block.getTimestamp(),block.getHeight(),transaction)){
                 logger.debug("交易校验失败：社区奖励交易验证失败。");
                 return false;
             }

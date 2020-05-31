@@ -2,7 +2,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
-import com.xingkaichun.helloworldblockchain.core.tools.TransactionUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.core.utils.LevelDBUtil;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import org.iq80.leveldb.DB;
@@ -44,7 +44,7 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     public void insertTransactionDTO(TransactionDTO transactionDTO) throws Exception {
         //交易已经持久化进交易池数据库 丢弃交易
         synchronized (BlockChainDataBase.class){
-            String transactionHash = TransactionUtil.calculateTransactionHash(transactionDTO);
+            String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
             LevelDBUtil.put(transactionPoolDB,transactionHash, encode(transactionDTO));
         }
     }
@@ -76,7 +76,7 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
 
     @Override
     public void deleteTransactionDto(TransactionDTO transactionDTO) throws Exception {
-        String transactionHash = TransactionUtil.calculateTransactionHash(transactionDTO);
+        String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
         LevelDBUtil.delete(transactionPoolDB,transactionHash);
     }
 

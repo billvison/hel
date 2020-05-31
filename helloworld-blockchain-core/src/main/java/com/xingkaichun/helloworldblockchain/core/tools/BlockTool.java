@@ -18,9 +18,9 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class BlockUtil {
+public class BlockTool {
 
-    private final static Logger logger = LoggerFactory.getLogger(BlockUtil.class);
+    private final static Logger logger = LoggerFactory.getLogger(BlockTool.class);
 
     /**
      * 计算区块的Hash值
@@ -85,7 +85,7 @@ public class BlockUtil {
                 }
             }
         }
-        if(!TransactionUtil.isTransactionHashRight(transaction)){
+        if(!TransactionTool.isTransactionHashRight(transaction)){
             return false;
         }
         List<TransactionOutput> outputs = transaction.getOutputs();
@@ -93,7 +93,7 @@ public class BlockUtil {
             return true;
         }
         for(TransactionOutput transactionOutput:outputs){
-            if(!TransactionUtil.isTransactionOutputHashRight(transaction,transactionOutput)){
+            if(!TransactionTool.isTransactionOutputHashRight(transaction,transactionOutput)){
                 return false;
             }
         }

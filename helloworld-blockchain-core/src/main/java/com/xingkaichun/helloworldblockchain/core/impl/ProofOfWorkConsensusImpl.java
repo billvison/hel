@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.ConsensusVariableHolder;
 import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.core.tools.BlockUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 
 /**
  * 工作量证明实现
@@ -28,7 +28,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         //区块Hash
         String hash = block.getHash();
         if(hash == null){
-            hash = BlockUtil.calculateBlockHash(block);
+            hash = BlockTool.calculateBlockHash(block);
         }
         return hash.startsWith(targetDifficult);
     }

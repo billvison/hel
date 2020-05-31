@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.exception.ExecuteScriptExceptio
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.core.tools.TransactionUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
 
@@ -68,7 +68,7 @@ public class ScriptMachine {
                 }else if(OPERATION_CODE_CHECK_SIGN.equals(command)){
                     String publicKey = stack.pop();
                     String sign = stack.pop();
-                    boolean verifySignatureSuccess = AccountUtil.verifySignature(new StringPublicKey(publicKey), TransactionUtil.getSignatureData(transactionEnvironment),sign);
+                    boolean verifySignatureSuccess = AccountUtil.verifySignature(new StringPublicKey(publicKey), TransactionTool.getSignatureData(transactionEnvironment),sign);
                     if(!verifySignatureSuccess){
                         throw new ExecuteScriptException("脚本执行失败");
                     }

@@ -12,7 +12,7 @@ import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class WalletUtil {
+public class WalletTool {
 
     public static Wallet loadWallet(StringPrivateKey stringPrivateKey, StringPublicKey stringPublicKey, StringAddress stringAddress){
         try {

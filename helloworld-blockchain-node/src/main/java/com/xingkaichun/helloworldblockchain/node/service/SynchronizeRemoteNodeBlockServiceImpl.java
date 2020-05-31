@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
 import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationEnum;
@@ -196,7 +196,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                     forkNodeHandler(node,synchronizerDataBase);
                     return;
                 }
-                Block block = NodeTransportDtoUtil.classCast(blockChainDataBase,blockDTO);
+                Block block = NodeTransportDtoTool.classCast(blockChainDataBase,blockDTO);
                 boolean isAddBlockSuccess = blockChainDataBase.addBlock(block);
                 if(!isAddBlockSuccess){
                     synchronizerDataBase.clear(nodeId);

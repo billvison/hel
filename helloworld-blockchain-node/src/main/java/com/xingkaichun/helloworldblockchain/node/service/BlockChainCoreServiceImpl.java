@@ -9,9 +9,9 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoUtil;
-import com.xingkaichun.helloworldblockchain.core.tools.TransactionUtil;
-import com.xingkaichun.helloworldblockchain.core.tools.WalletUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
+import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
+import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
@@ -60,7 +60,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
     @Override
     public WalletDTO generateWalletDTO() {
-        Wallet wallet = WalletUtil.generateWallet();
+        Wallet wallet = WalletTool.generateWallet();
         return WalletDtoUtil.classCast(wallet);
     }
 
@@ -70,7 +70,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         if(transaction == null){
             return null;
         }
-        TransactionDTO transactionDTO = NodeTransportDtoUtil.classCast(transaction);
+        TransactionDTO transactionDTO = NodeTransportDtoTool.classCast(transaction);
         return transactionDTO;
     }
 
@@ -126,7 +126,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         response.setTransactionDTO(transactionDTO);
         response.setSuccessSubmitNode(successSubmitNode);
         response.setFailSubmitNode(failSubmitNode);
-        response.setTransactionHash(TransactionUtil.calculateTransactionHash(transactionDTO));
+        response.setTransactionHash(TransactionTool.calculateTransactionHash(transactionDTO));
         return response;
     }
 
@@ -206,7 +206,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     public String signatureTransactionDTO(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) {
-        String signature = NodeTransportDtoUtil.signature(transactionDTO,stringPrivateKey);
+        String signature = NodeTransportDtoTool.signature(transactionDTO,stringPrivateKey);
         return signature;
     }
 
@@ -225,7 +225,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         if(block == null){
             return null;
         }
-        BlockDTO blockDTO = NodeTransportDtoUtil.classCast(block);
+        BlockDTO blockDTO = NodeTransportDtoTool.classCast(block);
         return blockDTO;
     }
 

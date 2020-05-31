@@ -23,9 +23,9 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class TextSizeRestrictionUtil {
+public class TextSizeRestrictionTool {
 
-    private final static Logger logger = LoggerFactory.getLogger(TextSizeRestrictionUtil.class);
+    private final static Logger logger = LoggerFactory.getLogger(TextSizeRestrictionTool.class);
 
 
     //交易文本字符串最大长度值
@@ -54,10 +54,10 @@ public class TextSizeRestrictionUtil {
 
         //校验共识占用存储空间
         BigInteger nonce = new BigInteger(block.getConsensusValue());
-        if(BigIntegerUtil.isLessThan(nonce, TextSizeRestrictionUtil.MIN_NONCE)){
+        if(BigIntegerUtil.isLessThan(nonce, TextSizeRestrictionTool.MIN_NONCE)){
             return false;
         }
-        if(BigIntegerUtil.isGreatThan(nonce, TextSizeRestrictionUtil.MAX_NONCE)){
+        if(BigIntegerUtil.isGreatThan(nonce, TextSizeRestrictionTool.MAX_NONCE)){
             return false;
         }
 
@@ -65,9 +65,9 @@ public class TextSizeRestrictionUtil {
         //校验区块中交易的数量
         List<Transaction> transactions = block.getTransactions();
         long transactionsSize = transactions==null?0L:transactions.size();
-        if(transactionsSize > TextSizeRestrictionUtil.BLOCK_MAX_TRANSACTION_SIZE){
+        if(transactionsSize > TextSizeRestrictionTool.BLOCK_MAX_TRANSACTION_SIZE){
             logger.debug(String.format("区块数据异常，区块里包含的交易数量超过限制值%d。",
-                    TextSizeRestrictionUtil.BLOCK_MAX_TRANSACTION_SIZE));
+                    TextSizeRestrictionTool.BLOCK_MAX_TRANSACTION_SIZE));
             return false;
         }
         //校验每一笔交易占用的存储空间
@@ -155,7 +155,7 @@ public class TextSizeRestrictionUtil {
         }
 
         //校验整笔交易所占存储空间
-        if(calculateTransactionTextSize(transaction) > TextSizeRestrictionUtil.TRANSACTION_TEXT_MAX_SIZE){
+        if(calculateTransactionTextSize(transaction) > TextSizeRestrictionTool.TRANSACTION_TEXT_MAX_SIZE){
             logger.debug("交易数据异常，交易所占存储空间太大。");
             return false;
         }

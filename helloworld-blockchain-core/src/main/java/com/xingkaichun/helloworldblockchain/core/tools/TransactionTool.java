@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class TransactionUtil {
+public class TransactionTool {
 
     /**
      * 交易输入总额

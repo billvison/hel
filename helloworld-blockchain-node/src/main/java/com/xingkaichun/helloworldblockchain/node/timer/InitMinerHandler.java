@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.node.timer;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
-import com.xingkaichun.helloworldblockchain.core.tools.WalletUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.node.dto.wallet.WalletDTO;
@@ -40,7 +40,7 @@ public class InitMinerHandler {
         ConfigurationDto minerAddressConfigurationDto =  configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
         if(Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             //创建钱包
-            Wallet wallet = WalletUtil.generateWallet();
+            Wallet wallet = WalletTool.generateWallet();
             WalletDTO walletDTO =  WalletDtoUtil.classCast(wallet);
 
             //将钱包的地址当做矿工的地址写入数据库
