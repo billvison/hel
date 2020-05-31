@@ -129,21 +129,14 @@ public class TimerService {
     }
 
     private void addSeedNodeToLocalBlockchain() {
-        List<Node> nodeList = new ArrayList<>();
-        //TODO
-        Node node1 = new Node();
-        node1.setIp("139.9.125.122");
-        node1.setPort(8444);
-        Node node2 = new Node();
-        node2.setIp("119.3.57.171");
-        node2.setPort(8444);
-        nodeList.add(node2);
-        if(nodeList != null){
-            for(Node node:nodeList){
-                Node n = nodeService.queryNode(node);
-                if(n == null){
-                    nodeService.addNode(node);
-                }
+        for(String strNode:GlobalSetting.SEED_NODE_LIST){
+            Node node = new Node();
+            String[] nodeDetail = strNode.split(":");
+            node.setIp(nodeDetail[0]);
+            node.setPort(Integer.parseInt(nodeDetail[1]));
+            Node n = nodeService.queryNode(node);
+            if(n == null){
+                nodeService.addNode(node);
             }
         }
     }

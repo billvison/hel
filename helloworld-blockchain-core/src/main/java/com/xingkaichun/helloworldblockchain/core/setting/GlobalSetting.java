@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,6 +19,8 @@ public class GlobalSetting {
 
     //区块链的链ID
     public final static String BLOCK_CHAIN_ID = "0001";
+    //区块链网络中的种子节点
+    public final static List<String> SEED_NODE_LIST = Arrays.asList("139.9.125.122:8444","119.3.57.171:8444");
 
 
     /**
