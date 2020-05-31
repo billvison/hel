@@ -21,7 +21,7 @@ public class LevelDBUtil {
     }
 
     public static void put(DB db, String key, byte[] bytesValue) throws DBException {
-        db.put(stringToBytes(key),bytesValue);
+        put(db,stringToBytes(key),bytesValue);
     }
 
     public static void put(DB db, byte[] bytesKey, byte[] bytesValue) throws DBException {
@@ -32,8 +32,8 @@ public class LevelDBUtil {
         db.write(writeBatch);
     }
 
-    public static byte[] get(DB db,String key) throws DBException {
-        return db.get(stringToBytes(key));
+    public static byte[] get(DB db, String key) throws DBException {
+        return get(db,stringToBytes(key));
     }
 
     public static byte[] get(DB db, byte[] bytesKey) throws DBException {
@@ -41,11 +41,11 @@ public class LevelDBUtil {
     }
 
     public static void delete(DB db,String key) throws DBException {
-        db.delete(stringToBytes(key));
+        delete(db,stringToBytes(key));
     }
 
-    public static void delete(DB db,byte[] byteskey) throws DBException {
-        db.delete(byteskey);
+    public static void delete(DB db,byte[] bytesKey) throws DBException {
+        db.delete(bytesKey);
     }
 
     public static DB createDB(File dbFile) throws Exception{
