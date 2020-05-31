@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstant;
+import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
@@ -231,8 +231,8 @@ public class BlockChainBrowserController {
             PingResponse response = new PingResponse();
             response.setNodeList(nodeList);
             response.setBlockChainHeight(blockChainHeight);
-            response.setBlockChainId(BlockChainCoreConstant.BLOCK_CHAIN_ID);
-            response.setBlockChainVersion(BlockChainCoreConstant.SystemVersionConstant.obtainVersion());
+            response.setBlockChainId(GlobalSetting.BLOCK_CHAIN_ID);
+            response.setBlockChainVersion(GlobalSetting.SystemVersionConstant.obtainVersion());
             return ServiceResult.createSuccessServiceResult("查询节点信息成功",response);
         } catch (Exception e){
             String message = "查询节点信息失败";

@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.utils;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -63,10 +64,10 @@ public class EncodeDecodeUtil {
 
 
     public static byte[] encode(BigInteger bigInteger){
-        return String.valueOf(bigInteger).getBytes(BlockChainCoreConstant.GLOBAL_CHARSET);
+        return String.valueOf(bigInteger).getBytes(GlobalSetting.GLOBAL_CHARSET);
     }
     public static BigInteger decodeToBigInteger(byte[] bytesBigInteger){
-        String strBigInteger = new String(bytesBigInteger, BlockChainCoreConstant.GLOBAL_CHARSET);
+        String strBigInteger = new String(bytesBigInteger, GlobalSetting.GLOBAL_CHARSET);
         BigInteger bigInteger = new BigInteger(strBigInteger);
         return bigInteger;
     }

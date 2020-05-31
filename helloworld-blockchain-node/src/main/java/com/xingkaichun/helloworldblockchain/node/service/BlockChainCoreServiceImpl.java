@@ -8,10 +8,10 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
-import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstant;
-import com.xingkaichun.helloworldblockchain.core.utils.BlockchainHashUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.NodeTransportDtoUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.WalletUtil;
+import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.core.tools.BlockchainHashUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.WalletUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
@@ -150,7 +150,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
             }
         }
         //手续费
-        values = values.add(BlockChainCoreConstant.TransactionConstant.MIN_TRANSACTION_FEE);
+        values = values.add(GlobalSetting.TransactionConstant.MIN_TRANSACTION_FEE);
 
         List<TransactionOutput> utxoList = blockChainCore.getBlockChainDataBase().queryUnspendTransactionOuputListByAddress(stringAccount.getStringAddress(),0,100);
         //交易输入列表

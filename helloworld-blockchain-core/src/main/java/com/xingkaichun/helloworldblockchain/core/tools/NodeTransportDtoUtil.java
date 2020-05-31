@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.core.utils;
+package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
@@ -9,6 +9,8 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
@@ -51,7 +53,7 @@ public class NodeTransportDtoUtil {
         String previousHash = null;
         BigInteger height = blockDTO.getHeight();
         if(BigIntegerUtil.isEquals(height,BigInteger.ONE)){
-            previousHash = BlockChainCoreConstant.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH;
+            previousHash = GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH;
         } else {
             Block previousBlock = blockChainDataBase.findNoTransactionBlockByBlockHeight(height.subtract(BigInteger.ONE));
             if(previousBlock == null){

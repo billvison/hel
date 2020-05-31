@@ -1,10 +1,10 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
+import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
 import org.iq80.leveldb.*;
 import org.iq80.leveldb.impl.Iq80DBFactory;
 
 import java.io.File;
-import java.nio.charset.Charset;
 
 /**
  * LevelDB工具类
@@ -13,8 +13,6 @@ import java.nio.charset.Charset;
  */
 public class LevelDBUtil {
 
-    private static final Charset CHARSET_UTF_8 = Charset.forName("UTF-8");
-
     private static WriteOptions writeOptions = new WriteOptions();
 
     static {
@@ -22,31 +20,31 @@ public class LevelDBUtil {
         writeOptions.snapshot(true);
     }
 
-    public static void put(DB db, String key, byte[] bytesValue) throws DBException{
+    public static void put(DB db, String key, byte[] bytesValue) throws DBException {
         db.put(stringToBytes(key),bytesValue);
     }
 
-    public static void put(DB db, byte[] bytesKey, byte[] bytesValue) throws DBException{
+    public static void put(DB db, byte[] bytesKey, byte[] bytesValue) throws DBException {
         db.put(bytesKey,bytesValue);
     }
 
-    public static void write(DB db, WriteBatch writeBatch) throws DBException{
+    public static void write(DB db, WriteBatch writeBatch) throws DBException {
         db.write(writeBatch);
     }
 
-    public static byte[] get(DB db,String key) throws DBException{
+    public static byte[] get(DB db,String key) throws DBException {
         return db.get(stringToBytes(key));
     }
 
-    public static byte[] get(DB db, byte[] byteskey) throws DBException{
-        return db.get(byteskey);
+    public static byte[] get(DB db, byte[] bytesKey) throws DBException {
+        return db.get(bytesKey);
     }
 
-    public static void delete(DB db,String key) throws DBException, InterruptedException {
+    public static void delete(DB db,String key) throws DBException {
         db.delete(stringToBytes(key));
     }
 
-    public static void delete(DB db,byte[] byteskey) throws DBException, InterruptedException {
+    public static void delete(DB db,byte[] byteskey) throws DBException {
         db.delete(byteskey);
     }
 
@@ -57,10 +55,10 @@ public class LevelDBUtil {
     }
 
     public static byte[] stringToBytes(String strValue) {
-        return strValue.getBytes(CHARSET_UTF_8);
+        return strValue.getBytes(GlobalSetting.GLOBAL_CHARSET);
     }
 
     public static String bytesToString(byte[] bytesValue) {
-        return new String(bytesValue,CHARSET_UTF_8);
+        return new String(bytesValue, GlobalSetting.GLOBAL_CHARSET);
     }
 }

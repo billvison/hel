@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.node.timer;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstant;
+import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
@@ -169,7 +169,7 @@ public class TimerService {
             if(isPingSuccess){
                 PingResponse pingResponse = pingResponseServiceResult.getResult();
                 //链ID不同
-                if(!BlockChainCoreConstant.BLOCK_CHAIN_ID.equals(pingResponse.getBlockChainId())){
+                if(!GlobalSetting.BLOCK_CHAIN_ID.equals(pingResponse.getBlockChainId())){
                     nodeService.deleteNode(node);
                 }else {
                     node.setBlockChainHeight(pingResponse.getBlockChainHeight());

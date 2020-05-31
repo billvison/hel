@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.core.utils;
+package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
@@ -8,6 +8,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionIn
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.Script;
+import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

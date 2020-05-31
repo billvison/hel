@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.exception.ExecuteScriptExceptio
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.core.utils.TransactionUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.TransactionUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
 

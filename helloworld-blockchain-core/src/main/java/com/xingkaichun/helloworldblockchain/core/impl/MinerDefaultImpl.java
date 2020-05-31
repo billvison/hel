@@ -4,12 +4,13 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Miner;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.ConsensusVariableHolder;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
+import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.core.tools.*;
 import com.xingkaichun.helloworldblockchain.core.utils.*;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
@@ -90,7 +91,7 @@ public class MinerDefaultImpl extends Miner {
         }
         //挖矿超过一定时长还没有挖矿成功，这时重新打包交易，对自己来说，可以获取更多的奖励，对交易发送者来说，可以让自己的交易更快的写进区块链
         //一定时间内还没有挖到矿，重新开始挖矿。
-        if(System.currentTimeMillis() > miningBlock.getStartTimestamp()+ BlockChainCoreConstant.MinerConstant.MAX_MINE_TIMESTAMP){
+        if(System.currentTimeMillis() > miningBlock.getStartTimestamp()+ GlobalSetting.MinerConstant.MAX_MINE_TIMESTAMP){
             return true;
         }
         Block block = miningBlock.getBlock();
@@ -393,8 +394,8 @@ public class MinerDefaultImpl extends Miner {
         nonNonceBlock.setTimestamp(timestamp);
 
         if(tailBlock == null){
-            nonNonceBlock.setHeight(BlockChainCoreConstant.GenesisBlockConstant.FIRST_BLOCK_HEIGHT);
-            nonNonceBlock.setPreviousHash(BlockChainCoreConstant.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH);
+            nonNonceBlock.setHeight(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_HEIGHT);
+            nonNonceBlock.setPreviousHash(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH);
         } else {
             nonNonceBlock.setHeight(tailBlock.getHeight().add(BigInteger.valueOf(1)));
             nonNonceBlock.setPreviousHash(tailBlock.getHash());

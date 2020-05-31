@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.core.utils;
+package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;

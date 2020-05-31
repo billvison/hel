@@ -4,8 +4,8 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.ConsensusVariableHolder;
-import com.xingkaichun.helloworldblockchain.core.utils.BlockChainCoreConstant;
-import com.xingkaichun.helloworldblockchain.core.utils.BlockUtil;
+import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.core.tools.BlockUtil;
 
 /**
  * 工作量证明实现
@@ -38,14 +38,14 @@ public class ProofOfWorkConsensusImpl extends Consensus {
 
         ConsensusVariableHolder consensusVariableHolder = new ConsensusVariableHolder();
         //目标难度
-        final String targetDifficult = BlockChainCoreConstant.MinerConstant.INIT_GENERATE_BLOCK_DIFFICULTY_STRING;
+        final String targetDifficult = GlobalSetting.MinerConstant.INIT_GENERATE_BLOCK_DIFFICULTY_STRING;
         consensusVariableHolder.put(EXPLAIN,targetDifficult);
         consensusVariableHolder.put(TARGET_DIFFICULT,targetDifficult);
         return consensusVariableHolder;
 /*
         int blockHeight = block.getHeight();
         if(blockHeight <= 2){
-            consensusTarget.setValue(BlockChainCoreConstant.INIT_GENERATE_BLOCK_DIFFICULTY_STRING);
+            consensusTarget.setValue(GlobalSetting.INIT_GENERATE_BLOCK_DIFFICULTY_STRING);
             return consensusTarget;
         }
         Block previousBlock = blockChainDataBase.findBlockByBlockHeight(blockHeight-1);
@@ -56,8 +56,8 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         long blockIntervalTimestamp = previousBlockTimestamp - previousPreviousBlockTimestamp;
 
         //允许产生区块时间的波动范围
-        long minTargetTimestamp = BlockChainCoreConstant.GENERATE_BLOCK_AVERAGE_TIMESTAMP / 4;
-        long maxTargetTimestamp = BlockChainCoreConstant.GENERATE_BLOCK_AVERAGE_TIMESTAMP * 4;
+        long minTargetTimestamp = GlobalSetting.GENERATE_BLOCK_AVERAGE_TIMESTAMP / 4;
+        long maxTargetTimestamp = GlobalSetting.GENERATE_BLOCK_AVERAGE_TIMESTAMP * 4;
 
         String stringConsensusTarget = previousBlock.getConsensusTarget().getValue();
         if(blockIntervalTimestamp < minTargetTimestamp){
