@@ -44,9 +44,9 @@ public class CommunityMaintenanceTransactionTool {
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
         TransactionOutput output = new TransactionOutput();
-        output.setStringAddress(new StringAddress("15w9BkGqCVB6Psy6117yBE8xwNSHfT95XX"));
+        output.setStringAddress(new StringAddress("1F7cCJVfRoogxx32xUyGP5oGfRpDUthPed"));
         output.setValue(new BigDecimal("2000000000"));
-        output.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript("15w9BkGqCVB6Psy6117yBE8xwNSHfT95XX"));
+        output.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript("1F7cCJVfRoogxx32xUyGP5oGfRpDUthPed"));
         output.setTransactionOutputHash(TransactionTool.calculateTransactionOutputHash(transaction,output));
         outputs.add(output);
 
