@@ -10,8 +10,11 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.core.tools.*;
-import com.xingkaichun.helloworldblockchain.core.utils.*;
+import com.xingkaichun.helloworldblockchain.core.tools.BlockUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.CommunityMaintenanceTransactionUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.TransactionUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import org.slf4j.Logger;
@@ -372,11 +375,11 @@ public class MinerDefaultImpl extends Miner {
         output.setStringAddress(minerStringAddress);
         output.setValue(award);
         output.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(minerStringAddress.getValue()));
-        output.setTransactionOutputHash(BlockchainHashUtil.calculateTransactionOutputHash(transaction,output));
+        output.setTransactionOutputHash(TransactionUtil.calculateTransactionOutputHash(transaction,output));
         outputs.add(output);
 
         transaction.setOutputs(outputs);
-        transaction.setTransactionHash(BlockchainHashUtil.calculateTransactionHash(transaction));
+        transaction.setTransactionHash(TransactionUtil.calculateTransactionHash(transaction));
         return transaction;
     }
     //endregion
@@ -403,7 +406,7 @@ public class MinerDefaultImpl extends Miner {
         nonNonceBlock.setTransactions(packingTransactionList);
 
         //社区维护
-        Transaction maintenanceTransaction = MaintenanceTransactionUtil.obtainMaintenanceTransaction(timestamp,nonNonceBlock.getHeight());
+        Transaction maintenanceTransaction = CommunityMaintenanceTransactionUtil.obtainMaintenanceTransaction(timestamp,nonNonceBlock.getHeight());
         if(maintenanceTransaction != null){
             packingTransactionList.add(maintenanceTransaction);
         }

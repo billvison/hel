@@ -129,7 +129,7 @@ public class NodeTransportDtoUtil {
         transaction.setTimestamp(transactionDTO.getTimestamp());
         TransactionType transactionType = transactionTypeFromTransactionDTO(transactionDTO);
         transaction.setTransactionType(transactionType);
-        transaction.setTransactionHash(BlockchainHashUtil.calculateTransactionHash(transactionDTO));
+        transaction.setTransactionHash(TransactionUtil.calculateTransactionHash(transactionDTO));
         transaction.setInputs(inputs);
         transaction.setOutputs(outputs);
         transaction.setMessages(transactionDTO.getMessages());
@@ -205,7 +205,7 @@ public class NodeTransportDtoUtil {
      */
     public static TransactionOutput classCast(TransactionDTO transactionDTO, TransactionOutputDTO transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
-        transactionOutput.setTransactionOutputHash(BlockchainHashUtil.calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
+        transactionOutput.setTransactionOutputHash(TransactionUtil.calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
         transactionOutput.setStringAddress(new StringAddress(transactionOutputDTO.getAddress()));
         transactionOutput.setValue(new BigDecimal(transactionOutputDTO.getValue()));
         transactionOutput.setScriptLock(scriptLockFrom(transactionOutputDTO.getScriptLock()));
@@ -235,7 +235,7 @@ public class NodeTransportDtoUtil {
      * 用于签名的数据数据
      */
     public static String signatureData(TransactionDTO transactionDTO) {
-        String data = BlockchainHashUtil.calculateTransactionHash(transactionDTO);
+        String data = TransactionUtil.calculateTransactionHash(transactionDTO);
         return data;
     }
 

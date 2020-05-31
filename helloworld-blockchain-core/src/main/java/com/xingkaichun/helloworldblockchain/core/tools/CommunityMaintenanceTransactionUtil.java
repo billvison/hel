@@ -16,7 +16,7 @@ import java.util.ArrayList;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class MaintenanceTransactionUtil {
+public class CommunityMaintenanceTransactionUtil {
 
     public static Transaction obtainMaintenanceTransaction(long timestamp, BigInteger blockHeight){
         if(BigIntegerUtil.isEquals(blockHeight,new BigInteger("2"))){
@@ -47,11 +47,11 @@ public class MaintenanceTransactionUtil {
         output.setStringAddress(new StringAddress("15w9BkGqCVB6Psy6117yBE8xwNSHfT95XX"));
         output.setValue(new BigDecimal("2000000000"));
         output.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript("15w9BkGqCVB6Psy6117yBE8xwNSHfT95XX"));
-        output.setTransactionOutputHash(BlockchainHashUtil.calculateTransactionOutputHash(transaction,output));
+        output.setTransactionOutputHash(TransactionUtil.calculateTransactionOutputHash(transaction,output));
         outputs.add(output);
 
         transaction.setOutputs(outputs);
-        transaction.setTransactionHash(BlockchainHashUtil.calculateTransactionHash(transaction));
+        transaction.setTransactionHash(TransactionUtil.calculateTransactionHash(transaction));
         return transaction;
     }
 }

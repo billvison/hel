@@ -85,7 +85,7 @@ public class BlockUtil {
                 }
             }
         }
-        if(!BlockchainHashUtil.isTransactionHashRight(transaction)){
+        if(!TransactionUtil.isTransactionHashRight(transaction)){
             return false;
         }
         List<TransactionOutput> outputs = transaction.getOutputs();
@@ -93,7 +93,7 @@ public class BlockUtil {
             return true;
         }
         for(TransactionOutput transactionOutput:outputs){
-            if(!BlockchainHashUtil.isTransactionOutputHashRight(transaction,transactionOutput)){
+            if(!TransactionUtil.isTransactionOutputHashRight(transaction,transactionOutput)){
                 return false;
             }
         }

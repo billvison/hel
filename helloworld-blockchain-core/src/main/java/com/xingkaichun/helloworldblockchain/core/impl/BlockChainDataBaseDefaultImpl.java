@@ -375,7 +375,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验奖励交易
-        if(!MaintenanceTransactionUtil.isMaintenanceTransactionRight(block.getTimestamp(),block.getHeight(),maintenanceTransaction)){
+        if(!CommunityMaintenanceTransactionUtil.isMaintenanceTransactionRight(block.getTimestamp(),block.getHeight(),maintenanceTransaction)){
             logger.debug("交易校验失败：社区奖励交易验证失败。");
             return false;
         }
@@ -729,7 +729,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 logger.debug("交易校验失败：社区奖励交易不能有附加信息。");
                 return false;
             }
-            if(!MaintenanceTransactionUtil.isMaintenanceTransactionRight(block.getTimestamp(),block.getHeight(),transaction)){
+            if(!CommunityMaintenanceTransactionUtil.isMaintenanceTransactionRight(block.getTimestamp(),block.getHeight(),transaction)){
                 logger.debug("交易校验失败：社区奖励交易验证失败。");
                 return false;
             }

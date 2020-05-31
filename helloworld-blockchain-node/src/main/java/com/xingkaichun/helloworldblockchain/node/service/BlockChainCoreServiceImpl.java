@@ -9,8 +9,8 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.core.tools.BlockchainHashUtil;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.TransactionUtil;
 import com.xingkaichun.helloworldblockchain.core.tools.WalletUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
@@ -126,7 +126,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         response.setTransactionDTO(transactionDTO);
         response.setSuccessSubmitNode(successSubmitNode);
         response.setFailSubmitNode(failSubmitNode);
-        response.setTransactionHash(BlockchainHashUtil.calculateTransactionHash(transactionDTO));
+        response.setTransactionHash(TransactionUtil.calculateTransactionHash(transactionDTO));
         return response;
     }
 

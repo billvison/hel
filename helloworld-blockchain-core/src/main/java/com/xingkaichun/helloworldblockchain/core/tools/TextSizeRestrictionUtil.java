@@ -39,6 +39,8 @@ public class TextSizeRestrictionUtil {
     //nonce最小值
     public final static BigInteger MIN_NONCE = BigInteger.ZERO;
 
+
+
     //region 校验存储容量
     /**
      * 校验区块的存储容量是否合法：用来限制区块所占存储空间的大小。
@@ -104,7 +106,7 @@ public class TextSizeRestrictionUtil {
         if(inputs != null){
             for(TransactionInput transactionInput:inputs){
                 ScriptKey scriptKey = transactionInput.getScriptKey();
-                if(calculateScriptSize(scriptKey)>500){
+                if(calculateScriptTextSize(scriptKey)>500){
                     logger.debug("交易校验失败：交易输入脚本所占存储空间过大。");
                     return false;
                 }
@@ -125,13 +127,13 @@ public class TextSizeRestrictionUtil {
                 }
 
                 BigDecimal value = transactionOutput.getValue();
-                if(obtainBigDecimalSize(value)>100){
+                if(calculateBigDecimalTextSize(value)>100){
                     logger.debug("交易校验失败：交易金额长度超过存储限制");
                     return false;
                 }
 
                 ScriptLock scriptLock = transactionOutput.getScriptLock();
-                if(calculateScriptSize(scriptLock)>500){
+                if(calculateScriptTextSize(scriptLock)>500){
                     logger.debug("交易校验失败：交易输出脚本所占存储空间过大。");
                     return false;
                 }
@@ -153,7 +155,7 @@ public class TextSizeRestrictionUtil {
         }
 
         //校验整笔交易所占存储空间
-        if(calculateTransactionSize(transaction) > TextSizeRestrictionUtil.TRANSACTION_TEXT_MAX_SIZE){
+        if(calculateTransactionTextSize(transaction) > TextSizeRestrictionUtil.TRANSACTION_TEXT_MAX_SIZE){
             logger.debug("交易数据异常，交易所占存储空间太大。");
             return false;
         }
@@ -161,25 +163,27 @@ public class TextSizeRestrictionUtil {
     }
     //endregion
 
+
+
     //region 计算文本大小
     /**
      * 计算脚本长度
      */
-    private static long calculateTransactionSize(Transaction transaction) {
+    private static long calculateTransactionTextSize(Transaction transaction) {
         long size = 0L;
         long timestamp = transaction.getTimestamp();
         size += String.valueOf(timestamp).length();
         TransactionType transactionType = transaction.getTransactionType();
         size += String.valueOf(transactionType.getCode()).length();
         List<TransactionInput> inputs = transaction.getInputs();
-        size += calculateTransactionInputSize(inputs);
+        size += calculateTransactionInputTextSize(inputs);
         List<TransactionOutput> outputs = transaction.getOutputs();
-        size += calculateTransactionOutputSize(outputs);
+        size += calculateTransactionOutputTextSize(outputs);
         List<String> messages = transaction.getMessages();
-        size += calculateMessageSize(messages);
+        size += calculateMessageTextSize(messages);
         return size;
     }
-    private static long calculateMessageSize(List<String> messages) {
+    private static long calculateMessageTextSize(List<String> messages) {
         long size = 0L;
         if(messages == null || messages.size()==0){
             return 0L;
@@ -189,17 +193,17 @@ public class TextSizeRestrictionUtil {
         }
         return size;
     }
-    private static long calculateTransactionOutputSize(List<TransactionOutput> outputs) {
+    private static long calculateTransactionOutputTextSize(List<TransactionOutput> outputs) {
         long size = 0L;
         if(outputs == null || outputs.size()==0){
             return size;
         }
         for(TransactionOutput transactionOutput:outputs){
-            size += calculateTransactionOutputSize(transactionOutput);
+            size += calculateTransactionOutputTextSize(transactionOutput);
         }
         return size;
     }
-    private static long calculateTransactionOutputSize(TransactionOutput output) {
+    private static long calculateTransactionOutputTextSize(TransactionOutput output) {
         long size = 0L;
         if(output == null){
             return 0L;
@@ -207,33 +211,33 @@ public class TextSizeRestrictionUtil {
         StringAddress stringAddress = output.getStringAddress();
         size += stringAddress.getValue().length();
         BigDecimal bigDecimal = output.getValue();
-        size += obtainBigDecimalSize(bigDecimal);
+        size += calculateBigDecimalTextSize(bigDecimal);
         ScriptLock scriptLock = output.getScriptLock();
-        size += calculateScriptSize(scriptLock);
+        size += calculateScriptTextSize(scriptLock);
         return size;
     }
-    private static long calculateTransactionInputSize(List<TransactionInput> inputs) {
+    private static long calculateTransactionInputTextSize(List<TransactionInput> inputs) {
         long size = 0L;
         if(inputs == null || inputs.size()==0){
             return size;
         }
         for(TransactionInput transactionInput:inputs){
-            size += calculateTransactionInputSize(transactionInput);
+            size += calculateTransactionInputTextSize(transactionInput);
         }
         return size;
     }
-    private static long calculateTransactionInputSize(TransactionInput input) {
+    private static long calculateTransactionInputTextSize(TransactionInput input) {
         long size = 0L;
         if(input == null){
             return size;
         }
         TransactionOutput unspendTransactionOutput = input.getUnspendTransactionOutput();
-        size += calculateTransactionOutputSize(unspendTransactionOutput);
+        size += calculateTransactionOutputTextSize(unspendTransactionOutput);
         ScriptKey scriptKey = input.getScriptKey();
-        size += calculateScriptSize(scriptKey);
+        size += calculateScriptTextSize(scriptKey);
         return size;
     }
-    private static long calculateScriptSize(Script script) {
+    private static long calculateScriptTextSize(Script script) {
         long size = 0L;
         if(script == null || script.size()==0){
             return size;
@@ -243,9 +247,8 @@ public class TextSizeRestrictionUtil {
         }
         return size;
     }
-    //endregion
-
-    private static long obtainBigDecimalSize(BigDecimal number){
+    private static long calculateBigDecimalTextSize(BigDecimal number){
         return number.toPlainString().length();
     }
+    //endregion
 }
