@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.tools;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.script.ScriptMachine;
+import com.xingkaichun.helloworldblockchain.core.model.script.ScriptMachine;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 

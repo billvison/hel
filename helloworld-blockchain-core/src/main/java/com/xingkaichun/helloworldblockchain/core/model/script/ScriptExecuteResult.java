@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.core.script;
+package com.xingkaichun.helloworldblockchain.core.model.script;
 
 import java.util.Stack;
 

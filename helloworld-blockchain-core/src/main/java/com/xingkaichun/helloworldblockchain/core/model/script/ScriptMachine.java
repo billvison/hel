@@ -1,6 +1,8 @@
-package com.xingkaichun.helloworldblockchain.core.script;
+package com.xingkaichun.helloworldblockchain.core.model.script;
 
 import com.xingkaichun.helloworldblockchain.core.exception.ExecuteScriptException;
+import com.xingkaichun.helloworldblockchain.core.model.script.Script;
+import com.xingkaichun.helloworldblockchain.core.model.script.ScriptExecuteResult;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;

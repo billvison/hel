@@ -26,7 +26,7 @@ public abstract class BlockChainDataBase {
         this.incentive = incentive;
     }
 
-//region 区块增加与删除
+    //region 区块增加与删除
     /**
      * 新增区块: 在不允许删除区块链上的区块的情况下，将一个新的区块添加到区块链上。
      * 这是一个有些复杂的操作，需要考虑如下几点:
