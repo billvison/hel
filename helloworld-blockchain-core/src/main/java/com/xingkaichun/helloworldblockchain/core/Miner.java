@@ -18,6 +18,13 @@ public abstract class Miner {
     //矿工交易数据库：矿工从交易数据库里获取挖矿的原材料(交易数据)
     protected MinerTransactionDtoDataBase minerTransactionDtoDataBase;
 
+    public Miner(StringAddress minerStringAddress, BlockChainDataBase blockChainDataBase, MinerTransactionDtoDataBase minerTransactionDtoDataBase) {
+        this.minerStringAddress = minerStringAddress;
+        this.blockChainDataBase = blockChainDataBase;
+        this.minerTransactionDtoDataBase = minerTransactionDtoDataBase;
+    }
+
+
     //region 挖矿相关
     /**
      * 启用矿工。
@@ -52,6 +59,12 @@ public abstract class Miner {
     public abstract Transaction buildMineAwardTransaction(long timestamp, BlockChainDataBase blockChainDataBase, Block block) throws Exception;
     //endregion
 
+    /**
+     * 重置矿工地址
+     */
+    public void resetMinerStringAddress(StringAddress minerStringAddress) {
+        this.minerStringAddress = minerStringAddress;
+    }
 
 
 
@@ -61,24 +74,12 @@ public abstract class Miner {
         return minerStringAddress;
     }
 
-    public void setMinerStringAddress(StringAddress minerStringAddress) {
-        this.minerStringAddress = minerStringAddress;
-    }
-
     public BlockChainDataBase getBlockChainDataBase() {
         return blockChainDataBase;
     }
 
-    public void setBlockChainDataBase(BlockChainDataBase blockChainDataBase) {
-        this.blockChainDataBase = blockChainDataBase;
-    }
-
     public MinerTransactionDtoDataBase getMinerTransactionDtoDataBase() {
         return minerTransactionDtoDataBase;
-    }
-
-    public void setMinerTransactionDtoDataBase(MinerTransactionDtoDataBase minerTransactionDtoDataBase) {
-        this.minerTransactionDtoDataBase = minerTransactionDtoDataBase;
     }
     //endregion
 }

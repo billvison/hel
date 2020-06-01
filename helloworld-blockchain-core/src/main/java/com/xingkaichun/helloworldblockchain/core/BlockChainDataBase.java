@@ -16,15 +16,17 @@ import java.util.List;
  */
 public abstract class BlockChainDataBase {
 
-    //矿工激励
-    protected Incentive incentive ;
     //区块共识
     protected Consensus consensus ;
+    //矿工激励
+    protected Incentive incentive ;
 
+    public BlockChainDataBase(Consensus consensus,Incentive incentive) {
+        this.consensus = consensus;
+        this.incentive = incentive;
+    }
 
-
-
-    //region 区块增加与删除
+//region 区块增加与删除
     /**
      * 新增区块: 在不允许删除区块链上的区块的情况下，将一个新的区块添加到区块链上。
      * 这是一个有些复杂的操作，需要考虑如下几点:
@@ -135,16 +137,8 @@ public abstract class BlockChainDataBase {
         return incentive;
     }
 
-    public void setIncentive(Incentive incentive) {
-        this.incentive = incentive;
-    }
-
     public Consensus getConsensus() {
         return consensus;
-    }
-
-    public void setConsensus(Consensus consensus) {
-        this.consensus = consensus;
     }
     //endregion
 }

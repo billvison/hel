@@ -42,12 +42,8 @@ public class MinerDefaultImpl extends Miner {
      */
     private ThreadLocal<MiningBlock> miningBlockThreadLocal;
 
-
     public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, MinerTransactionDtoDataBase minerTransactionDtoDataBase, StringAddress minerStringAddress) {
-        this.blockChainDataBase = blockChainDataBase;
-        this.minerTransactionDtoDataBase = minerTransactionDtoDataBase;
-        this.minerStringAddress = minerStringAddress;
-
+        super(minerStringAddress,blockChainDataBase,minerTransactionDtoDataBase);
         miningBlockThreadLocal = new ThreadLocal<>();
     }
     //endregion
@@ -382,6 +378,7 @@ public class MinerDefaultImpl extends Miner {
         transaction.setTransactionHash(TransactionTool.calculateTransactionHash(transaction));
         return transaction;
     }
+
     //endregion
 
     //region 构建区块、计算区块hash、校验区块Nonce

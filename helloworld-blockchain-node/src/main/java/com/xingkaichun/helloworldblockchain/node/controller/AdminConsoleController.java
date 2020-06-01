@@ -254,7 +254,7 @@ public class AdminConsoleController {
             if(adminConsoleService.isMinerActive()){
                 return ServiceResult.createFailServiceResult("矿工正在挖矿，请先暂停挖矿，再设置矿工钱包地址");
             }
-            blockChainCore.getMiner().setMinerStringAddress(new StringAddress(request.getMinerAddress()));
+            blockChainCore.getMiner().resetMinerStringAddress(new StringAddress(request.getMinerAddress()));
             ConfigurationDto configurationDto = new ConfigurationDto();
             configurationDto.setConfKey(ConfigurationEnum.MINER_ADDRESS.name());
             configurationDto.setConfValue(request.getMinerAddress());

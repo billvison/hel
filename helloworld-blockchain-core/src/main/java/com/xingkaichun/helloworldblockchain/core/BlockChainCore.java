@@ -18,6 +18,12 @@ public abstract class BlockChainCore {
     //区块链同步器
     protected Synchronizer synchronizer ;
 
+    public BlockChainCore(BlockChainDataBase blockChainDataBase, Miner miner, Synchronizer synchronizer) {
+        this.blockChainDataBase = blockChainDataBase;
+        this.miner = miner;
+        this.synchronizer = synchronizer;
+    }
+
     /**
      * 激活区块链核心。激活矿工、激活区块链同步器。
      */
@@ -32,24 +38,12 @@ public abstract class BlockChainCore {
         return blockChainDataBase;
     }
 
-    public void setBlockChainDataBase(BlockChainDataBase blockChainDataBase) {
-        this.blockChainDataBase = blockChainDataBase;
-    }
-
     public Miner getMiner() {
         return miner;
     }
 
-    public void setMiner(Miner miner) {
-        this.miner = miner;
-    }
-
     public Synchronizer getSynchronizer() {
         return synchronizer;
-    }
-
-    public void setSynchronizer(Synchronizer synchronizer) {
-        this.synchronizer = synchronizer;
     }
     //endregion
 }

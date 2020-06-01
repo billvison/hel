@@ -40,9 +40,9 @@ public class SynchronizerDefaultImpl extends Synchronizer {
     public SynchronizerDefaultImpl(BlockChainDataBase targetBlockChainDataBase,
                                    BlockChainDataBase temporaryBlockChainDataBase,
                                    SynchronizerDataBase synchronizerDataBase) {
+        super(synchronizerDataBase);
         this.targetBlockChainDataBase = targetBlockChainDataBase;
         this.temporaryBlockChainDataBase = temporaryBlockChainDataBase;
-        this.synchronizerDataBase = synchronizerDataBase;
     }
 
     @Override

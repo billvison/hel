@@ -12,6 +12,11 @@ public abstract class Synchronizer {
     //节点同步数据库
     protected SynchronizerDataBase synchronizerDataBase;
 
+    public Synchronizer(SynchronizerDataBase synchronizerDataBase) {
+        this.synchronizerDataBase = synchronizerDataBase;
+    }
+
+
     //region 同步其它区块链节点的数据
     /**
      * 启用同步器。
@@ -45,10 +50,5 @@ public abstract class Synchronizer {
     public SynchronizerDataBase getSynchronizerDataBase() {
         return synchronizerDataBase;
     }
-
-    public void setSynchronizerDataBase(SynchronizerDataBase synchronizerDataBase) {
-        this.synchronizerDataBase = synchronizerDataBase;
-    }
-
     //endregion
 }

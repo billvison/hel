@@ -89,9 +89,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     //region 构造函数
     public BlockChainDataBaseDefaultImpl(String blockchainDataPath,Incentive incentive,Consensus consensus) throws Exception {
+        super(consensus,incentive);
         this.blockChainDB = LevelDBUtil.createDB(new File(blockchainDataPath,BlockChain_DataBase_DirectName));
-        this.incentive = incentive ;
-        this.consensus = consensus ;
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 blockChainDB.close();

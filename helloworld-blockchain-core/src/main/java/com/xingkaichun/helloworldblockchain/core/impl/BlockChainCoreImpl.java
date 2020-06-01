@@ -1,6 +1,9 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
+import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
+import com.xingkaichun.helloworldblockchain.core.Miner;
+import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +15,10 @@ import org.slf4j.LoggerFactory;
 public class BlockChainCoreImpl extends BlockChainCore {
 
     private Logger logger = LoggerFactory.getLogger(BlockChainCoreImpl.class);
+
+    public BlockChainCoreImpl(BlockChainDataBase blockChainDataBase, Miner miner, Synchronizer synchronizer) {
+        super(blockChainDataBase,miner,synchronizer);
+    }
 
     @Override
     public void start() {
