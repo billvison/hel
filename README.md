@@ -62,15 +62,19 @@ HelloworldBlockchain项目没有任何复杂依赖，请搜索idea如何导入�
 ### 打包与发布项目  
 项目打包
 ```  
-进入目录  
+进入项目目录(请根据本地的实际项目目录运行命令)  
+cd C:\Users\xingkaichun\IdeaProjects\HelloworldBlockchain   
+将所有的子项目都部署到本地maven仓库  
+mvn -P package-profile -Dmaven.test.skip=true clean package install  
+进入子项目helloworld-blockchain-node目录  
 cd helloworld-blockchain-node  
 运行打包命令  
 mvn -P package-profile -Dmaven.test.skip=true clean package install spring-boot:repackage assembly:single  
 ```  
 发布项目
 ```  
-进入打包结果目录  
-cd target  
+进入打包结果目录(请根据本地的实际项目目录运行命令)  
+cd C:\Users\xingkaichun\IdeaProjects\HelloworldBlockchain\helloworld-blockchain-node\target  
 解压  
 tar -zxvf helloworld-blockchain-node-*.tar.gz  
 进入解压文件目录  
