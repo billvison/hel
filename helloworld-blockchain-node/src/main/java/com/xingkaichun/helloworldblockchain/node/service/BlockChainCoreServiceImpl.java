@@ -7,7 +7,7 @@ import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.model.script.ScriptMachine;
+import com.xingkaichun.helloworldblockchain.core.VirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
@@ -144,7 +144,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
                 TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
                 transactionOutputDTO.setAddress(o.getAddress());
                 transactionOutputDTO.setValue(o.getValue());
-                transactionOutputDTO.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(o.getAddress()));
+                transactionOutputDTO.setScriptLock(VirtualMachine.createPayToClassicAddressOutputScript(o.getAddress()));
                 transactionOutputDtoList.add(transactionOutputDTO);
                 values = values.add(new BigDecimal(o.getValue()));
             }
@@ -178,7 +178,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
             TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
             transactionOutputDTO.setAddress(stringAccount.getStringAddress().getValue());
             transactionOutputDTO.setValue(change.toPlainString());
-            transactionOutputDTO.setScriptLock(ScriptMachine.createPayToClassicAddressOutputScript(stringAccount.getStringAddress().getValue()));
+            transactionOutputDTO.setScriptLock(VirtualMachine.createPayToClassicAddressOutputScript(stringAccount.getStringAddress().getValue()));
             transactionOutputDtoList.add(transactionOutputDTO);
         }
 
@@ -200,7 +200,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
         for(TransactionInputDTO transactionInputDTO:transactionInputDtoList){
             String signature = signatureTransactionDTO(transactionDTO, stringAccount.getStringPrivateKey());
-            transactionInputDTO.setScriptKey(ScriptMachine.createPayToClassicAddressInputScript(signature, stringAccount.getStringPublicKey().getValue()));
+            transactionInputDTO.setScriptKey(VirtualMachine.createPayToClassicAddressInputScript(signature, stringAccount.getStringPublicKey().getValue()));
         }
         return transactionDTO;
     }
