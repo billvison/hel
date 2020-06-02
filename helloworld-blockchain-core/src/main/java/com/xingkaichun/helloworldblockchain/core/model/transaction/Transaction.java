@@ -12,7 +12,11 @@ import java.util.List;
  */
 public class Transaction implements Serializable {
 
-    //交易时间戳
+    /**
+     * 交易时间戳
+     * 这个时间戳是由用户生成的，用户机器的时间戳可能超前或是滞后真正的时间戳，
+     * 你无法强制要求用户的机器的时间戳是正确的，因此在使用这个时间戳时必须要考虑这可能并不是个正确的时间戳。
+     */
     private long timestamp;
     /**
      * 交易的Hash是交易的摘要。交易的哈希确定了，具体的交易也就确定了。
