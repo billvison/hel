@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
-import java.util.Base64;
+import org.bouncycastle.util.encoders.Base64;
 
 /**
  * Base64工具类
@@ -13,13 +13,13 @@ public class Base64Util {
      * Base64编码
      */
     public static String encode(byte[] input) {
-        return Base64.getEncoder().encodeToString(input);
+        return Base64.toBase64String(input);
     }
 
     /**
      * Base64解码
      */
     public static byte[] decode(String input) {
-        return Base64.getDecoder().decode(input);
+        return Base64.decode(input);
     }
 }
