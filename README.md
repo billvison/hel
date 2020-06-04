@@ -5,19 +5,19 @@ HelloworldBlockchain是一个Helloworld级别的数字货币项目。
 ### HelloworldBlockchain项目意义  
 探索与实践区块链技术。   
 
-#### 作者(微信号HelloworldBlockchain)
+#### 作者联系方式  
 无论你有任何问题，扫二维码添加作者微信(微信号HelloworldBlockchain)  
-<img width="150" height="150" src="http://139.9.125.122:8444/document/image/Wechat_HelloworldBlockchain.jpg"/>  
+<img alt="作者微信" width="150" height="150" src="http://139.9.125.122:8444/document/image/Wechat_HelloworldBlockchain.jpg"/>  
 
 ### 部署展示  
 http://139.9.125.122:8444/index.html  
-![HellowordlBlockchain首页](http://139.9.125.122:8444/document/image/HelloworldBlockchainIndexPage.png)
+<img alt="HellowordlBlockchain首页" src="http://139.9.125.122:8444/document/image/HelloworldBlockchainIndexPage.png"/>  
 
 ### HelloworldBlockchain项目特色
 多链系统：Helloworld区块链系统由多条链组成。每条链完全独立自主，例如可以拥有自己的共识策略、激励策略等。由于每条链完全独立，因此非常适合探索实践各种区块链技术。   
 无限大的每秒交易数量：部署足够多的链，就能够有承载每秒无限大交易数量的能力。   
 支持跨链交易  
-实时交易(已有想法，暂未代码实现)
+实时交易(已有想法，暂未代码实现)  
 
 ### Helloworld币
 Helloworld币总共发行100 0000 0000枚。由于HelloworldBlockchain是一个多链系统，因此多条链的币加在一起是100 0000 0000枚。 
