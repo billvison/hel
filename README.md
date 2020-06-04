@@ -5,7 +5,7 @@ HelloworldBlockchain是一个Helloworld级别的数字货币项目。
 ### HelloworldBlockchain项目意义  
 探索与实践区块链技术。   
 
-#### 作者联系方式  
+### 作者联系方式  
 无论你有任何问题，扫二维码添加作者微信(微信号HelloworldBlockchain)  
 <img alt="作者微信" width="150" height="150" src="http://139.9.125.122:8444/document/image/Wechat_HelloworldBlockchain.jpg"/>  
 
