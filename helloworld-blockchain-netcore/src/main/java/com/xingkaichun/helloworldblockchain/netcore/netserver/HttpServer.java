@@ -7,12 +7,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-/**
- * HTTP Server.
- * 
- * @since 1.0.0 2019年12月26日
- * @author <a href="https://waylau.com">Way Lau</a>
- */
+
 public class HttpServer {
 
 	public static int DEFAULT_PORT = 8080;

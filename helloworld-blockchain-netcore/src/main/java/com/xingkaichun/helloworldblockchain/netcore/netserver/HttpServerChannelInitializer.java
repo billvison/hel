@@ -8,12 +8,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 
-/**
- * HTTP Server ChannelInitializer.
- * 
- * @since 1.0.0 2019年12月26日
- * @author <a href="https://waylau.com">Way Lau</a>
- */
+
 public class HttpServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
 	public HttpServerChannelInitializer() {

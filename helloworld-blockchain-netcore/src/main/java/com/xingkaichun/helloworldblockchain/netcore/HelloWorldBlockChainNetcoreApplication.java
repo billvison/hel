@@ -11,7 +11,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.Configurati
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.timer.BlockchainBranchHandler;
 import com.xingkaichun.helloworldblockchain.netcore.timer.InitMinerHandler;
-import com.xingkaichun.helloworldblockchain.netcore.timer.InitUserHandler;
 import com.xingkaichun.helloworldblockchain.netcore.timer.TimerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +31,7 @@ import java.security.Security;
 @Configuration
 @SpringBootApplication
 @ServletComponentScan
-public class HelloWorldBlockChainNodeApplication {
+public class HelloWorldBlockChainNetcoreApplication {
 
 	@Value("${blockchainDataPath:}")
 	private String blockchainDataPath;
@@ -40,7 +39,7 @@ public class HelloWorldBlockChainNodeApplication {
 
 	public static void main(String[] args) throws Exception {
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-		SpringApplication.run(HelloWorldBlockChainNodeApplication.class, args);
+		SpringApplication.run(HelloWorldBlockChainNetcoreApplication.class, args);
 	}
 
 	@Autowired
@@ -96,11 +95,6 @@ public class HelloWorldBlockChainNodeApplication {
 		return blockchainBranchHandler;
 	}
 
-	@Bean
-	public InitUserHandler initUserHandler(){
-		InitUserHandler initUserHandler = new InitUserHandler();
-		return initUserHandler;
-	}
 	@Bean
 	public InitMinerHandler initMinerHandler(){
 		InitMinerHandler initMinerHandler = new InitMinerHandler();
