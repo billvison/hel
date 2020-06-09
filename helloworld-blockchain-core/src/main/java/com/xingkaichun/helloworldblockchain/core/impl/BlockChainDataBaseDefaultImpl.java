@@ -41,6 +41,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
+//TODO 数据库统一切切换成sqlite，sqlite可以同时在android、java se使用
 public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     private Logger logger = LoggerFactory.getLogger(BlockChainDataBaseDefaultImpl.class);
