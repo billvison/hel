@@ -3,20 +3,19 @@ package com.xingkaichun.helloworldblockchain.netcore.service;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.request.*;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.*;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.EmptyResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.NodeServerApiRoute;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.request.*;
+import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.*;
 import com.xingkaichun.helloworldblockchain.netcore.util.NetUtil;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -26,7 +25,6 @@ import java.math.BigInteger;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Service
 public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientService {
 
     private static final Logger logger = LoggerFactory.getLogger(BlockchainNodeClientServiceImpl.class);

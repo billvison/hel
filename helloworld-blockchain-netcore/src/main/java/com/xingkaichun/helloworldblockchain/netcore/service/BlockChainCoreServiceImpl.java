@@ -2,12 +2,12 @@ package com.xingkaichun.helloworldblockchain.netcore.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
+import com.xingkaichun.helloworldblockchain.core.VirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.VirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
@@ -26,13 +26,12 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.netcore.dto.wallet.WalletDTO;
+import com.xingkaichun.helloworldblockchain.netcore.util.WalletDtoUtil;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionInputDTO;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionOutputDTO;
-import com.xingkaichun.helloworldblockchain.netcore.util.WalletDtoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -43,7 +42,6 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Service
 public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
     @Autowired

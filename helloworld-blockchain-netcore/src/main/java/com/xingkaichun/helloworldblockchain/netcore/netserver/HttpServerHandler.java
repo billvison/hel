@@ -1,5 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore.netserver;
 
+import com.google.gson.Gson;
+import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.NodeServerApiRoute;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -11,6 +13,8 @@ import io.netty.util.CharsetUtil;
 
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
+	NodeServerController nodeServerController;
+
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
 		this.readRequest(msg);
@@ -20,16 +24,25 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
 		switch (uri) {
 		case "/":
-			sendMsg = "<h3>Netty HTTP Server</h3><p>Welcome to <a href=\"https://waylau.com\">waylau.com</a>!</p>";
+			sendMsg = "HelloworldBlockchain";
 			break;
-		case "/hi":
-			sendMsg = "<h3>Netty HTTP Server</h3><p>Hello Word!</p>";
+		case NodeServerApiRoute.PING:
+			sendMsg = toString(nodeServerController.ping(ctx,null));
 			break;
-		case "/love":
-			sendMsg = "<h3>Netty HTTP Server</h3><p>I Love You!</p>";
+		case NodeServerApiRoute.ADD_OR_UPDATE_NODE:
+			sendMsg = toString(nodeServerController.addOrUpdateNode(ctx,null));
+			break;
+		case NodeServerApiRoute.QUERY_BLOCK_HASH_BY_BLOCK_HEIGHT:
+			sendMsg = toString(nodeServerController.queryBlockHashByBlockHeight(null));
+			break;
+		case NodeServerApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT:
+			sendMsg = toString(nodeServerController.queryBlockDtoByBlockHeight(null));
+			break;
+		case NodeServerApiRoute.RECEIVE_TRANSACTION:
+			sendMsg = toString(nodeServerController.receiveTransaction(null));
 			break;
 		default:
-			sendMsg = "<h3>Netty HTTP Server</h3><p>I was lost!</p>";
+			sendMsg = "404 PAGE NOT FOUND";
 			break;
 		}
 
@@ -58,4 +71,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 		res.headers().set(HttpHeaderNames.CONTENT_LENGTH, msg.length());
 		ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
 	}
+
+
+
+	private String toString(Object ping) {
+		return new Gson().toJson(ping);
+	}
+
 }

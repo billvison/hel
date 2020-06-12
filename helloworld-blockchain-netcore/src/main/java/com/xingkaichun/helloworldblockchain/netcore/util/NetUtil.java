@@ -1,7 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.util;
 
 import com.google.gson.Gson;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -26,7 +25,7 @@ public class NetUtil {
             connection.setDoInput(true);
             connection.setUseCaches(false);
             connection.setInstanceFollowRedirects(true);
-            connection.setRequestMethod(RequestMethod.GET.toString()); // 设置请求方式
+            connection.setRequestMethod("GET"); // 设置请求方式
             connection.setRequestProperty("Accept", "application/json"); // 设置接收数据的格式
             connection.setRequestProperty("Content-Type", "application/json"); // 设置发送数据的格式
             connection.setRequestProperty("Accept-Encoding", "identity");

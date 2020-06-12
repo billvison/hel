@@ -12,9 +12,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.Ping
 import com.xingkaichun.helloworldblockchain.netcore.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.PostConstruct;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
@@ -28,29 +26,15 @@ public class TimerService {
 
     private static final Logger logger = LoggerFactory.getLogger(TimerService.class);
 
-    @Autowired
     private BlockChainCoreService blockChainCoreService;
-
-    @Autowired
     private NodeService nodeService;
-
-    @Autowired
     private SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService;
-
-    @Autowired
     private BlockchainNodeClientService blockchainNodeClientService;
-
-    @Autowired
     private BlockChainCore blockChainCore;
-
-    @Autowired
     private ConfigurationService configurationService;
-
-    @Autowired
     private Gson gson;
 
 
-    @PostConstruct
     private void startThread(){
         //阻塞：将种子节点加入区块链
         addSeedNodeToLocalBlockchain();

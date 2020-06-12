@@ -7,7 +7,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.Blockch
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.io.InputStream;
@@ -24,10 +23,7 @@ public class BlockchainBranchHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(BlockchainBranchHandler.class);
 
-    @Autowired
     private BlockChainBranchService blockChainBranchService;
-
-    @Autowired
     private Gson gson;
 
     public final static String INIT_BLOCKCHAIN_BRANCH_FILE_NAME = "InitBlockchainBranch.txt";

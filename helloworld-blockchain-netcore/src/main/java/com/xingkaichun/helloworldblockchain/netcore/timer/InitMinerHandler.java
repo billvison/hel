@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -35,7 +34,6 @@ public class InitMinerHandler {
     private Gson gson;
 
 
-    @PostConstruct
     private void startThread() throws IOException {
         ConfigurationDto minerAddressConfigurationDto =  configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
         if(Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
