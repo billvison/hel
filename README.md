@@ -5,15 +5,19 @@ HelloworldBlockchain是一个Helloworld级别的数字货币项目。
 ### HelloworldBlockchain项目意义  
 探索与实践区块链技术。   
 
+### 作者联系方式  
+无论你有任何问题，扫二维码添加作者微信(微信号HelloworldBlockchain)  
+<img alt="作者微信" width="150" height="150" src="http://139.9.125.122:8444/document/image/Wechat_HelloworldBlockchain.jpg"/>  
+
 ### 部署展示  
 http://139.9.125.122:8444/index.html  
-![HellowordlBlockchain首页](http://139.9.125.122:8444/document/image/HelloworldBlockchainIndexPage.png)
+<img alt="HellowordlBlockchain首页" src="http://139.9.125.122:8444/document/image/HelloworldBlockchainIndexPage.png"/>  
 
 ### HelloworldBlockchain项目特色
 多链系统：Helloworld区块链系统由多条链组成。每条链完全独立自主，例如可以拥有自己的共识策略、激励策略等。由于每条链完全独立，因此非常适合探索实践各种区块链技术。   
 无限大的每秒交易数量：部署足够多的链，就能够有承载每秒无限大交易数量的能力。   
 支持跨链交易  
-实时交易(已有想法，暂未代码实现)
+实时交易(已有想法，暂未代码实现)  
 
 ### Helloworld币
 Helloworld币总共发行100 0000 0000枚。由于HelloworldBlockchain是一个多链系统，因此多条链的币加在一起是100 0000 0000枚。 
@@ -95,13 +99,5 @@ cd HelloworldBlockchainNode
 * 查询账户余额
 
 ### 区块链学习
-#### 区块链相关概念的学习
 在系统学习区块链前，可以关注抖音账号xingkaichun，视频都是几分钟一个，内容是作者讲解的区块链理论与概念，不涉及到具体项目与代码。建议学习完概念之后，然后再搭建本项目，最后再学习本项目源码。
 
-#### 作者(微信号HelloworldBlockchain)承接辅导学员学习区块链
-如果需要作者教学，这里因为作者要费精力，所以会收取一点费用，98元(几包烟钱)。相信以多数开发的水平是不需要作者辅导的，直接跳过就行了。  
-学完之后，你可以掌握什么？  
-掌握数字货币、区块链等概念、技术。  
-能独立开发出一个新的类似比特币的数字货币。  
-扫二维码添加作者微信(微信号HelloworldBlockchain)  
-<img width="150" height="150" src="http://139.9.125.122:8444/document/image/Wechat_HelloworldBlockchain.jpg"/>

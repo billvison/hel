@@ -287,11 +287,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
 
+        //TODO 版本校验
         //检查系统版本是否支持
-        if(!GlobalSetting.SystemVersionConstant.isVersionLegal(block.getTimestamp())){
+/*        if(!GlobalSetting.SystemVersionConstant.isVersionLegal(block.getTimestamp())){
             logger.debug("系统版本过低，不支持校验区块，请尽快升级系统。");
             return false;
-        }
+        }*/
 
         //校验区块的存储容量是否合法
         if(!TextSizeRestrictionTool.isBlockStorageCapacityLegal(block)){
