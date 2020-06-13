@@ -1,7 +1,5 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
@@ -12,13 +10,7 @@ import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService
 import com.xingkaichun.helloworldblockchain.netcore.timer.BlockchainBranchHandler;
 import com.xingkaichun.helloworldblockchain.netcore.timer.InitMinerHandler;
 import com.xingkaichun.helloworldblockchain.netcore.timer.TimerService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 import java.security.Security;
@@ -28,12 +20,8 @@ import java.security.Security;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Configuration
-@SpringBootApplication
-@ServletComponentScan
 public class HelloWorldBlockChainNetcoreApplication {
 
-	@Value("${blockchainDataPath:}")
 	private String blockchainDataPath;
 
 
@@ -42,10 +30,8 @@ public class HelloWorldBlockChainNetcoreApplication {
 		SpringApplication.run(HelloWorldBlockChainNetcoreApplication.class, args);
 	}
 
-	@Autowired
 	private ConfigurationService configurationService;
 
-	@Bean
 	public BlockChainCore buildBlockChainCore(/*先初始化*/InitMinerHandler initMinerHandler) throws Exception {
 		if(Strings.isNullOrEmpty(blockchainDataPath)){
 			String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
@@ -83,31 +69,23 @@ public class HelloWorldBlockChainNetcoreApplication {
 		return blockChainCore;
 	}
 
-	@Bean
 	public TimerService buildTimeService(){
 		TimerService timerService = new TimerService();
 		return timerService;
 	}
 
-	@Bean
 	public BlockchainBranchHandler blockchainBranchHandler(){
 		BlockchainBranchHandler blockchainBranchHandler = new BlockchainBranchHandler();
 		return blockchainBranchHandler;
 	}
 
-	@Bean
 	public InitMinerHandler initMinerHandler(){
 		InitMinerHandler initMinerHandler = new InitMinerHandler();
 		return initMinerHandler;
 	}
 
-	@Bean
 	public Gson buildGson(){
 		return new Gson();
 	}
 
-	@Bean
-	public ObjectMapper objectMapper() {
-		return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-	}
 }

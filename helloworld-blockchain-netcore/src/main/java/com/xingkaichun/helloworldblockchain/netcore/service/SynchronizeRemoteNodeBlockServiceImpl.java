@@ -5,23 +5,22 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
+import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationEnum;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.QueryBlockDtoByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.QueryBlockHashByBlockHeightResponse;
+import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -30,7 +29,6 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Service
 public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteNodeBlockService {
 
     private static final Logger logger = LoggerFactory.getLogger(SynchronizeRemoteNodeBlockServiceImpl.class);

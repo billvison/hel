@@ -16,13 +16,11 @@ import java.util.*;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-@Service
 public class BlockChainBranchServiceImpl implements BlockChainBranchService {
 
-    @Autowired
     private BlockChainBranchDao blockChainBranchDao;
-    @Autowired
     private BlockChainCoreService blockChainCoreService;
+
 
 
     private Map<String,String> blockHeightBlockHashMap = new HashMap<>();
