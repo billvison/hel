@@ -33,7 +33,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         init();
     }
 
-    private void init() throws SQLException, ClassNotFoundException {
+    private void init() throws Exception {
         String createTable1Sql1 = "CREATE TABLE IF NOT EXISTS NODE " +
                 "(" +
                 "nodeId CHAR(100) PRIMARY KEY NOT NULL," +
@@ -286,20 +286,22 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         }
     }
 
-    private synchronized Connection connection() throws ClassNotFoundException, SQLException {
+    private synchronized Connection connection() throws Exception {
         if(connection != null && !connection.isClosed()){
             return connection;
         }
-        Class.forName("org.sqlite.JDBC");
+        //Class.forName("org.sqlite.JDBC");
+        DriverManager.registerDriver((Driver) (Class.forName("org.sqldroid.SQLDroidDriver").newInstance()));
         File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
         nodeSynchronizeDatabaseDirect.mkdirs();
         File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
-        String dbUrl = String.format("jdbc:sqlite:%s",nodeSynchronizeDatabasePath.getAbsolutePath());
+        //String dbUrl = String.format("jdbc:sqlite:%s",nodeSynchronizeDatabasePath.getAbsolutePath());
+        String dbUrl = String.format("jdbc:sqldroid:%s",nodeSynchronizeDatabasePath.getAbsolutePath());
         connection = DriverManager.getConnection(dbUrl);
         return connection;
     }
 
-    private void executeSql(String sql) throws SQLException, ClassNotFoundException {
+    private void executeSql(String sql) throws Exception {
         Statement stmt = null;
         try {
             stmt = connection().createStatement();
