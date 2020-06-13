@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
+import com.xingkaichun.helloworldblockchain.core.utils.SqldroidUtil;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -290,14 +291,11 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         if(connection != null && !connection.isClosed()){
             return connection;
         }
-        //Class.forName("org.sqlite.JDBC");
-        DriverManager.registerDriver((Driver) (Class.forName("org.sqldroid.SQLDroidDriver").newInstance()));
         File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
         nodeSynchronizeDatabaseDirect.mkdirs();
         File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
-        //String dbUrl = String.format("jdbc:sqlite:%s",nodeSynchronizeDatabasePath.getAbsolutePath());
-        String dbUrl = String.format("jdbc:sqldroid:%s",nodeSynchronizeDatabasePath.getAbsolutePath());
-        connection = DriverManager.getConnection(dbUrl);
+        String jdbcConnectionUrl = SqldroidUtil.getJdbcConnectionUrl(nodeSynchronizeDatabasePath.getAbsolutePath());
+        connection = DriverManager.getConnection(jdbcConnectionUrl);
         return connection;
     }
 
