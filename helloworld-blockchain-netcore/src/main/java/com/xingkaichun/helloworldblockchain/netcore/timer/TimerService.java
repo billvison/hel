@@ -34,8 +34,18 @@ public class TimerService {
     private ConfigurationService configurationService;
     private Gson gson;
 
+    public TimerService(BlockChainCoreService blockChainCoreService, NodeService nodeService, SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService, BlockchainNodeClientService blockchainNodeClientService, BlockChainCore blockChainCore, ConfigurationService configurationService) {
+        this.blockChainCoreService = blockChainCoreService;
+        this.nodeService = nodeService;
+        this.synchronizeRemoteNodeBlockService = synchronizeRemoteNodeBlockService;
+        this.blockchainNodeClientService = blockchainNodeClientService;
+        this.blockChainCore = blockChainCore;
+        this.configurationService = configurationService;
 
-    private void startThread(){
+        this.gson = new Gson();
+    }
+
+    public void startThread() {
         //阻塞：将种子节点加入区块链
         addSeedNodeToLocalBlockchain();
         new Thread(()->{
@@ -230,7 +240,7 @@ public class TimerService {
     /**
      * 将远程节点知道的节点，一一进行验证这些节点的合法性，如果正常，则将这些节点加入自己的区块链网络。
      */
-    private void addNewAvailableNodeToDatabase(List<Node> nodeList) {
+    private void addNewAvailableNodeToDatabase(List<Node> nodeList){
         if(nodeList == null || nodeList.size()==0){
             return;
         }

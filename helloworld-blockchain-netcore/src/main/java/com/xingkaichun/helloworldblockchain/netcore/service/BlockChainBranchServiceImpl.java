@@ -5,9 +5,6 @@ import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainBranchDao;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.model.BlockchainBranchBlockEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -22,14 +19,18 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
     private BlockChainCoreService blockChainCoreService;
 
 
-
     private Map<String,String> blockHeightBlockHashMap = new HashMap<>();
     private boolean isRefreshCache = false;
+
+    public BlockChainBranchServiceImpl(BlockChainBranchDao blockChainBranchDao, BlockChainCoreService blockChainCoreService) {
+        this.blockChainBranchDao = blockChainBranchDao;
+        this.blockChainCoreService = blockChainCoreService;
+    }
 
     /**
      * 将分支加载到内存
      */
-    private void refreshCache(){
+    private void refreshCache() throws Exception {
         List<BlockchainBranchBlockEntity> blockchainBranchBlockEntityList = blockChainBranchDao.queryAllBlockchainBranchBlock();
         if(blockchainBranchBlockEntityList != null){
             for(BlockchainBranchBlockEntity entity:blockchainBranchBlockEntityList){
@@ -63,7 +64,7 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
     }
 
     @Override
-    public boolean isBlockchainConfirmABranch() {
+    public boolean isBlockchainConfirmABranch() throws Exception {
         List<BlockchainBranchBlockEntity> blockchainBranchBlockEntityList = blockChainBranchDao.queryAllBlockchainBranchBlock();
         if(blockchainBranchBlockEntityList == null || blockchainBranchBlockEntityList.size()==0){
             return false;
@@ -102,7 +103,7 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
     }
 
     @Override
-    public List<BlockchainBranchBlockDto> queryBlockchainBranch() {
+    public List<BlockchainBranchBlockDto> queryBlockchainBranch() throws Exception {
         List<BlockchainBranchBlockEntity> blockchainBranchBlockEntityList = blockChainBranchDao.queryAllBlockchainBranchBlock();
         if(blockchainBranchBlockEntityList == null || blockchainBranchBlockEntityList.size()==0){
             return null;
@@ -110,7 +111,7 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
         return classCast(blockchainBranchBlockEntityList);
     }
 
-    @Transactional
+    //TODO 事务
     @Override
     public void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList) throws Exception {
         blockChainBranchDao.removeAll();

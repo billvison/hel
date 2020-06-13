@@ -26,10 +26,14 @@ public class BlockchainBranchHandler {
     private BlockChainBranchService blockChainBranchService;
     private Gson gson;
 
+    public BlockchainBranchHandler(BlockChainBranchService blockChainBranchService) {
+        this.blockChainBranchService = blockChainBranchService;
+        this.gson = new Gson();
+    }
+
     public final static String INIT_BLOCKCHAIN_BRANCH_FILE_NAME = "InitBlockchainBranch.txt";
 
-    @PostConstruct
-    private void startThread() throws Exception {
+    public void startThread() throws Exception {
 
         if(!blockChainBranchService.isBlockchainConfirmABranch()){
             URL url = Thread.currentThread().getContextClassLoader().getResource(INIT_BLOCKCHAIN_BRANCH_FILE_NAME);

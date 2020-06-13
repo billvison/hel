@@ -19,15 +19,15 @@ public interface NodeService {
     /**
      * 获取所有节点
      */
-    List<Node> queryAllNoForkNodeList() ;
+    List<Node> queryAllNoForkNodeList();
     /**
      * 获取所有活着的节点
      */
-    List<Node> queryAllNoForkAliveNodeList() ;
+    List<Node> queryAllNoForkAliveNodeList();
     /**
      * 节点网络连接错误处理
      */
-    void nodeErrorConnectionHandle(SimpleNode node) ;
+    void nodeErrorConnectionHandle(SimpleNode node);
 
     /**
      * 设置节点为分叉节点

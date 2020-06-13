@@ -8,7 +8,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.request.Que
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.SimpleNode;
 import com.xingkaichun.helloworldblockchain.netcore.model.NodeEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -20,31 +19,32 @@ import java.util.List;
  */
 public class NodeServiceImpl implements NodeService {
 
-    @Autowired
     private NodeDao nodeDao;
-
-    @Autowired
     private BlockChainCore blockChainCore;
-
-    @Autowired
     private ConfigurationService configurationService;
 
+    public NodeServiceImpl(NodeDao nodeDao, BlockChainCore blockChainCore, ConfigurationService configurationService) {
+        this.nodeDao = nodeDao;
+        this.blockChainCore = blockChainCore;
+        this.configurationService = configurationService;
+    }
+
     @Override
-    public List<Node> queryAllNoForkNodeList() {
+    public List<Node> queryAllNoForkNodeList(){
         List<NodeEntity> nodeEntityList = nodeDao.queryAllNoForkNodeList();
         List<Node> nodeList = classCast(nodeEntityList);
         return nodeList;
     }
 
     @Override
-    public List<Node> queryAllNoForkAliveNodeList() {
+    public List<Node> queryAllNoForkAliveNodeList(){
         List<NodeEntity> nodeEntityList = nodeDao.queryAllNoForkAliveNodeList();
         List<Node> nodeList = classCast(nodeEntityList);
         return nodeList;
     }
 
     @Override
-    public void nodeErrorConnectionHandle(SimpleNode simpleNode) {
+    public void nodeErrorConnectionHandle(SimpleNode simpleNode){
         NodeEntity nodeEntity = nodeDao.queryNode(simpleNode);
         if(nodeEntity == null){
             return;
@@ -61,7 +61,7 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public void addOrUpdateNodeForkPropertity(SimpleNode simpleNode) {
+    public void addOrUpdateNodeForkPropertity(SimpleNode simpleNode){
         NodeEntity nodeEntity = nodeDao.queryNode(simpleNode);
         if(nodeEntity == null){
             Node node = new Node();
@@ -78,32 +78,32 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public void deleteNode(SimpleNode simpleNode) {
+    public void deleteNode(SimpleNode simpleNode){
         nodeDao.deleteNode(simpleNode);
     }
 
     @Override
-    public List<Node> queryNodeList(QueryNodeListRequest request) {
+    public List<Node> queryNodeList(QueryNodeListRequest request){
         List<NodeEntity> nodeEntityList = nodeDao.queryAllNodeList();
         List<Node> nodeList = classCast(nodeEntityList);
         return nodeList;
     }
 
     @Override
-    public void addNode(Node node) {
+    public void addNode(Node node){
         fillNodeDefaultValue(node);
         NodeEntity nodeEntityByPass = classCast(node);
         nodeDao.addNode(nodeEntityByPass);
     }
 
     @Override
-    public void updateNode(Node node) {
+    public void updateNode(Node node){
         NodeEntity nodeEntit = classCast(node);
         nodeDao.updateNode(nodeEntit);
     }
 
     @Override
-    public Node queryNode(SimpleNode simpleNode) {
+    public Node queryNode(SimpleNode simpleNode){
         NodeEntity nodeEntity = nodeDao.queryNode(simpleNode);
         if(nodeEntity == null){
             return null;

@@ -14,8 +14,6 @@ import com.xingkaichun.helloworldblockchain.netcore.util.NetUtil;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -29,14 +27,15 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
 
     private static final Logger logger = LoggerFactory.getLogger(BlockchainNodeClientServiceImpl.class);
 
-    @Autowired
     private BlockChainCore blockChainCore;
-
-    @Autowired
     private Gson gson;
-
-    @Value("${server.port}")
+    //TODO @Value("${server.port}")
     private int serverPort;
+
+    public BlockchainNodeClientServiceImpl(BlockChainCore blockChainCore) {
+        this.blockChainCore = blockChainCore;
+        this.gson = new Gson();
+    }
 
     @Override
     public ServiceResult<EmptyResponse> sumiteTransaction(SimpleNode node, TransactionDTO transactionDTO) throws Exception {

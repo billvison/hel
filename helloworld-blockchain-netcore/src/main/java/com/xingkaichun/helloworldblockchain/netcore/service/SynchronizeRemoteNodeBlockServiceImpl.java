@@ -20,7 +20,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.Quer
 import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -33,27 +32,13 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
 
     private static final Logger logger = LoggerFactory.getLogger(SynchronizeRemoteNodeBlockServiceImpl.class);
 
-    @Autowired
     private NodeDao nodeDao;
-
-    @Autowired
     private BlockChainCore blockChainCore;
-
-    @Autowired
     private NodeService nodeService;
-
-    @Autowired
     private BlockChainBranchService blockChainBranchService;
-
-    @Autowired
     private BlockchainNodeClientService blockchainNodeClientService;
-
-    @Autowired
     private ConfigurationService configurationService;
-
-    @Autowired
     private Gson gson;
-
     /**
      * 若是有分叉时，一次同步的最后一个区块的高度至少要比本地区块链的高度大于N个。
      * 假设本地区块链挖矿过快，等外部区块通过网络传输到本节点后，在加入本地区块链做校验的时候，
@@ -61,6 +46,18 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
      * 所以可以尝试一次多同步几个区块，至少保证本地计算能力达不到同步过来的高度。
      */
     private BigInteger SYNCHRONIZE_BLOCK_SIZE_FROM_LOCAL_BLOCKCHAIN_HEIGHT = new BigInteger("10");
+
+
+    public SynchronizeRemoteNodeBlockServiceImpl(NodeDao nodeDao, BlockChainCore blockChainCore, NodeService nodeService, BlockChainBranchService blockChainBranchService, BlockchainNodeClientService blockchainNodeClientService, ConfigurationService configurationService) {
+        this.nodeDao = nodeDao;
+        this.blockChainCore = blockChainCore;
+        this.nodeService = nodeService;
+        this.blockChainBranchService = blockChainBranchService;
+        this.blockchainNodeClientService = blockchainNodeClientService;
+        this.configurationService = configurationService;
+        this.gson = new Gson();
+    }
+
 
 
     @Override

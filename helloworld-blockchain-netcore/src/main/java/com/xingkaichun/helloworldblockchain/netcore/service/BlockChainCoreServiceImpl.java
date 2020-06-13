@@ -31,7 +31,6 @@ import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionInputDTO;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionOutputDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -44,17 +43,17 @@ import java.util.List;
  */
 public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
-    @Autowired
     private BlockChainCore blockChainCore;
-
-    @Autowired
     private NodeService nodeService;
-
-    @Autowired
     private BlockchainNodeClientService blockchainNodeClientService;
-
-    @Autowired
     private BlockchainNodeServerService blockchainNodeServerService;
+
+    public BlockChainCoreServiceImpl(BlockChainCore blockChainCore, NodeService nodeService, BlockchainNodeClientService blockchainNodeClientService, BlockchainNodeServerService blockchainNodeServerService) {
+        this.blockChainCore = blockChainCore;
+        this.nodeService = nodeService;
+        this.blockchainNodeClientService = blockchainNodeClientService;
+        this.blockchainNodeServerService = blockchainNodeServerService;
+    }
 
     @Override
     public WalletDTO generateWalletDTO() {

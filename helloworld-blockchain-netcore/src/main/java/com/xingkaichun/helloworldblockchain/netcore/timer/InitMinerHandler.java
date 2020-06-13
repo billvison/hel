@@ -11,7 +11,6 @@ import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService
 import com.xingkaichun.helloworldblockchain.netcore.util.WalletDtoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -27,14 +26,12 @@ public class InitMinerHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(InitMinerHandler.class);
 
-    @Autowired
     private ConfigurationService configurationService;
 
-    @Autowired
     private Gson gson;
 
 
-    private void startThread() throws IOException {
+    public void startThread() throws IOException {
         ConfigurationDto minerAddressConfigurationDto =  configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
         if(Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             //创建钱包

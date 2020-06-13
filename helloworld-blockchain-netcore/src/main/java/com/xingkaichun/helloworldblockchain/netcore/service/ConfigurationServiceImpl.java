@@ -5,8 +5,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dao.ConfigurationDao;
 import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.model.ConfigurationEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -14,9 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class ConfigurationServiceImpl implements ConfigurationService {
 
-    @Autowired
     private ConfigurationDao configurationDao;
 
+    public ConfigurationServiceImpl(ConfigurationDao configurationDao) {
+        this.configurationDao = configurationDao;
+    }
 
     @Override
     public ConfigurationDto getConfigurationByConfigurationKey(String confKey) {
@@ -41,7 +41,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         throw new RuntimeException(String.format("系统中不存在配置%s",confKey));
     }
 
-    @Transactional
+    //事务
     @Override
     public void setConfiguration(ConfigurationDto configurationDto) {
         String confKey = configurationDto.getConfKey();
