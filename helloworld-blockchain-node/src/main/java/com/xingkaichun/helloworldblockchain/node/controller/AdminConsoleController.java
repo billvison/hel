@@ -17,7 +17,6 @@ import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.*;
 import com.xingkaichun.helloworldblockchain.node.dto.user.request.UpdateAdminUserRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.user.response.UpdateAdminUserResponse;
-import com.xingkaichun.helloworldblockchain.node.service.AdminConsoleService;
 import com.xingkaichun.helloworldblockchain.node.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,9 +39,6 @@ import java.util.List;
 public class AdminConsoleController {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminConsoleController.class);
-
-    @Autowired
-    private AdminConsoleService adminConsoleService;
 
     @Autowired
     private BlockChainCoreService blockChainCoreService;
@@ -71,7 +67,7 @@ public class AdminConsoleController {
         try {
             ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_MINER_ACTIVE.name());
             boolean isMineActiveByDatabase = Boolean.valueOf(configurationDto.getConfValue());
-            boolean isMineActive = adminConsoleService.isMinerActive();
+            boolean isMineActive = blockChainCore.getMiner().isActive();
             if(isMineActiveByDatabase != isMineActive){
                 String message = String.format("配置%s与真实运行情况不一致，请检查原因。",ConfigurationEnum.IS_MINER_ACTIVE.name());
                 logger.error(message);
@@ -93,7 +89,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.ACTIVE_MINER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<ActiveMinerResponse> activeMiner(@RequestBody ActiveMinerRequest request){
         try {
-            adminConsoleService.activeMiner();
+            blockChainCore.getMiner().active();
 
             ConfigurationDto configurationDto = new ConfigurationDto(ConfigurationEnum.IS_MINER_ACTIVE.name(),String.valueOf(true));
             configurationService.setConfiguration(configurationDto);
@@ -114,7 +110,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.DEACTIVE_MINER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeactiveMinerResponse> deactiveMiner(@RequestBody DeactiveMinerRequest request){
         try {
-            adminConsoleService.deactiveMiner();
+            blockChainCore.getMiner().deactive();
 
             ConfigurationDto configurationDto = new ConfigurationDto(ConfigurationEnum.IS_MINER_ACTIVE.name(),String.valueOf(false));
             configurationService.setConfiguration(configurationDto);
@@ -140,7 +136,7 @@ public class AdminConsoleController {
         try {
             ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_SYNCHRONIZER_ACTIVE.name());
             boolean isSynchronizerActiveByDatabase = Boolean.valueOf(configurationDto.getConfValue());
-            boolean isSynchronizerActive = adminConsoleService.isSynchronizerActive();
+            boolean isSynchronizerActive = blockChainCore.getSynchronizer().isActive();
             if(isSynchronizerActiveByDatabase != isSynchronizerActive){
                 String message = String.format("配置%s与真实运行情况不一致，请检查原因。",ConfigurationEnum.IS_SYNCHRONIZER_ACTIVE.name());
                 logger.error(message);
@@ -162,7 +158,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.ACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<ActiveSynchronizerResponse> activeSynchronizer(@RequestBody ActiveSynchronizerRequest request){
         try {
-            adminConsoleService.activeSynchronizer();
+            blockChainCore.getSynchronizer().active();
 
             ConfigurationDto configurationDto = new ConfigurationDto(ConfigurationEnum.IS_SYNCHRONIZER_ACTIVE.name(),String.valueOf(true));
             configurationService.setConfiguration(configurationDto);
@@ -183,7 +179,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.DEACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeactiveSynchronizerResponse> deactiveSynchronizer(@RequestBody DeactiveSynchronizerRequest request){
         try {
-            adminConsoleService.deactiveSynchronizer();
+            blockChainCore.getSynchronizer().deactive();
 
             ConfigurationDto configurationDto = new ConfigurationDto(ConfigurationEnum.IS_SYNCHRONIZER_ACTIVE.name(),String.valueOf(false));
             configurationService.setConfiguration(configurationDto);
@@ -257,7 +253,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.SET_MINER_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<SetMinerAddressResponse> setMinerAddress(@RequestBody SetMinerAddressRequest request){
         try {
-            if(adminConsoleService.isMinerActive()){
+            if(blockChainCore.getMiner().isActive()){
                 return ServiceResult.createFailServiceResult("矿工正在挖矿，请先暂停挖矿，再设置矿工钱包地址");
             }
             blockChainCore.getMiner().resetMinerStringAddress(new StringAddress(request.getMinerAddress()));
