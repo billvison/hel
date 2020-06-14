@@ -5,23 +5,20 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.NodeServerApi
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.request.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 
-import java.nio.charset.Charset;
-
 
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-	NodeServerController nodeServerController;
+	NodeServerHandlerResolver nodeServerHandlerResolver;
 
-	protected HttpServerHandler(NodeServerController nodeServerController) {
+	protected HttpServerHandler(NodeServerHandlerResolver nodeServerHandlerResolver) {
 		super();
-		this.nodeServerController = nodeServerController;
+		this.nodeServerHandlerResolver = nodeServerHandlerResolver;
 	}
 
 
@@ -40,23 +37,23 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 			break;
 		case NodeServerApiRoute.PING:
 			PingRequest request1 = new Gson().fromJson(body,PingRequest.class);
-			sendMsg = toString(nodeServerController.ping(ctx,request1));
+			sendMsg = toString(nodeServerHandlerResolver.ping(ctx,request1));
 			break;
 		case NodeServerApiRoute.ADD_OR_UPDATE_NODE:
 			AddOrUpdateNodeRequest request2 = new Gson().fromJson(body,AddOrUpdateNodeRequest.class);
-			sendMsg = toString(nodeServerController.addOrUpdateNode(ctx,request2));
+			sendMsg = toString(nodeServerHandlerResolver.addOrUpdateNode(ctx,request2));
 			break;
 		case NodeServerApiRoute.QUERY_BLOCK_HASH_BY_BLOCK_HEIGHT:
 			QueryBlockHashByBlockHeightRequest request3 = new Gson().fromJson(body, QueryBlockHashByBlockHeightRequest.class);
-			sendMsg = toString(nodeServerController.queryBlockHashByBlockHeight(request3));
+			sendMsg = toString(nodeServerHandlerResolver.queryBlockHashByBlockHeight(request3));
 			break;
 		case NodeServerApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT:
 			QueryBlockDtoByBlockHeightRequest request4 = new Gson().fromJson(body, QueryBlockDtoByBlockHeightRequest.class);
-			sendMsg = toString(nodeServerController.queryBlockDtoByBlockHeight(request4));
+			sendMsg = toString(nodeServerHandlerResolver.queryBlockDtoByBlockHeight(request4));
 			break;
 		case NodeServerApiRoute.RECEIVE_TRANSACTION:
 			ReceiveTransactionRequest request5 = new Gson().fromJson(body, ReceiveTransactionRequest.class);
-			sendMsg = toString(nodeServerController.receiveTransaction(request5));
+			sendMsg = toString(nodeServerHandlerResolver.receiveTransaction(request5));
 			break;
 		default:
 			sendMsg = "404 PAGE NOT FOUND";

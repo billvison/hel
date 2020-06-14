@@ -10,13 +10,13 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class HttpServer {
 
-	public static int DEFAULT_PORT = 8080;
+	public static int DEFAULT_PORT = 8444;
 
-	NodeServerController nodeServerController;
+	NodeServerHandlerResolver nodeServerHandlerResolver;
 
-	public HttpServer(NodeServerController nodeServerController) {
+	public HttpServer(NodeServerHandlerResolver nodeServerHandlerResolver) {
 		super();
-		this.nodeServerController = nodeServerController;
+		this.nodeServerHandlerResolver = nodeServerHandlerResolver;
 	}
 
 
@@ -33,7 +33,7 @@ public class HttpServer {
 			
 			b.group(bossGroup, workerGroup) // 设置EventLoopGroup
 			.channel(NioServerSocketChannel.class) // 指明新的Channel的类型
-			.childHandler(new HttpServerChannelInitializer(nodeServerController)) // 指定ChannelHandler
+			.childHandler(new HttpServerChannelInitializer(nodeServerHandlerResolver)) // 指定ChannelHandler
 			.option(ChannelOption.SO_BACKLOG, 128) // 设置的ServerChannel的一些选项
 			.childOption(ChannelOption.SO_KEEPALIVE, true); // 设置的ServerChannel的子Channel的选项
  

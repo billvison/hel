@@ -7,26 +7,22 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-
-import java.nio.charset.Charset;
 
 
 public class HttpServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-	NodeServerController nodeServerController;
+	NodeServerHandlerResolver nodeServerHandlerResolver;
 
-	public HttpServerChannelInitializer(NodeServerController nodeServerController) {
+	public HttpServerChannelInitializer(NodeServerHandlerResolver nodeServerHandlerResolver) {
 		super();
-		this.nodeServerController = nodeServerController;
+		this.nodeServerHandlerResolver = nodeServerHandlerResolver;
 	}
 	
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
 		ch.pipeline().addLast("codec", new HttpServerCodec());
 		ch.pipeline().addLast("aggregator", new HttpObjectAggregator(1048576));
-		ch.pipeline().addLast("serverHandler", new HttpServerHandler(nodeServerController));
+		ch.pipeline().addLast("serverHandler", new HttpServerHandler(nodeServerHandlerResolver));
 	}
 
 }
