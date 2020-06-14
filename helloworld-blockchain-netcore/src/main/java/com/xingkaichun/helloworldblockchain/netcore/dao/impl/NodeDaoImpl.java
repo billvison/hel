@@ -19,7 +19,7 @@ public class NodeDaoImpl implements NodeDao {
     }
 
     private void init() throws Exception {
-        String createTable1Sql1 = "CREATE TABLE \"Node\"(" +
+        String createTable1Sql1 = "CREATE TABLE IF NOT EXISTS [Node](" +
                 "  [ip] VARCHAR(20) NOT NULL, " +
                 "  [port] INTEGER(10) NOT NULL, " +
                 "  [blockChainHeight] INTEGER(20) NOT NULL, " +

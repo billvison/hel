@@ -8,6 +8,8 @@ import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.netcore.dao.impl.BlockChainBranchDaoImpl;
 import com.xingkaichun.helloworldblockchain.netcore.dao.impl.ConfigurationDaoImpl;
 import com.xingkaichun.helloworldblockchain.netcore.dao.impl.NodeDaoImpl;
+import com.xingkaichun.helloworldblockchain.netcore.netserver.HttpServer;
+import com.xingkaichun.helloworldblockchain.netcore.netserver.NodeServerController;
 import com.xingkaichun.helloworldblockchain.netcore.service.*;
 import com.xingkaichun.helloworldblockchain.netcore.timer.BlockchainBranchHandler;
 import com.xingkaichun.helloworldblockchain.netcore.timer.TimerService;
@@ -39,7 +41,9 @@ public class NetBlcokchainCoreFactory {
         TimerService timerService = new TimerService(blockChainCoreService,nodeService,synchronizeRemoteNodeBlockService,blockchainNodeClientService,blockChainCore,configurationService);
         BlockchainBranchHandler blockchainBranchHandler = new BlockchainBranchHandler(blockChainBranchService);
 
-        NetBlcokchainCore netBlcokchainCore = new NetBlcokchainCore(blockChainCore,timerService,blockchainBranchHandler);
+        NodeServerController nodeServerController = new NodeServerController(blockChainCoreService,nodeService,blockchainNodeServerService,configurationService);
+        HttpServer httpServer = new HttpServer(nodeServerController);
+        NetBlcokchainCore netBlcokchainCore = new NetBlcokchainCore(blockChainCore,timerService,blockchainBranchHandler,httpServer);
         return netBlcokchainCore;
     }
 

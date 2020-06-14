@@ -34,6 +34,13 @@ public class NodeServerController {
     private BlockchainNodeServerService blockchainNodeServerService;
     private ConfigurationService configurationService;
 
+    public NodeServerController(BlockChainCoreService blockChainCoreService, NodeService nodeService, BlockchainNodeServerService blockchainNodeServerService, ConfigurationService configurationService) {
+        this.blockChainCoreService = blockChainCoreService;
+        this.nodeService = nodeService;
+        this.blockchainNodeServerService = blockchainNodeServerService;
+        this.configurationService = configurationService;
+    }
+
     /**
      * Ping节点
      */
@@ -62,9 +69,9 @@ public class NodeServerController {
             response.setBlockChainHeight(blockChainHeight);
             response.setBlockChainId(GlobalSetting.BLOCK_CHAIN_ID);
             response.setBlockChainVersion(GlobalSetting.SystemVersionConstant.obtainVersion());
-            return ServiceResult.createSuccessServiceResult("查询节点信息成功",response);
+            return ServiceResult.createSuccessServiceResult("ping node info success",response);
         } catch (Exception e){
-            String message = "查询节点信息成功失败";
+            String message = "ping node info failed";
             logger.error(message,e);
             return ServiceResult.createSuccessServiceResult(message,null);
         }
@@ -88,7 +95,7 @@ public class NodeServerController {
             if(!Boolean.valueOf(configurationDto.getConfValue())){
                 Node nodeInDb = nodeService.queryNode(node);
                 if(nodeInDb == null){
-                    return ServiceResult.createSuccessServiceResult("你不是该节点的授信节点。",null);
+                    return ServiceResult.createSuccessServiceResult("not allowed update node info",null);
                 }
                 logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,request.getPort()));
             }
@@ -98,9 +105,9 @@ public class NodeServerController {
                 nodeService.updateNode(node);
             }
             AddOrUpdateNodeResponse response = new AddOrUpdateNodeResponse();
-            return ServiceResult.createSuccessServiceResult("更新节点成功",response);
+            return ServiceResult.createSuccessServiceResult("update node info success",response);
         } catch (Exception e){
-            String message = "更新节点失败";
+            String message = "update node info failed";
             logger.error(message,e);
             return ServiceResult.createSuccessServiceResult(message,null);
         }
@@ -116,9 +123,9 @@ public class NodeServerController {
 
             QueryBlockHashByBlockHeightResponse response = new QueryBlockHashByBlockHeightResponse();
             response.setBlockHash(blockHash);
-            return ServiceResult.createSuccessServiceResult("成功获取区块Hash",response);
+            return ServiceResult.createSuccessServiceResult("query block hash by block height success",response);
         } catch (Exception e){
-            String message = "查询区块Hash失败";
+            String message = "query block hash by block height failed";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
@@ -134,9 +141,9 @@ public class NodeServerController {
 
             QueryBlockDtoByBlockHeightResponse response = new QueryBlockDtoByBlockHeightResponse();
             response.setBlockDTO(blockDTO);
-            return ServiceResult.createSuccessServiceResult("成功获取区块",response);
+            return ServiceResult.createSuccessServiceResult("query block by block height success",response);
         } catch (Exception e){
-            String message = "查询获取失败";
+            String message = "query block by block height failed";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
@@ -150,9 +157,9 @@ public class NodeServerController {
             blockchainNodeServerService.receiveTransaction(request.getTransactionDTO());
 
             ReceiveTransactionResponse response = new ReceiveTransactionResponse();
-            return ServiceResult.createSuccessServiceResult("提交交易成功",response);
+            return ServiceResult.createSuccessServiceResult("commit transaction success",response);
         } catch (Exception e){
-            String message = "提交交易失败";
+            String message = "commit transaction failed";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

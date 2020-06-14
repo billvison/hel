@@ -36,13 +36,14 @@ public class BlockchainBranchHandler {
     public void startThread() throws Exception {
 
         if(!blockChainBranchService.isBlockchainConfirmABranch()){
-            URL url = Thread.currentThread().getContextClassLoader().getResource(INIT_BLOCKCHAIN_BRANCH_FILE_NAME);
+        //TODO 默认分支
+            /*            URL url = Thread.currentThread().getContextClassLoader().getResource(INIT_BLOCKCHAIN_BRANCH_FILE_NAME);
             logger.info(String.format("使用文件%s初始化区块链的分支。 ",url));
             InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(INIT_BLOCKCHAIN_BRANCH_FILE_NAME);
             String context = CharStreams.toString(new InputStreamReader(inputStream, "UTF-8"));
             Type jsonType = new TypeToken<BlockchainBranchDto>() {}.getType();
             BlockchainBranchDto blockchainBranchDto = gson.fromJson(context,jsonType);
-            blockChainBranchService.updateBranchchainBranch(blockchainBranchDto.getBlockList());
+            blockChainBranchService.updateBranchchainBranch(blockchainBranchDto.getBlockList());*/
         }
 
         new Thread(()->{

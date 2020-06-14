@@ -12,14 +12,16 @@ public class HttpServer {
 
 	public static int DEFAULT_PORT = 8080;
 
-	public static void main(String[] args) throws Exception {
-		int port;
+	NodeServerController nodeServerController;
 
-		try {
-			port = Integer.parseInt(args[0]);
-		} catch (RuntimeException ex) {
-			port = DEFAULT_PORT;
-		}
+	public HttpServer(NodeServerController nodeServerController) {
+		super();
+		this.nodeServerController = nodeServerController;
+	}
+
+
+	public void run() throws Exception {
+		int port= DEFAULT_PORT;
 
 		// 多线程事件循环器
 		EventLoopGroup bossGroup = new NioEventLoopGroup(1); // boss
@@ -31,7 +33,7 @@ public class HttpServer {
 			
 			b.group(bossGroup, workerGroup) // 设置EventLoopGroup
 			.channel(NioServerSocketChannel.class) // 指明新的Channel的类型
-			.childHandler(new HttpServerChannelInitializer()) // 指定ChannelHandler
+			.childHandler(new HttpServerChannelInitializer(nodeServerController)) // 指定ChannelHandler
 			.option(ChannelOption.SO_BACKLOG, 128) // 设置的ServerChannel的一些选项
 			.childOption(ChannelOption.SO_KEEPALIVE, true); // 设置的ServerChannel的子Channel的选项
  

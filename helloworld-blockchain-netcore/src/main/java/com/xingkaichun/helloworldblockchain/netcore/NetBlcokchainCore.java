@@ -10,11 +10,13 @@ public class NetBlcokchainCore {
     private BlockChainCore blockChainCore;
     private TimerService timerService;
     private BlockchainBranchHandler blockchainBranchHandler;
+    private HttpServer httpServer;
 
-    public NetBlcokchainCore(BlockChainCore blockChainCore,TimerService timerService,BlockchainBranchHandler blockchainBranchHandler) {
+    public NetBlcokchainCore(BlockChainCore blockChainCore,TimerService timerService,BlockchainBranchHandler blockchainBranchHandler,HttpServer httpServer) {
         this.blockChainCore = blockChainCore;
         this.timerService = timerService;
         this.blockchainBranchHandler = blockchainBranchHandler;
+        this.httpServer = httpServer;
     }
 
     public void start() throws Exception {
@@ -32,15 +34,12 @@ public class NetBlcokchainCore {
             }
         }).start();
 
-        new Thread(){
-            @Override
-            public void run() {
-                try {
-                    new HttpServer().main(null);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        new Thread(()->{
+            try {
+                httpServer.run();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }.start();
+        }).start();
     }
 }
