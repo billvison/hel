@@ -64,6 +64,11 @@
         <artifactId>helloworld-blockchain-crypto</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.xingkaichun.helloworldblockchain</groupId>
+        <artifactId>helloworld-blockchain-netcore</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
 
       <dependency>
