@@ -20,19 +20,7 @@ public class NetBlcokchainCore {
     }
 
     public void start() throws Exception {
-
-        //同步区块链网络中的节点、区块
-        timerService.startThread();
-        //处理分叉
-        blockchainBranchHandler.startThread();
-
-        new Thread(()->{
-            try {
-                blockChainCore.start();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
+        blockChainCore.start();
 
         new Thread(()->{
             try {
@@ -41,5 +29,10 @@ public class NetBlcokchainCore {
                 e.printStackTrace();
             }
         }).start();
+
+        //同步区块链网络中的节点、区块
+        timerService.startThread();
+        //处理分叉
+        blockchainBranchHandler.startThread();
     }
 }

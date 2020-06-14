@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
+import com.sun.corba.se.impl.oa.toa.TOA;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
@@ -25,6 +26,7 @@ public class IncentiveDefaultImpl extends Incentive {
 
     private Logger logger = LoggerFactory.getLogger(IncentiveDefaultImpl.class);
 
+    //TODO
     @Override
     public BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
         //转账手续费
@@ -44,7 +46,11 @@ public class IncentiveDefaultImpl extends Incentive {
                 --multiple;
             }
         }
+        //最小值
         BigDecimal total = mixedCoin.add(fees);
+        if(total.compareTo(GlobalSetting.TransactionConstant.MIN_TRANSACTION_FEE)<0){
+            total = GlobalSetting.TransactionConstant.MIN_TRANSACTION_FEE;
+        }
         //小数位数
         BigDecimal setScaleTotal = total.setScale(GlobalSetting.TransactionConstant.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES,BigDecimal.ROUND_DOWN);
         return setScaleTotal;
