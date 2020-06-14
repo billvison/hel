@@ -35,4 +35,40 @@ public class NetBlcokchainCore {
         //处理分叉
         blockchainBranchHandler.startThread();
     }
+
+
+
+
+
+    public BlockChainCore getBlockChainCore() {
+        return blockChainCore;
+    }
+
+    public void setBlockChainCore(BlockChainCore blockChainCore) {
+        this.blockChainCore = blockChainCore;
+    }
+
+    public TimerService getTimerService() {
+        return timerService;
+    }
+
+    public void setTimerService(TimerService timerService) {
+        this.timerService = timerService;
+    }
+
+    public BlockchainBranchHandler getBlockchainBranchHandler() {
+        return blockchainBranchHandler;
+    }
+
+    public void setBlockchainBranchHandler(BlockchainBranchHandler blockchainBranchHandler) {
+        this.blockchainBranchHandler = blockchainBranchHandler;
+    }
+
+    public HttpServer getHttpServer() {
+        return httpServer;
+    }
+
+    public void setHttpServer(HttpServer httpServer) {
+        this.httpServer = httpServer;
+    }
 }

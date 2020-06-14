@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.node.controller;
 
 import com.google.common.base.Strings;
-import com.xingkaichun.helloworldblockchain.node.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.user.UserApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
 import com.xingkaichun.helloworldblockchain.node.dto.user.request.LoginRequest;

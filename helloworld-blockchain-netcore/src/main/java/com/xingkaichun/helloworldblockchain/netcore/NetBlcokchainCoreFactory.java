@@ -16,6 +16,12 @@ import com.xingkaichun.helloworldblockchain.netcore.timer.TimerService;
 
 public class NetBlcokchainCoreFactory {
 
+    public static ConfigurationService configurationService = null;
+    public static BlockChainCoreService blockChainCoreService = null;
+    public static NodeService nodeService = null;
+    public static BlockChainBranchService blockChainBranchService = null;
+
+
     public static NetBlcokchainCore createNetBlcokchainCore(String blockchainDataPath,String minerAddress) throws Exception {
 
         //TODO
@@ -29,13 +35,13 @@ public class NetBlcokchainCoreFactory {
         NodeDao nodeDao = new NodeDaoImpl(blockchainDataPath);
         BlockChainBranchDao blockChainBranchDao = new BlockChainBranchDaoImpl(blockchainDataPath);
 
-        ConfigurationService configurationService = new ConfigurationServiceImpl(configurationDao);
-        NodeService nodeService = new NodeServiceImpl(nodeDao,blockChainCore,configurationService);
+        configurationService = new ConfigurationServiceImpl(configurationDao);
+        nodeService = new NodeServiceImpl(nodeDao,blockChainCore,configurationService);
         BlockchainNodeClientService blockchainNodeClientService = new BlockchainNodeClientServiceImpl(blockChainCore);
         BlockchainNodeServerService blockchainNodeServerService = new BlockchainNodeServerServiceImpl(blockChainCore);
-        BlockChainCoreService blockChainCoreService = new BlockChainCoreServiceImpl(blockChainCore,nodeService,blockchainNodeClientService,blockchainNodeServerService);
+        blockChainCoreService = new BlockChainCoreServiceImpl(blockChainCore,nodeService,blockchainNodeClientService,blockchainNodeServerService);
 
-        BlockChainBranchService blockChainBranchService = new BlockChainBranchServiceImpl(blockChainBranchDao,blockChainCoreService);
+        blockChainBranchService = new BlockChainBranchServiceImpl(blockChainBranchDao,blockChainCoreService);
         SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService = new SynchronizeRemoteNodeBlockServiceImpl(nodeDao,blockChainCore,nodeService,blockChainBranchService,blockchainNodeClientService,configurationService);
 
         TimerService timerService = new TimerService(blockChainCoreService,nodeService,synchronizeRemoteNodeBlockService,blockchainNodeClientService,blockChainCore,configurationService);

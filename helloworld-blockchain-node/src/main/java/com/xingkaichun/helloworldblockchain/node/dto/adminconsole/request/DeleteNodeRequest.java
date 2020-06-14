@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request;
 
-import com.xingkaichun.helloworldblockchain.node.dto.nodeserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.SimpleNode;
 
 /**
  *

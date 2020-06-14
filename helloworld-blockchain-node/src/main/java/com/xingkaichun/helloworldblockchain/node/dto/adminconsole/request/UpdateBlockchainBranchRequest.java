@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request;
 
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbranch.BlockchainBranchBlockDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchBlockDto;
 
 import java.util.List;
 

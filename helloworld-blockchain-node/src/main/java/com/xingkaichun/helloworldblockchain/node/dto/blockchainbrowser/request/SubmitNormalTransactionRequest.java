@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request;
 
-import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.NormalTransactionDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.NormalTransactionDto;
 
 /**
  *

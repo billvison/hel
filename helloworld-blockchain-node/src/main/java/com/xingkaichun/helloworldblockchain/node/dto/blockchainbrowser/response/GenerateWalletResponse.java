@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response;
 
-import com.xingkaichun.helloworldblockchain.node.dto.wallet.WalletDTO;
+import com.xingkaichun.helloworldblockchain.netcore.dto.wallet.WalletDTO;
 
 /**
  *

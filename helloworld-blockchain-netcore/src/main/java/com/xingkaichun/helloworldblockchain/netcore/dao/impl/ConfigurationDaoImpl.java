@@ -56,7 +56,7 @@ public class ConfigurationDaoImpl implements ConfigurationDao {
 
     @Override
     public void addConfiguration(ConfigurationEntity configurationEntity) {
-        String sql1 = "INSERT INTO Configuration (confKey, confValue) VALUES ?,?)";
+        String sql1 = "INSERT INTO Configuration (confKey, confValue) VALUES (?,?)";
         PreparedStatement preparedStatement1 = null;
         try {
             preparedStatement1 = connection().prepareStatement(sql1);

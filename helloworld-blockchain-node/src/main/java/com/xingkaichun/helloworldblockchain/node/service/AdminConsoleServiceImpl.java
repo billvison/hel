@@ -14,10 +14,6 @@ public class AdminConsoleServiceImpl implements AdminConsoleService {
     @Autowired
     private BlockChainCore blockChainCore;
 
-    @Autowired
-    private NodeService nodeService;
-
-
     @Override
     public boolean isMinerActive() {
         return blockChainCore.getMiner().isActive();
