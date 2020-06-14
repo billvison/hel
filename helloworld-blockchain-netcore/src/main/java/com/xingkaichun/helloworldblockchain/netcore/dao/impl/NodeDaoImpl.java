@@ -171,7 +171,21 @@ public class NodeDaoImpl implements NodeDao {
 
     @Override
     public void updateNode(NodeEntity node){
-        //TODO 赋值
+        //TODO 优化
+        NodeEntity nodeEntity = queryNode(node);
+        if(node.getBlockChainHeight()==null){
+            node.setBlockChainHeight(nodeEntity.getBlockChainHeight());
+        }
+        if(node.getIsNodeAvailable()==null){
+            node.setIsNodeAvailable(nodeEntity.getIsNodeAvailable());
+        }
+        if(node.getErrorConnectionTimes()==null){
+            node.setErrorConnectionTimes(nodeEntity.getErrorConnectionTimes());
+        }
+        if(node.getFork()==null){
+            node.setFork(nodeEntity.getFork());
+        }
+
         String sql1 = "UPDATE Node SET blockChainHeight = ? ,isNodeAvailable = ? ," +
                 "                errorConnectionTimes = ?, fork = ? where ip = ? and port = ?";
         PreparedStatement preparedStatement1 = null;
