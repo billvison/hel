@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.timer;
+package com.xingkaichun.helloworldblockchain.netcore.daemonservice;
 
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
@@ -22,9 +22,9 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class TimerService {
+public class AutomaticDaemonService {
 
-    private static final Logger logger = LoggerFactory.getLogger(TimerService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AutomaticDaemonService.class);
 
     private BlockChainCoreService blockChainCoreService;
     private NodeService nodeService;
@@ -34,7 +34,7 @@ public class TimerService {
     private ConfigurationService configurationService;
     private Gson gson;
 
-    public TimerService(BlockChainCoreService blockChainCoreService, NodeService nodeService, SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService, BlockchainNodeClientService blockchainNodeClientService, BlockChainCore blockChainCore, ConfigurationService configurationService) {
+    public AutomaticDaemonService(BlockChainCoreService blockChainCoreService, NodeService nodeService, SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService, BlockchainNodeClientService blockchainNodeClientService, BlockChainCore blockChainCore, ConfigurationService configurationService) {
         this.blockChainCoreService = blockChainCoreService;
         this.nodeService = nodeService;
         this.synchronizeRemoteNodeBlockService = synchronizeRemoteNodeBlockService;

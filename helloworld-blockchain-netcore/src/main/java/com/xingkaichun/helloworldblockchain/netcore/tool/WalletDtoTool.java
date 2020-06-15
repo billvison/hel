@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.util;
+package com.xingkaichun.helloworldblockchain.netcore.tool;
 
 import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
@@ -11,7 +11,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.wallet.WalletDTO;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class WalletDtoUtil {
+public class WalletDtoTool {
 
     /**
      * 类型转换

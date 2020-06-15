@@ -1,32 +1,23 @@
-package com.xingkaichun.helloworldblockchain.netcore.timer;
+package com.xingkaichun.helloworldblockchain.netcore.daemonservice;
 
-import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchDto;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.URL;
 
 /**
  * 区块链分叉处理
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class BlockchainBranchHandler {
+public class BlockchainBranchDaemonService {
 
-    private static final Logger logger = LoggerFactory.getLogger(BlockchainBranchHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(BlockchainBranchDaemonService.class);
 
     private BlockChainBranchService blockChainBranchService;
     private Gson gson;
 
-    public BlockchainBranchHandler(BlockChainBranchService blockChainBranchService) {
+    public BlockchainBranchDaemonService(BlockChainBranchService blockChainBranchService) {
         this.blockChainBranchService = blockChainBranchService;
         this.gson = new Gson();
     }

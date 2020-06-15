@@ -2,20 +2,20 @@ package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.netcore.netserver.HttpServer;
-import com.xingkaichun.helloworldblockchain.netcore.timer.BlockchainBranchHandler;
-import com.xingkaichun.helloworldblockchain.netcore.timer.TimerService;
+import com.xingkaichun.helloworldblockchain.netcore.daemonservice.BlockchainBranchDaemonService;
+import com.xingkaichun.helloworldblockchain.netcore.daemonservice.AutomaticDaemonService;
 
 public class NetBlcokchainCore {
 
     private BlockChainCore blockChainCore;
-    private TimerService timerService;
-    private BlockchainBranchHandler blockchainBranchHandler;
+    private AutomaticDaemonService automaticDaemonService;
+    private BlockchainBranchDaemonService blockchainBranchDaemonService;
     private HttpServer httpServer;
 
-    public NetBlcokchainCore(BlockChainCore blockChainCore,TimerService timerService,BlockchainBranchHandler blockchainBranchHandler,HttpServer httpServer) {
+    public NetBlcokchainCore(BlockChainCore blockChainCore, AutomaticDaemonService automaticDaemonService, BlockchainBranchDaemonService blockchainBranchDaemonService, HttpServer httpServer) {
         this.blockChainCore = blockChainCore;
-        this.timerService = timerService;
-        this.blockchainBranchHandler = blockchainBranchHandler;
+        this.automaticDaemonService = automaticDaemonService;
+        this.blockchainBranchDaemonService = blockchainBranchDaemonService;
         this.httpServer = httpServer;
     }
 
@@ -31,9 +31,9 @@ public class NetBlcokchainCore {
         }).start();
 
         //同步区块链网络中的节点、区块
-        timerService.startThread();
+        automaticDaemonService.startThread();
         //处理分叉
-        blockchainBranchHandler.startThread();
+        blockchainBranchDaemonService.startThread();
     }
 
 
@@ -48,20 +48,20 @@ public class NetBlcokchainCore {
         this.blockChainCore = blockChainCore;
     }
 
-    public TimerService getTimerService() {
-        return timerService;
+    public AutomaticDaemonService getAutomaticDaemonService() {
+        return automaticDaemonService;
     }
 
-    public void setTimerService(TimerService timerService) {
-        this.timerService = timerService;
+    public void setAutomaticDaemonService(AutomaticDaemonService automaticDaemonService) {
+        this.automaticDaemonService = automaticDaemonService;
     }
 
-    public BlockchainBranchHandler getBlockchainBranchHandler() {
-        return blockchainBranchHandler;
+    public BlockchainBranchDaemonService getBlockchainBranchDaemonService() {
+        return blockchainBranchDaemonService;
     }
 
-    public void setBlockchainBranchHandler(BlockchainBranchHandler blockchainBranchHandler) {
-        this.blockchainBranchHandler = blockchainBranchHandler;
+    public void setBlockchainBranchDaemonService(BlockchainBranchDaemonService blockchainBranchDaemonService) {
+        this.blockchainBranchDaemonService = blockchainBranchDaemonService;
     }
 
     public HttpServer getHttpServer() {

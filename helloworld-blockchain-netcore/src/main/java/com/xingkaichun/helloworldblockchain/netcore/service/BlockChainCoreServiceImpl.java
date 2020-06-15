@@ -26,7 +26,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.netcore.dto.wallet.WalletDTO;
-import com.xingkaichun.helloworldblockchain.netcore.util.WalletDtoUtil;
+import com.xingkaichun.helloworldblockchain.netcore.tool.WalletDtoTool;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionInputDTO;
@@ -58,7 +58,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public WalletDTO generateWalletDTO() {
         Wallet wallet = WalletTool.generateWallet();
-        return WalletDtoUtil.classCast(wallet);
+        return WalletDtoTool.classCast(wallet);
     }
 
     @Override

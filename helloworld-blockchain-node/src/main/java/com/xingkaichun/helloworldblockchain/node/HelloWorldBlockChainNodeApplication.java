@@ -79,8 +79,8 @@ public class HelloWorldBlockChainNodeApplication {
 	}
 
 /*	@Bean
-	public InitMinerHandler initMinerHandler(){
-		InitMinerHandler initMinerHandler = new InitMinerHandler();
+	public InitMinerTool initMinerHandler(){
+		InitMinerTool initMinerHandler = new InitMinerTool();
 		return initMinerHandler;
 	}*/
 

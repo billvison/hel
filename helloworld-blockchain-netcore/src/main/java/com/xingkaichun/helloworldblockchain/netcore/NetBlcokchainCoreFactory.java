@@ -13,9 +13,9 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.Configurati
 import com.xingkaichun.helloworldblockchain.netcore.netserver.HttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.netserver.NodeServerHandlerResolver;
 import com.xingkaichun.helloworldblockchain.netcore.service.*;
-import com.xingkaichun.helloworldblockchain.netcore.timer.BlockchainBranchHandler;
-import com.xingkaichun.helloworldblockchain.netcore.timer.InitMinerHandler;
-import com.xingkaichun.helloworldblockchain.netcore.timer.TimerService;
+import com.xingkaichun.helloworldblockchain.netcore.daemonservice.BlockchainBranchDaemonService;
+import com.xingkaichun.helloworldblockchain.netcore.tool.InitMinerTool;
+import com.xingkaichun.helloworldblockchain.netcore.daemonservice.AutomaticDaemonService;
 
 import java.io.File;
 
@@ -44,7 +44,7 @@ public class NetBlcokchainCoreFactory {
             defaultMinerAddress = dataRootPathConfigurationDto.getConfValue();
         }else {
             if(defaultMinerAddress == null){
-                defaultMinerAddress = InitMinerHandler.buildDefaultMinerAddress(configurationService,defaultDataRootPath);
+                defaultMinerAddress = InitMinerTool.buildDefaultMinerAddress(configurationService,defaultDataRootPath);
             }
             configurationService.setConfiguration(new ConfigurationDto(ConfigurationEnum.MINER_ADDRESS.name(),defaultMinerAddress));
         }
@@ -64,12 +64,12 @@ public class NetBlcokchainCoreFactory {
         blockChainBranchService = new BlockChainBranchServiceImpl(blockChainBranchDao,blockChainCoreService);
         SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService = new SynchronizeRemoteNodeBlockServiceImpl(nodeDao,blockChainCore,nodeService,blockChainBranchService,blockchainNodeClientService,configurationService);
 
-        TimerService timerService = new TimerService(blockChainCoreService,nodeService,synchronizeRemoteNodeBlockService,blockchainNodeClientService,blockChainCore,configurationService);
-        BlockchainBranchHandler blockchainBranchHandler = new BlockchainBranchHandler(blockChainBranchService);
+        AutomaticDaemonService automaticDaemonService = new AutomaticDaemonService(blockChainCoreService,nodeService,synchronizeRemoteNodeBlockService,blockchainNodeClientService,blockChainCore,configurationService);
+        BlockchainBranchDaemonService blockchainBranchDaemonService = new BlockchainBranchDaemonService(blockChainBranchService);
 
         NodeServerHandlerResolver nodeServerHandlerResolver = new NodeServerHandlerResolver(blockChainCoreService,nodeService,blockchainNodeServerService,configurationService);
         HttpServer httpServer = new HttpServer(nodeServerHandlerResolver);
-        NetBlcokchainCore netBlcokchainCore = new NetBlcokchainCore(blockChainCore,timerService,blockchainBranchHandler,httpServer);
+        NetBlcokchainCore netBlcokchainCore = new NetBlcokchainCore(blockChainCore, automaticDaemonService, blockchainBranchDaemonService,httpServer);
 
 
         //是否激活矿工

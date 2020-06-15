@@ -1,14 +1,12 @@
-package com.xingkaichun.helloworldblockchain.netcore.timer;
+package com.xingkaichun.helloworldblockchain.netcore.tool;
 
 import com.google.common.base.Strings;
-import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.wallet.WalletDTO;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
-import com.xingkaichun.helloworldblockchain.netcore.util.WalletDtoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +20,9 @@ import java.io.IOException;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class InitMinerHandler {
+public class InitMinerTool {
 
-    private static final Logger logger = LoggerFactory.getLogger(InitMinerHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(InitMinerTool.class);
 
 
     public static String buildDefaultMinerAddress(ConfigurationService configurationService, String defaultDataRootPath) throws IOException {
@@ -32,7 +30,7 @@ public class InitMinerHandler {
         if(Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             //创建钱包
             Wallet wallet = WalletTool.generateWallet();
-            WalletDTO walletDTO =  WalletDtoUtil.classCast(wallet);
+            WalletDTO walletDTO =  WalletDtoTool.classCast(wallet);
 
             //将钱包的地址当做矿工的地址写入数据库
             minerAddressConfigurationDto.setConfKey(ConfigurationEnum.MINER_ADDRESS.name());
