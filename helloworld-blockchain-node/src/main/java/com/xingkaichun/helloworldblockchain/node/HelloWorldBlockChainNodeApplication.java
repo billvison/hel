@@ -78,12 +78,6 @@ public class HelloWorldBlockChainNodeApplication {
 		return initUserHandler;
 	}
 
-/*	@Bean
-	public InitMinerTool initMinerHandler(){
-		InitMinerTool initMinerHandler = new InitMinerTool();
-		return initMinerHandler;
-	}*/
-
 	@Bean
 	public Gson buildGson(){
 		return new Gson();
