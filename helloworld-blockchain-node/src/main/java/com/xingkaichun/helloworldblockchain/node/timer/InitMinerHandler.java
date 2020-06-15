@@ -39,7 +39,7 @@ public class InitMinerHandler {
 
 
     @PostConstruct
-    private void startThread() throws IOException {
+    private void buildDefaultMinerAddress() throws IOException {
         ConfigurationDto minerAddressConfigurationDto =  configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
         if(Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             //创建钱包

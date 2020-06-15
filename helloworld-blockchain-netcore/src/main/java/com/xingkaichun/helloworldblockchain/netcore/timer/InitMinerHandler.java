@@ -26,12 +26,8 @@ public class InitMinerHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(InitMinerHandler.class);
 
-    private ConfigurationService configurationService;
 
-    private Gson gson;
-
-
-    public void startThread() throws IOException {
+    public static String buildDefaultMinerAddress(ConfigurationService configurationService, String defaultDataRootPath) throws IOException {
         ConfigurationDto minerAddressConfigurationDto =  configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
         if(Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             //创建钱包
@@ -52,7 +48,7 @@ public class InitMinerHandler {
                                 "为保安全，请另在其它地方妥善保存您的矿工钱包私钥、公钥、地址，并删除此文件。"
                         ,walletDTO.getPrivateKey(),walletDTO.getAddress());
                 logger.info(minerWalletInfo);
-                fileWriter = new FileWriter(new File("InitMiner.txt"));
+                fileWriter = new FileWriter(new File(defaultDataRootPath,"InitMiner.txt"));
                 fileWriter.write(minerWalletInfo);
                 fileWriter.close();
             } catch (IOException e) {
@@ -61,6 +57,8 @@ public class InitMinerHandler {
                     fileWriter.close();
                 }
             }
+            return wallet.getStringAddress().getValue();
         }
+        return null;
     }
 }
