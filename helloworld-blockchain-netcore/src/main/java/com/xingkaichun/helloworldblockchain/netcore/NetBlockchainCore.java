@@ -5,14 +5,14 @@ import com.xingkaichun.helloworldblockchain.netcore.netserver.HttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.daemonservice.BlockchainBranchDaemonService;
 import com.xingkaichun.helloworldblockchain.netcore.daemonservice.AutomaticDaemonService;
 
-public class NetBlcokchainCore {
+public class NetBlockchainCore {
 
     private BlockChainCore blockChainCore;
     private AutomaticDaemonService automaticDaemonService;
     private BlockchainBranchDaemonService blockchainBranchDaemonService;
     private HttpServer httpServer;
 
-    public NetBlcokchainCore(BlockChainCore blockChainCore, AutomaticDaemonService automaticDaemonService, BlockchainBranchDaemonService blockchainBranchDaemonService, HttpServer httpServer) {
+    public NetBlockchainCore(BlockChainCore blockChainCore, AutomaticDaemonService automaticDaemonService, BlockchainBranchDaemonService blockchainBranchDaemonService, HttpServer httpServer) {
         this.blockChainCore = blockChainCore;
         this.automaticDaemonService = automaticDaemonService;
         this.blockchainBranchDaemonService = blockchainBranchDaemonService;
@@ -20,22 +20,15 @@ public class NetBlcokchainCore {
     }
 
     public void start() throws Exception {
+        //启动本地的单机区块链
         blockChainCore.start();
-
-        new Thread(()->{
-            try {
-                httpServer.run();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-
+        //启动区块链节点服务器
+        httpServer.start();
         //同步区块链网络中的节点、区块
-        automaticDaemonService.startThread();
-        //处理分叉
-        blockchainBranchDaemonService.startThread();
+        automaticDaemonService.start();
+        //处理本地区块链的分叉
+        blockchainBranchDaemonService.start();
     }
-
 
 
 

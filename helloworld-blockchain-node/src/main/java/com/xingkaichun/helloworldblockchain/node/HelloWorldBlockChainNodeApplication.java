@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
-import com.xingkaichun.helloworldblockchain.netcore.NetBlcokchainCore;
+import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlcokchainCoreFactory;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
@@ -42,31 +42,31 @@ public class HelloWorldBlockChainNodeApplication {
 
 
 	@Bean
-	public NetBlcokchainCore netBlcokchainCore() throws Exception {
-		NetBlcokchainCore netBlcokchainCore = NetBlcokchainCoreFactory.createNetBlcokchainCore("F:\\tmp\\helloworldblockchain","1111122222333334444455555");
-		netBlcokchainCore.start();
-		return netBlcokchainCore;
+	public NetBlockchainCore netBlcokchainCore() throws Exception {
+		NetBlockchainCore netBlockchainCore = NetBlcokchainCoreFactory.createNetBlcokchainCore("F:\\tmp\\helloworldblockchain","1111122222333334444455555");
+		netBlockchainCore.start();
+		return netBlockchainCore;
 	}
 
 	@Bean
-	public BlockChainCore buildBlockChainCore(NetBlcokchainCore netBlcokchainCore){
-		return netBlcokchainCore.getBlockChainCore();
+	public BlockChainCore buildBlockChainCore(NetBlockchainCore netBlockchainCore){
+		return netBlockchainCore.getBlockChainCore();
 	}
 
 	@Bean
-	public ConfigurationService buildConfigurationService(NetBlcokchainCore netBlcokchainCore){
+	public ConfigurationService buildConfigurationService(NetBlockchainCore netBlockchainCore){
 		return NetBlcokchainCoreFactory.configurationService;
 	}
 	@Bean
-	public BlockChainCoreService buildBlockChainCoreService(NetBlcokchainCore netBlcokchainCore){
+	public BlockChainCoreService buildBlockChainCoreService(NetBlockchainCore netBlockchainCore){
 		return NetBlcokchainCoreFactory.blockChainCoreService;
 	}
 	@Bean
-	public NodeService buildNodeService(NetBlcokchainCore netBlcokchainCore){
+	public NodeService buildNodeService(NetBlockchainCore netBlockchainCore){
 		return NetBlcokchainCoreFactory.nodeService;
 	}
 	@Bean
-	public BlockChainBranchService buildBlockChainBranchService(NetBlcokchainCore netBlcokchainCore){
+	public BlockChainBranchService buildBlockChainBranchService(NetBlockchainCore netBlockchainCore){
 		return NetBlcokchainCoreFactory.blockChainBranchService;
 	}
 

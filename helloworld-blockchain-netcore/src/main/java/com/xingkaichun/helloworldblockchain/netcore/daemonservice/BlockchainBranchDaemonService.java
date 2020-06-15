@@ -24,7 +24,7 @@ public class BlockchainBranchDaemonService {
 
     public final static String INIT_BLOCKCHAIN_BRANCH_FILE_NAME = "InitBlockchainBranch.txt";
 
-    public void startThread() throws Exception {
+    public void start() throws Exception {
 
         if(!blockChainBranchService.isBlockchainConfirmABranch()){
         //TODO 默认分支

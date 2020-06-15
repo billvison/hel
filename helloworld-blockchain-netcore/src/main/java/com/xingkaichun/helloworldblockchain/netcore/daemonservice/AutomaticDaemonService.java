@@ -45,7 +45,7 @@ public class AutomaticDaemonService {
         this.gson = new Gson();
     }
 
-    public void startThread() {
+    public void start() {
         //阻塞：将种子节点加入区块链
         addSeedNodeToLocalBlockchain();
         new Thread(()->{

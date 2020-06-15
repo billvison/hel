@@ -27,7 +27,7 @@ public class NetBlcokchainCoreFactory {
     public static BlockChainBranchService blockChainBranchService = null;
 
 
-    public static NetBlcokchainCore createNetBlcokchainCore(String defaultDataRootPath,String defaultMinerAddress) throws Exception {
+    public static NetBlockchainCore createNetBlcokchainCore(String defaultDataRootPath, String defaultMinerAddress) throws Exception {
         ConfigurationDao configurationDao = new ConfigurationDaoImpl(defaultDataRootPath);
         configurationService = new ConfigurationServiceImpl(configurationDao);
 
@@ -69,7 +69,7 @@ public class NetBlcokchainCoreFactory {
 
         NodeServerHandlerResolver nodeServerHandlerResolver = new NodeServerHandlerResolver(blockChainCoreService,nodeService,blockchainNodeServerService,configurationService);
         HttpServer httpServer = new HttpServer(nodeServerHandlerResolver);
-        NetBlcokchainCore netBlcokchainCore = new NetBlcokchainCore(blockChainCore, automaticDaemonService, blockchainBranchDaemonService,httpServer);
+        NetBlockchainCore netBlockchainCore = new NetBlockchainCore(blockChainCore, automaticDaemonService, blockchainBranchDaemonService,httpServer);
 
 
         //是否激活矿工
@@ -87,10 +87,10 @@ public class NetBlcokchainCoreFactory {
             blockChainCore.getSynchronizer().deactive();
         }
 
-        return netBlcokchainCore;
+        return netBlockchainCore;
     }
 
-    public static NetBlcokchainCore createNetBlcokchainCore() throws Exception {
+    public static NetBlockchainCore createNetBlcokchainCore() throws Exception {
         return createNetBlcokchainCore(null,null);
     }
 
