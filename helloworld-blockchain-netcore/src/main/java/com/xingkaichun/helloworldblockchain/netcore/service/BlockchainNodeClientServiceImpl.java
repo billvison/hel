@@ -11,7 +11,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.SimpleNode;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.request.*;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.*;
 import com.xingkaichun.helloworldblockchain.netcore.util.NetUtil;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

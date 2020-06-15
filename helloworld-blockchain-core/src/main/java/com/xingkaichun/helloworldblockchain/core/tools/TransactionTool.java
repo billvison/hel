@@ -12,9 +12,9 @@ import com.xingkaichun.helloworldblockchain.crypto.Base58Util;
 import com.xingkaichun.helloworldblockchain.crypto.Base64Util;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionInputDTO;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionOutputDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDTO;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

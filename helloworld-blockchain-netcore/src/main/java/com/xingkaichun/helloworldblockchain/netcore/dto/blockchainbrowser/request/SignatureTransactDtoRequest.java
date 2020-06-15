@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.request;
 
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 
 /**
  *

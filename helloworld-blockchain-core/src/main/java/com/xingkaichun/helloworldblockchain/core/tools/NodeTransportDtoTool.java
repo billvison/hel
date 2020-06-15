@@ -14,10 +14,10 @@ import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionInputDTO;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionOutputDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDTO;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

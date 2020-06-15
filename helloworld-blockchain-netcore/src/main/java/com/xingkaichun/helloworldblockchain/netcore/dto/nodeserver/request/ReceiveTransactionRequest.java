@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.request;
 
-import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 
 /**
  *

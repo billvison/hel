@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
-import com.xingkaichun.helloworldblockchain.netcore.NetBlcokchainCoreFactory;
+import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCoreFactory;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
@@ -43,7 +43,7 @@ public class HelloWorldBlockChainNodeApplication {
 
 	@Bean
 	public NetBlockchainCore netBlcokchainCore() throws Exception {
-		NetBlockchainCore netBlockchainCore = NetBlcokchainCoreFactory.createNetBlcokchainCore("F:\\tmp\\helloworldblockchain","1111122222333334444455555");
+		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore("F:\\tmp\\helloworldblockchain","1111122222333334444455555");
 		netBlockchainCore.start();
 		return netBlockchainCore;
 	}
@@ -55,19 +55,19 @@ public class HelloWorldBlockChainNodeApplication {
 
 	@Bean
 	public ConfigurationService buildConfigurationService(NetBlockchainCore netBlockchainCore){
-		return NetBlcokchainCoreFactory.configurationService;
+		return NetBlockchainCoreFactory.configurationService;
 	}
 	@Bean
 	public BlockChainCoreService buildBlockChainCoreService(NetBlockchainCore netBlockchainCore){
-		return NetBlcokchainCoreFactory.blockChainCoreService;
+		return NetBlockchainCoreFactory.blockChainCoreService;
 	}
 	@Bean
 	public NodeService buildNodeService(NetBlockchainCore netBlockchainCore){
-		return NetBlcokchainCoreFactory.nodeService;
+		return NetBlockchainCoreFactory.nodeService;
 	}
 	@Bean
 	public BlockChainBranchService buildBlockChainBranchService(NetBlockchainCore netBlockchainCore){
-		return NetBlcokchainCoreFactory.blockChainBranchService;
+		return NetBlockchainCoreFactory.blockChainBranchService;
 	}
 
 

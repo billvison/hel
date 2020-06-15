@@ -9,11 +9,20 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.xingkaichun.helloworldblockchain</groupId>
-    <artifactId>helloworld-blockchain-node-transport-dto</artifactId>
+    <artifactId>helloworld-blockchain-netcore-transport-dto</artifactId>
 
-    <name>helloworld-blockchain-node-transport-dto</name>
+    <name>helloworld-blockchain-netcore-transport-dto</name>
+
+    <properties>
+    </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
 </project>

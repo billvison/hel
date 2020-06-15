@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.node.transport.dto;
+package com.xingkaichun.helloworldblockchain.netcore.transport.dto;
 
 /**
  * 该包用于存放【节点之间数据传输使用的】dto类，不存在任何业务逻辑。

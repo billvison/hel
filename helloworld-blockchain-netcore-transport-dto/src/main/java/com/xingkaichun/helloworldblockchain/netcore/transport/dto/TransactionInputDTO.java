@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.node.transport.dto;
+package com.xingkaichun.helloworldblockchain.netcore.transport.dto;
 
 import java.io.Serializable;
 import java.util.List;

@@ -19,7 +19,7 @@ import com.xingkaichun.helloworldblockchain.netcore.daemonservice.AutomaticDaemo
 
 import java.io.File;
 
-public class NetBlcokchainCoreFactory {
+public class NetBlockchainCoreFactory {
 
     public static ConfigurationService configurationService = null;
     public static BlockChainCoreService blockChainCoreService = null;

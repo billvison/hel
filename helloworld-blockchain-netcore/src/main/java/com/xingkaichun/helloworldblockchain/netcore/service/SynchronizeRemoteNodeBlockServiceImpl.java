@@ -17,7 +17,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.QueryBlockDtoByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.QueryBlockHashByBlockHeightResponse;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

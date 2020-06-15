@@ -10,8 +10,8 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.reques
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.response.SubmitNormalTransactionResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
 import com.xingkaichun.helloworldblockchain.netcore.dto.wallet.WalletDTO;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 
 import java.math.BigInteger;
 import java.util.List;

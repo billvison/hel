@@ -11,7 +11,7 @@ import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreServic
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockchainNodeServerService;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

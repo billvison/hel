@@ -11,7 +11,7 @@ public class HelloWorldBlockChainNetcoreApplication {
 
 	public static void main(String[] args) throws Exception {
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-		NetBlockchainCore netBlockchainCore = NetBlcokchainCoreFactory.createNetBlcokchainCore("F:\\tmp\\helloworldblockchain","1111122222333334444455555");
+		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore("F:\\tmp\\helloworldblockchain","1111122222333334444455555");
 		netBlockchainCore.start();
 	}
 

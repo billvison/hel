@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core;
 
-import com.xingkaichun.helloworldblockchain.node.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 
 import java.math.BigInteger;
 import java.util.List;
