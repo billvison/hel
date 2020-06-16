@@ -15,10 +15,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.security.Security;
+import java.io.File;
 
 /**
  * 启动入口
@@ -35,16 +36,20 @@ public class HelloWorldBlockChainNodeApplication {
 
 
 	public static void main(String[] args) throws Exception {
-		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-		SpringApplication.run(HelloWorldBlockChainNodeApplication.class, args);
+		ConfigurableApplicationContext context = SpringApplication.run(HelloWorldBlockChainNodeApplication.class, args);
+
+		NetBlockchainCore netBlockchainCore = context.getBean(NetBlockchainCore.class);
+		netBlockchainCore.start();
 	}
 
 
 
 	@Bean
-	public NetBlockchainCore netBlcokchainCore() throws Exception {
-		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore("F:\\tmp\\helloworldblockchain","1111122222333334444455555");
-		netBlockchainCore.start();
+	public NetBlockchainCore buildNetBlockchainCore() throws Exception {
+		if(blockchainDataPath == null || "".equals(blockchainDataPath)){
+			blockchainDataPath = buildDefaultDataRootPath();
+		}
+		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(blockchainDataPath,8444);
 		return netBlockchainCore;
 	}
 
@@ -86,5 +91,10 @@ public class HelloWorldBlockChainNodeApplication {
 	@Bean
 	public ObjectMapper objectMapper() {
 		return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+	}
+
+	public static String buildDefaultDataRootPath() throws Exception {
+		String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+		return new File(path,"HelloworldBlockchainRootData").getAbsolutePath();
 	}
 }

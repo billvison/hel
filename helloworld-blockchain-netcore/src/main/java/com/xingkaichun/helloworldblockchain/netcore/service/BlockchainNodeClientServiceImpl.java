@@ -29,10 +29,10 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
 
     private BlockChainCore blockChainCore;
     private Gson gson;
-    //TODO @Value("${server.port}")
     private int serverPort;
 
-    public BlockchainNodeClientServiceImpl(BlockChainCore blockChainCore) {
+    public BlockchainNodeClientServiceImpl(int serverPort,BlockChainCore blockChainCore) {
+        this.serverPort = serverPort;
         this.blockChainCore = blockChainCore;
         this.gson = new Gson();
     }

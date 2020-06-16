@@ -47,7 +47,7 @@ public abstract class Miner {
     /**
      * 停用矿工：设置矿工为非活动状态。
      */
-    public abstract void deactive() throws Exception;
+    public abstract void deactive() ;
     //endregion
 
 

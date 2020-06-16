@@ -15,7 +15,6 @@ public enum ConfigurationEnum {
     NODE_SEARCH_NEW_NODE_TIME_INTERVAL(String.valueOf(2*60*1000),"在区块链网络中自动搜寻新的节点的间隔时间。"),
     SEARCH_NEW_BLOCKS_TIME_INTERVAL(String.valueOf(1*60*1000),"在区块链网络中自动搜寻新的区块的间隔时间。"),
     CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL(String.valueOf(1*60*1000),"检查自己的区块链高度在区块链网络中是否是最大的高度的时间间隔。"),
-    DATA_ROOT_PATH(String.valueOf(1*60*60*1000),"数据存放的根路径。所有数据都保存在这个目录下。"),
 
 
 

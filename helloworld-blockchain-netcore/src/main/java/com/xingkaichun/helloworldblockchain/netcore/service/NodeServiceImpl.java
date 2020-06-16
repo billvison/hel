@@ -1,6 +1,5 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
-import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationEnum;
@@ -20,12 +19,10 @@ import java.util.List;
 public class NodeServiceImpl implements NodeService {
 
     private NodeDao nodeDao;
-    private BlockChainCore blockChainCore;
     private ConfigurationService configurationService;
 
-    public NodeServiceImpl(NodeDao nodeDao, BlockChainCore blockChainCore, ConfigurationService configurationService) {
+    public NodeServiceImpl(NodeDao nodeDao, ConfigurationService configurationService) {
         this.nodeDao = nodeDao;
-        this.blockChainCore = blockChainCore;
         this.configurationService = configurationService;
     }
 

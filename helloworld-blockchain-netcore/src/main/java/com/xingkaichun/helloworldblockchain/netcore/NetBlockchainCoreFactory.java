@@ -2,6 +2,8 @@ package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCoreFactory;
+import com.xingkaichun.helloworldblockchain.netcore.daemonservice.AutomaticDaemonService;
+import com.xingkaichun.helloworldblockchain.netcore.daemonservice.BlockchainBranchDaemonService;
 import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainBranchDao;
 import com.xingkaichun.helloworldblockchain.netcore.dao.ConfigurationDao;
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
@@ -13,11 +15,8 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.Configurati
 import com.xingkaichun.helloworldblockchain.netcore.netserver.HttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.netserver.NodeServerHandlerResolver;
 import com.xingkaichun.helloworldblockchain.netcore.service.*;
-import com.xingkaichun.helloworldblockchain.netcore.daemonservice.BlockchainBranchDaemonService;
 import com.xingkaichun.helloworldblockchain.netcore.tool.InitMinerTool;
-import com.xingkaichun.helloworldblockchain.netcore.daemonservice.AutomaticDaemonService;
-
-import java.io.File;
+import com.xingkaichun.helloworldblockchain.netcore.util.FileUtil;
 
 public class NetBlockchainCoreFactory {
 
@@ -27,37 +26,33 @@ public class NetBlockchainCoreFactory {
     public static BlockChainBranchService blockChainBranchService = null;
 
 
-    public static NetBlockchainCore createNetBlcokchainCore(String defaultDataRootPath, String defaultMinerAddress) throws Exception {
-        ConfigurationDao configurationDao = new ConfigurationDaoImpl(defaultDataRootPath);
+    public static NetBlockchainCore createNetBlcokchainCore(String dataRootPath,int serverPort) throws Exception {
+        if(dataRootPath == null){
+            throw new NullPointerException("参数路径不能为空。");
+        }
+        FileUtil.mkdir(dataRootPath);
+
+
+        ConfigurationDao configurationDao = new ConfigurationDaoImpl(dataRootPath);
         configurationService = new ConfigurationServiceImpl(configurationDao);
 
-        ConfigurationDto dataRootPathConfigurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.DATA_ROOT_PATH.name());
-        if(dataRootPathConfigurationDto == null){
-            defaultDataRootPath = buildDefaultDataRootPath();
-            configurationService.setConfiguration(new ConfigurationDto(ConfigurationEnum.DATA_ROOT_PATH.name(),defaultDataRootPath));
-        }else {
-            defaultDataRootPath = dataRootPathConfigurationDto.getConfValue();
-        }
-
+        String minerAddress = null;
         ConfigurationDto minerAddressConfigurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
         if(minerAddressConfigurationDto != null){
-            defaultMinerAddress = dataRootPathConfigurationDto.getConfValue();
+            minerAddress = minerAddressConfigurationDto.getConfValue();
         }else {
-            if(defaultMinerAddress == null){
-                defaultMinerAddress = InitMinerTool.buildDefaultMinerAddress(configurationService,defaultDataRootPath);
-            }
-            configurationService.setConfiguration(new ConfigurationDto(ConfigurationEnum.MINER_ADDRESS.name(),defaultMinerAddress));
+            minerAddress = InitMinerTool.buildDefaultMinerAddress(configurationService,dataRootPath);
+            configurationService.setConfiguration(new ConfigurationDto(ConfigurationEnum.MINER_ADDRESS.name(),minerAddress));
         }
 
 
-        BlockChainCoreFactory factory = new BlockChainCoreFactory();
-        BlockChainCore blockChainCore = factory.createBlockChainCore(defaultDataRootPath,defaultMinerAddress);
+        BlockChainCore blockChainCore = BlockChainCoreFactory.createBlockChainCore(dataRootPath,minerAddress);
 
-        NodeDao nodeDao = new NodeDaoImpl(defaultDataRootPath);
-        BlockChainBranchDao blockChainBranchDao = new BlockChainBranchDaoImpl(defaultDataRootPath);
+        NodeDao nodeDao = new NodeDaoImpl(dataRootPath);
+        BlockChainBranchDao blockChainBranchDao = new BlockChainBranchDaoImpl(dataRootPath);
 
-        nodeService = new NodeServiceImpl(nodeDao,blockChainCore,configurationService);
-        BlockchainNodeClientService blockchainNodeClientService = new BlockchainNodeClientServiceImpl(blockChainCore);
+        nodeService = new NodeServiceImpl(nodeDao,configurationService);
+        BlockchainNodeClientService blockchainNodeClientService = new BlockchainNodeClientServiceImpl(serverPort,blockChainCore);
         BlockchainNodeServerService blockchainNodeServerService = new BlockchainNodeServerServiceImpl(blockChainCore);
         blockChainCoreService = new BlockChainCoreServiceImpl(blockChainCore,nodeService,blockchainNodeClientService,blockchainNodeServerService);
 
@@ -68,34 +63,9 @@ public class NetBlockchainCoreFactory {
         BlockchainBranchDaemonService blockchainBranchDaemonService = new BlockchainBranchDaemonService(blockChainBranchService);
 
         NodeServerHandlerResolver nodeServerHandlerResolver = new NodeServerHandlerResolver(blockChainCoreService,nodeService,blockchainNodeServerService,configurationService);
-        HttpServer httpServer = new HttpServer(nodeServerHandlerResolver);
-        NetBlockchainCore netBlockchainCore = new NetBlockchainCore(blockChainCore, automaticDaemonService, blockchainBranchDaemonService,httpServer);
-
-
-        //是否激活矿工
-        ConfigurationDto isMinerActiveConfigurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_MINER_ACTIVE.name());
-        if(Boolean.valueOf(isMinerActiveConfigurationDto.getConfValue())){
-            blockChainCore.getMiner().active();
-        }else {
-            blockChainCore.getMiner().deactive();
-        }
-        //是否激活同步者
-        ConfigurationDto isSynchronizerActiveConfigurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_SYNCHRONIZER_ACTIVE.name());
-        if(Boolean.valueOf(isSynchronizerActiveConfigurationDto.getConfValue())){
-            blockChainCore.getSynchronizer().active();
-        }else {
-            blockChainCore.getSynchronizer().deactive();
-        }
-
+        HttpServer httpServer = new HttpServer(serverPort,nodeServerHandlerResolver);
+        NetBlockchainCore netBlockchainCore = new NetBlockchainCore(blockChainCore, automaticDaemonService, blockchainBranchDaemonService, httpServer, configurationService);
         return netBlockchainCore;
     }
 
-    public static NetBlockchainCore createNetBlcokchainCore() throws Exception {
-        return createNetBlcokchainCore(null,null);
-    }
-
-    public static String buildDefaultDataRootPath() throws Exception {
-        String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-        return new File(path,"HelloworldBlockchainRootData").getAbsolutePath();
-    }
 }

@@ -10,12 +10,13 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class HttpServer {
 
-	public static int DEFAULT_PORT = 8444;
+	public int serverPort;
 
 	NodeServerHandlerResolver nodeServerHandlerResolver;
 
-	public HttpServer(NodeServerHandlerResolver nodeServerHandlerResolver) {
+	public HttpServer(int serverPort, NodeServerHandlerResolver nodeServerHandlerResolver) {
 		super();
+		this.serverPort = serverPort;
 		this.nodeServerHandlerResolver = nodeServerHandlerResolver;
 	}
 
@@ -23,7 +24,7 @@ public class HttpServer {
 	public void start() throws Exception {
 		new Thread(
 				()->{
-					int port= DEFAULT_PORT;
+					int port= serverPort;
 
 					// 多线程事件循环器
 					EventLoopGroup bossGroup = new NioEventLoopGroup(1); // boss
