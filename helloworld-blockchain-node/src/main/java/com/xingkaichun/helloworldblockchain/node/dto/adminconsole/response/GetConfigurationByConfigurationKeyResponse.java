@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 
 /**
  *

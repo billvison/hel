@@ -10,8 +10,8 @@ import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.netcore.dao.impl.BlockChainBranchDaoImpl;
 import com.xingkaichun.helloworldblockchain.netcore.dao.impl.ConfigurationDaoImpl;
 import com.xingkaichun.helloworldblockchain.netcore.dao.impl.NodeDaoImpl;
-import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationEnum;
+import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.netserver.HttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.netserver.NodeServerHandlerResolver;
 import com.xingkaichun.helloworldblockchain.netcore.service.*;
@@ -56,7 +56,7 @@ public class NetBlockchainCoreFactory {
         blockChainCoreService = new BlockChainCoreServiceImpl(blockChainCore,nodeService,blockchainNodeClientService);
 
         blockChainBranchService = new BlockChainBranchServiceImpl(blockChainBranchDao,blockChainCoreService);
-        SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService = new SynchronizeRemoteNodeBlockServiceImpl(nodeDao,blockChainCore,nodeService,blockChainBranchService,blockchainNodeClientService,configurationService);
+        SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService = new SynchronizeRemoteNodeBlockServiceImpl(blockChainCore,nodeService,blockChainBranchService,blockchainNodeClientService,configurationService);
 
         AutomaticDaemonService automaticDaemonService = new AutomaticDaemonService(blockChainCoreService,nodeService,synchronizeRemoteNodeBlockService,blockchainNodeClientService,blockChainCore,configurationService);
         BlockchainBranchDaemonService blockchainBranchDaemonService = new BlockchainBranchDaemonService(blockChainBranchService);

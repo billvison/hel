@@ -1,6 +1,5 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.request.QueryNodeListRequest;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNode;
 
@@ -42,7 +41,7 @@ public interface NodeService {
     /**
      * 查询节点
      */
-    List<Node> queryNodeList(QueryNodeListRequest request);
+    List<Node> queryNodeList(SimpleNode node);
 
     /**
      * 新增节点

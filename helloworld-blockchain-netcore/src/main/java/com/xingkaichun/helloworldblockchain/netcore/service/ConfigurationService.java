@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 
 /**
  * 配置service

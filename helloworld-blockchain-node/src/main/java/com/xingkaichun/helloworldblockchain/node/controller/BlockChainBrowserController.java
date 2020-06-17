@@ -104,7 +104,7 @@ public class BlockChainBrowserController {
                     return ServiceResult.createFailServiceResult("交易输出的金额不是一个数值。");
                 }
             }
-            SubmitNormalTransactionResponse response = blockChainCoreService.sumiteTransaction(request.getNormalTransactionDto());
+            SubmitNormalTransactionResponse response = blockChainCoreService.submitTransaction(request.getNormalTransactionDto());
             return ServiceResult.createSuccessServiceResult("提交交易到区块链网络成功",response);
         } catch (Exception e){
             String message = "提交交易到区块链网络失败";

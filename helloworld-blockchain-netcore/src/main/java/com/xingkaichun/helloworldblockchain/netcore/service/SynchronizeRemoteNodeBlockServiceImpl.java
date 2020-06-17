@@ -1,6 +1,5 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
-import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Synchronizer;
@@ -9,9 +8,8 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
-import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
-import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationEnum;
+import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.PingResponse;
@@ -32,13 +30,11 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
 
     private static final Logger logger = LoggerFactory.getLogger(SynchronizeRemoteNodeBlockServiceImpl.class);
 
-    private NodeDao nodeDao;
     private BlockChainCore blockChainCore;
     private NodeService nodeService;
     private BlockChainBranchService blockChainBranchService;
     private BlockchainNodeClientService blockchainNodeClientService;
     private ConfigurationService configurationService;
-    private Gson gson;
     /**
      * 若是有分叉时，一次同步的最后一个区块的高度至少要比本地区块链的高度大于N个。
      * 假设本地区块链挖矿过快，等外部区块通过网络传输到本节点后，在加入本地区块链做校验的时候，
@@ -48,14 +44,12 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     private BigInteger SYNCHRONIZE_BLOCK_SIZE_FROM_LOCAL_BLOCKCHAIN_HEIGHT = new BigInteger("10");
 
 
-    public SynchronizeRemoteNodeBlockServiceImpl(NodeDao nodeDao, BlockChainCore blockChainCore, NodeService nodeService, BlockChainBranchService blockChainBranchService, BlockchainNodeClientService blockchainNodeClientService, ConfigurationService configurationService) {
-        this.nodeDao = nodeDao;
+    public SynchronizeRemoteNodeBlockServiceImpl(BlockChainCore blockChainCore, NodeService nodeService, BlockChainBranchService blockChainBranchService, BlockchainNodeClientService blockchainNodeClientService, ConfigurationService configurationService) {
         this.blockChainCore = blockChainCore;
         this.nodeService = nodeService;
         this.blockChainBranchService = blockChainBranchService;
         this.blockchainNodeClientService = blockchainNodeClientService;
         this.configurationService = configurationService;
-        this.gson = new Gson();
     }
 
 

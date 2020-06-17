@@ -3,8 +3,7 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
-import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.request.QueryNodeListRequest;
+import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
@@ -346,7 +345,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.QUERY_NODE_LIST,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryNodeListResponse> queryNodeList(@RequestBody QueryNodeListRequest request){
         try {
-            List<Node> nodeList = nodeService.queryNodeList(request);
+            List<Node> nodeList = nodeService.queryNodeList(request.getNode());
             QueryNodeListResponse response = new QueryNodeListResponse();
             response.setNodeList(nodeList);
             return ServiceResult.createSuccessServiceResult("查询节点成功",response);

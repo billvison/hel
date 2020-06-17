@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.request;
+package com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request;
 
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNode;
 

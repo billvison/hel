@@ -1,9 +1,8 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
-import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationEnum;
-import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.request.QueryNodeListRequest;
+import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNode;
 import com.xingkaichun.helloworldblockchain.netcore.model.NodeEntity;
@@ -80,7 +79,8 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public List<Node> queryNodeList(QueryNodeListRequest request){
+    public List<Node> queryNodeList(SimpleNode node){
+        //TODO
         List<NodeEntity> nodeEntityList = nodeDao.queryAllNodeList();
         List<Node> nodeList = classCast(nodeEntityList);
         return nodeList;

@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole;
+package com.xingkaichun.helloworldblockchain.netcore.dto.configuration;
 
 /**
  *

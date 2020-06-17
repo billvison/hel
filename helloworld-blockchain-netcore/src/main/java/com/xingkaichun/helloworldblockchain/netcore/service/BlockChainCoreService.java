@@ -43,7 +43,7 @@ public interface BlockChainCoreService {
     /**
      * 提交交易到区块链网络
      */
-    SubmitNormalTransactionResponse sumiteTransaction(NormalTransactionDto transactionDTO) throws Exception;
+    SubmitNormalTransactionResponse submitTransaction(NormalTransactionDto transactionDTO) throws Exception;
 
     /**
      * 根据区块高度获取区块DTO

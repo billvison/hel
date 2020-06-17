@@ -94,7 +94,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public SubmitNormalTransactionResponse sumiteTransaction(NormalTransactionDto normalTransactionDto) throws Exception {
+    public SubmitNormalTransactionResponse submitTransaction(NormalTransactionDto normalTransactionDto) throws Exception {
         TransactionDTO transactionDTO = classCast(normalTransactionDto);
         saveTransactionToMinerTransactionDatabase(transactionDTO);
         List<Node> nodes = nodeService.queryAllNoForkAliveNodeList();
