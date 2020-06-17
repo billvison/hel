@@ -1,11 +1,10 @@
-package com.xingkaichun.helloworldblockchain.node.timer;
+package com.xingkaichun.helloworldblockchain.node.init;
 
 import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
 import com.xingkaichun.helloworldblockchain.node.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 
 /**
  * 初始化用户，每次启动系统时，会校验数据库中是否存在用户。
@@ -22,9 +21,9 @@ public class InitUserHandler {
     String DEFAULT_PASSWORD = "123456";
 
     @PostConstruct
-    private void startThread() throws IOException {
+    private void init(){
         long userSize = userService.queryUserSize();
-        if(userSize>0){
+        if(userSize > 0){
             return;
         }
 
@@ -33,5 +32,4 @@ public class InitUserHandler {
         userDto.setPassword(DEFAULT_PASSWORD);
         userService.addUser(userDto);
     }
-
 }

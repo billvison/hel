@@ -10,7 +10,7 @@ import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchServ
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.node.timer.InitUserHandler;
+import com.xingkaichun.helloworldblockchain.node.init.InitUserHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
