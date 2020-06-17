@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.netcore.dao.impl;
 
 import com.xingkaichun.helloworldblockchain.core.utils.SqldroidUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNode;
 import com.xingkaichun.helloworldblockchain.netcore.model.NodeEntity;
 
 import java.io.File;
@@ -31,14 +30,14 @@ public class NodeDaoImpl implements NodeDao {
     }
 
     @Override
-    public NodeEntity queryNode(SimpleNode simpleNode){
+    public NodeEntity queryNode(String ip, int port){
         String sql = "select * from Node WHERE ip = ? and port = ?";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             preparedStatement = connection().prepareStatement(sql);
-            preparedStatement.setString(1,simpleNode.getIp());
-            preparedStatement.setInt(2,simpleNode.getPort());
+            preparedStatement.setString(1,ip);
+            preparedStatement.setInt(2,port);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 return resultSetToNodeEntity(resultSet);
@@ -172,7 +171,7 @@ public class NodeDaoImpl implements NodeDao {
     @Override
     public void updateNode(NodeEntity node){
         //TODO 优化
-        NodeEntity nodeEntity = queryNode(node);
+        NodeEntity nodeEntity = queryNode(node.getIp(),node.getPort());
         if(node.getBlockChainHeight()==null){
             node.setBlockChainHeight(nodeEntity.getBlockChainHeight());
         }
@@ -211,13 +210,13 @@ public class NodeDaoImpl implements NodeDao {
     }
 
     @Override
-    public boolean deleteNode(SimpleNode simpleNode){
+    public boolean deleteNode(String ip, int port){
         String sql1 = "delete from Node WHERE ip = ? and port = ?";
         PreparedStatement preparedStatement1 = null;
         try {
             preparedStatement1 = connection().prepareStatement(sql1);
-            preparedStatement1.setString(1,simpleNode.getIp());
-            preparedStatement1.setInt(2,simpleNode.getPort());
+            preparedStatement1.setString(1,ip);
+            preparedStatement1.setInt(2,port);
             preparedStatement1.executeUpdate();
         } catch (Exception e){
             throw new RuntimeException(e);

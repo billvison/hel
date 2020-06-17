@@ -41,14 +41,14 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public void nodeErrorConnectionHandle(SimpleNode simpleNode){
-        NodeEntity nodeEntity = nodeDao.queryNode(simpleNode);
+        NodeEntity nodeEntity = nodeDao.queryNode(simpleNode.getIp(),simpleNode.getPort());
         if(nodeEntity == null){
             return;
         }
         int errorConnectionTimes = nodeEntity.getErrorConnectionTimes()+1;
         ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.NODE_ERROR_CONNECTION_TIMES_REMOVE_THRESHOLD.name());
         if(errorConnectionTimes >= Long.parseLong(configurationDto.getConfValue())){
-            nodeDao.deleteNode(simpleNode);
+            nodeDao.deleteNode(simpleNode.getIp(),simpleNode.getPort());
         } else {
             nodeEntity.setErrorConnectionTimes(errorConnectionTimes);
             nodeEntity.setIsNodeAvailable(false);
@@ -58,7 +58,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public void addOrUpdateNodeForkPropertity(SimpleNode simpleNode){
-        NodeEntity nodeEntity = nodeDao.queryNode(simpleNode);
+        NodeEntity nodeEntity = nodeDao.queryNode(simpleNode.getIp(),simpleNode.getPort());
         if(nodeEntity == null){
             Node node = new Node();
             node.setIp(simpleNode.getIp());
@@ -75,7 +75,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public void deleteNode(SimpleNode simpleNode){
-        nodeDao.deleteNode(simpleNode);
+        nodeDao.deleteNode(simpleNode.getIp(),simpleNode.getPort());
     }
 
     @Override
@@ -101,7 +101,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public Node queryNode(SimpleNode simpleNode){
-        NodeEntity nodeEntity = nodeDao.queryNode(simpleNode);
+        NodeEntity nodeEntity = nodeDao.queryNode(simpleNode.getIp(),simpleNode.getPort());
         if(nodeEntity == null){
             return null;
         }
