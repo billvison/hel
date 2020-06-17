@@ -8,13 +8,13 @@ import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
+import com.xingkaichun.helloworldblockchain.netcore.dto.account.AccountDTO;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.NormalTransactionDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.SubmitNormalTransactionResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
-import com.xingkaichun.helloworldblockchain.netcore.dto.wallet.WalletDTO;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
@@ -58,12 +58,12 @@ public class BlockChainBrowserController {
      * 生成钱包(公钥、私钥、地址)
      */
     @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.GENERATE_WALLETDTO,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<GenerateWalletResponse> generateWallet(@RequestBody GenerateWalletRequest request){
+    @RequestMapping(value = BlockChainApiRoute.GENERATE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<GenerateAccountResponse> generateWallet(@RequestBody GenerateAccountRequest request){
         try {
-            WalletDTO walletDTO = blockChainCoreService.generateWalletDTO();
-            GenerateWalletResponse response = new GenerateWalletResponse();
-            response.setWalletDTO(walletDTO);
+            AccountDTO accountDTO = blockChainCoreService.generateWalletDTO();
+            GenerateAccountResponse response = new GenerateAccountResponse();
+            response.setAccountDTO(accountDTO);
             return ServiceResult.createSuccessServiceResult("生成钱包成功",response);
         } catch (Exception e){
             String message = "生成钱包失败";

@@ -25,11 +25,7 @@ public class WalletTool {
     public static StringAccount generateWallet(){
         try {
             StringAccount stringAccount = AccountUtil.randomStringAccount();
-            StringPublicKey stringPublicKey = stringAccount.getStringPublicKey();
-            StringPrivateKey stringPrivateKey = stringAccount.getStringPrivateKey();
-            StringAddress stringAddress = stringAccount.getStringAddress();
-            StringAccount wallet = new StringAccount(stringPrivateKey,stringPublicKey,stringAddress);
-            return wallet;
+            return stringAccount;
         }catch(Exception e) {
             throw new RuntimeException(e);
         }

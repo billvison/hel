@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.NormalTransactionDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.SubmitNormalTransactionResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
-import com.xingkaichun.helloworldblockchain.netcore.dto.wallet.WalletDTO;
+import com.xingkaichun.helloworldblockchain.netcore.dto.account.AccountDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 
@@ -23,7 +23,7 @@ public interface BlockChainCoreService {
     /**
      * 生成钱包
      */
-    WalletDTO generateWalletDTO();
+    AccountDTO generateWalletDTO();
     /**
      * 根据交易哈希获取交易
      */

@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
-import com.xingkaichun.helloworldblockchain.netcore.dto.wallet.WalletDTO;
+import com.xingkaichun.helloworldblockchain.netcore.dto.account.AccountDTO;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,11 +30,11 @@ public class InitMinerTool {
         if(Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             //创建钱包
             StringAccount stringAccount = WalletTool.generateWallet();
-            WalletDTO walletDTO =  WalletDtoTool.classCast(stringAccount);
+            AccountDTO accountDTO =  WalletDtoTool.classCast(stringAccount);
 
             //将钱包的地址当做矿工的地址写入数据库
             minerAddressConfigurationDto.setConfKey(ConfigurationEnum.MINER_ADDRESS.name());
-            minerAddressConfigurationDto.setConfValue(walletDTO.getAddress());
+            minerAddressConfigurationDto.setConfValue(accountDTO.getAddress());
             configurationService.setConfiguration(minerAddressConfigurationDto);
 
             //将钱包写入到外部文件
@@ -44,7 +44,7 @@ public class InitMinerTool {
                                 "钱包私钥是[%s]\n" +
                                 "钱包地址是[%s]\n" +
                                 "为保安全，请另在其它地方妥善保存您的矿工钱包私钥、公钥、地址，并删除此文件。"
-                        ,walletDTO.getPrivateKey(),walletDTO.getAddress());
+                        , accountDTO.getPrivateKey(), accountDTO.getAddress());
                 logger.info(minerWalletInfo);
                 fileWriter = new FileWriter(new File(defaultDataRootPath,"InitMiner.txt"));
                 fileWriter.write(minerWalletInfo);

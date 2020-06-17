@@ -1,11 +1,11 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.wallet;
+package com.xingkaichun.helloworldblockchain.netcore.dto.account;
 
 /**
  * 钱包
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class WalletDTO {
+public class AccountDTO {
 
     private String privateKey;
 
@@ -13,7 +13,7 @@ public class WalletDTO {
 
     private String address;
 
-    public WalletDTO(String privateKey, String publicKey, String address) {
+    public AccountDTO(String privateKey, String publicKey, String address) {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.address = address;

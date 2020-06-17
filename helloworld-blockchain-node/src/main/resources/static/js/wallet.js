@@ -3,13 +3,13 @@ function generateWallet(){
 	var wallet = {};
 	$.ajax({
 	    type: "post",
-	    url: "/Api/BlockChain/GenerateWalletDTO",
+	    url: "/Api/BlockChain/GenerateAccountDTO",
 	    contentType: "application/json",
 	    data: `{}`,
 	    dataType: "json",
 	    async: false,
 	    success: function (data) {
-	        wallet = data.result.walletDTO;
+	        wallet = data.result.accountDTO;
 			// console.log(wallet);
 	    },
 	    error: function (e) {
