@@ -76,4 +76,9 @@ public interface BlockChainCoreService {
     TransactionDTO queryMiningTransactionDtoByTransactionHash(String transactionHash) throws Exception;
 
     void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) throws Exception;
+
+    /**
+     * 保存交易到矿工交易数据库
+     */
+    void saveTransactionToMinerTransactionDatabase(TransactionDTO transactionDTO) throws Exception ;
 }

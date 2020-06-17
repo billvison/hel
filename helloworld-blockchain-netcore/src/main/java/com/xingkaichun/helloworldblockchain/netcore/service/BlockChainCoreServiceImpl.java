@@ -46,13 +46,11 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     private BlockChainCore blockChainCore;
     private NodeService nodeService;
     private BlockchainNodeClientService blockchainNodeClientService;
-    private BlockchainNodeServerService blockchainNodeServerService;
 
-    public BlockChainCoreServiceImpl(BlockChainCore blockChainCore, NodeService nodeService, BlockchainNodeClientService blockchainNodeClientService, BlockchainNodeServerService blockchainNodeServerService) {
+    public BlockChainCoreServiceImpl(BlockChainCore blockChainCore, NodeService nodeService, BlockchainNodeClientService blockchainNodeClientService) {
         this.blockChainCore = blockChainCore;
         this.nodeService = nodeService;
         this.blockchainNodeClientService = blockchainNodeClientService;
-        this.blockchainNodeServerService = blockchainNodeServerService;
     }
 
     @Override
@@ -103,7 +101,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public SubmitNormalTransactionResponse sumiteTransaction(NormalTransactionDto normalTransactionDto) throws Exception {
         TransactionDTO transactionDTO = classCast(normalTransactionDto);
-        blockChainCore.getMiner().getMinerTransactionDtoDataBase().insertTransactionDTO(transactionDTO);
+        saveTransactionToMinerTransactionDatabase(transactionDTO);
         List<Node> nodes = nodeService.queryAllNoForkAliveNodeList();
 
         List<SubmitNormalTransactionResponse.Node> successSubmitNode = new ArrayList<>();
@@ -267,5 +265,10 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) throws Exception {
         blockChainCore.getBlockChainDataBase().removeBlocksUtilBlockHeightLessThan(blockHeight);
+    }
+
+    @Override
+    public void saveTransactionToMinerTransactionDatabase(TransactionDTO transactionDTO) throws Exception {
+        blockChainCore.getMiner().getMinerTransactionDtoDataBase().insertTransactionDTO(transactionDTO);
     }
 }

@@ -8,7 +8,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.Node;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.request.*;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.*;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
-import com.xingkaichun.helloworldblockchain.netcore.service.BlockchainNodeServerService;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
@@ -31,13 +30,11 @@ public class NodeServerHandlerResolver {
 
     private BlockChainCoreService blockChainCoreService;
     private NodeService nodeService;
-    private BlockchainNodeServerService blockchainNodeServerService;
     private ConfigurationService configurationService;
 
-    public NodeServerHandlerResolver(BlockChainCoreService blockChainCoreService, NodeService nodeService, BlockchainNodeServerService blockchainNodeServerService, ConfigurationService configurationService) {
+    public NodeServerHandlerResolver(BlockChainCoreService blockChainCoreService, NodeService nodeService, ConfigurationService configurationService) {
         this.blockChainCoreService = blockChainCoreService;
         this.nodeService = nodeService;
-        this.blockchainNodeServerService = blockchainNodeServerService;
         this.configurationService = configurationService;
     }
 
@@ -154,7 +151,7 @@ public class NodeServerHandlerResolver {
      */
     public ServiceResult<ReceiveTransactionResponse> receiveTransaction(ReceiveTransactionRequest request){
         try {
-            blockchainNodeServerService.receiveTransaction(request.getTransactionDTO());
+            blockChainCoreService.saveTransactionToMinerTransactionDatabase(request.getTransactionDTO());
 
             ReceiveTransactionResponse response = new ReceiveTransactionResponse();
             return ServiceResult.createSuccessServiceResult("commit transaction success",response);

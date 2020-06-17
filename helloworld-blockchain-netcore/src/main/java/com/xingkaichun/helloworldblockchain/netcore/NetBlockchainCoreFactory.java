@@ -53,8 +53,7 @@ public class NetBlockchainCoreFactory {
 
         nodeService = new NodeServiceImpl(nodeDao,configurationService);
         BlockchainNodeClientService blockchainNodeClientService = new BlockchainNodeClientServiceImpl(serverPort);
-        BlockchainNodeServerService blockchainNodeServerService = new BlockchainNodeServerServiceImpl(blockChainCore);
-        blockChainCoreService = new BlockChainCoreServiceImpl(blockChainCore,nodeService,blockchainNodeClientService,blockchainNodeServerService);
+        blockChainCoreService = new BlockChainCoreServiceImpl(blockChainCore,nodeService,blockchainNodeClientService);
 
         blockChainBranchService = new BlockChainBranchServiceImpl(blockChainBranchDao,blockChainCoreService);
         SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService = new SynchronizeRemoteNodeBlockServiceImpl(nodeDao,blockChainCore,nodeService,blockChainBranchService,blockchainNodeClientService,configurationService);
@@ -62,7 +61,7 @@ public class NetBlockchainCoreFactory {
         AutomaticDaemonService automaticDaemonService = new AutomaticDaemonService(blockChainCoreService,nodeService,synchronizeRemoteNodeBlockService,blockchainNodeClientService,blockChainCore,configurationService);
         BlockchainBranchDaemonService blockchainBranchDaemonService = new BlockchainBranchDaemonService(blockChainBranchService);
 
-        NodeServerHandlerResolver nodeServerHandlerResolver = new NodeServerHandlerResolver(blockChainCoreService,nodeService,blockchainNodeServerService,configurationService);
+        NodeServerHandlerResolver nodeServerHandlerResolver = new NodeServerHandlerResolver(blockChainCoreService,nodeService,configurationService);
         HttpServer httpServer = new HttpServer(serverPort,nodeServerHandlerResolver);
         NetBlockchainCore netBlockchainCore = new NetBlockchainCore(blockChainCore, automaticDaemonService, blockchainBranchDaemonService, httpServer, configurationService);
         return netBlockchainCore;
