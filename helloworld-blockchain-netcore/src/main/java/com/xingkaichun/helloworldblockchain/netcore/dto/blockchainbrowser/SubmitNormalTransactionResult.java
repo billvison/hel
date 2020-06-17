@@ -95,5 +95,5 @@ public class SubmitNormalTransactionResult {
         this.transactionHash = transactionHash;
     }
 
-//endregion
+    //endregion
 }
