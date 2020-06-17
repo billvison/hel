@@ -52,7 +52,7 @@ public class NetBlockchainCoreFactory {
         BlockChainBranchDao blockChainBranchDao = new BlockChainBranchDaoImpl(dataRootPath);
 
         nodeService = new NodeServiceImpl(nodeDao,configurationService);
-        BlockchainNodeClientService blockchainNodeClientService = new BlockchainNodeClientServiceImpl(serverPort,blockChainCore);
+        BlockchainNodeClientService blockchainNodeClientService = new BlockchainNodeClientServiceImpl(serverPort);
         BlockchainNodeServerService blockchainNodeServerService = new BlockchainNodeServerServiceImpl(blockChainCore);
         blockChainCoreService = new BlockChainCoreServiceImpl(blockChainCore,nodeService,blockchainNodeClientService,blockchainNodeServerService);
 

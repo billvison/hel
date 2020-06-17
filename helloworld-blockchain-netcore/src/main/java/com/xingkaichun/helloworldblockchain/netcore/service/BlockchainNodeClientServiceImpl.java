@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.netcore.service;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.EmptyResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.Node;
@@ -10,8 +9,8 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.NodeServerApi
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.SimpleNode;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.request.*;
 import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.*;
-import com.xingkaichun.helloworldblockchain.netcore.util.NetUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.util.NetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,13 +26,11 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
 
     private static final Logger logger = LoggerFactory.getLogger(BlockchainNodeClientServiceImpl.class);
 
-    private BlockChainCore blockChainCore;
     private Gson gson;
     private int serverPort;
 
-    public BlockchainNodeClientServiceImpl(int serverPort,BlockChainCore blockChainCore) {
+    public BlockchainNodeClientServiceImpl(int serverPort) {
         this.serverPort = serverPort;
-        this.blockChainCore = blockChainCore;
         this.gson = new Gson();
     }
 
