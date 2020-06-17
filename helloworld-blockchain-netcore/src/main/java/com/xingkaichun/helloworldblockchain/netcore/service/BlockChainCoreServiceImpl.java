@@ -4,7 +4,6 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.VirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
@@ -52,8 +51,8 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
     @Override
     public WalletDTO generateWalletDTO() {
-        Wallet wallet = WalletTool.generateWallet();
-        return WalletDtoTool.classCast(wallet);
+        StringAccount stringAccount = WalletTool.generateWallet();
+        return WalletDtoTool.classCast(stringAccount);
     }
 
     @Override

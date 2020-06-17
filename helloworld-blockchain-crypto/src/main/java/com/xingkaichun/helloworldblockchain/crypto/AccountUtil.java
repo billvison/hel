@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -56,13 +56,10 @@ public class AccountUtil {
             BigInteger priv = privParams.getD();
             // The public key is an encoded point on the elliptic curve. It has no meaning independent of the curve.
             byte[] pub = pubParams.getQ().getEncoded(compressed);
-            StringAccount stringAccount = new StringAccount();
             StringPrivateKey stringPrivateKey = stringPrivateKeyFrom(priv);
             StringPublicKey stringPublicKey = stringPublicKeyFrom(pub);
             StringAddress stringAddress = stringAddressFrom(stringPublicKey);
-            stringAccount.setStringPrivateKey(stringPrivateKey);
-            stringAccount.setStringPublicKey(stringPublicKey);
-            stringAccount.setStringAddress(stringAddress);
+            StringAccount stringAccount = new StringAccount(stringPrivateKey,stringPublicKey,stringAddress);
             return stringAccount;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -76,13 +73,10 @@ public class AccountUtil {
         try {
             BigInteger priv = privateKeyFrom(stringPrivateKey);
             byte[] ecPublicKey = publicFromPrivate(priv);
-            StringAccount stringAccount = new StringAccount();
 
             StringPublicKey stringPublicKey = stringPublicKeyFrom(ecPublicKey);
             StringAddress stringAddress = stringAddressFrom(stringPublicKey);
-            stringAccount.setStringPrivateKey(stringPrivateKey);
-            stringAccount.setStringPublicKey(stringPublicKey);
-            stringAccount.setStringAddress(stringAddress);
+            StringAccount stringAccount = new StringAccount(stringPrivateKey,stringPublicKey,stringAddress);
             return stringAccount;
         } catch (Exception e) {
             throw new RuntimeException(e);

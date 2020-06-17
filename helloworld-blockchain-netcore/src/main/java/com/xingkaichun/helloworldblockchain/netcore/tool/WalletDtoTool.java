@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.tool;
 
-import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
@@ -16,18 +16,18 @@ public class WalletDtoTool {
     /**
      * 类型转换
      */
-    public static WalletDTO classCast(Wallet wallet){
-        WalletDTO walletDTO = new WalletDTO(wallet.getStringPrivateKey().getValue(),wallet.getStringPublicKey().getValue(),wallet.getStringAddress().getValue());
+    public static WalletDTO classCast(StringAccount stringAccount){
+        WalletDTO walletDTO = new WalletDTO(stringAccount.getStringPrivateKey().getValue(),stringAccount.getStringPublicKey().getValue(),stringAccount.getStringAddress().getValue());
         return walletDTO;
     }
     
     /**
      * 类型转换
      */
-    public static Wallet classCast(WalletDTO walletDTO){
-        Wallet wallet = new Wallet(new StringPrivateKey(walletDTO.getPrivateKey()),
-                new StringPublicKey(walletDTO.getPublicKey()),
-                new StringAddress(walletDTO.getAddress()));
-        return wallet;
+    public static StringAccount classCast(WalletDTO walletDTO){
+        StringAccount stringAccount = new StringAccount(new StringPrivateKey(walletDTO.getPrivateKey())
+                ,new StringPublicKey(walletDTO.getPublicKey())
+                ,new StringAddress(walletDTO.getAddress()));
+        return stringAccount;
     }
 }

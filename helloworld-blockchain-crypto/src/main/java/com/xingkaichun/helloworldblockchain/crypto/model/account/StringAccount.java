@@ -18,7 +18,11 @@ public class StringAccount implements Serializable {
     private StringPublicKey stringPublicKey;
     private StringAddress stringAddress;
 
-
+    public StringAccount(StringPrivateKey stringPrivateKey, StringPublicKey stringPublicKey, StringAddress stringAddress) {
+        this.stringPrivateKey = stringPrivateKey;
+        this.stringPublicKey = stringPublicKey;
+        this.stringAddress = stringAddress;
+    }
 
 
     //region get set

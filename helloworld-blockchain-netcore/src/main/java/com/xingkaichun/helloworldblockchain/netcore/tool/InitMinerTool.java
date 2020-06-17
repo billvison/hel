@@ -1,8 +1,8 @@
 package com.xingkaichun.helloworldblockchain.netcore.tool;
 
 import com.google.common.base.Strings;
-import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.wallet.WalletDTO;
@@ -29,8 +29,8 @@ public class InitMinerTool {
         ConfigurationDto minerAddressConfigurationDto =  configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
         if(Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             //创建钱包
-            Wallet wallet = WalletTool.generateWallet();
-            WalletDTO walletDTO =  WalletDtoTool.classCast(wallet);
+            StringAccount stringAccount = WalletTool.generateWallet();
+            WalletDTO walletDTO =  WalletDtoTool.classCast(stringAccount);
 
             //将钱包的地址当做矿工的地址写入数据库
             minerAddressConfigurationDto.setConfKey(ConfigurationEnum.MINER_ADDRESS.name());
@@ -55,7 +55,7 @@ public class InitMinerTool {
                     fileWriter.close();
                 }
             }
-            return wallet.getStringAddress().getValue();
+            return stringAccount.getStringAddress().getValue();
         }
         return null;
     }

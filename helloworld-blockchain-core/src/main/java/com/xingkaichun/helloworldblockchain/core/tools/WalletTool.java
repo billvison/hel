@@ -5,7 +5,6 @@ import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
-import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
 
 /**
  * 钱包工具类
@@ -14,22 +13,22 @@ import com.xingkaichun.helloworldblockchain.core.model.key.Wallet;
  */
 public class WalletTool {
 
-    public static Wallet loadWallet(StringPrivateKey stringPrivateKey, StringPublicKey stringPublicKey, StringAddress stringAddress){
+    public static StringAccount loadWallet(StringPrivateKey stringPrivateKey, StringPublicKey stringPublicKey, StringAddress stringAddress){
         try {
-            Wallet wallet = new Wallet(stringPrivateKey,stringPublicKey,stringAddress);
+            StringAccount wallet = new StringAccount(stringPrivateKey,stringPublicKey,stringAddress);
             return wallet;
         }catch(Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Wallet generateWallet(){
+    public static StringAccount generateWallet(){
         try {
             StringAccount stringAccount = AccountUtil.randomStringAccount();
             StringPublicKey stringPublicKey = stringAccount.getStringPublicKey();
             StringPrivateKey stringPrivateKey = stringAccount.getStringPrivateKey();
             StringAddress stringAddress = stringAccount.getStringAddress();
-            Wallet wallet = new Wallet(stringPrivateKey,stringPublicKey,stringAddress);
+            StringAccount wallet = new StringAccount(stringPrivateKey,stringPublicKey,stringAddress);
             return wallet;
         }catch(Exception e) {
             throw new RuntimeException(e);
