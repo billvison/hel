@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.request;
+package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request;
 
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
 
@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageConditio
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class QueryTxosByAddressRequest {
+public class QueryUtxosByAddressRequest {
 
     private String address;
 
@@ -32,6 +32,7 @@ public class QueryTxosByAddressRequest {
     public void setPageCondition(PageCondition pageCondition) {
         this.pageCondition = pageCondition;
     }
+
 
     //endregion
 }

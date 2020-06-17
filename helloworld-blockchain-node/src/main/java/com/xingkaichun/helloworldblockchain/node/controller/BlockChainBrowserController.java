@@ -10,9 +10,6 @@ import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.NormalTransactionDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.request.QueryMiningTransactionListRequest;
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.request.QueryTxosByAddressRequest;
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.request.QueryUtxosByAddressRequest;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.response.SubmitNormalTransactionResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
@@ -21,10 +18,10 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.wallet.WalletDTO;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.BlockChainApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.*;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,7 +187,7 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.QUERY_UTXOS_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryUtxosByAddressResponse> queryUtxosByAddress(@RequestBody QueryUtxosByAddressRequest request){
         try {
-            List<TransactionOutput> utxoList = blockChainCoreService.queryUtxoListByAddress(request);
+            List<TransactionOutput> utxoList = blockChainCoreService.queryUtxoListByAddress(request.getAddress(),request.getPageCondition());
 
             QueryUtxosByAddressResponse response = new QueryUtxosByAddressResponse();
             response.setUtxos(utxoList);
@@ -209,7 +206,7 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.QUERY_TXOS_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryTxosByAddressResponse> queryTxosByAddress(@RequestBody QueryTxosByAddressRequest request){
         try {
-            List<TransactionOutput> txoList = blockChainCoreService.queryTxoListByAddress(request);
+            List<TransactionOutput> txoList = blockChainCoreService.queryTxoListByAddress(request.getAddress(),request.getPageCondition());
             if(txoList == null){
                 return ServiceResult.createFailServiceResult(String.format("地址[%s]没有对应的交易输出列表。",request.getAddress()));
             }
@@ -252,7 +249,7 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.QUERY_MINING_TRANSACTION_LIST,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryMiningTransactionListResponse> queryMiningTransactionList(@RequestBody QueryMiningTransactionListRequest request){
         try {
-            List<TransactionDTO> transactionDtoList = blockChainCoreService.queryMiningTransactionList(request);
+            List<TransactionDTO> transactionDtoList = blockChainCoreService.queryMiningTransactionList(request.getPageCondition());
             QueryMiningTransactionListResponse response = new QueryMiningTransactionListResponse();
             response.setTransactionDtoList(transactionDtoList);
             return ServiceResult.createSuccessServiceResult("查询挖矿中的交易成功",response);
