@@ -17,7 +17,7 @@ import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.NormalTransactionDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.response.SubmitNormalTransactionResponse;
+import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.SubmitNormalTransactionResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.EmptyResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
@@ -94,25 +94,25 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public SubmitNormalTransactionResponse submitTransaction(NormalTransactionDto normalTransactionDto) throws Exception {
+    public SubmitNormalTransactionResult submitTransaction(NormalTransactionDto normalTransactionDto) throws Exception {
         TransactionDTO transactionDTO = classCast(normalTransactionDto);
         saveTransactionToMinerTransactionDatabase(transactionDTO);
         List<Node> nodes = nodeService.queryAllNoForkAliveNodeList();
 
-        List<SubmitNormalTransactionResponse.Node> successSubmitNode = new ArrayList<>();
-        List<SubmitNormalTransactionResponse.Node> failSubmitNode = new ArrayList<>();
+        List<SubmitNormalTransactionResult.Node> successSubmitNode = new ArrayList<>();
+        List<SubmitNormalTransactionResult.Node> failSubmitNode = new ArrayList<>();
         if(nodes != null){
             for(Node node:nodes){
                 ServiceResult<EmptyResponse> submitSuccess = blockchainNodeClientService.sumiteTransaction(node,transactionDTO);
                 if(ServiceResult.isSuccess(submitSuccess)){
-                    successSubmitNode.add(new SubmitNormalTransactionResponse.Node(node.getIp(),node.getPort()));
+                    successSubmitNode.add(new SubmitNormalTransactionResult.Node(node.getIp(),node.getPort()));
                 } else {
-                    failSubmitNode.add(new SubmitNormalTransactionResponse.Node(node.getIp(),node.getPort()));
+                    failSubmitNode.add(new SubmitNormalTransactionResult.Node(node.getIp(),node.getPort()));
                 }
             }
         }
 
-        SubmitNormalTransactionResponse response = new SubmitNormalTransactionResponse();
+        SubmitNormalTransactionResult response = new SubmitNormalTransactionResult();
         response.setTransactionDTO(transactionDTO);
         response.setSuccessSubmitNode(successSubmitNode);
         response.setFailSubmitNode(failSubmitNode);

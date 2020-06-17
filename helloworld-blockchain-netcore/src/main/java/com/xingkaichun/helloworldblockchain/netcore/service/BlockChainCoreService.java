@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.NormalTransactionDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.response.SubmitNormalTransactionResponse;
+import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.SubmitNormalTransactionResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
 import com.xingkaichun.helloworldblockchain.netcore.dto.wallet.WalletDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
@@ -43,7 +43,7 @@ public interface BlockChainCoreService {
     /**
      * 提交交易到区块链网络
      */
-    SubmitNormalTransactionResponse submitTransaction(NormalTransactionDto transactionDTO) throws Exception;
+    SubmitNormalTransactionResult submitTransaction(NormalTransactionDto transactionDTO) throws Exception;
 
     /**
      * 根据区块高度获取区块DTO
