@@ -1,8 +1,8 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
 import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.request.QueryNodeListRequest;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.Node;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNode;
 
 import java.util.List;
 

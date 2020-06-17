@@ -1,6 +1,6 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response;
+package com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
 
 import java.math.BigInteger;
 import java.util.List;

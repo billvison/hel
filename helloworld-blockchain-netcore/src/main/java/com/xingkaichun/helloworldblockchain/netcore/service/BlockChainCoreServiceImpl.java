@@ -21,7 +21,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.respon
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.EmptyResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.Node;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
 import com.xingkaichun.helloworldblockchain.netcore.dto.wallet.WalletDTO;
 import com.xingkaichun.helloworldblockchain.netcore.tool.WalletDtoTool;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;

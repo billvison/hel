@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.request;
+package com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request;
 
 import java.math.BigInteger;
 
@@ -6,7 +6,7 @@ import java.math.BigInteger;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class QueryBlockDtoByBlockHeightRequest {
+public class QueryBlockHashByBlockHeightRequest {
 
     private BigInteger blockHeight;
 
@@ -24,4 +24,5 @@ public class QueryBlockDtoByBlockHeightRequest {
     }
 
     //endregion
+
 }

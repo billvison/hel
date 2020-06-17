@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.model;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNode;
 
 import java.math.BigInteger;
 

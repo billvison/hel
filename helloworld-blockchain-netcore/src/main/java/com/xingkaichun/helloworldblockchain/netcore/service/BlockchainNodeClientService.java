@@ -3,11 +3,11 @@ package com.xingkaichun.helloworldblockchain.netcore.service;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.EmptyResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.Node;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.SimpleNode;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.PingResponse;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.QueryBlockDtoByBlockHeightResponse;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response.QueryBlockHashByBlockHeightResponse;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.PingResponse;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.QueryBlockDtoByBlockHeightResponse;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.QueryBlockHashByBlockHeightResponse;
 
 import java.math.BigInteger;
 

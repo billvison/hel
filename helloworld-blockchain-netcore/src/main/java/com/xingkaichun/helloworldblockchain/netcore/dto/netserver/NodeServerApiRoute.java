@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver;
+package com.xingkaichun.helloworldblockchain.netcore.dto.netserver;
 
 /**
  *

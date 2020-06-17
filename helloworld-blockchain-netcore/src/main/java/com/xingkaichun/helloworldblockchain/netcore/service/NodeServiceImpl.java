@@ -4,8 +4,8 @@ import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.adminconsole.request.QueryNodeListRequest;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.Node;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNode;
 import com.xingkaichun.helloworldblockchain.netcore.model.NodeEntity;
 
 import java.math.BigInteger;

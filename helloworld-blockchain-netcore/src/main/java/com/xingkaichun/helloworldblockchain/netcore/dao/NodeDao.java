@@ -1,9 +1,8 @@
 package com.xingkaichun.helloworldblockchain.netcore.dao;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNode;
 import com.xingkaichun.helloworldblockchain.netcore.model.NodeEntity;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**

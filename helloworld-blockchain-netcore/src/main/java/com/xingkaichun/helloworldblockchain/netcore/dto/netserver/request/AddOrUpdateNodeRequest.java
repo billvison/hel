@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.request;
+package com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request;
 
 import java.math.BigInteger;
 

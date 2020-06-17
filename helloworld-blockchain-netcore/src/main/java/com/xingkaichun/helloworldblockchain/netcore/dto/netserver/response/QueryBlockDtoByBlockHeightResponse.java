@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.response;
+package com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response;
 
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 

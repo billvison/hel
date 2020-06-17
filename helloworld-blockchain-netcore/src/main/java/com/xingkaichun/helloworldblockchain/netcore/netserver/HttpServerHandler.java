@@ -1,8 +1,8 @@
 package com.xingkaichun.helloworldblockchain.netcore.netserver;
 
 import com.google.gson.Gson;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.NodeServerApiRoute;
-import com.xingkaichun.helloworldblockchain.netcore.dto.nodeserver.request.*;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeServerApiRoute;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
