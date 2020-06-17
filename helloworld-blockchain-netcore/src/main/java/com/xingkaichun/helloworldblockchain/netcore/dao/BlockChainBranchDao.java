@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.netcore.dao;
 
 import com.xingkaichun.helloworldblockchain.netcore.model.BlockchainBranchBlockEntity;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
