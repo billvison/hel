@@ -6,7 +6,7 @@ package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser;
  */
 public class BlockChainApiRoute {
 
-    public static final String GENERATE_ACCOUNT = "/Api/BlockChain/GenerateAccountDTO";
+    public static final String GENERATE_ACCOUNT = "/Api/BlockChain/GenerateAccount";
     public static final String SUBMIT_TRANSACTION = "/Api/BlockChain/SubmitTransaction";
     public static final String QUERY_TRANSACTION_BY_TRANSACTION_HASH = "/Api/BlockChain/QueryTransactionByTransactionHash";
     public static final String QUERY_TRANSACTION_BY_TRANSACTION_HEIGHT = "/Api/BlockChain/QueryTransactionByTransactionHeight";

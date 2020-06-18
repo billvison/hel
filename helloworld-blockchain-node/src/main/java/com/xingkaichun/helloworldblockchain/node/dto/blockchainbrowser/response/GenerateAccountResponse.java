@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.account.AccountDTO;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 
 /**
  *
@@ -8,20 +8,21 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.account.AccountDTO;
  */
 public class GenerateAccountResponse {
 
-    private AccountDTO accountDTO;
+    private StringAccount stringAccount;
 
 
 
 
     //region get set
 
-    public AccountDTO getAccountDTO() {
-        return accountDTO;
+    public StringAccount getStringAccount() {
+        return stringAccount;
     }
 
-    public void setAccountDTO(AccountDTO accountDTO) {
-        this.accountDTO = accountDTO;
+    public void setStringAccount(StringAccount stringAccount) {
+        this.stringAccount = stringAccount;
     }
+
 
     //endregion
 }

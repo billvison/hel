@@ -7,14 +7,14 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.netcore.dto.account.AccountDTO;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchBlockDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.transaction.NormalTransactionDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.transaction.SubmitNormalTransactionResultDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.transaction.NormalTransactionDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.transaction.SubmitNormalTransactionResultDto;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
@@ -61,9 +61,9 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.GENERATE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<GenerateAccountResponse> generateWallet(@RequestBody GenerateAccountRequest request){
         try {
-            AccountDTO accountDTO = blockChainCoreService.generateWalletDTO();
+            StringAccount stringAccount = AccountUtil.randomStringAccount();
             GenerateAccountResponse response = new GenerateAccountResponse();
-            response.setAccountDTO(accountDTO);
+            response.setStringAccount(stringAccount);
             return ServiceResult.createSuccessServiceResult("生成钱包成功",response);
         } catch (Exception e){
             String message = "生成钱包失败";

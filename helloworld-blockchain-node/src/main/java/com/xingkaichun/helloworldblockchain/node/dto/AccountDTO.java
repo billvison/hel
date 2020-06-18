@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.account;
+package com.xingkaichun.helloworldblockchain.node.dto;
 
 /**
  * 钱包
