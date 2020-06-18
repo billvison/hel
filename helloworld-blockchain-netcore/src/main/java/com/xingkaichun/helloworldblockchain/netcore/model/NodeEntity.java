@@ -1,15 +1,14 @@
 package com.xingkaichun.helloworldblockchain.netcore.model;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNode;
-
 import java.math.BigInteger;
 
 /**
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class NodeEntity extends SimpleNode{
-
+public class NodeEntity{
+    private String ip;
+    private int port;
     private BigInteger blockChainHeight;
     private Boolean isNodeAvailable;
     private Integer errorConnectionTimes;
@@ -19,6 +18,21 @@ public class NodeEntity extends SimpleNode{
 
 
     //region get set
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 
     public BigInteger getBlockChainHeight() {
         return blockChainHeight;
