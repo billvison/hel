@@ -6,7 +6,7 @@ import java.math.BigInteger;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class Node extends SimpleNode{
+public class NodeDto extends SimpleNodeDto {
 
     private BigInteger blockChainHeight;
     private Boolean isNodeAvailable;

@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser;
+package com.xingkaichun.helloworldblockchain.netcore.dto.transaction;
 
 /**
  *

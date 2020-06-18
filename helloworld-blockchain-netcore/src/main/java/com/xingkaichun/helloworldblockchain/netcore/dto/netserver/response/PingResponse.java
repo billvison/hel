@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -14,7 +14,7 @@ public class PingResponse {
     private String blockChainId;
     private Long blockChainVersion;
     private BigInteger blockChainHeight ;
-    private List<Node> nodeList;
+    private List<NodeDto> nodeList;
 
 
 
@@ -45,11 +45,11 @@ public class PingResponse {
         this.blockChainHeight = blockChainHeight;
     }
 
-    public List<Node> getNodeList() {
+    public List<NodeDto> getNodeList() {
         return nodeList;
     }
 
-    public void setNodeList(List<Node> nodeList) {
+    public void setNodeList(List<NodeDto> nodeList) {
         this.nodeList = nodeList;
     }
 

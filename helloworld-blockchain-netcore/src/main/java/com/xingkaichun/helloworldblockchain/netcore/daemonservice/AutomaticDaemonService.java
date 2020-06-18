@@ -7,7 +7,7 @@ import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.netcore.service.*;
 import org.slf4j.Logger;
@@ -123,11 +123,11 @@ public class AutomaticDaemonService {
 
     private void addSeedNodeToLocalBlockchain() {
         for(String strNode:GlobalSetting.SEED_NODE_LIST){
-            Node node = new Node();
+            NodeDto node = new NodeDto();
             String[] nodeDetail = strNode.split(":");
             node.setIp(nodeDetail[0]);
             node.setPort(Integer.parseInt(nodeDetail[1]));
-            Node n = nodeService.queryNode(node);
+            NodeDto n = nodeService.queryNode(node);
             if(n == null){
                 nodeService.addNode(node);
             }
@@ -143,8 +143,8 @@ public class AutomaticDaemonService {
         if(!Boolean.valueOf(configurationDto.getConfValue())){
             return;
         }
-        List<Node> nodes = nodeService.queryAllNoForkNodeList();
-        for(Node node:nodes){
+        List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
+        for(NodeDto node:nodes){
             configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
             if(!Boolean.valueOf(configurationDto.getConfValue())){
                 return;
@@ -178,14 +178,14 @@ public class AutomaticDaemonService {
      * 发现自己的区块链高度比全网节点都要高，则广播自己的区块高度
      */
     private void broadcastLocalBlcokChainHeight() throws Exception {
-        List<Node> nodes = nodeService.queryAllNoForkAliveNodeList();
+        List<NodeDto> nodes = nodeService.queryAllNoForkAliveNodeList();
         if(nodes == null || nodes.size()==0){
             return;
         }
 
         BigInteger localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
         boolean isLocalBlockChainHighest = true;
-        for(Node node:nodes){
+        for(NodeDto node:nodes){
             if(BigIntegerUtil.isLessThan(localBlockChainHeight,node.getBlockChainHeight())){
                 isLocalBlockChainHighest = false;
                 break;
@@ -198,7 +198,7 @@ public class AutomaticDaemonService {
             //广播节点数量
             int broadcastNodeCount = 0;
             //排序节点
-            Collections.sort(nodes,(Node node1,Node node2)->{
+            Collections.sort(nodes,(NodeDto node1, NodeDto node2)->{
                 if(BigIntegerUtil.isGreatThan(node1.getBlockChainHeight(),node2.getBlockChainHeight())){
                     return -1;
                 } else if(node1.getBlockChainHeight() == node2.getBlockChainHeight()){
@@ -207,7 +207,7 @@ public class AutomaticDaemonService {
                     return 1;
                 }
             });
-            for(Node node:nodes){
+            for(NodeDto node:nodes){
                 blockchainNodeClientService.unicastLocalBlockChainHeight(node,localBlockChainHeight);
                 ++broadcastNodeCount;
                 if(broadcastNodeCount>20){
@@ -221,14 +221,14 @@ public class AutomaticDaemonService {
      * 搜索新的区块，并同步这些区块到本地区块链系统
      */
     private void searchNewBlocks() throws Exception {
-        List<Node> nodes = nodeService.queryAllNoForkAliveNodeList();
+        List<NodeDto> nodes = nodeService.queryAllNoForkAliveNodeList();
         if(nodes == null || nodes.size()==0){
             return;
         }
 
         BigInteger localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
         //可能存在多个节点的数据都比本地节点的区块多，但它们节点的数据可能是相同的，不应该向每个节点都去请求数据。
-        for(Node node:nodes){
+        for(NodeDto node:nodes){
             if(BigIntegerUtil.isLessThan(localBlockChainHeight,node.getBlockChainHeight())){
                 synchronizeRemoteNodeBlockService.synchronizeRemoteNodeBlock(node);
                 //同步之后，本地区块链高度已经发生改变了
@@ -240,11 +240,11 @@ public class AutomaticDaemonService {
     /**
      * 将远程节点知道的节点，一一进行验证这些节点的合法性，如果正常，则将这些节点加入自己的区块链网络。
      */
-    private void addNewAvailableNodeToDatabase(List<Node> nodeList){
+    private void addNewAvailableNodeToDatabase(List<NodeDto> nodeList){
         if(nodeList == null || nodeList.size()==0){
             return;
         }
-        for(Node node : nodeList){
+        for(NodeDto node : nodeList){
             addNewAvailableNodeToDatabase(node);
         }
     }
@@ -252,8 +252,8 @@ public class AutomaticDaemonService {
     /**
      * 若一个新的(之前没有加入过本地数据库)、可用的(网络连接是好的)的节点加入本地数据库
      */
-    private void addNewAvailableNodeToDatabase(Node node) {
-        Node localNode = nodeService.queryNode(node);
+    private void addNewAvailableNodeToDatabase(NodeDto node) {
+        NodeDto localNode = nodeService.queryNode(node);
         if(localNode == null){
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
             if(ServiceResult.isSuccess(pingResponseServiceResult)){

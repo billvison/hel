@@ -30,7 +30,7 @@ public class InitMinerTool {
         if(Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             //创建钱包
             StringAccount stringAccount = WalletTool.generateWallet();
-            AccountDTO accountDTO =  WalletDtoTool.classCast(stringAccount);
+            AccountDTO accountDTO =  AccountTool.classCast(stringAccount);
 
             //将钱包的地址当做矿工的地址写入数据库
             minerAddressConfigurationDto.setConfKey(ConfigurationEnum.MINER_ADDRESS.name());

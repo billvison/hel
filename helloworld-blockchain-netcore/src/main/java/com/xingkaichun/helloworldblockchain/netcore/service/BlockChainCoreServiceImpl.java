@@ -15,14 +15,14 @@ import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.NormalTransactionDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.SubmitNormalTransactionResult;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.transaction.NormalTransactionDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.transaction.SubmitNormalTransactionResultDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.EmptyResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
 import com.xingkaichun.helloworldblockchain.netcore.dto.account.AccountDTO;
-import com.xingkaichun.helloworldblockchain.netcore.tool.WalletDtoTool;
+import com.xingkaichun.helloworldblockchain.netcore.tool.AccountTool;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDTO;
@@ -52,7 +52,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public AccountDTO generateWalletDTO() {
         StringAccount stringAccount = WalletTool.generateWallet();
-        return WalletDtoTool.classCast(stringAccount);
+        return AccountTool.classCast(stringAccount);
     }
 
     @Override
@@ -93,25 +93,25 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public SubmitNormalTransactionResult submitTransaction(NormalTransactionDto normalTransactionDto) throws Exception {
+    public SubmitNormalTransactionResultDto submitTransaction(NormalTransactionDto normalTransactionDto) throws Exception {
         TransactionDTO transactionDTO = classCast(normalTransactionDto);
         saveTransactionToMinerTransactionDatabase(transactionDTO);
-        List<Node> nodes = nodeService.queryAllNoForkAliveNodeList();
+        List<NodeDto> nodes = nodeService.queryAllNoForkAliveNodeList();
 
-        List<SubmitNormalTransactionResult.Node> successSubmitNode = new ArrayList<>();
-        List<SubmitNormalTransactionResult.Node> failSubmitNode = new ArrayList<>();
+        List<SubmitNormalTransactionResultDto.Node> successSubmitNode = new ArrayList<>();
+        List<SubmitNormalTransactionResultDto.Node> failSubmitNode = new ArrayList<>();
         if(nodes != null){
-            for(Node node:nodes){
+            for(NodeDto node:nodes){
                 ServiceResult<EmptyResponse> submitSuccess = blockchainNodeClientService.sumiteTransaction(node,transactionDTO);
                 if(ServiceResult.isSuccess(submitSuccess)){
-                    successSubmitNode.add(new SubmitNormalTransactionResult.Node(node.getIp(),node.getPort()));
+                    successSubmitNode.add(new SubmitNormalTransactionResultDto.Node(node.getIp(),node.getPort()));
                 } else {
-                    failSubmitNode.add(new SubmitNormalTransactionResult.Node(node.getIp(),node.getPort()));
+                    failSubmitNode.add(new SubmitNormalTransactionResultDto.Node(node.getIp(),node.getPort()));
                 }
             }
         }
 
-        SubmitNormalTransactionResult response = new SubmitNormalTransactionResult();
+        SubmitNormalTransactionResultDto response = new SubmitNormalTransactionResultDto();
         response.setTransactionDTO(transactionDTO);
         response.setSuccessSubmitNode(successSubmitNode);
         response.setFailSubmitNode(failSubmitNode);

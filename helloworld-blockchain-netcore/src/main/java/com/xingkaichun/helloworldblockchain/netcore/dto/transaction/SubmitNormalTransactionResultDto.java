@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser;
+package com.xingkaichun.helloworldblockchain.netcore.dto.transaction;
 
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 
@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class SubmitNormalTransactionResult {
+public class SubmitNormalTransactionResultDto {
 
     //交易Hash
     private String transactionHash;

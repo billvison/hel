@@ -7,11 +7,11 @@ import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey
 import com.xingkaichun.helloworldblockchain.netcore.dto.account.AccountDTO;
 
 /**
- * 钱包工具类
+ * 账户工具类
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class WalletDtoTool {
+public class AccountTool {
 
     /**
      * 类型转换

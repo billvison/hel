@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 
 /**
  * 同步节点数据service
@@ -12,5 +12,5 @@ public interface SynchronizeRemoteNodeBlockService {
     /**
      * 同步远程节点的区块到本地区块链系统
      */
-    void synchronizeRemoteNodeBlock(Node node) throws Exception;
+    void synchronizeRemoteNodeBlock(NodeDto node) throws Exception;
 }

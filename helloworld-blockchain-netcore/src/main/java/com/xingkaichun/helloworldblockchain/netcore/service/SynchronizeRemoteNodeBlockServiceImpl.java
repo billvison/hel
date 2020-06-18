@@ -11,7 +11,7 @@ import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.QueryBlockDtoByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.QueryBlockHashByBlockHeightResponse;
@@ -55,7 +55,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
 
 
     @Override
-    public void synchronizeRemoteNodeBlock(Node node) throws Exception {
+    public void synchronizeRemoteNodeBlock(NodeDto node) throws Exception {
         if(!isBlockChainIdRight(node)){
             nodeService.deleteNode(node);
         }
@@ -219,7 +219,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     /**
      * 区块链ID是否正确
      */
-    private boolean isBlockChainIdRight(Node node) {
+    private boolean isBlockChainIdRight(NodeDto node) {
         String currentBlockChainId = GlobalSetting.BLOCK_CHAIN_ID;
         ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
         if(!ServiceResult.isSuccess(pingResponseServiceResult)){
@@ -229,7 +229,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
         return currentBlockChainId.equals(blockChainId);
     }
 
-    private boolean isFork(Node node) {
+    private boolean isFork(NodeDto node) {
         ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
         if(!ServiceResult.isSuccess(pingResponseServiceResult)){
             return false;
@@ -253,16 +253,16 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     /**
      * 这里表明真的分叉区块个数过多了，形成了新的分叉，区块链协议不支持同步了。
      */
-    private void forkNodeHandler(Node node,SynchronizerDataBase synchronizerDataBase) throws Exception {
+    private void forkNodeHandler(NodeDto node, SynchronizerDataBase synchronizerDataBase) throws Exception {
         synchronizerDataBase.clear(buildNodeId(node));
         nodeService.addOrUpdateNodeForkPropertity(node);
     }
 
-    private String buildNodeId(Node node) {
+    private String buildNodeId(NodeDto node) {
         return node.getIp()+":"+node.getPort();
     }
 
-    private BlockDTO getBlockDtoByBlockHeight(Node node, BigInteger blockHeight) {
+    private BlockDTO getBlockDtoByBlockHeight(NodeDto node, BigInteger blockHeight) {
         try {
             BlockDTO localBlockDTO = getLocalBlockDtoByBlockHeight(node,blockHeight);
             if(localBlockDTO != null){
@@ -279,7 +279,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
         }
     }
 
-    private BlockDTO getLocalBlockDtoByBlockHeight(Node node, BigInteger blockHeight) throws Exception {
+    private BlockDTO getLocalBlockDtoByBlockHeight(NodeDto node, BigInteger blockHeight) throws Exception {
         SynchronizerDataBase synchronizerDataBase = blockChainCore.getSynchronizer().getSynchronizerDataBase();
         BlockDTO blockDTO = synchronizerDataBase.getBlockDto(buildNodeId(node),blockHeight);
         return blockDTO;

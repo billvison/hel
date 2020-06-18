@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request.*;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.*;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
@@ -43,13 +43,13 @@ public class NodeServerHandlerResolver {
      */
     public ServiceResult<PingResponse> ping(ChannelHandlerContext ctx, PingRequest request){
         try {
-            List<Node> nodeList = nodeService.queryAllNoForkNodeList();
+            List<NodeDto> nodeList = nodeService.queryAllNoForkNodeList();
             BigInteger blockChainHeight = blockChainCoreService.queryBlockChainHeight();
 
             //将ping的来路作为区块链节点
             ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
             if(Boolean.valueOf(configurationDto.getConfValue())){
-                Node node = new Node();
+                NodeDto node = new NodeDto();
                 InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
                 String ip = insocket.getAddress().getHostAddress();
                 node.setIp(ip);
@@ -79,7 +79,7 @@ public class NodeServerHandlerResolver {
      */
     public ServiceResult<AddOrUpdateNodeResponse> addOrUpdateNode(ChannelHandlerContext ctx,AddOrUpdateNodeRequest request){
         try {
-            Node node = new Node();
+            NodeDto node = new NodeDto();
             InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
             String ip = insocket.getAddress().getHostAddress();
             node.setIp(ip);
@@ -90,7 +90,7 @@ public class NodeServerHandlerResolver {
 
             ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
             if(!Boolean.valueOf(configurationDto.getConfValue())){
-                Node nodeInDb = nodeService.queryNode(node);
+                NodeDto nodeInDb = nodeService.queryNode(node);
                 if(nodeInDb == null){
                     return ServiceResult.createSuccessServiceResult("not allowed update node info",null);
                 }

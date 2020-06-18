@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
@@ -277,7 +277,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.ADD_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<AddNodeResponse> addNode(@RequestBody AddNodeRequest request){
         try {
-            Node node = request.getNode();
+            NodeDto node = request.getNode();
             if(Strings.isNullOrEmpty(node.getIp())){
                 return ServiceResult.createFailServiceResult("节点IP不能为空");
             }
@@ -345,7 +345,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.QUERY_NODE_LIST,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryNodeListResponse> queryNodeList(@RequestBody QueryNodeListRequest request){
         try {
-            List<Node> nodeList = nodeService.queryNodeList(request.getNode());
+            List<NodeDto> nodeList = nodeService.queryNodeList(request.getNode());
             QueryNodeListResponse response = new QueryNodeListResponse();
             response.setNodeList(nodeList);
             return ServiceResult.createSuccessServiceResult("查询节点成功",response);

@@ -10,11 +10,11 @@ import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.netcore.dto.account.AccountDTO;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchBlockDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.NormalTransactionDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbrowser.SubmitNormalTransactionResult;
+import com.xingkaichun.helloworldblockchain.netcore.dto.transaction.NormalTransactionDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.transaction.SubmitNormalTransactionResultDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.Node;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
@@ -77,7 +77,7 @@ public class BlockChainBrowserController {
      */
     @ResponseBody
     @RequestMapping(value = BlockChainApiRoute.SUBMIT_TRANSACTION,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<SubmitNormalTransactionResult> submitTransaction(@RequestBody SubmitNormalTransactionRequest request){
+    public ServiceResult<SubmitNormalTransactionResultDto> submitTransaction(@RequestBody SubmitNormalTransactionRequest request){
         try {
             NormalTransactionDto normalTransactionDto = request.getNormalTransactionDto();
             String privateKey = normalTransactionDto.getPrivateKey();
@@ -104,7 +104,7 @@ public class BlockChainBrowserController {
                     return ServiceResult.createFailServiceResult("交易输出的金额不是一个数值。");
                 }
             }
-            SubmitNormalTransactionResult response = blockChainCoreService.submitTransaction(request.getNormalTransactionDto());
+            SubmitNormalTransactionResultDto response = blockChainCoreService.submitTransaction(request.getNormalTransactionDto());
             return ServiceResult.createSuccessServiceResult("提交交易到区块链网络成功",response);
         } catch (Exception e){
             String message = "提交交易到区块链网络失败";
@@ -227,7 +227,7 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.PING,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<PingResponse> ping(@RequestBody PingRequest request){
         try {
-            List<Node> nodeList = nodeService.queryAllNoForkNodeList();
+            List<NodeDto> nodeList = nodeService.queryAllNoForkNodeList();
             BigInteger blockChainHeight = blockChainCoreService.queryBlockChainHeight();
             PingResponse response = new PingResponse();
             response.setNodeList(nodeList);

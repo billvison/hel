@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNode;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNodeDto;
 
 /**
  *
@@ -8,17 +8,17 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNode;
  */
 public class QueryNodeListRequest {
 
-    private SimpleNode node;
+    private SimpleNodeDto node;
 
 
 
 
     //region get set
-    public SimpleNode getNode() {
+    public SimpleNodeDto getNode() {
         return node;
     }
 
-    public void setNode(SimpleNode node) {
+    public void setNode(SimpleNodeDto node) {
         this.node = node;
     }
     //endregion
