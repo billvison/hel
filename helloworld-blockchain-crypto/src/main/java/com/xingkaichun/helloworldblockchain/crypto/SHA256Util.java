@@ -9,6 +9,10 @@ import java.security.MessageDigest;
  */
 public class SHA256Util {
 
+    static {
+        JavaCryptographyExtensionProviderUtil.addBouncyCastleProvider();
+    }
+
     /**
      * Sha256消息摘要
      */

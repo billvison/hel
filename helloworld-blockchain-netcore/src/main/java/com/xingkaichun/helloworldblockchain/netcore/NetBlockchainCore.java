@@ -7,10 +7,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.Configurat
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.netserver.HttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-import java.security.Provider;
-import java.security.Security;
 
 public class NetBlockchainCore {
 
@@ -19,13 +15,6 @@ public class NetBlockchainCore {
     private BlockchainBranchDaemonService blockchainBranchDaemonService;
     private HttpServer httpServer;
     private ConfigurationService configurationService;
-
-    static {
-        Provider provider = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
-        if(provider == null){
-            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        }
-    }
 
     public NetBlockchainCore(BlockChainCore blockChainCore, AutomaticDaemonService automaticDaemonService, BlockchainBranchDaemonService blockchainBranchDaemonService, HttpServer httpServer, ConfigurationService configurationService) {
         this.blockChainCore = blockChainCore;

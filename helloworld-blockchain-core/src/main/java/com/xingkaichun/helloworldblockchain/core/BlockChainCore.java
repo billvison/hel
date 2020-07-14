@@ -1,10 +1,5 @@
 package com.xingkaichun.helloworldblockchain.core;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-import java.security.Provider;
-import java.security.Security;
-
 /**
  * 区块链核心，代表一个完整的区块链核心系统。
  * 区块链核心系统，由以下几部分组成：
@@ -22,13 +17,6 @@ public abstract class BlockChainCore {
     protected Miner miner ;
     //区块链同步器
     protected Synchronizer synchronizer ;
-
-    static {
-        Provider provider = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
-        if(provider == null){
-            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        }
-    }
 
     public BlockChainCore(BlockChainDataBase blockChainDataBase, Miner miner, Synchronizer synchronizer) {
         this.blockChainDataBase = blockChainDataBase;

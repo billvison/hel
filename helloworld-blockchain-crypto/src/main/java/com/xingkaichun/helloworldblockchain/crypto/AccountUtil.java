@@ -37,6 +37,10 @@ public class AccountUtil {
     private static final boolean compressed = false;
 
     static {
+        JavaCryptographyExtensionProviderUtil.addBouncyCastleProvider();
+    }
+
+    static {
         X9ECParameters params = SECNamedCurves.getByName("secp256k1");
         ecParams = new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH());
         secureRandom = new SecureRandom();

@@ -9,6 +9,10 @@ import java.security.MessageDigest;
  */
 public class RipeMD160Util {
 
+    static {
+        JavaCryptographyExtensionProviderUtil.addBouncyCastleProvider();
+    }
+
     /**
      * RipeMD160消息摘要
      */
