@@ -18,7 +18,7 @@ public class RipeMD160Util {
      */
     public static byte[] applyRipeMD160(byte[] data) {
         try {
-            MessageDigest ripeMD160Digest = MessageDigest.getInstance("RipeMD160");
+            MessageDigest ripeMD160Digest = MessageDigest.getInstance("RipeMD160",JavaCryptographyExtensionProviderUtil.getProviderName());
             return ripeMD160Digest.digest(data);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -13,4 +13,8 @@ public class JavaCryptographyExtensionProviderUtil {
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         }
     }
+
+    public static String getProviderName(){
+        return BouncyCastleProvider.PROVIDER_NAME;
+    }
 }
