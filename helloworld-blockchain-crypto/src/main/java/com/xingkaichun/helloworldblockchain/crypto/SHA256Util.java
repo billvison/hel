@@ -18,7 +18,7 @@ public class SHA256Util {
      */
     public static byte[] applySha256(byte[] input) {
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256",JavaCryptographyExtensionProviderUtil.getProviderName());
+            MessageDigest digest = MessageDigest.getInstance("SHA-256",JavaCryptographyExtensionProviderUtil.getBouncyCastleProviderName());
             byte[] sha256Digest = digest.digest(input);
             return sha256Digest;
         } catch (Exception e) {

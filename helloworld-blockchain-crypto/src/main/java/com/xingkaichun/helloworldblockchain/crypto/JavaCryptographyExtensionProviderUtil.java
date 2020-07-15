@@ -14,7 +14,7 @@ public class JavaCryptographyExtensionProviderUtil {
         }
     }
 
-    public static String getProviderName(){
+    public static String getBouncyCastleProviderName(){
         return BouncyCastleProvider.PROVIDER_NAME;
     }
 }
