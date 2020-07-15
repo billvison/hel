@@ -6,13 +6,18 @@ import java.util.List;
 
 /**
  * 区块
+ * 属性含义参考 com.xingkaichun.helloworldblockchain.core.model.Block
  *
  * @author 邢开春 xingkaichun@qq.com
  */
 public class BlockDTO implements Serializable {
+    //区块产生的时间戳
     private long timestamp;
+    //区块高度
     private BigInteger height;
+    //区块里的交易
     private List<TransactionDTO> transactions;
+    //共识值
     private String consensusValue;
 
 

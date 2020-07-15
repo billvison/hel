@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * 交易输出
+ * 属性含义参考 com.xingkaichun.helloworldblockchain.core.model.TransactionOutput
  *
  * @author 邢开春 xingkaichun@qq.com
  */

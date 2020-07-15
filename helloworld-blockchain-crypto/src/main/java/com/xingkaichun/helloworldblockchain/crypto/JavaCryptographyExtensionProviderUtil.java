@@ -5,6 +5,11 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import java.security.Provider;
 import java.security.Security;
 
+/**
+ * JavaCryptographyExtension Provider工具类
+ *
+ * @author 邢开春 xingkaichun@qq.com
+ */
 public class JavaCryptographyExtensionProviderUtil {
 
     public static synchronized void addBouncyCastleProvider(){
