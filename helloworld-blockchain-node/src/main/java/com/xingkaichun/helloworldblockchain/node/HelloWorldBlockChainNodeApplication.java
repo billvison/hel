@@ -46,6 +46,7 @@ public class HelloWorldBlockChainNodeApplication {
 
 	@Bean
 	public NetBlockchainCore buildNetBlockchainCore() throws Exception {
+		//TODO 地址优化 linux window android 最好删除配置
 		if(blockchainDataPath == null || "".equals(blockchainDataPath)){
 			blockchainDataPath = buildDefaultDataRootPath();
 		}
