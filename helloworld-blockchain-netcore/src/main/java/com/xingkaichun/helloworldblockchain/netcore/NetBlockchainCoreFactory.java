@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
+import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCoreFactory;
 import com.xingkaichun.helloworldblockchain.netcore.daemonservice.AutomaticDaemonService;
@@ -38,7 +39,7 @@ public class NetBlockchainCoreFactory {
 
         String minerAddress = null;
         ConfigurationDto minerAddressConfigurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
-        if(minerAddressConfigurationDto != null){
+        if(minerAddressConfigurationDto != null && !Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             minerAddress = minerAddressConfigurationDto.getConfValue();
         }else {
             minerAddress = InitMinerTool.buildDefaultMinerAddress(configurationService,dataRootPath);

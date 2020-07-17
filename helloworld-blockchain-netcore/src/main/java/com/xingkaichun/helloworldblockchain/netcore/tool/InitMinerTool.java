@@ -29,7 +29,7 @@ public class InitMinerTool {
         if(Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             //创建钱包
             StringAccount stringAccount = AccountUtil.randomStringAccount();
-
+//TODO 钱包秘钥保存在哪里？
             //将钱包的地址当做矿工的地址写入数据库
             minerAddressConfigurationDto.setConfKey(ConfigurationEnum.MINER_ADDRESS.name());
             minerAddressConfigurationDto.setConfValue(stringAccount.getStringAddress().getValue());
@@ -48,7 +48,7 @@ public class InitMinerTool {
                 fileWriter.write(minerWalletInfo);
                 fileWriter.close();
             } catch (IOException e) {
-                logger.error("创建用户出错",e);
+                logger.error("创建钱包出错",e);
                 if(fileWriter != null){
                     fileWriter.close();
                 }
