@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionIn
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.script.Script;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptExecuteResult;
-import com.xingkaichun.helloworldblockchain.core.VirtualMachine;
+import com.xingkaichun.helloworldblockchain.core.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.Base58Util;
 import com.xingkaichun.helloworldblockchain.crypto.Base64Util;
@@ -94,9 +94,9 @@ public class TransactionTool {
         List<TransactionInput> inputs = transaction.getInputs();
         if(inputs != null && inputs.size()!=0){
             for(TransactionInput transactionInput:inputs){
-                Script payToClassicAddressScript = VirtualMachine.createPayToClassicAddressScript(transactionInput.getScriptKey(),transactionInput.getUnspendTransactionOutput().getScriptLock());
-                VirtualMachine virtualMachine = new VirtualMachine();
-                ScriptExecuteResult scriptExecuteResult = virtualMachine.executeScript(transaction,payToClassicAddressScript);
+                Script payToClassicAddressScript = StackBasedVirtualMachine.createPayToClassicAddressScript(transactionInput.getScriptKey(),transactionInput.getUnspendTransactionOutput().getScriptLock());
+                StackBasedVirtualMachine stackBasedVirtualMachine = new StackBasedVirtualMachine();
+                ScriptExecuteResult scriptExecuteResult = stackBasedVirtualMachine.executeScript(transaction,payToClassicAddressScript);
                 return Boolean.valueOf(scriptExecuteResult.pop());
             }
         }

@@ -8,7 +8,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.VirtualMachine;
+import com.xingkaichun.helloworldblockchain.core.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.CommunityMaintenanceTransactionTool;
@@ -370,7 +370,7 @@ public class MinerDefaultImpl extends Miner {
         TransactionOutput output = new TransactionOutput();
         output.setStringAddress(minerStringAddress);
         output.setValue(award);
-        output.setScriptLock(VirtualMachine.createPayToClassicAddressOutputScript(minerStringAddress.getValue()));
+        output.setScriptLock(StackBasedVirtualMachine.createPayToClassicAddressOutputScript(minerStringAddress.getValue()));
         output.setTransactionOutputHash(TransactionTool.calculateTransactionOutputHash(transaction,output));
         outputs.add(output);
 

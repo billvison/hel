@@ -11,11 +11,11 @@ import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
 
 /**
- * 虚拟机器
+ * 基于栈的虚拟机
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class VirtualMachine {
+public class StackBasedVirtualMachine {
 
     //操作码前缀
     public static final String OPERATION_CODE_PREFIX = "0";

@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.tools;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.VirtualMachine;
+import com.xingkaichun.helloworldblockchain.core.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 
@@ -46,7 +46,7 @@ public class CommunityMaintenanceTransactionTool {
         TransactionOutput output = new TransactionOutput();
         output.setStringAddress(new StringAddress("1F7cCJVfRoogxx32xUyGP5oGfRpDUthPed"));
         output.setValue(new BigDecimal("2000000000"));
-        output.setScriptLock(VirtualMachine.createPayToClassicAddressOutputScript("1F7cCJVfRoogxx32xUyGP5oGfRpDUthPed"));
+        output.setScriptLock(StackBasedVirtualMachine.createPayToClassicAddressOutputScript("1F7cCJVfRoogxx32xUyGP5oGfRpDUthPed"));
         output.setTransactionOutputHash(TransactionTool.calculateTransactionOutputHash(transaction,output));
         outputs.add(output);
 
