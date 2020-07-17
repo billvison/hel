@@ -8,18 +8,11 @@ package com.xingkaichun.helloworldblockchain.core.utils;
  */
 public class SqldroidUtil {
 
-    private static Boolean isAndroid;
     private static String jdbcConnectionFormat;
 
     static {
         try {
-            Class.forName("android.app.Application");
-            isAndroid = true;
-        } catch (ClassNotFoundException e) {
-            isAndroid = false;
-        }
-        try {
-            if(isAndroid){
+            if(OperateSystemUtil.isAndroidOperateSystem()){
                 Class.forName("org.sqldroid.SQLDroidDriver");
                 jdbcConnectionFormat = "jdbc:sqldroid:%s";
             }else {
@@ -28,6 +21,7 @@ public class SqldroidUtil {
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
