@@ -33,14 +33,18 @@ public class GlobalSetting {
          * 区块链版本设置
          * 这里的版本是一个时间戳数值
          * 部分配置需要根据版本时间戳去获取
-         * 第一版本只支持运行至北京时间2020-06-01 00:00:00，到时间后必须升级系统
+         * [最新版本时间]必须要在[当前时刻时间]之后，系统才能正常运行。
+         * 例如：第一版本只支持运行至北京时间2020-06-01 00:00:00，到时间后必须升级系统。
          */
-        //第一版本
+        //第一版本2020-06-01 00:00:00
         public final static long BLOCK_CHAIN_VERSION_1 = 1590940800000L;
+        //第二版本2020-08-01 00:00:00
+        public final static long BLOCK_CHAIN_VERSION_2 = 1596211200000L;
         //版本列表
         public final static List<Long> BLOCK_CHAIN_VERSION_LIST = new ArrayList<>();
         static {
             BLOCK_CHAIN_VERSION_LIST.add(BLOCK_CHAIN_VERSION_1);
+            BLOCK_CHAIN_VERSION_LIST.add(BLOCK_CHAIN_VERSION_2);
         }
 
         /**
