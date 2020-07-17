@@ -8,8 +8,9 @@ package com.xingkaichun.helloworldblockchain.core.utils;
  */
 public class SqldroidUtil {
 
-    public static Boolean isAndroid;
-    public static String jdbcConnectionFormat;
+    private static Boolean isAndroid;
+    private static String jdbcConnectionFormat;
+
     static {
         try {
             Class.forName("android.app.Application");
