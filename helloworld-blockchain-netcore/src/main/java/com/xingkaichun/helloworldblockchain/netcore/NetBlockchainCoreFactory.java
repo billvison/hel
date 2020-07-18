@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.netcore;
 import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCoreFactory;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 import com.xingkaichun.helloworldblockchain.netcore.daemonservice.AutomaticDaemonService;
 import com.xingkaichun.helloworldblockchain.netcore.daemonservice.BlockchainBranchDaemonService;
 import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainBranchDao;
@@ -16,7 +17,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.Configurat
 import com.xingkaichun.helloworldblockchain.netcore.netserver.HttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.netserver.NodeServerHandlerResolver;
 import com.xingkaichun.helloworldblockchain.netcore.service.*;
-import com.xingkaichun.helloworldblockchain.netcore.tool.InitMinerTool;
 import com.xingkaichun.helloworldblockchain.netcore.util.FileUtil;
 
 public class NetBlockchainCoreFactory {
@@ -37,16 +37,7 @@ public class NetBlockchainCoreFactory {
         ConfigurationDao configurationDao = new ConfigurationDaoImpl(dataRootPath);
         configurationService = new ConfigurationServiceImpl(configurationDao);
 
-        String minerAddress = null;
-        ConfigurationDto minerAddressConfigurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
-        if(minerAddressConfigurationDto != null && !Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
-            minerAddress = minerAddressConfigurationDto.getConfValue();
-        }else {
-            minerAddress = InitMinerTool.buildDefaultMinerAddress(configurationService,dataRootPath);
-            configurationService.setConfiguration(new ConfigurationDto(ConfigurationEnum.MINER_ADDRESS.name(),minerAddress));
-        }
-
-
+        String minerAddress = configurationService.getMinerAddress();
         BlockChainCore blockChainCore = BlockChainCoreFactory.createBlockChainCore(dataRootPath,minerAddress);
 
         NodeDao nodeDao = new NodeDaoImpl(dataRootPath);
