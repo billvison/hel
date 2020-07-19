@@ -111,14 +111,14 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
         return classCast(blockchainBranchBlockEntityList);
     }
 
-    //TODO 事务
     @Override
     public void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList) throws Exception {
-        blockChainBranchDao.removeAll();
+        List<BlockchainBranchBlockEntity> entityList = new ArrayList<>();
         for(BlockchainBranchBlockDto blockchainBranchBlockDto:blockList){
             BlockchainBranchBlockEntity entity = classCast(blockchainBranchBlockDto);
-            blockChainBranchDao.add(entity);
+            entityList.add(entity);
         }
+        blockChainBranchDao.updateBranchchainBranch(entityList);
         refreshCache();
         branchchainBranchHandler();
     }

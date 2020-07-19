@@ -14,7 +14,5 @@ public interface BlockChainBranchDao {
 
     List<BlockchainBranchBlockEntity> queryAllBlockchainBranchBlock();
 
-    void removeAll();
-
-    void add(BlockchainBranchBlockEntity entity);
+    void updateBranchchainBranch(List<BlockchainBranchBlockEntity> entityList);
 }

@@ -61,7 +61,6 @@ public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
         return nodeList;
     }
 
-    @Override
     public void removeAll() {
         String sql1 = "delete from BlockchainBranch";
         PreparedStatement preparedStatement1 = null;
@@ -80,7 +79,6 @@ public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
         }
     }
 
-    @Override
     public void add(BlockchainBranchBlockEntity entity) {
         String sql1 = "INSERT INTO BlockchainBranch (blockHeight, blockHash)" +
                 "        VALUES (?, ?)";
@@ -120,6 +118,7 @@ public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
         connection = DriverManager.getConnection(jdbcConnectionUrl);
         return connection;
     }
+
     private void executeSql(String sql) throws Exception {
         Statement stmt = null;
         try {
@@ -130,6 +129,28 @@ public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
             if(stmt != null){
                 stmt.close();
             }
+        }
+    }
+
+    @Override
+    public void updateBranchchainBranch(List<BlockchainBranchBlockEntity> entityList) {
+        Connection connection = null;
+        try {
+            connection = connection();
+            connection.setAutoCommit(false);
+            removeAll();
+            for(BlockchainBranchBlockEntity entity:entityList){
+                add(entity);
+            }
+            connection.commit();
+        } catch (Exception e){
+            try {
+                connection.rollback();
+            } catch (SQLException sqlException) {
+                sqlException.printStackTrace();
+            }
+            throw new RuntimeException(e);
+        } finally {
         }
     }
 }
