@@ -7,8 +7,8 @@ package com.xingkaichun.helloworldblockchain.netcore.dto.configuration;
 public enum ConfigurationEnum {
     IS_MINER_ACTIVE("true","矿工是否处于激活状态？"),
     IS_SYNCHRONIZER_ACTIVE("true","同步者是否处于激活状态？"),
-    MINER_ADDRESS("","用户设置的矿工钱包的地址。"),
-    DEFAULT_MINER_ACCOUNT("默认矿工账户，当用户没有设置自己的挖矿账户时，默认使用这个矿工账户","默认矿工账户"),
+    MINER_ADDRESS(null,"用户设置的矿工钱包的地址。"),
+    DEFAULT_MINER_ACCOUNT(null,"默认矿工账户，当用户没有设置自己的挖矿账户时，默认使用这个矿工账户"),
     AUTO_SEARCH_NODE("true","是否允许节点自动在区块链网络中搜索节点。"),
     FORK_BLOCK_SIZE("100","两个区块链有分叉时，区块差异个数大于这个值，则真的分叉了。"),
     NODE_ERROR_CONNECTION_TIMES_REMOVE_THRESHOLD("10","本地节点发现某一个节点错误次数过多，则删除该节点。这个阈值配置。"),

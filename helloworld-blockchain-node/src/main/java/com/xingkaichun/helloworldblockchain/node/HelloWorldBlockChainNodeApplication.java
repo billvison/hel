@@ -2,14 +2,17 @@ package com.xingkaichun.helloworldblockchain.node;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
+import com.xingkaichun.helloworldblockchain.core.utils.OperateSystemUtil;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCoreFactory;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
+import com.xingkaichun.helloworldblockchain.netcore.util.FileUtil;
 import com.xingkaichun.helloworldblockchain.node.init.InitUserHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -46,11 +49,7 @@ public class HelloWorldBlockChainNodeApplication {
 
 	@Bean
 	public NetBlockchainCore buildNetBlockchainCore() throws Exception {
-		//TODO 地址优化 linux window android 最好删除配置
-		if(blockchainDataPath == null || "".equals(blockchainDataPath)){
-			blockchainDataPath = buildDefaultDataRootPath();
-		}
-		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(blockchainDataPath,8444);
+		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(getDataRootPath(),8444);
 		return netBlockchainCore;
 	}
 
@@ -94,8 +93,21 @@ public class HelloWorldBlockChainNodeApplication {
 		return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 	}
 
-	public static String buildDefaultDataRootPath() throws Exception {
-		String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-		return new File(path,"HelloworldBlockchainRootData").getAbsolutePath();
+
+	public String getDataRootPath() {
+		String dataRootPath = blockchainDataPath;
+		if(Strings.isNullOrEmpty(dataRootPath)){
+			if(OperateSystemUtil.isWindowsOperateSystem()){
+				dataRootPath = "C:\\HelloworldBlockchainDataRoot\\";
+			}else if(OperateSystemUtil.isLinuxOperateSystem()){
+				dataRootPath = "/opt/HelloworldBlockchainDataRoot/";
+			}
+		}
+		if(Strings.isNullOrEmpty(dataRootPath)){
+			String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+			dataRootPath = new File(path,"HelloworldBlockchainRootData").getAbsolutePath();
+		}
+		FileUtil.mkdir(dataRootPath);
+		return dataRootPath;
 	}
 }
