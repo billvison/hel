@@ -1,6 +1,8 @@
 package com.xingkaichun.helloworldblockchain.netcore.dao.impl;
 
+import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.utils.SqldroidUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.SqliteUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.netcore.model.NodeEntity;
 
@@ -31,6 +33,8 @@ public class NodeDaoImpl implements NodeDao {
 
     @Override
     public NodeEntity queryNode(String ip, int port){
+        checkIp(ip);
+        checkPort(port);
         String sql = "select * from Node WHERE ip = ? and port = ?";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -59,25 +63,6 @@ public class NodeDaoImpl implements NodeDao {
             }
         }
         return null;
-    }
-    String createTable1Sql1 = "CREATE TABLE [Node](" +
-            "  [ip] VARCHAR(20) NOT NULL, " +
-            "  [port] INTEGER(10) NOT NULL, " +
-            "  [blockChainHeight] INTEGER(20) NOT NULL, " +
-            "  [isNodeAvailable] INTEGER(10) NOT NULL, " +
-            "  [errorConnectionTimes] INTEGER(10) NOT NULL, " +
-            "  [fork] INTEGER(10) NOT NULL, " +
-            "  UNIQUE([ip], [port]));";
-
-
-    public static boolean intToBoolean(Integer intValue){
-        return Integer.valueOf(0).compareTo(intValue)==0?false:true;
-    }
-    public static int booleanToInt(Boolean booleanValue){
-        if(booleanValue == null || !booleanValue){
-            return 0;
-        }
-        return 1;
     }
 
     @Override
@@ -144,6 +129,9 @@ public class NodeDaoImpl implements NodeDao {
 
     @Override
     public void addNode(NodeEntity node){
+        checkIp(node.getIp());
+        checkPort(node.getPort());
+
         String sql1 = "        INSERT INTO Node (ip, port, blockChainHeight, isNodeAvailable, errorConnectionTimes, fork)" +
                 "        VALUES (?,?,?,?,?,?)";
         PreparedStatement preparedStatement1 = null;
@@ -152,9 +140,9 @@ public class NodeDaoImpl implements NodeDao {
             preparedStatement1.setString(1,node.getIp());
             preparedStatement1.setInt(2,node.getPort());
             preparedStatement1.setInt(3,node.getBlockChainHeight().intValue());
-            preparedStatement1.setInt(4,booleanToInt(node.getIsNodeAvailable()));
+            preparedStatement1.setInt(4,SqliteUtil.booleanToInt(node.getIsNodeAvailable()));
             preparedStatement1.setInt(5,node.getErrorConnectionTimes());
-            preparedStatement1.setInt(6,booleanToInt(node.getFork()));
+            preparedStatement1.setInt(6,SqliteUtil.booleanToInt(node.getFork()));
             preparedStatement1.executeUpdate();
         } catch (Exception e){
             throw new RuntimeException(e);
@@ -170,7 +158,9 @@ public class NodeDaoImpl implements NodeDao {
 
     @Override
     public void updateNode(NodeEntity node){
-        //TODO 优化
+        checkIp(node.getIp());
+        checkPort(node.getPort());
+
         NodeEntity nodeEntity = queryNode(node.getIp(),node.getPort());
         if(node.getBlockChainHeight()==null){
             node.setBlockChainHeight(nodeEntity.getBlockChainHeight());
@@ -191,9 +181,9 @@ public class NodeDaoImpl implements NodeDao {
         try {
             preparedStatement1 = connection().prepareStatement(sql1);
             preparedStatement1.setInt(1,node.getBlockChainHeight().intValue());
-            preparedStatement1.setInt(2,booleanToInt(node.getIsNodeAvailable()));
+            preparedStatement1.setInt(2,SqliteUtil.booleanToInt(node.getIsNodeAvailable()));
             preparedStatement1.setInt(3,node.getErrorConnectionTimes());
-            preparedStatement1.setInt(4,booleanToInt(node.getFork()));
+            preparedStatement1.setInt(4,SqliteUtil.booleanToInt(node.getFork()));
             preparedStatement1.setString(5,node.getIp());
             preparedStatement1.setInt(6,node.getPort());
             preparedStatement1.executeUpdate();
@@ -211,6 +201,9 @@ public class NodeDaoImpl implements NodeDao {
 
     @Override
     public boolean deleteNode(String ip, int port){
+        checkIp(ip);
+        checkPort(port);
+
         String sql1 = "delete from Node WHERE ip = ? and port = ?";
         PreparedStatement preparedStatement1 = null;
         try {
@@ -281,6 +274,7 @@ public class NodeDaoImpl implements NodeDao {
         connection = DriverManager.getConnection(jdbcConnectionUrl);
         return connection;
     }
+
     private void executeSql(String sql) throws Exception {
         Statement stmt = null;
         try {
@@ -294,8 +288,6 @@ public class NodeDaoImpl implements NodeDao {
         }
     }
 
-
-
     private NodeEntity resultSetToNodeEntity(ResultSet resultSet) throws Exception {
         String ip = resultSet.getString("ip");
         Integer port = resultSet.getInt("port");
@@ -308,9 +300,21 @@ public class NodeDaoImpl implements NodeDao {
         entity.setIp(ip);
         entity.setPort(port);
         entity.setBlockChainHeight(BigInteger.valueOf(blockChainHeight));
-        entity.setIsNodeAvailable(intToBoolean(isNodeAvailable));
+        entity.setIsNodeAvailable(SqliteUtil.intToBoolean(isNodeAvailable));
         entity.setErrorConnectionTimes(errorConnectionTimes);
-        entity.setFork(intToBoolean(fork));
+        entity.setFork(SqliteUtil.intToBoolean(fork));
         return entity;
+    }
+
+    private void checkIp(String ip) {
+        if(Strings.isNullOrEmpty(ip)){
+            throw new NullPointerException("ip不合法");
+        }
+    }
+
+    private void checkPort(int port) {
+        if(port <= 0){
+            throw new NullPointerException("port不合法");
+        }
     }
 }

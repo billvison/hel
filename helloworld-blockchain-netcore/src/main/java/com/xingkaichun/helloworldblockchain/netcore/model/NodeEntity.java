@@ -8,7 +8,7 @@ import java.math.BigInteger;
  */
 public class NodeEntity{
     private String ip;
-    private int port;
+    private Integer port;
     private BigInteger blockChainHeight;
     private Boolean isNodeAvailable;
     private Integer errorConnectionTimes;
@@ -26,11 +26,11 @@ public class NodeEntity{
         this.ip = ip;
     }
 
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(Integer port) {
         this.port = port;
     }
 
