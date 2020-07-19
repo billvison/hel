@@ -41,7 +41,7 @@ public interface NodeService {
     /**
      * 查询节点
      */
-    List<NodeDto> queryNodeList(SimpleNodeDto node);
+    List<NodeDto> queryAllNodeList();
 
     /**
      * 新增节点

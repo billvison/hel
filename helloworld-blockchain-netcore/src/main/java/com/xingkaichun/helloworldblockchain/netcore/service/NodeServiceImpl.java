@@ -79,8 +79,7 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public List<NodeDto> queryNodeList(SimpleNodeDto node){
-        //TODO
+    public List<NodeDto> queryAllNodeList(){
         List<NodeEntity> nodeEntityList = nodeDao.queryAllNodeList();
         List<NodeDto> nodeList = classCast(nodeEntityList);
         return nodeList;

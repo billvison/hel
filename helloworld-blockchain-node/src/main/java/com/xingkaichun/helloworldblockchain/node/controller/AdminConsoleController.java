@@ -3,8 +3,8 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
-import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
@@ -342,11 +342,11 @@ public class AdminConsoleController {
      * 查询节点
      */
     @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.QUERY_NODE_LIST,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryNodeListResponse> queryNodeList(@RequestBody QueryNodeListRequest request){
+    @RequestMapping(value = AdminConsoleApiRoute.QUERY_ALL_NODE_LIST,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryAllNodeListResponse> queryAllNodeList(@RequestBody QueryAllNodeListRequest request){
         try {
-            List<NodeDto> nodeList = nodeService.queryNodeList(request.getNode());
-            QueryNodeListResponse response = new QueryNodeListResponse();
+            List<NodeDto> nodeList = nodeService.queryAllNodeList();
+            QueryAllNodeListResponse response = new QueryAllNodeListResponse();
             response.setNodeList(nodeList);
             return ServiceResult.createSuccessServiceResult("查询节点成功",response);
         } catch (Exception e){

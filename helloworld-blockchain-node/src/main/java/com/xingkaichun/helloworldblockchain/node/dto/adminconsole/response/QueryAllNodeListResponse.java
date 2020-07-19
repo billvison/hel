@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class QueryNodeListResponse {
+public class QueryAllNodeListResponse {
 
     private List<NodeDto> nodeList;
 

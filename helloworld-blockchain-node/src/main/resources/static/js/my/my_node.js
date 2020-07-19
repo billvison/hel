@@ -5,7 +5,7 @@ function queryNodeList() {
     var node_list = {};
     $.ajax({
         type: "post",
-        url: "/Api/AdminConsole/QueryNodeList",
+        url: "/Api/AdminConsole/QueryAllNodeList",
         contentType: "application/json",
         data: `{}`,
         dataType: "json",
