@@ -1,6 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore.dao.impl;
 
 import com.google.common.base.Strings;
+import com.xingkaichun.helloworldblockchain.core.utils.FileUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.SqldroidUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.SqliteUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
@@ -268,7 +269,7 @@ public class NodeDaoImpl implements NodeDao {
             return connection;
         }
         File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
-        nodeSynchronizeDatabaseDirect.mkdirs();
+        FileUtil.mkdir(nodeSynchronizeDatabaseDirect);
         File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
         String jdbcConnectionUrl = SqldroidUtil.getJdbcConnectionUrl(nodeSynchronizeDatabasePath.getAbsolutePath());
         connection = DriverManager.getConnection(jdbcConnectionUrl);

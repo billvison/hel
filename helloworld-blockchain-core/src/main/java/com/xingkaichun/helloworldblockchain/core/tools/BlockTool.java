@@ -4,6 +4,8 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.core.utils.ByteUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.MerkleUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
@@ -28,7 +30,7 @@ public class BlockTool {
      */
     public static String calculateBlockHash(Block block) {
         String input = block.getTimestamp()+block.getPreviousHash()+block.getHeight()+block.getMerkleRoot()+block.getConsensusValue();
-        byte[] sha256Digest = SHA256Util.applySha256(input.getBytes());
+        byte[] sha256Digest = SHA256Util.applySha256(ByteUtil.stringToBytes(input));
         return HexUtil.bytesToHexString(sha256Digest) + block.getTimestamp();
     }
 

@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
+import com.xingkaichun.helloworldblockchain.core.utils.FileUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.SqldroidUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import org.slf4j.Logger;
@@ -292,7 +293,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             return connection;
         }
         File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
-        nodeSynchronizeDatabaseDirect.mkdirs();
+        FileUtil.mkdir(nodeSynchronizeDatabaseDirect);
         File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
         String jdbcConnectionUrl = SqldroidUtil.getJdbcConnectionUrl(nodeSynchronizeDatabasePath.getAbsolutePath());
         connection = DriverManager.getConnection(jdbcConnectionUrl);

@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.dao.impl;
 
+import com.xingkaichun.helloworldblockchain.core.utils.FileUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.SqldroidUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainBranchDao;
 import com.xingkaichun.helloworldblockchain.netcore.model.BlockchainBranchBlockEntity;
@@ -112,7 +113,7 @@ public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
             return connection;
         }
         File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
-        nodeSynchronizeDatabaseDirect.mkdirs();
+        FileUtil.mkdir(nodeSynchronizeDatabaseDirect);
         File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
         String jdbcConnectionUrl = SqldroidUtil.getJdbcConnectionUrl(nodeSynchronizeDatabasePath.getAbsolutePath());
         connection = DriverManager.getConnection(jdbcConnectionUrl);
@@ -145,7 +146,9 @@ public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
             connection.commit();
         } catch (Exception e){
             try {
-                connection.rollback();
+                if(connection != null){
+                    connection.rollback();
+                }
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
             }

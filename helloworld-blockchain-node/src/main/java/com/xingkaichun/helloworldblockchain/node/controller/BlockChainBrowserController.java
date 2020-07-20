@@ -142,7 +142,7 @@ public class BlockChainBrowserController {
     public ServiceResult<QueryTransactionByTransactionHeightResponse> queryTransactionByTransactionHeight(@RequestBody QueryTransactionByTransactionHeightRequest request){
         try {
             if(request.getPageCondition()==null){
-                request.setPageCondition(PageCondition.defaultPageCondition);
+                request.setPageCondition(PageCondition.DEFAULT_PAGE_CONDITION);
             }
             List<Transaction> transactionList = blockChainCoreService.queryTransactionByTransactionHeight(request.getPageCondition());
             if(transactionList == null){
@@ -290,7 +290,7 @@ public class BlockChainBrowserController {
         try {
             Block block = blockChainCoreService.queryNoTransactionBlockDtoByBlockHash(request.getBlockHash());
             if(block == null){
-                return ServiceResult.createFailServiceResult(String.format("区块链中不存在区块哈希[%d]，请检查输入高度。",request.getBlockHash()));
+                return ServiceResult.createFailServiceResult(String.format("区块链中不存在区块哈希[%s]，请检查输入高度。",request.getBlockHash()));
             }
             QueryBlockDtoByBlockHashResponse response = new QueryBlockDtoByBlockHashResponse();
             response.setBlock(block);

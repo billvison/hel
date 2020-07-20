@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.dao.impl;
 
+import com.xingkaichun.helloworldblockchain.core.utils.FileUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.SqldroidUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dao.ConfigurationDao;
 import com.xingkaichun.helloworldblockchain.netcore.model.ConfigurationEntity;
@@ -108,7 +109,7 @@ public class ConfigurationDaoImpl implements ConfigurationDao {
             return connection;
         }
         File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
-        nodeSynchronizeDatabaseDirect.mkdirs();
+        FileUtil.mkdir(nodeSynchronizeDatabaseDirect);
         File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
         String jdbcConnectionUrl = SqldroidUtil.getJdbcConnectionUrl(nodeSynchronizeDatabasePath.getAbsolutePath());
         connection = DriverManager.getConnection(jdbcConnectionUrl);

@@ -7,6 +7,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.script.Script;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptExecuteResult;
 import com.xingkaichun.helloworldblockchain.core.StackBasedVirtualMachine;
+import com.xingkaichun.helloworldblockchain.core.utils.ByteUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.Base58Util;
 import com.xingkaichun.helloworldblockchain.crypto.Base64Util;
@@ -179,7 +180,7 @@ public class TransactionTool {
         if(messageList != null && messageList.size()!=0){
             data += "[" + Joiner.on(",").join(messageList) + "]";
         }
-        byte[] byteSha256 = SHA256Util.applySha256(data.getBytes());
+        byte[] byteSha256 = SHA256Util.applySha256(ByteUtil.stringToBytes(data));
         String base64Encode = Base64Util.encode(byteSha256);
         return base64Encode + currentTimeMillis;
     }
@@ -207,7 +208,7 @@ public class TransactionTool {
         forHash += "[" + address + "]";
         forHash += "[" + value + "]";
         forHash += "[" + Joiner.on(" ").join(scriptLock) + "]";
-        byte[] sha256 = SHA256Util.applySha256(forHash.getBytes());
+        byte[] sha256 = SHA256Util.applySha256(ByteUtil.stringToBytes(forHash));
         String base58Encode = Base58Util.encode(sha256);
         return base58Encode + currentTimeMillis;
     }

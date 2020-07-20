@@ -25,15 +25,7 @@ public enum TransactionType {
         return code;
     }
 
-    public void setCode(int code) {
-        this.code = code;
-    }
-
     public String getDescrible() {
         return describle;
-    }
-
-    public void setDescrible(String describle) {
-        this.describle = describle;
     }
 }

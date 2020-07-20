@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,11 +42,8 @@ public class GlobalSetting {
         //第二版本2020-08-01 00:00:00
         public final static long BLOCK_CHAIN_VERSION_2 = 1596211200000L;
         //版本列表
-        public final static List<Long> BLOCK_CHAIN_VERSION_LIST = new ArrayList<>();
-        static {
-            BLOCK_CHAIN_VERSION_LIST.add(BLOCK_CHAIN_VERSION_1);
-            BLOCK_CHAIN_VERSION_LIST.add(BLOCK_CHAIN_VERSION_2);
-        }
+        public final static List<Long> BLOCK_CHAIN_VERSION_LIST =
+                Collections.unmodifiableList(Arrays.asList(BLOCK_CHAIN_VERSION_1,BLOCK_CHAIN_VERSION_2));
 
         /**
          * 检查系统版本是否支持。

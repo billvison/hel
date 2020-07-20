@@ -132,6 +132,10 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             if(!isAddBlockToBlockChainSuccess){
                 return;
             }
+            targetBlockChainTailBlock = targetBlockChainDataBase.findTailNoTransactionBlock();
+        }
+        if(targetBlockChainTailBlock == null){
+            throw new RuntimeException("在这个时刻，targetBlockChainTailBlock必定不为null。");
         }
         if(BigIntegerUtil.isGreatEqualThan(targetBlockChainTailBlock.getHeight(),temporaryBlockChainTailBlock.getHeight())){
             return;

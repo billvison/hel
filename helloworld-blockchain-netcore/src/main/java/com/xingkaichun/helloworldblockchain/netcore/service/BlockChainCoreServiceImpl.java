@@ -66,7 +66,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public List<TransactionOutput> queryUtxoListByAddress(String address,PageCondition pageCondition) throws Exception {
         if(pageCondition == null){
-            pageCondition = PageCondition.defaultPageCondition;
+            pageCondition = PageCondition.DEFAULT_PAGE_CONDITION;
         }
         StringAddress stringAddress = new StringAddress(address);
         List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryUnspendTransactionOuputListByAddress(stringAddress,pageCondition.getFrom(),pageCondition.getSize());
@@ -76,7 +76,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public List<TransactionOutput> queryTxoListByAddress(String address,PageCondition pageCondition) throws Exception {
         if(pageCondition == null){
-            pageCondition = PageCondition.defaultPageCondition;
+            pageCondition = PageCondition.DEFAULT_PAGE_CONDITION;
         }
         StringAddress stringAddress = new StringAddress(address);
         List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryTransactionOuputListByAddress(stringAddress,pageCondition.getFrom(),pageCondition.getSize());
@@ -234,7 +234,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public List<TransactionDTO> queryMiningTransactionList(PageCondition pageCondition) throws Exception {
         if(pageCondition == null){
-            pageCondition = PageCondition.defaultPageCondition;
+            pageCondition = PageCondition.DEFAULT_PAGE_CONDITION;
         }
         List<TransactionDTO> transactionDtoList = blockChainCore.getMiner().getMinerTransactionDtoDataBase().selectTransactionDtoList(blockChainCore.getBlockChainDataBase(),pageCondition.getFrom(),pageCondition.getSize());
         return transactionDtoList;

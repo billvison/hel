@@ -134,20 +134,22 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 BigIntegerUtil.isEquals(transactionQuantity,BigInteger.ZERO)?
                         BigInteger.ZERO:transactionSequenceNumberInBlockChain.add(BigInteger.ONE));
         block.setEndTransactionSequenceNumberInBlockChain(transactionSequenceNumberInBlockChain.add(transactionQuantity));
-        for(Transaction transaction:transactions){
-            transactionSequenceNumberInBlock = transactionSequenceNumberInBlock.add(BigInteger.ONE);
-            transactionSequenceNumberInBlockChain = transactionSequenceNumberInBlockChain.add(BigInteger.ONE);
-            transaction.setBlockHeight(blockHeight);
-            transaction.setTransactionSequenceNumberInBlock(transactionSequenceNumberInBlock);
-            transaction.setTransactionSequenceNumberInBlockChain(transactionSequenceNumberInBlockChain);
+        if(transactions != null){
+            for(Transaction transaction:transactions){
+                transactionSequenceNumberInBlock = transactionSequenceNumberInBlock.add(BigInteger.ONE);
+                transactionSequenceNumberInBlockChain = transactionSequenceNumberInBlockChain.add(BigInteger.ONE);
+                transaction.setBlockHeight(blockHeight);
+                transaction.setTransactionSequenceNumberInBlock(transactionSequenceNumberInBlock);
+                transaction.setTransactionSequenceNumberInBlockChain(transactionSequenceNumberInBlockChain);
 
-            List<TransactionOutput> outputs = transaction.getOutputs();
-            if(outputs != null){
-                for (int i=0; i <outputs.size(); i++){
-                    TransactionOutput transactionOutput = outputs.get(i);
-                    transactionOutput.setBlockHeight(blockHeight);
-                    transactionOutput.setTransactionOutputSequence(BigInteger.valueOf(i).add(BigInteger.ONE));
-                    transactionOutput.setTransactionSequenceNumberInBlock(transaction.getTransactionSequenceNumberInBlock());
+                List<TransactionOutput> outputs = transaction.getOutputs();
+                if(outputs != null){
+                    for (int i=0; i <outputs.size(); i++){
+                        TransactionOutput transactionOutput = outputs.get(i);
+                        transactionOutput.setBlockHeight(blockHeight);
+                        transactionOutput.setTransactionOutputSequence(BigInteger.valueOf(i).add(BigInteger.ONE));
+                        transactionOutput.setTransactionSequenceNumberInBlock(transaction.getTransactionSequenceNumberInBlock());
+                    }
                 }
             }
         }
@@ -838,6 +840,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 }
             }
 
+            if(mineAwardTransaction == null){
+                throw new RuntimeException("区块中没有发现挖矿奖励交易");
+            }
             List<TransactionInput> inputs = mineAwardTransaction.getInputs();
             if(inputs!=null && inputs.size()!=0){
                 logger.debug("区块数据异常：挖矿交易的输入只能为空。");
@@ -863,7 +868,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             //获取区块中写入的挖矿奖励金额
             BigDecimal blockWritedMineAward = BigDecimal.ZERO;
             for(TransactionOutput output:outputs){
-                blockWritedMineAward.add(output.getValue());
+                blockWritedMineAward = blockWritedMineAward.add(output.getValue());
             }
 
             //目标挖矿奖励

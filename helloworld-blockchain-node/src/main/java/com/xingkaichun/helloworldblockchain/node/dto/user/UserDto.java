@@ -1,10 +1,12 @@
 package com.xingkaichun.helloworldblockchain.node.dto.user;
 
+import java.io.Serializable;
+
 /**
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class UserDto {
+public class UserDto implements Serializable {
 
     private int userId;
     private String userName;
