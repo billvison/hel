@@ -4,6 +4,7 @@ import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
+import com.xingkaichun.helloworldblockchain.util.ByteUtil;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.DERSequenceGenerator;
@@ -105,7 +106,7 @@ public class AccountUtil {
     public static String signature(StringPrivateKey stringPrivateKey, String rawData) {
        try {
            BigInteger bigIntegerPrivateKey = privateKeyFrom(stringPrivateKey);
-           byte[] bytesSignature = signature(bigIntegerPrivateKey,rawData.getBytes());
+           byte[] bytesSignature = signature(bigIntegerPrivateKey, ByteUtil.stringToBytes(rawData));
            String signature = Base64.getEncoder().encodeToString(bytesSignature);
            return signature;
        } catch (Exception e) {
@@ -120,7 +121,7 @@ public class AccountUtil {
         try {
             byte[] bytePublicKey = publicKeyFrom(stringPublicKey);
             byte[] bytesSignature = Base64.getDecoder().decode(signature);
-            return verifySignature(bytePublicKey,rawData.getBytes(),bytesSignature);
+            return verifySignature(bytePublicKey,ByteUtil.stringToBytes(rawData),bytesSignature);
         }catch(Exception e) {
             throw new RuntimeException(e);
         }

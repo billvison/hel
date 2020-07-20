@@ -9,30 +9,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.xingkaichun.helloworldblockchain</groupId>
-    <artifactId>helloworld-blockchain-crypto</artifactId>
+    <artifactId>helloworld-blockchain-util</artifactId>
 
-    <name>helloworld-blockchain-crypto</name>
+    <name>helloworld-blockchain-util</name>
+
+    <properties>
+    </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.xingkaichun.helloworldblockchain</groupId>
             <artifactId>helloworld-blockchain-setting</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.xingkaichun.helloworldblockchain</groupId>
-            <artifactId>helloworld-blockchain-util</artifactId>
-        </dependency>
     </dependencies>
-
 </project>

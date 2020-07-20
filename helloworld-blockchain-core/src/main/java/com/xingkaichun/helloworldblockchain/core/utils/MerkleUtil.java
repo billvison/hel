@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.utils;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.crypto.Base64Util;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
+import com.xingkaichun.helloworldblockchain.util.ByteUtil;
 
 import java.util.ArrayList;
 import java.util.List;
