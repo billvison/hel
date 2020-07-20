@@ -25,6 +25,10 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.xingkaichun.helloworldblockchain</groupId>
+            <artifactId>helloworld-blockchain-setting</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

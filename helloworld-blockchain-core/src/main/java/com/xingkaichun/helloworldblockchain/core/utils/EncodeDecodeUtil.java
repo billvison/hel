@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.utils;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.core.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
