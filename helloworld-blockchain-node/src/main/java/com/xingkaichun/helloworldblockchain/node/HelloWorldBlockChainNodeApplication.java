@@ -3,11 +3,14 @@ package com.xingkaichun.helloworldblockchain.node;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.base.Strings;
+import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.utils.OperateSystemUtil;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCoreFactory;
+import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchDto;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
@@ -23,6 +26,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 
 /**
  * 启动入口
@@ -49,7 +55,14 @@ public class HelloWorldBlockChainNodeApplication {
 
 	@Bean
 	public NetBlockchainCore buildNetBlockchainCore() throws Exception {
-		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(getDataRootPath(),8444,null);
+
+		String INIT_BLOCKCHAIN_BRANCH_FILE_NAME = "InitBlockchainBranch.txt";
+		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(INIT_BLOCKCHAIN_BRANCH_FILE_NAME);
+		String context = CharStreams.toString(new InputStreamReader(inputStream, "UTF-8"));
+		Type jsonType = new TypeToken<BlockchainBranchDto>() {}.getType();
+		BlockchainBranchDto blockchainBranchDto = new Gson().fromJson(context,jsonType);
+
+		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(getDataRootPath(),8444,blockchainBranchDto);
 		return netBlockchainCore;
 	}
 
