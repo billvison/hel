@@ -2,12 +2,11 @@ package com.xingkaichun.helloworldblockchain.node;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.common.base.Strings;
 import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
-import com.xingkaichun.helloworldblockchain.core.utils.OperateSystemUtil;
+import com.xingkaichun.helloworldblockchain.core.tools.ResourcePathTool;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCoreFactory;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchDto;
@@ -15,7 +14,6 @@ import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchServ
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.netcore.util.FileUtil;
 import com.xingkaichun.helloworldblockchain.node.init.InitUserHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -25,7 +23,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -52,7 +49,6 @@ public class HelloWorldBlockChainNodeApplication {
 	}
 
 
-
 	@Bean
 	public NetBlockchainCore buildNetBlockchainCore() throws Exception {
 
@@ -62,7 +58,7 @@ public class HelloWorldBlockChainNodeApplication {
 		Type jsonType = new TypeToken<BlockchainBranchDto>() {}.getType();
 		BlockchainBranchDto blockchainBranchDto = new Gson().fromJson(context,jsonType);
 
-		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(getDataRootPath(),8444,blockchainBranchDto);
+		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(ResourcePathTool.getDataRootPath(blockchainDataPath),8444,blockchainBranchDto);
 		return netBlockchainCore;
 	}
 
@@ -107,20 +103,4 @@ public class HelloWorldBlockChainNodeApplication {
 	}
 
 
-	public String getDataRootPath() {
-		String dataRootPath = blockchainDataPath;
-		if(Strings.isNullOrEmpty(dataRootPath)){
-			if(OperateSystemUtil.isWindowsOperateSystem()){
-				dataRootPath = "C:\\HelloworldBlockchainDataRoot\\";
-			}else if(OperateSystemUtil.isLinuxOperateSystem()){
-				dataRootPath = "/opt/HelloworldBlockchainDataRoot/";
-			}
-		}
-		if(Strings.isNullOrEmpty(dataRootPath)){
-			String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-			dataRootPath = new File(path,"HelloworldBlockchainRootData").getAbsolutePath();
-		}
-		FileUtil.mkdir(dataRootPath);
-		return dataRootPath;
-	}
 }

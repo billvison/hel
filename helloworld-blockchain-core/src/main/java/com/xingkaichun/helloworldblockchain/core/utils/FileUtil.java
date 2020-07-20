@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.util;
+package com.xingkaichun.helloworldblockchain.core.utils;
 
 import java.io.File;
 
