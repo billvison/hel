@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCoreFactory;
+import com.xingkaichun.helloworldblockchain.core.tools.ResourcePathTool;
 import com.xingkaichun.helloworldblockchain.netcore.daemonservice.AutomaticDaemonService;
 import com.xingkaichun.helloworldblockchain.netcore.daemonservice.BlockchainBranchDaemonService;
 import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainBranchDao;
@@ -22,6 +23,11 @@ public class NetBlockchainCoreFactory {
     public static BlockChainCoreService blockChainCoreService = null;
     public static NodeService nodeService = null;
     public static BlockChainBranchService blockChainBranchService = null;
+
+
+    public static NetBlockchainCore createNetBlcokchainCore() throws Exception {
+        return createNetBlcokchainCore(ResourcePathTool.getDataRootPath(),8444,null);
+    }
 
 
     public static NetBlockchainCore createNetBlcokchainCore(String dataRootPath, int serverPort, BlockchainBranchDto initBlockchainBranchDto) throws Exception {

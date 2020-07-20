@@ -1,7 +1,5 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
-import com.xingkaichun.helloworldblockchain.core.tools.ResourcePathTool;
-
 /**
  * 启动入口
  *
@@ -10,7 +8,7 @@ import com.xingkaichun.helloworldblockchain.core.tools.ResourcePathTool;
 public class HelloWorldBlockChainNetcoreApplication {
 
 	public static void main(String[] args) throws Exception {
-		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(ResourcePathTool.getDataRootPath(),8444,null);
+		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore();
 		netBlockchainCore.start();
 	}
 
