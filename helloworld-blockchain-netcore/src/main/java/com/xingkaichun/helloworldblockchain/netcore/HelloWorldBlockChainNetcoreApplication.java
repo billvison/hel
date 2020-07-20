@@ -8,7 +8,7 @@ package com.xingkaichun.helloworldblockchain.netcore;
 public class HelloWorldBlockChainNetcoreApplication {
 
 	public static void main(String[] args) throws Exception {
-		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore("F:\\tmp\\helloworldblockchain",8444);
+		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore("F:\\tmp\\helloworldblockchain",8444,null);
 		netBlockchainCore.start();
 	}
 

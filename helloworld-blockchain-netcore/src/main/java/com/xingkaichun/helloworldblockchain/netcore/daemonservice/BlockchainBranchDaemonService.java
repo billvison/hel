@@ -1,7 +1,10 @@
 package com.xingkaichun.helloworldblockchain.netcore.daemonservice;
 
-import com.google.gson.Gson;
+import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
+import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,28 +18,30 @@ public class BlockchainBranchDaemonService {
     private static final Logger logger = LoggerFactory.getLogger(BlockchainBranchDaemonService.class);
 
     private BlockChainBranchService blockChainBranchService;
-    private Gson gson;
+    private ConfigurationService configurationService;
+    private BlockchainBranchDto initBlockchainBranchDto;
 
-    public BlockchainBranchDaemonService(BlockChainBranchService blockChainBranchService) {
+    public BlockchainBranchDaemonService(BlockChainBranchService blockChainBranchService, ConfigurationService configurationService,BlockchainBranchDto initBlockchainBranchDto) throws Exception {
         this.blockChainBranchService = blockChainBranchService;
-        this.gson = new Gson();
+        this.configurationService = configurationService;
+        this.initBlockchainBranchDto = initBlockchainBranchDto;
+
+        init();
     }
 
-    public final static String INIT_BLOCKCHAIN_BRANCH_FILE_NAME = "InitBlockchainBranch.txt";
+    private void init() throws Exception {
+        ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_BLOCKCHAIN_BRANCH_INIT.name());
+        if(configurationDto == null || !Boolean.valueOf(configurationDto.getConfValue())){
+            if(initBlockchainBranchDto != null){
+                blockChainBranchService.updateBranchchainBranch(initBlockchainBranchDto.getBlockList());
+
+                configurationDto = new ConfigurationDto(ConfigurationEnum.IS_BLOCKCHAIN_BRANCH_INIT.name(),Boolean.TRUE.toString());
+                configurationService.setConfiguration(configurationDto);
+            }
+        }
+    }
 
     public void start() throws Exception {
-
-        if(!blockChainBranchService.isBlockchainConfirmABranch()){
-        //TODO 默认分支
-            /*            URL url = Thread.currentThread().getContextClassLoader().getResource(INIT_BLOCKCHAIN_BRANCH_FILE_NAME);
-            logger.info(String.format("使用文件%s初始化区块链的分支。 ",url));
-            InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(INIT_BLOCKCHAIN_BRANCH_FILE_NAME);
-            String context = CharStreams.toString(new InputStreamReader(inputStream, "UTF-8"));
-            Type jsonType = new TypeToken<BlockchainBranchDto>() {}.getType();
-            BlockchainBranchDto blockchainBranchDto = gson.fromJson(context,jsonType);
-            blockChainBranchService.updateBranchchainBranch(blockchainBranchDto.getBlockList());*/
-        }
-
         new Thread(()->{
             while (true){
                 try {

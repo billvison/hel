@@ -41,7 +41,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-//TODO 数据库统一切切换成sqlite，sqlite可以同时在android、java se使用
 public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     private Logger logger = LoggerFactory.getLogger(BlockChainDataBaseDefaultImpl.class);
@@ -51,7 +50,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //区块链数据库
     private DB blockChainDB;
 
-    //TODO 可以选择关闭区块浏览器的功能，若是关闭的话，则会节约很多的磁盘空间。
+    //TODO 改善型功能 可以选择关闭区块浏览器的功能，若是关闭的话，则会节约很多的磁盘空间。
 
     //区块链高度key：它对应的值是区块链的高度
     private final static String BLOCK_CHAIN_HEIGHT_KEY = "B_C_H_K";
@@ -287,12 +286,11 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
 
-        //TODO 版本校验
         //检查系统版本是否支持
-/*        if(!GlobalSetting.SystemVersionConstant.isVersionLegal(block.getTimestamp())){
+        if(!GlobalSetting.SystemVersionConstant.isVersionLegal(block.getTimestamp())){
             logger.debug("系统版本过低，不支持校验区块，请尽快升级系统。");
             return false;
-        }*/
+        }
 
         //校验区块的存储容量是否合法
         if(!TextSizeRestrictionTool.isBlockStorageCapacityLegal(block)){

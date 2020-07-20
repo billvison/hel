@@ -138,7 +138,7 @@ public class AutomaticDaemonService {
      * 在区块链网络中搜寻新的节点
      */
     public void searchNewNodes() {
-        //TODO 性能调整，并发
+        //TODO 改善型功能 性能调整，并发
         ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
         if(!Boolean.valueOf(configurationDto.getConfValue())){
             return;
@@ -192,7 +192,7 @@ public class AutomaticDaemonService {
             }
         }
 
-        //TODO 性能调整 根据网络带宽设置传播宽度，这里存在可能你所发送的节点一起向你请求数据。
+        //TODO 改善型功能 性能调整 根据网络带宽设置传播宽度，这里存在可能你所发送的节点一起向你请求数据。
         //通知按照区块高度较高的先
         if(isLocalBlockChainHighest){
             //广播节点数量

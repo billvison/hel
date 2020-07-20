@@ -49,7 +49,7 @@ public class HelloWorldBlockChainNodeApplication {
 
 	@Bean
 	public NetBlockchainCore buildNetBlockchainCore() throws Exception {
-		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(getDataRootPath(),8444);
+		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(getDataRootPath(),8444,null);
 		return netBlockchainCore;
 	}
 
