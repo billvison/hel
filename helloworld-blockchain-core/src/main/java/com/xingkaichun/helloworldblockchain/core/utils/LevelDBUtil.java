@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.ByteUtil;
 import org.iq80.leveldb.*;
 import org.iq80.leveldb.impl.Iq80DBFactory;
 
@@ -55,10 +55,10 @@ public class LevelDBUtil {
     }
 
     public static byte[] stringToBytes(String strValue) {
-        return strValue.getBytes(GlobalSetting.GLOBAL_CHARSET);
+        return ByteUtil.stringToBytes(strValue);
     }
 
     public static String bytesToString(byte[] bytesValue) {
-        return new String(bytesValue, GlobalSetting.GLOBAL_CHARSET);
+        return ByteUtil.bytesToString(bytesValue);
     }
 }
