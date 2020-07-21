@@ -3,13 +3,11 @@ package com.xingkaichun.helloworldblockchain.core.utils;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.math.BigInteger;
 
 /**
  * EncodeDecode工具类
@@ -60,15 +58,5 @@ public class EncodeDecodeUtil {
         ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
         Block block = (Block) objectInputStream.readObject();
         return block;
-    }
-
-
-    public static byte[] encode(BigInteger bigInteger){
-        return String.valueOf(bigInteger).getBytes(GlobalSetting.GLOBAL_CHARSET);
-    }
-    public static BigInteger decodeToBigInteger(byte[] bytesBigInteger){
-        String strBigInteger = new String(bytesBigInteger, GlobalSetting.GLOBAL_CHARSET);
-        BigInteger bigInteger = new BigInteger(strBigInteger);
-        return bigInteger;
     }
 }

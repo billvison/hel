@@ -10,10 +10,17 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.core.tools.*;
-import com.xingkaichun.helloworldblockchain.core.utils.*;
+import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
+import com.xingkaichun.helloworldblockchain.core.tools.CommunityMaintenanceTransactionTool;
+import com.xingkaichun.helloworldblockchain.core.tools.TextSizeRestrictionTool;
+import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
+import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.EncodeDecodeUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.LevelDBUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.ByteUtil;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.WriteBatch;
@@ -223,7 +230,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             //区块链没有区块高度默认为0
             return BigInteger.valueOf(0);
         }
-        return EncodeDecodeUtil.decodeToBigInteger(bytesBlockChainHeight);
+        return ByteUtil.bytesToBigInteger(bytesBlockChainHeight);
     }
 
     @Override
@@ -263,7 +270,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(bytesBlockHeight == null){
             return null;
         }
-        return new BigInteger(LevelDBUtil.bytesToString(bytesBlockHeight));
+        return ByteUtil.bytesToBigInteger(bytesBlockHeight);
     }
 
     @Override
@@ -990,23 +997,23 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         BigInteger transactionQuantity = queryTransactionQuantity();
         byte[] totalTransactionQuantityKey = buildTotalTransactionQuantityKey();
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-            writeBatch.put(totalTransactionQuantityKey, EncodeDecodeUtil.encode(transactionQuantity.add(BigInteger.valueOf(block.getTransactions().size()))));
+            writeBatch.put(totalTransactionQuantityKey, ByteUtil.bigIntegerToBytes(transactionQuantity.add(BigInteger.valueOf(block.getTransactions().size()))));
         }else{
-            writeBatch.put(totalTransactionQuantityKey, EncodeDecodeUtil.encode(transactionQuantity.subtract(BigInteger.valueOf(block.getTransactions().size()))));
+            writeBatch.put(totalTransactionQuantityKey, ByteUtil.bigIntegerToBytes(transactionQuantity.subtract(BigInteger.valueOf(block.getTransactions().size()))));
         }
         //区块Hash到区块高度的映射
         byte[] blockHashBlockHeightKey = buildBlockHashtBlockHeightKey(block.getHash());
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-            writeBatch.put(blockHashBlockHeightKey, LevelDBUtil.stringToBytes(String.valueOf(block.getHeight())));
+            writeBatch.put(blockHashBlockHeightKey, ByteUtil.bigIntegerToBytes(block.getHeight()));
         }else{
             writeBatch.delete(blockHashBlockHeightKey);
         }
         //更新区块链的高度
         byte[] blockChainHeightKey = buildBlockChainHeightKey();
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-            writeBatch.put(blockChainHeightKey,EncodeDecodeUtil.encode(block.getHeight()));
+            writeBatch.put(blockChainHeightKey,ByteUtil.bigIntegerToBytes(block.getHeight()));
         }else{
-            writeBatch.put(blockChainHeightKey,EncodeDecodeUtil.encode(block.getHeight().subtract(BigInteger.valueOf(1))));
+            writeBatch.put(blockChainHeightKey,ByteUtil.bigIntegerToBytes(block.getHeight().subtract(BigInteger.valueOf(1))));
         }
 
         List<Transaction> transactionList = block.getTransactions();
@@ -1204,7 +1211,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(byteTotalTransactionQuantity == null){
             return BigInteger.ZERO;
         }
-        return EncodeDecodeUtil.decodeToBigInteger(byteTotalTransactionQuantity);
+        return ByteUtil.bytesToBigInteger(byteTotalTransactionQuantity);
     }
 
     /**
