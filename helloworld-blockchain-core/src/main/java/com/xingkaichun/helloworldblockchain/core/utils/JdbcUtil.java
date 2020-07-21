@@ -1,12 +1,16 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
 /**
- * SQLDroid工具
+ * Jdbc工具
+ *
+ * 能同时适用于android、window、linux平台
+ *
+ * android平台用SQLDroid
  * https://github.com/SQLDroid/SQLDroid
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class SqldroidUtil {
+public class JdbcUtil {
 
     private static String jdbcConnectionFormat;
 
