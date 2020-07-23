@@ -64,15 +64,6 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
     }
 
     @Override
-    public boolean isBlockchainConfirmABranch() throws Exception {
-        List<BlockchainBranchBlockEntity> blockchainBranchBlockEntityList = blockChainBranchDao.queryAllBlockchainBranchBlock();
-        if(blockchainBranchBlockEntityList == null || blockchainBranchBlockEntityList.size()==0){
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public void branchchainBranchHandler() throws Exception {
         if(!isRefreshCache){
             refreshCache();
@@ -114,9 +105,11 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
     @Override
     public void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList) throws Exception {
         List<BlockchainBranchBlockEntity> entityList = new ArrayList<>();
-        for(BlockchainBranchBlockDto blockchainBranchBlockDto:blockList){
-            BlockchainBranchBlockEntity entity = classCast(blockchainBranchBlockDto);
-            entityList.add(entity);
+        if(blockList != null){
+            for(BlockchainBranchBlockDto blockchainBranchBlockDto:blockList){
+                BlockchainBranchBlockEntity entity = classCast(blockchainBranchBlockDto);
+                entityList.add(entity);
+            }
         }
         blockChainBranchDao.updateBranchchainBranch(entityList);
         refreshCache();

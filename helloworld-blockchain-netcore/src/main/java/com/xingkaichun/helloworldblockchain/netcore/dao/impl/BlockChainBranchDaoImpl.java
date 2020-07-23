@@ -140,8 +140,10 @@ public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
             connection = connection();
             connection.setAutoCommit(false);
             removeAll();
-            for(BlockchainBranchBlockEntity entity:entityList){
-                add(entity);
+            if(entityList != null){
+                for(BlockchainBranchBlockEntity entity:entityList){
+                    add(entity);
+                }
             }
             connection.commit();
         } catch (Exception e){

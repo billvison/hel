@@ -34,10 +34,9 @@ public class BlockchainBranchDaemonService {
         if(configurationDto == null || !Boolean.valueOf(configurationDto.getConfValue())){
             if(initBlockchainBranchDto != null){
                 blockChainBranchService.updateBranchchainBranch(initBlockchainBranchDto.getBlockList());
-
-                configurationDto = new ConfigurationDto(ConfigurationEnum.IS_BLOCKCHAIN_BRANCH_INIT.name(),Boolean.TRUE.toString());
-                configurationService.setConfiguration(configurationDto);
             }
+            configurationDto = new ConfigurationDto(ConfigurationEnum.IS_BLOCKCHAIN_BRANCH_INIT.name(),Boolean.TRUE.toString());
+            configurationService.setConfiguration(configurationDto);
         }
     }
 
