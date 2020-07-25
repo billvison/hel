@@ -368,16 +368,16 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         Transaction maintenanceTransaction = null;
         //校验社区维护交易有且只能有一笔
         //社区维护交易笔数
-        int minerTransactionNumber = 0;
+        int maintenanceTransactionRNumber = 0;
         if(transactions != null){
             for(Transaction transaction : transactions){
                 if(transaction.getTransactionType() == TransactionType.COMMUNITY_MAINTENANCE){
-                    minerTransactionNumber++;
+                    maintenanceTransactionRNumber++;
                     maintenanceTransaction = transaction;
                 }
             }
         }
-        if(minerTransactionNumber > 1){
+        if(maintenanceTransactionRNumber > 1){
             logger.debug("区块数据异常，一个区块社区维护的交易只能有一笔。");
             return false;
         }
