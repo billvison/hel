@@ -14,6 +14,9 @@ public class FileUtil {
     }
 
     public static void mkdir(File file) {
+        if(file.exists()){
+            return;
+        }
         boolean mkdirs = file.mkdirs();
         if(!mkdirs){
             throw new RuntimeException("创建目录失败。");
