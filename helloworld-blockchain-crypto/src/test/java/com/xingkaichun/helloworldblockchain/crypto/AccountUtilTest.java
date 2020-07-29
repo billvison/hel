@@ -20,14 +20,14 @@ public class AccountUtilTest {
         StringAccount stringAccount = AccountUtil.stringAccountFrom(STRING_ACCOUNT.getStringPrivateKey());
         assertTrue(STRING_ACCOUNT.getStringPrivateKey().getValue().equals(stringAccount.getStringPrivateKey().getValue()));
         assertTrue(STRING_ACCOUNT.getStringPublicKey().getValue().equals(stringAccount.getStringPublicKey().getValue()));
-        assertTrue(STRING_ACCOUNT.getStringAddress().equals(stringAccount.getStringAddress()));
+        assertTrue(STRING_ACCOUNT.getStringAddress().getValue().equals(stringAccount.getStringAddress().getValue()));
     }
 
     @Test
     public void stringAddressFromTest()
     {
         StringAddress stringAddress = AccountUtil.stringAddressFrom(STRING_ACCOUNT.getStringPublicKey());
-        assertTrue(STRING_ACCOUNT.getStringAddress().equals(stringAddress));
+        assertTrue(STRING_ACCOUNT.getStringAddress().getValue().equals(stringAddress.getValue()));
     }
 
 }
