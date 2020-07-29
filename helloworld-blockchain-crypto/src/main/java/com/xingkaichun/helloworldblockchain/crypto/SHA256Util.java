@@ -16,10 +16,10 @@ public class SHA256Util {
     /**
      * Sha256消息摘要
      */
-    public static byte[] applySha256(byte[] input) {
+    public static byte[] digest(byte[] input) {
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256",JavaCryptographyExtensionProviderUtil.getBouncyCastleProviderName());
-            byte[] sha256Digest = digest.digest(input);
+            MessageDigest sha256MessageDigest = MessageDigest.getInstance("SHA-256",JavaCryptographyExtensionProviderUtil.getBouncyCastleProviderName());
+            byte[] sha256Digest = sha256MessageDigest.digest(input);
             return sha256Digest;
         } catch (Exception e) {
             throw new RuntimeException(e);

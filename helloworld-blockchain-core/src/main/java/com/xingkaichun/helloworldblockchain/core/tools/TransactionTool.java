@@ -180,8 +180,8 @@ public class TransactionTool {
         if(messageList != null && messageList.size()!=0){
             data += "[" + Joiner.on(",").join(messageList) + "]";
         }
-        byte[] byteSha256 = SHA256Util.applySha256(ByteUtil.stringToBytes(data));
-        String base64Encode = Base64Util.encode(byteSha256);
+        byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(data));
+        String base64Encode = Base64Util.encode(sha256Digest);
         return base64Encode + currentTimeMillis;
     }
 
@@ -208,8 +208,8 @@ public class TransactionTool {
         forHash += "[" + address + "]";
         forHash += "[" + value + "]";
         forHash += "[" + Joiner.on(" ").join(scriptLock) + "]";
-        byte[] sha256 = SHA256Util.applySha256(ByteUtil.stringToBytes(forHash));
-        String base58Encode = Base58Util.encode(sha256);
+        byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(forHash));
+        String base58Encode = Base58Util.encode(sha256Digest);
         return base58Encode + currentTimeMillis;
     }
 }

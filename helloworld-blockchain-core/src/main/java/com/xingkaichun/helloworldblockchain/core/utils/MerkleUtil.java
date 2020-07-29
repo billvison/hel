@@ -56,7 +56,7 @@ public class MerkleUtil {
     }
 
     private static String sha256Base64(String inputs) {
-        byte[] sha256Digest = SHA256Util.applySha256(ByteUtil.stringToBytes(inputs));
+        byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(inputs));
         return Base64Util.encode(sha256Digest);
     }
 }

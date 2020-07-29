@@ -16,10 +16,11 @@ public class RipeMD160Util {
     /**
      * RipeMD160消息摘要
      */
-    public static byte[] applyRipeMD160(byte[] data) {
+    public static byte[] digest(byte[] data) {
         try {
-            MessageDigest ripeMD160Digest = MessageDigest.getInstance("RipeMD160",JavaCryptographyExtensionProviderUtil.getBouncyCastleProviderName());
-            return ripeMD160Digest.digest(data);
+            MessageDigest ripeMD160MessageDigest = MessageDigest.getInstance("RipeMD160",JavaCryptographyExtensionProviderUtil.getBouncyCastleProviderName());
+            byte[] ripeMD160Digest = ripeMD160MessageDigest.digest(data);
+            return ripeMD160Digest;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

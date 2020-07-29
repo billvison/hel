@@ -209,20 +209,20 @@ public class AccountUtil {
      * 公钥生成base58格式地址
      */
     private static String base58AddressFrom(byte[] bytePublicKey) {
-        byte[] pubKSha256 = SHA256Util.applySha256(bytePublicKey);
-        byte[] pubKSha256RipeMD160 = RipeMD160Util.applyRipeMD160(pubKSha256);
+        byte[] pubKSha256Digest = SHA256Util.digest(bytePublicKey);
+        byte[] pubKSha256DigestRipeMD160Digest = RipeMD160Util.digest(pubKSha256Digest);
 
         //地址数组
         byte[] byteAddress = new byte[1 + 20 + 4];
 
         //将地址的版本号0x00存储进地址数组
         byteAddress[0] = 0x00;
-        System.arraycopy(pubKSha256RipeMD160, 0, byteAddress, 1, 20);
+        System.arraycopy(pubKSha256DigestRipeMD160Digest, 0, byteAddress, 1, 20);
 
         //计算公钥Hash
         byte[] versionAndPubKSha256RipeMD160 = new byte[21];
         System.arraycopy(byteAddress, 0, versionAndPubKSha256RipeMD160, 0, 21);
-        byte[] doubleSHA256 = SHA256Util.applySha256(SHA256Util.applySha256(versionAndPubKSha256RipeMD160));
+        byte[] doubleSHA256 = SHA256Util.digest(SHA256Util.digest(versionAndPubKSha256RipeMD160));
 
         //取前四位作为地址校验码，将校验码前四位加到地址数组的末四位
         System.arraycopy(doubleSHA256, 0, byteAddress, 21, 4);

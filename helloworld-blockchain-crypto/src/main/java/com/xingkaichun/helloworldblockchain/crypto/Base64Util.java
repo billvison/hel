@@ -9,10 +9,6 @@ import org.bouncycastle.util.encoders.Base64;
  */
 public class Base64Util {
 
-    static {
-        JavaCryptographyExtensionProviderUtil.addBouncyCastleProvider();
-    }
-
     /**
      * Base64编码
      */
