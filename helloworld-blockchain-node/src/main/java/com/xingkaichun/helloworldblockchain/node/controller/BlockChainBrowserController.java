@@ -4,11 +4,9 @@ import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
@@ -22,6 +20,7 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.BlockChainApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response.*;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +84,7 @@ public class BlockChainBrowserController {
                 return ServiceResult.createFailServiceResult("私钥不能为空");
             }
             try {
-                AccountUtil.stringAccountFrom(new StringPrivateKey(privateKey));
+                AccountUtil.stringAccountFrom(privateKey);
             } catch (Exception e){
                 return ServiceResult.createFailServiceResult("私钥不正确，请检查输入的私钥");
             }

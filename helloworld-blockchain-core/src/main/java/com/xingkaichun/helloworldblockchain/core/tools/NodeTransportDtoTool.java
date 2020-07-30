@@ -11,7 +11,6 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDTO;
@@ -225,8 +224,8 @@ public class NodeTransportDtoTool {
     /**
      * 交易签名
      */
-    public static String signature(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) {
-        String strSignature = AccountUtil.signature(stringPrivateKey,signatureData(transactionDTO));
+    public static String signature(TransactionDTO transactionDTO, String privateKey) {
+        String strSignature = AccountUtil.signature(privateKey,signatureData(transactionDTO));
         return strSignature;
     }
 

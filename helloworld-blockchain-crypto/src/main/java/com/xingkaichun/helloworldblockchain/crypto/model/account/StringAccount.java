@@ -14,12 +14,12 @@ import java.io.Serializable;
  */
 public class StringAccount implements Serializable {
 
-    private StringPrivateKey stringPrivateKey;
+    private String privateKey;
     private String publicKey;
     private String address;
 
-    public StringAccount(StringPrivateKey stringPrivateKey, String publicKey, String address) {
-        this.stringPrivateKey = stringPrivateKey;
+    public StringAccount(String privateKey, String publicKey, String address) {
+        this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.address = address;
     }
@@ -27,12 +27,12 @@ public class StringAccount implements Serializable {
 
     //region get set
 
-    public StringPrivateKey getStringPrivateKey() {
-        return stringPrivateKey;
+    public String getPrivateKey() {
+        return privateKey;
     }
 
-    public void setStringPrivateKey(StringPrivateKey stringPrivateKey) {
-        this.stringPrivateKey = stringPrivateKey;
+    public void setPrivateKey(String privateKey) {
+        this.privateKey = privateKey;
     }
 
     public String getPublicKey() {

@@ -11,7 +11,6 @@ import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.Base58Util;
 import com.xingkaichun.helloworldblockchain.crypto.Base64Util;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDTO;
@@ -83,8 +82,8 @@ public class TransactionTool {
     /**
      * 交易签名
      */
-    public static String signature(StringPrivateKey stringPrivateKey, Transaction transaction) {
-        String strSignature = AccountUtil.signature(stringPrivateKey, getSignatureData(transaction));
+    public static String signature(String privateKey, Transaction transaction) {
+        String strSignature = AccountUtil.signature(privateKey, getSignatureData(transaction));
         return strSignature;
     }
 

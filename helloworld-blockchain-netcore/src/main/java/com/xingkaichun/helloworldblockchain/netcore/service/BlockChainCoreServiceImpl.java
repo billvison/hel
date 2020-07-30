@@ -11,7 +11,6 @@ import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.EmptyResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
@@ -110,7 +109,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     private TransactionDTO classCast(NormalTransactionDto normalTransactionDto) throws Exception {
         long currentTimeMillis = System.currentTimeMillis();
 
-        StringAccount stringAccount = AccountUtil.stringAccountFrom(new StringPrivateKey(normalTransactionDto.getPrivateKey()));
+        StringAccount stringAccount = AccountUtil.stringAccountFrom(normalTransactionDto.getPrivateKey());
 
         List<NormalTransactionDto.Output> outputs = normalTransactionDto.getOutputs();
         List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();
@@ -176,14 +175,14 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         transactionDTO.setOutputs(transactionOutputDtoList);
 
         for(TransactionInputDTO transactionInputDTO:transactionInputDtoList){
-            String signature = signatureTransactionDTO(transactionDTO, stringAccount.getStringPrivateKey());
+            String signature = signatureTransactionDTO(transactionDTO, stringAccount.getPrivateKey());
             transactionInputDTO.setScriptKey(StackBasedVirtualMachine.createPayToClassicAddressInputScript(signature, stringAccount.getPublicKey()));
         }
         return transactionDTO;
     }
 
-    public String signatureTransactionDTO(TransactionDTO transactionDTO, StringPrivateKey stringPrivateKey) {
-        String signature = NodeTransportDtoTool.signature(transactionDTO,stringPrivateKey);
+    public String signatureTransactionDTO(TransactionDTO transactionDTO, String privateKey) {
+        String signature = NodeTransportDtoTool.signature(transactionDTO,privateKey);
         return signature;
     }
 
