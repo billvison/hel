@@ -12,9 +12,9 @@ public class AccountUtilTest {
             ,"164qdFjYmbwPybeXrfFayAgjpp1nsCuWRg");
 
     @Test
-    public void stringAccountFromTest()
+    public void accountFromPrivateKeyTest()
     {
-        Account account = AccountUtil.stringAccountFrom(STRING_ACCOUNT.getPrivateKey());
+        Account account = AccountUtil.accountFromPrivateKey(STRING_ACCOUNT.getPrivateKey());
         assertTrue(STRING_ACCOUNT.getPrivateKey().equals(account.getPrivateKey()));
         assertTrue(STRING_ACCOUNT.getAddress().equals(account.getAddress()));
         assertTrue(STRING_ACCOUNT.getAddress().equals(account.getAddress()));

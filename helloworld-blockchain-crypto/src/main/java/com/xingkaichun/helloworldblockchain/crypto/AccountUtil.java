@@ -46,7 +46,7 @@ public class AccountUtil {
     /**
      * 随机生成一个账户
      */
-    public static Account randomStringAccount() {
+    public static Account randomAccount() {
         try {
             ECKeyPairGenerator generator = new ECKeyPairGenerator();
             ECKeyGenerationParameters keygenParams = new ECKeyGenerationParameters(ecParams, secureRandom);
@@ -69,7 +69,7 @@ public class AccountUtil {
     /**
      * 私钥生成账户
      */
-    public static Account stringAccountFrom(String privateKey) {
+    public static Account accountFromPrivateKey(String privateKey) {
         try {
             BigInteger priv = privateKeyFrom(privateKey);
             byte[] ecPublicKey = publicFromPrivate(priv);

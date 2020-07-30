@@ -60,7 +60,7 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.GENERATE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<GenerateAccountResponse> generateWallet(@RequestBody GenerateAccountRequest request){
         try {
-            Account account = AccountUtil.randomStringAccount();
+            Account account = AccountUtil.randomAccount();
             GenerateAccountResponse response = new GenerateAccountResponse();
             response.setAccount(account);
             return ServiceResult.createSuccessServiceResult("生成钱包成功",response);
@@ -84,7 +84,7 @@ public class BlockChainBrowserController {
                 return ServiceResult.createFailServiceResult("私钥不能为空");
             }
             try {
-                AccountUtil.stringAccountFrom(privateKey);
+                AccountUtil.accountFromPrivateKey(privateKey);
             } catch (Exception e){
                 return ServiceResult.createFailServiceResult("私钥不正确，请检查输入的私钥");
             }

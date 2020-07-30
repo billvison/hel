@@ -90,7 +90,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                 Account account = gson.fromJson(configurationDto.getConfValue(),Account.class);
                 return account;
             }
-            Account defaultAccount = AccountUtil.randomStringAccount();
+            Account defaultAccount = AccountUtil.randomAccount();
             ConfigurationDto defaultAccountConfigurationDto =
                     new ConfigurationDto(ConfigurationEnum.DEFAULT_MINER_ACCOUNT.name(),gson.toJson(defaultAccount));
             setConfiguration(defaultAccountConfigurationDto);
