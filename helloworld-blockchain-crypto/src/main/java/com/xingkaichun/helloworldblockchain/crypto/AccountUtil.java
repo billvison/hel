@@ -56,9 +56,9 @@ public class AccountUtil {
             ECPublicKeyParameters pubParams = (ECPublicKeyParameters) keypair.getPublic();
             BigInteger priv = privParams.getD();
             byte[] pub = pubParams.getQ().getEncoded(compressed);
-            String privateKey = stringPrivateKeyFrom(priv);
-            String publicKey = stringPublicKeyFrom(pub);
-            String address = stringAddressFrom(publicKey);
+            String privateKey = encodePrivateKey(priv);
+            String publicKey = encodePublicKey(pub);
+            String address = addressFromPublicKey(publicKey);
             StringAccount stringAccount = new StringAccount(privateKey,publicKey,address);
             return stringAccount;
         } catch (Exception e) {
@@ -74,8 +74,8 @@ public class AccountUtil {
             BigInteger priv = privateKeyFrom(privateKey);
             byte[] ecPublicKey = publicFromPrivate(priv);
 
-            String publicKey = stringPublicKeyFrom(ecPublicKey);
-            String address = stringAddressFrom(publicKey);
+            String publicKey = encodePublicKey(ecPublicKey);
+            String address = addressFromPublicKey(publicKey);
             StringAccount stringAccount = new StringAccount(privateKey,publicKey,address);
             return stringAccount;
         } catch (Exception e) {
@@ -86,7 +86,7 @@ public class AccountUtil {
     /**
      * 公钥生成地址
      */
-    public static String stringAddressFrom(String publicKey) {
+    public static String addressFromPublicKey(String publicKey) {
         try {
             byte[] bytePublicKey = HexUtil.hexStringToBytes(publicKey);
             return base58AddressFrom(bytePublicKey);
@@ -149,14 +149,14 @@ public class AccountUtil {
     /**
      * 将原始私钥进行编码操作，生成编码私钥
      */
-    private static String stringPrivateKeyFrom(BigInteger bigIntegerPrivateKey) {
+    private static String encodePrivateKey(BigInteger bigIntegerPrivateKey) {
         String hexPrivateKey = HexUtil.bytesToHexString(bigIntegerPrivateKey.toByteArray());
         return hexPrivateKey;
     }
     /**
      * 将原始公钥进行编码操作，生成编码公钥
      */
-    private static String stringPublicKeyFrom(byte[] bytePublicKey) {
+    private static String encodePublicKey(byte[] bytePublicKey) {
         String hexPublicKey = HexUtil.bytesToHexString(bytePublicKey);
         return hexPublicKey;
     }

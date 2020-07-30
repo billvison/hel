@@ -21,9 +21,9 @@ public class AccountUtilTest {
     }
 
     @Test
-    public void stringAddressFromTest()
+    public void addressFromPublicKeyTest()
     {
-        String address = AccountUtil.stringAddressFrom(STRING_ACCOUNT.getPublicKey());
+        String address = AccountUtil.addressFromPublicKey(STRING_ACCOUNT.getPublicKey());
         assertTrue(STRING_ACCOUNT.getAddress().equals(address));
     }
 
