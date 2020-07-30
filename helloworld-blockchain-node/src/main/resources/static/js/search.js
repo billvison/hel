@@ -203,7 +203,7 @@ function txosByAddress(result){
 	} else {
         for (var i=0; i<result.txos.length; i++) {
             temp += '<dl><dd>transactionOutputHash: ' + result.txos[i].transactionOutputHash + '</dd>' +
-                    '<dd>stringAddress: ' + result.txos[i].stringAddress.value + '</dd>' +
+                    '<dd>stringAddress: ' + result.txos[i].address + '</dd>' +
                     '<dd>value: ' + result.txos[i].value + '</dd>' +
                     '<dd>scriptLock: ' + JSON.stringify(result.txos[i].scriptLock)+ '</dd>' +
                     '<dd>blockHeight: ' + result.txos[i].blockHeight + '</dd>' +
@@ -219,7 +219,7 @@ function utxosByAddress(result){
 	} else {
         for (var i=0; i<result.utxos.length; i++) {
             temp += '<dl><dd>transactionOutputHash: ' + result.utxos[i].transactionOutputHash + '</dd>' +
-                    '<dd>stringAddress: ' + result.utxos[i].stringAddress.value + '</dd>' +
+                    '<dd>stringAddress: ' + result.utxos[i].address + '</dd>' +
                     '<dd>value: ' + result.utxos[i].value + '</dd>' +
                     '<dd>scriptLock: ' + JSON.stringify(result.utxos[i].scriptLock)+ '</dd>' +
                     '<dd>blockHeight: ' + result.utxos[i].blockHeight + '</dd>' +
@@ -337,7 +337,7 @@ function tempTransList(result){
 			if (result.transactionList[j].inputs !== null) {
 				for (var i=0; i<result.transactionList[j].inputs.length; i++) {
 					char += '<dl class="child"><dd>unspendTransactionOutputHash: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.transactionOutputHash + '</dd>' +
-							'<dd>stringAddress: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.stringAddress.value + '</dd>' +
+							'<dd>stringAddress: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.address + '</dd>' +
 							'<dd>value: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.value + '</dd>' +
 							'<dd>blockHeight: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.blockHeight + '</dd>' +
 							'<dd>transactionSequenceNumberInBlock: ' + result.transactionList[j].inputs[i].unspendTransactionOutput.transactionSequenceNumberInBlock + '</dd>' +
@@ -355,7 +355,7 @@ function tempTransList(result){
 			if (result.transactionList[j].outputs !== null) {
 				for (var i=0; i<result.transactionList[j].outputs.length; i++) {
 					char += '<dl class="child"><dd>transactionOutputHash: ' + result.transactionList[j].outputs[i].transactionOutputHash + '</dd>' +
-							'<dd>stringAddress: ' + result.transactionList[j].outputs[i].stringAddress.value + '</dd>' +
+							'<dd>stringAddress: ' + result.transactionList[j].outputs[i].address + '</dd>' +
 							'<dd>value: ' + result.transactionList[j].outputs[i].value + '</dd>' +
 							'<dd>scriptLock: ' + JSON.stringify(result.transactionList[j].outputs[i].scriptLock) + '</dd>' +
 							'<dd>blockHeight: ' + result.transactionList[j].outputs[i].blockHeight + '</dd>' +
