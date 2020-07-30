@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
 
-import com.xingkaichun.helloworldblockchain.crypto.model.account.Account;
+import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 
 /**

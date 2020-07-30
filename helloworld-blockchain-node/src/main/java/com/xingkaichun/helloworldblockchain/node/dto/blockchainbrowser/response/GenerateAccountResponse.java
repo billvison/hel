@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response;
 
 
-import com.xingkaichun.helloworldblockchain.crypto.model.account.Account;
+import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 
 /**
  *

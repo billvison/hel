@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
-import com.xingkaichun.helloworldblockchain.crypto.model.account.Account;
+import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
