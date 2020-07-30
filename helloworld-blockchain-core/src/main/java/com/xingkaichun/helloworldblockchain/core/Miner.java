@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.core;
 
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 
 /**
  * 矿工:挖矿、分配挖矿奖励、将挖取的区块放入区块链
@@ -12,14 +11,14 @@ import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 public abstract class Miner {
 
     //矿工钱包地址
-    protected StringAddress minerStringAddress;
+    protected String minerAddress;
     //矿工挖矿所在的区块链
     protected BlockChainDataBase blockChainDataBase;
     //矿工交易数据库：矿工从交易数据库里获取挖矿的原材料(交易数据)
     protected MinerTransactionDtoDataBase minerTransactionDtoDataBase;
 
-    public Miner(StringAddress minerStringAddress, BlockChainDataBase blockChainDataBase, MinerTransactionDtoDataBase minerTransactionDtoDataBase) {
-        this.minerStringAddress = minerStringAddress;
+    public Miner(String minerAddress, BlockChainDataBase blockChainDataBase, MinerTransactionDtoDataBase minerTransactionDtoDataBase) {
+        this.minerAddress = minerAddress;
         this.blockChainDataBase = blockChainDataBase;
         this.minerTransactionDtoDataBase = minerTransactionDtoDataBase;
     }
@@ -62,16 +61,16 @@ public abstract class Miner {
     /**
      * 重置矿工地址
      */
-    public void resetMinerStringAddress(StringAddress minerStringAddress) {
-        this.minerStringAddress = minerStringAddress;
+    public void resetMinerAddress(String minerAddress) {
+        this.minerAddress = minerAddress;
     }
 
 
 
 
     //region get set
-    public StringAddress getMinerStringAddress() {
-        return minerStringAddress;
+    public String getMinerAddress() {
+        return minerAddress;
     }
 
     public BlockChainDataBase getBlockChainDataBase() {

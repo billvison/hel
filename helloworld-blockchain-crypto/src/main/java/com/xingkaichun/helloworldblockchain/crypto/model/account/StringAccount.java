@@ -16,12 +16,12 @@ public class StringAccount implements Serializable {
 
     private StringPrivateKey stringPrivateKey;
     private StringPublicKey stringPublicKey;
-    private StringAddress stringAddress;
+    private String address;
 
-    public StringAccount(StringPrivateKey stringPrivateKey, StringPublicKey stringPublicKey, StringAddress stringAddress) {
+    public StringAccount(StringPrivateKey stringPrivateKey, StringPublicKey stringPublicKey, String address) {
         this.stringPrivateKey = stringPrivateKey;
         this.stringPublicKey = stringPublicKey;
-        this.stringAddress = stringAddress;
+        this.address = address;
     }
 
 
@@ -43,13 +43,13 @@ public class StringAccount implements Serializable {
         this.stringPublicKey = stringPublicKey;
     }
 
-    public StringAddress getStringAddress() {
-        return stringAddress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setStringAddress(StringAddress stringAddress) {
-        this.stringAddress = stringAddress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    //endregion
+//endregion
 }

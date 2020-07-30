@@ -1,7 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 import com.xingkaichun.helloworldblockchain.core.impl.*;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 
 import java.io.File;
 
@@ -27,8 +26,7 @@ public class BlockChainCoreFactory {
         BlockChainDataBase blockChainDataBase = new BlockChainDataBaseDefaultImpl(blockchainDataPath,incentive,consensus);
 
         MinerTransactionDtoDataBase minerTransactionDtoDataBase = new MinerTransactionDtoDtoDataBaseDefaultImpl(blockchainDataPath);
-        StringAddress minerStringAddress = new StringAddress(minerAddress);
-        Miner miner = new MinerDefaultImpl(blockChainDataBase, minerTransactionDtoDataBase,minerStringAddress);
+        Miner miner = new MinerDefaultImpl(blockChainDataBase, minerTransactionDtoDataBase, minerAddress);
 
         SynchronizerDataBase synchronizerDataBase = new SynchronizerDataBaseDefaultImpl(blockchainDataPath);
         BlockChainDataBase temporaryBlockChainDataBase = new BlockChainDataBaseDefaultImpl(new File(blockchainDataPath,"TemporaryBlockChainDataBase").getAbsolutePath(),incentive,consensus);

@@ -60,7 +60,7 @@ public class StackBasedVirtualMachine {
                     stack.push(stack.peek());
                 }else if(OPERATION_CODE_PUBLIC_KEY_TO_CLASSIC_ADDRESS.equals(command)){
                     String top = stack.peek();
-                    String address = AccountUtil.stringAddressFrom(new StringPublicKey(top)).getValue();
+                    String address = AccountUtil.stringAddressFrom(new StringPublicKey(top));
                     stack.pop();
                     stack.push(address);
                 }else if(OPERATION_CODE_EQUAL_VERIFY.equals(command)){

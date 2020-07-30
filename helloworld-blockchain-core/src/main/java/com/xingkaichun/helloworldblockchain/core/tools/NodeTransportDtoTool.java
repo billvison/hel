@@ -9,15 +9,14 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDTO;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -206,7 +205,7 @@ public class NodeTransportDtoTool {
     public static TransactionOutput classCast(TransactionDTO transactionDTO, TransactionOutputDTO transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
         transactionOutput.setTransactionOutputHash(TransactionTool.calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
-        transactionOutput.setStringAddress(new StringAddress(transactionOutputDTO.getAddress()));
+        transactionOutput.setAddress(transactionOutputDTO.getAddress());
         transactionOutput.setValue(new BigDecimal(transactionOutputDTO.getValue()));
         transactionOutput.setScriptLock(scriptLockFrom(transactionOutputDTO.getScriptLock()));
         return transactionOutput;
@@ -217,7 +216,7 @@ public class NodeTransportDtoTool {
      */
     public static TransactionOutputDTO classCast(TransactionOutput transactionOutput) {
         TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-        transactionOutputDTO.setAddress(transactionOutput.getStringAddress().getValue());
+        transactionOutputDTO.setAddress(transactionOutput.getAddress());
         transactionOutputDTO.setValue(transactionOutput.getValue().toPlainString());
         transactionOutputDTO.setScriptLock(transactionOutput.getScriptLock());
         return transactionOutputDTO;

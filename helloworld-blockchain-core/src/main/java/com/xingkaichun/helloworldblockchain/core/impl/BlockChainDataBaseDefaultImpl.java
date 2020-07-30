@@ -18,7 +18,6 @@ import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.EncodeDecodeUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.LevelDBUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.ByteUtil;
 import org.iq80.leveldb.DB;
@@ -922,7 +921,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToTransactionOuputListKey(TransactionOutput transactionOutput) {
-        String address = transactionOutput.getStringAddress().getValue();
+        String address = transactionOutput.getAddress();
         String transactionOutputHash = transactionOutput.getTransactionOutputHash();
         String stringKey = ADDRESS_TO_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG + transactionOutputHash;
         return LevelDBUtil.stringToBytes(stringKey);
@@ -932,7 +931,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return LevelDBUtil.stringToBytes(stringKey);
     }
     private byte[] buildAddressToUnspendTransactionOutputListKey(TransactionOutput transactionOutput) {
-        String address = transactionOutput.getStringAddress().getValue();
+        String address = transactionOutput.getAddress();
         String transactionOutputHash = transactionOutput.getTransactionOutputHash();
         String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG + transactionOutputHash;
         return LevelDBUtil.stringToBytes(stringKey);
@@ -1107,10 +1106,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public List<TransactionOutput> queryUnspendTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception {
+    public List<TransactionOutput> queryUnspendTransactionOuputListByAddress(String address,long from,long size) throws Exception {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
-        byte[] addressToUnspendTransactionOutputListKey = buildAddressToUnspendTransactionOutputListKey(stringAddress.getValue());
+        byte[] addressToUnspendTransactionOutputListKey = buildAddressToUnspendTransactionOutputListKey(address);
         int currentFrom = 0;
         int currentSize = 0;
         for (iterator.seek(addressToUnspendTransactionOutputListKey); iterator.hasNext(); iterator.next()) {
@@ -1150,10 +1149,10 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception {
+    public List<TransactionOutput> queryTransactionOuputListByAddress(String address,long from,long size) throws Exception {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
-        byte[] addressToTransactionOutputListKey = buildAddressToTransactionOuputListKey(stringAddress.getValue());
+        byte[] addressToTransactionOutputListKey = buildAddressToTransactionOuputListKey(address);
         int currentFrom = 0;
         int currentSize = 0;
         for (iterator.seek(addressToTransactionOutputListKey); iterator.hasNext(); iterator.next()) {

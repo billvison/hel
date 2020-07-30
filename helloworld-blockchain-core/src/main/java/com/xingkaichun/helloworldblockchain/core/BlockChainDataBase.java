@@ -3,7 +3,6 @@ package com.xingkaichun.helloworldblockchain.core;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -113,13 +112,13 @@ public abstract class BlockChainDataBase {
     /**
      * 根据地址查询未花费交易输出
      */
-    public abstract List<TransactionOutput> queryUnspendTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception ;
+    public abstract List<TransactionOutput> queryUnspendTransactionOuputListByAddress(String address,long from,long size) throws Exception ;
 
 
     /**
      * 根据地址查询交易输出
      */
-    public abstract List<TransactionOutput> queryTransactionOuputListByAddress(StringAddress stringAddress,long from,long size) throws Exception ;
+    public abstract List<TransactionOutput> queryTransactionOuputListByAddress(String address,long from,long size) throws Exception ;
 
 
     /**

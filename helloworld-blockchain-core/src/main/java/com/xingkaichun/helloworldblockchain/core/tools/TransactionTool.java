@@ -189,7 +189,7 @@ public class TransactionTool {
      * 计算交易输出哈希
      */
     public static String calculateTransactionOutputHash(Transaction transaction,TransactionOutput output) {
-        return calculateTransactionOutputHash(transaction.getTimestamp(),output.getStringAddress().getValue(),output.getValue().toPlainString(),output.getScriptLock());
+        return calculateTransactionOutputHash(transaction.getTimestamp(),output.getAddress(),output.getValue().toPlainString(),output.getScriptLock());
     }
 
     /**

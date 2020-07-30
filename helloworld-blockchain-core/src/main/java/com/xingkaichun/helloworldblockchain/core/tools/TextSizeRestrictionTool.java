@@ -1,15 +1,14 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.core.model.script.Script;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.model.script.Script;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,12 +115,12 @@ public class TextSizeRestrictionTool {
         //校验交易输出
         if(outputs != null){
             for(TransactionOutput transactionOutput:outputs){
-                StringAddress stringAddress = transactionOutput.getStringAddress();
-                if(stringAddress.getValue().length()<=20){
+                String address = transactionOutput.getAddress();
+                if(address.length()<=20){
                     logger.debug("钱包地址长度过短");
                     return false;
                 }
-                if(stringAddress.getValue().length()>=40){
+                if(address.length()>=40){
                     logger.debug("钱包地址长度过长");
                     return false;
                 }
@@ -208,8 +207,8 @@ public class TextSizeRestrictionTool {
         if(output == null){
             return 0L;
         }
-        StringAddress stringAddress = output.getStringAddress();
-        size += stringAddress.getValue().length();
+        String address = output.getAddress();
+        size += address.length();
         BigDecimal bigDecimal = output.getValue();
         size += calculateBigDecimalTextSize(bigDecimal);
         ScriptLock scriptLock = output.getScriptLock();

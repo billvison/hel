@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.core.model.transaction;
 
 
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -29,7 +28,7 @@ public class TransactionOutput implements Serializable {
      */
     private String transactionOutputHash;
     //交易输出的地址
-    private StringAddress stringAddress;
+    private String address;
     //交易输出的金额
     private BigDecimal value;
     /**
@@ -71,12 +70,12 @@ public class TransactionOutput implements Serializable {
         this.transactionOutputHash = transactionOutputHash;
     }
 
-    public StringAddress getStringAddress() {
-        return stringAddress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setStringAddress(StringAddress stringAddress) {
-        this.stringAddress = stringAddress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public BigDecimal getValue() {

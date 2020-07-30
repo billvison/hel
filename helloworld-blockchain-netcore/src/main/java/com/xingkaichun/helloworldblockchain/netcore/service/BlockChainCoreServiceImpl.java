@@ -7,12 +7,10 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.EmptyResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
@@ -24,6 +22,7 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDTO;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -68,8 +67,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         if(pageCondition == null){
             pageCondition = PageCondition.DEFAULT_PAGE_CONDITION;
         }
-        StringAddress stringAddress = new StringAddress(address);
-        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryUnspendTransactionOuputListByAddress(stringAddress,pageCondition.getFrom(),pageCondition.getSize());
+        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryUnspendTransactionOuputListByAddress(address,pageCondition.getFrom(),pageCondition.getSize());
         return utxo;
     }
 
@@ -78,8 +76,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         if(pageCondition == null){
             pageCondition = PageCondition.DEFAULT_PAGE_CONDITION;
         }
-        StringAddress stringAddress = new StringAddress(address);
-        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryTransactionOuputListByAddress(stringAddress,pageCondition.getFrom(),pageCondition.getSize());
+        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryTransactionOuputListByAddress(address,pageCondition.getFrom(),pageCondition.getSize());
         return utxo;
     }
 
@@ -132,7 +129,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         //手续费
         values = values.add(GlobalSetting.TransactionConstant.MIN_TRANSACTION_FEE);
 
-        List<TransactionOutput> utxoList = blockChainCore.getBlockChainDataBase().queryUnspendTransactionOuputListByAddress(stringAccount.getStringAddress(),0,100);
+        List<TransactionOutput> utxoList = blockChainCore.getBlockChainDataBase().queryUnspendTransactionOuputListByAddress(stringAccount.getAddress(),0,100);
         //交易输入列表
         List<String> inputs = new ArrayList<>();
         //交易输入总金额
@@ -156,9 +153,9 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
             //找零
             change = useValues.subtract(values);
             TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-            transactionOutputDTO.setAddress(stringAccount.getStringAddress().getValue());
+            transactionOutputDTO.setAddress(stringAccount.getAddress());
             transactionOutputDTO.setValue(change.toPlainString());
-            transactionOutputDTO.setScriptLock(StackBasedVirtualMachine.createPayToClassicAddressOutputScript(stringAccount.getStringAddress().getValue()));
+            transactionOutputDTO.setScriptLock(StackBasedVirtualMachine.createPayToClassicAddressOutputScript(stringAccount.getAddress()));
             transactionOutputDtoList.add(transactionOutputDTO);
         }
 

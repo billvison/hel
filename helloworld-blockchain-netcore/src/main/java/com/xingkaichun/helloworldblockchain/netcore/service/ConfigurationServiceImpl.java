@@ -106,7 +106,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
             minerAddress = minerAddressConfigurationDto.getConfValue();
         }else {
             StringAccount stringAccount = getDefaultMinerAccount();
-            minerAddress = stringAccount.getStringAddress().getValue();
+            minerAddress = stringAccount.getAddress();
         }
         return minerAddress;
     }

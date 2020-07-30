@@ -1,7 +1,6 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.util.ByteUtil;
@@ -61,8 +60,8 @@ public class AccountUtil {
             byte[] pub = pubParams.getQ().getEncoded(compressed);
             StringPrivateKey stringPrivateKey = stringPrivateKeyFrom(priv);
             StringPublicKey stringPublicKey = stringPublicKeyFrom(pub);
-            StringAddress stringAddress = stringAddressFrom(stringPublicKey);
-            StringAccount stringAccount = new StringAccount(stringPrivateKey,stringPublicKey,stringAddress);
+            String address = stringAddressFrom(stringPublicKey);
+            StringAccount stringAccount = new StringAccount(stringPrivateKey,stringPublicKey,address);
             return stringAccount;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -78,8 +77,8 @@ public class AccountUtil {
             byte[] ecPublicKey = publicFromPrivate(priv);
 
             StringPublicKey stringPublicKey = stringPublicKeyFrom(ecPublicKey);
-            StringAddress stringAddress = stringAddressFrom(stringPublicKey);
-            StringAccount stringAccount = new StringAccount(stringPrivateKey,stringPublicKey,stringAddress);
+            String address = stringAddressFrom(stringPublicKey);
+            StringAccount stringAccount = new StringAccount(stringPrivateKey,stringPublicKey,address);
             return stringAccount;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -89,10 +88,10 @@ public class AccountUtil {
     /**
      * 公钥生成地址
      */
-    public static StringAddress stringAddressFrom(StringPublicKey stringPublicKey) {
+    public static String stringAddressFrom(StringPublicKey stringPublicKey) {
         try {
             byte[] bytePublicKey = HexUtil.hexStringToBytes(stringPublicKey.getValue());
-            return new StringAddress(base58AddressFrom(bytePublicKey));
+            return base58AddressFrom(bytePublicKey);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

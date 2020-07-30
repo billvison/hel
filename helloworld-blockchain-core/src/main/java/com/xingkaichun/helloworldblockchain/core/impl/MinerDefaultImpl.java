@@ -3,20 +3,19 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Miner;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
+import com.xingkaichun.helloworldblockchain.core.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.StackBasedVirtualMachine;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.CommunityMaintenanceTransactionTool;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +41,8 @@ public class MinerDefaultImpl extends Miner {
      */
     private ThreadLocal<MiningBlock> miningBlockThreadLocal;
 
-    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, MinerTransactionDtoDataBase minerTransactionDtoDataBase, StringAddress minerStringAddress) {
-        super(minerStringAddress,blockChainDataBase,minerTransactionDtoDataBase);
+    public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, MinerTransactionDtoDataBase minerTransactionDtoDataBase, String minerAddress) {
+        super(minerAddress,blockChainDataBase,minerTransactionDtoDataBase);
         miningBlockThreadLocal = new ThreadLocal<>();
     }
     //endregion
@@ -368,9 +367,9 @@ public class MinerDefaultImpl extends Miner {
         BigDecimal award = blockChainDataBase.getIncentive().mineAward(blockChainDataBase,block);
 
         TransactionOutput output = new TransactionOutput();
-        output.setStringAddress(minerStringAddress);
+        output.setAddress(minerAddress);
         output.setValue(award);
-        output.setScriptLock(StackBasedVirtualMachine.createPayToClassicAddressOutputScript(minerStringAddress.getValue()));
+        output.setScriptLock(StackBasedVirtualMachine.createPayToClassicAddressOutputScript(minerAddress));
         output.setTransactionOutputHash(TransactionTool.calculateTransactionOutputHash(transaction,output));
         outputs.add(output);
 

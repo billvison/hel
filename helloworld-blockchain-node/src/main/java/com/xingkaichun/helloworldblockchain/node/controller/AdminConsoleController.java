@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 
 import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAddress;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
@@ -255,7 +254,7 @@ public class AdminConsoleController {
             if(blockChainCore.getMiner().isActive()){
                 return ServiceResult.createFailServiceResult("矿工正在挖矿，请先暂停挖矿，再设置矿工钱包地址");
             }
-            blockChainCore.getMiner().resetMinerStringAddress(new StringAddress(request.getMinerAddress()));
+            blockChainCore.getMiner().resetMinerAddress(request.getMinerAddress());
             ConfigurationDto configurationDto = new ConfigurationDto();
             configurationDto.setConfKey(ConfigurationEnum.MINER_ADDRESS.name());
             configurationDto.setConfValue(request.getMinerAddress());
