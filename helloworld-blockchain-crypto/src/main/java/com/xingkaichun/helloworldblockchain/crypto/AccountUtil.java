@@ -34,7 +34,6 @@ public class AccountUtil {
 
     private static final ECDomainParameters ecParams;
     private static final SecureRandom secureRandom;
-    //whether to generate a compressed point encoding
     private static final boolean compressed = false;
 
     static {
@@ -59,7 +58,6 @@ public class AccountUtil {
             ECPrivateKeyParameters privParams = (ECPrivateKeyParameters) keypair.getPrivate();
             ECPublicKeyParameters pubParams = (ECPublicKeyParameters) keypair.getPublic();
             BigInteger priv = privParams.getD();
-            // The public key is an encoded point on the elliptic curve. It has no meaning independent of the curve.
             byte[] pub = pubParams.getQ().getEncoded(compressed);
             StringPrivateKey stringPrivateKey = stringPrivateKeyFrom(priv);
             StringPublicKey stringPublicKey = stringPublicKeyFrom(pub);
