@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
 
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.Account;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 
 /**
@@ -24,7 +24,7 @@ public interface ConfigurationService {
     /**
      * 获取默认矿工账户
      */
-    StringAccount getDefaultMinerAccount();
+    Account getDefaultMinerAccount();
 
     /**
      * 获取矿工钱包地址

@@ -1,6 +1,7 @@
 package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response;
 
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
+
+import com.xingkaichun.helloworldblockchain.crypto.model.account.Account;
 
 /**
  *
@@ -8,19 +9,19 @@ import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
  */
 public class GenerateAccountResponse {
 
-    private StringAccount stringAccount;
+    private Account account;
 
 
 
 
     //region get set
 
-    public StringAccount getStringAccount() {
-        return stringAccount;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setStringAccount(StringAccount stringAccount) {
-        this.stringAccount = stringAccount;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
 

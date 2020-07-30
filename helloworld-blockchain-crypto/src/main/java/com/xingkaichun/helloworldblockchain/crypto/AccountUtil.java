@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.Account;
 import com.xingkaichun.helloworldblockchain.util.ByteUtil;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -46,7 +46,7 @@ public class AccountUtil {
     /**
      * 随机生成一个账户
      */
-    public static StringAccount randomStringAccount() {
+    public static Account randomStringAccount() {
         try {
             ECKeyPairGenerator generator = new ECKeyPairGenerator();
             ECKeyGenerationParameters keygenParams = new ECKeyGenerationParameters(ecParams, secureRandom);
@@ -59,8 +59,8 @@ public class AccountUtil {
             String privateKey = encodePrivateKey(priv);
             String publicKey = encodePublicKey(pub);
             String address = addressFromPublicKey(publicKey);
-            StringAccount stringAccount = new StringAccount(privateKey,publicKey,address);
-            return stringAccount;
+            Account account = new Account(privateKey,publicKey,address);
+            return account;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -69,15 +69,15 @@ public class AccountUtil {
     /**
      * 私钥生成账户
      */
-    public static StringAccount stringAccountFrom(String privateKey) {
+    public static Account stringAccountFrom(String privateKey) {
         try {
             BigInteger priv = privateKeyFrom(privateKey);
             byte[] ecPublicKey = publicFromPrivate(priv);
 
             String publicKey = encodePublicKey(ecPublicKey);
             String address = addressFromPublicKey(publicKey);
-            StringAccount stringAccount = new StringAccount(privateKey,publicKey,address);
-            return stringAccount;
+            Account account = new Account(privateKey,publicKey,address);
+            return account;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

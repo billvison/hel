@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.netcore.service;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.Account;
 import com.xingkaichun.helloworldblockchain.netcore.dao.ConfigurationDao;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
@@ -82,19 +82,19 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 
     @Override
-    public StringAccount getDefaultMinerAccount() {
+    public Account getDefaultMinerAccount() {
         synchronized (this.getClass()){
             Gson gson = new Gson();
             ConfigurationDto configurationDto = getConfigurationByConfigurationKey(ConfigurationEnum.DEFAULT_MINER_ACCOUNT.name());
             if(configurationDto != null && !Strings.isNullOrEmpty(configurationDto.getConfValue())){
-                StringAccount stringAccount = gson.fromJson(configurationDto.getConfValue(),StringAccount.class);
-                return stringAccount;
+                Account account = gson.fromJson(configurationDto.getConfValue(),Account.class);
+                return account;
             }
-            StringAccount defaultStringAccount = AccountUtil.randomStringAccount();
-            ConfigurationDto defaultStringAccountConfigurationDto =
-                    new ConfigurationDto(ConfigurationEnum.DEFAULT_MINER_ACCOUNT.name(),gson.toJson(defaultStringAccount));
-            setConfiguration(defaultStringAccountConfigurationDto);
-            return defaultStringAccount;
+            Account defaultAccount = AccountUtil.randomStringAccount();
+            ConfigurationDto defaultAccountConfigurationDto =
+                    new ConfigurationDto(ConfigurationEnum.DEFAULT_MINER_ACCOUNT.name(),gson.toJson(defaultAccount));
+            setConfiguration(defaultAccountConfigurationDto);
+            return defaultAccount;
         }
     }
 
@@ -105,8 +105,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         if(minerAddressConfigurationDto != null && !Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             minerAddress = minerAddressConfigurationDto.getConfValue();
         }else {
-            StringAccount stringAccount = getDefaultMinerAccount();
-            minerAddress = stringAccount.getAddress();
+            Account account = getDefaultMinerAccount();
+            minerAddress = account.getAddress();
         }
         return minerAddress;
     }

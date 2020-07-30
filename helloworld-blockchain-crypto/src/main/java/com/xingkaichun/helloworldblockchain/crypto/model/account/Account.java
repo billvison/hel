@@ -12,13 +12,13 @@ import java.io.Serializable;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class StringAccount implements Serializable {
+public class Account implements Serializable {
 
     private String privateKey;
     private String publicKey;
     private String address;
 
-    public StringAccount(String privateKey, String publicKey, String address) {
+    public Account(String privateKey, String publicKey, String address) {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.address = address;

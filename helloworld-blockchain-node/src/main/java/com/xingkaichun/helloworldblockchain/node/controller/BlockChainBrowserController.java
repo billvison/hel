@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
+import com.xingkaichun.helloworldblockchain.crypto.model.account.Account;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
@@ -60,9 +60,9 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.GENERATE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<GenerateAccountResponse> generateWallet(@RequestBody GenerateAccountRequest request){
         try {
-            StringAccount stringAccount = AccountUtil.randomStringAccount();
+            Account account = AccountUtil.randomStringAccount();
             GenerateAccountResponse response = new GenerateAccountResponse();
-            response.setStringAccount(stringAccount);
+            response.setAccount(account);
             return ServiceResult.createSuccessServiceResult("生成钱包成功",response);
         } catch (Exception e){
             String message = "生成钱包失败";
