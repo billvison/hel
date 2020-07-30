@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.crypto;
 
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringAccount;
 import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPrivateKey;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
 import com.xingkaichun.helloworldblockchain.util.ByteUtil;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -59,9 +58,9 @@ public class AccountUtil {
             BigInteger priv = privParams.getD();
             byte[] pub = pubParams.getQ().getEncoded(compressed);
             StringPrivateKey stringPrivateKey = stringPrivateKeyFrom(priv);
-            StringPublicKey stringPublicKey = stringPublicKeyFrom(pub);
-            String address = stringAddressFrom(stringPublicKey);
-            StringAccount stringAccount = new StringAccount(stringPrivateKey,stringPublicKey,address);
+            String publicKey = stringPublicKeyFrom(pub);
+            String address = stringAddressFrom(publicKey);
+            StringAccount stringAccount = new StringAccount(stringPrivateKey,publicKey,address);
             return stringAccount;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -76,9 +75,9 @@ public class AccountUtil {
             BigInteger priv = privateKeyFrom(stringPrivateKey);
             byte[] ecPublicKey = publicFromPrivate(priv);
 
-            StringPublicKey stringPublicKey = stringPublicKeyFrom(ecPublicKey);
-            String address = stringAddressFrom(stringPublicKey);
-            StringAccount stringAccount = new StringAccount(stringPrivateKey,stringPublicKey,address);
+            String publicKey = stringPublicKeyFrom(ecPublicKey);
+            String address = stringAddressFrom(publicKey);
+            StringAccount stringAccount = new StringAccount(stringPrivateKey,publicKey,address);
             return stringAccount;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -88,9 +87,9 @@ public class AccountUtil {
     /**
      * 公钥生成地址
      */
-    public static String stringAddressFrom(StringPublicKey stringPublicKey) {
+    public static String stringAddressFrom(String publicKey) {
         try {
-            byte[] bytePublicKey = HexUtil.hexStringToBytes(stringPublicKey.getValue());
+            byte[] bytePublicKey = HexUtil.hexStringToBytes(publicKey);
             return base58AddressFrom(bytePublicKey);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -114,9 +113,9 @@ public class AccountUtil {
     /**
      * 验证签名
      */
-    public static boolean verifySignature(StringPublicKey stringPublicKey, String rawData, String signature) {
+    public static boolean verifySignature(String publicKey, String rawData, String signature) {
         try {
-            byte[] bytePublicKey = publicKeyFrom(stringPublicKey);
+            byte[] bytePublicKey = publicKeyFrom(publicKey);
             byte[] bytesSignature = Base64.getDecoder().decode(signature);
             return verifySignature(bytePublicKey,ByteUtil.stringToBytes(rawData),bytesSignature);
         }catch(Exception e) {
@@ -144,8 +143,8 @@ public class AccountUtil {
     /**
      * 由编码公钥解码出原始公钥
      */
-    private static byte[] publicKeyFrom(StringPublicKey stringPublicKey) {
-        byte[] bytePublicKey = HexUtil.hexStringToBytes(stringPublicKey.getValue());
+    private static byte[] publicKeyFrom(String publicKey) {
+        byte[] bytePublicKey = HexUtil.hexStringToBytes(publicKey);
         return bytePublicKey;
     }
     /**
@@ -158,9 +157,9 @@ public class AccountUtil {
     /**
      * 将原始公钥进行编码操作，生成编码公钥
      */
-    private static StringPublicKey stringPublicKeyFrom(byte[] bytePublicKey) {
+    private static String stringPublicKeyFrom(byte[] bytePublicKey) {
         String hexPublicKey = HexUtil.bytesToHexString(bytePublicKey);
-        return new StringPublicKey(hexPublicKey);
+        return hexPublicKey;
     }
 
     /**

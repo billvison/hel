@@ -177,7 +177,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
         for(TransactionInputDTO transactionInputDTO:transactionInputDtoList){
             String signature = signatureTransactionDTO(transactionDTO, stringAccount.getStringPrivateKey());
-            transactionInputDTO.setScriptKey(StackBasedVirtualMachine.createPayToClassicAddressInputScript(signature, stringAccount.getStringPublicKey().getValue()));
+            transactionInputDTO.setScriptKey(StackBasedVirtualMachine.createPayToClassicAddressInputScript(signature, stringAccount.getPublicKey()));
         }
         return transactionDTO;
     }

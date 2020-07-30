@@ -8,7 +8,6 @@ import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.account.StringPublicKey;
 
 /**
  * 基于栈的虚拟机
@@ -60,7 +59,7 @@ public class StackBasedVirtualMachine {
                     stack.push(stack.peek());
                 }else if(OPERATION_CODE_PUBLIC_KEY_TO_CLASSIC_ADDRESS.equals(command)){
                     String top = stack.peek();
-                    String address = AccountUtil.stringAddressFrom(new StringPublicKey(top));
+                    String address = AccountUtil.stringAddressFrom(top);
                     stack.pop();
                     stack.push(address);
                 }else if(OPERATION_CODE_EQUAL_VERIFY.equals(command)){
@@ -70,7 +69,7 @@ public class StackBasedVirtualMachine {
                 }else if(OPERATION_CODE_CHECK_SIGN.equals(command)){
                     String publicKey = stack.pop();
                     String sign = stack.pop();
-                    boolean verifySignatureSuccess = AccountUtil.verifySignature(new StringPublicKey(publicKey), TransactionTool.getSignatureData(transactionEnvironment),sign);
+                    boolean verifySignatureSuccess = AccountUtil.verifySignature(publicKey, TransactionTool.getSignatureData(transactionEnvironment),sign);
                     if(!verifySignatureSuccess){
                         throw new ExecuteScriptException("脚本执行失败");
                     }

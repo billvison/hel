@@ -15,12 +15,12 @@ import java.io.Serializable;
 public class StringAccount implements Serializable {
 
     private StringPrivateKey stringPrivateKey;
-    private StringPublicKey stringPublicKey;
+    private String publicKey;
     private String address;
 
-    public StringAccount(StringPrivateKey stringPrivateKey, StringPublicKey stringPublicKey, String address) {
+    public StringAccount(StringPrivateKey stringPrivateKey, String publicKey, String address) {
         this.stringPrivateKey = stringPrivateKey;
-        this.stringPublicKey = stringPublicKey;
+        this.publicKey = publicKey;
         this.address = address;
     }
 
@@ -35,12 +35,12 @@ public class StringAccount implements Serializable {
         this.stringPrivateKey = stringPrivateKey;
     }
 
-    public StringPublicKey getStringPublicKey() {
-        return stringPublicKey;
+    public String getPublicKey() {
+        return publicKey;
     }
 
-    public void setStringPublicKey(StringPublicKey stringPublicKey) {
-        this.stringPublicKey = stringPublicKey;
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
     }
 
     public String getAddress() {
