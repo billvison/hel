@@ -34,6 +34,7 @@
     <bcprov.version>1.59</bcprov.version>
     <netty-all.version>4.1.49.Final</netty-all.version>
     <sqldroid.version>1.0.3</sqldroid.version>
+    <bitcoinj.version>0.15.8</bitcoinj.version>
   </properties>
 
   <dependencyManagement>
@@ -146,6 +147,12 @@
         <groupId>org.sqldroid</groupId>
         <artifactId>sqldroid</artifactId>
         <version>${sqldroid.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bitcoinj</groupId>
+        <artifactId>bitcoinj-core</artifactId>
+        <version>${bitcoinj.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
