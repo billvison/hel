@@ -26,7 +26,11 @@ public class AccountUtilTest extends AccountUtil{
         assertTrue(account.getAddress().equals(accountFromPrivateKey.getAddress()));
 
         //用bitcoinj解析账户，并对比私钥、公钥、地址
-        //TODO 为什么有时失败 有时成功？？
+        //
+        /**
+         * TODO 为什么有时失败 有时成功？？
+         * 自己工具类的私钥有00开头，而bitcoinj十六进制前如果是00则删除
+         */
         ECKey bitcoinjECKey = ECKey.fromPrivate(AccountUtil.privateKeyFrom(account.getPrivateKey()),false);
         assertTrue(account.getPrivateKey().equals(bitcoinjECKey.getPrivateKeyAsHex()));
         assertTrue(account.getPublicKey().equals(bitcoinjECKey.getPublicKeyAsHex()));
