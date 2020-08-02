@@ -4,16 +4,20 @@ import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.Utils;
 import org.bitcoinj.script.Script;
 import org.junit.Test;
 
+import java.math.BigInteger;
+
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 
 public class AccountUtilTest extends AccountUtil{
 
-    private final static Account ACCOUNT = new Account("25e25210dce702d4e36b6c8a17e18dc1d02a9e4f0d1d31c4aee77327cf1641cc"
-            ,"043f099e71ac2b0ca6ca72b4e00539f6972a5f2769bdbfb7b357691c00815bb33860518bb1a1e047a652fee2a21464b95d8176bdbf66f8f4a07ccad52c74321772"
-            ,"164qdFjYmbwPybeXrfFayAgjpp1nsCuWRg"
+    private final static Account ACCOUNT = new Account("00d5c654eeff2cf1c6af16d721f31854ef447dfc61a6344bf1ba7108ec77d29b80"
+            ,"044a99261b7a4b4bad2cac46defa41936b5807bf35dc5d7645d4976431666c741f3be030868718a20f875c69e9f1b781502429584f2c754c0aa8432719df1ed65e"
+            ,"13e2eYT45FbRMBuyg7CHjZuEkjfMCD7xGg"
             );
 
     @Test
@@ -32,10 +36,7 @@ public class AccountUtilTest extends AccountUtil{
          * 自己工具类的私钥有00开头，而bitcoinj十六进制前如果是00则删除
          */
         ECKey bitcoinjECKey = ECKey.fromPrivate(AccountUtil.privateKeyFrom(account.getPrivateKey()),false);
-        assertTrue(account.getPrivateKey().equals(bitcoinjECKey.getPrivateKeyAsHex()));
-        assertTrue(account.getPublicKey().equals(bitcoinjECKey.getPublicKeyAsHex()));
-        Address bitcoinjAddress = Address.fromKey(NetworkParameters.fromID(NetworkParameters.ID_MAINNET),bitcoinjECKey, Script.ScriptType.P2PKH);
-        assertTrue(account.getAddress().equals(bitcoinjAddress.toString()));
+        assertAccount(account,bitcoinjECKey);
     }
 
     @Test
@@ -85,11 +86,37 @@ public class AccountUtilTest extends AccountUtil{
         assertTrue(ACCOUNT.getPublicKey().equals(account.getPublicKey()));
         assertTrue(ACCOUNT.getAddress().equals(account.getAddress()));
 
+
         //用bitcoinj解析账户，并对比私钥、公钥、地址
         ECKey bitcoinjECKey = ECKey.fromPrivate(AccountUtil.privateKeyFrom(ACCOUNT.getPrivateKey()),false);
-        assertTrue(ACCOUNT.getPrivateKey().equals(bitcoinjECKey.getPrivateKeyAsHex()));
-        assertTrue(ACCOUNT.getPublicKey().equals(bitcoinjECKey.getPublicKeyAsHex()));
+        assertAccount(ACCOUNT,bitcoinjECKey);
+
+
+        for (int i=0;i<100;i++){
+            account = AccountUtil.randomAccount();
+            bitcoinjECKey = ECKey.fromPrivate(AccountUtil.privateKeyFrom(account.getPrivateKey()),false);
+            assertAccount(account,bitcoinjECKey);
+        }
+    }
+
+
+    public static void assertAccount(Account account,ECKey bitcoinjECKey){
+        BigInteger accountPrivate = AccountUtil.privateKeyFrom(account.getPrivateKey());
+        String accountPrivateHex = Utils.HEX.encode(accountPrivate.toByteArray());
+        assertTrue(accountPrivate.equals(bitcoinjECKey.getPrivKey()));
+        assertTrue(account.getPrivateKey().equals(accountPrivateHex));
+
+        //accountPrivate.toByteArray() 有时候32字节 有时候33字节
+        assertArrayEquals(accountPrivate.toByteArray(),Utils.bigIntegerToBytes(bitcoinjECKey.getPrivKey(), accountPrivate.toByteArray().length));
+
+        //bitcoinj 私钥前缀如果是0xOO，则会丢弃
+        String accountPrivate2Hex = Utils.HEX.encode(Utils.bigIntegerToBytes(bitcoinjECKey.getPrivKey(), accountPrivate.toByteArray().length));
+        //assertTrue(accountPrivate.equals(accountPrivate2Hex));
+        //assertTrue(account.getPrivateKey().contains(bitcoinjECKey.getPrivateKeyAsHex()));
+
+        assertTrue(account.getPublicKey().equals(bitcoinjECKey.getPublicKeyAsHex()));
+
         Address bitcoinjAddress = Address.fromKey(NetworkParameters.fromID(NetworkParameters.ID_MAINNET),bitcoinjECKey, Script.ScriptType.P2PKH);
-        assertTrue(ACCOUNT.getAddress().equals(bitcoinjAddress.toString()));
+        assertTrue(account.getAddress().equals(bitcoinjAddress.toString()));
     }
 }
