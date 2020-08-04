@@ -71,6 +71,8 @@ public class AccountUtil {
      */
     public static Account accountFromPrivateKey(String privateKey) {
         try {
+            privateKey = fillZeroTo64LengthPrivateKey(privateKey);
+
             BigInteger priv = privateKeyFrom(privateKey);
             byte[] ecPublicKey = publicKeyFromPrivateKey(priv);
 
@@ -150,9 +152,10 @@ public class AccountUtil {
      * 将原始私钥进行编码操作，生成编码私钥
      */
     protected static String encodePrivateKey(BigInteger bigIntegerPrivateKey) {
-        String hexPrivateKey = HexUtil.bytesToHexString(bigIntegerPrivateKey.toByteArray());
-        return hexPrivateKey;
+        String hexPrivateKey = bigIntegerPrivateKey.toString(16);
+        return fillZeroTo64LengthPrivateKey(hexPrivateKey);
     }
+
     /**
      * 将原始公钥进行编码操作，生成编码公钥
      */
@@ -225,5 +228,16 @@ public class AccountUtil {
         //用Base58编码地址数组
         String base58Address = Base58Util.encode(byteAddress);
         return base58Address;
+    }
+
+    /**
+     * 前置填零，返回64长度十六进制私钥
+     */
+    private static String fillZeroTo64LengthPrivateKey(String privateKey) {
+        //私钥长度是256bit，64位十六进制的字符串数，前置补充零
+        if(privateKey.length()<64){
+            privateKey = ("0000000000000000000000000000000000000000000000000000000000000000").substring(0,64-privateKey.length())+privateKey;
+        }
+        return privateKey;
     }
 }
