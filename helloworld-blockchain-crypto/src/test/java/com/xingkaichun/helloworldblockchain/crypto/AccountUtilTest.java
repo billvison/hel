@@ -4,12 +4,14 @@ import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.script.Script;
 import org.junit.Test;
 
 import java.util.Random;
 
-import static org.junit.Assert.assertTrue;
+import static org.bitcoinj.core.Utils.HEX;
+import static org.junit.Assert.*;
 
 public class AccountUtilTest extends AccountUtil{
 
@@ -22,11 +24,6 @@ public class AccountUtilTest extends AccountUtil{
     public void randomAccountKeyTest()
     {
         Account account = AccountUtil.randomAccount();
-        Account accountFromPrivateKey = AccountUtil.accountFromPrivateKey(account.getPrivateKey());
-        assertTrue(account.getPrivateKey().equals(accountFromPrivateKey.getPrivateKey()));
-        assertTrue(account.getPublicKey().equals(accountFromPrivateKey.getPublicKey()));
-        assertTrue(account.getAddress().equals(accountFromPrivateKey.getAddress()));
-
         assertAccount(account);
     }
 
@@ -37,6 +34,7 @@ public class AccountUtilTest extends AccountUtil{
         assertTrue(ACCOUNT_1.getPrivateKey().equals(account.getPrivateKey()));
         assertTrue(ACCOUNT_1.getPublicKey().equals(account.getPublicKey()));
         assertTrue(ACCOUNT_1.getAddress().equals(account.getAddress()));
+        assertAccount(account);
     }
 
     @Test
@@ -47,29 +45,60 @@ public class AccountUtilTest extends AccountUtil{
     }
 
     @Test
-    public void signatureTest()
+    public  void signatureTest() throws Exception
     {
-        //TODO 用一个写死的数据验证
-        //遍历随机生成验证
-        String rawData = "123456";
-        String signature = AccountUtil.signature(ACCOUNT_1.getPrivateKey(),rawData);
-        boolean verifySignature = AccountUtil.verifySignature(ACCOUNT_1.getPublicKey(),rawData,signature);
-        assertTrue(verifySignature);
+        verifySignatureTest();
+    }
+
+    //来源org.bitcoinj.core.ECKeyTest.testSignatures()
+    @Test
+    public void verifySignatureTest() throws Exception
+    {
+        byte[] zeroValueByte32Length = new byte[32];
+        Account account = AccountUtil.accountFromPrivateKey("180cb41c7c600be951b5d3d0a7334acc7506173875834f7a6c4c786a28fcbb19");
+        byte[] signatureByAccount = AccountUtil.signature(AccountUtil.privateKeyFrom(account.getPrivateKey()),zeroValueByte32Length);
+        boolean verifySignatureByAccount = AccountUtil.verifySignature(AccountUtil.publicKeyFrom(account.getPublicKey()),zeroValueByte32Length,signatureByAccount);
+        assertTrue(verifySignatureByAccount);
+
+        byte[] signatureByFixValue = HEX.decode("3046022100dffbc26774fc841bbe1c1362fd643609c6e42dcb274763476d87af2c0597e89e022100c59e3c13b96b316cae9fa0ab0260612c7a133a6fe2b3445b6bf80b3123bf274d");
+        boolean verifySignatureByFixValue = AccountUtil.verifySignature(AccountUtil.publicKeyFrom(account.getPublicKey()),zeroValueByte32Length,signatureByFixValue);
+        assertTrue(verifySignatureByFixValue);
+    }
+
+    private void randomAssertSignature() throws Exception{
+        Account account = AccountUtil.randomAccount();
+        ECKey bitcoinjECKey = ECKey.fromPrivate(AccountUtil.privateKeyFrom(account.getPrivateKey()),false);
+
+        //随机生成32位数组字节
+        byte[] randomByte = new byte[32];
+        new Random().nextBytes(randomByte);
+        Sha256Hash randomSha256Hash = Sha256Hash.wrap(randomByte);
+
+        byte[] signByAccount = AccountUtil.signature(AccountUtil.privateKeyFrom(account.getPrivateKey()),randomByte);
+        byte[] signByAccount2 = AccountUtil.signature(AccountUtil.privateKeyFrom(account.getPrivateKey()),randomByte);
+        //校验同一私钥，两次签名是否一致
+        assertArrayEquals(signByAccount,signByAccount2);
+        //校验签名是否正确
+        assertTrue(AccountUtil.verifySignature(AccountUtil.publicKeyFrom(account.getPublicKey()),randomByte,signByAccount));
+        //用bitcoinj校验签名是否正确
+        assert(bitcoinjECKey.verify(randomSha256Hash.getBytes(), signByAccount));
+
+
+        byte[] signByBitcoinj = bitcoinjECKey.sign(randomSha256Hash).encodeToDER();
+        ECKey bitcoinjECKey2 = ECKey.fromPrivate(AccountUtil.privateKeyFrom(account.getPrivateKey()),false);
+        byte[] signByBitcoinj2 = bitcoinjECKey2.sign(randomSha256Hash).encodeToDER();
+        //校验同一私钥，两次bitcoinj签名是否一致
+        assertArrayEquals(signByBitcoinj,signByBitcoinj2);
+        //bitcoinj校验bitcoinj签名是否正确
+        assert(bitcoinjECKey.verify(randomSha256Hash.getBytes(), signByBitcoinj));
+        //校验bitcoinj签名是否正确
+        assertTrue(AccountUtil.verifySignature(AccountUtil.publicKeyFrom(account.getPublicKey()),randomByte,signByBitcoinj));
+
+        //assertArrayEquals(signByAccount,signByBitcoinj);
     }
 
     @Test
-    public void verifySignatureTest()
-    {
-        //TODO 用一个写死的数据验证
-        //遍历随机生成验证
-        String rawData = "123456";
-        String signature = AccountUtil.signature(ACCOUNT_1.getPrivateKey(),rawData);
-        boolean verifySignature = AccountUtil.verifySignature(ACCOUNT_1.getPublicKey(),rawData,signature);
-        assertTrue(verifySignature);
-    }
-
-    @Test
-    public void allTest()
+    public void allTest() throws Exception
     {
         assertAccount(ACCOUNT_1);
 
@@ -82,10 +111,19 @@ public class AccountUtilTest extends AccountUtil{
             Account account = AccountUtil.accountFromPrivateKey(randomPrivateKey());
             assertAccount(account);
         }
+
+        for(int i=0;i<1000;i++){
+            randomAssertSignature();
+        }
     }
 
 
     private static void assertAccount(Account account){
+        Account accountFromPrivateKey = AccountUtil.accountFromPrivateKey(account.getPrivateKey());
+        assertTrue(account.getPrivateKey().equals(accountFromPrivateKey.getPrivateKey()));
+        assertTrue(account.getPublicKey().equals(accountFromPrivateKey.getPublicKey()));
+        assertTrue(account.getAddress().equals(accountFromPrivateKey.getAddress()));
+
         //用bitcoinj解析账户，并对比私钥、公钥、地址
         ECKey bitcoinjECKey = ECKey.fromPrivate(AccountUtil.privateKeyFrom(account.getPrivateKey()),false);
         assertTrue(account.getPrivateKey().equals(bitcoinjECKey.getPrivateKeyAsHex()));
