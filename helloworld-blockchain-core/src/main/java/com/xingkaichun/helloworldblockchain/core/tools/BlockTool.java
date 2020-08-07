@@ -4,14 +4,15 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.utils.MerkleUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
+import com.xingkaichun.helloworldblockchain.crypto.MerkleTreeUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.util.ByteUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,8 +48,14 @@ public class BlockTool {
      * @param block 区块
      */
     public static String calculateBlockMerkleRoot(Block block) {
-        List<Transaction> transactionList = block.getTransactions();
-        return MerkleUtil.calculateTransactionMerkleRoot(transactionList);
+        List<Transaction> transactions = block.getTransactions();
+        List<byte[]> hashList = new ArrayList<>();
+        if(transactions != null){
+            for(Transaction transaction : transactions) {
+                hashList.add(ByteUtil.stringToBytes(transaction.getTransactionHash()));
+            }
+        }
+        return MerkleTreeUtil.calculateBigEndianHexMerkleRoot(hashList);
     }
     /**
      * 区块中写入的默克尔树根是否正确

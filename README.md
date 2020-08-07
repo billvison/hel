@@ -108,3 +108,5 @@ cd HelloworldBlockchainNode
 
 
 ### 编码规范  
+采用双重哈希算法  
+采用大端模式

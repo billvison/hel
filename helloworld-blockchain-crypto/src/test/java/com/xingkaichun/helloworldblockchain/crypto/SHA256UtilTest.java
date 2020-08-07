@@ -3,6 +3,9 @@ package com.xingkaichun.helloworldblockchain.crypto;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Random;
+
 import static org.junit.Assert.assertArrayEquals;
 
 
@@ -30,6 +33,16 @@ public class SHA256UtilTest {
         for(int i=0;i<messages.length;i++){
             byte[] messageDigest = SHA256Util.digest(toByteArray(messages[i]));
             assertArrayEquals(Hex.decode(digests[i]), messageDigest);
+        }
+    }
+
+    @Test
+    public void digestTwice()
+    {
+        for (int j = 0; j < 100; j++) {
+            byte[] randomBytes = new byte[j];
+            new Random().nextBytes(randomBytes);
+            assertArrayEquals(SHA256Util.digest(SHA256Util.digest(randomBytes)), SHA256Util.digestTwice(randomBytes));
         }
     }
 

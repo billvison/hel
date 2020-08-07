@@ -25,4 +25,11 @@ public class SHA256Util {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 获取进行两次Sha256操作的消息摘要
+     */
+    public static byte[] digestTwice(byte[] input) {
+        return digest(digest(input));
+    }
 }
