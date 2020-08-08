@@ -412,8 +412,8 @@ public class MinerDefaultImpl extends Miner {
         packingTransactionList.add(mineAwardTransaction);
 
 
-        String merkleRoot = BlockTool.calculateBlockMerkleRoot(nonNonceBlock);
-        nonNonceBlock.setMerkleRoot(merkleRoot);
+        String merkleTreeRoot = BlockTool.calculateBlockMerkleTreeRoot(nonNonceBlock);
+        nonNonceBlock.setMerkleTreeRoot(merkleTreeRoot);
         return nonNonceBlock;
     }
     //endregion

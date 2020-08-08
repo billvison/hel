@@ -30,7 +30,7 @@ public class Transaction implements Serializable {
      * 这个字段也可以用来表示一个独一无二的交易编号
      * 还有另外一个独一无二的编号，区块高度+交易在区块中的编号，这个编号有个缺点，只能在区块完全确定后，才能确定这个编号
      *
-     * 冗余字段，这个值可以由区块链计算出来
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
     private String transactionHash;
     /**
@@ -54,19 +54,19 @@ public class Transaction implements Serializable {
     /**
      * 在区块中的交易序列号
      *
-     * 冗余字段，这个值可以由区块链计算出来
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
     private BigInteger transactionSequenceNumberInBlock;
     /**
      * 在区块链中交易序列号
      *
-     * 冗余字段，这个值可以由区块链计算出来
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
     private BigInteger transactionSequenceNumberInBlockChain;
     /**
      * 交易所在区块的区块高度
      *
-     * 冗余字段，这个值可以由区块链计算出来
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
     private BigInteger blockHeight;
 

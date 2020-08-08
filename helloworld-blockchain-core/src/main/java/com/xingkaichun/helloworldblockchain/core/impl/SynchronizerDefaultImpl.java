@@ -219,7 +219,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
         //不严格校验,这里没有具体校验每一笔交易
         if(StringUtil.isEquals(block1.getPreviousBlockHash(),block2.getPreviousBlockHash())
                 && BigIntegerUtil.isEquals(block1.getHeight(),block2.getHeight())
-                && StringUtil.isEquals(block1.getMerkleRoot(),block2.getMerkleRoot())
+                && StringUtil.isEquals(block1.getMerkleTreeRoot(),block2.getMerkleTreeRoot())
                 && StringUtil.isEquals(block1.getConsensusValue(),block2.getConsensusValue())
                 && StringUtil.isEquals(block1.getHash(),block2.getHash())){
             return true;

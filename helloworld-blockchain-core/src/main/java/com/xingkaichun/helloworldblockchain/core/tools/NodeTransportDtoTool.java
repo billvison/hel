@@ -65,7 +65,7 @@ public class NodeTransportDtoTool {
         block.setPreviousBlockHash(previousBlockHash);
         block.setHeight(blockDTO.getHeight());
         block.setTransactions(transactionList);
-        block.setMerkleRoot(BlockTool.calculateBlockMerkleRoot(block));
+        block.setMerkleTreeRoot(BlockTool.calculateBlockMerkleTreeRoot(block));
         block.setConsensusValue(blockDTO.getConsensusValue());
         block.setHash(BlockTool.calculateBlockHash(block));
         return block;

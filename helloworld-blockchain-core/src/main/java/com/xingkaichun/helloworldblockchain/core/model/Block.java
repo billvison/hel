@@ -30,6 +30,7 @@ public class Block implements Serializable {
     private BigInteger height;
     /**
      * 上一个区块的哈希
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
     private String previousBlockHash;
     /**
@@ -39,11 +40,13 @@ public class Block implements Serializable {
     /**
      * 默克尔树根
      * 由transactions生成。
-     * 既然这个字段是有由交易列表生成的，这个字段每次需要时完全可以自己生成？为什么需要这个字段？请参考SPV。
+     * 既然这个字段是由交易列表生成的，这个字段每次需要时完全可以自己生成？为什么需要这个字段？
+     * 第一：这个值是区块里所有交易的摘要。这个值确定了，交易也就固定了。
+     * 第二：请参考SPV。
      *
-     * 冗余字段，这个值可以由区块链计算出来
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
-    private String merkleRoot;
+    private String merkleTreeRoot;
     /**
      * 共识值
      * 区块链是个分布式账本，每个人都拥有记账的权利。如果每个人都很简单的就能够记账，账本就会特别难达成一致。
@@ -70,7 +73,7 @@ public class Block implements Serializable {
      * 这里建议它的构成是一串字符+时间戳。
      * 因为后产生的区块时间戳更大，因此只要校验这个时间戳是否比上一个区块产生的时间戳更大，就可校验它的唯一性。
      *
-     * 冗余字段，这个值可以由区块链计算出来
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
     private String hash;
 
@@ -80,14 +83,14 @@ public class Block implements Serializable {
      * 在做共识计算时，可能会产生很多的中间变量，如果每次都重新计算一次，比较浪费算力，
      * 这里的设计是将计算好的中间变量保存到这个持有者中，下次计算共识，直接从持有者中获取中间变量。
      *
-     * 冗余字段，这个值可以由区块链计算出来
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
     private ConsensusVariableHolder consensusVariableHolder;
 
     /**
      * 区块中的交易总笔数
      *
-     * 冗余字段，这个值可以由区块链计算出来
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
     private BigInteger transactionQuantity;
 
@@ -98,7 +101,7 @@ public class Block implements Serializable {
      * 区块中没有交易，值为0
      * 区块中有交易，值等于 高度低于当前区块的所有区块中包含的交易数量之和+1
      *
-     * 冗余字段，这个值可以由区块链计算出来
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
     private BigInteger startTransactionSequenceNumberInBlockChain;
 
@@ -109,7 +112,7 @@ public class Block implements Serializable {
      * 区块中没有交易，值为0
      * 区块中有交易，值等于 高度低于当前区块的所有区块中包含的交易数量之和+当前区块中包含的交易数量
      *
-     * 冗余字段，这个值可以由区块链计算出来
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
     private BigInteger endTransactionSequenceNumberInBlockChain;
 
@@ -150,12 +153,12 @@ public class Block implements Serializable {
         this.transactions = transactions;
     }
 
-    public String getMerkleRoot() {
-        return merkleRoot;
+    public String getMerkleTreeRoot() {
+        return merkleTreeRoot;
     }
 
-    public void setMerkleRoot(String merkleRoot) {
-        this.merkleRoot = merkleRoot;
+    public void setMerkleTreeRoot(String merkleTreeRoot) {
+        this.merkleTreeRoot = merkleTreeRoot;
     }
 
     public String getConsensusValue() {

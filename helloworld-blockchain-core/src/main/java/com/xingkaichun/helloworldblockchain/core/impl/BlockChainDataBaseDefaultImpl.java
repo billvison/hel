@@ -600,7 +600,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
         //校验写入的MerkleRoot是否与计算得来的一致
-        if(!BlockTool.isBlockWriteMerkleRootRight(block)){
+        if(!BlockTool.isBlockWriteMerkleTreeRootRight(block)){
             return false;
         }
         //校验写入的Hash是否与计算得来的一致

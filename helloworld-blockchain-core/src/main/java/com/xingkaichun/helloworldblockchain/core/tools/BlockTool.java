@@ -29,7 +29,7 @@ public class BlockTool {
      * @param block 区块
      */
     public static String calculateBlockHash(Block block) {
-        String input = block.getTimestamp()+block.getPreviousBlockHash()+block.getHeight()+block.getMerkleRoot()+block.getConsensusValue();
+        String input = block.getTimestamp()+block.getPreviousBlockHash()+block.getHeight()+block.getMerkleTreeRoot()+block.getConsensusValue();
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(input));
         return HexUtil.bytesToHexString(sha256Digest) + block.getTimestamp();
     }
@@ -47,7 +47,7 @@ public class BlockTool {
      * 计算区块的默克尔树根值
      * @param block 区块
      */
-    public static String calculateBlockMerkleRoot(Block block) {
+    public static String calculateBlockMerkleTreeRoot(Block block) {
         List<Transaction> transactions = block.getTransactions();
         List<byte[]> hashList = new ArrayList<>();
         if(transactions != null){
@@ -60,9 +60,9 @@ public class BlockTool {
     /**
      * 区块中写入的默克尔树根是否正确
      */
-    public static boolean isBlockWriteMerkleRootRight(Block block){
-        String targetMerkleRoot = calculateBlockMerkleRoot(block);
-        return targetMerkleRoot.equals(block.getMerkleRoot());
+    public static boolean isBlockWriteMerkleTreeRootRight(Block block){
+        String targetMerkleRoot = calculateBlockMerkleTreeRoot(block);
+        return targetMerkleRoot.equals(block.getMerkleTreeRoot());
     }
 
     /**
