@@ -402,7 +402,7 @@ public class MinerDefaultImpl extends Miner {
 
         //创建挖矿奖励交易
         Transaction mineAwardTransaction =  buildMineAwardTransaction(timestamp,blockChainDataBase,nonNonceBlock);
-        packingTransactionList.add(mineAwardTransaction);
+        packingTransactionList.add(0,mineAwardTransaction);
 
 
         String merkleTreeRoot = BlockTool.calculateBlockMerkleTreeRoot(nonNonceBlock);

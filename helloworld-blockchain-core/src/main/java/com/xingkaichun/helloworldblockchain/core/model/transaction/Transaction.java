@@ -35,6 +35,7 @@ public class Transaction implements Serializable {
     private String transactionHash;
     /**
      * 交易类型
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
     private TransactionType transactionType;
     /**

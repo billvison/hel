@@ -341,12 +341,40 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
 
+        //校验交易类型的次序
+        if(!isBlockTransactionTypeRight(block)){
+            logger.debug("区块数据异常，区块有且只有一笔交易是CoinBase，且CoinBase交易是区块的第一笔交易。");
+            return false;
+        }
+
         //从交易角度校验每一笔交易
         for(Transaction tx : block.getTransactions()){
             boolean transactionCanAddToNextBlock = isTransactionCanAddToNextBlock(block,tx);
             if(!transactionCanAddToNextBlock){
                 logger.debug("区块数据异常，交易异常。");
                 return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 校验区块中交易类型的次序
+     */
+    private boolean isBlockTransactionTypeRight(Block block) {
+        List<Transaction> transactions = block.getTransactions();
+        for(int i=0; i<transactions.size(); i++){
+            Transaction transaction = transactions.get(i);
+            if(i == 0){
+                if(transaction.getTransactionType() != TransactionType.COINBASE){
+                    logger.debug("区块数据异常，区块第一笔交易必须是CoinBase。");
+                    return false;
+                }
+            }else {
+                if(transaction.getTransactionType() != TransactionType.NORMAL){
+                    logger.debug("区块数据异常，区块非第一笔交易必须是普通交易。");
+                    return false;
+                }
             }
         }
         return true;
@@ -577,8 +605,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //校验交易类型
         TransactionType transactionType = transaction.getTransactionType();
         if(transactionType != TransactionType.NORMAL
-                && transactionType != TransactionType.COINBASE
-        ){
+                && transactionType != TransactionType.COINBASE)
+        {
             logger.debug("交易校验失败：不能识别的交易类型。");
             return false;
         }

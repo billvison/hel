@@ -7,7 +7,6 @@ import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,8 +156,6 @@ public class TextSizeRestrictionTool {
         long size = 0L;
         long timestamp = transaction.getTimestamp();
         size += String.valueOf(timestamp).length();
-        TransactionType transactionType = transaction.getTransactionType();
-        size += String.valueOf(transactionType.getCode()).length();
         List<TransactionInput> inputs = transaction.getInputs();
         size += calculateTransactionInputTextSize(inputs);
         List<TransactionOutput> outputs = transaction.getOutputs();
