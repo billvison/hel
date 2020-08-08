@@ -48,14 +48,14 @@ public class Block implements Serializable {
      */
     private String merkleTreeRoot;
     /**
-     * 共识值
+     * 随机数值、共识值
      * 区块链是个分布式账本，每个人都拥有记账的权利。如果每个人都很简单的就能够记账，账本就会特别难达成一致。
      * 一般情况下，想要记账请解答一个难题，从而增大记账的难度。
-     * 而这个共识值就是难题的答案。难题的答案可能并不是唯一，一般情况下，很难获取答案。
+     * 而这个随机数值就是难题的答案。难题的答案可能并不是唯一，一般情况下，很难获取答案。
      */
-    private String consensusValue;
+    private String nonce;
     /**
-     * 区块哈希：由timestamp、previousBlockHash、height、consensusValue、merkleRoot共同作用使用Hash算法生成。
+     * 区块哈希：由timestamp、previousBlockHash、height、nonce、merkleRoot共同作用使用Hash算法生成。
      * 为什么需要哈希这个字段？
      * 区块哈希确定了，反过来说其它字段的值也是确定的，也就是说区块的数据是确定的。
      * 我们知道区块链的区块需要指向上一个区块？怎么指向？
@@ -161,12 +161,12 @@ public class Block implements Serializable {
         this.merkleTreeRoot = merkleTreeRoot;
     }
 
-    public String getConsensusValue() {
-        return consensusValue;
+    public String getNonce() {
+        return nonce;
     }
 
-    public void setConsensusValue(String consensusValue) {
-        this.consensusValue = consensusValue;
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
     }
 
     public String getHash() {

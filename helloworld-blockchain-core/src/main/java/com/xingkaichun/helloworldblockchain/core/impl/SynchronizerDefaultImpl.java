@@ -220,7 +220,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
         if(StringUtil.isEquals(block1.getPreviousBlockHash(),block2.getPreviousBlockHash())
                 && BigIntegerUtil.isEquals(block1.getHeight(),block2.getHeight())
                 && StringUtil.isEquals(block1.getMerkleTreeRoot(),block2.getMerkleTreeRoot())
-                && StringUtil.isEquals(block1.getConsensusValue(),block2.getConsensusValue())
+                && StringUtil.isEquals(block1.getNonce(),block2.getNonce())
                 && StringUtil.isEquals(block1.getHash(),block2.getHash())){
             return true;
         }

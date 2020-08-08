@@ -52,7 +52,7 @@ public class TextSizeRestrictionTool {
         }
 
         //校验共识占用存储空间
-        BigInteger nonce = new BigInteger(block.getConsensusValue());
+        BigInteger nonce = new BigInteger(block.getNonce());
         if(BigIntegerUtil.isLessThan(nonce, TextSizeRestrictionTool.MIN_NONCE)){
             return false;
         }

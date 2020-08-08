@@ -66,7 +66,7 @@ public class NodeTransportDtoTool {
         block.setHeight(blockDTO.getHeight());
         block.setTransactions(transactionList);
         block.setMerkleTreeRoot(BlockTool.calculateBlockMerkleTreeRoot(block));
-        block.setConsensusValue(blockDTO.getConsensusValue());
+        block.setNonce(blockDTO.getNonce());
         block.setHash(BlockTool.calculateBlockHash(block));
         return block;
     }
@@ -90,7 +90,7 @@ public class NodeTransportDtoTool {
         blockDTO.setTimestamp(block.getTimestamp());
         blockDTO.setHeight(block.getHeight());
         blockDTO.setTransactions(transactionDtoList);
-        blockDTO.setConsensusValue(block.getConsensusValue());
+        blockDTO.setNonce(block.getNonce());
         return blockDTO;
     }
 

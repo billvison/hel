@@ -18,7 +18,7 @@ public class BlockDTO implements Serializable {
     //区块里的交易
     private List<TransactionDTO> transactions;
     //共识值
-    private String consensusValue;
+    private String nonce;
 
 
 
@@ -49,13 +49,12 @@ public class BlockDTO implements Serializable {
         this.transactions = transactions;
     }
 
-    public String getConsensusValue() {
-        return consensusValue;
+    public String getNonce() {
+        return nonce;
     }
 
-    public void setConsensusValue(String consensusValue) {
-        this.consensusValue = consensusValue;
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
     }
-
-    //endregion
+//endregion
 }
