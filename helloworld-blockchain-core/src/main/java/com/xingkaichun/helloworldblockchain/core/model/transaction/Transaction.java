@@ -46,12 +46,6 @@ public class Transaction implements Serializable {
      */
     private List<TransactionOutput> outputs;
     /**
-     * 交易附加信息
-     * 加了这个字段，易于拓展功能，请尽量不使用这个字段
-     * 例如：若是增加跨链交易功能，可以将跨链的链ID写在这里
-     */
-    private List<String> messages;
-    /**
      * 在区块中的交易序列号
      *
      * 冗余字段，这个值可以由区块链系统推算出来
@@ -113,14 +107,6 @@ public class Transaction implements Serializable {
 
     public void setOutputs(List<TransactionOutput> outputs) {
         this.outputs = outputs;
-    }
-
-    public List<String> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(List<String> messages) {
-        this.messages = messages;
     }
 
     public BigInteger getTransactionSequenceNumberInBlock() {

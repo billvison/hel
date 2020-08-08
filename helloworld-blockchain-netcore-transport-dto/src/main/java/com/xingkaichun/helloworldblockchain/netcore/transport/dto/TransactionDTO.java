@@ -20,8 +20,6 @@ public class TransactionDTO implements Serializable {
     private List<TransactionInputDTO> inputs;
     //交易输出
     private List<TransactionOutputDTO> outputs;
-    //附加消息
-    private List<String> messages;
 
 
 
@@ -58,14 +56,6 @@ public class TransactionDTO implements Serializable {
 
     public void setOutputs(List<TransactionOutputDTO> outputs) {
         this.outputs = outputs;
-    }
-
-    public List<String> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(List<String> messages) {
-        this.messages = messages;
     }
 
     //endregion

@@ -93,7 +93,6 @@ public class TextSizeRestrictionTool {
         long timestamp = transaction.getTimestamp();
         List<TransactionInput> inputs = transaction.getInputs();
         List<TransactionOutput> outputs = transaction.getOutputs();
-        List<String> messages = transaction.getMessages();
 
         //校验时间的长度
         if(String.valueOf(timestamp).length()>20){
@@ -139,20 +138,6 @@ public class TextSizeRestrictionTool {
             }
         }
 
-        //校验附加消息
-        if(messages != null){
-            for(String message:messages){
-                if(message == null || message.length()==0){
-                    logger.debug("交易校验失败：附加消息不能为空。");
-                    return false;
-                }
-                if(message.length()>100){
-                    logger.debug("交易校验失败：附加消息所占存储空间太大。");
-                    return false;
-                }
-            }
-        }
-
         //校验整笔交易所占存储空间
         if(calculateTransactionTextSize(transaction) > TextSizeRestrictionTool.TRANSACTION_TEXT_MAX_SIZE){
             logger.debug("交易数据异常，交易所占存储空间太大。");
@@ -178,18 +163,6 @@ public class TextSizeRestrictionTool {
         size += calculateTransactionInputTextSize(inputs);
         List<TransactionOutput> outputs = transaction.getOutputs();
         size += calculateTransactionOutputTextSize(outputs);
-        List<String> messages = transaction.getMessages();
-        size += calculateMessageTextSize(messages);
-        return size;
-    }
-    private static long calculateMessageTextSize(List<String> messages) {
-        long size = 0L;
-        if(messages == null || messages.size()==0){
-            return 0L;
-        }
-        for(String message:messages){
-            size += message.length();
-        }
         return size;
     }
     private static long calculateTransactionOutputTextSize(List<TransactionOutput> outputs) {

@@ -130,7 +130,6 @@ public class NodeTransportDtoTool {
         transaction.setTransactionHash(TransactionTool.calculateTransactionHash(transactionDTO));
         transaction.setInputs(inputs);
         transaction.setOutputs(outputs);
-        transaction.setMessages(transactionDTO.getMessages());
         return transaction;
     }
 
@@ -194,7 +193,6 @@ public class NodeTransportDtoTool {
         transactionDTO.setTransactionTypeCode(transaction.getTransactionType().getCode());
         transactionDTO.setInputs(inputs);
         transactionDTO.setOutputs(outputs);
-        transactionDTO.setMessages(transaction.getMessages());
         return transactionDTO;
     }
 

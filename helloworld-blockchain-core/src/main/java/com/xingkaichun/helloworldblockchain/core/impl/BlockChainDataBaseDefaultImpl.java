@@ -675,13 +675,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
              * 激励交易输出可以为空，这时代表矿工放弃了奖励、或者依据规则挖矿激励就是零奖励。
              */
             List<TransactionInput> inputs = transaction.getInputs();
-            List<String> messages = transaction.getMessages();
             if(inputs != null && inputs.size()!=0){
                 logger.debug("交易校验失败：激励交易不能有交易输入。");
-                return false;
-            }
-            if(messages != null && messages.size()>0){
-                logger.debug("交易校验失败：激励交易不能有附加信息。");
                 return false;
             }
             if(!isBlockWriteMineAwardRight(block)){
@@ -694,13 +689,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
              * 普通交易输出可以为空，这时代表用户将自己的币扔进了黑洞，强制销毁了。
              */
             List<TransactionInput> inputs = transaction.getInputs();
-            List<String> messages = transaction.getMessages();
             if(inputs == null || inputs.size()==0){
                 logger.debug("交易校验失败：普通交易必须有交易输入。");
-                return false;
-            }
-            if(messages != null && messages.size()>0){
-                logger.debug("交易校验失败：普通交易不能有附加信息。");
                 return false;
             }
             BigDecimal inputsValue = TransactionTool.getInputsValue(transaction);
@@ -727,13 +717,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return true;
         } else if(transaction.getTransactionType() == TransactionType.COMMUNITY_MAINTENANCE){
             List<TransactionInput> inputs = transaction.getInputs();
-            List<String> messages = transaction.getMessages();
             if(inputs != null && inputs.size()!=0){
                 logger.debug("交易校验失败：社区奖励交易不能有交易输入。");
-                return false;
-            }
-            if(messages != null && messages.size()>0){
-                logger.debug("交易校验失败：社区奖励交易不能有附加信息。");
                 return false;
             }
             if(!CommunityMaintenanceTransactionTool.isMaintenanceTransactionRight(block.getTimestamp(),block.getHeight(),transaction)){

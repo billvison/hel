@@ -142,7 +142,7 @@ public class TransactionTool {
                 outputHashList.add(transactionOutput.getTransactionOutputHash());
             }
         }
-        return calculateTransactionHash(transaction.getTimestamp(),transaction.getTransactionType().getCode(),inputHashList,outputHashList,transaction.getMessages());
+        return calculateTransactionHash(transaction.getTimestamp(),transaction.getTransactionType().getCode(),inputHashList,outputHashList);
     }
 
     /**
@@ -161,13 +161,13 @@ public class TransactionTool {
         for(TransactionOutputDTO transactionOutputDTO:outputs){
             outputHashList.add(calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
         }
-        return calculateTransactionHash(transactionDTO.getTimestamp(),transactionDTO.getTransactionTypeCode(),inputHashList,outputHashList,transactionDTO.getMessages());
+        return calculateTransactionHash(transactionDTO.getTimestamp(),transactionDTO.getTransactionTypeCode(),inputHashList,outputHashList);
     }
 
     /**
      * 计算交易哈希
      */
-    private static String calculateTransactionHash(long currentTimeMillis,int transactionTypeCode,List<String> inputHashList,List<String> outputHashList,List<String> messageList){
+    private static String calculateTransactionHash(long currentTimeMillis,int transactionTypeCode,List<String> inputHashList,List<String> outputHashList){
         String data = "";
         data += "[" + transactionTypeCode + "]";
         if(inputHashList != null && inputHashList.size()!=0){
@@ -175,9 +175,6 @@ public class TransactionTool {
         }
         if(outputHashList != null && outputHashList.size()!=0){
             data += "[" + Joiner.on(",").join(outputHashList) + "]";
-        }
-        if(messageList != null && messageList.size()!=0){
-            data += "[" + Joiner.on(",").join(messageList) + "]";
         }
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(data));
         String base64Encode = Base64Util.encode(sha256Digest);
