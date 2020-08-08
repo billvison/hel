@@ -11,7 +11,6 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionIn
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
-import com.xingkaichun.helloworldblockchain.core.tools.CommunityMaintenanceTransactionTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TextSizeRestrictionTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
@@ -342,12 +341,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
 
-        //社区交易
-        if(!isMaintenanceTransactionRight(block)){
-            logger.debug("区块数据异常，社区维护的交易异常。");
-            return false;
-        }
-
         //从交易角度校验每一笔交易
         for(Transaction tx : block.getTransactions()){
             boolean transactionCanAddToNextBlock = isTransactionCanAddToNextBlock(block,tx);
@@ -358,37 +351,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         return true;
     }
-
-
-    private boolean isMaintenanceTransactionRight(Block block) {
-        //社区维护的交易只能有一笔，也可以没有。
-        List<Transaction> transactions = block.getTransactions();
-
-        Transaction maintenanceTransaction = null;
-        //校验社区维护交易有且只能有一笔
-        //社区维护交易笔数
-        int maintenanceTransactionRNumber = 0;
-        if(transactions != null){
-            for(Transaction transaction : transactions){
-                if(transaction.getTransactionType() == TransactionType.COMMUNITY_MAINTENANCE){
-                    maintenanceTransactionRNumber++;
-                    maintenanceTransaction = transaction;
-                }
-            }
-        }
-        if(maintenanceTransactionRNumber > 1){
-            logger.debug("区块数据异常，一个区块社区维护的交易只能有一笔。");
-            return false;
-        }
-
-        //校验奖励交易
-        if(!CommunityMaintenanceTransactionTool.isMaintenanceTransactionRight(block.getTimestamp(),block.getHeight(),maintenanceTransaction)){
-            logger.debug("交易校验失败：社区奖励交易验证失败。");
-            return false;
-        }
-        return true;
-    }
-
 
     /**
      * 是否有双花攻击
@@ -443,13 +405,13 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         for(int i=0; i<transactions.size()-1; i++){
             Transaction tx = transactions.get(i);
-            if(tx.getTransactionType() == TransactionType.MINER_AWARD){
+            if(tx.getTransactionType() == TransactionType.COINBASE){
                 logger.debug("区块数据异常，挖矿奖励应当是区块中最后一笔交易。");
                 return false;
             }
         }
         Transaction transaction = transactions.get(transactions.size()-1);
-        if(transaction.getTransactionType() != TransactionType.MINER_AWARD){
+        if(transaction.getTransactionType() != TransactionType.COINBASE){
             logger.debug("区块数据异常，区块中最后一笔交易不是挖矿交易。");
             return false;
         }
@@ -458,7 +420,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //挖矿交易笔数
         int minerTransactionNumber = 0;
         for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() == TransactionType.MINER_AWARD){
+            if(tx.getTransactionType() == TransactionType.COINBASE){
                 minerTransactionNumber++;
             }
         }
@@ -473,7 +435,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
         //校验奖励交易
         for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() == TransactionType.MINER_AWARD){
+            if(tx.getTransactionType() == TransactionType.COINBASE){
                 boolean transactionCanAddToNextBlock = isTransactionCanAddToNextBlock(block,tx);
                 if(!transactionCanAddToNextBlock){
                     logger.debug("区块数据异常，激励交易异常。");
@@ -615,13 +577,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         //校验交易类型
         TransactionType transactionType = transaction.getTransactionType();
         if(transactionType != TransactionType.NORMAL
-                && transactionType != TransactionType.MINER_AWARD
-                && transactionType != TransactionType.COMMUNITY_MAINTENANCE
+                && transactionType != TransactionType.COINBASE
         ){
             logger.debug("交易校验失败：不能识别的交易类型。");
             return false;
         }
-        if(transactionType == TransactionType.MINER_AWARD){
+        if(transactionType == TransactionType.COINBASE){
             if(block == null){
                 logger.debug("交易校验失败：验证激励交易必须区块参数不能为空。");
                 return false;
@@ -670,7 +631,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //根据交易类型，做进一步的校验
-        if(transaction.getTransactionType() == TransactionType.MINER_AWARD){
+        if(transaction.getTransactionType() == TransactionType.COINBASE){
             /**
              * 激励交易输出可以为空，这时代表矿工放弃了奖励、或者依据规则挖矿激励就是零奖励。
              */
@@ -712,17 +673,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 }
             }catch (Exception e){
                 logger.debug("交易校验失败：校验交易签名失败。不合法的交易。",e);
-                return false;
-            }
-            return true;
-        } else if(transaction.getTransactionType() == TransactionType.COMMUNITY_MAINTENANCE){
-            List<TransactionInput> inputs = transaction.getInputs();
-            if(inputs != null && inputs.size()!=0){
-                logger.debug("交易校验失败：社区奖励交易不能有交易输入。");
-                return false;
-            }
-            if(!CommunityMaintenanceTransactionTool.isMaintenanceTransactionRight(block.getTimestamp(),block.getHeight(),transaction)){
-                logger.debug("交易校验失败：社区奖励交易验证失败。");
                 return false;
             }
             return true;
@@ -809,7 +759,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             //校验奖励交易笔数
             int mineAwardTransactionCount = 0;
             for(Transaction tx : block.getTransactions()){
-                if(tx.getTransactionType() == TransactionType.MINER_AWARD){
+                if(tx.getTransactionType() == TransactionType.COINBASE){
                     mineAwardTransactionCount++;
                 }
             }
@@ -825,7 +775,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             //获取区块中写入的挖矿奖励交易
             Transaction mineAwardTransaction = null;
             for(Transaction tx : block.getTransactions()){
-                if(tx.getTransactionType() == TransactionType.MINER_AWARD){
+                if(tx.getTransactionType() == TransactionType.COINBASE){
                     mineAwardTransaction = tx;
                     break;
                 }

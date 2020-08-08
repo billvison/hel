@@ -142,7 +142,7 @@ public class TransactionTool {
                 outputHashList.add(transactionOutput.getTransactionOutputHash());
             }
         }
-        return calculateTransactionHash(transaction.getTimestamp(),transaction.getTransactionType().getCode(),inputHashList,outputHashList);
+        return calculateTransactionHash(transaction.getTimestamp(),inputHashList,outputHashList);
     }
 
     /**
@@ -161,15 +161,14 @@ public class TransactionTool {
         for(TransactionOutputDTO transactionOutputDTO:outputs){
             outputHashList.add(calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
         }
-        return calculateTransactionHash(transactionDTO.getTimestamp(),transactionDTO.getTransactionTypeCode(),inputHashList,outputHashList);
+        return calculateTransactionHash(transactionDTO.getTimestamp(),inputHashList,outputHashList);
     }
 
     /**
      * 计算交易哈希
      */
-    private static String calculateTransactionHash(long currentTimeMillis,int transactionTypeCode,List<String> inputHashList,List<String> outputHashList){
+    private static String calculateTransactionHash(long currentTimeMillis,List<String> inputHashList,List<String> outputHashList){
         String data = "";
-        data += "[" + transactionTypeCode + "]";
         if(inputHashList != null && inputHashList.size()!=0){
             data += "[" + Joiner.on(",").join(inputHashList) + "]";
         }

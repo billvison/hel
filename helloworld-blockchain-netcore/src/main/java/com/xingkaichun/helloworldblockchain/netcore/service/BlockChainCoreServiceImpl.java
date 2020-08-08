@@ -170,7 +170,6 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.setTimestamp(currentTimeMillis);
-        transactionDTO.setTransactionTypeCode(TransactionType.NORMAL.getCode());
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
 

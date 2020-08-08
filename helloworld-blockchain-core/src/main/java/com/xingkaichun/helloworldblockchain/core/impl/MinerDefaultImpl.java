@@ -10,7 +10,6 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionIn
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
-import com.xingkaichun.helloworldblockchain.core.tools.CommunityMaintenanceTransactionTool;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
@@ -360,7 +359,7 @@ public class MinerDefaultImpl extends Miner {
     public Transaction buildMineAwardTransaction(long timestamp, BlockChainDataBase blockChainDataBase, Block block) throws Exception {
         Transaction transaction = new Transaction();
         transaction.setTimestamp(timestamp);
-        transaction.setTransactionType(TransactionType.MINER_AWARD);
+        transaction.setTransactionType(TransactionType.COINBASE);
         transaction.setInputs(null);
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
@@ -400,12 +399,6 @@ public class MinerDefaultImpl extends Miner {
             nonNonceBlock.setPreviousBlockHash(tailBlock.getHash());
         }
         nonNonceBlock.setTransactions(packingTransactionList);
-
-        //社区维护
-        Transaction maintenanceTransaction = CommunityMaintenanceTransactionTool.obtainMaintenanceTransaction(timestamp,nonNonceBlock.getHeight());
-        if(maintenanceTransaction != null){
-            packingTransactionList.add(maintenanceTransaction);
-        }
 
         //创建挖矿奖励交易
         Transaction mineAwardTransaction =  buildMineAwardTransaction(timestamp,blockChainDataBase,nonNonceBlock);

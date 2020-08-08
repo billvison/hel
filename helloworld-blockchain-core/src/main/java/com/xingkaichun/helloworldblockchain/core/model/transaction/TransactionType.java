@@ -8,10 +8,8 @@ package com.xingkaichun.helloworldblockchain.core.model.transaction;
 public enum TransactionType {
 
     NORMAL(1,"普通交易"),
-    MINER_AWARD(2,"挖矿奖励"),
-    COMMUNITY_MAINTENANCE(3,"社区维护");
-    //DESTORY(3,"销毁币");//TODO 实现
-    // ACROSS_CHAIN(4,"跨链交易"),//TODO 实现
+    //TODO 介绍
+    COINBASE(2,"挖矿奖励");
 
     private int code;
     private String describle;

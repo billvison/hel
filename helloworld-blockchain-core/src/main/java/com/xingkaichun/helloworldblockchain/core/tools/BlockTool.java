@@ -87,7 +87,7 @@ public class BlockTool {
     public static boolean isTransactionWriteRight(Block block, @Nonnull Transaction transaction) {
         //校验挖矿交易的时间戳
         if(block != null){
-            if(transaction.getTransactionType() == TransactionType.MINER_AWARD){
+            if(transaction.getTransactionType() == TransactionType.COINBASE){
                 if(block.getTimestamp() != transaction.getTimestamp()){
                     return false;
                 }
