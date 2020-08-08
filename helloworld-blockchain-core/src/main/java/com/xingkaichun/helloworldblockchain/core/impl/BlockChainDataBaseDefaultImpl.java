@@ -565,7 +565,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         Block tailBlock = findNoTransactionBlockByBlockHeight(obtainBlockChainHeight());
         if(tailBlock == null){
             //校验区块Hash是否连贯
-            if(!GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousHash())){
+            if(!GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousBlockHash())){
                 return false;
             }
             //校验区块高度是否连贯
@@ -578,7 +578,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 return false;
             }
             //校验区块Hash是否连贯
-            if(!tailBlock.getHash().equals(block.getPreviousHash())){
+            if(!tailBlock.getHash().equals(block.getPreviousBlockHash())){
                 return false;
             }
             //校验区块高度是否连贯

@@ -101,7 +101,7 @@ public class MinerDefaultImpl extends Miner {
             //第一个区块，除了创始人，其它矿工没有机会走到这里
             return false;
         } else {
-            if(BigIntegerUtil.isEquals(tailBlock.getHeight().add(BigInteger.valueOf(1)),block.getHeight()) && tailBlock.getHash().equals(block.getPreviousHash())){
+            if(BigIntegerUtil.isEquals(tailBlock.getHeight().add(BigInteger.valueOf(1)),block.getHeight()) && tailBlock.getHash().equals(block.getPreviousBlockHash())){
                 return false;
             }
             return true;
@@ -394,10 +394,10 @@ public class MinerDefaultImpl extends Miner {
 
         if(tailBlock == null){
             nonNonceBlock.setHeight(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_HEIGHT);
-            nonNonceBlock.setPreviousHash(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH);
+            nonNonceBlock.setPreviousBlockHash(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH);
         } else {
             nonNonceBlock.setHeight(tailBlock.getHeight().add(BigInteger.valueOf(1)));
-            nonNonceBlock.setPreviousHash(tailBlock.getHash());
+            nonNonceBlock.setPreviousBlockHash(tailBlock.getHash());
         }
         nonNonceBlock.setTransactions(packingTransactionList);
 

@@ -184,7 +184,7 @@ function blockByHeight(result){
 	}
 	var temp =
 			'<dl><dd>时间戳: ' + result.block.timestamp + '</dd>' +
-			'<dd>前哈希: ' + result.block.previousHash + '</dd>' +
+			'<dd>前哈希: ' + result.block.previousBlockHash + '</dd>' +
 			'<dd>区块高度: ' + result.block.height + '</dd>' +		
 			'<dd>merkleRoot: ' + result.block.merkleRoot + '</dd>' +
 			'<dd>consensusValue: ' + result.block.consensusValue + '</dd>' +

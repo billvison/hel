@@ -151,7 +151,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
                 break;
             }
             Block temporaryBlock = temporaryBlockChainDataBase.findNoTransactionBlockByBlockHeight(noForkBlockHeight);
-            if(targetBlock.getHash().equals(temporaryBlock.getHash()) && targetBlock.getPreviousHash().equals(temporaryBlock.getPreviousHash())){
+            if(targetBlock.getHash().equals(temporaryBlock.getHash()) && targetBlock.getPreviousBlockHash().equals(temporaryBlock.getPreviousBlockHash())){
                 break;
             }
             targetBlockChainDataBase.removeTailBlock();
@@ -217,7 +217,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             return false;
         }
         //不严格校验,这里没有具体校验每一笔交易
-        if(StringUtil.isEquals(block1.getPreviousHash(),block2.getPreviousHash())
+        if(StringUtil.isEquals(block1.getPreviousBlockHash(),block2.getPreviousBlockHash())
                 && BigIntegerUtil.isEquals(block1.getHeight(),block2.getHeight())
                 && StringUtil.isEquals(block1.getMerkleRoot(),block2.getMerkleRoot())
                 && StringUtil.isEquals(block1.getConsensusValue(),block2.getConsensusValue())

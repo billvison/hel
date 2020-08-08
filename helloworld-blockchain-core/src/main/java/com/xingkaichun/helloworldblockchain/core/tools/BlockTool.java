@@ -29,7 +29,7 @@ public class BlockTool {
      * @param block 区块
      */
     public static String calculateBlockHash(Block block) {
-        String input = block.getTimestamp()+block.getPreviousHash()+block.getHeight()+block.getMerkleRoot()+block.getConsensusValue();
+        String input = block.getTimestamp()+block.getPreviousBlockHash()+block.getHeight()+block.getMerkleRoot()+block.getConsensusValue();
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(input));
         return HexUtil.bytesToHexString(sha256Digest) + block.getTimestamp();
     }

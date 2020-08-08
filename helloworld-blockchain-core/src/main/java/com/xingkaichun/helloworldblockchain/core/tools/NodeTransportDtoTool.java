@@ -48,21 +48,21 @@ public class NodeTransportDtoTool {
         }
 
         //求上一个区块的hash
-        String previousHash = null;
+        String previousBlockHash = null;
         BigInteger height = blockDTO.getHeight();
         if(BigIntegerUtil.isEquals(height,BigInteger.ONE)){
-            previousHash = GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH;
+            previousBlockHash = GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH;
         } else {
             Block previousBlock = blockChainDataBase.findNoTransactionBlockByBlockHeight(height.subtract(BigInteger.ONE));
             if(previousBlock == null){
                 throw new ClassCastException("上一个区块不应该为null");
             }
-            previousHash = previousBlock.getHash();
+            previousBlockHash = previousBlock.getHash();
         }
 
         Block block = new Block();
         block.setTimestamp(blockDTO.getTimestamp());
-        block.setPreviousHash(previousHash);
+        block.setPreviousBlockHash(previousBlockHash);
         block.setHeight(blockDTO.getHeight());
         block.setTransactions(transactionList);
         block.setMerkleRoot(BlockTool.calculateBlockMerkleRoot(block));
