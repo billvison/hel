@@ -1,7 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.google.common.base.Joiner;
-import com.xingkaichun.helloworldblockchain.core.model.enums.HashEnum;
 import com.xingkaichun.helloworldblockchain.core.model.script.Script;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptExecuteResult;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
@@ -176,7 +175,7 @@ public class TransactionTool {
             data += "[" + Joiner.on(" ").join(outputHashList) + "]";
         }
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(data));
-        return HexUtil.bytesToHexString(sha256Digest) + HashEnum.TRANSACTION_HASH.getCode() + currentTimeMillis;
+        return HexUtil.bytesToHexString(sha256Digest) + currentTimeMillis;
     }
 
     /**
@@ -202,6 +201,6 @@ public class TransactionTool {
         forHash += "[" + value + "]";
         forHash += "[" + Joiner.on(" ").join(scriptLock) + "]";
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(forHash));
-        return HexUtil.bytesToHexString(sha256Digest) + HashEnum.TRANSACTION_OUTPUT_HASH.getCode() + currentTimeMillis;
+        return HexUtil.bytesToHexString(sha256Digest) + + currentTimeMillis;
     }
 }

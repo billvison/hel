@@ -263,7 +263,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return EncodeDecodeUtil.decodeToBlock(bytesBlock);
     }
     @Override
-    public BigInteger findBlockHeightByBlockHash(String blockHash) throws Exception {
+    public BigInteger findBlockHeightByBlockHash(String blockHash) {
         byte[] bytesBlockHeight = LevelDBUtil.get(blockChainDB, buildBlockHashtBlockHeightKey(blockHash));
         if(bytesBlockHeight == null){
             return null;
@@ -482,15 +482,15 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 主键不能被连续使用一次以上
      * 主键符合约束
      */
-    private boolean isNewGenerateHashRight(Block block) throws Exception {
-        //校验区块Hash是否已经被使用了
-        if(isHashExist(block.getHash())){
-            logger.debug("区块数据异常，区块Hash已经被使用了。");
+    private boolean isNewGenerateHashRight(Block block) {
+        String blockHash = block.getHash();
+        List<Transaction> blockTransactions = block.getTransactions();
+        //在不同的交易中，新生产的哈希(区块的哈希、交易的哈希、交易输出哈希)不应该被使用两次或是两次以上
+        Set<String> hashSet = new HashSet<>();
+        if(!saveHash(hashSet,blockHash)){
             return false;
         }
-        //在不同的交易中，新生产的哈希(交易的哈希、交易输出哈希)不应该被使用两次或是两次以上
-        Set<String> hashSet = new HashSet<>();
-        for(Transaction transaction : block.getTransactions()){
+        for(Transaction transaction : blockTransactions){
             String transactionHash = transaction.getTransactionHash();
             if(!saveHash(hashSet,transactionHash)){
                 return false;
@@ -505,10 +505,14 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 }
             }
         }
+        //校验区块Hash是否已经被使用了
+        if(isHashExist(blockHash)){
+            logger.debug("区块数据异常，区块Hash已经被使用了。");
+            return false;
+        }
         //校验每一笔交易新产生的Hash是否正确
-        List<Transaction> transactions = block.getTransactions();
-        if(transactions != null){
-            for(Transaction transaction:transactions){
+        if(blockTransactions != null){
+            for(Transaction transaction:blockTransactions){
                 if(!isNewGenerateHashRight(transaction)){
                     return false;
                 }

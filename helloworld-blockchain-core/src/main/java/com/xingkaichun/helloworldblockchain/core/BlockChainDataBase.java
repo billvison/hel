@@ -125,7 +125,7 @@ public abstract class BlockChainDataBase {
      * 根据区块Hash查找区块高度
      * @param blockHash 区块Hash
      */
-    public abstract BigInteger findBlockHeightByBlockHash(String blockHash) throws Exception ;
+    public abstract BigInteger findBlockHeightByBlockHash(String blockHash) ;
     //endregion
 
 
