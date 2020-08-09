@@ -7,23 +7,12 @@ package com.xingkaichun.helloworldblockchain.core.model.transaction;
  */
 public enum TransactionType {
 
-    NORMAL(1,"普通交易"),
-    //TODO 介绍
-    COINBASE(2,"挖矿奖励");
+    NORMAL,
+    /**
+     * TODO 介绍
+     * https://zhuanlan.zhihu.com/p/55310564
+     * @author 邢开春 xingkaichun@qq.com
+     */
+    COINBASE;
 
-    private int code;
-    private String describle;
-
-    TransactionType(int code, String describle) {
-        this.code = code;
-        this.describle = describle;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getDescrible() {
-        return describle;
-    }
 }

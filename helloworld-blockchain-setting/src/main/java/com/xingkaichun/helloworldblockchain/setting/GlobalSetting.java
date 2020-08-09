@@ -41,9 +41,11 @@ public class GlobalSetting {
         public final static long BLOCK_CHAIN_VERSION_1 = 1590940800000L;
         //第二版本2020-08-01 00:00:00
         public final static long BLOCK_CHAIN_VERSION_2 = 1596211200000L;
+        //第二版本2020-10-01 00:00:00
+        public final static long BLOCK_CHAIN_VERSION_3 = 1696211200000L;
         //版本列表
         public final static List<Long> BLOCK_CHAIN_VERSION_LIST =
-                Collections.unmodifiableList(Arrays.asList(BLOCK_CHAIN_VERSION_1,BLOCK_CHAIN_VERSION_2));
+                Collections.unmodifiableList(Arrays.asList(BLOCK_CHAIN_VERSION_1,BLOCK_CHAIN_VERSION_2,BLOCK_CHAIN_VERSION_3));
 
         /**
          * 检查系统版本是否支持。
@@ -83,7 +85,7 @@ public class GlobalSetting {
         //产生区块的平均时间
         public final static long GENERATE_BLOCK_AVERAGE_TIMESTAMP = 2 *  60 * 1000;
         //初始化产生区块的难度
-        public final static String INIT_GENERATE_BLOCK_DIFFICULTY_STRING = "000000";
+        public final static String INIT_GENERATE_BLOCK_DIFFICULTY_STRING = "0000";
         //初始化挖矿激励金额
         public final static BigDecimal INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT = new BigDecimal("100");
         //挖矿激励减产周期

@@ -1,15 +1,15 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.google.common.base.Joiner;
-import com.xingkaichun.helloworldblockchain.core.StackBasedVirtualMachine;
+import com.xingkaichun.helloworldblockchain.core.model.enums.HashEnum;
 import com.xingkaichun.helloworldblockchain.core.model.script.Script;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptExecuteResult;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.script.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
-import com.xingkaichun.helloworldblockchain.crypto.Base58Util;
-import com.xingkaichun.helloworldblockchain.crypto.Base64Util;
+import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDTO;
@@ -170,14 +170,13 @@ public class TransactionTool {
     private static String calculateTransactionHash(long currentTimeMillis,List<String> inputHashList,List<String> outputHashList){
         String data = "";
         if(inputHashList != null && inputHashList.size()!=0){
-            data += "[" + Joiner.on(",").join(inputHashList) + "]";
+            data += "[" + Joiner.on(" ").join(inputHashList) + "]";
         }
         if(outputHashList != null && outputHashList.size()!=0){
-            data += "[" + Joiner.on(",").join(outputHashList) + "]";
+            data += "[" + Joiner.on(" ").join(outputHashList) + "]";
         }
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(data));
-        String base64Encode = Base64Util.encode(sha256Digest);
-        return base64Encode + currentTimeMillis;
+        return HexUtil.bytesToHexString(sha256Digest) + HashEnum.TRANSACTION_HASH.getCode() + currentTimeMillis;
     }
 
     /**
@@ -199,12 +198,10 @@ public class TransactionTool {
      */
     private static String calculateTransactionOutputHash(long currentTimeMillis, String address, String value, List<String> scriptLock) {
         String forHash = "";
-        forHash += "[" + currentTimeMillis + "]";
         forHash += "[" + address + "]";
         forHash += "[" + value + "]";
         forHash += "[" + Joiner.on(" ").join(scriptLock) + "]";
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(forHash));
-        String base58Encode = Base58Util.encode(sha256Digest);
-        return base58Encode + currentTimeMillis;
+        return HexUtil.bytesToHexString(sha256Digest) + HashEnum.TRANSACTION_OUTPUT_HASH.getCode() + currentTimeMillis;
     }
 }

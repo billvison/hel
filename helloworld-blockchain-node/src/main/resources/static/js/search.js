@@ -186,7 +186,7 @@ function blockByHeight(result){
 			'<dl><dd>时间戳: ' + result.block.timestamp + '</dd>' +
 			'<dd>前哈希: ' + result.block.previousBlockHash + '</dd>' +
 			'<dd>区块高度: ' + result.block.height + '</dd>' +		
-			'<dd>merkleRoot: ' + result.block.merkleRoot + '</dd>' +
+			'<dd>merkleTreeRoot: ' + result.block.merkleTreeRoot + '</dd>' +
 			'<dd>nonce: ' + result.block.nonce + '</dd>' +
 			'<dd>哈希: ' + result.block.hash + '</dd>' +
 			'<dd>explain: ' + result.block.consensusVariableHolder.explain + '</dd>' +
