@@ -622,7 +622,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         //业务校验
         //交易金额相关
-        if(!isTransactionAmountLegal(transaction)){
+        if(!TransactionTool.isTransactionAmountLegal(transaction)){
             logger.debug("交易金额不合法");
             return false;
         }
@@ -1178,53 +1178,5 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return BigInteger.ZERO;
         }
         return ByteUtil.bytesToBigInteger(byteTotalTransactionQuantity);
-    }
-
-    /**
-     * 交易中的金额是否符合系统的约束
-     */
-    private boolean isTransactionAmountLegal(Transaction transaction) {
-        List<TransactionOutput> outputs = transaction.getOutputs();
-        if(outputs != null){
-            for(TransactionOutput output:outputs){
-                if(!isTransactionAmountLegal(output.getValue())){
-                    logger.debug("交易金额不合法");
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 是否是一个合法的交易金额：这里用于限制交易金额的最大值、最小值、小数保留位置
-     */
-    private boolean isTransactionAmountLegal(BigDecimal transactionAmount) {
-        try {
-            if(transactionAmount == null){
-                logger.debug("交易金额不合法：交易金额不能为空");
-                return false;
-            }
-            //校验交易金额最小值
-            if(transactionAmount.compareTo(GlobalSetting.TransactionConstant.TRANSACTION_MIN_AMOUNT) < 0){
-                logger.debug("交易金额不合法：交易金额不能小于系统默认交易金额最小值");
-                return false;
-            }
-            //校验交易金额最大值
-            if(transactionAmount.compareTo(GlobalSetting.TransactionConstant.TRANSACTION_MAX_AMOUNT) > 0){
-                logger.debug("交易金额不合法：交易金额不能大于系统默认交易金额最大值");
-                return false;
-            }
-            //校验小数位数
-            long decimalPlaces = NumberUtil.obtainDecimalPlaces(transactionAmount);
-            if(decimalPlaces > GlobalSetting.TransactionConstant.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES){
-                logger.debug("交易金额不合法：交易金额的小数位数过多，大于系统默认小说最高精度");
-                return false;
-            }
-            return true;
-        } catch (Exception e) {
-            logger.debug("校验金额方法出现异常，请检查。",e);
-            return false;
-        }
     }
 }

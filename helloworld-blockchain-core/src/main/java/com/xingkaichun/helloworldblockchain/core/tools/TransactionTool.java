@@ -7,13 +7,17 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.script.StackBasedVirtualMachine;
+import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDTO;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.ByteUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -25,6 +29,8 @@ import java.util.List;
  * @author 邢开春 xingkaichun@qq.com
  */
 public class TransactionTool {
+
+    private final static Logger logger = LoggerFactory.getLogger(TransactionTool.class);
 
     /**
      * 交易输入总额
@@ -71,7 +77,6 @@ public class TransactionTool {
 
     /**
      * 获取用于签名的交易数据
-     * @return
      */
     public static String getSignatureData(Transaction transaction) {
         String data = transaction.getTransactionHash();
@@ -203,4 +208,55 @@ public class TransactionTool {
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(forHash));
         return HexUtil.bytesToHexString(sha256Digest) + + currentTimeMillis;
     }
+
+
+    /**
+     * 交易中的金额是否符合系统的约束
+     */
+    public static boolean isTransactionAmountLegal(Transaction transaction) {
+        //TODO 交易输入>交易输出
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        if(outputs != null){
+            for(TransactionOutput output:outputs){
+                if(!isTransactionAmountLegal(output.getValue())){
+                    logger.debug("交易金额不合法");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 是否是一个合法的交易金额：这里用于限制交易金额的最大值、最小值、小数保留位置
+     */
+    public static boolean isTransactionAmountLegal(BigDecimal transactionAmount) {
+        try {
+            if(transactionAmount == null){
+                logger.debug("交易金额不合法：交易金额不能为空");
+                return false;
+            }
+            //校验交易金额最小值
+            if(transactionAmount.compareTo(GlobalSetting.TransactionConstant.TRANSACTION_MIN_AMOUNT) < 0){
+                logger.debug("交易金额不合法：交易金额不能小于系统默认交易金额最小值");
+                return false;
+            }
+            //校验交易金额最大值
+            if(transactionAmount.compareTo(GlobalSetting.TransactionConstant.TRANSACTION_MAX_AMOUNT) > 0){
+                logger.debug("交易金额不合法：交易金额不能大于系统默认交易金额最大值");
+                return false;
+            }
+            //校验小数位数
+            long decimalPlaces = NumberUtil.obtainDecimalPlaces(transactionAmount);
+            if(decimalPlaces > GlobalSetting.TransactionConstant.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES){
+                logger.debug("交易金额不合法：交易金额的小数位数过多，大于系统默认小说最高精度");
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            logger.debug("校验金额方法出现异常，请检查。",e);
+            return false;
+        }
+    }
+
 }
