@@ -92,27 +92,24 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //endregion
 
     //region 构造函数
-    public BlockChainDataBaseDefaultImpl(String blockchainDataPath,Incentive incentive,Consensus consensus) throws Exception {
+    public BlockChainDataBaseDefaultImpl(String blockchainDataPath,Incentive incentive,Consensus consensus) {
         super(consensus,incentive);
-        this.blockChainDB = LevelDBUtil.createDB(new File(blockchainDataPath,BlockChain_DataBase_DirectName));
+        File blockChainDBFile = new File(blockchainDataPath,BlockChain_DataBase_DirectName);
+        this.blockChainDB = LevelDBUtil.createDB(blockChainDBFile);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                blockChainDB.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            LevelDBUtil.closeDB(blockChainDB);
         }));
     }
     //endregion
 
     //region 区块增加与删除
     @Override
-    public boolean addBlock(Block block) throws Exception {
+    public boolean addBlock(Block block) {
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{
-            boolean isBlockCanApplyToBlockChain = isBlockCanApplyToBlockChain(block);
-            if(!isBlockCanApplyToBlockChain){
+            boolean isBlockCanAddToBlockChain = isBlockCanAddToBlockChain(block);
+            if(!isBlockCanAddToBlockChain){
                 return false;
             }
             WriteBatch writeBatch = createWriteBatch(block,BlockChainActionEnum.ADD_BLOCK);
@@ -126,7 +123,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * 补充区块的属性
      */
-    private void fillBlockPropertity(Block block) throws Exception {
+    private void fillBlockPropertity(Block block) {
 
         BigInteger transactionSequenceNumberInBlock = BigInteger.ZERO;
         BigInteger transactionSequenceNumberInBlockChain = queryTransactionSize();
@@ -160,7 +157,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public Block removeTailBlock() throws Exception {
+    public Block removeTailBlock() {
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{
@@ -177,10 +174,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) throws Exception {
-        if(blockHeight == null){
-            throw new NullPointerException("区块高度不能为空");
-        }
+    public void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) {
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{
@@ -204,7 +198,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     //region 区块链提供的通用方法
     @Override
-    public Block queryTailBlock() throws Exception {
+    public Block queryTailBlock() {
         BigInteger blockChainHeight = queryBlockChainHeight();
         if(BigIntegerUtil.isLessEqualThan(blockChainHeight,BigInteger.valueOf(0))){
             return null;
@@ -213,7 +207,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
     //TODO 删除NoTransactionBlock ？ 或是 新增区块头实体
     @Override
-    public Block queryTailNoTransactionBlock() throws Exception {
+    public Block queryTailNoTransactionBlock() {
         BigInteger blockChainHeight = queryBlockChainHeight();
         if(BigIntegerUtil.isLessEqualThan(blockChainHeight,BigInteger.valueOf(0))){
             return null;
@@ -241,7 +235,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public TransactionOutput queryUnspendTransactionOutputByTransactionOuputHash(String transactionOutputHash) throws Exception {
+    public TransactionOutput queryUnspendTransactionOutputByTransactionOuputHash(String transactionOutputHash) {
         if(transactionOutputHash==null || "".equals(transactionOutputHash)){
             return null;
         }
@@ -253,7 +247,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public Block queryBlockByBlockHeight(BigInteger blockHeight) throws Exception {
+    public Block queryBlockByBlockHeight(BigInteger blockHeight) {
         byte[] bytesBlock = LevelDBUtil.get(blockChainDB, buildBlockHeightKey(blockHeight));
         if(bytesBlock==null){
             return null;
@@ -261,7 +255,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return EncodeDecodeUtil.decodeToBlock(bytesBlock);
     }
     @Override
-    public Block queryNoTransactionBlockByBlockHeight(BigInteger blockHeight) throws Exception {
+    public Block queryNoTransactionBlockByBlockHeight(BigInteger blockHeight) {
         if(blockHeight == null){
             return null;
         }
@@ -282,7 +276,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public Transaction queryTransactionByTransactionHash(String transactionHash) throws Exception {
+    public Transaction queryTransactionByTransactionHash(String transactionHash) {
         byte[] bytesTransaction = LevelDBUtil.get(blockChainDB, buildTransactionHashKey(transactionHash));
         if(bytesTransaction==null){
             return null;
@@ -291,12 +285,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
     //endregion
 
-    /**
-     * 检测区块是否可以被应用到区块链上
-     * 只有一种情况，区块可以被应用到区块链，即: 区块是区块链上的下一个区块
-     */
     @Override
-    public boolean isBlockCanApplyToBlockChain(@Nonnull Block block) throws Exception {
+    public boolean isBlockCanAddToBlockChain(@Nonnull Block block) {
         //校验区块时间
         if(!isBlockTimestampLegal(block)){
             logger.debug("区块生成的时间太滞后。");
@@ -436,7 +426,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * 校验激励
      */
-    private boolean isIncentiveRight(Block block) throws Exception {
+    private boolean isIncentiveRight(Block block) {
         //奖励交易有且只有一笔，且是区块的最后一笔交易
         List<Transaction> transactions = block.getTransactions();
         if(transactions == null || transactions.size()==0){
@@ -567,7 +557,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * 简单的校验Block的连贯性:从高度、哈希、时间戳三个方面检查
      */
-    private boolean isBlockHashBlockHeightBlockTimestampRight(Block block) throws Exception {
+    private boolean isBlockHashBlockHeightBlockTimestampRight(Block block) {
         Block tailBlock = queryNoTransactionBlockByBlockHeight(queryBlockChainHeight());
         if(tailBlock == null){
             //校验区块Hash是否连贯
@@ -617,7 +607,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) throws Exception{
+    public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) {
         //校验交易类型
         TransactionType transactionType = transaction.getTransactionType();
         if(transactionType != TransactionType.NORMAL
@@ -778,7 +768,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * 检查交易输入是否都是未花费交易输出
      */
-    private boolean isUnspendTransactionOutput(List<TransactionInput> inputs) throws Exception {
+    private boolean isUnspendTransactionOutput(List<TransactionInput> inputs) {
         //校验：交易输入是否是UTXO
         if(inputs != null){
             for(TransactionInput transactionInput : inputs) {
@@ -799,70 +789,66 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * @return
      */
     private boolean isBlockWriteMineAwardRight(Block block){
-        try {
-            //校验奖励交易笔数
-            int mineAwardTransactionCount = 0;
-            for(Transaction tx : block.getTransactions()){
-                if(tx.getTransactionType() == TransactionType.COINBASE){
-                    mineAwardTransactionCount++;
-                }
+        //校验奖励交易笔数
+        int mineAwardTransactionCount = 0;
+        for(Transaction tx : block.getTransactions()){
+            if(tx.getTransactionType() == TransactionType.COINBASE){
+                mineAwardTransactionCount++;
             }
-            if(mineAwardTransactionCount == 0){
-                logger.debug("区块中没有奖励交易。");
-                return false;
-            }
-            if(mineAwardTransactionCount > 1){
-                logger.debug("区块中不能有两笔奖励交易。");
-                return false;
-            }
-
-            //获取区块中写入的挖矿奖励交易
-            Transaction mineAwardTransaction = null;
-            for(Transaction tx : block.getTransactions()){
-                if(tx.getTransactionType() == TransactionType.COINBASE){
-                    mineAwardTransaction = tx;
-                    break;
-                }
-            }
-
-            if(mineAwardTransaction == null){
-                throw new RuntimeException("区块中没有发现挖矿奖励交易");
-            }
-            List<TransactionInput> inputs = mineAwardTransaction.getInputs();
-            if(inputs!=null && inputs.size()!=0){
-                logger.debug("区块数据异常：挖矿交易的输入只能为空。");
-                return false;
-            }
-            List<TransactionOutput> outputs = mineAwardTransaction.getOutputs();
-            if(outputs == null){
-                logger.debug("区块数据异常：挖矿交易的输出不能为空。");
-                return false;
-            }
-            if(outputs.size() != 1){
-                logger.debug("区块数据异常：挖矿交易的输出有且只能有一笔。");
-                return false;
-            }
-            //校验正反
-            for(TransactionOutput output:outputs){
-                if(output.getValue().compareTo(BigDecimal.ZERO)<0){
-                    logger.debug("区块数据异常：挖矿交易的输出不能小于0。");
-                    return false;
-                }
-            }
-
-            //获取区块中写入的挖矿奖励金额
-            BigDecimal blockWritedMineAward = BigDecimal.ZERO;
-            for(TransactionOutput output:outputs){
-                blockWritedMineAward = blockWritedMineAward.add(output.getValue());
-            }
-
-            //目标挖矿奖励
-            BigDecimal targetMineAward = incentive.mineAward(this, block);
-            return targetMineAward.compareTo(blockWritedMineAward) >= 0 ;
-        } catch (Exception e){
-            logger.debug("区块数据异常，挖矿奖励交易不正确。");
+        }
+        if(mineAwardTransactionCount == 0){
+            logger.debug("区块中没有奖励交易。");
             return false;
         }
+        if(mineAwardTransactionCount > 1){
+            logger.debug("区块中不能有两笔奖励交易。");
+            return false;
+        }
+
+        //获取区块中写入的挖矿奖励交易
+        Transaction mineAwardTransaction = null;
+        for(Transaction tx : block.getTransactions()){
+            if(tx.getTransactionType() == TransactionType.COINBASE){
+                mineAwardTransaction = tx;
+                break;
+            }
+        }
+
+        if(mineAwardTransaction == null){
+            logger.debug("区块中没有发现挖矿奖励交易。");
+            return false;
+        }
+        List<TransactionInput> inputs = mineAwardTransaction.getInputs();
+        if(inputs!=null && inputs.size()!=0){
+            logger.debug("区块数据异常：挖矿交易的输入只能为空。");
+            return false;
+        }
+        List<TransactionOutput> outputs = mineAwardTransaction.getOutputs();
+        if(outputs == null){
+            logger.debug("区块数据异常：挖矿交易的输出不能为空。");
+            return false;
+        }
+        if(outputs.size() != 1){
+            logger.debug("区块数据异常：挖矿交易的输出有且只能有一笔。");
+            return false;
+        }
+        //校验正反
+        for(TransactionOutput output:outputs){
+            if(output.getValue().compareTo(BigDecimal.ZERO)<0){
+                logger.debug("区块数据异常：挖矿交易的输出不能小于0。");
+                return false;
+            }
+        }
+
+        //获取区块中写入的挖矿奖励金额
+        BigDecimal blockWritedMineAward = BigDecimal.ZERO;
+        for(TransactionOutput output:outputs){
+            blockWritedMineAward = blockWritedMineAward.add(output.getValue());
+        }
+
+        //目标挖矿奖励
+        BigDecimal targetMineAward = incentive.mineAward(this, block);
+        return targetMineAward.compareTo(blockWritedMineAward) >= 0 ;
     }
 
     //region 数据库相关
@@ -934,7 +920,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * 将区块信息组装成WriteBatch对象
      */
-    private WriteBatch createWriteBatch(Block block, BlockChainActionEnum blockChainActionEnum) throws Exception {
+    private WriteBatch createWriteBatch(Block block, BlockChainActionEnum blockChainActionEnum) {
         fillBlockPropertity(block);
         WriteBatch writeBatch = new WriteBatchImpl();
         fillWriteBatch(writeBatch,block,blockChainActionEnum);
@@ -944,16 +930,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * 把区块信息组装进WriteBatch对象
      */
-    private void fillWriteBatch(WriteBatch writeBatch, Block block, BlockChainActionEnum blockChainActionEnum) throws Exception {
-        if(writeBatch == null){
-            throw new NullPointerException("参数writeBatch没有初始化");
-        }
-        if(block == null){
-            throw new NullPointerException("区块不能为空");
-        }
-        if(blockChainActionEnum == null){
-            throw new NullPointerException("区块链动作不能为空");
-        }
+    private void fillWriteBatch(WriteBatch writeBatch, Block block, BlockChainActionEnum blockChainActionEnum) {
         //更新区块数据
         byte[] blockHeightKey = buildBlockHeightKey(block.getHeight());
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
@@ -1049,7 +1026,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         addAboutAddressWriteBatch(writeBatch,block,blockChainActionEnum);
     }
 
-    private void addAboutAddressWriteBatch(WriteBatch writeBatch, Block block, BlockChainActionEnum blockChainActionEnum) throws Exception {
+    private void addAboutAddressWriteBatch(WriteBatch writeBatch, Block block, BlockChainActionEnum blockChainActionEnum) {
         for(Transaction transaction : block.getTransactions()){
             if(transaction == null){
                 return;
@@ -1085,7 +1062,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public List<TransactionOutput> queryUnspendTransactionOutputListByAddress(String address,long from,long size) throws Exception {
+    public List<TransactionOutput> queryUnspendTransactionOutputListByAddress(String address,long from,long size) {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
         byte[] addressToUnspendTransactionOutputListKey = buildAddressToUnspendTransactionOutputListKey(address);
@@ -1114,7 +1091,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public List<Transaction> queryTransactionByTransactionHeight(BigInteger from,BigInteger size) throws Exception {
+    public List<Transaction> queryTransactionByTransactionHeight(BigInteger from,BigInteger size) {
         List<Transaction> transactionList = new ArrayList<>();
         for(int i=0;BigIntegerUtil.isLessThan(BigInteger.valueOf(i),size);i++){
             byte[] byteTransaction = LevelDBUtil.get(blockChainDB,buildTransactionSequenceNumberInBlockChainKey(from.add(BigInteger.valueOf(i))));
@@ -1128,7 +1105,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public List<TransactionOutput> queryTransactionOutputListByAddress(String address,long from,long size) throws Exception {
+    public List<TransactionOutput> queryTransactionOutputListByAddress(String address,long from,long size) {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
         byte[] addressToTransactionOutputListKey = buildAddressToTransactionOuputListKey(address);

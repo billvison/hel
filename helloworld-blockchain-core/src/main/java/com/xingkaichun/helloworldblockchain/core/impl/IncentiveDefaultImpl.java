@@ -26,7 +26,7 @@ public class IncentiveDefaultImpl extends Incentive {
     private Logger logger = LoggerFactory.getLogger(IncentiveDefaultImpl.class);
 
     @Override
-    public BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) throws Exception {
+    public BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) {
         //转账手续费
         BigDecimal fees = getFees(block);
         //区块固定奖励

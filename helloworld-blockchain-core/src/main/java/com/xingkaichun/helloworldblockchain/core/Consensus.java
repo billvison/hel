@@ -25,13 +25,13 @@ public abstract class Consensus implements Serializable {
      * 区块满足共识的要求了吗？
      * 如果满足共识的要求，这个区块就可以添加进区块链，否则，不可以。
      */
-    public abstract boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
+    public abstract boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block) ;
 
     /**
      * 计算共识的中间变量持有者
      * 在做共识计算时，可能会产生很多的中间变量，如果每次都重新计算一次，比较浪费算力，
      * 这里的设计是将计算好的中间变量保存到这个持有者中，下次计算共识，直接从持有者中获取中间变量。
      */
-    public abstract ConsensusVariableHolder calculateConsensusVariableHolder(BlockChainDataBase blockChainDataBase, Block block) throws Exception;
+    public abstract ConsensusVariableHolder calculateConsensusVariableHolder(BlockChainDataBase blockChainDataBase, Block block) ;
 }
 

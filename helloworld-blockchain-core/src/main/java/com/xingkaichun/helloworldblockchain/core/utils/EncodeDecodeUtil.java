@@ -3,11 +3,10 @@ package com.xingkaichun.helloworldblockchain.core.utils;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 /**
  * EncodeDecode工具类
@@ -16,47 +15,80 @@ import java.io.ObjectOutputStream;
  */
 public class EncodeDecodeUtil {
 
-    public static byte[] encode(Transaction transaction) throws Exception {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        objectOutputStream.writeObject(transaction);
-        byte[] bytesTransaction = byteArrayOutputStream.toByteArray();
-        return bytesTransaction;
+    private final static Logger logger = LoggerFactory.getLogger(EncodeDecodeUtil.class);
+
+    public static byte[] encode(Transaction transaction) {
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(transaction);
+            byte[] bytesTransaction = byteArrayOutputStream.toByteArray();
+            return bytesTransaction;
+        } catch (IOException e) {
+            logger.error("序列化/反序列化失败",e);
+            throw new RuntimeException(e);
+        }
     }
-    public static Transaction decodeToTransaction(byte[] bytesTransaction) throws Exception {
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytesTransaction);
-        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        Transaction transaction = (Transaction) objectInputStream.readObject();
-        return transaction;
+    public static Transaction decodeToTransaction(byte[] bytesTransaction) {
+        try {
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytesTransaction);
+            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            Transaction transaction = (Transaction) objectInputStream.readObject();
+            return transaction;
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("序列化/反序列化失败",e);
+            throw new RuntimeException(e);
+        }
     }
 
 
-    public static byte[] encode(TransactionOutput transactionOutput) throws Exception {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        objectOutputStream.writeObject(transactionOutput);
-        byte[] bytesTransactionOutput = byteArrayOutputStream.toByteArray();
-        return bytesTransactionOutput;
+    public static byte[] encode(TransactionOutput transactionOutput) {
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(transactionOutput);
+            byte[] bytesTransactionOutput = byteArrayOutputStream.toByteArray();
+            return bytesTransactionOutput;
+        } catch (IOException e) {
+            logger.error("序列化/反序列化失败",e);
+            throw new RuntimeException(e);
+        }
     }
-    public static TransactionOutput decodeToTransactionOutput(byte[] bytesTransactionOutput) throws Exception {
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytesTransactionOutput);
-        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        TransactionOutput transactionOutput = (TransactionOutput) objectInputStream.readObject();
-        return transactionOutput;
+    public static TransactionOutput decodeToTransactionOutput(byte[] bytesTransactionOutput) {
+        try {
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytesTransactionOutput);
+            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            TransactionOutput transactionOutput = (TransactionOutput) objectInputStream.readObject();
+            return transactionOutput;
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("序列化/反序列化失败",e);
+            throw new RuntimeException(e);
+        }
+
     }
 
 
-    public static byte[] encode(Block block) throws Exception {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        objectOutputStream.writeObject(block);
-        byte[] bytesBlock = byteArrayOutputStream.toByteArray();
-        return bytesBlock;
+    public static byte[] encode(Block block) {
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(block);
+            byte[] bytesBlock = byteArrayOutputStream.toByteArray();
+            return bytesBlock;
+        } catch (IOException e) {
+            logger.error("序列化/反序列化失败",e);
+            throw new RuntimeException(e);
+        }
     }
-    public static Block decodeToBlock(byte[] bytesBlock) throws Exception{
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytesBlock);
-        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        Block block = (Block) objectInputStream.readObject();
-        return block;
+    public static Block decodeToBlock(byte[] bytesBlock) {
+        try {
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytesBlock);
+            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            Block block = (Block) objectInputStream.readObject();
+            return block;
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("序列化/反序列化失败",e);
+            throw new RuntimeException(e);
+        }
     }
 }
