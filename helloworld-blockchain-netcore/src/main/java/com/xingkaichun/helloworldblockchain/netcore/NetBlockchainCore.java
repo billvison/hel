@@ -45,7 +45,7 @@ public class NetBlockchainCore {
 
 
 
-    public void start() throws Exception {
+    public void start() {
         //启动本地的单机区块链
         blockChainCore.start();
         //启动区块链节点服务器

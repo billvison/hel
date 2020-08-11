@@ -19,7 +19,7 @@ public class BlockChainCoreFactory {
      * @param minerAddress 矿工钱包地址
      * @author 邢开春 xingkaichun@qq.com
      */
-    public static BlockChainCore createBlockChainCore(String blockchainDataPath,String minerAddress) throws Exception {
+    public static BlockChainCore createBlockChainCore(String blockchainDataPath,String minerAddress) {
 
         Incentive incentive = new IncentiveDefaultImpl();
         Consensus consensus = new ProofOfWorkConsensusImpl();

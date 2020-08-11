@@ -122,4 +122,5 @@ cd HelloworldBlockchainNode
 3.脚本
   可以直接区分操作码与操作数  
 4.区块数据校验方式  
+5.序列化抛弃java字节流形式的序列化
   

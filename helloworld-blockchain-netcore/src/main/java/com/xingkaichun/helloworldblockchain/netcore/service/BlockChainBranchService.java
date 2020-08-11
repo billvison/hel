@@ -20,7 +20,7 @@ public interface BlockChainBranchService {
      */
     BigInteger getFixBlockHashMaxBlockHeight(BigInteger blockHeight);
 
-    void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList) throws Exception;
-    void branchchainBranchHandler() throws Exception;
-    List<BlockchainBranchBlockDto> queryBlockchainBranch() throws Exception;
+    void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList) ;
+    void branchchainBranchHandler() ;
+    List<BlockchainBranchBlockDto> queryBlockchainBranch() ;
 }

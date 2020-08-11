@@ -31,7 +31,7 @@ public abstract class Miner {
      * 若矿工处于活动作态，开始挖矿。
      * 若矿工处于非活动状态，矿工不会进行任何工作。
      */
-    public abstract void start() throws Exception;
+    public abstract void start() ;
 
     /**
      * 矿工是否处于活动状态。
@@ -55,7 +55,7 @@ public abstract class Miner {
      * 构建区块的挖矿奖励交易，这里可以实现挖矿奖励的分配。
      * @param block 目标区块
      */
-    public abstract Transaction buildMineAwardTransaction(long timestamp, BlockChainDataBase blockChainDataBase, Block block) throws Exception;
+    public abstract Transaction buildMineAwardTransaction(long timestamp, BlockChainDataBase blockChainDataBase, Block block) ;
     //endregion
 
     /**

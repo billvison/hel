@@ -3,13 +3,14 @@ package com.xingkaichun.helloworldblockchain.netcore.daemonservice;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
+import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
-import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.netcore.service.*;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,11 +60,8 @@ public class AutomaticDaemonService {
                 } catch (Exception e) {
                     logger.error("定时将种子节点加入区块链网络",e);
                 }
-                try {
-                    ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.ADD_SEED_NODE_TO_LOCAL_BLOCKCHAIN_TIME_INTERVAL.name());
-                    Thread.sleep(Long.parseLong(configurationDto.getConfValue()));
-                } catch (InterruptedException e) {
-                }
+                ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.ADD_SEED_NODE_TO_LOCAL_BLOCKCHAIN_TIME_INTERVAL.name());
+                ThreadUtil.sleep(Long.parseLong(configurationDto.getConfValue()));
             }
         }).start();
 
@@ -76,11 +74,8 @@ public class AutomaticDaemonService {
                 } catch (Exception e) {
                     logger.error("在区块链网络中搜索新的节点出现异常",e);
                 }
-                try {
-                    ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.NODE_SEARCH_NEW_NODE_TIME_INTERVAL.name());
-                    Thread.sleep(Long.parseLong(configurationDto.getConfValue()));
-                } catch (InterruptedException e) {
-                }
+                ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.NODE_SEARCH_NEW_NODE_TIME_INTERVAL.name());
+                ThreadUtil.sleep(Long.parseLong(configurationDto.getConfValue()));
             }
         }).start();
 
@@ -93,11 +88,8 @@ public class AutomaticDaemonService {
                 } catch (Exception e) {
                     logger.error("在区块链网络中广播自己的区块高度出现异常",e);
                 }
-                try {
-                    ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL.name());
-                    Thread.sleep(Long.parseLong(configurationDto.getConfValue()));
-                } catch (InterruptedException e) {
-                }
+                ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL.name());
+                ThreadUtil.sleep(Long.parseLong(configurationDto.getConfValue()));
             }
         }).start();
 
@@ -112,11 +104,8 @@ public class AutomaticDaemonService {
                 } catch (Exception e) {
                     logger.error("在区块链网络中同步其它节点的区块出现异常",e);
                 }
-                try {
-                    ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.SEARCH_NEW_BLOCKS_TIME_INTERVAL.name());
-                    Thread.sleep(Long.parseLong(configurationDto.getConfValue()));
-                } catch (InterruptedException e) {
-                }
+                ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.SEARCH_NEW_BLOCKS_TIME_INTERVAL.name());
+                ThreadUtil.sleep(Long.parseLong(configurationDto.getConfValue()));
             }
         }).start();
     }
@@ -177,7 +166,7 @@ public class AutomaticDaemonService {
     /**
      * 发现自己的区块链高度比全网节点都要高，则广播自己的区块高度
      */
-    private void broadcastLocalBlcokChainHeight() throws Exception {
+    private void broadcastLocalBlcokChainHeight() {
         List<NodeDto> nodes = nodeService.queryAllNoForkAliveNodeList();
         if(nodes == null || nodes.size()==0){
             return;
@@ -220,7 +209,7 @@ public class AutomaticDaemonService {
     /**
      * 搜索新的区块，并同步这些区块到本地区块链系统
      */
-    private void searchNewBlocks() throws Exception {
+    private void searchNewBlocks() {
         List<NodeDto> nodes = nodeService.queryAllNoForkAliveNodeList();
         if(nodes == null || nodes.size()==0){
             return;

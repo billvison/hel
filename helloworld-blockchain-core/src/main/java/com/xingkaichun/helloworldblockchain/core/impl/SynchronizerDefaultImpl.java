@@ -3,12 +3,13 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.StringUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,9 +47,9 @@ public class SynchronizerDefaultImpl extends Synchronizer {
     }
 
     @Override
-    public void start() throws Exception {
+    public void start() {
         while (true){
-            Thread.sleep(10);
+            ThreadUtil.sleep(10);
             if(!synchronizeOption){
                 continue;
             }
@@ -75,7 +76,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
         return synchronizeOption;
     }
 
-    private void synchronizeBlockChainNode(String availableSynchronizeNodeId) throws Exception {
+    private void synchronizeBlockChainNode(String availableSynchronizeNodeId) {
         if(!synchronizeOption){
             return;
         }
@@ -119,7 +120,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
      * 则targetBlockChainDataBase同步blockChainDataBaseTemporary的数据。
      */
     private void promoteTargetBlockChainDataBase(BlockChainDataBase targetBlockChainDataBase,
-                                                   BlockChainDataBase temporaryBlockChainDataBase) throws Exception {
+                                                   BlockChainDataBase temporaryBlockChainDataBase) {
         Block targetBlockChainTailBlock = targetBlockChainDataBase.queryTailNoTransactionBlock();
         Block temporaryBlockChainTailBlock = temporaryBlockChainDataBase.queryTailNoTransactionBlock() ;
         //不需要调整
@@ -175,7 +176,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
      * 使得temporaryBlockChainDataBase和targetBlockChainDataBase的区块链数据一模一样
      */
     private void copyTargetBlockChainDataBaseToTemporaryBlockChainDataBase(BlockChainDataBase targetBlockChainDataBase,
-                                 BlockChainDataBase temporaryBlockChainDataBase) throws Exception {
+                                 BlockChainDataBase temporaryBlockChainDataBase) {
         Block targetBlockChainTailBlock = targetBlockChainDataBase.queryTailNoTransactionBlock() ;
         Block temporaryBlockChainTailBlock = temporaryBlockChainDataBase.queryTailNoTransactionBlock() ;
         if(targetBlockChainTailBlock == null){

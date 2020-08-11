@@ -1,8 +1,8 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
-import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
+import com.xingkaichun.helloworldblockchain.core.utils.EncodeDecodeUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.LevelDBUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import org.iq80.leveldb.DB;
@@ -12,7 +12,7 @@ import org.iq80.leveldb.impl.WriteBatchImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     private final static String MinerTransaction_DataBase_DirectName = "MinerTransactionDtoDataBase";
     private DB transactionPoolDB;
 
-    public MinerTransactionDtoDtoDataBaseDefaultImpl(String blockchainDataPath) throws Exception {
+    public MinerTransactionDtoDtoDataBaseDefaultImpl(String blockchainDataPath) {
 
         this.transactionPoolDB = LevelDBUtil.createDB(new File(blockchainDataPath,MinerTransaction_DataBase_DirectName));
 
@@ -41,17 +41,17 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
         }));
     }
 
-    public void insertTransactionDTO(TransactionDTO transactionDTO) throws Exception {
+    public void insertTransactionDTO(TransactionDTO transactionDTO) {
         //交易已经持久化进交易池数据库 丢弃交易
-        synchronized (BlockChainDataBase.class){
+        synchronized (this.getClass()){
             String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
-            LevelDBUtil.put(transactionPoolDB,transactionHash, encode(transactionDTO));
+            LevelDBUtil.put(transactionPoolDB,transactionHash, EncodeDecodeUtil.encode(transactionDTO));
         }
     }
 
     @Override
-    public List<TransactionDTO> selectTransactionDtoList(BlockChainDataBase blockChainDataBase,long from, long size) throws Exception {
-        synchronized (BlockChainDataBase.class){
+    public List<TransactionDTO> selectTransactionDtoList(long from, long size) {
+        synchronized (this.getClass()){
             List<TransactionDTO> transactionDtoList = new ArrayList<>();
             int cunrrentFrom = 0;
             int cunrrentSize = 0;
@@ -62,7 +62,7 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
                 }
                 cunrrentFrom++;
                 if(cunrrentFrom>=from && cunrrentSize<size){
-                    TransactionDTO transactionDTO = decodeToTransactionDTO(byteValue);
+                    TransactionDTO transactionDTO = EncodeDecodeUtil.decodeToTransactionDTO(byteValue);
                     transactionDtoList.add(transactionDTO);
                     cunrrentSize++;
                 }
@@ -75,13 +75,13 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     }
 
     @Override
-    public void deleteTransactionDto(TransactionDTO transactionDTO) throws Exception {
+    public void deleteTransactionDto(TransactionDTO transactionDTO) {
         String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
         LevelDBUtil.delete(transactionPoolDB,transactionHash);
     }
 
     @Override
-    public void deleteTransactionDtoListByTransactionHashList(List<String> transactionHashList) throws Exception {
+    public void deleteTransactionDtoListByTransactionHashList(List<String> transactionHashList) {
         if(transactionHashList == null || transactionHashList.size()==0){
             return;
         }
@@ -93,28 +93,11 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     }
 
     @Override
-    public TransactionDTO selectTransactionDtoByTransactionHash(String transactionHash) throws Exception {
+    public TransactionDTO selectTransactionDtoByTransactionHash(String transactionHash) {
         byte[] byteTransactionDTO = LevelDBUtil.get(transactionPoolDB,transactionHash);
         if(byteTransactionDTO == null){
             return null;
         }
-        return decodeToTransactionDTO(byteTransactionDTO);
-    }
-
-    private static byte[] encode(TransactionDTO transactionDTO) throws Exception {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = null;
-        objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        objectOutputStream.writeObject(transactionDTO);
-        byte[] bytesTransactionDTO = byteArrayOutputStream.toByteArray();
-        return bytesTransactionDTO;
-    }
-
-    private static TransactionDTO decodeToTransactionDTO(byte[] bytesTransactionDTO) throws Exception {
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytesTransactionDTO);
-        ObjectInputStream objectInputStream = null;
-        objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        TransactionDTO transactionDTO = (TransactionDTO) objectInputStream.readObject();
-        return transactionDTO;
+        return EncodeDecodeUtil.decodeToTransactionDTO(byteTransactionDTO);
     }
 }

@@ -51,7 +51,7 @@ import java.util.List;
  * 获取一个有数据传输完毕标识的节点ID。
  * 根据节点ID可获取传输过来的完整数据。(循环获取节点下一个Block，直至获取结果为null)。在这一步中，
  * 因为获取到了传输的数据，所以可以做自己的业务逻辑了。
- * 使用完毕后，删除节点ID传输数据，清除节点ID的数据传输完毕标识。
+ * 使用完毕后，清除节点ID传输数据，清除节点ID的数据传输完毕标识。
  *
  * @author 邢开春 xingkaichun@qq.com
  */
@@ -60,42 +60,42 @@ public abstract class SynchronizerDataBase {
     /**
      * 保存节点(nodeId)传输过来的数据
      */
-    public abstract boolean addBlockDTO(String nodeId, BlockDTO blockDTO) throws Exception ;
+    public abstract boolean addBlockDTO(String nodeId, BlockDTO blockDTO) ;
     /**
      * 获取节点(nodeId)传输过来所有区块中最小的区块高度。
      */
-    public abstract BigInteger getMinBlockHeight(String nodeId) throws Exception ;
+    public abstract BigInteger getMinBlockHeight(String nodeId) ;
     /**
      * 获取节点(nodeId)传输过来所有区块中最大的区块高度。
      */
-    public abstract BigInteger getMaxBlockHeight(String nodeId) throws Exception ;
+    public abstract BigInteger getMaxBlockHeight(String nodeId) ;
     /**
      * 根据节点与区块高度获取区块
      */
-    public abstract BlockDTO getBlockDto(String nodeId,BigInteger blockHeight) throws Exception ;
+    public abstract BlockDTO getBlockDto(String nodeId,BigInteger blockHeight) ;
     /**
      * 给节点(nodeId)添加数据传输完成的标识。
      */
-    public abstract void addDataTransferFinishFlag(String nodeId) throws Exception ;
+    public abstract void addDataTransferFinishFlag(String nodeId) ;
     /**
      * 节点(nodeId)有数据传输完成的标识吗？
      */
-    public abstract boolean hasDataTransferFinishFlag(String nodeId) throws Exception;
+    public abstract boolean hasDataTransferFinishFlag(String nodeId);
     /**
      * 删除节点(nodeId)传输过来的数据。
      * 清除节点(nodeId)的数据传输完成标识
      */
-    public abstract void clear(String nodeId) throws Exception ;
+    public abstract void clear(String nodeId) ;
     /**
      * 获取一个有数据传输完成标识的节点ID
      */
-    public abstract String getDataTransferFinishFlagNodeId() throws Exception ;
+    public abstract String getDataTransferFinishFlagNodeId() ;
     /**
-     * 获取一个节点ID
+     * 获取所有节点ID
      */
-    public abstract List<String> getAllNodeId() throws Exception ;
+    public abstract List<String> getAllNodeId() ;
     /**
      * 获取节点ID最后更新时间
      */
-    public abstract long getLastUpdateTimestamp(String nodeId) throws Exception ;
+    public abstract long getLastUpdateTimestamp(String nodeId) ;
 }

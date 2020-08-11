@@ -22,55 +22,55 @@ public interface BlockChainCoreService {
     /**
      * 根据交易哈希获取交易
      */
-    TransactionDTO queryTransactionDtoByTransactionHash(String transactionHash) throws Exception;
+    TransactionDTO queryTransactionDtoByTransactionHash(String transactionHash) ;
     /**
      * 根据交易高度获取交易
      */
-    List<Transaction> queryTransactionByTransactionHeight(PageCondition pageCondition) throws Exception;
+    List<Transaction> queryTransactionByTransactionHeight(PageCondition pageCondition) ;
     /**
      * 根据地址获取UTXO
      */
-    List<TransactionOutput> queryUtxoListByAddress(String address,PageCondition pageCondition) throws Exception;
+    List<TransactionOutput> queryUtxoListByAddress(String address,PageCondition pageCondition) ;
     /**
      * 根据地址获取TXO
      */
-    List<TransactionOutput> queryTxoListByAddress(String address,PageCondition pageCondition) throws Exception;
+    List<TransactionOutput> queryTxoListByAddress(String address,PageCondition pageCondition) ;
     /**
      * 提交交易到区块链网络
      */
-    SubmitNormalTransactionResultDto submitTransaction(NormalTransactionDto transactionDTO) throws Exception;
+    SubmitNormalTransactionResultDto submitTransaction(NormalTransactionDto transactionDTO) ;
 
     /**
      * 根据区块高度获取区块DTO
      */
-    BlockDTO queryBlockDtoByBlockHeight(BigInteger blockHeight) throws Exception;
+    BlockDTO queryBlockDtoByBlockHeight(BigInteger blockHeight) ;
     /**
      * 根据区块哈希获取区块
      */
-    Block queryNoTransactionBlockDtoByBlockHash(String blockHash) throws Exception;
+    Block queryNoTransactionBlockDtoByBlockHash(String blockHash) ;
     /**
      * 根据区块高度获取区块DTO
      */
-    Block queryNoTransactionBlockDtoByBlockHeight(BigInteger blockHeight) throws Exception;
+    Block queryNoTransactionBlockDtoByBlockHeight(BigInteger blockHeight) ;
     /**
      * 根据区块高度获取区块Hash
      */
-    String queryBlockHashByBlockHeight(BigInteger blockHeight) throws Exception;
+    String queryBlockHashByBlockHeight(BigInteger blockHeight) ;
     /**
      * 获取区块链高度
      */
-    BigInteger queryBlockChainHeight() throws Exception;
+    BigInteger queryBlockChainHeight() ;
     /**
      * 查询挖矿中的交易
      */
-    List<TransactionDTO> queryMiningTransactionList(PageCondition pageCondition) throws Exception;
+    List<TransactionDTO> queryMiningTransactionList(PageCondition pageCondition) ;
 
-    TransactionDTO queryMiningTransactionDtoByTransactionHash(String transactionHash) throws Exception;
+    TransactionDTO queryMiningTransactionDtoByTransactionHash(String transactionHash) ;
 
-    void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) throws Exception;
+    void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) ;
 
     /**
      * 保存交易到矿工交易数据库
      */
-    void saveTransactionToMinerTransactionDatabase(TransactionDTO transactionDTO) throws Exception ;
+    void saveTransactionToMinerTransactionDatabase(TransactionDTO transactionDTO)  ;
 }

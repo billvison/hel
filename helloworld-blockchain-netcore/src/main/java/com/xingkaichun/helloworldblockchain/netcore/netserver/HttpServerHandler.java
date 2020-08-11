@@ -23,7 +23,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
 
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
+	protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) {
 		this.readRequest(msg);
 
 		String body = msg.content().toString(CharsetUtil.UTF_8);

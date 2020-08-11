@@ -19,7 +19,7 @@ public class HttpServerChannelInitializer extends ChannelInitializer<SocketChann
 	}
 	
 	@Override
-	protected void initChannel(SocketChannel ch) throws Exception {
+	protected void initChannel(SocketChannel ch) {
 		ch.pipeline().addLast("codec", new HttpServerCodec());
 		ch.pipeline().addLast("aggregator", new HttpObjectAggregator(1048576));
 		ch.pipeline().addLast("serverHandler", new HttpServerHandler(nodeServerHandlerResolver));

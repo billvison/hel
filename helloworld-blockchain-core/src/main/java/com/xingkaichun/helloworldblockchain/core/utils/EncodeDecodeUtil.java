@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.utils;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +87,34 @@ public class EncodeDecodeUtil {
             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
             Block block = (Block) objectInputStream.readObject();
             return block;
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("序列化/反序列化失败",e);
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+    public static byte[] encode(TransactionDTO transactionDTO) {
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = null;
+            objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(transactionDTO);
+            byte[] bytesTransactionDTO = byteArrayOutputStream.toByteArray();
+            return bytesTransactionDTO;
+        } catch (IOException e) {
+            logger.error("序列化/反序列化失败",e);
+            throw new RuntimeException(e);
+        }
+    }
+    public static TransactionDTO decodeToTransactionDTO(byte[] bytesTransactionDTO) {
+        try {
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytesTransactionDTO);
+            ObjectInputStream objectInputStream = null;
+            objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            TransactionDTO transactionDTO = (TransactionDTO) objectInputStream.readObject();
+            return transactionDTO;
         } catch (IOException | ClassNotFoundException e) {
             logger.error("序列化/反序列化失败",e);
             throw new RuntimeException(e);

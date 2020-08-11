@@ -2,10 +2,10 @@ package com.xingkaichun.helloworldblockchain.netcore.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
-import com.xingkaichun.helloworldblockchain.core.script.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.script.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
@@ -44,7 +44,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public TransactionDTO queryTransactionDtoByTransactionHash(String transactionHash) throws Exception {
+    public TransactionDTO queryTransactionDtoByTransactionHash(String transactionHash) {
         Transaction transaction = blockChainCore.getBlockChainDataBase().queryTransactionByTransactionHash(transactionHash);
         if(transaction == null){
             return null;
@@ -54,14 +54,14 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public List<Transaction> queryTransactionByTransactionHeight(PageCondition pageCondition) throws Exception {
+    public List<Transaction> queryTransactionByTransactionHeight(PageCondition pageCondition) {
         BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
         List<Transaction>  transactionList = blockChainDataBase.queryTransactionByTransactionHeight(BigInteger.valueOf(pageCondition.getFrom()),BigInteger.valueOf(pageCondition.getSize()));
         return transactionList;
     }
 
     @Override
-    public List<TransactionOutput> queryUtxoListByAddress(String address,PageCondition pageCondition) throws Exception {
+    public List<TransactionOutput> queryUtxoListByAddress(String address,PageCondition pageCondition) {
         if(pageCondition == null){
             pageCondition = PageCondition.DEFAULT_PAGE_CONDITION;
         }
@@ -70,7 +70,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public List<TransactionOutput> queryTxoListByAddress(String address,PageCondition pageCondition) throws Exception {
+    public List<TransactionOutput> queryTxoListByAddress(String address,PageCondition pageCondition) {
         if(pageCondition == null){
             pageCondition = PageCondition.DEFAULT_PAGE_CONDITION;
         }
@@ -79,7 +79,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public SubmitNormalTransactionResultDto submitTransaction(NormalTransactionDto normalTransactionDto) throws Exception {
+    public SubmitNormalTransactionResultDto submitTransaction(NormalTransactionDto normalTransactionDto) {
         TransactionDTO transactionDTO = classCast(normalTransactionDto);
         saveTransactionToMinerTransactionDatabase(transactionDTO);
         List<NodeDto> nodes = nodeService.queryAllNoForkAliveNodeList();
@@ -105,7 +105,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         return response;
     }
 
-    private TransactionDTO classCast(NormalTransactionDto normalTransactionDto) throws Exception {
+    private TransactionDTO classCast(NormalTransactionDto normalTransactionDto) {
         long currentTimeMillis = System.currentTimeMillis();
 
         Account account = AccountUtil.accountFromPrivateKey(normalTransactionDto.getPrivateKey());
@@ -185,7 +185,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public String queryBlockHashByBlockHeight(BigInteger blockHeight) throws Exception {
+    public String queryBlockHashByBlockHeight(BigInteger blockHeight) {
         Block block = blockChainCore.getBlockChainDataBase().queryNoTransactionBlockByBlockHeight(blockHeight);
         if(block == null){
             return null;
@@ -194,7 +194,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public BlockDTO queryBlockDtoByBlockHeight(BigInteger blockHeight) throws Exception {
+    public BlockDTO queryBlockDtoByBlockHeight(BigInteger blockHeight) {
         Block block = blockChainCore.getBlockChainDataBase().queryBlockByBlockHeight(blockHeight);
         if(block == null){
             return null;
@@ -204,7 +204,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public Block queryNoTransactionBlockDtoByBlockHash(String blockHash) throws Exception {
+    public Block queryNoTransactionBlockDtoByBlockHash(String blockHash) {
         BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
         BigInteger blockHeight = blockChainDataBase.queryBlockHeightByBlockHash(blockHash);
         if(blockHeight == null){
@@ -215,7 +215,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public Block queryNoTransactionBlockDtoByBlockHeight(BigInteger blockHeight) throws Exception {
+    public Block queryNoTransactionBlockDtoByBlockHeight(BigInteger blockHeight) {
         Block block = blockChainCore.getBlockChainDataBase().queryNoTransactionBlockByBlockHeight(blockHeight);
         return block;
     }
@@ -226,27 +226,27 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public List<TransactionDTO> queryMiningTransactionList(PageCondition pageCondition) throws Exception {
+    public List<TransactionDTO> queryMiningTransactionList(PageCondition pageCondition) {
         if(pageCondition == null){
             pageCondition = PageCondition.DEFAULT_PAGE_CONDITION;
         }
-        List<TransactionDTO> transactionDtoList = blockChainCore.getMiner().getMinerTransactionDtoDataBase().selectTransactionDtoList(blockChainCore.getBlockChainDataBase(),pageCondition.getFrom(),pageCondition.getSize());
+        List<TransactionDTO> transactionDtoList = blockChainCore.getMiner().getMinerTransactionDtoDataBase().selectTransactionDtoList(pageCondition.getFrom(),pageCondition.getSize());
         return transactionDtoList;
     }
 
     @Override
-    public TransactionDTO queryMiningTransactionDtoByTransactionHash(String transactionHash) throws Exception {
+    public TransactionDTO queryMiningTransactionDtoByTransactionHash(String transactionHash) {
         TransactionDTO transactionDTO = blockChainCore.getMiner().getMinerTransactionDtoDataBase().selectTransactionDtoByTransactionHash(transactionHash);
         return transactionDTO;
     }
 
     @Override
-    public void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) throws Exception {
+    public void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) {
         blockChainCore.getBlockChainDataBase().removeBlocksUtilBlockHeightLessThan(blockHeight);
     }
 
     @Override
-    public void saveTransactionToMinerTransactionDatabase(TransactionDTO transactionDTO) throws Exception {
+    public void saveTransactionToMinerTransactionDatabase(TransactionDTO transactionDTO) {
         blockChainCore.getMiner().getMinerTransactionDtoDataBase().insertTransactionDTO(transactionDTO);
     }
 }

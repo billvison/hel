@@ -1,5 +1,13 @@
 package com.xingkaichun.helloworldblockchain.core.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
  * Jdbc工具
  *
@@ -11,6 +19,8 @@ package com.xingkaichun.helloworldblockchain.core.utils;
  * @author 邢开春 xingkaichun@qq.com
  */
 public class JdbcUtil {
+
+    private final static Logger logger = LoggerFactory.getLogger(JdbcUtil.class);
 
     private static String jdbcConnectionFormat;
 
@@ -36,5 +46,39 @@ public class JdbcUtil {
      */
     public static String getJdbcConnectionUrl(String databasePath){
         return String.format(jdbcConnectionFormat,databasePath);
+    }
+
+    public static void closeStatement(Statement stmt) {
+        if(stmt != null){
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                logger.debug("Statement关闭异常。",e);
+            }
+        }
+    }
+
+    public static void closeResultSet(ResultSet resultSet) {
+        if(resultSet != null){
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                logger.debug("ResultSet关闭异常。",e);
+            }
+        }
+    }
+
+    public static boolean executeSql(Connection connection, String sql) {
+        Statement stmt = null;
+        try {
+            stmt = connection.createStatement();
+            stmt.execute(sql);
+            stmt.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            JdbcUtil.closeStatement(stmt);
+        }
+        return true;
     }
 }

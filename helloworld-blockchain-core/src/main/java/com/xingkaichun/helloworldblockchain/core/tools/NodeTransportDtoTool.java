@@ -33,7 +33,7 @@ public class NodeTransportDtoTool {
     /**
      * 类型转换
      */
-    public static Block classCast(BlockChainDataBase blockChainDataBase, BlockDTO blockDTO) throws Exception {
+    public static Block classCast(BlockChainDataBase blockChainDataBase, BlockDTO blockDTO) {
         if(BigIntegerUtil.isLessThan(blockDTO.getHeight(),BigInteger.ONE)){
             throw new ClassCastException("区块的高度不能少于1");
         }
@@ -73,7 +73,7 @@ public class NodeTransportDtoTool {
     /**
      * 类型转换
      */
-    public static BlockDTO classCast(Block block) throws Exception {
+    public static BlockDTO classCast(Block block) {
         if(block == null){
             return null;
         }
@@ -97,7 +97,7 @@ public class NodeTransportDtoTool {
     /**
      * 类型转换
      */
-    public static Transaction classCast(BlockChainDataBase blockChainDataBase, TransactionDTO transactionDTO) throws Exception {
+    public static Transaction classCast(BlockChainDataBase blockChainDataBase, TransactionDTO transactionDTO) {
         List<TransactionInput> inputs = new ArrayList<>();
         List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getInputs();
         if(transactionInputDtoList != null){

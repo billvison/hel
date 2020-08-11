@@ -15,12 +15,12 @@ import java.util.List;
 
 public class NodeDaoImpl implements NodeDao {
 
-    public NodeDaoImpl(String blockchainDataPath) throws Exception {
+    public NodeDaoImpl(String blockchainDataPath) {
         this.blockchainDataPath = blockchainDataPath;
         init();
     }
 
-    private void init() throws Exception {
+    private void init() {
         String createTable1Sql1 = "CREATE TABLE IF NOT EXISTS [Node](" +
                 "  [ip] VARCHAR(20) NOT NULL, " +
                 "  [port] INTEGER(10) NOT NULL, " +
@@ -29,7 +29,7 @@ public class NodeDaoImpl implements NodeDao {
                 "  [errorConnectionTimes] INTEGER(10) NOT NULL, " +
                 "  [fork] INTEGER(10) NOT NULL, " +
                 "  UNIQUE([ip], [port]));";
-        executeSql(createTable1Sql1);
+        JdbcUtil.executeSql(connection(),createTable1Sql1);
     }
 
     @Override
@@ -50,18 +50,8 @@ public class NodeDaoImpl implements NodeDao {
         } catch (Exception e){
             throw new RuntimeException(e);
         } finally {
-            if(preparedStatement != null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                }
-            }
-            if(resultSet != null){
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                }
-            }
+            JdbcUtil.closeStatement(preparedStatement);
+            JdbcUtil.closeResultSet(resultSet);
         }
         return null;
     }
@@ -81,18 +71,8 @@ public class NodeDaoImpl implements NodeDao {
         } catch (Exception e){
             throw new RuntimeException(e);
         } finally {
-            if(preparedStatement != null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                }
-            }
-            if(resultSet != null){
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                }
-            }
+            JdbcUtil.closeStatement(preparedStatement);
+            JdbcUtil.closeResultSet(resultSet);
         }
         return list;
     }
@@ -112,18 +92,8 @@ public class NodeDaoImpl implements NodeDao {
         } catch (Exception e){
             throw new RuntimeException(e);
         } finally {
-            if(preparedStatement != null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                }
-            }
-            if(resultSet != null){
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                }
-            }
+            JdbcUtil.closeStatement(preparedStatement);
+            JdbcUtil.closeResultSet(resultSet);
         }
         return list;
     }
@@ -148,12 +118,7 @@ public class NodeDaoImpl implements NodeDao {
         } catch (Exception e){
             throw new RuntimeException(e);
         } finally {
-            if(preparedStatement1 != null){
-                try {
-                    preparedStatement1.close();
-                } catch (SQLException e) {
-                }
-            }
+            JdbcUtil.closeStatement(preparedStatement1);
         }
     }
 
@@ -191,12 +156,7 @@ public class NodeDaoImpl implements NodeDao {
         } catch (Exception e){
             throw new RuntimeException(e);
         } finally {
-            if(preparedStatement1 != null){
-                try {
-                    preparedStatement1.close();
-                } catch (SQLException e) {
-                }
-            }
+            JdbcUtil.closeStatement(preparedStatement1);
         }
     }
 
@@ -215,12 +175,7 @@ public class NodeDaoImpl implements NodeDao {
         } catch (Exception e){
             throw new RuntimeException(e);
         } finally {
-            if(preparedStatement1 != null){
-                try {
-                    preparedStatement1.close();
-                } catch (SQLException e) {
-                }
-            }
+            JdbcUtil.closeStatement(preparedStatement1);
         }
         return true;
     }
@@ -240,18 +195,8 @@ public class NodeDaoImpl implements NodeDao {
         } catch (Exception e){
             throw new RuntimeException(e);
         } finally {
-            if(preparedStatement != null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                }
-            }
-            if(resultSet != null){
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                }
-            }
+            JdbcUtil.closeStatement(preparedStatement);
+            JdbcUtil.closeResultSet(resultSet);
         }
         return list;
     }
@@ -264,47 +209,42 @@ public class NodeDaoImpl implements NodeDao {
     private String blockchainDataPath;
     private Connection connection;
 
-    private synchronized Connection connection() throws Exception {
-        if(connection != null && !connection.isClosed()){
-            return connection;
-        }
-        File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
-        FileUtil.mkdir(nodeSynchronizeDatabaseDirect);
-        File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
-        String jdbcConnectionUrl = JdbcUtil.getJdbcConnectionUrl(nodeSynchronizeDatabasePath.getAbsolutePath());
-        connection = DriverManager.getConnection(jdbcConnectionUrl);
-        return connection;
-    }
-
-    private void executeSql(String sql) throws Exception {
-        Statement stmt = null;
+    private synchronized Connection connection() {
         try {
-            stmt = connection().createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-        } finally {
-            if(stmt != null){
-                stmt.close();
+            if(connection != null && !connection.isClosed()){
+                return connection;
             }
+            File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
+            FileUtil.mkdir(nodeSynchronizeDatabaseDirect);
+            File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
+            String jdbcConnectionUrl = JdbcUtil.getJdbcConnectionUrl(nodeSynchronizeDatabasePath.getAbsolutePath());
+            connection = DriverManager.getConnection(jdbcConnectionUrl);
+            return connection;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private NodeEntity resultSetToNodeEntity(ResultSet resultSet) throws Exception {
-        String ip = resultSet.getString("ip");
-        Integer port = resultSet.getInt("port");
-        Integer blockChainHeight = resultSet.getInt("blockChainHeight");
-        Integer isNodeAvailable = resultSet.getInt("isNodeAvailable");
-        Integer errorConnectionTimes = resultSet.getInt("errorConnectionTimes");
-        Integer fork = resultSet.getInt("fork");
+    private NodeEntity resultSetToNodeEntity(ResultSet resultSet) {
+        try {
+            String ip = resultSet.getString("ip");
+            Integer port = resultSet.getInt("port");
+            Integer blockChainHeight = resultSet.getInt("blockChainHeight");
+            Integer isNodeAvailable = resultSet.getInt("isNodeAvailable");
+            Integer errorConnectionTimes = resultSet.getInt("errorConnectionTimes");
+            Integer fork = resultSet.getInt("fork");
 
-        NodeEntity entity = new NodeEntity();
-        entity.setIp(ip);
-        entity.setPort(port);
-        entity.setBlockChainHeight(BigInteger.valueOf(blockChainHeight));
-        entity.setIsNodeAvailable(SqliteUtil.intToBoolean(isNodeAvailable));
-        entity.setErrorConnectionTimes(errorConnectionTimes);
-        entity.setFork(SqliteUtil.intToBoolean(fork));
-        return entity;
+            NodeEntity entity = new NodeEntity();
+            entity.setIp(ip);
+            entity.setPort(port);
+            entity.setBlockChainHeight(BigInteger.valueOf(blockChainHeight));
+            entity.setIsNodeAvailable(SqliteUtil.intToBoolean(isNodeAvailable));
+            entity.setErrorConnectionTimes(errorConnectionTimes);
+            entity.setFork(SqliteUtil.intToBoolean(fork));
+            return entity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void checkIp(String ip) {

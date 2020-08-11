@@ -35,7 +35,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
     }
 
     @Override
-    public ServiceResult<EmptyResponse> sumiteTransaction(SimpleNodeDto node, TransactionDTO transactionDTO) throws Exception {
+    public ServiceResult<EmptyResponse> sumiteTransaction(SimpleNodeDto node, TransactionDTO transactionDTO) {
         try {
             String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeServerApiRoute.RECEIVE_TRANSACTION);
             ReceiveTransactionRequest request = new ReceiveTransactionRequest();

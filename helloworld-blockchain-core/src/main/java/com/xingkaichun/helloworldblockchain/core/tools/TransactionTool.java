@@ -94,7 +94,7 @@ public class TransactionTool {
     /**
      * 验证脚本
      */
-    public static boolean verifyScript(Transaction transaction) throws Exception {
+    public static boolean verifyScript(Transaction transaction) {
         List<TransactionInput> inputs = transaction.getInputs();
         if(inputs != null && inputs.size()!=0){
             for(TransactionInput transactionInput:inputs){

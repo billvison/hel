@@ -7,7 +7,7 @@ package com.xingkaichun.helloworldblockchain.netcore;
  */
 public class HelloWorldBlockChainNetcoreApplication {
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore();
 		netBlockchainCore.start();
 	}

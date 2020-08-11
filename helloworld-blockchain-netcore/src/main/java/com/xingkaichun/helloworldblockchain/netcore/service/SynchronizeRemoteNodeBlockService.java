@@ -12,5 +12,5 @@ public interface SynchronizeRemoteNodeBlockService {
     /**
      * 同步远程节点的区块到本地区块链系统
      */
-    void synchronizeRemoteNodeBlock(NodeDto node) throws Exception;
+    void synchronizeRemoteNodeBlock(NodeDto node) ;
 }

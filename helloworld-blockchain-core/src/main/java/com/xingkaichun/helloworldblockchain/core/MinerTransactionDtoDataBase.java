@@ -17,25 +17,25 @@ public abstract class MinerTransactionDtoDataBase {
     /**
      * 新增交易
      */
-    public abstract void insertTransactionDTO(TransactionDTO transactionDTO) throws Exception ;
+    public abstract void insertTransactionDTO(TransactionDTO transactionDTO) ;
 
     /**
      * 获取交易
      */
-    public abstract List<TransactionDTO> selectTransactionDtoList(BlockChainDataBase blockChainDataBase,long from, long size) throws Exception ;
+    public abstract List<TransactionDTO> selectTransactionDtoList(long from, long size) ;
 
     /**
      * 删除交易
      */
-    public abstract void deleteTransactionDto(TransactionDTO transactionDTO) throws Exception ;
+    public abstract void deleteTransactionDto(TransactionDTO transactionDTO) ;
 
     /**
      * 删除交易
      */
-    public abstract void deleteTransactionDtoListByTransactionHashList(List<String> transactionHashList) throws Exception ;
+    public abstract void deleteTransactionDtoListByTransactionHashList(List<String> transactionHashList) ;
 
     /**
      * 查询交易
      */
-    public abstract TransactionDTO selectTransactionDtoByTransactionHash(String transactionHash) throws Exception;
+    public abstract TransactionDTO selectTransactionDtoByTransactionHash(String transactionHash);
 }

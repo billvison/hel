@@ -4,23 +4,27 @@ import com.xingkaichun.helloworldblockchain.core.utils.FileUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.JdbcUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dao.ConfigurationDao;
 import com.xingkaichun.helloworldblockchain.netcore.model.ConfigurationEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.sql.*;
 
 public class ConfigurationDaoImpl implements ConfigurationDao {
 
+    private final static Logger logger = LoggerFactory.getLogger(ConfigurationDaoImpl.class);
 
-    public ConfigurationDaoImpl(String blockchainDataPath) throws Exception {
+
+    public ConfigurationDaoImpl(String blockchainDataPath) {
         this.blockchainDataPath = blockchainDataPath;
         init();
     }
 
-    private void init() throws Exception {
+    private void init() {
         String createTable1Sql1 = "CREATE TABLE IF NOT EXISTS [Configuration](" +
                 "  [confKey] VARCHAR(100)," +
                 "  [confValue] VARCHAR(100));";
-        executeSql(createTable1Sql1);
+        JdbcUtil.executeSql(connection(),createTable1Sql1);
     }
 
     @Override
@@ -36,21 +40,11 @@ public class ConfigurationDaoImpl implements ConfigurationDao {
                 String confValue = resultSet.getString("confValue");
                 return confValue;
             }
-        } catch (Exception e){
+        } catch (SQLException e){
             throw new RuntimeException(e);
         } finally {
-            if(preparedStatement != null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                }
-            }
-            if(resultSet != null){
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                }
-            }
+            JdbcUtil.closeStatement(preparedStatement);
+            JdbcUtil.closeResultSet(resultSet);
         }
         return null;
     }
@@ -58,42 +52,32 @@ public class ConfigurationDaoImpl implements ConfigurationDao {
     @Override
     public void addConfiguration(ConfigurationEntity configurationEntity) {
         String sql1 = "INSERT INTO Configuration (confKey, confValue) VALUES (?,?)";
-        PreparedStatement preparedStatement1 = null;
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement1 = connection().prepareStatement(sql1);
-            preparedStatement1.setString(1,configurationEntity.getConfKey());
-            preparedStatement1.setString(2,configurationEntity.getConfValue());
-            preparedStatement1.executeUpdate();
+            preparedStatement = connection().prepareStatement(sql1);
+            preparedStatement.setString(1,configurationEntity.getConfKey());
+            preparedStatement.setString(2,configurationEntity.getConfValue());
+            preparedStatement.executeUpdate();
         } catch (Exception e){
             throw new RuntimeException(e);
         } finally {
-            if(preparedStatement1 != null){
-                try {
-                    preparedStatement1.close();
-                } catch (SQLException e) {
-                }
-            }
+            JdbcUtil.closeStatement(preparedStatement);
         }
     }
 
     @Override
     public void updateConfiguration(ConfigurationEntity configurationEntity) {
         String sql1 = "UPDATE Configuration SET confValue = ? where confKey = ?";
-        PreparedStatement preparedStatement1 = null;
+        PreparedStatement preparedStatement = null;
         try {
-            preparedStatement1 = connection().prepareStatement(sql1);
-            preparedStatement1.setString(1,configurationEntity.getConfValue());
-            preparedStatement1.setString(2,configurationEntity.getConfKey());
-            preparedStatement1.executeUpdate();
+            preparedStatement = connection().prepareStatement(sql1);
+            preparedStatement.setString(1,configurationEntity.getConfValue());
+            preparedStatement.setString(2,configurationEntity.getConfKey());
+            preparedStatement.executeUpdate();
         } catch (Exception e){
             throw new RuntimeException(e);
         } finally {
-            if(preparedStatement1 != null){
-                try {
-                    preparedStatement1.close();
-                } catch (SQLException e) {
-                }
-            }
+            JdbcUtil.closeStatement(preparedStatement);
         }
     }
 
@@ -104,27 +88,19 @@ public class ConfigurationDaoImpl implements ConfigurationDao {
     private String blockchainDataPath;
     private Connection connection;
 
-    private synchronized Connection connection() throws Exception {
-        if(connection != null && !connection.isClosed()){
-            return connection;
-        }
-        File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
-        FileUtil.mkdir(nodeSynchronizeDatabaseDirect);
-        File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
-        String jdbcConnectionUrl = JdbcUtil.getJdbcConnectionUrl(nodeSynchronizeDatabasePath.getAbsolutePath());
-        connection = DriverManager.getConnection(jdbcConnectionUrl);
-        return connection;
-    }
-    private void executeSql(String sql) throws Exception {
-        Statement stmt = null;
+    private synchronized Connection connection() {
         try {
-            stmt = connection().createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-        } finally {
-            if(stmt != null){
-                stmt.close();
+            if(connection != null && !connection.isClosed()){
+                return connection;
             }
+            File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
+            FileUtil.mkdir(nodeSynchronizeDatabaseDirect);
+            File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
+            String jdbcConnectionUrl = JdbcUtil.getJdbcConnectionUrl(nodeSynchronizeDatabasePath.getAbsolutePath());
+            connection = DriverManager.getConnection(jdbcConnectionUrl);
+            return connection;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

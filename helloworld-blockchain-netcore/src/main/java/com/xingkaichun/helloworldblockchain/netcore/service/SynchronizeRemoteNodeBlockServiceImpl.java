@@ -5,17 +5,18 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
+import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
-import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.QueryBlockDtoByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.QueryBlockHashByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +56,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
 
 
     @Override
-    public void synchronizeRemoteNodeBlock(NodeDto node) throws Exception {
+    public void synchronizeRemoteNodeBlock(NodeDto node) {
         if(!isBlockChainIdRight(node)){
             nodeService.deleteNode(node);
         }
@@ -207,7 +208,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
             if(allNodeId == null || !allNodeId.contains(nodeId)){
                 break;
             }
-            Thread.sleep(timestamp);
+            ThreadUtil.sleep(timestamp);
             totalTimestamp += timestamp;
             if(totalTimestamp>maxTimestamp){
                 logger.error(String.format("节点[%s:%d]数据太长时间没有被区块链系统使用，请检查原因",node.getIp(),node.getPort()));
@@ -253,7 +254,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     /**
      * 这里表明真的分叉区块个数过多了，形成了新的分叉，区块链协议不支持同步了。
      */
-    private void forkNodeHandler(NodeDto node, SynchronizerDataBase synchronizerDataBase) throws Exception {
+    private void forkNodeHandler(NodeDto node, SynchronizerDataBase synchronizerDataBase) {
         synchronizerDataBase.clear(buildNodeId(node));
         nodeService.addOrUpdateNodeForkPropertity(node);
     }
@@ -279,7 +280,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
         }
     }
 
-    private BlockDTO getLocalBlockDtoByBlockHeight(NodeDto node, BigInteger blockHeight) throws Exception {
+    private BlockDTO getLocalBlockDtoByBlockHeight(NodeDto node, BigInteger blockHeight) {
         SynchronizerDataBase synchronizerDataBase = blockChainCore.getSynchronizer().getSynchronizerDataBase();
         BlockDTO blockDTO = synchronizerDataBase.getBlockDto(buildNodeId(node),blockHeight);
         return blockDTO;

@@ -1,13 +1,13 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNodeDto;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.EmptyResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.QueryBlockDtoByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.QueryBlockHashByBlockHeightResponse;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 
 import java.math.BigInteger;
 
@@ -21,7 +21,7 @@ public interface BlockchainNodeClientService {
     /**
      * 提交交易至其它节点
      */
-    ServiceResult<EmptyResponse> sumiteTransaction(SimpleNodeDto node, TransactionDTO transactionDTO) throws Exception ;
+    ServiceResult<EmptyResponse> sumiteTransaction(SimpleNodeDto node, TransactionDTO transactionDTO) ;
 
     /**
      * Ping指定节点

@@ -30,7 +30,7 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
     /**
      * 将分支加载到内存
      */
-    private void refreshCache() throws Exception {
+    private void refreshCache() {
         List<BlockchainBranchBlockEntity> blockchainBranchBlockEntityList = blockChainBranchDao.queryAllBlockchainBranchBlock();
         if(blockchainBranchBlockEntityList != null){
             for(BlockchainBranchBlockEntity entity:blockchainBranchBlockEntityList){
@@ -64,7 +64,7 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
     }
 
     @Override
-    public void branchchainBranchHandler() throws Exception {
+    public void branchchainBranchHandler() {
         if(!isRefreshCache){
             refreshCache();
         }
@@ -94,7 +94,7 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
     }
 
     @Override
-    public List<BlockchainBranchBlockDto> queryBlockchainBranch() throws Exception {
+    public List<BlockchainBranchBlockDto> queryBlockchainBranch() {
         List<BlockchainBranchBlockEntity> blockchainBranchBlockEntityList = blockChainBranchDao.queryAllBlockchainBranchBlock();
         if(blockchainBranchBlockEntityList == null || blockchainBranchBlockEntityList.size()==0){
             return null;
@@ -103,7 +103,7 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
     }
 
     @Override
-    public void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList) throws Exception {
+    public void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList) {
         List<BlockchainBranchBlockEntity> entityList = new ArrayList<>();
         if(blockList != null){
             for(BlockchainBranchBlockDto blockchainBranchBlockDto:blockList){

@@ -3,16 +3,17 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Miner;
 import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDataBase;
-import com.xingkaichun.helloworldblockchain.core.script.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.core.script.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
@@ -50,9 +51,9 @@ public class MinerDefaultImpl extends Miner {
 
     //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
     @Override
-    public void start() throws Exception {
+    public void start() {
         while(true){
-            Thread.sleep(10);
+            ThreadUtil.sleep(10);
             if(!mineOption){
                 continue;
             }
@@ -82,7 +83,7 @@ public class MinerDefaultImpl extends Miner {
     /**
      * 校验MiningBlock是否正确
      */
-    private boolean isObtainMiningBlockAgain(BlockChainDataBase blockChainDataBase, MiningBlock miningBlock) throws Exception {
+    private boolean isObtainMiningBlockAgain(BlockChainDataBase blockChainDataBase, MiningBlock miningBlock) {
         if(miningBlock == null){
             return true;
         }
@@ -136,9 +137,9 @@ public class MinerDefaultImpl extends Miner {
     /**
      * 获取挖矿中的区块对象
      */
-    private MiningBlock obtainMiningBlock(BlockChainDataBase blockChainDataBase) throws Exception {
+    private MiningBlock obtainMiningBlock(BlockChainDataBase blockChainDataBase) {
         MiningBlock miningBlock = new MiningBlock();
-        List<TransactionDTO> forMineBlockTransactionDtoList = minerTransactionDtoDataBase.selectTransactionDtoList(blockChainDataBase,1,10000);
+        List<TransactionDTO> forMineBlockTransactionDtoList = minerTransactionDtoDataBase.selectTransactionDtoList(1,10000);
         List<Transaction> forMineBlockTransactionList = new ArrayList<>();
         if(forMineBlockTransactionDtoList != null){
             for(TransactionDTO transactionDTO:forMineBlockTransactionDtoList){
@@ -165,7 +166,7 @@ public class MinerDefaultImpl extends Miner {
         return miningBlock;
     }
 
-    public void miningBlock(BlockChainDataBase blockChainDataBase, MiningBlock miningBlock) throws Exception {
+    public void miningBlock(BlockChainDataBase blockChainDataBase, MiningBlock miningBlock) {
         //TODO 改善型功能 这里可以利用多处理器的性能进行计算 还可以进行矿池挖矿
         Block block = miningBlock.getBlock();
         BigInteger startNonce = miningBlock.getNextNonce();
@@ -287,9 +288,8 @@ public class MinerDefaultImpl extends Miner {
     /**
      * 打包处理过程: 将异常的交易丢弃掉【站在区块的角度校验交易】
      * @param packingTransactionList
-     * @throws Exception
      */
-    public List<Transaction> removeExceptionTransaction_PointOfBlockView(BlockChainDataBase blockChainDataBase,List<Transaction> packingTransactionList) throws Exception{
+    public List<Transaction> removeExceptionTransaction_PointOfBlockView(BlockChainDataBase blockChainDataBase,List<Transaction> packingTransactionList) {
         List<Transaction> exceptionTransactionList = new ArrayList<>();
         //区块中允许没有交易
         if(packingTransactionList==null || packingTransactionList.size()==0){
@@ -335,7 +335,7 @@ public class MinerDefaultImpl extends Miner {
     /**
      * 打包处理过程: 将异常的交易丢弃掉【站在单笔交易的角度校验交易】
      */
-    private List<Transaction> removeExceptionTransaction_PointOfTransactionView(BlockChainDataBase blockChainDataBase,List<Transaction> transactionList) throws Exception{
+    private List<Transaction> removeExceptionTransaction_PointOfTransactionView(BlockChainDataBase blockChainDataBase,List<Transaction> transactionList) {
         List<Transaction> exceptionTransactionList = new ArrayList<>();
         if(transactionList==null || transactionList.size()==0){
             return exceptionTransactionList;
@@ -356,7 +356,7 @@ public class MinerDefaultImpl extends Miner {
     //region 挖矿奖励相关
 
     @Override
-    public Transaction buildMineAwardTransaction(long timestamp, BlockChainDataBase blockChainDataBase, Block block) throws Exception {
+    public Transaction buildMineAwardTransaction(long timestamp, BlockChainDataBase blockChainDataBase, Block block) {
         Transaction transaction = new Transaction();
         transaction.setTimestamp(timestamp);
         transaction.setTransactionType(TransactionType.COINBASE);
@@ -383,7 +383,7 @@ public class MinerDefaultImpl extends Miner {
     /**
      * 构建挖矿区块
      */
-    public Block buildNextMineBlock(BlockChainDataBase blockChainDataBase, List<Transaction> packingTransactionList) throws Exception {
+    public Block buildNextMineBlock(BlockChainDataBase blockChainDataBase, List<Transaction> packingTransactionList) {
         long timestamp = System.currentTimeMillis();
 
         Block tailBlock = blockChainDataBase.queryTailNoTransactionBlock();

@@ -11,7 +11,8 @@ import org.junit.Test;
 import java.util.Random;
 
 import static org.bitcoinj.core.Utils.HEX;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AccountUtilTest extends AccountUtil{
 
@@ -45,14 +46,14 @@ public class AccountUtilTest extends AccountUtil{
     }
 
     @Test
-    public  void signatureTest() throws Exception
+    public void signatureTest()
     {
         verifySignatureTest();
     }
 
     //来源org.bitcoinj.core.ECKeyTest.testSignatures()
     @Test
-    public void verifySignatureTest() throws Exception
+    public void verifySignatureTest()
     {
         byte[] zeroValueByte32Length = new byte[32];
         Account account = AccountUtil.accountFromPrivateKey("180cb41c7c600be951b5d3d0a7334acc7506173875834f7a6c4c786a28fcbb19");

@@ -23,6 +23,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -41,7 +42,7 @@ public class HelloWorldBlockChainNodeApplication {
 	private String blockchainDataPath;
 
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(HelloWorldBlockChainNodeApplication.class, args);
 
 		NetBlockchainCore netBlockchainCore = context.getBean(NetBlockchainCore.class);
@@ -50,16 +51,19 @@ public class HelloWorldBlockChainNodeApplication {
 
 
 	@Bean
-	public NetBlockchainCore buildNetBlockchainCore() throws Exception {
+	public NetBlockchainCore buildNetBlockchainCore() {
+		try {
+			String INIT_BLOCKCHAIN_BRANCH_FILE_NAME = "InitBlockchainBranch.txt";
+			InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(INIT_BLOCKCHAIN_BRANCH_FILE_NAME);
+			String context = CharStreams.toString(new InputStreamReader(inputStream, "UTF-8"));
+			Type jsonType = new TypeToken<BlockchainBranchDto>() {}.getType();
+			BlockchainBranchDto blockchainBranchDto = new Gson().fromJson(context,jsonType);
 
-		String INIT_BLOCKCHAIN_BRANCH_FILE_NAME = "InitBlockchainBranch.txt";
-		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(INIT_BLOCKCHAIN_BRANCH_FILE_NAME);
-		String context = CharStreams.toString(new InputStreamReader(inputStream, "UTF-8"));
-		Type jsonType = new TypeToken<BlockchainBranchDto>() {}.getType();
-		BlockchainBranchDto blockchainBranchDto = new Gson().fromJson(context,jsonType);
-
-		NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(ResourcePathTool.getDataRootPath(blockchainDataPath),8444,blockchainBranchDto);
-		return netBlockchainCore;
+			NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(ResourcePathTool.getDataRootPath(blockchainDataPath),8444,blockchainBranchDto);
+			return netBlockchainCore;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Bean

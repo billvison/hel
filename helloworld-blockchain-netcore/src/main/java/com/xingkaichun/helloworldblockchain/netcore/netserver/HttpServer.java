@@ -21,7 +21,7 @@ public class HttpServer {
 	}
 
 
-	public void start() throws Exception {
+	public void start() {
 		new Thread(
 				()->{
 					int port= serverPort;

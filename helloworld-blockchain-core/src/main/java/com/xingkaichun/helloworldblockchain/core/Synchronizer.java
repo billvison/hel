@@ -24,7 +24,7 @@ public abstract class Synchronizer {
      * 若同步器处于活动状态，开始同步其它区块链节点的数据，直至本次同步结束。
      * 若同步器处于非活动状态，矿工不会进行任何工作。
      */
-    public abstract void start() throws Exception;
+    public abstract void start();
 
     /**
      * 同步器是否处于激活状态。

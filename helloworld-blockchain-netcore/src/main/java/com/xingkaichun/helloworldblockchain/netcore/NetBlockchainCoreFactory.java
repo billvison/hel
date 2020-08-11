@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.netcore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCoreFactory;
 import com.xingkaichun.helloworldblockchain.core.tools.ResourcePathTool;
+import com.xingkaichun.helloworldblockchain.core.utils.FileUtil;
 import com.xingkaichun.helloworldblockchain.netcore.daemonservice.AutomaticDaemonService;
 import com.xingkaichun.helloworldblockchain.netcore.daemonservice.BlockchainBranchDaemonService;
 import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainBranchDao;
@@ -15,7 +16,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.Blockch
 import com.xingkaichun.helloworldblockchain.netcore.netserver.HttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.netserver.NodeServerHandlerResolver;
 import com.xingkaichun.helloworldblockchain.netcore.service.*;
-import com.xingkaichun.helloworldblockchain.core.utils.FileUtil;
 
 public class NetBlockchainCoreFactory {
 
@@ -25,12 +25,12 @@ public class NetBlockchainCoreFactory {
     public static BlockChainBranchService blockChainBranchService = null;
 
 
-    public static NetBlockchainCore createNetBlcokchainCore() throws Exception {
+    public static NetBlockchainCore createNetBlcokchainCore() {
         return createNetBlcokchainCore(ResourcePathTool.getDataRootPath(),8444,null);
     }
 
 
-    public static NetBlockchainCore createNetBlcokchainCore(String dataRootPath, int serverPort, BlockchainBranchDto initBlockchainBranchDto) throws Exception {
+    public static NetBlockchainCore createNetBlcokchainCore(String dataRootPath, int serverPort, BlockchainBranchDto initBlockchainBranchDto) {
         if(dataRootPath == null){
             throw new NullPointerException("参数路径不能为空。");
         }

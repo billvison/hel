@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.daemonservice;
 
+import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
@@ -21,7 +22,7 @@ public class BlockchainBranchDaemonService {
     private ConfigurationService configurationService;
     private BlockchainBranchDto initBlockchainBranchDto;
 
-    public BlockchainBranchDaemonService(BlockChainBranchService blockChainBranchService, ConfigurationService configurationService,BlockchainBranchDto initBlockchainBranchDto) throws Exception {
+    public BlockchainBranchDaemonService(BlockChainBranchService blockChainBranchService, ConfigurationService configurationService,BlockchainBranchDto initBlockchainBranchDto) {
         this.blockChainBranchService = blockChainBranchService;
         this.configurationService = configurationService;
         this.initBlockchainBranchDto = initBlockchainBranchDto;
@@ -29,7 +30,7 @@ public class BlockchainBranchDaemonService {
         init();
     }
 
-    private void init() throws Exception {
+    private void init() {
         ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_BLOCKCHAIN_BRANCH_INIT.name());
         if(configurationDto == null || !Boolean.valueOf(configurationDto.getConfValue())){
             if(initBlockchainBranchDto != null){
@@ -40,7 +41,7 @@ public class BlockchainBranchDaemonService {
         }
     }
 
-    public void start() throws Exception {
+    public void start() {
         new Thread(()->{
             while (true){
                 try {
@@ -48,10 +49,7 @@ public class BlockchainBranchDaemonService {
                 } catch (Exception e) {
                     logger.error("在区块链网络中搜索新的节点出现异常",e);
                 }
-                try {
-                    Thread.sleep(10*60*1000);
-                } catch (InterruptedException e) {
-                }
+                ThreadUtil.sleep(10*60*1000);
             }
         }).start();
     }

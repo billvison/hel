@@ -30,18 +30,18 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
     private String blockchainDataPath;
     private Connection connection;
 
-    public SynchronizerDataBaseDefaultImpl(String blockchainDataPath) throws Exception {
+    public SynchronizerDataBaseDefaultImpl(String blockchainDataPath) {
         this.blockchainDataPath = blockchainDataPath;
         init();
     }
 
-    private void init() throws Exception {
+    private void init() {
         String createTable1Sql1 = "CREATE TABLE IF NOT EXISTS NODE " +
                 "(" +
                 "nodeId CHAR(100) PRIMARY KEY NOT NULL," +
                 "status CHAR(10)" +
                 ")";
-        executeSql(createTable1Sql1);
+        JdbcUtil.executeSql(connection(),createTable1Sql1);
 
         String createTable1Sql2 = "CREATE TABLE IF NOT EXISTS DATA " +
                 "(" +
@@ -50,11 +50,11 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
                 "blockDto TEXT NOT NULL," +
                 "insertTime INTEGER NOT NULL" +
                 ")";
-        executeSql(createTable1Sql2);
+        JdbcUtil.executeSql(connection(),createTable1Sql2);
     }
 
     @Override
-    public boolean addBlockDTO(String nodeId, BlockDTO blockDTO) throws Exception {
+    public boolean addBlockDTO(String nodeId, BlockDTO blockDTO) {
 
         String sql = "INSERT INTO DATA (nodeId,blockHeight,blockDto,insertTime) " +
                 "VALUES (?,?,?,?);";
@@ -66,16 +66,16 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             preparedStatement.setString(3, NodeTransportDtoTool.encode(blockDTO));
             preparedStatement.setLong(4,System.currentTimeMillis());
             preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         } finally {
-            if(preparedStatement != null){
-                preparedStatement.close();
-            }
+            JdbcUtil.closeStatement(preparedStatement);
         }
         return true;
     }
 
     @Override
-    public BigInteger getMinBlockHeight(String nodeId) throws Exception {
+    public BigInteger getMinBlockHeight(String nodeId) {
         String sql = "SELECT min(blockHeight) as minBlockHeight FROM DATA WHERE nodeId = ?";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -83,23 +83,21 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             preparedStatement = connection().prepareStatement(sql);
             preparedStatement.setString(1,nodeId);
             resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+            if (resultSet.next()){
                 BigDecimal blockHeight = resultSet.getBigDecimal("minBlockHeight");
                 return new BigInteger(blockHeight.toPlainString());
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         } finally {
-            if(preparedStatement != null){
-                preparedStatement.close();
-            }
-            if(resultSet != null){
-                resultSet.close();
-            }
+            JdbcUtil.closeStatement(preparedStatement);
+            JdbcUtil.closeResultSet(resultSet);
         }
         return BigInteger.ZERO;
     }
 
     @Override
-    public BigInteger getMaxBlockHeight(String nodeId) throws Exception {
+    public BigInteger getMaxBlockHeight(String nodeId) {
         String sql = "SELECT max(blockHeight) as maxBlockHeight FROM DATA WHERE nodeId = ?";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -107,23 +105,21 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             preparedStatement = connection().prepareStatement(sql);
             preparedStatement.setString(1,nodeId);
             resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+            if (resultSet.next()){
                 BigDecimal blockHeight = resultSet.getBigDecimal("maxBlockHeight");
                 return new BigInteger(blockHeight.toPlainString());
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         } finally {
-            if(preparedStatement != null){
-                preparedStatement.close();
-            }
-            if(resultSet != null){
-                resultSet.close();
-            }
+            JdbcUtil.closeStatement(preparedStatement);
+            JdbcUtil.closeResultSet(resultSet);
         }
         return null;
     }
 
     @Override
-    public BlockDTO getBlockDto(String nodeId, BigInteger blockHeight) throws Exception {
+    public BlockDTO getBlockDto(String nodeId, BigInteger blockHeight) {
         String selectBlockDataSql = "SELECT * FROM DATA WHERE nodeId = ? and blockHeight=?";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -136,20 +132,18 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
                 String stringBlockDto = resultSet.getString("blockDto");
                 return NodeTransportDtoTool.decodeToBlockDTO(stringBlockDto);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         } finally {
-            if(preparedStatement != null){
-                preparedStatement.close();
-            }
-            if(resultSet != null){
-                resultSet.close();
-            }
+            JdbcUtil.closeStatement(preparedStatement);
+            JdbcUtil.closeResultSet(resultSet);
         }
         return null;
     }
 
 
     @Override
-    public boolean hasDataTransferFinishFlag(String nodeId) throws Exception {
+    public boolean hasDataTransferFinishFlag(String nodeId) {
         String sql = "SELECT * FROM NODE WHERE status = 'FINISH' and nodeId = ? limit 0,1";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -157,45 +151,41 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             preparedStatement = connection().prepareStatement(sql);
             preparedStatement.setString(1,nodeId);
             resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+            if (resultSet.next()){
                 return true;
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         } finally {
-            if(preparedStatement != null){
-                preparedStatement.close();
-            }
-            if(resultSet != null){
-                resultSet.close();
-            }
+            JdbcUtil.closeStatement(preparedStatement);
+            JdbcUtil.closeResultSet(resultSet);
         }
         return false;
     }
 
     @Override
-    public String getDataTransferFinishFlagNodeId() throws Exception {
+    public String getDataTransferFinishFlagNodeId() {
         String sql = "SELECT * FROM NODE WHERE status = 'FINISH' limit 0,1";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             preparedStatement = connection().prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+            if (resultSet.next()){
                 String nodeId = resultSet.getString("nodeId");
                 return nodeId;
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         } finally {
-            if(preparedStatement != null){
-                preparedStatement.close();
-            }
-            if(resultSet != null){
-                resultSet.close();
-            }
+            JdbcUtil.closeStatement(preparedStatement);
+            JdbcUtil.closeResultSet(resultSet);
         }
         return null;
     }
 
     @Override
-    public List<String> getAllNodeId() throws Exception {
+    public List<String> getAllNodeId() {
         String sql = "SELECT * FROM NODE";
         List<String> nodeList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
@@ -207,19 +197,17 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
                 String nodeId = resultSet.getString("nodeId");
                 nodeList.add(nodeId);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         } finally {
-            if(preparedStatement != null){
-                preparedStatement.close();
-            }
-            if(resultSet != null){
-                resultSet.close();
-            }
+            JdbcUtil.closeStatement(preparedStatement);
+            JdbcUtil.closeResultSet(resultSet);
         }
         return nodeList;
     }
 
     @Override
-    public long getLastUpdateTimestamp(String nodeId) throws Exception {
+    public long getLastUpdateTimestamp(String nodeId) {
         String selectBlockDataSql = "SELECT insertTime FROM DATA WHERE nodeId = ? order by insertTime desc limit 0,1";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -231,18 +219,16 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
                 return resultSet.getLong("insertTime");
             }
             return 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         } finally {
-            if(preparedStatement != null){
-                preparedStatement.close();
-            }
-            if(resultSet != null){
-                resultSet.close();
-            }
+            JdbcUtil.closeStatement(preparedStatement);
+            JdbcUtil.closeResultSet(resultSet);
         }
     }
 
     @Override
-    public void addDataTransferFinishFlag(String nodeId) throws Exception {
+    public void addDataTransferFinishFlag(String nodeId) {
         String sql1 = "DELETE FROM NODE WHERE nodeId = ?";
         PreparedStatement preparedStatement1 = null;
         String sql2 = "INSERT INTO NODE (nodeId,status) VALUES (? , ?)";
@@ -255,18 +241,16 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             preparedStatement2.setString(1,nodeId);
             preparedStatement2.setString(2,"FINISH");
             preparedStatement2.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         } finally {
-            if(preparedStatement1 != null){
-                preparedStatement1.close();
-            }
-            if(preparedStatement2 != null){
-                preparedStatement2.close();
-            }
+            JdbcUtil.closeStatement(preparedStatement1);
+            JdbcUtil.closeStatement(preparedStatement2);
         }
     }
 
     @Override
-    public void clear(String nodeId) throws Exception {
+    public void clear(String nodeId) {
         String sql = "DELETE FROM DATA WHERE nodeId = ?";
         PreparedStatement preparedStatement1 = null;
         String sql2 = "DELETE FROM NODE WHERE nodeId = ?";
@@ -278,38 +262,27 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             preparedStatement2 = connection().prepareStatement(sql2);
             preparedStatement2.setString(1,nodeId);
             preparedStatement2.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         } finally {
-            if(preparedStatement1 != null){
-                preparedStatement1.close();
-            }
-            if(preparedStatement2 != null){
-                preparedStatement2.close();
-            }
+            JdbcUtil.closeStatement(preparedStatement1);
+            JdbcUtil.closeStatement(preparedStatement2);
         }
     }
 
-    private synchronized Connection connection() throws Exception {
-        if(connection != null && !connection.isClosed()){
-            return connection;
-        }
-        File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
-        FileUtil.mkdir(nodeSynchronizeDatabaseDirect);
-        File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
-        String jdbcConnectionUrl = JdbcUtil.getJdbcConnectionUrl(nodeSynchronizeDatabasePath.getAbsolutePath());
-        connection = DriverManager.getConnection(jdbcConnectionUrl);
-        return connection;
-    }
-
-    private void executeSql(String sql) throws Exception {
-        Statement stmt = null;
+    private synchronized Connection connection() {
         try {
-            stmt = connection().createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-        } finally {
-            if(stmt != null){
-                stmt.close();
+            if(connection != null && !connection.isClosed()){
+                return connection;
             }
+            File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
+            FileUtil.mkdir(nodeSynchronizeDatabaseDirect);
+            File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
+            String jdbcConnectionUrl = JdbcUtil.getJdbcConnectionUrl(nodeSynchronizeDatabasePath.getAbsolutePath());
+            connection = DriverManager.getConnection(jdbcConnectionUrl);
+            return connection;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
