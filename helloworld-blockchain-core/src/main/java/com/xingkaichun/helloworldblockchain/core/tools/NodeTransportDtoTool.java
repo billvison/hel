@@ -53,7 +53,7 @@ public class NodeTransportDtoTool {
         if(BigIntegerUtil.isEquals(height,BigInteger.ONE)){
             previousBlockHash = GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH;
         } else {
-            Block previousBlock = blockChainDataBase.findNoTransactionBlockByBlockHeight(height.subtract(BigInteger.ONE));
+            Block previousBlock = blockChainDataBase.queryNoTransactionBlockByBlockHeight(height.subtract(BigInteger.ONE));
             if(previousBlock == null){
                 throw new ClassCastException("上一个区块不应该为null");
             }
@@ -103,7 +103,7 @@ public class NodeTransportDtoTool {
         if(transactionInputDtoList != null){
             for (TransactionInputDTO transactionInputDTO:transactionInputDtoList){
                 String unspendTransactionOutputHash = transactionInputDTO.getUnspendTransactionOutputHash();
-                TransactionOutput transactionOutput = blockChainDataBase.findUnspendTransactionOuputByTransactionOuputHash(unspendTransactionOutputHash);
+                TransactionOutput transactionOutput = blockChainDataBase.queryUnspendTransactionOutputByTransactionOuputHash(unspendTransactionOutputHash);
                 if(transactionOutput == null){
                     throw new ClassCastException("TransactionOutput不应该是null。");
                 }

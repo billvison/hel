@@ -45,7 +45,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
     @Override
     public TransactionDTO queryTransactionDtoByTransactionHash(String transactionHash) throws Exception {
-        Transaction transaction = blockChainCore.getBlockChainDataBase().findTransactionByTransactionHash(transactionHash);
+        Transaction transaction = blockChainCore.getBlockChainDataBase().queryTransactionByTransactionHash(transactionHash);
         if(transaction == null){
             return null;
         }
@@ -65,7 +65,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         if(pageCondition == null){
             pageCondition = PageCondition.DEFAULT_PAGE_CONDITION;
         }
-        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryUnspendTransactionOuputListByAddress(address,pageCondition.getFrom(),pageCondition.getSize());
+        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryUnspendTransactionOutputListByAddress(address,pageCondition.getFrom(),pageCondition.getSize());
         return utxo;
     }
 
@@ -74,7 +74,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         if(pageCondition == null){
             pageCondition = PageCondition.DEFAULT_PAGE_CONDITION;
         }
-        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryTransactionOuputListByAddress(address,pageCondition.getFrom(),pageCondition.getSize());
+        List<TransactionOutput> utxo =  blockChainCore.getBlockChainDataBase().queryTransactionOutputListByAddress(address,pageCondition.getFrom(),pageCondition.getSize());
         return utxo;
     }
 
@@ -127,7 +127,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         //手续费
         values = values.add(GlobalSetting.TransactionConstant.MIN_TRANSACTION_FEE);
 
-        List<TransactionOutput> utxoList = blockChainCore.getBlockChainDataBase().queryUnspendTransactionOuputListByAddress(account.getAddress(),0,100);
+        List<TransactionOutput> utxoList = blockChainCore.getBlockChainDataBase().queryUnspendTransactionOutputListByAddress(account.getAddress(),0,100);
         //交易输入列表
         List<String> inputs = new ArrayList<>();
         //交易输入总金额
@@ -186,7 +186,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
     @Override
     public String queryBlockHashByBlockHeight(BigInteger blockHeight) throws Exception {
-        Block block = blockChainCore.getBlockChainDataBase().findNoTransactionBlockByBlockHeight(blockHeight);
+        Block block = blockChainCore.getBlockChainDataBase().queryNoTransactionBlockByBlockHeight(blockHeight);
         if(block == null){
             return null;
         }
@@ -195,7 +195,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
     @Override
     public BlockDTO queryBlockDtoByBlockHeight(BigInteger blockHeight) throws Exception {
-        Block block = blockChainCore.getBlockChainDataBase().findBlockByBlockHeight(blockHeight);
+        Block block = blockChainCore.getBlockChainDataBase().queryBlockByBlockHeight(blockHeight);
         if(block == null){
             return null;
         }
@@ -206,23 +206,23 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public Block queryNoTransactionBlockDtoByBlockHash(String blockHash) throws Exception {
         BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
-        BigInteger blockHeight = blockChainDataBase.findBlockHeightByBlockHash(blockHash);
+        BigInteger blockHeight = blockChainDataBase.queryBlockHeightByBlockHash(blockHash);
         if(blockHeight == null){
             return null;
         }
-        Block block = blockChainDataBase.findNoTransactionBlockByBlockHeight(blockHeight);
+        Block block = blockChainDataBase.queryNoTransactionBlockByBlockHeight(blockHeight);
         return block;
     }
 
     @Override
     public Block queryNoTransactionBlockDtoByBlockHeight(BigInteger blockHeight) throws Exception {
-        Block block = blockChainCore.getBlockChainDataBase().findNoTransactionBlockByBlockHeight(blockHeight);
+        Block block = blockChainCore.getBlockChainDataBase().queryNoTransactionBlockByBlockHeight(blockHeight);
         return block;
     }
 
     @Override
-    public BigInteger queryBlockChainHeight() throws Exception {
-        return blockChainCore.getBlockChainDataBase().obtainBlockChainHeight();
+    public BigInteger queryBlockChainHeight() {
+        return blockChainCore.getBlockChainDataBase().queryBlockChainHeight();
     }
 
     @Override

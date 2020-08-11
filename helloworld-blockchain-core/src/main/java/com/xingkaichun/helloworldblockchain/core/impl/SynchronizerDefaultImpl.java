@@ -90,7 +90,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
         if(maxBlockHeight == null){
             return;
         }
-        BigInteger targetBlockChainHeight = targetBlockChainDataBase.obtainBlockChainHeight();
+        BigInteger targetBlockChainHeight = targetBlockChainDataBase.queryBlockChainHeight();
         if(!BigIntegerUtil.isEquals(targetBlockChainHeight,BigInteger.valueOf(0)) && BigIntegerUtil.isGreatEqualThan(targetBlockChainHeight,maxBlockHeight)){
             synchronizerDataBase.clear(availableSynchronizeNodeId);
             return;
@@ -120,19 +120,19 @@ public class SynchronizerDefaultImpl extends Synchronizer {
      */
     private void promoteTargetBlockChainDataBase(BlockChainDataBase targetBlockChainDataBase,
                                                    BlockChainDataBase temporaryBlockChainDataBase) throws Exception {
-        Block targetBlockChainTailBlock = targetBlockChainDataBase.findTailNoTransactionBlock();
-        Block temporaryBlockChainTailBlock = temporaryBlockChainDataBase.findTailNoTransactionBlock() ;
+        Block targetBlockChainTailBlock = targetBlockChainDataBase.queryTailNoTransactionBlock();
+        Block temporaryBlockChainTailBlock = temporaryBlockChainDataBase.queryTailNoTransactionBlock() ;
         //不需要调整
         if(temporaryBlockChainTailBlock == null){
             return;
         }
         if(targetBlockChainTailBlock == null){
-            Block block = temporaryBlockChainDataBase.findBlockByBlockHeight(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_HEIGHT);
+            Block block = temporaryBlockChainDataBase.queryBlockByBlockHeight(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_HEIGHT);
             boolean isAddBlockToBlockChainSuccess = targetBlockChainDataBase.addBlock(block);
             if(!isAddBlockToBlockChainSuccess){
                 return;
             }
-            targetBlockChainTailBlock = targetBlockChainDataBase.findTailNoTransactionBlock();
+            targetBlockChainTailBlock = targetBlockChainDataBase.queryTailNoTransactionBlock();
         }
         if(targetBlockChainTailBlock == null){
             throw new RuntimeException("在这个时刻，targetBlockChainTailBlock必定不为null。");
@@ -146,22 +146,22 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             if(BigIntegerUtil.isLessEqualThan(noForkBlockHeight,BigInteger.valueOf(0))){
                 break;
             }
-            Block targetBlock = targetBlockChainDataBase.findNoTransactionBlockByBlockHeight(noForkBlockHeight);
+            Block targetBlock = targetBlockChainDataBase.queryNoTransactionBlockByBlockHeight(noForkBlockHeight);
             if(targetBlock == null){
                 break;
             }
-            Block temporaryBlock = temporaryBlockChainDataBase.findNoTransactionBlockByBlockHeight(noForkBlockHeight);
+            Block temporaryBlock = temporaryBlockChainDataBase.queryNoTransactionBlockByBlockHeight(noForkBlockHeight);
             if(targetBlock.getHash().equals(temporaryBlock.getHash()) && targetBlock.getPreviousBlockHash().equals(temporaryBlock.getPreviousBlockHash())){
                 break;
             }
             targetBlockChainDataBase.removeTailBlock();
-            noForkBlockHeight = targetBlockChainDataBase.obtainBlockChainHeight();
+            noForkBlockHeight = targetBlockChainDataBase.queryBlockChainHeight();
         }
 
-        BigInteger targetBlockChainHeight = targetBlockChainDataBase.obtainBlockChainHeight() ;
+        BigInteger targetBlockChainHeight = targetBlockChainDataBase.queryBlockChainHeight() ;
         while(true){
             targetBlockChainHeight = targetBlockChainHeight.add(BigInteger.valueOf(1));
-            Block currentBlock = temporaryBlockChainDataBase.findBlockByBlockHeight(targetBlockChainHeight) ;
+            Block currentBlock = temporaryBlockChainDataBase.queryBlockByBlockHeight(targetBlockChainHeight) ;
             if(currentBlock == null){
                 break;
             }
@@ -176,8 +176,8 @@ public class SynchronizerDefaultImpl extends Synchronizer {
      */
     private void copyTargetBlockChainDataBaseToTemporaryBlockChainDataBase(BlockChainDataBase targetBlockChainDataBase,
                                  BlockChainDataBase temporaryBlockChainDataBase) throws Exception {
-        Block targetBlockChainTailBlock = targetBlockChainDataBase.findTailNoTransactionBlock() ;
-        Block temporaryBlockChainTailBlock = temporaryBlockChainDataBase.findTailNoTransactionBlock() ;
+        Block targetBlockChainTailBlock = targetBlockChainDataBase.queryTailNoTransactionBlock() ;
+        Block temporaryBlockChainTailBlock = temporaryBlockChainDataBase.queryTailNoTransactionBlock() ;
         if(targetBlockChainTailBlock == null){
             //清空temporary
             temporaryBlockChainDataBase.removeBlocksUtilBlockHeightLessThan(BigInteger.ONE);
@@ -188,18 +188,18 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             if(temporaryBlockChainTailBlock == null){
                 break;
             }
-            Block targetBlockChainBlock = targetBlockChainDataBase.findNoTransactionBlockByBlockHeight(temporaryBlockChainTailBlock.getHeight());
+            Block targetBlockChainBlock = targetBlockChainDataBase.queryNoTransactionBlockByBlockHeight(temporaryBlockChainTailBlock.getHeight());
             if(isBlockEqual(targetBlockChainBlock,temporaryBlockChainTailBlock)){
                 break;
             }
             temporaryBlockChainDataBase.removeTailBlock();
-            temporaryBlockChainTailBlock = temporaryBlockChainDataBase.findTailNoTransactionBlock();
+            temporaryBlockChainTailBlock = temporaryBlockChainDataBase.queryTailNoTransactionBlock();
         }
         //复制target数据至temporary
-        BigInteger temporaryBlockChainHeight = temporaryBlockChainDataBase.obtainBlockChainHeight();
+        BigInteger temporaryBlockChainHeight = temporaryBlockChainDataBase.queryBlockChainHeight();
         while(true){
             temporaryBlockChainHeight = temporaryBlockChainHeight.add(BigInteger.valueOf(1));
-            Block currentBlock = targetBlockChainDataBase.findBlockByBlockHeight(temporaryBlockChainHeight) ;
+            Block currentBlock = targetBlockChainDataBase.queryBlockByBlockHeight(temporaryBlockChainHeight) ;
             if(currentBlock == null){
                 break;
             }

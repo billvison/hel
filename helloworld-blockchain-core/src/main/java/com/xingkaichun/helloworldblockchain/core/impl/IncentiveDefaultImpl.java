@@ -35,7 +35,7 @@ public class IncentiveDefaultImpl extends Incentive {
         BigInteger blockHeight = block.getHeight();
         if(BigIntegerUtil.isLessEqualThan(blockHeight,BigInteger.ONE)){
         }else {
-            Block firstBlock = blockChainDataBase.findBlockByBlockHeight(BigInteger.valueOf(1));
+            Block firstBlock = blockChainDataBase.queryBlockByBlockHeight(BigInteger.valueOf(1));
             long timestamp = GlobalSetting.MinerConstant.MINE_BLOCK_INCENTIVE_REDUCE_BY_HALF_INTERVAL_TIMESTAMP;
             long totalTimestamp = System.currentTimeMillis() - firstBlock.getTimestamp();
             long multiple = totalTimestamp / timestamp;

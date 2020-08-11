@@ -70,35 +70,38 @@ public abstract class BlockChainDataBase {
 
     //region 区块链提供的通用方法
     /**
-     * 获取区块链的长度
+     * 查询区块链的长度
      */
-    public abstract BigInteger obtainBlockChainHeight() throws Exception ;
-
+    public abstract BigInteger queryBlockChainHeight() ;
+    /**
+     * 查询区块链中总的交易数量
+     */
+    public abstract BigInteger queryTransactionSize() ;
 
     /**
-     * 查找区块链上的最后一个区块
+     * 查询区块链上的最后一个区块
      */
-    public abstract Block findTailBlock() throws Exception ;
+    public abstract Block queryTailBlock() throws Exception ;
     /**
      * 在区块链中根据区块高度查找区块
      * @param blockHeight 区块高度
      */
-    public abstract Block findBlockByBlockHeight(BigInteger blockHeight) throws Exception ;
+    public abstract Block queryBlockByBlockHeight(BigInteger blockHeight) throws Exception ;
     /**
      * 查找区块链上的最后一个区块，返回的区块不包含交易信息
      */
-    public abstract Block findTailNoTransactionBlock() throws Exception ;
+    public abstract Block queryTailNoTransactionBlock() throws Exception ;
     /**
      * 在区块链中根据区块高度查找【未存储交易信息】的区块
      * @param blockHeight 区块高度
      */
-    public abstract Block findNoTransactionBlockByBlockHeight(BigInteger blockHeight) throws Exception ;
+    public abstract Block queryNoTransactionBlockByBlockHeight(BigInteger blockHeight) throws Exception ;
 
 
     /**
      * 在区块链中根据交易ID查找交易
      */
-    public abstract Transaction findTransactionByTransactionHash(String transactionHash) throws Exception ;
+    public abstract Transaction queryTransactionByTransactionHash(String transactionHash) throws Exception ;
     /**
      * 根据交易高度查询交易
      */
@@ -108,24 +111,24 @@ public abstract class BlockChainDataBase {
     /**
      * 在区块链中根据 交易输出哈希 查找未花费交易输出
      */
-    public abstract TransactionOutput findUnspendTransactionOuputByTransactionOuputHash(String transactionOutputHash) throws Exception ;
+    public abstract TransactionOutput queryUnspendTransactionOutputByTransactionOuputHash(String transactionOutputHash) throws Exception ;
     /**
      * 根据地址查询未花费交易输出
      */
-    public abstract List<TransactionOutput> queryUnspendTransactionOuputListByAddress(String address,long from,long size) throws Exception ;
+    public abstract List<TransactionOutput> queryUnspendTransactionOutputListByAddress(String address,long from,long size) throws Exception ;
 
 
     /**
      * 根据地址查询交易输出
      */
-    public abstract List<TransactionOutput> queryTransactionOuputListByAddress(String address,long from,long size) throws Exception ;
+    public abstract List<TransactionOutput> queryTransactionOutputListByAddress(String address,long from,long size) throws Exception ;
 
 
     /**
      * 根据区块Hash查找区块高度
      * @param blockHash 区块Hash
      */
-    public abstract BigInteger findBlockHeightByBlockHash(String blockHash) ;
+    public abstract BigInteger queryBlockHeightByBlockHash(String blockHash) ;
     //endregion
 
 

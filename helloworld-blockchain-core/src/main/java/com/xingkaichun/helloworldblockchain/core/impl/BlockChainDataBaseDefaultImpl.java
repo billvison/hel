@@ -16,7 +16,6 @@ import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.EncodeDecodeUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.LevelDBUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.ByteUtil;
 import org.iq80.leveldb.DB;
@@ -130,7 +129,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     private void fillBlockPropertity(Block block) throws Exception {
 
         BigInteger transactionSequenceNumberInBlock = BigInteger.ZERO;
-        BigInteger transactionSequenceNumberInBlockChain = queryTransactionQuantity();
+        BigInteger transactionSequenceNumberInBlockChain = queryTransactionSize();
         BigInteger blockHeight = block.getHeight();
         List<Transaction> transactions = block.getTransactions();
         BigInteger transactionQuantity = transactions==null?BigInteger.ZERO:BigInteger.valueOf(transactions.size());
@@ -165,7 +164,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{
-            Block tailBlock = findTailBlock();
+            Block tailBlock = queryTailBlock();
             if(tailBlock == null){
                 return null;
             }
@@ -186,7 +185,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         writeLock.lock();
         try{
             while (true){
-                Block tailBlock = findTailBlock();
+                Block tailBlock = queryTailBlock();
                 if(tailBlock == null){
                     return;
                 }
@@ -205,24 +204,25 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     //region 区块链提供的通用方法
     @Override
-    public Block findTailBlock() throws Exception {
-        BigInteger blockChainHeight = obtainBlockChainHeight();
+    public Block queryTailBlock() throws Exception {
+        BigInteger blockChainHeight = queryBlockChainHeight();
         if(BigIntegerUtil.isLessEqualThan(blockChainHeight,BigInteger.valueOf(0))){
             return null;
         }
-        return findBlockByBlockHeight(blockChainHeight);
+        return queryBlockByBlockHeight(blockChainHeight);
     }
+    //TODO 删除NoTransactionBlock ？ 或是 新增区块头实体
     @Override
-    public Block findTailNoTransactionBlock() throws Exception {
-        BigInteger blockChainHeight = obtainBlockChainHeight();
+    public Block queryTailNoTransactionBlock() throws Exception {
+        BigInteger blockChainHeight = queryBlockChainHeight();
         if(BigIntegerUtil.isLessEqualThan(blockChainHeight,BigInteger.valueOf(0))){
             return null;
         }
-        return findNoTransactionBlockByBlockHeight(blockChainHeight);
+        return queryNoTransactionBlockByBlockHeight(blockChainHeight);
     }
 
     @Override
-    public BigInteger obtainBlockChainHeight() throws Exception {
+    public BigInteger queryBlockChainHeight() {
         byte[] bytesBlockChainHeight = LevelDBUtil.get(blockChainDB, buildBlockChainHeightKey());
         if(bytesBlockChainHeight == null){
             //区块链没有区块高度默认为0
@@ -232,7 +232,16 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public TransactionOutput findUnspendTransactionOuputByTransactionOuputHash(String transactionOutputHash) throws Exception {
+    public BigInteger queryTransactionSize() {
+        byte[] byteTotalTransactionQuantity = LevelDBUtil.get(blockChainDB, buildTotalTransactionQuantityKey());
+        if(byteTotalTransactionQuantity == null){
+            return BigInteger.ZERO;
+        }
+        return ByteUtil.bytesToBigInteger(byteTotalTransactionQuantity);
+    }
+
+    @Override
+    public TransactionOutput queryUnspendTransactionOutputByTransactionOuputHash(String transactionOutputHash) throws Exception {
         if(transactionOutputHash==null || "".equals(transactionOutputHash)){
             return null;
         }
@@ -244,7 +253,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public Block findBlockByBlockHeight(BigInteger blockHeight) throws Exception {
+    public Block queryBlockByBlockHeight(BigInteger blockHeight) throws Exception {
         byte[] bytesBlock = LevelDBUtil.get(blockChainDB, buildBlockHeightKey(blockHeight));
         if(bytesBlock==null){
             return null;
@@ -252,7 +261,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return EncodeDecodeUtil.decodeToBlock(bytesBlock);
     }
     @Override
-    public Block findNoTransactionBlockByBlockHeight(BigInteger blockHeight) throws Exception {
+    public Block queryNoTransactionBlockByBlockHeight(BigInteger blockHeight) throws Exception {
         if(blockHeight == null){
             return null;
         }
@@ -263,7 +272,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         return EncodeDecodeUtil.decodeToBlock(bytesBlock);
     }
     @Override
-    public BigInteger findBlockHeightByBlockHash(String blockHash) {
+    public BigInteger queryBlockHeightByBlockHash(String blockHash) {
+        //TODO 方法名称
         byte[] bytesBlockHeight = LevelDBUtil.get(blockChainDB, buildBlockHashtBlockHeightKey(blockHash));
         if(bytesBlockHeight == null){
             return null;
@@ -272,7 +282,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public Transaction findTransactionByTransactionHash(String transactionHash) throws Exception {
+    public Transaction queryTransactionByTransactionHash(String transactionHash) throws Exception {
         byte[] bytesTransaction = LevelDBUtil.get(blockChainDB, buildTransactionHashKey(transactionHash));
         if(bytesTransaction==null){
             return null;
@@ -382,6 +392,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     /**
      * 是否有双花攻击
+     * TODO https://www.jianshu.com/p/d2b705a8c83f 解释双花
      */
     private boolean isDoubleSpendAttackHappen(Block block) {
         //在不同的交易中，哈希(交易的哈希、交易输入哈希、交易输出哈希)不应该被使用两次或是两次以上
@@ -403,6 +414,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
     /**
      * 是否有双花攻击
+     * TODO https://www.jianshu.com/p/d2b705a8c83f 解释双花
      */
     private boolean isDoubleSpendAttackHappen(@Nonnull Transaction transaction) {
         List<TransactionInput> inputs = transaction.getInputs();
@@ -556,7 +568,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 简单的校验Block的连贯性:从高度、哈希、时间戳三个方面检查
      */
     private boolean isBlockHashBlockHeightBlockTimestampRight(Block block) throws Exception {
-        Block tailBlock = findNoTransactionBlockByBlockHeight(obtainBlockChainHeight());
+        Block tailBlock = queryNoTransactionBlockByBlockHeight(queryBlockChainHeight());
         if(tailBlock == null){
             //校验区块Hash是否连贯
             if(!GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousBlockHash())){
@@ -772,8 +784,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             for(TransactionInput transactionInput : inputs) {
                 TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
                 String unspendTransactionOutputHash = unspendTransactionOutput.getTransactionOutputHash();
-                TransactionOutput tx = findUnspendTransactionOuputByTransactionOuputHash(unspendTransactionOutputHash);
-                if(tx == null){
+                TransactionOutput transactionOutput = queryUnspendTransactionOutputByTransactionOuputHash(unspendTransactionOutputHash);
+                if(transactionOutput == null){
                     return false;
                 }
             }
@@ -960,12 +972,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             writeBatch.delete(blockHeightMapNoTransactionBlockKey);
         }
         //更新交易数量
-        BigInteger transactionQuantity = queryTransactionQuantity();
+        BigInteger transactionSize = queryTransactionSize();
         byte[] totalTransactionQuantityKey = buildTotalTransactionQuantityKey();
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-            writeBatch.put(totalTransactionQuantityKey, ByteUtil.bigIntegerToBytes(transactionQuantity.add(BigInteger.valueOf(block.getTransactions().size()))));
+            writeBatch.put(totalTransactionQuantityKey, ByteUtil.bigIntegerToBytes(transactionSize.add(BigInteger.valueOf(block.getTransactions().size()))));
         }else{
-            writeBatch.put(totalTransactionQuantityKey, ByteUtil.bigIntegerToBytes(transactionQuantity.subtract(BigInteger.valueOf(block.getTransactions().size()))));
+            writeBatch.put(totalTransactionQuantityKey, ByteUtil.bigIntegerToBytes(transactionSize.subtract(BigInteger.valueOf(block.getTransactions().size()))));
         }
         //区块Hash到区块高度的映射
         byte[] blockHashBlockHeightKey = buildBlockHashtBlockHeightKey(block.getHash());
@@ -1073,7 +1085,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public List<TransactionOutput> queryUnspendTransactionOuputListByAddress(String address,long from,long size) throws Exception {
+    public List<TransactionOutput> queryUnspendTransactionOutputListByAddress(String address,long from,long size) throws Exception {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
         byte[] addressToUnspendTransactionOutputListKey = buildAddressToUnspendTransactionOutputListKey(address);
@@ -1116,7 +1128,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public List<TransactionOutput> queryTransactionOuputListByAddress(String address,long from,long size) throws Exception {
+    public List<TransactionOutput> queryTransactionOutputListByAddress(String address,long from,long size) throws Exception {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
         byte[] addressToTransactionOutputListKey = buildAddressToTransactionOuputListKey(address);
@@ -1167,16 +1179,5 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             hashSet.add(hash);
         }
         return true;
-    }
-
-    /**
-     * 查询区块链中总的交易数量
-     */
-    private BigInteger queryTransactionQuantity() {
-        byte[] byteTotalTransactionQuantity = LevelDBUtil.get(blockChainDB, buildTotalTransactionQuantityKey());
-        if(byteTotalTransactionQuantity == null){
-            return BigInteger.ZERO;
-        }
-        return ByteUtil.bytesToBigInteger(byteTotalTransactionQuantity);
     }
 }

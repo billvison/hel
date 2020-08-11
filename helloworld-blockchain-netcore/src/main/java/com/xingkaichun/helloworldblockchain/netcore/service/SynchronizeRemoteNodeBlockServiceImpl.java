@@ -74,7 +74,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
         //分叉参数
         ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.FORK_BLOCK_SIZE.name());
         BigInteger forkBlockSize = new BigInteger(configurationDto.getConfValue());
-        Block tailBlock = blockChainDataBase.findTailNoTransactionBlock();
+        Block tailBlock = blockChainDataBase.queryTailNoTransactionBlock();
         BigInteger localBlockChainHeight = tailBlock==null?BigInteger.ZERO:tailBlock.getHeight();
 
         boolean fork = false;
@@ -131,7 +131,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                     forkNodeHandler(node,synchronizerDataBase);
                     return;
                 }
-                Block localBlock = blockChainDataBase.findNoTransactionBlockByBlockHeight(tempBlockHeight);
+                Block localBlock = blockChainDataBase.queryNoTransactionBlockByBlockHeight(tempBlockHeight);
                 if(localBlock.getHash().equals(blockHash)){
                     break;
                 }
