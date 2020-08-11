@@ -2,8 +2,12 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 
 import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
+import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.script.ScriptOperationCodes;
 import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
@@ -144,6 +148,7 @@ public class BlockChainBrowserController {
                 request.setPageCondition(PageCondition.DEFAULT_PAGE_CONDITION);
             }
             List<Transaction> transactionList = blockChainCoreService.queryTransactionByTransactionHeight(request.getPageCondition());
+            toTransactionView(transactionList);
             if(transactionList == null){
                 return ServiceResult.createFailServiceResult(String.format("区块链中不存在交易高度[%s]，请检查输入的交易哈希。",request.getPageCondition().getFrom()));
             }
@@ -318,5 +323,56 @@ public class BlockChainBrowserController {
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
+    }
+
+    //TODO 单独的一套DTO
+    private void toTransactionView(List<Transaction> transactionList) {
+        if(transactionList != null){
+            for(Transaction transaction:transactionList){
+                toTransactionView(transaction);
+            }
+        }
+    }
+
+    private void toTransactionView(Transaction transaction) {
+        if(transaction != null){
+            List<TransactionInput> inputs = transaction.getInputs();
+            if(inputs != null){
+                for(TransactionInput input:inputs){
+                    ScriptKey scriptKey = input.getScriptKey();
+                    if(scriptKey != null){
+                        ScriptKey scriptKeyView = toScriptKeyView(scriptKey);
+                        input.setScriptKey(scriptKeyView);
+                    }
+                }
+            }
+            List<TransactionOutput> outputs = transaction.getOutputs();
+            if(outputs != null){
+                for(TransactionOutput output:outputs){
+                    ScriptLock scriptLock = output.getScriptLock();
+                    if(scriptLock != null){
+                        ScriptLock scriptLockView = toScriptLockView(scriptLock);
+                        output.setScriptLock(scriptLockView);
+                    }
+                }
+            }
+        }
+    }
+
+    private ScriptKey toScriptKeyView(ScriptKey scriptKey) {
+        ScriptKey scriptKeyView = new ScriptKey();
+        for(String script:scriptKey){
+            scriptKeyView.add(ScriptOperationCodes.getCodeNameOrRawData(script));
+        }
+        return scriptKeyView;
+    }
+
+
+    private ScriptLock toScriptLockView(ScriptLock scriptLock) {
+        ScriptLock scriptLockView = new ScriptLock();
+        for(String script:scriptLock){
+            scriptLockView.add(ScriptOperationCodes.getCodeNameOrRawData(script));
+        }
+        return scriptLockView;
     }
 }

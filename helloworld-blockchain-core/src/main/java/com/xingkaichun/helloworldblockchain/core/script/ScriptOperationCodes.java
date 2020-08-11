@@ -77,4 +77,21 @@ public class ScriptOperationCodes {
     public static String getOperationDataFromData(String data){
         return ScriptOperationCodes.OPERATION_DATA_PREFIX + data;
     }
+
+    /**
+     * 操作数移除操作数前缀，返回真实的操作数
+     */
+    public static String getCodeFromOperationCode(String operationCode){
+        return operationCode.substring(ScriptOperationCodes.OPERATION_CODE_PREFIX.length());
+    }
+
+    /**
+     * 返回编码名称或是真实数据
+     */
+    public static String getCodeNameOrRawData(String operation){
+        if(operation.startsWith(OPERATION_DATA_PREFIX)){
+            return getDataFromOperationData(operation);
+        }
+        return opCodeMap.get(operation);
+    }
 }
