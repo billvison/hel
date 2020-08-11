@@ -1,6 +1,5 @@
 package com.xingkaichun.helloworldblockchain.core.script;
 
-import com.xingkaichun.helloworldblockchain.core.exception.ExecuteScriptException;
 import com.xingkaichun.helloworldblockchain.core.model.script.Script;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptExecuteResult;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
@@ -19,7 +18,7 @@ public class StackBasedVirtualMachine {
     /**
      * 执行脚本
      */
-    public ScriptExecuteResult executeScript(Transaction transactionEnvironment, Script script) throws ExecuteScriptException {
+    public ScriptExecuteResult executeScript(Transaction transactionEnvironment, Script script) throws RuntimeException {
         ScriptExecuteResult stack = new ScriptExecuteResult();
         for(int i=0;i<script.size();i++){
             String command = script.get(i);
@@ -36,21 +35,21 @@ public class StackBasedVirtualMachine {
                     stack.push(address);
                 }else if(ScriptOperationCodes.OP_EQUALVERIFY.equals(command)){
                     if(!stack.pop().equals(stack.pop())){
-                        throw new ExecuteScriptException("脚本执行失败");
+                        throw new RuntimeException("脚本执行失败");
                     }
                 }else if(ScriptOperationCodes.OP_CHECKSIG.equals(command)){
                     String publicKey = stack.pop();
                     String sign = stack.pop();
                     boolean verifySignatureSuccess = AccountUtil.verifySignature(publicKey, TransactionTool.getSignatureData(transactionEnvironment),sign);
                     if(!verifySignatureSuccess){
-                        throw new ExecuteScriptException("脚本执行失败");
+                        throw new RuntimeException("脚本执行失败");
                     }
                     stack.push(String.valueOf(Boolean.TRUE));
                 }else {
-                    throw new ExecuteScriptException("没有指令");
+                    throw new RuntimeException("没有指令");
                 }
             }else {
-                throw new ExecuteScriptException("指令错误");
+                throw new RuntimeException("指令错误");
             }
         }
         return stack;
