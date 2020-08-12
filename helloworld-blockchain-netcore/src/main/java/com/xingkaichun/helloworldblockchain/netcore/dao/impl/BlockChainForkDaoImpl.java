@@ -2,8 +2,8 @@ package com.xingkaichun.helloworldblockchain.netcore.dao.impl;
 
 import com.xingkaichun.helloworldblockchain.core.utils.FileUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.JdbcUtil;
-import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainBranchDao;
-import com.xingkaichun.helloworldblockchain.netcore.model.BlockchainBranchBlockEntity;
+import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainForkDao;
+import com.xingkaichun.helloworldblockchain.netcore.model.BlockchainForkBlockEntity;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -11,15 +11,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
+public class BlockChainForkDaoImpl implements BlockChainForkDao {
 
-    public BlockChainBranchDaoImpl(String blockchainDataPath) {
+    public BlockChainForkDaoImpl(String blockchainDataPath) {
         this.blockchainDataPath = blockchainDataPath;
         init();
     }
 
     private void init() {
-        String createTable1Sql1 = "CREATE TABLE IF NOT EXISTS [BlockchainBranch](" +
+        String createTable1Sql1 = "CREATE TABLE IF NOT EXISTS [BlockchainFork](" +
                 "  [blockHeight] INT(20), " +
                 "  [blockHash] VARCHAR(100))";
         JdbcUtil.executeSql(connection(),createTable1Sql1);
@@ -27,9 +27,9 @@ public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
 
 
     @Override
-    public List<BlockchainBranchBlockEntity> queryAllBlockchainBranchBlock() {
-        String sql = "select * from BlockchainBranch";
-        List<BlockchainBranchBlockEntity> nodeList = new ArrayList<>();
+    public List<BlockchainForkBlockEntity> queryAllBlockchainForkBlock() {
+        String sql = "select * from BlockchainFork";
+        List<BlockchainForkBlockEntity> nodeList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
@@ -38,7 +38,7 @@ public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
             while (resultSet.next()){
                 Integer blockHeight = resultSet.getInt("blockHeight");
                 String blockHash = resultSet.getString("blockHash");
-                BlockchainBranchBlockEntity entity = new BlockchainBranchBlockEntity();
+                BlockchainForkBlockEntity entity = new BlockchainForkBlockEntity();
                 entity.setBlockHeight(BigInteger.valueOf(blockHeight));
                 entity.setBlockHash(blockHash);
                 nodeList.add(entity);
@@ -53,7 +53,7 @@ public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
     }
 
     public void removeAll() {
-        String sql1 = "delete from BlockchainBranch";
+        String sql1 = "delete from BlockchainFork";
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection().prepareStatement(sql1);
@@ -65,8 +65,8 @@ public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
         }
     }
 
-    public void add(BlockchainBranchBlockEntity entity) {
-        String sql1 = "INSERT INTO BlockchainBranch (blockHeight, blockHash)" +
+    public void add(BlockchainForkBlockEntity entity) {
+        String sql1 = "INSERT INTO BlockchainFork (blockHeight, blockHash)" +
                 "        VALUES (?, ?)";
         PreparedStatement preparedStatement = null;
         try {
@@ -83,7 +83,7 @@ public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
 
 
     private static final String NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME = "NetCoreDatabase";
-    private static final String NODE_SYNCHRONIZE_DATABASE_File_Name = "BlockChainBranchDaoImpl.db";
+    private static final String NODE_SYNCHRONIZE_DATABASE_File_Name = "BlockChainForkDaoImpl.db";
 
     private String blockchainDataPath;
     private Connection connection;
@@ -105,14 +105,14 @@ public class BlockChainBranchDaoImpl implements BlockChainBranchDao {
     }
 
     @Override
-    public void updateBranchchainBranch(List<BlockchainBranchBlockEntity> entityList) {
+    public void updateBlockchainFork(List<BlockchainForkBlockEntity> entityList) {
         Connection connection = null;
         try {
             connection = connection();
             connection.setAutoCommit(false);
             removeAll();
             if(entityList != null){
-                for(BlockchainBranchBlockEntity entity:entityList){
+                for(BlockchainForkBlockEntity entity:entityList){
                     add(entity);
                 }
             }

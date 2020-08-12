@@ -2,9 +2,9 @@ package com.xingkaichun.helloworldblockchain.netcore.service;
 
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
-import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainBranchDao;
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchBlockDto;
-import com.xingkaichun.helloworldblockchain.netcore.model.BlockchainBranchBlockEntity;
+import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainForkDao;
+import com.xingkaichun.helloworldblockchain.netcore.dto.fork.BlockchainForkBlockDto;
+import com.xingkaichun.helloworldblockchain.netcore.model.BlockchainForkBlockEntity;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -13,17 +13,17 @@ import java.util.*;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class BlockChainBranchServiceImpl implements BlockChainBranchService {
+public class BlockChainForkServiceImpl implements BlockChainForkService {
 
-    private BlockChainBranchDao blockChainBranchDao;
+    private BlockChainForkDao blockChainForkDao;
     private BlockChainCoreService blockChainCoreService;
 
 
     private Map<String,String> blockHeightBlockHashMap = new HashMap<>();
     private boolean isRefreshCache = false;
 
-    public BlockChainBranchServiceImpl(BlockChainBranchDao blockChainBranchDao, BlockChainCoreService blockChainCoreService) {
-        this.blockChainBranchDao = blockChainBranchDao;
+    public BlockChainForkServiceImpl(BlockChainForkDao blockChainForkDao, BlockChainCoreService blockChainCoreService) {
+        this.blockChainForkDao = blockChainForkDao;
         this.blockChainCoreService = blockChainCoreService;
     }
 
@@ -31,9 +31,9 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
      * 将分支加载到内存
      */
     private void refreshCache() {
-        List<BlockchainBranchBlockEntity> blockchainBranchBlockEntityList = blockChainBranchDao.queryAllBlockchainBranchBlock();
-        if(blockchainBranchBlockEntityList != null){
-            for(BlockchainBranchBlockEntity entity:blockchainBranchBlockEntityList){
+        List<BlockchainForkBlockEntity> blockchainForkBlockEntityList = blockChainForkDao.queryAllBlockchainForkBlock();
+        if(blockchainForkBlockEntityList != null){
+            for(BlockchainForkBlockEntity entity: blockchainForkBlockEntityList){
                 blockHeightBlockHashMap.put(String.valueOf(entity.getBlockHeight()),entity.getBlockHash());
             }
         }
@@ -64,17 +64,17 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
     }
 
     @Override
-    public void branchchainBranchHandler() {
+    public void blockchainForkHandler() {
         if(!isRefreshCache){
             refreshCache();
         }
-        List<BlockchainBranchBlockEntity> blockchainBranchBlockEntityList = blockChainBranchDao.queryAllBlockchainBranchBlock();
-        if(blockchainBranchBlockEntityList == null || blockchainBranchBlockEntityList.size()==0){
+        List<BlockchainForkBlockEntity> blockchainForkBlockEntityList = blockChainForkDao.queryAllBlockchainForkBlock();
+        if(blockchainForkBlockEntityList == null || blockchainForkBlockEntityList.size()==0){
             return;
         }
-        blockchainBranchBlockEntityList.sort(Comparator.comparing(BlockchainBranchBlockEntity::getBlockHeight));
-        for(int i=0;i<blockchainBranchBlockEntityList.size();i++){
-            BlockchainBranchBlockEntity entity = blockchainBranchBlockEntityList.get(i);
+        blockchainForkBlockEntityList.sort(Comparator.comparing(BlockchainForkBlockEntity::getBlockHeight));
+        for(int i = 0; i< blockchainForkBlockEntityList.size(); i++){
+            BlockchainForkBlockEntity entity = blockchainForkBlockEntityList.get(i);
             Block block = blockChainCoreService.queryNoTransactionBlockDtoByBlockHeight(entity.getBlockHeight());
             if(block == null){
                 return;
@@ -86,7 +86,7 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
             if(i==0){
                 deleteBlockHeight = BigInteger.ONE;
             }else {
-                deleteBlockHeight = blockchainBranchBlockEntityList.get(i-1).getBlockHeight().add(BigInteger.ONE);
+                deleteBlockHeight = blockchainForkBlockEntityList.get(i-1).getBlockHeight().add(BigInteger.ONE);
             }
             blockChainCoreService.removeBlocksUtilBlockHeightLessThan(deleteBlockHeight);
             return;
@@ -94,48 +94,48 @@ public class BlockChainBranchServiceImpl implements BlockChainBranchService {
     }
 
     @Override
-    public List<BlockchainBranchBlockDto> queryBlockchainBranch() {
-        List<BlockchainBranchBlockEntity> blockchainBranchBlockEntityList = blockChainBranchDao.queryAllBlockchainBranchBlock();
-        if(blockchainBranchBlockEntityList == null || blockchainBranchBlockEntityList.size()==0){
+    public List<BlockchainForkBlockDto> queryBlockchainFork() {
+        List<BlockchainForkBlockEntity> blockchainForkBlockEntityList = blockChainForkDao.queryAllBlockchainForkBlock();
+        if(blockchainForkBlockEntityList == null || blockchainForkBlockEntityList.size()==0){
             return null;
         }
-        return classCast(blockchainBranchBlockEntityList);
+        return classCast(blockchainForkBlockEntityList);
     }
 
     @Override
-    public void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList) {
-        List<BlockchainBranchBlockEntity> entityList = new ArrayList<>();
+    public void updateBlockchainFork(List<BlockchainForkBlockDto> blockList) {
+        List<BlockchainForkBlockEntity> entityList = new ArrayList<>();
         if(blockList != null){
-            for(BlockchainBranchBlockDto blockchainBranchBlockDto:blockList){
-                BlockchainBranchBlockEntity entity = classCast(blockchainBranchBlockDto);
+            for(BlockchainForkBlockDto blockchainForkBlockDto :blockList){
+                BlockchainForkBlockEntity entity = classCast(blockchainForkBlockDto);
                 entityList.add(entity);
             }
         }
-        blockChainBranchDao.updateBranchchainBranch(entityList);
+        blockChainForkDao.updateBlockchainFork(entityList);
         refreshCache();
-        branchchainBranchHandler();
+        blockchainForkHandler();
     }
 
-    private List<BlockchainBranchBlockDto> classCast(List<BlockchainBranchBlockEntity> blockchainBranchBlockEntityList) {
-        if(blockchainBranchBlockEntityList == null || blockchainBranchBlockEntityList.size()==0){
+    private List<BlockchainForkBlockDto> classCast(List<BlockchainForkBlockEntity> blockchainForkBlockEntityList) {
+        if(blockchainForkBlockEntityList == null || blockchainForkBlockEntityList.size()==0){
             return null;
         }
-        List<BlockchainBranchBlockDto> dtoList = new ArrayList<>();
-        for(BlockchainBranchBlockEntity entity:blockchainBranchBlockEntityList){
+        List<BlockchainForkBlockDto> dtoList = new ArrayList<>();
+        for(BlockchainForkBlockEntity entity: blockchainForkBlockEntityList){
             dtoList.add(classCast(entity));
         }
         return dtoList;
     }
 
-    private BlockchainBranchBlockDto classCast(BlockchainBranchBlockEntity entity) {
-        BlockchainBranchBlockDto dto = new BlockchainBranchBlockDto();
+    private BlockchainForkBlockDto classCast(BlockchainForkBlockEntity entity) {
+        BlockchainForkBlockDto dto = new BlockchainForkBlockDto();
         dto.setBlockHash(entity.getBlockHash());
         dto.setBlockHeight(entity.getBlockHeight());
         return dto;
     }
 
-    private BlockchainBranchBlockEntity classCast(BlockchainBranchBlockDto dto) {
-        BlockchainBranchBlockEntity entity = new BlockchainBranchBlockEntity();
+    private BlockchainForkBlockEntity classCast(BlockchainForkBlockDto dto) {
+        BlockchainForkBlockEntity entity = new BlockchainForkBlockEntity();
         entity.setBlockHash(dto.getBlockHash());
         entity.setBlockHeight(dto.getBlockHeight());
         return entity;

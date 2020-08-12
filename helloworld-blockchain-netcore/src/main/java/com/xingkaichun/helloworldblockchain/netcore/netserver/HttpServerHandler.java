@@ -14,11 +14,11 @@ import io.netty.util.CharsetUtil;
 
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-	NodeServerHandlerResolver nodeServerHandlerResolver;
+	HttpServerHandlerResolver httpServerHandlerResolver;
 
-	protected HttpServerHandler(NodeServerHandlerResolver nodeServerHandlerResolver) {
+	protected HttpServerHandler(HttpServerHandlerResolver httpServerHandlerResolver) {
 		super();
-		this.nodeServerHandlerResolver = nodeServerHandlerResolver;
+		this.httpServerHandlerResolver = httpServerHandlerResolver;
 	}
 
 
@@ -37,23 +37,23 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 			break;
 		case NodeServerApiRoute.PING:
 			PingRequest request1 = new Gson().fromJson(body,PingRequest.class);
-			sendMsg = toString(nodeServerHandlerResolver.ping(ctx,request1));
+			sendMsg = toString(httpServerHandlerResolver.ping(ctx,request1));
 			break;
 		case NodeServerApiRoute.ADD_OR_UPDATE_NODE:
 			AddOrUpdateNodeRequest request2 = new Gson().fromJson(body,AddOrUpdateNodeRequest.class);
-			sendMsg = toString(nodeServerHandlerResolver.addOrUpdateNode(ctx,request2));
+			sendMsg = toString(httpServerHandlerResolver.addOrUpdateNode(ctx,request2));
 			break;
 		case NodeServerApiRoute.QUERY_BLOCK_HASH_BY_BLOCK_HEIGHT:
 			QueryBlockHashByBlockHeightRequest request3 = new Gson().fromJson(body, QueryBlockHashByBlockHeightRequest.class);
-			sendMsg = toString(nodeServerHandlerResolver.queryBlockHashByBlockHeight(request3));
+			sendMsg = toString(httpServerHandlerResolver.queryBlockHashByBlockHeight(request3));
 			break;
 		case NodeServerApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT:
 			QueryBlockDtoByBlockHeightRequest request4 = new Gson().fromJson(body, QueryBlockDtoByBlockHeightRequest.class);
-			sendMsg = toString(nodeServerHandlerResolver.queryBlockDtoByBlockHeight(request4));
+			sendMsg = toString(httpServerHandlerResolver.queryBlockDtoByBlockHeight(request4));
 			break;
 		case NodeServerApiRoute.RECEIVE_TRANSACTION:
 			ReceiveTransactionRequest request5 = new Gson().fromJson(body, ReceiveTransactionRequest.class);
-			sendMsg = toString(nodeServerHandlerResolver.receiveTransaction(request5));
+			sendMsg = toString(httpServerHandlerResolver.receiveTransaction(request5));
 			break;
 		default:
 			sendMsg = "404 PAGE NOT FOUND";

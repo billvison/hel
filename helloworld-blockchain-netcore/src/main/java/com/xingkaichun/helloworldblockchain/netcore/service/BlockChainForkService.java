@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchBlockDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.fork.BlockchainForkBlockDto;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public interface BlockChainBranchService {
+public interface BlockChainForkService {
 
     boolean isFork(BigInteger blockHeight, String blockHash);
 
@@ -20,7 +20,7 @@ public interface BlockChainBranchService {
      */
     BigInteger getFixBlockHashMaxBlockHeight(BigInteger blockHeight);
 
-    void updateBranchchainBranch(List<BlockchainBranchBlockDto> blockList) ;
-    void branchchainBranchHandler() ;
-    List<BlockchainBranchBlockDto> queryBlockchainBranch() ;
+    void updateBlockchainFork(List<BlockchainForkBlockDto> blockList) ;
+    void blockchainForkHandler() ;
+    List<BlockchainForkBlockDto> queryBlockchainFork() ;
 }

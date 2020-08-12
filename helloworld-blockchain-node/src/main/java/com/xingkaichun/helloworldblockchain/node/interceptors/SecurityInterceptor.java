@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class SecurityInterceptor implements HandlerInterceptor {
 
-	private Logger logger = LoggerFactory.getLogger(SecurityInterceptor.class);
+	private final static Logger logger = LoggerFactory.getLogger(SecurityInterceptor.class);
 
 	@Override
 	public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object){

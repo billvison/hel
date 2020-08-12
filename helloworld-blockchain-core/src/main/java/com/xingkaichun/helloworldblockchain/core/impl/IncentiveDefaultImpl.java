@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class IncentiveDefaultImpl extends Incentive {
 
-    private Logger logger = LoggerFactory.getLogger(IncentiveDefaultImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(IncentiveDefaultImpl.class);
 
     @Override
     public BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) {

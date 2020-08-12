@@ -48,7 +48,7 @@ public class NodeTransportDtoTool {
         }
 
         //求上一个区块的hash
-        String previousBlockHash = null;
+        String previousBlockHash;
         BigInteger height = blockDTO.getHeight();
         if(BigIntegerUtil.isEquals(height,BigInteger.ONE)){
             previousBlockHash = GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH;
@@ -103,7 +103,7 @@ public class NodeTransportDtoTool {
         if(transactionInputDtoList != null){
             for (TransactionInputDTO transactionInputDTO:transactionInputDtoList){
                 String unspendTransactionOutputHash = transactionInputDTO.getUnspendTransactionOutputHash();
-                TransactionOutput transactionOutput = blockChainDataBase.queryUnspendTransactionOutputByTransactionOuputHash(unspendTransactionOutputHash);
+                TransactionOutput transactionOutput = blockChainDataBase.queryUnspendTransactionOutputByTransactionOutputHash(unspendTransactionOutputHash);
                 if(transactionOutput == null){
                     throw new ClassCastException("TransactionOutput不应该是null。");
                 }
@@ -145,9 +145,7 @@ public class NodeTransportDtoTool {
             return null;
         }
         ScriptKey sKey = new ScriptKey();
-        for(String script:scriptKey){
-            sKey.add(script);
-        }
+        sKey.addAll(scriptKey);
         return sKey;
     }
 
@@ -156,9 +154,7 @@ public class NodeTransportDtoTool {
             return null;
         }
         ScriptLock sLock = new ScriptLock();
-        for(String script:scriptLock){
-            sLock.add(script);
-        }
+        sLock.addAll(scriptLock);
         return sLock;
     }
     /**

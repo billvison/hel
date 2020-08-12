@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionDtoDataBase {
 
-    private Logger logger = LoggerFactory.getLogger(MinerTransactionDtoDtoDataBaseDefaultImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(MinerTransactionDtoDtoDataBaseDefaultImpl.class);
 
     private final static String MinerTransaction_DataBase_DirectName = "MinerTransactionDtoDataBase";
     private DB transactionPoolDB;
@@ -33,11 +33,7 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
         this.transactionPoolDB = LevelDBUtil.createDB(new File(blockchainDataPath,MinerTransaction_DataBase_DirectName));
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                transactionPoolDB.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            LevelDBUtil.closeDB(transactionPoolDB);
         }));
     }
 

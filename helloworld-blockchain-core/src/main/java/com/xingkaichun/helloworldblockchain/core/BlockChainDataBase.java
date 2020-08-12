@@ -37,12 +37,12 @@ public abstract class BlockChainDataBase {
     /**
      * 删除区块链的尾巴区块(最后一个区块)
      */
-    public abstract Block removeTailBlock() ;
+    public abstract void removeTailBlock() ;
 
     /**
      * 删除区块高度大于等于@blockHeight@的区块
      */
-    public abstract void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) ;
+    public abstract void removeTailBlocksUtilBlockHeightLessThan(BigInteger blockHeight) ;
     //endregion
 
 
@@ -57,6 +57,7 @@ public abstract class BlockChainDataBase {
     /**
      * 校验交易是否可以被添加进下一个区块之中。
      * 如果校验的是奖励交易，则需要整个区块的信息，因此这个函数包含了两个参数：交易所在的区块、交易
+     * //TODO 交易的时间校验？？是否需要区块  方法名
      */
     public abstract boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) ;
     //endregion
@@ -64,11 +65,6 @@ public abstract class BlockChainDataBase {
 
 
 
-
-
-
-
-    //region 区块链提供的通用方法
     /**
      * 查询区块链的长度
      */
@@ -77,20 +73,28 @@ public abstract class BlockChainDataBase {
      * 查询区块链中总的交易数量
      */
     public abstract BigInteger queryTransactionSize() ;
+    /**
+     * 根据区块Hash查找区块高度
+     */
+    public abstract BigInteger queryBlockHeightByBlockHash(String blockHash) ;
 
+
+
+
+    //区块查询
     /**
      * 查询区块链上的最后一个区块
      */
     public abstract Block queryTailBlock() ;
     /**
+     * 查找区块链上的最后一个区块，返回的区块不包含交易信息
+     */
+    public abstract Block queryTailNoTransactionBlock() ;
+    /**
      * 在区块链中根据区块高度查找区块
      * @param blockHeight 区块高度
      */
     public abstract Block queryBlockByBlockHeight(BigInteger blockHeight) ;
-    /**
-     * 查找区块链上的最后一个区块，返回的区块不包含交易信息
-     */
-    public abstract Block queryTailNoTransactionBlock() ;
     /**
      * 在区块链中根据区块高度查找【未存储交易信息】的区块
      * @param blockHeight 区块高度
@@ -98,6 +102,9 @@ public abstract class BlockChainDataBase {
     public abstract Block queryNoTransactionBlockByBlockHeight(BigInteger blockHeight) ;
 
 
+
+
+    //交易查询
     /**
      * 在区块链中根据交易ID查找交易
      */
@@ -108,28 +115,21 @@ public abstract class BlockChainDataBase {
     public abstract List<Transaction> queryTransactionByTransactionHeight(BigInteger from,BigInteger size) ;
 
 
+
+
+    //交易输出查询
     /**
      * 在区块链中根据 交易输出哈希 查找未花费交易输出
      */
-    public abstract TransactionOutput queryUnspendTransactionOutputByTransactionOuputHash(String transactionOutputHash) ;
+    public abstract TransactionOutput queryUnspendTransactionOutputByTransactionOutputHash(String transactionOutputHash) ;
     /**
      * 根据地址查询未花费交易输出
      */
     public abstract List<TransactionOutput> queryUnspendTransactionOutputListByAddress(String address,long from,long size) ;
-
-
     /**
      * 根据地址查询交易输出
      */
     public abstract List<TransactionOutput> queryTransactionOutputListByAddress(String address,long from,long size) ;
-
-
-    /**
-     * 根据区块Hash查找区块高度
-     * @param blockHash 区块Hash
-     */
-    public abstract BigInteger queryBlockHeightByBlockHash(String blockHash) ;
-    //endregion
 
 
 

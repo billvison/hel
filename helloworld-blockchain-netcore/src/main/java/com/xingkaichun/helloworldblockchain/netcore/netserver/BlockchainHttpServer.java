@@ -6,18 +6,25 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * 区块链节点服务器：其它节点与之通信，同步节点数据、区块数据、交易数据等。
+ * @author 邢开春 xingkaichun@qq.com
+ */
+public class BlockchainHttpServer {
 
-public class HttpServer {
+	private final static Logger logger = LoggerFactory.getLogger(BlockchainHttpServer.class);
 
-	public int serverPort;
+	private int serverPort;
 
-	NodeServerHandlerResolver nodeServerHandlerResolver;
+	private HttpServerHandlerResolver httpServerHandlerResolver;
 
-	public HttpServer(int serverPort, NodeServerHandlerResolver nodeServerHandlerResolver) {
+	public BlockchainHttpServer(int serverPort, HttpServerHandlerResolver httpServerHandlerResolver) {
 		super();
 		this.serverPort = serverPort;
-		this.nodeServerHandlerResolver = nodeServerHandlerResolver;
+		this.httpServerHandlerResolver = httpServerHandlerResolver;
 	}
 
 
@@ -36,7 +43,7 @@ public class HttpServer {
 
 						b.group(bossGroup, workerGroup) // 设置EventLoopGroup
 								.channel(NioServerSocketChannel.class) // 指明新的Channel的类型
-								.childHandler(new HttpServerChannelInitializer(nodeServerHandlerResolver)) // 指定ChannelHandler
+								.childHandler(new HttpServerChannelInitializer(httpServerHandlerResolver)) // 指定ChannelHandler
 								.option(ChannelOption.SO_BACKLOG, 128) // 设置的ServerChannel的一些选项
 								.childOption(ChannelOption.SO_KEEPALIVE, true); // 设置的ServerChannel的子Channel的选项
 
@@ -49,7 +56,7 @@ public class HttpServer {
 						// 在这个例子中，这不会发生，但你可以优雅地关闭你的服务器。
 						f.channel().closeFuture().sync();
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						logger.error("BlockchainHttpServer运行出现异常",e);
 					} finally {
 						// 优雅的关闭
 						workerGroup.shutdownGracefully();

@@ -11,14 +11,14 @@ import com.xingkaichun.helloworldblockchain.core.script.ScriptOperationCodes;
 import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchBlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
+import com.xingkaichun.helloworldblockchain.netcore.dto.fork.BlockchainForkBlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.transaction.NormalTransactionDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.transaction.SubmitNormalTransactionResultDto;
-import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
+import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainForkService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.BlockChainApiRoute;
@@ -55,7 +55,7 @@ public class BlockChainBrowserController {
     private NodeService nodeService;
 
     @Autowired
-    private BlockChainBranchService blockChainBranchService;
+    private BlockChainForkService blockChainForkService;
 
    /**
      * 生成钱包(公钥、私钥、地址)
@@ -310,12 +310,12 @@ public class BlockChainBrowserController {
      * 获取当前区块链分支
      */
     @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.QUERY_BLOCKCHAINBRANCH,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryBlockchainBranchResponse> queryBlockchainBranch(@RequestBody QueryBlockchainBranchRequest request){
+    @RequestMapping(value = BlockChainApiRoute.QUERY_BLOCKCHAINBFORK,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryBlockchainForkResponse> queryBlockchainFork(@RequestBody QueryBlockchainForkRequest request){
         try {
-            List<BlockchainBranchBlockDto> blockList = blockChainBranchService.queryBlockchainBranch();
+            List<BlockchainForkBlockDto> blockList = blockChainForkService.queryBlockchainFork();
 
-            QueryBlockchainBranchResponse response = new QueryBlockchainBranchResponse();
+            QueryBlockchainForkResponse response = new QueryBlockchainForkResponse();
             response.setBlockList(blockList);
             return ServiceResult.createSuccessServiceResult("成功获取当前区块链分支",response);
         } catch (Exception e){

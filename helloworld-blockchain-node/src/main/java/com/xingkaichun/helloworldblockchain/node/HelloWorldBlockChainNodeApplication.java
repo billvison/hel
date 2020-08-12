@@ -9,8 +9,8 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.tools.ResourcePathTool;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCoreFactory;
-import com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch.BlockchainBranchDto;
-import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
+import com.xingkaichun.helloworldblockchain.netcore.dto.fork.BlockchainForkDto;
+import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainForkService;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
@@ -53,13 +53,13 @@ public class HelloWorldBlockChainNodeApplication {
 	@Bean
 	public NetBlockchainCore buildNetBlockchainCore() {
 		try {
-			String INIT_BLOCKCHAIN_BRANCH_FILE_NAME = "InitBlockchainBranch.txt";
-			InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(INIT_BLOCKCHAIN_BRANCH_FILE_NAME);
+			String INIT_BLOCKCHAIN_FORK_FILE_NAME = "InitBlockchainFork.txt";
+			InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(INIT_BLOCKCHAIN_FORK_FILE_NAME);
 			String context = CharStreams.toString(new InputStreamReader(inputStream, "UTF-8"));
-			Type jsonType = new TypeToken<BlockchainBranchDto>() {}.getType();
-			BlockchainBranchDto blockchainBranchDto = new Gson().fromJson(context,jsonType);
+			Type jsonType = new TypeToken<BlockchainForkDto>() {}.getType();
+			BlockchainForkDto blockchainForkDto = new Gson().fromJson(context,jsonType);
 
-			NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(ResourcePathTool.getDataRootPath(blockchainDataPath),8444,blockchainBranchDto);
+			NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(ResourcePathTool.getDataRootPath(blockchainDataPath),8444, blockchainForkDto);
 			return netBlockchainCore;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -84,8 +84,8 @@ public class HelloWorldBlockChainNodeApplication {
 		return NetBlockchainCoreFactory.nodeService;
 	}
 	@Bean
-	public BlockChainBranchService buildBlockChainBranchService(NetBlockchainCore netBlockchainCore){
-		return NetBlockchainCoreFactory.blockChainBranchService;
+	public BlockChainForkService buildBlockChainFrokService(NetBlockchainCore netBlockchainCore){
+		return NetBlockchainCoreFactory.blockChainForkService;
 	}
 
 

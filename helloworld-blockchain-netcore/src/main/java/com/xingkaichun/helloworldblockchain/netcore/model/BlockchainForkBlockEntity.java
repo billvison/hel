@@ -7,7 +7,7 @@ import java.math.BigInteger;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class BlockchainBranchBlockEntity {
+public class BlockchainForkBlockEntity {
 
     private BigInteger blockHeight;
     private String blockHash;

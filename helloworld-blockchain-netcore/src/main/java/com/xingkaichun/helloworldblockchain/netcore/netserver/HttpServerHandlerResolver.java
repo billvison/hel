@@ -20,19 +20,18 @@ import java.net.InetSocketAddress;
 import java.util.List;
 
 /**
- * 负责节点与节点通信的控制器
- *
+ * 节点请求处理器
  * @author 邢开春 xingkaichun@qq.com
  */
-public class NodeServerHandlerResolver {
+public class HttpServerHandlerResolver {
 
-    private static final Logger logger = LoggerFactory.getLogger(NodeServerHandlerResolver.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpServerHandlerResolver.class);
 
     private BlockChainCoreService blockChainCoreService;
     private NodeService nodeService;
     private ConfigurationService configurationService;
 
-    public NodeServerHandlerResolver(BlockChainCoreService blockChainCoreService, NodeService nodeService, ConfigurationService configurationService) {
+    public HttpServerHandlerResolver(BlockChainCoreService blockChainCoreService, NodeService nodeService, ConfigurationService configurationService) {
         this.blockChainCoreService = blockChainCoreService;
         this.nodeService = nodeService;
         this.configurationService = configurationService;

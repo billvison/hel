@@ -33,7 +33,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
 
     private BlockChainCore blockChainCore;
     private NodeService nodeService;
-    private BlockChainBranchService blockChainBranchService;
+    private BlockChainForkService blockChainForkService;
     private BlockchainNodeClientService blockchainNodeClientService;
     private ConfigurationService configurationService;
     /**
@@ -45,10 +45,10 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     private BigInteger SYNCHRONIZE_BLOCK_SIZE_FROM_LOCAL_BLOCKCHAIN_HEIGHT = new BigInteger("10");
 
 
-    public SynchronizeRemoteNodeBlockServiceImpl(BlockChainCore blockChainCore, NodeService nodeService, BlockChainBranchService blockChainBranchService, BlockchainNodeClientService blockchainNodeClientService, ConfigurationService configurationService) {
+    public SynchronizeRemoteNodeBlockServiceImpl(BlockChainCore blockChainCore, NodeService nodeService, BlockChainForkService blockChainForkService, BlockchainNodeClientService blockchainNodeClientService, ConfigurationService configurationService) {
         this.blockChainCore = blockChainCore;
         this.nodeService = nodeService;
-        this.blockChainBranchService = blockChainBranchService;
+        this.blockChainForkService = blockChainForkService;
         this.blockchainNodeClientService = blockchainNodeClientService;
         this.configurationService = configurationService;
     }
@@ -88,7 +88,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 return;
             }
             String blockHash = queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash();
-            if(blockChainBranchService.isFork(localBlockChainHeight,blockHash)){
+            if(blockChainForkService.isFork(localBlockChainHeight,blockHash)){
                 forkNodeHandler(node,synchronizerDataBase);
                 return;
             }
@@ -128,7 +128,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                     break;
                 }
                 String blockHash = queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash();
-                if(blockChainBranchService.isFork(tempBlockHeight,blockHash)){
+                if(blockChainForkService.isFork(tempBlockHeight,blockHash)){
                     forkNodeHandler(node,synchronizerDataBase);
                     return;
                 }
@@ -156,7 +156,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 }
                 String blockHash = queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash();
 
-                if(blockChainBranchService.isFork(tempBlockHeight,blockHash)){
+                if(blockChainForkService.isFork(tempBlockHeight,blockHash)){
                     forkNodeHandler(node,synchronizerDataBase);
                     return;
                 }
@@ -182,7 +182,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                     break;
                 }
                 String blockHash = queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash();
-                if(blockChainBranchService.isFork(tempBlockHeight,blockHash)){
+                if(blockChainForkService.isFork(tempBlockHeight,blockHash)){
                     forkNodeHandler(node,synchronizerDataBase);
                     return;
                 }
@@ -210,7 +210,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
             }
             ThreadUtil.sleep(timestamp);
             totalTimestamp += timestamp;
-            if(totalTimestamp>maxTimestamp){
+            if(totalTimestamp > maxTimestamp){
                 logger.error(String.format("节点[%s:%d]数据太长时间没有被区块链系统使用，请检查原因",node.getIp(),node.getPort()));
                 synchronizerDataBase.clear(nodeId);
             }
@@ -239,7 +239,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
         if(BigIntegerUtil.isLessEqualThan(blockChainHeight,BigInteger.ZERO)){
             return false;
         }
-        BigInteger nearBlockHeight = blockChainBranchService.getFixBlockHashMaxBlockHeight(blockChainHeight);
+        BigInteger nearBlockHeight = blockChainForkService.getFixBlockHashMaxBlockHeight(blockChainHeight);
         if(BigIntegerUtil.isLessEqualThan(nearBlockHeight,BigInteger.ZERO)){
             return false;
         }
@@ -247,7 +247,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
         if(!ServiceResult.isSuccess(queryBlockHashByBlockHeightResponseServiceResult)){
             return false;
         }
-        return blockChainBranchService.isFork(nearBlockHeight,queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash());
+        return blockChainForkService.isFork(nearBlockHeight,queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash());
     }
 
 
@@ -264,20 +264,15 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     }
 
     private BlockDTO getBlockDtoByBlockHeight(NodeDto node, BigInteger blockHeight) {
-        try {
-            BlockDTO localBlockDTO = getLocalBlockDtoByBlockHeight(node,blockHeight);
-            if(localBlockDTO != null){
-                return localBlockDTO;
-            }
-            ServiceResult<QueryBlockDtoByBlockHeightResponse> blockDtoServiceResult = blockchainNodeClientService.queryBlockDtoByBlockHeight(node,blockHeight);
-            if(!ServiceResult.isSuccess(blockDtoServiceResult)){
-                return null;
-            }
-            return blockDtoServiceResult.getResult().getBlockDTO();
-        } catch (Exception e) {
-            e.printStackTrace();
+        BlockDTO localBlockDTO = getLocalBlockDtoByBlockHeight(node,blockHeight);
+        if(localBlockDTO != null){
+            return localBlockDTO;
+        }
+        ServiceResult<QueryBlockDtoByBlockHeightResponse> blockDtoServiceResult = blockchainNodeClientService.queryBlockDtoByBlockHeight(node,blockHeight);
+        if(!ServiceResult.isSuccess(blockDtoServiceResult)){
             return null;
         }
+        return blockDtoServiceResult.getResult().getBlockDTO();
     }
 
     private BlockDTO getLocalBlockDtoByBlockHeight(NodeDto node, BigInteger blockHeight) {

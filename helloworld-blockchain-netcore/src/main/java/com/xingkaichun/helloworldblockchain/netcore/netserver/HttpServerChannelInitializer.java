@@ -11,18 +11,18 @@ import io.netty.handler.codec.http.HttpServerCodec;
 
 public class HttpServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-	NodeServerHandlerResolver nodeServerHandlerResolver;
+	HttpServerHandlerResolver httpServerHandlerResolver;
 
-	public HttpServerChannelInitializer(NodeServerHandlerResolver nodeServerHandlerResolver) {
+	public HttpServerChannelInitializer(HttpServerHandlerResolver httpServerHandlerResolver) {
 		super();
-		this.nodeServerHandlerResolver = nodeServerHandlerResolver;
+		this.httpServerHandlerResolver = httpServerHandlerResolver;
 	}
 	
 	@Override
 	protected void initChannel(SocketChannel ch) {
 		ch.pipeline().addLast("codec", new HttpServerCodec());
-		ch.pipeline().addLast("aggregator", new HttpObjectAggregator(1048576));
-		ch.pipeline().addLast("serverHandler", new HttpServerHandler(nodeServerHandlerResolver));
+		ch.pipeline().addLast("aggregator", new HttpObjectAggregator(10*1024*1024));
+		ch.pipeline().addLast("serverHandler", new HttpServerHandler(httpServerHandlerResolver));
 	}
 
 }

@@ -242,7 +242,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
     @Override
     public void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) {
-        blockChainCore.getBlockChainDataBase().removeBlocksUtilBlockHeightLessThan(blockHeight);
+        blockChainCore.getBlockChainDataBase().removeTailBlocksUtilBlockHeightLessThan(blockHeight);
     }
 
     @Override

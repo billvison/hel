@@ -47,7 +47,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
-    private Logger logger = LoggerFactory.getLogger(BlockChainDataBaseDefaultImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(BlockChainDataBaseDefaultImpl.class);
 
     //region 变量
     private final static String BlockChain_DataBase_DirectName = "BlockChainDataBase";
@@ -157,24 +157,23 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public Block removeTailBlock() {
+    public void removeTailBlock() {
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{
             Block tailBlock = queryTailBlock();
             if(tailBlock == null){
-                return null;
+                return;
             }
             WriteBatch writeBatch = createWriteBatch(tailBlock,BlockChainActionEnum.DELETE_BLOCK);
             LevelDBUtil.write(blockChainDB,writeBatch);
-            return tailBlock;
         }finally {
             writeLock.unlock();
         }
     }
 
     @Override
-    public void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) {
+    public void removeTailBlocksUtilBlockHeightLessThan(BigInteger blockHeight) {
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{
@@ -235,7 +234,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
 
     @Override
-    public TransactionOutput queryUnspendTransactionOutputByTransactionOuputHash(String transactionOutputHash) {
+    public TransactionOutput queryUnspendTransactionOutputByTransactionOutputHash(String transactionOutputHash) {
         if(transactionOutputHash==null || "".equals(transactionOutputHash)){
             return null;
         }
@@ -774,7 +773,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             for(TransactionInput transactionInput : inputs) {
                 TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
                 String unspendTransactionOutputHash = unspendTransactionOutput.getTransactionOutputHash();
-                TransactionOutput transactionOutput = queryUnspendTransactionOutputByTransactionOuputHash(unspendTransactionOutputHash);
+                TransactionOutput transactionOutput = queryUnspendTransactionOutputByTransactionOutputHash(unspendTransactionOutputHash);
                 if(transactionOutput == null){
                     return false;
                 }
@@ -786,7 +785,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * 区块中写入的挖矿奖励是否正确？
      * @param block 被校验挖矿奖励是否正确的区块
-     * @return
      */
     private boolean isBlockWriteMineAwardRight(Block block){
         //校验奖励交易笔数

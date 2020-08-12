@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
 
-    private Logger logger = LoggerFactory.getLogger(SynchronizerDataBaseDefaultImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(SynchronizerDataBaseDefaultImpl.class);
 
     private static final String NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME = "NodeSynchronizeDatabase";
     private static final String NODE_SYNCHRONIZE_DATABASE_File_Name = "NodeSynchronize.db";

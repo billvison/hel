@@ -35,7 +35,6 @@ public interface NodeDao {
      * 删除节点
      */
     boolean deleteNode(String ip, int port);
-
     /**
      * 查询所有节点
      */

@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
-import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainBranchService;
+import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainForkService;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
@@ -42,7 +42,7 @@ public class AdminConsoleController {
     private BlockChainCoreService blockChainCoreService;
 
     @Autowired
-    private BlockChainBranchService blockChainBranchService;
+    private BlockChainForkService blockChainForkService;
 
     @Autowired
     private UserService userService;
@@ -196,11 +196,11 @@ public class AdminConsoleController {
      * 更换当前区块链分支
      */
     @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.UPDATE_BLOCKCHAINBRANCH,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<UpdateBlockchainBranchResponse> updateBranchchainBranch(@RequestBody UpdateBlockchainBranchRequest request){
+    @RequestMapping(value = AdminConsoleApiRoute.UPDATE_BLOCKCHAINBFORK,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<UpdateBlockchainForkResponse> updateBlockchainFork(@RequestBody UpdateBlockchainForkRequest request){
         try {
-            blockChainBranchService.updateBranchchainBranch(request.getBlockList());
-            UpdateBlockchainBranchResponse response = new UpdateBlockchainBranchResponse();
+            blockChainForkService.updateBlockchainFork(request.getBlockList());
+            UpdateBlockchainForkResponse response = new UpdateBlockchainForkResponse();
             return ServiceResult.createSuccessServiceResult("成功更换当前区块链分支",response);
         } catch (Exception e){
             String message = "更换当前区块链分支失败";

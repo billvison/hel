@@ -1,6 +1,9 @@
 package com.xingkaichun.helloworldblockchain.netcore.util;
 
 import com.google.gson.Gson;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -12,6 +15,8 @@ import java.net.URL;
  * @author 邢开春 xingkaichun@qq.com
  */
 public class NetUtil {
+
+    private final static Logger logger = LoggerFactory.getLogger(NetUtil.class);
 
     private static Gson gson = new Gson();
 
@@ -32,13 +37,13 @@ public class NetUtil {
             connection.setReadTimeout(3000);
             connection.setConnectTimeout(3000);
             connection.connect();
-            out = new OutputStreamWriter(connection.getOutputStream(), "UTF-8"); // utf-8编码
+            out = new OutputStreamWriter(connection.getOutputStream(), GlobalSetting.GLOBAL_CHARSET);
             out.append(gson.toJson(requestBody));
             out.flush();
             out.close();
 
             // 读取响应
-            InputStream is = null;
+            InputStream is;
             int responseCode = connection.getResponseCode();
             if (responseCode == 200) {
                 is = connection.getInputStream();
@@ -46,8 +51,8 @@ public class NetUtil {
                 is = connection.getErrorStream();
             }
             StringBuilder data = new StringBuilder();
-            br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-            String line = "";
+            br = new BufferedReader(new InputStreamReader(is, GlobalSetting.GLOBAL_CHARSET));
+            String line;
             while ( (line = br.readLine()) != null) {
                 data.append(line);
             }
@@ -58,16 +63,15 @@ public class NetUtil {
                     out.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("IO关闭异常",e);
             }
             try {
                 if (br != null) {
                     br.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("IO关闭异常",e);
             }
-
         }
     }
 

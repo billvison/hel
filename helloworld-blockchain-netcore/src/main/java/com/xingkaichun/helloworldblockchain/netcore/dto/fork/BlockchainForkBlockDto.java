@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.blockchainbranch;
+package com.xingkaichun.helloworldblockchain.netcore.dto.fork;
 
 
 import java.math.BigInteger;
@@ -7,7 +7,7 @@ import java.math.BigInteger;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class BlockchainBranchBlockDto {
+public class BlockchainForkBlockDto {
 
     private BigInteger blockHeight;
     private String blockHash;

@@ -2,25 +2,25 @@ package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.netcore.daemonservice.AutomaticDaemonService;
-import com.xingkaichun.helloworldblockchain.netcore.daemonservice.BlockchainBranchDaemonService;
+import com.xingkaichun.helloworldblockchain.netcore.daemonservice.BlockchainForkDaemonService;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
-import com.xingkaichun.helloworldblockchain.netcore.netserver.HttpServer;
+import com.xingkaichun.helloworldblockchain.netcore.netserver.BlockchainHttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 
 public class NetBlockchainCore {
 
     private BlockChainCore blockChainCore;
     private AutomaticDaemonService automaticDaemonService;
-    private BlockchainBranchDaemonService blockchainBranchDaemonService;
-    private HttpServer httpServer;
+    private BlockchainForkDaemonService blockchainForkDaemonService;
+    private BlockchainHttpServer blockchainHttpServer;
     private ConfigurationService configurationService;
 
-    public NetBlockchainCore(BlockChainCore blockChainCore, AutomaticDaemonService automaticDaemonService, BlockchainBranchDaemonService blockchainBranchDaemonService, HttpServer httpServer, ConfigurationService configurationService) {
+    public NetBlockchainCore(BlockChainCore blockChainCore, AutomaticDaemonService automaticDaemonService, BlockchainForkDaemonService blockchainForkDaemonService, BlockchainHttpServer blockchainHttpServer, ConfigurationService configurationService) {
         this.blockChainCore = blockChainCore;
         this.automaticDaemonService = automaticDaemonService;
-        this.blockchainBranchDaemonService = blockchainBranchDaemonService;
-        this.httpServer = httpServer;
+        this.blockchainForkDaemonService = blockchainForkDaemonService;
+        this.blockchainHttpServer = blockchainHttpServer;
         this.configurationService = configurationService;
         init();
     }
@@ -49,11 +49,11 @@ public class NetBlockchainCore {
         //启动本地的单机区块链
         blockChainCore.start();
         //启动区块链节点服务器
-        httpServer.start();
+        blockchainHttpServer.start();
         //同步区块链网络中的节点、区块
         automaticDaemonService.start();
         //处理本地区块链的分叉
-        blockchainBranchDaemonService.start();
+        blockchainForkDaemonService.start();
     }
 
 
@@ -75,19 +75,19 @@ public class NetBlockchainCore {
         this.automaticDaemonService = automaticDaemonService;
     }
 
-    public BlockchainBranchDaemonService getBlockchainBranchDaemonService() {
-        return blockchainBranchDaemonService;
+    public BlockchainForkDaemonService getBlockchainForkDaemonService() {
+        return blockchainForkDaemonService;
     }
 
-    public void setBlockchainBranchDaemonService(BlockchainBranchDaemonService blockchainBranchDaemonService) {
-        this.blockchainBranchDaemonService = blockchainBranchDaemonService;
+    public void setBlockchainForkDaemonService(BlockchainForkDaemonService blockchainForkDaemonService) {
+        this.blockchainForkDaemonService = blockchainForkDaemonService;
     }
 
-    public HttpServer getHttpServer() {
-        return httpServer;
+    public BlockchainHttpServer getBlockchainHttpServer() {
+        return blockchainHttpServer;
     }
 
-    public void setHttpServer(HttpServer httpServer) {
-        this.httpServer = httpServer;
+    public void setBlockchainHttpServer(BlockchainHttpServer blockchainHttpServer) {
+        this.blockchainHttpServer = blockchainHttpServer;
     }
 }

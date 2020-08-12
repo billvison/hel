@@ -22,7 +22,7 @@ import java.math.BigInteger;
  */
 public class SynchronizerDefaultImpl extends Synchronizer {
 
-    private Logger logger = LoggerFactory.getLogger(SynchronizerDefaultImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(SynchronizerDefaultImpl.class);
 
     //本节点的区块链，同步器的目标就是让本节点区块链增长长度。
     private BlockChainDataBase targetBlockChainDataBase;
@@ -100,7 +100,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
         BigInteger minBlockHeight = synchronizerDataBase.getMinBlockHeight(availableSynchronizeNodeId);
         BlockDTO blockDTO = synchronizerDataBase.getBlockDto(availableSynchronizeNodeId,minBlockHeight);
         if(blockDTO != null){
-            temporaryBlockChainDataBase.removeBlocksUtilBlockHeightLessThan(blockDTO.getHeight());
+            temporaryBlockChainDataBase.removeTailBlocksUtilBlockHeightLessThan(blockDTO.getHeight());
             while(blockDTO != null){
                 Block block = NodeTransportDtoTool.classCast(temporaryBlockChainDataBase,blockDTO);
                 boolean isAddBlockToBlockChainSuccess = temporaryBlockChainDataBase.addBlock(block);
@@ -181,7 +181,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
         Block temporaryBlockChainTailBlock = temporaryBlockChainDataBase.queryTailNoTransactionBlock() ;
         if(targetBlockChainTailBlock == null){
             //清空temporary
-            temporaryBlockChainDataBase.removeBlocksUtilBlockHeightLessThan(BigInteger.ONE);
+            temporaryBlockChainDataBase.removeTailBlocksUtilBlockHeightLessThan(BigInteger.ONE);
             return;
         }
         //删除Temporary区块链直到尚未分叉位置停止

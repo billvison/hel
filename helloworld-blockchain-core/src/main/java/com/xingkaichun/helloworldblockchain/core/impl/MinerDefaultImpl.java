@@ -30,7 +30,7 @@ import java.util.*;
  */
 public class MinerDefaultImpl extends Miner {
 
-    private Logger logger = LoggerFactory.getLogger(MinerDefaultImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(MinerDefaultImpl.class);
 
     //region 属性与构造函数
     //挖矿开关:默认打开挖矿的开关

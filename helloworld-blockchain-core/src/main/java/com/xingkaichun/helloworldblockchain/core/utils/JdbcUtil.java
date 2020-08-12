@@ -34,7 +34,6 @@ public class JdbcUtil {
                 jdbcConnectionFormat = "jdbc:sqlite:%s";
             }
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
