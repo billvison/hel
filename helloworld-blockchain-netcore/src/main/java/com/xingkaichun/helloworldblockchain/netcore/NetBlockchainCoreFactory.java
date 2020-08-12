@@ -4,8 +4,6 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCoreFactory;
 import com.xingkaichun.helloworldblockchain.core.tools.ResourcePathTool;
 import com.xingkaichun.helloworldblockchain.core.utils.FileUtil;
-import com.xingkaichun.helloworldblockchain.netcore.daemonservice.AutomaticDaemonService;
-import com.xingkaichun.helloworldblockchain.netcore.daemonservice.BlockchainForkDaemonService;
 import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainForkDao;
 import com.xingkaichun.helloworldblockchain.netcore.dao.ConfigurationDao;
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
@@ -51,14 +49,29 @@ public class NetBlockchainCoreFactory {
         blockChainCoreService = new BlockChainCoreServiceImpl(blockChainCore,nodeService,blockchainNodeClientService);
 
         blockChainForkService = new BlockChainForkServiceImpl(blockChainForkDao,blockChainCoreService);
-        SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService = new SynchronizeRemoteNodeBlockServiceImpl(blockChainCore,nodeService, blockChainForkService,blockchainNodeClientService,configurationService);
+        SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService
+                = new SynchronizeRemoteNodeBlockServiceImpl(blockChainCore,nodeService, blockChainForkService,blockchainNodeClientService,configurationService);
 
-        AutomaticDaemonService automaticDaemonService = new AutomaticDaemonService(blockChainCoreService,nodeService,synchronizeRemoteNodeBlockService,blockchainNodeClientService,blockChainCore,configurationService);
-        BlockchainForkDaemonService blockchainForkDaemonService = new BlockchainForkDaemonService(blockChainForkService,configurationService, initBlockchainForkDto);
+        BlockchainForkMaintainer blockchainForkMaintainer = new BlockchainForkMaintainer(blockChainForkService,configurationService, initBlockchainForkDto);
 
-        HttpServerHandlerResolver httpServerHandlerResolver = new HttpServerHandlerResolver(blockChainCoreService,nodeService,configurationService);
+
+
+
+
+        HttpServerHandlerResolver httpServerHandlerResolver
+                = new HttpServerHandlerResolver(blockChainCoreService,nodeService,configurationService);
         BlockchainHttpServer blockchainHttpServer = new BlockchainHttpServer(serverPort, httpServerHandlerResolver);
-        NetBlockchainCore netBlockchainCore = new NetBlockchainCore(blockChainCore, automaticDaemonService, blockchainForkDaemonService, blockchainHttpServer, configurationService);
+        NodeSeeder nodeSeeder = new NodeSeeder(nodeService,configurationService);
+        NodeSearcher nodeSearcher = new NodeSearcher(configurationService,nodeService,blockchainNodeClientService);
+        BlockSearcher blockSearcher
+                = new BlockSearcher(nodeService,blockChainCoreService,synchronizeRemoteNodeBlockService,blockChainCore,configurationService);
+        BlockBroadcaster blockBroadcaster
+                = new BlockBroadcaster(configurationService,nodeService,blockChainCoreService,blockchainNodeClientService);
+
+
+        NetBlockchainCore netBlockchainCore
+                = new NetBlockchainCore(blockChainCore, blockchainForkMaintainer, blockchainHttpServer, configurationService
+                ,nodeSeeder,nodeSearcher,blockSearcher,blockBroadcaster);
         return netBlockchainCore;
     }
 

@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.daemonservice;
+package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.fork.BlockchainForkDto;
@@ -14,15 +14,15 @@ import org.slf4j.LoggerFactory;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class BlockchainForkDaemonService {
+public class BlockchainForkMaintainer {
 
-    private static final Logger logger = LoggerFactory.getLogger(BlockchainForkDaemonService.class);
+    private static final Logger logger = LoggerFactory.getLogger(BlockchainForkMaintainer.class);
 
     private BlockChainForkService blockChainForkService;
     private ConfigurationService configurationService;
     private BlockchainForkDto initBlockchainForkDto;
 
-    public BlockchainForkDaemonService(BlockChainForkService blockChainForkService, ConfigurationService configurationService, BlockchainForkDto initBlockchainForkDto) {
+    public BlockchainForkMaintainer(BlockChainForkService blockChainForkService, ConfigurationService configurationService, BlockchainForkDto initBlockchainForkDto) {
         this.blockChainForkService = blockChainForkService;
         this.configurationService = configurationService;
         this.initBlockchainForkDto = initBlockchainForkDto;
