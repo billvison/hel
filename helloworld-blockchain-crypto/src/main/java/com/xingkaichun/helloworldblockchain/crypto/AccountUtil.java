@@ -222,7 +222,7 @@ public class AccountUtil {
         //计算公钥Hash
         byte[] versionAndPubKSha256RipeMD160 = new byte[21];
         System.arraycopy(byteAddress, 0, versionAndPubKSha256RipeMD160, 0, 21);
-        byte[] doubleSHA256 = SHA256Util.digest(SHA256Util.digest(versionAndPubKSha256RipeMD160));
+        byte[] doubleSHA256 = SHA256Util.digestTwice(versionAndPubKSha256RipeMD160);
 
         //取前四位作为地址校验码，将校验码前四位加到地址数组的末四位
         System.arraycopy(doubleSHA256, 0, byteAddress, 21, 4);
