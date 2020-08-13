@@ -363,7 +363,7 @@ public class MinerDefaultImpl extends Miner {
         transaction.setInputs(null);
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
-        BigDecimal award = blockChainDataBase.getIncentive().mineAward(blockChainDataBase,block);
+        BigDecimal award = blockChainDataBase.getIncentive().mineAward(block);
 
         TransactionOutput output = new TransactionOutput();
         output.setAddress(minerAddress);

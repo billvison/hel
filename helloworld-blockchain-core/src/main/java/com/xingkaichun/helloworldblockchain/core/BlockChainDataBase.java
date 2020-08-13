@@ -15,6 +15,7 @@ import java.util.List;
  */
 public abstract class BlockChainDataBase {
 
+    //region 变量与构造函数
     //区块共识
     protected Consensus consensus ;
     //矿工激励
@@ -24,6 +25,9 @@ public abstract class BlockChainDataBase {
         this.consensus = consensus;
         this.incentive = incentive;
     }
+    //endregion
+
+
 
     //region 区块增加与删除
     /**
@@ -64,7 +68,7 @@ public abstract class BlockChainDataBase {
 
 
 
-
+    //region 普通查询
     /**
      * 查询区块链的长度
      */
@@ -77,11 +81,11 @@ public abstract class BlockChainDataBase {
      * 根据区块Hash查找区块高度
      */
     public abstract BigInteger queryBlockHeightByBlockHash(String blockHash) ;
+    //endregion
 
 
 
-
-    //区块查询
+    //region 区块查询
     /**
      * 查询区块链上的最后一个区块
      */
@@ -100,11 +104,11 @@ public abstract class BlockChainDataBase {
      * @param blockHeight 区块高度
      */
     public abstract Block queryNoTransactionBlockByBlockHeight(BigInteger blockHeight) ;
+    //endregion
 
 
 
-
-    //交易查询
+    //region 交易查询
     /**
      * 在区块链中根据交易ID查找交易
      */
@@ -113,11 +117,11 @@ public abstract class BlockChainDataBase {
      * 根据交易高度查询交易
      */
     public abstract List<Transaction> queryTransactionByTransactionHeight(BigInteger from,BigInteger size) ;
+    //endregion
 
 
 
-
-    //交易输出查询
+    //region 交易输出查询
     /**
      * 在区块链中根据 交易输出哈希 查找未花费交易输出
      */
@@ -130,7 +134,7 @@ public abstract class BlockChainDataBase {
      * 根据地址查询交易输出
      */
     public abstract List<TransactionOutput> queryTransactionOutputListByAddress(String address,long from,long size) ;
-
+    //endregion
 
 
 

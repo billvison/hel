@@ -1,14 +1,13 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
-import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +25,8 @@ public class IncentiveDefaultImpl extends Incentive {
     private final static Logger logger = LoggerFactory.getLogger(IncentiveDefaultImpl.class);
 
     @Override
-    public BigDecimal mineAward(BlockChainDataBase blockChainDataBase, Block block) {
+    public BigDecimal mineAward(Block block) {
+        //TODO 奖励策略
         //转账手续费
         BigDecimal fees = getFees(block);
         //区块固定奖励
@@ -35,10 +35,8 @@ public class IncentiveDefaultImpl extends Incentive {
         BigInteger blockHeight = block.getHeight();
         if(BigIntegerUtil.isLessEqualThan(blockHeight,BigInteger.ONE)){
         }else {
-            Block firstBlock = blockChainDataBase.queryBlockByBlockHeight(BigInteger.valueOf(1));
-            long timestamp = GlobalSetting.MinerConstant.MINE_BLOCK_INCENTIVE_REDUCE_BY_HALF_INTERVAL_TIMESTAMP;
-            long totalTimestamp = System.currentTimeMillis() - firstBlock.getTimestamp();
-            long multiple = totalTimestamp / timestamp;
+            BigInteger height = block.getHeight();
+            long multiple = (height.divide(new BigInteger("210000"))).longValue();
             while (multiple > 1){
                 mixedCoin = mixedCoin.divide(new BigDecimal("2"));
                 --multiple;
