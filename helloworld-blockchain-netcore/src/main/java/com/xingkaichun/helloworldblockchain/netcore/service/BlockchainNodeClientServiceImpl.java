@@ -10,7 +10,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request.*;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.*;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.netcore.util.NetUtil;
+import com.xingkaichun.helloworldblockchain.netcore.tools.NetTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
             String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeServerApiRoute.RECEIVE_TRANSACTION);
             ReceiveTransactionRequest request = new ReceiveTransactionRequest();
             request.setTransactionDTO(transactionDTO);
-            String html = NetUtil.getHtml(url,request);
+            String html = NetTool.jsonGetRequest(url,request);
             Type jsonType = new TypeToken<ServiceResult<ReceiveTransactionResponse>>() {}.getType();
             ServiceResult<ReceiveTransactionResponse> pingResponseServiceResult = gson.fromJson(html,jsonType);
             if(ServiceResult.isSuccess(pingResponseServiceResult)){
@@ -62,7 +62,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
             String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeServerApiRoute.PING);
             PingRequest pingRequest = new PingRequest();
             pingRequest.setPort(serverPort);
-            String html = NetUtil.getHtml(url,pingRequest);
+            String html = NetTool.jsonGetRequest(url,pingRequest);
             Type jsonType = new TypeToken<ServiceResult<PingResponse>>() {}.getType();
             ServiceResult<PingResponse> pingResponseServiceResult = gson.fromJson(html,jsonType);
             if(ServiceResult.isSuccess(pingResponseServiceResult)){
@@ -85,7 +85,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
             AddOrUpdateNodeRequest request = new AddOrUpdateNodeRequest();
             request.setPort(serverPort);
             request.setBlockChainHeight(localBlockChainHeight);
-            String html = NetUtil.getHtml(url,request);
+            String html = NetTool.jsonGetRequest(url,request);
             Type jsonType = new TypeToken<ServiceResult<AddOrUpdateNodeResponse>>() {}.getType();
             ServiceResult<AddOrUpdateNodeResponse> pingResponseServiceResult = gson.fromJson(html,jsonType);
             if(ServiceResult.isSuccess(pingResponseServiceResult)){
@@ -108,7 +108,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
             String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeServerApiRoute.QUERY_BLOCK_HASH_BY_BLOCK_HEIGHT);
             QueryBlockHashByBlockHeightRequest request = new QueryBlockHashByBlockHeightRequest();
             request.setBlockHeight(blockHeight);
-            String html = NetUtil.getHtml(url,request);
+            String html = NetTool.jsonGetRequest(url,request);
             Type jsonType = new TypeToken<ServiceResult<QueryBlockHashByBlockHeightResponse>>() {}.getType();
             ServiceResult<QueryBlockHashByBlockHeightResponse> serviceResult = gson.fromJson(html,jsonType);
             if(ServiceResult.isSuccess(serviceResult)){
@@ -131,7 +131,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
             String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeServerApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT);
             QueryBlockDtoByBlockHeightRequest request = new QueryBlockDtoByBlockHeightRequest();
             request.setBlockHeight(blockHeight);
-            String html = NetUtil.getHtml(url,request);
+            String html = NetTool.jsonGetRequest(url,request);
             Type jsonType = new TypeToken<ServiceResult<QueryBlockDtoByBlockHeightResponse>>() {}.getType();
             ServiceResult<QueryBlockDtoByBlockHeightResponse> serviceResult = gson.fromJson(html,jsonType);
             if(ServiceResult.isSuccess(serviceResult)){

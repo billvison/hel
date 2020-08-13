@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.util;
+package com.xingkaichun.helloworldblockchain.netcore.tools;
 
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
@@ -14,25 +14,25 @@ import java.net.URL;
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class NetUtil {
+public class NetTool {
 
-    private final static Logger logger = LoggerFactory.getLogger(NetUtil.class);
+    private final static Logger logger = LoggerFactory.getLogger(NetTool.class);
 
     private static Gson gson = new Gson();
 
-    public static String getHtml(String stringUrl,Object requestBody) throws IOException {
+    public static String jsonGetRequest(String requestUrl, Object requestBody) throws IOException {
         OutputStreamWriter out = null;
         BufferedReader br = null;
         try {
-            URL url = new URL(stringUrl);// 创建连接
+            URL url = new URL(requestUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
             connection.setUseCaches(false);
             connection.setInstanceFollowRedirects(true);
-            connection.setRequestMethod("GET"); // 设置请求方式
-            connection.setRequestProperty("Accept", "application/json"); // 设置接收数据的格式
-            connection.setRequestProperty("Content-Type", "application/json"); // 设置发送数据的格式
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept-Encoding", "identity");
             connection.setReadTimeout(3000);
             connection.setConnectTimeout(3000);
@@ -42,7 +42,6 @@ public class NetUtil {
             out.flush();
             out.close();
 
-            // 读取响应
             InputStream is;
             int responseCode = connection.getResponseCode();
             if (responseCode == 200) {
