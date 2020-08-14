@@ -75,7 +75,7 @@ public abstract class BlockChainDataBase {
      */
     public abstract BigInteger queryTransactionSize() ;
     /**
-     * 根据区块Hash查找区块高度
+     * 根据区块哈希查找区块高度
      */
     public abstract BigInteger queryBlockHeightByBlockHash(String blockHash) ;
     //endregion
@@ -99,6 +99,14 @@ public abstract class BlockChainDataBase {
      * 在区块链中根据区块高度查找【未存储交易信息】的区块
      */
     public abstract Block queryNoTransactionBlockByBlockHeight(BigInteger blockHeight) ;
+    /**
+     * 在区块链中根据区块哈希查找区块
+     */
+    public abstract Block queryBlockByBlockHash(String blockHash) ;
+    /**
+     * 在区块链中根据区块哈希查找【未存储交易信息】区块
+     */
+    public abstract Block queryNoTransactionBlockByBlockHash(String blockHash) ;
     //endregion
 
 
@@ -118,17 +126,21 @@ public abstract class BlockChainDataBase {
 
     //region 交易输出查询
     /**
+     * 在区块链中根据 交易输出哈希 查找交易输出
+     */
+    public abstract TransactionOutput queryTransactionOutputByTransactionOutputHash(String transactionOutputHash) ;
+    /**
      * 在区块链中根据 交易输出哈希 查找未花费交易输出
      */
-    public abstract TransactionOutput queryUnspendTransactionOutputByTransactionOutputHash(String transactionOutputHash) ;
-    /**
-     * 根据地址查询未花费交易输出
-     */
-    public abstract List<TransactionOutput> queryUnspendTransactionOutputListByAddress(String address,long from,long size) ;
+    public abstract TransactionOutput queryUnspendTransactionOutputByTransactionOutputHash(String unspendTransactionOutputHash) ;
     /**
      * 根据地址查询交易输出
      */
     public abstract List<TransactionOutput> queryTransactionOutputListByAddress(String address,long from,long size) ;
+    /**
+     * 根据地址查询未花费交易输出
+     */
+    public abstract List<TransactionOutput> queryUnspendTransactionOutputListByAddress(String address,long from,long size) ;
     //endregion
 
 
