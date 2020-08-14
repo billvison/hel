@@ -1,11 +1,13 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.google.common.base.Joiner;
+import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.script.Script;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptExecuteResult;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
@@ -259,4 +261,28 @@ public class TransactionTool {
         }
     }
 
+    /**
+     * 校验激励
+     */
+    public static boolean isIncentiveRight(BigDecimal targetMinerReward, Transaction transaction) {
+        if(transaction.getTransactionType() != TransactionType.COINBASE){
+            logger.debug("区块数据异常，区块中的第一笔交易应当是挖矿奖励交易。");
+            return false;
+        }
+        List<TransactionInput> inputs = transaction.getInputs();
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        if(inputs != null && inputs.size()!=0){
+            logger.debug("区块数据异常，挖矿奖励交易交易输入应当是空。");
+            return false;
+        }
+        if(outputs == null || outputs.size()!=1){
+            logger.debug("区块数据异常，挖矿奖励交易只能有一个交易输出。");
+            return false;
+        }
+        if(targetMinerReward.compareTo(outputs.get(0).getValue())>=0){
+            logger.debug("挖矿奖励数据异常，挖矿奖励金额大于应该获得奖励金额。");
+            return false;
+        }
+        return true;
+    }
 }

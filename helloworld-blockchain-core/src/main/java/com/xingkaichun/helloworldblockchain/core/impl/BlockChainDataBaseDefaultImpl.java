@@ -128,15 +128,15 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //region 校验区块、交易
     @Override
     public boolean isBlockCanAddToBlockChain(Block block) {
-        //校验区块时间
-        if(!BlockTool.isBlockTimestampLegal(block)){
-            logger.debug("区块生成的时间太滞后。");
-            return false;
-        }
-
         //检查系统版本是否支持
         if(!GlobalSetting.SystemVersionConstant.isVersionLegal(block.getTimestamp())){
             logger.debug("系统版本过低，不支持校验区块，请尽快升级系统。");
+            return false;
+        }
+
+        //校验区块时间 TODO 比前一个大 比当前时间小
+        if(!BlockTool.isBlockTimestampLegal(block)){
+            logger.debug("区块生成的时间太滞后。");
             return false;
         }
 
@@ -147,7 +147,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //校验区块的连贯性
-        if(!isBlockHashBlockHeightBlockTimestampRight(block)){
+        Block previousBlock = queryTailNoTransactionBlock();
+        if(!BlockTool.isBlockHashBlockHeightBlockTimestampRight(previousBlock,block)){
             logger.debug("区块校验失败：区块连贯性校验失败。");
             return false;
         }
@@ -183,7 +184,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
 
         //激励校验
-        if(!isIncentiveRight(block)){
+        if(!BlockTool.isIncentiveRight(incentive.mineAward(block),block)){
             logger.debug("区块数据异常，激励异常。");
             return false;
         }
@@ -279,8 +280,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 logger.debug("交易校验失败：激励交易不能有交易输入。");
                 return false;
             }
-            if(!BlockTool.isBlockWriteMineAwardRight(incentive,block)){
-                logger.debug("交易校验失败：挖矿交易的输出金额不正确。");
+            //激励校验
+            if(!TransactionTool.isIncentiveRight(incentive.mineAward(block),transaction)){
+                logger.debug("区块数据异常，激励异常。");
                 return false;
             }
             return true;
@@ -327,7 +329,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //region 普通查询
     @Override
     public BigInteger queryBlockChainHeight() {
-        byte[] bytesBlockChainHeight = LevelDBUtil.get(blockChainDB, KeyHelper.buildBlockChainHeightKey());
+        byte[] bytesBlockChainHeight = LevelDBUtil.get(blockChainDB, BlockChainDataBaseKeyHelper.buildBlockChainHeightKey());
         if(bytesBlockChainHeight == null){
             //区块链没有区块高度默认为0
             return BigInteger.valueOf(0);
@@ -337,7 +339,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     @Override
     public BigInteger queryTransactionSize() {
-        byte[] byteTotalTransactionQuantity = LevelDBUtil.get(blockChainDB, KeyHelper.buildTotalTransactionQuantityKey());
+        byte[] byteTotalTransactionQuantity = LevelDBUtil.get(blockChainDB, BlockChainDataBaseKeyHelper.buildTotalTransactionQuantityKey());
         if(byteTotalTransactionQuantity == null){
             return BigInteger.ZERO;
         }
@@ -346,7 +348,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     @Override
     public BigInteger queryBlockHeightByBlockHash(String blockHash) {
-        byte[] bytesBlockHashToBlockHeightKey = LevelDBUtil.get(blockChainDB, KeyHelper.buildBlockHashToBlockHeightKey(blockHash));
+        byte[] bytesBlockHashToBlockHeightKey = LevelDBUtil.get(blockChainDB, BlockChainDataBaseKeyHelper.buildBlockHashToBlockHeightKey(blockHash));
         if(bytesBlockHashToBlockHeightKey == null){
             return null;
         }
@@ -376,7 +378,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     }
     @Override
     public Block queryBlockByBlockHeight(BigInteger blockHeight) {
-        byte[] bytesBlock = LevelDBUtil.get(blockChainDB, KeyHelper.buildBlockHeightToBlockKey(blockHeight));
+        byte[] bytesBlock = LevelDBUtil.get(blockChainDB, BlockChainDataBaseKeyHelper.buildBlockHeightToBlockKey(blockHeight));
         if(bytesBlock==null){
             return null;
         }
@@ -387,7 +389,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(blockHeight == null){
             return null;
         }
-        byte[] bytesBlock = LevelDBUtil.get(blockChainDB, KeyHelper.buildBlockHeightToNoTransactionBlockKey(blockHeight));
+        byte[] bytesBlock = LevelDBUtil.get(blockChainDB, BlockChainDataBaseKeyHelper.buildBlockHeightToNoTransactionBlockKey(blockHeight));
         if(bytesBlock==null){
             return null;
         }
@@ -400,7 +402,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     //region 交易查询
     @Override
     public Transaction queryTransactionByTransactionHash(String transactionHash) {
-        byte[] bytesTransaction = LevelDBUtil.get(blockChainDB, KeyHelper.buildTransactionHashToTransactionKey(transactionHash));
+        byte[] bytesTransaction = LevelDBUtil.get(blockChainDB, BlockChainDataBaseKeyHelper.buildTransactionHashToTransactionKey(transactionHash));
         if(bytesTransaction==null){
             return null;
         }
@@ -410,7 +412,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     public List<Transaction> queryTransactionByTransactionHeight(BigInteger from,BigInteger size) {
         List<Transaction> transactionList = new ArrayList<>();
         for(int i=0;BigIntegerUtil.isLessThan(BigInteger.valueOf(i),size);i++){
-            byte[] byteTransaction = LevelDBUtil.get(blockChainDB, KeyHelper.buildTransactionSequenceNumberInBlockChainToTransactionKey(from.add(BigInteger.valueOf(i))));
+            byte[] byteTransaction = LevelDBUtil.get(blockChainDB, BlockChainDataBaseKeyHelper.buildTransactionSequenceNumberInBlockChainToTransactionKey(from.add(BigInteger.valueOf(i))));
             if(byteTransaction == null){
                 break;
             }
@@ -429,7 +431,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         if(transactionOutputHash==null || "".equals(transactionOutputHash)){
             return null;
         }
-        byte[] bytesUtxo = LevelDBUtil.get(blockChainDB, KeyHelper.buildUnspendTransactionOutputHashToUnspendTransactionOutputKey(transactionOutputHash));
+        byte[] bytesUtxo = LevelDBUtil.get(blockChainDB, BlockChainDataBaseKeyHelper.buildUnspendTransactionOutputHashToUnspendTransactionOutputKey(transactionOutputHash));
         if(bytesUtxo == null){
             return null;
         }
@@ -439,7 +441,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     public List<TransactionOutput> queryUnspendTransactionOutputListByAddress(String address,long from,long size) {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
-        byte[] addressToUnspendTransactionOutputListKey = KeyHelper.buildAddressToUnspendTransactionOutputListKey(address);
+        byte[] addressToUnspendTransactionOutputListKey = BlockChainDataBaseKeyHelper.buildAddressToUnspendTransactionOutputListKey(address);
         int currentFrom = 0;
         int currentSize = 0;
         for (iterator.seek(addressToUnspendTransactionOutputListKey); iterator.hasNext(); iterator.next()) {
@@ -467,7 +469,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     public List<TransactionOutput> queryTransactionOutputListByAddress(String address,long from,long size) {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
         DBIterator iterator = blockChainDB.iterator();
-        byte[] addressToTransactionOutputListKey = KeyHelper.buildAddressToTransactionOuputListKey(address);
+        byte[] addressToTransactionOutputListKey = BlockChainDataBaseKeyHelper.buildAddressToTransactionOuputListKey(address);
         int currentFrom = 0;
         int currentSize = 0;
         for (iterator.seek(addressToTransactionOutputListKey); iterator.hasNext(); iterator.next()) {
@@ -500,7 +502,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 将区块信息组装成WriteBatch对象
      */
     private WriteBatch createWriteBatch(Block block, BlockChainActionEnum blockChainActionEnum) {
-        fillBlockPropertity(block);
+        fillBlockProperty(block);
         WriteBatch writeBatch = new WriteBatchImpl();
         fillWriteBatch(writeBatch,block,blockChainActionEnum);
         return writeBatch;
@@ -510,14 +512,14 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      */
     private void fillWriteBatch(WriteBatch writeBatch, Block block, BlockChainActionEnum blockChainActionEnum) {
         //更新区块数据
-        byte[] blockHeightKey = KeyHelper.buildBlockHeightToBlockKey(block.getHeight());
+        byte[] blockHeightKey = BlockChainDataBaseKeyHelper.buildBlockHeightToBlockKey(block.getHeight());
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
             writeBatch.put(blockHeightKey, EncodeDecodeUtil.encode(block));
         }else{
             writeBatch.delete(blockHeightKey);
         }
         //存储无交易信息的区块
-        byte[] blockHeightToNoTransactionBlockKey = KeyHelper.buildBlockHeightToNoTransactionBlockKey(block.getHeight());
+        byte[] blockHeightToNoTransactionBlockKey = BlockChainDataBaseKeyHelper.buildBlockHeightToNoTransactionBlockKey(block.getHeight());
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
             List<Transaction> transactions = block.getTransactions();
             block.setTransactions(null);
@@ -528,21 +530,21 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         //更新交易数量
         BigInteger transactionSize = queryTransactionSize();
-        byte[] totalTransactionQuantityKey = KeyHelper.buildTotalTransactionQuantityKey();
+        byte[] totalTransactionQuantityKey = BlockChainDataBaseKeyHelper.buildTotalTransactionQuantityKey();
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
             writeBatch.put(totalTransactionQuantityKey, ByteUtil.bigIntegerToBytes(transactionSize.add(BigInteger.valueOf(block.getTransactions().size()))));
         }else{
             writeBatch.put(totalTransactionQuantityKey, ByteUtil.bigIntegerToBytes(transactionSize.subtract(BigInteger.valueOf(block.getTransactions().size()))));
         }
         //区块Hash到区块高度的映射
-        byte[] blockHashBlockHeightKey = KeyHelper.buildBlockHashToBlockHeightKey(block.getHash());
+        byte[] blockHashBlockHeightKey = BlockChainDataBaseKeyHelper.buildBlockHashToBlockHeightKey(block.getHash());
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
             writeBatch.put(blockHashBlockHeightKey, ByteUtil.bigIntegerToBytes(block.getHeight()));
         }else{
             writeBatch.delete(blockHashBlockHeightKey);
         }
         //更新区块链的高度
-        byte[] blockChainHeightKey = KeyHelper.buildBlockChainHeightKey();
+        byte[] blockChainHeightKey = BlockChainDataBaseKeyHelper.buildBlockChainHeightKey();
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
             writeBatch.put(blockChainHeightKey,ByteUtil.bigIntegerToBytes(block.getHeight()));
         }else{
@@ -552,11 +554,11 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         List<Transaction> transactionList = block.getTransactions();
         if(transactionList != null){
             for(Transaction transaction:transactionList){
-                byte[] hashKey = KeyHelper.buildHashKey(transaction.getTransactionHash());
+                byte[] hashKey = BlockChainDataBaseKeyHelper.buildHashKey(transaction.getTransactionHash());
                 //更新交易数据
-                byte[] transactionHashKey = KeyHelper.buildTransactionHashToTransactionKey(transaction.getTransactionHash());
+                byte[] transactionHashKey = BlockChainDataBaseKeyHelper.buildTransactionHashToTransactionKey(transaction.getTransactionHash());
                 //更新区块链中的交易序列号数据
-                byte[] transactionSequenceNumberInBlockChainToTransactionKey = KeyHelper.buildTransactionSequenceNumberInBlockChainToTransactionKey(transaction.getTransactionSequenceNumberInBlockChain());
+                byte[] transactionSequenceNumberInBlockChainToTransactionKey = BlockChainDataBaseKeyHelper.buildTransactionSequenceNumberInBlockChainToTransactionKey(transaction.getTransactionSequenceNumberInBlockChain());
                 if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
                     writeBatch.put(hashKey, hashKey);
                     writeBatch.put(transactionHashKey, EncodeDecodeUtil.encode(transaction));
@@ -571,7 +573,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                     for(TransactionInput txInput:inputs){
                         //更新UTXO数据
                         TransactionOutput unspendTransactionOutput = txInput.getUnspendTransactionOutput();
-                        byte[] unspendTransactionOutputHashToUnspendTransactionOutputKey = KeyHelper.buildUnspendTransactionOutputHashToUnspendTransactionOutputKey(unspendTransactionOutput.getTransactionOutputHash());
+                        byte[] unspendTransactionOutputHashToUnspendTransactionOutputKey = BlockChainDataBaseKeyHelper.buildUnspendTransactionOutputHashToUnspendTransactionOutputKey(unspendTransactionOutput.getTransactionOutputHash());
                         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
                             writeBatch.delete(unspendTransactionOutputHashToUnspendTransactionOutputKey);
                         } else {
@@ -582,11 +584,11 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 List<TransactionOutput> outputs = transaction.getOutputs();
                 if(outputs!=null){
                     for(TransactionOutput output:outputs){
-                        byte[] hashKey2 = KeyHelper.buildHashKey(output.getTransactionOutputHash());
+                        byte[] hashKey2 = BlockChainDataBaseKeyHelper.buildHashKey(output.getTransactionOutputHash());
                         //更新所有的交易输出
-                        byte[] transactionOutputHashToTransactionOutputKey = KeyHelper.buildTransactionOutputHashToTransactionOutputKey(output.getTransactionOutputHash());
+                        byte[] transactionOutputHashToTransactionOutputKey = BlockChainDataBaseKeyHelper.buildTransactionOutputHashToTransactionOutputKey(output.getTransactionOutputHash());
                         //更新UTXO数据
-                        byte[] unspendTransactionOutputHashToUnspendTransactionOutputKey = KeyHelper.buildUnspendTransactionOutputHashToUnspendTransactionOutputKey(output.getTransactionOutputHash());
+                        byte[] unspendTransactionOutputHashToUnspendTransactionOutputKey = BlockChainDataBaseKeyHelper.buildUnspendTransactionOutputHashToUnspendTransactionOutputKey(output.getTransactionOutputHash());
                         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
                             writeBatch.put(hashKey2, hashKey2);
                             writeBatch.put(transactionOutputHashToTransactionOutputKey, EncodeDecodeUtil.encode(output));
@@ -601,9 +603,13 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             }
         }
 
-        addAboutAddressWriteBatch(writeBatch,block,blockChainActionEnum);
+        addAddressRelateInformationToWriteBatch(writeBatch,block,blockChainActionEnum);
     }
-    private void addAboutAddressWriteBatch(WriteBatch writeBatch, Block block, BlockChainActionEnum blockChainActionEnum) {
+
+    /**
+     * 添加地址为主键的信息到WriteBatch
+     */
+    private void addAddressRelateInformationToWriteBatch(WriteBatch writeBatch, Block block, BlockChainActionEnum blockChainActionEnum) {
         for(Transaction transaction : block.getTransactions()){
             if(transaction == null){
                 return;
@@ -612,7 +618,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             if(inputs != null){
                 for (TransactionInput transactionInput:inputs){
                     TransactionOutput utxo = transactionInput.getUnspendTransactionOutput();
-                    byte[] addressToUnspendTransactionOutputListKey = KeyHelper.buildAddressToUnspendTransactionOutputListKey(utxo);
+                    byte[] addressToUnspendTransactionOutputListKey = BlockChainDataBaseKeyHelper.buildAddressToUnspendTransactionOutputListKey(utxo);
                     if(blockChainActionEnum == BlockChainActionEnum.ADD_BLOCK){
                         writeBatch.delete(addressToUnspendTransactionOutputListKey);
                     }else{
@@ -624,8 +630,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             List<TransactionOutput> outputs = transaction.getOutputs();
             if(outputs != null){
                 for (TransactionOutput transactionOutput:outputs){
-                    byte[] addressToTransactionOutputListKey = KeyHelper.buildAddressToTransactionOuputListKey(transactionOutput);
-                    byte[] addressToUnspendTransactionOutputListKey = KeyHelper.buildAddressToUnspendTransactionOutputListKey(transactionOutput);
+                    byte[] addressToTransactionOutputListKey = BlockChainDataBaseKeyHelper.buildAddressToTransactionOuputListKey(transactionOutput);
+                    byte[] addressToUnspendTransactionOutputListKey = BlockChainDataBaseKeyHelper.buildAddressToUnspendTransactionOutputListKey(transactionOutput);
                     if(blockChainActionEnum == BlockChainActionEnum.ADD_BLOCK){
                         byte[] byteTransactionOutput = EncodeDecodeUtil.encode(transactionOutput);
                         writeBatch.put(addressToTransactionOutputListKey,byteTransactionOutput);
@@ -640,7 +646,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * 补充区块的属性
      */
-    private void fillBlockPropertity(Block block) {
+    private void fillBlockProperty(Block block) {
         BigInteger transactionSequenceNumberInBlock = BigInteger.ZERO;
         BigInteger transactionSequenceNumberInBlockChain = queryTransactionSize();
         BigInteger blockHeight = block.getHeight();
@@ -734,191 +740,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
      * 哈希是否已经存在于区块链之中？
      */
     private boolean isHashExist(String hash){
-        byte[] bytesHash = LevelDBUtil.get(blockChainDB, KeyHelper.buildHashKey(hash));
+        byte[] bytesHash = LevelDBUtil.get(blockChainDB, BlockChainDataBaseKeyHelper.buildHashKey(hash));
         return bytesHash != null;
     }
-    /**
-     * 校验激励
-     */
-    private boolean isIncentiveRight(Block block) { //TODO
-        //奖励交易有且只有一笔，且是区块的第一笔交易
-        List<Transaction> transactions = block.getTransactions();
-        if(transactions == null || transactions.size()==0){
-            logger.debug("区块数据异常，没有检测到挖矿奖励交易。");
-            return false;
-        }
-        for(int i=0; i<transactions.size()-1; i++){
-            Transaction tx = transactions.get(i);
-            if(tx.getTransactionType() == TransactionType.COINBASE){
-                logger.debug("区块数据异常，挖矿奖励应当是区块中最后一笔交易。");
-                return false;
-            }
-        }
-        Transaction transaction = transactions.get(transactions.size()-1);
-        if(transaction.getTransactionType() != TransactionType.COINBASE){
-            logger.debug("区块数据异常，区块中最后一笔交易不是挖矿交易。");
-            return false;
-        }
-
-        //校验奖励交易有且只能有一笔
-        //挖矿交易笔数
-        int minerTransactionNumber = 0;
-        for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() == TransactionType.COINBASE){
-                minerTransactionNumber++;
-            }
-        }
-        if(minerTransactionNumber == 0){
-            logger.debug("区块数据异常，没有检测到挖矿奖励交易。");
-            return false;
-        }
-        if(minerTransactionNumber > 1){
-            logger.debug("区块数据异常，一个区块只能有一笔挖矿奖励。");
-            return false;
-        }
-
-        //校验奖励交易
-        for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() == TransactionType.COINBASE){
-                boolean transactionCanAddToNextBlock = isTransactionCanAddToNextBlock(block,tx);
-                if(!transactionCanAddToNextBlock){
-                    logger.debug("区块数据异常，激励交易异常。");
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-    /**
-     * 简单的校验Block的连贯性:从高度、哈希、时间戳三个方面检查
-     */
-    private boolean isBlockHashBlockHeightBlockTimestampRight(Block block) {
-        Block tailBlock = queryNoTransactionBlockByBlockHeight(queryBlockChainHeight());
-        if(tailBlock == null){
-            //校验区块Hash是否连贯
-            if(!GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH.equals(block.getPreviousBlockHash())){
-                return false;
-            }
-            //校验区块高度是否连贯
-            if(!BigIntegerUtil.isEquals(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_HEIGHT,block.getHeight())){
-                return false;
-            }
-        } else {
-            //校验区块时间戳
-            if(block.getTimestamp() <= tailBlock.getTimestamp()){
-                return false;
-            }
-            //校验区块Hash是否连贯
-            if(!tailBlock.getHash().equals(block.getPreviousBlockHash())){
-                return false;
-            }
-            //校验区块高度是否连贯
-            if(!BigIntegerUtil.isEquals(tailBlock.getHeight().add(BigInteger.valueOf(1)),block.getHeight())){
-                return false;
-            }
-        }
-        return true;
-    }
     //endregion
-}
-
-
-
-
-class KeyHelper {
-    //区块链高度key：它对应的值是区块链的高度
-    private final static String BLOCK_CHAIN_HEIGHT_KEY = "A";
-    //区块链中总的交易数量
-    private final static String TOTAL_TRANSACTION_QUANTITY_KEY = "B";
-
-    //哈希标识：哈希(交易哈希、交易输出哈希)的前缀，这里希望系统中所有使用到的哈希都是不同的
-    private final static String HASH_PREFIX_FLAG = "C";
-
-    //区块链中的交易序列号
-    private final static String TRANSACTION_SEQUENCE_NUMBER_IN_BLOCKCHAIN_TO_TRANSACTION_PREFIX_FLAG = "D";
-    //区块高度标识：存储区块链高度到区块的映射
-    private final static String BLOCK_HEIGHT_TO_BLOCK_PREFIX_FLAG = "E";
-    //区块高度标识：存储区块链高度到没有交易信息的区块的映射
-    private final static String BLOCK_HEIGHT_TO_NO_TRANSACTION_BLOCK_PREFIX_FLAG = "F";
-    //标识：存储区块链Hash到区块高度的映射
-    private final static String BLOCK_HASH_TO_BLOCK_HEIGHT_PREFIX_FLAG = "G";
-    //交易标识：存储交易哈希到交易的映射
-    private final static String TRANSACTION_HASH_TO_TRANSACTION_PREFIX_FLAG = "H";
-    //交易输出标识：存储交易输出哈希到交易输出的映射
-    private final static String TRANSACTION_OUTPUT_HASH_TO_TRANSACTION_OUTPUT_PREFIX_FLAG = "I";
-    //未花费的交易输出标识：存储未花费交易输出哈希到未花费交易输出的映射
-    private final static String UNSPEND_TRANSACTION_OUTPUT_HASH_TO_UNSPEND_TRANSACTION_OUTPUT_PREFIX_FLAG = "J";
-    //地址标识：存储地址到交易输出的映射
-    private final static String ADDRESS_TO_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG = "K";
-    //地址标识：存储地址到未花费交易输出的映射
-    private final static String ADDRESS_TO_UNSPEND_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG = "L";
-
-    //钱包地址截止标记
-    private final static String ADDRESS_END_FLAG = "#" ;
-
-
-
-
-    //拼装数据库Key的值
-    public static byte[] buildBlockChainHeightKey() {
-        String stringKey = BLOCK_CHAIN_HEIGHT_KEY;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildHashKey(String hash) {
-        String stringKey = HASH_PREFIX_FLAG + hash;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildBlockHeightToBlockKey(BigInteger blockHeight) {
-        String stringKey = BLOCK_HEIGHT_TO_BLOCK_PREFIX_FLAG + blockHeight;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildBlockHeightToNoTransactionBlockKey(BigInteger blockHeight) {
-        String stringKey = BLOCK_HEIGHT_TO_NO_TRANSACTION_BLOCK_PREFIX_FLAG + blockHeight;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildBlockHashToBlockHeightKey(String blockHash) {
-        String stringKey = BLOCK_HASH_TO_BLOCK_HEIGHT_PREFIX_FLAG + blockHash;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildTransactionHashToTransactionKey(String transactionHash) {
-        String stringKey = TRANSACTION_HASH_TO_TRANSACTION_PREFIX_FLAG + transactionHash;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildTransactionOutputHashToTransactionOutputKey(String transactionOutputHash) {
-        String stringKey = TRANSACTION_OUTPUT_HASH_TO_TRANSACTION_OUTPUT_PREFIX_FLAG + transactionOutputHash;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildUnspendTransactionOutputHashToUnspendTransactionOutputKey(String transactionOutputHash) {
-        String stringKey = UNSPEND_TRANSACTION_OUTPUT_HASH_TO_UNSPEND_TRANSACTION_OUTPUT_PREFIX_FLAG + transactionOutputHash;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildAddressToTransactionOuputListKey(TransactionOutput transactionOutput) {
-        String address = transactionOutput.getAddress();
-        String transactionOutputHash = transactionOutput.getTransactionOutputHash();
-        String stringKey = ADDRESS_TO_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG + transactionOutputHash;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildAddressToTransactionOuputListKey(String address) {
-        String stringKey = ADDRESS_TO_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildAddressToUnspendTransactionOutputListKey(TransactionOutput transactionOutput) {
-        String address = transactionOutput.getAddress();
-        String transactionOutputHash = transactionOutput.getTransactionOutputHash();
-        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG + transactionOutputHash;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildAddressToUnspendTransactionOutputListKey(String address) {
-        String stringKey = ADDRESS_TO_UNSPEND_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG + address + ADDRESS_END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildTotalTransactionQuantityKey() {
-        String stringKey = TOTAL_TRANSACTION_QUANTITY_KEY ;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildTransactionSequenceNumberInBlockChainToTransactionKey(BigInteger transactionSequenceNumberInBlockChain) {
-        String stringKey = TRANSACTION_SEQUENCE_NUMBER_IN_BLOCKCHAIN_TO_TRANSACTION_PREFIX_FLAG + transactionSequenceNumberInBlockChain;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
 }

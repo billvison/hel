@@ -31,6 +31,8 @@ public class Transaction implements Serializable {
      * 还有另外一个独一无二的编号，区块高度+交易在区块中的编号，这个编号有个缺点，只能在区块完全确定后，才能确定这个编号
      *
      * 冗余字段，这个值可以由区块链系统推算出来
+     *
+     * TODO https://blog.csdn.net/u014633283/article/details/104759834/
      */
     private String transactionHash;
     /**

@@ -6,6 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.MerkleTreeUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -248,76 +250,6 @@ public class BlockTool {
         return false;
     }
 
-
-    /**
-     * 区块中写入的挖矿奖励是否正确？
-     * @param incentive 矿工挖矿激励
-     * @param block 被校验挖矿奖励是否正确的区块
-     */
-    public static boolean isBlockWriteMineAwardRight(Incentive incentive, Block block){
-        //校验奖励交易笔数
-        int mineAwardTransactionCount = 0;
-        for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() == TransactionType.COINBASE){
-                mineAwardTransactionCount++;
-            }
-        }
-        if(mineAwardTransactionCount == 0){
-            logger.debug("区块中没有奖励交易。");
-            return false;
-        }
-        if(mineAwardTransactionCount > 1){
-            logger.debug("区块中不能有两笔奖励交易。");
-            return false;
-        }
-
-        //获取区块中写入的挖矿奖励交易
-        Transaction mineAwardTransaction = null;
-        for(Transaction tx : block.getTransactions()){
-            if(tx.getTransactionType() == TransactionType.COINBASE){
-                mineAwardTransaction = tx;
-                break;
-            }
-        }
-
-        if(mineAwardTransaction == null){
-            logger.debug("区块中没有发现挖矿奖励交易。");
-            return false;
-        }
-        List<TransactionInput> inputs = mineAwardTransaction.getInputs();
-        if(inputs!=null && inputs.size()!=0){
-            logger.debug("区块数据异常：挖矿交易的输入只能为空。");
-            return false;
-        }
-        List<TransactionOutput> outputs = mineAwardTransaction.getOutputs();
-        if(outputs == null){
-            logger.debug("区块数据异常：挖矿交易的输出不能为空。");
-            return false;
-        }
-        if(outputs.size() != 1){
-            logger.debug("区块数据异常：挖矿交易的输出有且只能有一笔。");
-            return false;
-        }
-        //校验正反
-        for(TransactionOutput output:outputs){
-            if(output.getValue().compareTo(BigDecimal.ZERO)<0){
-                logger.debug("区块数据异常：挖矿交易的输出不能小于0。");
-                return false;
-            }
-        }
-
-        //获取区块中写入的挖矿奖励金额
-        BigDecimal blockWritedMineAward = BigDecimal.ZERO;
-        for(TransactionOutput output:outputs){
-            blockWritedMineAward = blockWritedMineAward.add(output.getValue());
-        }
-
-        //目标挖矿奖励
-        BigDecimal targetMineAward = incentive.mineAward(block);
-        return targetMineAward.compareTo(blockWritedMineAward) >= 0 ;
-    }
-
-
     /**
      * 区块的时间是否合法
      */
@@ -390,5 +322,61 @@ public class BlockTool {
         return true;
     }
 
+    /**
+     * 简单的校验Block的连贯性:从高度、哈希、时间戳三个方面检查
+     */
+    public static boolean isBlockHashBlockHeightBlockTimestampRight(Block previousBlock,Block currentBlock) {
+        if(previousBlock == null){
+            //校验区块Hash是否连贯
+            if(!GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH.equals(currentBlock.getPreviousBlockHash())){
+                return false;
+            }
+            //校验区块高度是否连贯
+            if(!BigIntegerUtil.isEquals(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_HEIGHT,currentBlock.getHeight())){
+                return false;
+            }
+        } else {
+            //校验区块时间戳
+            if(currentBlock.getTimestamp() <= previousBlock.getTimestamp()){
+                return false;
+            }
+            //校验区块Hash是否连贯
+            if(!previousBlock.getHash().equals(currentBlock.getPreviousBlockHash())){
+                return false;
+            }
+            //校验区块高度是否连贯
+            if(!BigIntegerUtil.isEquals(previousBlock.getHeight().add(BigInteger.valueOf(1)),currentBlock.getHeight())){
+                return false;
+            }
+        }
+        return true;
+    }
 
+    /**
+     * 校验激励
+     */
+    public static boolean isIncentiveRight(BigDecimal targetMinerReward,Block block) {
+        //挖矿激励交易有且只有一笔，挖矿激励交易只能是区块的第一笔交易
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions == null || transactions.size()==0){
+            logger.debug("区块数据异常，没有检测到挖矿奖励交易。");
+            return false;
+        }
+        for(int i=0; i<transactions.size(); i++){
+            Transaction transaction = transactions.get(i);
+            if(i == 0){
+                    boolean incentiveRight = TransactionTool.isIncentiveRight(targetMinerReward,transaction);
+                    if(!incentiveRight){
+                        logger.debug("区块数据异常，挖矿激励交易异常。");
+                        return false;
+                    }
+            }else {
+                if(transaction.getTransactionType() == TransactionType.COINBASE){
+                    logger.debug("区块数据异常，挖矿激励交易只能是区块的第一笔交易。");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

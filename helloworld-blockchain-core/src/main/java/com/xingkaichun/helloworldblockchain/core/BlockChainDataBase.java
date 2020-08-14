@@ -31,18 +31,16 @@ public abstract class BlockChainDataBase {
 
     //region 区块增加与删除
     /**
-     * 新增区块: 在不允许删除区块链上的区块的情况下，将一个新的区块添加到区块链上。
+     * 将一个区块添加到区块链的尾部。
      * 这是一个有些复杂的操作，需要考虑如下几点:
      * 新增区块本身的数据的正确性;
      * 新增的区块是否能够正确衔接到区块链的尾部;
      */
     public abstract boolean addBlock(Block block) ;
-
     /**
      * 删除区块链的尾巴区块(最后一个区块)
      */
     public abstract void removeTailBlock() ;
-
     /**
      * 删除区块高度大于等于@blockHeight@的区块
      */
@@ -57,7 +55,6 @@ public abstract class BlockChainDataBase {
      * 只有一种情况，区块可以被添加到区块链，即: 区块是区块链上的下一个区块
      */
     public abstract boolean isBlockCanAddToBlockChain(Block block) ;
-
     /**
      * 校验交易是否可以被添加进下一个区块之中。
      * 如果校验的是奖励交易，则需要整个区块的信息，因此这个函数包含了两个参数：交易所在的区块、交易
@@ -96,12 +93,10 @@ public abstract class BlockChainDataBase {
     public abstract Block queryTailNoTransactionBlock() ;
     /**
      * 在区块链中根据区块高度查找区块
-     * @param blockHeight 区块高度
      */
     public abstract Block queryBlockByBlockHeight(BigInteger blockHeight) ;
     /**
      * 在区块链中根据区块高度查找【未存储交易信息】的区块
-     * @param blockHeight 区块高度
      */
     public abstract Block queryNoTransactionBlockByBlockHeight(BigInteger blockHeight) ;
     //endregion
@@ -110,7 +105,7 @@ public abstract class BlockChainDataBase {
 
     //region 交易查询
     /**
-     * 在区块链中根据交易ID查找交易
+     * 在区块链中根据交易哈希查找交易
      */
     public abstract Transaction queryTransactionByTransactionHash(String transactionHash) ;
     /**
