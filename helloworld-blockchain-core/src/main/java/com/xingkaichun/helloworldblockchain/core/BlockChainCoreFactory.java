@@ -1,6 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 import com.xingkaichun.helloworldblockchain.core.impl.*;
+import com.xingkaichun.helloworldblockchain.core.impl.BlockChainDataBaseDefaultImpl;
 
 import java.io.File;
 

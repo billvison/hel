@@ -1,11 +1,11 @@
-package com.xingkaichun.helloworldblockchain.core.impl;
+package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.utils.LevelDBUtil;
 
 import java.math.BigInteger;
 
-public class BlockChainDataBaseKeyHelper {
+public class BlockChainDataBaseKeyTool {
     //区块链高度key：它对应的值是区块链的高度
     private final static String BLOCK_CHAIN_HEIGHT_KEY = "A";
     //区块链中总的交易数量
