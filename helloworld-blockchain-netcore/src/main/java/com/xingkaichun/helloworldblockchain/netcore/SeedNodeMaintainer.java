@@ -12,21 +12,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 节点种子
- * 搜寻区块链网络中种子节点。
+ * 种子节点维护者
+ * 保证种子节点始终在节点列表中。
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class NodeSeeder {
+public class SeedNodeMaintainer {
 
-    private static final Logger logger = LoggerFactory.getLogger(NodeSeeder.class);
+    private static final Logger logger = LoggerFactory.getLogger(SeedNodeMaintainer.class);
 
     private NodeService nodeService;
     private ConfigurationService configurationService;
     private Gson gson = new Gson();
 
 
-    public NodeSeeder(NodeService nodeService, ConfigurationService configurationService) {
+    public SeedNodeMaintainer(NodeService nodeService, ConfigurationService configurationService) {
         this.nodeService = nodeService;
         this.configurationService = configurationService;
         this.gson = gson;

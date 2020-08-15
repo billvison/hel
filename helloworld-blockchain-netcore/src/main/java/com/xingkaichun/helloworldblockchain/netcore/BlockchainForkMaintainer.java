@@ -1,17 +1,17 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
-import com.xingkaichun.helloworldblockchain.netcore.dto.fork.BlockchainForkDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
+import com.xingkaichun.helloworldblockchain.netcore.dto.fork.BlockchainForkDto;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainForkService;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 区块链分叉处理
- *
+ * 区块链分叉维护者
+ * 定时检测区块链分支是否正确，如果不正确，则回滚区块，直至分支正确。
  * @author 邢开春 xingkaichun@qq.com
  */
 public class BlockchainForkMaintainer {
@@ -27,10 +27,12 @@ public class BlockchainForkMaintainer {
         this.configurationService = configurationService;
         this.initBlockchainForkDto = initBlockchainForkDto;
 
-        init();
+        restoreConfiguration();
     }
-
-    private void init() {
+    /**
+     * 恢复配置
+     */
+    private void restoreConfiguration() {
         ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_BLOCKCHAIN_FORK_INIT.name());
         if(configurationDto == null || !Boolean.valueOf(configurationDto.getConfValue())){
             if(initBlockchainForkDto != null){

@@ -10,10 +10,10 @@ public class NetBlockchainCore {
 
     private BlockChainCore blockChainCore;
     private BlockchainHttpServer blockchainHttpServer;
-    private NodeSeeder nodeSeeder;
+    private SeedNodeMaintainer seedNodeMaintainer;
     private NodeSearcher nodeSearcher;
     private BlockSearcher blockSearcher;
-    private BlockBroadcaster blockBroadcaster;
+    private BlockHeightBroadcaster blockHeightBroadcaster;
 
     private BlockchainForkMaintainer blockchainForkMaintainer;
     private ConfigurationService configurationService;
@@ -21,22 +21,24 @@ public class NetBlockchainCore {
 
     public NetBlockchainCore(BlockChainCore blockChainCore, BlockchainForkMaintainer blockchainForkMaintainer
             , BlockchainHttpServer blockchainHttpServer, ConfigurationService configurationService
-            ,NodeSeeder nodeSeeder ,NodeSearcher nodeSearcher
-            ,BlockSearcher blockSearcher ,BlockBroadcaster blockBroadcaster) {
+            , SeedNodeMaintainer seedNodeMaintainer, NodeSearcher nodeSearcher
+            , BlockSearcher blockSearcher , BlockHeightBroadcaster blockHeightBroadcaster) {
 
         this.blockChainCore = blockChainCore;
         this.blockchainForkMaintainer = blockchainForkMaintainer;
         this.blockchainHttpServer = blockchainHttpServer;
         this.configurationService = configurationService;
-        this.nodeSeeder = nodeSeeder;
+        this.seedNodeMaintainer = seedNodeMaintainer;
         this.nodeSearcher = nodeSearcher;
         this.blockSearcher = blockSearcher;
-        this.blockBroadcaster = blockBroadcaster;
-        init();
+        this.blockHeightBroadcaster = blockHeightBroadcaster;
+        restoreConfiguration();
     }
 
-
-    private void init() {
+    /**
+     * 恢复配置
+     */
+    private void restoreConfiguration() {
         //是否激活矿工
         ConfigurationDto isMinerActiveConfigurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_MINER_ACTIVE.name());
         if(Boolean.valueOf(isMinerActiveConfigurationDto.getConfValue())){
@@ -62,16 +64,15 @@ public class NetBlockchainCore {
         //启动区块链节点服务器
         blockchainHttpServer.start();
 
-        //启动节点种子
-        nodeSeeder.start();
+        //启动种子节点维护者
+        seedNodeMaintainer.start();
         //启动节点搜寻器
         nodeSearcher.start();
         //启动区块搜寻器
         blockSearcher.start();
-        //启动区块广播者
-        blockBroadcaster.start();
-
-        //处理本地区块链的分叉
+        //启动区块高度广播者
+        blockHeightBroadcaster.start();
+        //启动区块链分叉维护者
         blockchainForkMaintainer.start();
     }
 
@@ -87,8 +88,8 @@ public class NetBlockchainCore {
         return blockchainHttpServer;
     }
 
-    public NodeSeeder getNodeSeeder() {
-        return nodeSeeder;
+    public SeedNodeMaintainer getSeedNodeMaintainer() {
+        return seedNodeMaintainer;
     }
 
     public NodeSearcher getNodeSearcher() {
@@ -99,8 +100,8 @@ public class NetBlockchainCore {
         return blockSearcher;
     }
 
-    public BlockBroadcaster getBlockBroadcaster() {
-        return blockBroadcaster;
+    public BlockHeightBroadcaster getBlockHeightBroadcaster() {
+        return blockHeightBroadcaster;
     }
 
     public BlockchainForkMaintainer getBlockchainForkMaintainer() {

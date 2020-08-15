@@ -10,7 +10,7 @@ import java.math.BigInteger;
 import java.util.*;
 
 /**
- *
+ * 区块链分支维护
  * @author 邢开春 xingkaichun@qq.com
  */
 public class BlockChainForkServiceImpl implements BlockChainForkService {

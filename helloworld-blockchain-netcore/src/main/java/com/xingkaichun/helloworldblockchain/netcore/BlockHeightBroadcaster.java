@@ -17,22 +17,22 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 区块传播者
+ * 区块高度广播者
  * 如果本地区块链的高度高于全网，那么就应该通知其它节点(在区块链网络中传播自己的高度)，好让其它节点来同步自己的区块数据。
- * 其它节点什么时候来同步自己，让其它节点自己来决定。
+ * 至于其它节点什么时候来同步自己的区块，应该由其它节点来决定。
  *
  * @author 邢开春 xingkaichun@qq.com
  */
-public class BlockBroadcaster {
+public class BlockHeightBroadcaster {
 
-    private static final Logger logger = LoggerFactory.getLogger(BlockBroadcaster.class);
+    private static final Logger logger = LoggerFactory.getLogger(BlockHeightBroadcaster.class);
 
     private ConfigurationService configurationService;
     private NodeService nodeService;
     private BlockChainCoreService blockChainCoreService;
     private BlockchainNodeClientService blockchainNodeClientService;
 
-    public BlockBroadcaster(ConfigurationService configurationService, NodeService nodeService
+    public BlockHeightBroadcaster(ConfigurationService configurationService, NodeService nodeService
             , BlockChainCoreService blockChainCoreService, BlockchainNodeClientService blockchainNodeClientService) {
 
         this.configurationService = configurationService;

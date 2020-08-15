@@ -18,7 +18,6 @@ public class BlockchainHttpServer {
 	private final static Logger logger = LoggerFactory.getLogger(BlockchainHttpServer.class);
 
 	private int serverPort;
-
 	private HttpServerHandlerResolver httpServerHandlerResolver;
 
 	public BlockchainHttpServer(int serverPort, HttpServerHandlerResolver httpServerHandlerResolver) {
