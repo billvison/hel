@@ -73,19 +73,19 @@ public class HelloWorldBlockChainNodeApplication {
 
 	@Bean
 	public ConfigurationService buildConfigurationService(NetBlockchainCore netBlockchainCore){
-		return NetBlockchainCoreFactory.configurationService;
+		return NetBlockchainCoreFactory.getConfigurationService();
 	}
 	@Bean
 	public BlockChainCoreService buildBlockChainCoreService(NetBlockchainCore netBlockchainCore){
-		return NetBlockchainCoreFactory.blockChainCoreService;
+		return NetBlockchainCoreFactory.getBlockChainCoreService();
 	}
 	@Bean
 	public NodeService buildNodeService(NetBlockchainCore netBlockchainCore){
-		return NetBlockchainCoreFactory.nodeService;
+		return NetBlockchainCoreFactory.getNodeService();
 	}
 	@Bean
 	public BlockChainForkService buildBlockChainFrokService(NetBlockchainCore netBlockchainCore){
-		return NetBlockchainCoreFactory.blockChainForkService;
+		return NetBlockchainCoreFactory.getBlockChainForkService();
 	}
 
 

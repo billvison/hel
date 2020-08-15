@@ -15,12 +15,13 @@ import com.xingkaichun.helloworldblockchain.netcore.netserver.BlockchainHttpServ
 import com.xingkaichun.helloworldblockchain.netcore.netserver.HttpServerHandlerResolver;
 import com.xingkaichun.helloworldblockchain.netcore.service.*;
 
+//TODO 优化
 public class NetBlockchainCoreFactory {
 
-    public static ConfigurationService configurationService = null;
-    public static BlockChainCoreService blockChainCoreService = null;
-    public static NodeService nodeService = null;
-    public static BlockChainForkService blockChainForkService = null;
+    private static ConfigurationService configurationService = null;
+    private static BlockChainCoreService blockChainCoreService = null;
+    private static NodeService nodeService = null;
+    private static BlockChainForkService blockChainForkService = null;
 
 
     public static NetBlockchainCore createNetBlcokchainCore() {
@@ -52,7 +53,7 @@ public class NetBlockchainCoreFactory {
         SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService
                 = new SynchronizeRemoteNodeBlockServiceImpl(blockChainCore,nodeService, blockChainForkService,blockchainNodeClientService,configurationService);
 
-        BlockchainForkMaintainer blockchainForkMaintainer = new BlockchainForkMaintainer(blockChainForkService,configurationService, initBlockchainForkDto);
+        ForkMaintainer forkMaintainer = new ForkMaintainer(blockChainForkService,configurationService, initBlockchainForkDto);
 
 
 
@@ -65,14 +66,26 @@ public class NetBlockchainCoreFactory {
         NodeSearcher nodeSearcher = new NodeSearcher(configurationService,nodeService,blockchainNodeClientService);
         BlockSearcher blockSearcher
                 = new BlockSearcher(nodeService,blockChainCoreService,synchronizeRemoteNodeBlockService,blockChainCore,configurationService);
-        BlockHeightBroadcaster blockHeightBroadcaster
-                = new BlockHeightBroadcaster(configurationService,nodeService,blockChainCoreService,blockchainNodeClientService);
+        BlockBroadcaster blockBroadcaster
+                = new BlockBroadcaster(configurationService,nodeService,blockChainCoreService,blockchainNodeClientService);
 
 
         NetBlockchainCore netBlockchainCore
-                = new NetBlockchainCore(blockChainCore, blockchainForkMaintainer, blockchainHttpServer, configurationService
-                , seedNodeMaintainer,nodeSearcher,blockSearcher, blockHeightBroadcaster);
+                = new NetBlockchainCore(blockChainCore, forkMaintainer, blockchainHttpServer, configurationService
+                , seedNodeMaintainer,nodeSearcher,blockSearcher, blockBroadcaster);
         return netBlockchainCore;
     }
 
+    public static ConfigurationService getConfigurationService() {
+        return configurationService;
+    }
+    public static BlockChainCoreService getBlockChainCoreService() {
+        return blockChainCoreService;
+    }
+    public static NodeService getNodeService() {
+        return nodeService;
+    }
+    public static BlockChainForkService getBlockChainForkService() {
+        return blockChainForkService;
+    }
 }

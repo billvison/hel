@@ -13,25 +13,25 @@ public class NetBlockchainCore {
     private SeedNodeMaintainer seedNodeMaintainer;
     private NodeSearcher nodeSearcher;
     private BlockSearcher blockSearcher;
-    private BlockHeightBroadcaster blockHeightBroadcaster;
+    private BlockBroadcaster blockBroadcaster;
 
-    private BlockchainForkMaintainer blockchainForkMaintainer;
+    private ForkMaintainer forkMaintainer;
     private ConfigurationService configurationService;
 
 
-    public NetBlockchainCore(BlockChainCore blockChainCore, BlockchainForkMaintainer blockchainForkMaintainer
+    public NetBlockchainCore(BlockChainCore blockChainCore, ForkMaintainer forkMaintainer
             , BlockchainHttpServer blockchainHttpServer, ConfigurationService configurationService
             , SeedNodeMaintainer seedNodeMaintainer, NodeSearcher nodeSearcher
-            , BlockSearcher blockSearcher , BlockHeightBroadcaster blockHeightBroadcaster) {
+            , BlockSearcher blockSearcher , BlockBroadcaster blockBroadcaster) {
 
         this.blockChainCore = blockChainCore;
-        this.blockchainForkMaintainer = blockchainForkMaintainer;
+        this.forkMaintainer = forkMaintainer;
         this.blockchainHttpServer = blockchainHttpServer;
         this.configurationService = configurationService;
         this.seedNodeMaintainer = seedNodeMaintainer;
         this.nodeSearcher = nodeSearcher;
         this.blockSearcher = blockSearcher;
-        this.blockHeightBroadcaster = blockHeightBroadcaster;
+        this.blockBroadcaster = blockBroadcaster;
         restoreConfiguration();
     }
 
@@ -70,10 +70,10 @@ public class NetBlockchainCore {
         nodeSearcher.start();
         //启动区块搜寻器
         blockSearcher.start();
-        //启动区块高度广播者
-        blockHeightBroadcaster.start();
+        //启动区块广播者
+        blockBroadcaster.start();
         //启动区块链分叉维护者
-        blockchainForkMaintainer.start();
+        forkMaintainer.start();
     }
 
 
@@ -100,12 +100,12 @@ public class NetBlockchainCore {
         return blockSearcher;
     }
 
-    public BlockHeightBroadcaster getBlockHeightBroadcaster() {
-        return blockHeightBroadcaster;
+    public BlockBroadcaster getBlockBroadcaster() {
+        return blockBroadcaster;
     }
 
-    public BlockchainForkMaintainer getBlockchainForkMaintainer() {
-        return blockchainForkMaintainer;
+    public ForkMaintainer getForkMaintainer() {
+        return forkMaintainer;
     }
 
     public ConfigurationService getConfigurationService() {

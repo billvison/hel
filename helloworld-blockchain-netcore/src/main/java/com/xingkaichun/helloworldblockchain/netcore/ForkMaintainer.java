@@ -10,19 +10,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 区块链分叉维护者
+ * 区块链分支维护者
  * 定时检测区块链分支是否正确，如果不正确，则回滚区块，直至分支正确。
  * @author 邢开春 xingkaichun@qq.com
  */
-public class BlockchainForkMaintainer {
+public class ForkMaintainer {
 
-    private static final Logger logger = LoggerFactory.getLogger(BlockchainForkMaintainer.class);
+    private static final Logger logger = LoggerFactory.getLogger(ForkMaintainer.class);
 
     private BlockChainForkService blockChainForkService;
     private ConfigurationService configurationService;
     private BlockchainForkDto initBlockchainForkDto;
 
-    public BlockchainForkMaintainer(BlockChainForkService blockChainForkService, ConfigurationService configurationService, BlockchainForkDto initBlockchainForkDto) {
+    public ForkMaintainer(BlockChainForkService blockChainForkService, ConfigurationService configurationService, BlockchainForkDto initBlockchainForkDto) {
         this.blockChainForkService = blockChainForkService;
         this.configurationService = configurationService;
         this.initBlockchainForkDto = initBlockchainForkDto;

@@ -42,7 +42,9 @@ public class NodeSearcher {
         new Thread(()->{
             while (true){
                 try {
-                    searchNewNodes();
+                    if(autoSearchNodeOption()){
+                        searchNewNodes();
+                    }
                 } catch (Exception e) {
                     logger.error("在区块链网络中搜索新的节点出现异常",e);
                 }
@@ -57,14 +59,9 @@ public class NodeSearcher {
      */
     public void searchNewNodes() {
         //TODO 改善型功能 性能调整，并发
-        ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
-        if(!Boolean.valueOf(configurationDto.getConfValue())){
-            return;
-        }
         List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
         for(NodeDto node:nodes){
-            configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
-            if(!Boolean.valueOf(configurationDto.getConfValue())){
+            if(!autoSearchNodeOption()){
                 return;
             }
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
@@ -123,5 +120,12 @@ public class NodeSearcher {
                 }
             }
         }
+    }
+    /**
+     * 是否广播自己
+     */
+    private boolean autoSearchNodeOption() {
+        ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
+        return Boolean.valueOf(configurationDto.getConfValue());
     }
 }
