@@ -5,7 +5,7 @@ package com.xingkaichun.helloworldblockchain.core;
  * 区块链是一个分布式的数据库。
  * 本地节点的区块链高度落后于网络节点A的区块链高度，这时就需要将A的区块同步至本地区块链，这个就是该类的主要功能。
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public abstract class Synchronizer {
 

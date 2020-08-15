@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * 存放有关存储容量有关的常量，例如区块最大的存储容量，交易最大的存储容量
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class TextSizeRestrictionTool {
 

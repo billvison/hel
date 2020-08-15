@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageConditio
 
 /**
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class QueryMiningTransactionListRequest {
 

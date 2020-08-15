@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
 /**
  * 用户service
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public interface UserService {
 

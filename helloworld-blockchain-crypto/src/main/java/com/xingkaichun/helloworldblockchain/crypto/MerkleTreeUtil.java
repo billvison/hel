@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 默克尔树工具类
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class MerkleTreeUtil {
 
@@ -24,7 +24,7 @@ public class MerkleTreeUtil {
      * https://www.cnblogs.com/web-java/articles/5544093.html
      * 摘抄于bitcoinj-core-0.15.8.jar!\org\bitcoinj\core\Block.java MerkleRoot()方法
      *
-     * @author 邢开春 xingkaichun@qq.com
+     * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
      */
     public static byte[] calculateMerkleRoot(List<byte[]> hashList) {
         if(hashList == null || hashList.size() == 0){

@@ -11,7 +11,10 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 
-
+/**
+ *
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ */
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
 	HttpServerHandlerResolver httpServerHandlerResolver;

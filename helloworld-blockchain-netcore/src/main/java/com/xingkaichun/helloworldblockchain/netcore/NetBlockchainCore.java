@@ -6,6 +6,26 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.Configurat
 import com.xingkaichun.helloworldblockchain.netcore.netserver.BlockchainHttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 
+/**
+ * 网络版区块链核心，代表一个完整的网络版区块链核心系统。
+ * 网络版区块链核心系统，由以下几部分组成：
+ * 1.单机版[没有网络交互版本]区块链核心
+ * @see com.xingkaichun.helloworldblockchain.core.BlockChainCore
+ * 2.节点搜寻器
+ * @see com.xingkaichun.helloworldblockchain.netcore.NodeSearcher
+ * 3.节点广播者
+ * @see com.xingkaichun.helloworldblockchain.netcore.NodeBroadcaster
+ * 4.区块搜寻器
+ * @see com.xingkaichun.helloworldblockchain.netcore.BlockSearcher
+ * 5.区块广播者
+ * @see com.xingkaichun.helloworldblockchain.netcore.BlockBroadcaster
+ * 6.分支维护者
+ * @see com.xingkaichun.helloworldblockchain.netcore.ForkMaintainer
+ * 7.种子节点维护者
+ * @see com.xingkaichun.helloworldblockchain.netcore.SeedNodeMaintainer
+ *
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ */
 public class NetBlockchainCore {
 
     private BlockChainCore blockChainCore;

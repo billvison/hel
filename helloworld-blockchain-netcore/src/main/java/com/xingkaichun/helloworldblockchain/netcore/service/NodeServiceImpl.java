@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class NodeServiceImpl implements NodeService {
 

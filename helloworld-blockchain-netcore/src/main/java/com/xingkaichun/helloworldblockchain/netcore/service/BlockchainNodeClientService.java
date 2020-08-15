@@ -14,7 +14,7 @@ import java.math.BigInteger;
 /**
  * 区块链节点客户端service
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public interface BlockchainNodeClientService {
 

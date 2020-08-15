@@ -16,6 +16,11 @@ import com.xingkaichun.helloworldblockchain.netcore.netserver.HttpServerHandlerR
 import com.xingkaichun.helloworldblockchain.netcore.service.*;
 
 //TODO 优化
+/**
+ * 网络版区块链核心工厂
+ *
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ */
 public class NetBlockchainCoreFactory {
 
     private static ConfigurationService configurationService = null;

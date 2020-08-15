@@ -2,7 +2,7 @@ package com.xingkaichun.helloworldblockchain.netcore.dto.configuration;
 
 /**
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public enum ConfigurationEnum {
     IS_MINER_ACTIVE("true","矿工是否处于激活状态？"),

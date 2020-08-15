@@ -3,6 +3,10 @@ package com.xingkaichun.helloworldblockchain.core.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ *
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ */
 public class ThreadUtil {
 
     private final static Logger logger = LoggerFactory.getLogger(ThreadUtil.class);

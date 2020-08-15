@@ -8,7 +8,10 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 
-
+/**
+ *
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ */
 public class HttpServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
 	HttpServerHandlerResolver httpServerHandlerResolver;

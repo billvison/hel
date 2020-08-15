@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.netcore.model.ConfigurationEntity;
 /**
  * 配置dao
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public interface ConfigurationDao {
 

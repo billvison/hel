@@ -5,6 +5,11 @@ import com.xingkaichun.helloworldblockchain.core.utils.LevelDBUtil;
 
 import java.math.BigInteger;
 
+/**
+ * 区块链数据库主键工具类
+ *
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ */
 public class BlockChainDataBaseKeyTool {
     //区块链高度key：它对应的值是区块链的高度
     private final static String BLOCK_CHAIN_HEIGHT_KEY = "A";

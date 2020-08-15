@@ -53,7 +53,7 @@ import java.util.List;
  * 因为获取到了传输的数据，所以可以做自己的业务逻辑了。
  * 使用完毕后，清除节点ID传输数据，清除节点ID的数据传输完毕标识。
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public abstract class SynchronizerDataBase {
 

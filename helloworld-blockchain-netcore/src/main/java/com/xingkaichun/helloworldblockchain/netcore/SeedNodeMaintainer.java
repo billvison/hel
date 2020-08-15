@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * 种子节点也可能由于维护等原因，暂时不可以访问。由于种子节点不可用，就会被区块链系统从节点列表里给丢弃了。因此这里
  * ，每隔一定的时间重新将种子节点加入到节点列表。无论如何，每隔一定时间将种子节点重新加入节点列表总没问题。
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class SeedNodeMaintainer {
 

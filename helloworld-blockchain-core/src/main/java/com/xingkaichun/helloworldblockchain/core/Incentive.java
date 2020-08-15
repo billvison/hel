@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 /**
  * 矿工挖矿激励
  * TODO bitcoin挖矿奖励为什么总数是2100万 为什么每四年减半 https://blog.csdn.net/weixin_45583158/article/details/106088863
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public abstract class Incentive {
 

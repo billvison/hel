@@ -17,7 +17,7 @@ import java.io.Serializable;
  * 当然，即使我们控制了产生区块的难度，也有可能多个节点同时都产生了下一个区块(有了共识，产生的下一个区块只是少了很多很多)。
  * 同时产生了多个区块怎么办？这个问题，一个解决办法就是约定区块链网络中的节点以链长的为准，让它们继续竞争下去，比较谁能尽快的产生下下个区块。
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public abstract class Consensus implements Serializable {
 

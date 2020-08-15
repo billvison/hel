@@ -10,6 +10,10 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.sql.*;
 
+/**
+ *
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ */
 public class ConfigurationDaoImpl implements ConfigurationDao {
 
     private final static Logger logger = LoggerFactory.getLogger(ConfigurationDaoImpl.class);

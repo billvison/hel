@@ -12,7 +12,8 @@ import org.slf4j.LoggerFactory;
 /**
  * 区块链分支维护者
  * 定时检测区块链分支是否正确，如果不正确，则回滚区块，直至分支正确。
- * @author 邢开春 xingkaichun@qq.com
+ *
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class ForkMaintainer {
 

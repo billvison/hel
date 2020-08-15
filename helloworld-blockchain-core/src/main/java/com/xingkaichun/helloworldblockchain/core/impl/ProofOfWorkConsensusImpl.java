@@ -10,7 +10,7 @@ import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 /**
  * 工作量证明实现
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class ProofOfWorkConsensusImpl extends Consensus {
 

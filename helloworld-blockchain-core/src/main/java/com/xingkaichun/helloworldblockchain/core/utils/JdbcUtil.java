@@ -16,7 +16,7 @@ import java.sql.Statement;
  * android平台用SQLDroid
  * https://github.com/SQLDroid/SQLDroid
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class JdbcUtil {
 
@@ -40,8 +40,6 @@ public class JdbcUtil {
 
     /**
      * 获取JDBC ConnectionUrl
-     *
-     * @author 邢开春 xingkaichun@qq.com
      */
     public static String getJdbcConnectionUrl(String databasePath){
         return String.format(jdbcConnectionFormat,databasePath);

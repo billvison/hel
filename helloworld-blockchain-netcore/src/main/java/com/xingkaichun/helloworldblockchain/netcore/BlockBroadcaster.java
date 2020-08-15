@@ -25,7 +25,7 @@ import java.util.List;
  * 随便说一句，区块广播者会自动的将矿工挖取的区块自动的传播出去。矿工把区块放入区块链，
  * 当区块广播者广播这个区块高度时，也就完成了广播矿工挖取的区块。
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class BlockBroadcaster {
 

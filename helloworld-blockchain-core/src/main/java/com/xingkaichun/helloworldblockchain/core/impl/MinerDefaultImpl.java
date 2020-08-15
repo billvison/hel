@@ -26,7 +26,7 @@ import java.util.*;
 /**
  * 默认实现
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class MinerDefaultImpl extends Miner {
 

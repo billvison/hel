@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 全局设置
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class GlobalSetting {
 
@@ -27,7 +27,7 @@ public class GlobalSetting {
     /**
      * 系统版本
      *
-     * @author 邢开春 xingkaichun@qq.com
+     * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
      */
     public static class SystemVersionConstant{
         /**
@@ -67,7 +67,7 @@ public class GlobalSetting {
     /**
      * 创始区块
      *
-     * @author 邢开春 xingkaichun@qq.com
+     * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
      */
     public static class GenesisBlockConstant{
         //第一个区块的高度
@@ -79,7 +79,7 @@ public class GlobalSetting {
     /**
      * 挖矿设置
      *
-     * @author 邢开春 xingkaichun@qq.com
+     * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
      */
     public static class MinerConstant{
         //产生区块的平均时间
@@ -103,7 +103,7 @@ public class GlobalSetting {
     /**
      * 交易设置
      *
-     * @author 邢开春 xingkaichun@qq.com
+     * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
      */
     public static class TransactionConstant{
         //交易金额的小数点保留位数限制

@@ -8,7 +8,7 @@ import java.io.File;
 /**
  * 创建BlockChainCore的工厂
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class BlockChainCoreFactory {
 
@@ -18,7 +18,6 @@ public class BlockChainCoreFactory {
      *
      * @param blockchainDataPath 区块链数据存放位置
      * @param minerAddress 矿工钱包地址
-     * @author 邢开春 xingkaichun@qq.com
      */
     public static BlockChainCore createBlockChainCore(String blockchainDataPath,String minerAddress) {
 

@@ -8,7 +8,7 @@ import java.util.List;
  * 区块
  * 属性含义参考 com.xingkaichun.helloworldblockchain.core.model.Block
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class BlockDTO implements Serializable {
     //区块产生的时间戳

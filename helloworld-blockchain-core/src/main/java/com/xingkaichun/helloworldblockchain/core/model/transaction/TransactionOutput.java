@@ -10,7 +10,7 @@ import java.math.BigInteger;
 /**
  * 交易输出
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class TransactionOutput implements Serializable {
 

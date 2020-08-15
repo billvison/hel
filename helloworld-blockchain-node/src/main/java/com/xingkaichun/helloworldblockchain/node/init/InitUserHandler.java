@@ -10,7 +10,7 @@ import javax.annotation.PostConstruct;
  * 初始化用户，每次启动系统时，会校验数据库中是否存在用户。
  * 如果不存在用户，自动生成一个用户，并把用户写入外部文件供系统使用者查看生成的用户名与密码。
  *
- * @author 邢开春 xingkaichun@qq.com
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class InitUserHandler {
 

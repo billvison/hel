@@ -11,7 +11,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 区块链节点服务器：其它节点与之通信，同步节点数据、区块数据、交易数据等。
- * @author 邢开春 xingkaichun@qq.com
+ *
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class BlockchainHttpServer {
 
