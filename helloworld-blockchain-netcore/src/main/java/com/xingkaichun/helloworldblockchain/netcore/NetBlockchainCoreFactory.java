@@ -70,7 +70,7 @@ public class NetBlockchainCoreFactory {
         SeedNodeMaintainer seedNodeMaintainer = new SeedNodeMaintainer(nodeService,configurationService);
         NodeSearcher nodeSearcher = new NodeSearcher(configurationService,nodeService,blockchainNodeClientService);
         BlockSearcher blockSearcher
-                = new BlockSearcher(nodeService,blockChainCoreService,synchronizeRemoteNodeBlockService,blockChainCore,configurationService);
+                = new BlockSearcher(nodeService,blockChainCoreService,synchronizeRemoteNodeBlockService,blockChainCore,configurationService,blockchainNodeClientService);
         BlockBroadcaster blockBroadcaster
                 = new BlockBroadcaster(configurationService,nodeService,blockChainCoreService,blockchainNodeClientService);
 

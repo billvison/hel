@@ -33,7 +33,6 @@ public class BlockTool {
 
     /**
      * 计算区块的Hash值
-     * @param block 区块
      */
     public static String calculateBlockHash(Block block) {
         String input = block.getTimestamp()+block.getPreviousBlockHash()+block.getHeight()+block.getMerkleTreeRoot()+block.getNonce();
@@ -51,17 +50,16 @@ public class BlockTool {
 
     /**
      * 计算区块的默克尔树根值
-     * @param block 区块
      */
     public static String calculateBlockMerkleTreeRoot(Block block) {
         List<Transaction> transactions = block.getTransactions();
         List<byte[]> hashList = new ArrayList<>();
         if(transactions != null){
             for(Transaction transaction : transactions) {
-                hashList.add(ByteUtil.stringToBytes(transaction.getTransactionHash()));
+                hashList.add(SHA256Util.digest(ByteUtil.stringToBytes(transaction.getTransactionHash())));
             }
         }
-        return MerkleTreeUtil.calculateBigEndianHexMerkleRoot(hashList);
+        return HexUtil.bytesToHexString(MerkleTreeUtil.calculateMerkleRootByHash(hashList));
     }
     /**
      * 区块中写入的默克尔树根是否正确

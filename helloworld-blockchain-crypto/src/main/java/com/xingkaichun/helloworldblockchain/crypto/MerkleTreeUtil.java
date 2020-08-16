@@ -13,11 +13,6 @@ import java.util.List;
  */
 public class MerkleTreeUtil {
 
-
-    public static String calculateBigEndianHexMerkleRoot(List<byte[]> hashList) {
-        return HexUtil.bytesToHexString(calculateMerkleRoot(hashList));
-    }
-
     /**
      * https://en.bitcoin.it/wiki/Protocol_documentation#Merkle_Trees
      * https://blog.csdn.net/jason_cuijiahui/article/details/79011118
@@ -26,7 +21,7 @@ public class MerkleTreeUtil {
      *
      * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
      */
-    public static byte[] calculateMerkleRoot(List<byte[]> hashList) {
+    public static byte[] calculateMerkleRootByHash(List<byte[]> hashList) {
         if(hashList == null || hashList.size() == 0){
             throw new RuntimeException("hash数组不能为空");
         }
@@ -35,19 +30,14 @@ public class MerkleTreeUtil {
         }
         List<byte[]> tree = new ArrayList<>(hashList);
         int size = tree.size();
-        int levelOffset = 0; // Offset in the list where the currently processed level starts.
-        // Step through each level, stopping when we reach the root (levelSize == 1).
+        int levelOffset = 0;
         for (int levelSize = size; levelSize > 1; levelSize = (levelSize + 1) / 2) {
-            // For each pair of nodes on that level:
             for (int left = 0; left < levelSize; left += 2) {
-                // The right hand node can be the same as the left hand, in the case where we don't have enough
-                // transactions.
                 int right = Math.min(left + 1, levelSize - 1);
                 byte[] leftBytes = tree.get(levelOffset + left);
                 byte[] rightBytes = tree.get(levelOffset + right);
                 tree.add(SHA256Util.digestTwice(Arrays.concatenate(leftBytes, rightBytes)));
             }
-            // Move to the next level.
             levelOffset += levelSize;
         }
         return tree.get(tree.size()-1);

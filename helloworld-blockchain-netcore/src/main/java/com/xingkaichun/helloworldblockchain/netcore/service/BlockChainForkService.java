@@ -16,7 +16,6 @@ public interface BlockChainForkService {
 
     /**
      * 获取固定Hash的[小于传入的区块高度]的最大区块高度
-     * @param blockHeight 传入的区块高度
      */
     BigInteger getFixBlockHashMaxBlockHeight(BigInteger blockHeight);
 

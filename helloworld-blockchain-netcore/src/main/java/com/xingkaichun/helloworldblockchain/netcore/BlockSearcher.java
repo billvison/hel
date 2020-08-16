@@ -36,13 +36,14 @@ public class BlockSearcher {
 
     public BlockSearcher(NodeService nodeService, BlockChainCoreService blockChainCoreService
             , SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService, BlockChainCore blockChainCore
-            , ConfigurationService configurationService) {
+            , ConfigurationService configurationService,BlockchainNodeClientService blockchainNodeClientService) {
 
         this.nodeService = nodeService;
         this.blockChainCoreService = blockChainCoreService;
         this.synchronizeRemoteNodeBlockService = synchronizeRemoteNodeBlockService;
         this.blockChainCore = blockChainCore;
         this.configurationService = configurationService;
+        this.blockchainNodeClientService = blockchainNodeClientService;
     }
 
     public void start() {

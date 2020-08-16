@@ -38,17 +38,9 @@ public class MerkleTreeUtilTest {
 
 
     @Test
-    public void calculateMerkleRootTest()
+    public void calculateMerkleRootByHashTest()
     {
-        byte[] merkleRoot = MerkleTreeUtil.calculateMerkleRoot(hashList);
+        byte[] merkleRoot = MerkleTreeUtil.calculateMerkleRootByHash(hashList);
         assertArrayEquals(Utils.reverseBytes(HexUtil.hexStringToBytes(merkleTreeRoot)),merkleRoot);
-    }
-
-    @Test
-    public void calculateBigEndianHexMerkleRootTest()
-    {
-        byte[] merkleRoot = MerkleTreeUtil.calculateMerkleRoot(hashList);
-        assertArrayEquals(Utils.reverseBytes(HexUtil.hexStringToBytes(merkleTreeRoot)),merkleRoot);
-        assertEquals(HexUtil.bytesToHexString(Utils.reverseBytes(HexUtil.hexStringToBytes(merkleTreeRoot))), MerkleTreeUtil.calculateBigEndianHexMerkleRoot(hashList));
     }
 }

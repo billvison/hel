@@ -279,8 +279,8 @@ public class TransactionTool {
             logger.debug("区块数据异常，挖矿奖励交易只能有一个交易输出。");
             return false;
         }
-        if(targetMinerReward.compareTo(outputs.get(0).getValue())>=0){
-            logger.debug("挖矿奖励数据异常，挖矿奖励金额大于应该获得奖励金额。");
+        if(targetMinerReward.compareTo(outputs.get(0).getValue())<0){
+            logger.debug("挖矿奖励数据异常，挖矿奖励金额大于系统核算奖励金额。");
             return false;
         }
         return true;

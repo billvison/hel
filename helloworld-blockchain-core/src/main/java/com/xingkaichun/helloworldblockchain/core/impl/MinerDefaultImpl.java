@@ -287,7 +287,6 @@ public class MinerDefaultImpl extends Miner {
 
     /**
      * 打包处理过程: 将异常的交易丢弃掉【站在区块的角度校验交易】
-     * @param packingTransactionList
      */
     public List<Transaction> removeExceptionTransaction_PointOfBlockView(BlockChainDataBase blockChainDataBase,List<Transaction> packingTransactionList) {
         List<Transaction> exceptionTransactionList = new ArrayList<>();

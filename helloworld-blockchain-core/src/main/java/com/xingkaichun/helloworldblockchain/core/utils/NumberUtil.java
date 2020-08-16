@@ -11,8 +11,6 @@ public class NumberUtil {
 
     /**
      * 判断字符串是否是一个大于等于0的整数或小数
-     * @param str
-     * @return
      */
     public static boolean isNumber(String str){
         try {
