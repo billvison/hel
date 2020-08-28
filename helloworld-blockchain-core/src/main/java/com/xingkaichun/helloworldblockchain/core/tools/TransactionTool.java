@@ -174,7 +174,7 @@ public class TransactionTool {
      * 计算交易哈希
      */
     private static String calculateTransactionHash(long currentTimeMillis,List<String> inputHashList,List<String> outputHashList){
-        String data = "";
+        String data = "[" + currentTimeMillis + "]";
         if(inputHashList != null && inputHashList.size()!=0){
             data += "[" + Joiner.on(" ").join(inputHashList) + "]";
         }
@@ -203,7 +203,7 @@ public class TransactionTool {
      * 计算交易输出哈希
      */
     private static String calculateTransactionOutputHash(long currentTimeMillis, String address, String value, List<String> scriptLock) {
-        String forHash = "";
+        String forHash = "[" + currentTimeMillis + "]";
         forHash += "[" + address + "]";
         forHash += "[" + value + "]";
         forHash += "[" + Joiner.on(" ").join(scriptLock) + "]";
