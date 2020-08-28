@@ -8,13 +8,15 @@ import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.script.Script;
 import org.junit.Test;
 
+import java.lang.reflect.Method;
+import java.math.BigInteger;
 import java.util.Random;
 
 import static org.bitcoinj.core.Utils.HEX;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 
-public class AccountUtilTest extends AccountUtil{
+public class AccountUtilTest {
 
     private final static Account ACCOUNT_1 = new Account("d5c654eeff2cf1c6af16d721f31854ef447dfc61a6344bf1ba7108ec77d29b80"
             ,"044a99261b7a4b4bad2cac46defa41936b5807bf35dc5d7645d4976431666c741f3be030868718a20f875c69e9f1b781502429584f2c754c0aa8432719df1ed65e"
@@ -57,43 +59,43 @@ public class AccountUtilTest extends AccountUtil{
     {
         byte[] zeroValueByte32Length = new byte[32];
         Account account = AccountUtil.accountFromPrivateKey("180cb41c7c600be951b5d3d0a7334acc7506173875834f7a6c4c786a28fcbb19");
-        byte[] signatureByAccount = AccountUtil.signature(AccountUtil.privateKeyFrom(account.getPrivateKey()),zeroValueByte32Length);
-        boolean verifySignatureByAccount = AccountUtil.verifySignature(AccountUtil.publicKeyFrom(account.getPublicKey()),zeroValueByte32Length,signatureByAccount);
+        byte[] signatureByAccount = signatureProxy(privateKeyFromProxy(account.getPrivateKey()),zeroValueByte32Length);
+        boolean verifySignatureByAccount = verifySignatureProxy(publicKeyFromProxy(account.getPublicKey()),zeroValueByte32Length,signatureByAccount);
         assertTrue(verifySignatureByAccount);
 
         byte[] signatureByFixValue = HEX.decode("3046022100dffbc26774fc841bbe1c1362fd643609c6e42dcb274763476d87af2c0597e89e022100c59e3c13b96b316cae9fa0ab0260612c7a133a6fe2b3445b6bf80b3123bf274d");
-        boolean verifySignatureByFixValue = AccountUtil.verifySignature(AccountUtil.publicKeyFrom(account.getPublicKey()),zeroValueByte32Length,signatureByFixValue);
+        boolean verifySignatureByFixValue = verifySignatureProxy(publicKeyFromProxy(account.getPublicKey()),zeroValueByte32Length,signatureByFixValue);
         assertTrue(verifySignatureByFixValue);
     }
 
     private void randomAssertSignature() throws Exception{
         Account account = AccountUtil.randomAccount();
-        ECKey bitcoinjECKey = ECKey.fromPrivate(AccountUtil.privateKeyFrom(account.getPrivateKey()),false);
+        ECKey bitcoinjECKey = ECKey.fromPrivate(privateKeyFromProxy(account.getPrivateKey()),false);
 
         //随机生成32位数组字节
         byte[] randomByte = new byte[32];
         new Random().nextBytes(randomByte);
         Sha256Hash randomSha256Hash = Sha256Hash.wrap(randomByte);
 
-        byte[] signByAccount = AccountUtil.signature(AccountUtil.privateKeyFrom(account.getPrivateKey()),randomByte);
-        byte[] signByAccount2 = AccountUtil.signature(AccountUtil.privateKeyFrom(account.getPrivateKey()),randomByte);
+        byte[] signByAccount = signatureProxy(privateKeyFromProxy(account.getPrivateKey()),randomByte);
+        byte[] signByAccount2 = signatureProxy(privateKeyFromProxy(account.getPrivateKey()),randomByte);
         //校验同一私钥，两次签名是否一致
         assertArrayEquals(signByAccount,signByAccount2);
         //校验签名是否正确
-        assertTrue(AccountUtil.verifySignature(AccountUtil.publicKeyFrom(account.getPublicKey()),randomByte,signByAccount));
+        assertTrue(verifySignatureProxy(publicKeyFromProxy(account.getPublicKey()),randomByte,signByAccount));
         //用bitcoinj校验签名是否正确
         assert(bitcoinjECKey.verify(randomSha256Hash.getBytes(), signByAccount));
 
 
         byte[] signByBitcoinj = bitcoinjECKey.sign(randomSha256Hash).encodeToDER();
-        ECKey bitcoinjECKey2 = ECKey.fromPrivate(AccountUtil.privateKeyFrom(account.getPrivateKey()),false);
+        ECKey bitcoinjECKey2 = ECKey.fromPrivate(privateKeyFromProxy(account.getPrivateKey()),false);
         byte[] signByBitcoinj2 = bitcoinjECKey2.sign(randomSha256Hash).encodeToDER();
         //校验同一私钥，两次bitcoinj签名是否一致
         assertArrayEquals(signByBitcoinj,signByBitcoinj2);
         //bitcoinj校验bitcoinj签名是否正确
         assert(bitcoinjECKey.verify(randomSha256Hash.getBytes(), signByBitcoinj));
         //校验bitcoinj签名是否正确
-        assertTrue(AccountUtil.verifySignature(AccountUtil.publicKeyFrom(account.getPublicKey()),randomByte,signByBitcoinj));
+        assertTrue(verifySignatureProxy(publicKeyFromProxy(account.getPublicKey()),randomByte,signByBitcoinj));
 
         //assertArrayEquals(signByAccount,signByBitcoinj);
     }
@@ -126,7 +128,7 @@ public class AccountUtilTest extends AccountUtil{
         assertTrue(account.getAddress().equals(accountFromPrivateKey.getAddress()));
 
         //用bitcoinj解析账户，并对比私钥、公钥、地址
-        ECKey bitcoinjECKey = ECKey.fromPrivate(AccountUtil.privateKeyFrom(account.getPrivateKey()),false);
+        ECKey bitcoinjECKey = ECKey.fromPrivate(privateKeyFromProxy(account.getPrivateKey()),false);
         assertTrue(account.getPrivateKey().equals(bitcoinjECKey.getPrivateKeyAsHex()));
         assertTrue(account.getPublicKey().equals(bitcoinjECKey.getPublicKeyAsHex()));
         Address bitcoinjAddress = Address.fromKey(NetworkParameters.fromID(NetworkParameters.ID_MAINNET),bitcoinjECKey, Script.ScriptType.P2PKH);
@@ -141,5 +143,47 @@ public class AccountUtilTest extends AccountUtil{
             result.append(Integer.toHexString(new Random().nextInt(16)));
         }
         return result.toString();
+    }
+
+
+
+
+
+
+    private static BigInteger privateKeyFromProxy(String privateKey) {
+        try {
+            Method method1 = Class.forName("com.xingkaichun.helloworldblockchain.crypto.AccountUtil").getDeclaredMethod("privateKeyFrom", new Class[]{String.class});
+            method1.setAccessible(true);
+            return (BigInteger) method1.invoke(AccountUtil.class, privateKey);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private static byte[] publicKeyFromProxy(String publicKey) {
+        try {
+            Method method1 = Class.forName("com.xingkaichun.helloworldblockchain.crypto.AccountUtil").getDeclaredMethod("publicKeyFrom", new Class[]{String.class});
+            method1.setAccessible(true);
+            return (byte[]) method1.invoke(AccountUtil.class, publicKey);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private static byte[] signatureProxy(BigInteger bigIntegerPrivateKey, byte[] input) {
+        try {
+            Method method1 = Class.forName("com.xingkaichun.helloworldblockchain.crypto.AccountUtil").getDeclaredMethod("signature", new Class[]{BigInteger.class,byte[].class});
+            method1.setAccessible(true);
+            return (byte[]) method1.invoke(AccountUtil.class, bigIntegerPrivateKey,input);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private static boolean verifySignatureProxy(byte[] pub, byte[] rawData, byte[] signature) {
+        try {
+            Method method1 = Class.forName("com.xingkaichun.helloworldblockchain.crypto.AccountUtil").getDeclaredMethod("verifySignature", new Class[]{byte[].class,byte[].class,byte[].class});
+            method1.setAccessible(true);
+            return (boolean) method1.invoke(AccountUtil.class, pub,rawData,signature);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

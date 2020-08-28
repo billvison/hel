@@ -132,28 +132,28 @@ public class AccountUtil {
     /**
      * 由原始私钥推导出原始公钥
      */
-    protected static byte[] publicKeyFromPrivateKey(BigInteger bigIntegerPrivateKey) {
+    private static byte[] publicKeyFromPrivateKey(BigInteger bigIntegerPrivateKey) {
         byte[] bytePublicKey = ecParams.getG().multiply(bigIntegerPrivateKey).getEncoded(compressed);
         return bytePublicKey;
     }
     /**
      * 由编码私钥解码出原始私钥
      */
-    protected static BigInteger privateKeyFrom(String privateKey) {
+    private static BigInteger privateKeyFrom(String privateKey) {
         BigInteger bigIntegerPrivateKey = new BigInteger(privateKey,16);
         return bigIntegerPrivateKey;
     }
     /**
      * 由编码公钥解码出原始公钥
      */
-    protected static byte[] publicKeyFrom(String publicKey) {
+    private static byte[] publicKeyFrom(String publicKey) {
         byte[] bytePublicKey = HexUtil.hexStringToBytes(publicKey);
         return bytePublicKey;
     }
     /**
      * 将原始私钥进行编码操作，生成编码私钥
      */
-    protected static String encodePrivateKey(BigInteger bigIntegerPrivateKey) {
+    private static String encodePrivateKey(BigInteger bigIntegerPrivateKey) {
         String hexPrivateKey = bigIntegerPrivateKey.toString(16);
         return fillZeroTo64LengthPrivateKey(hexPrivateKey);
     }
@@ -161,7 +161,7 @@ public class AccountUtil {
     /**
      * 将原始公钥进行编码操作，生成编码公钥
      */
-    protected static String encodePublicKey(byte[] bytePublicKey) {
+    private static String encodePublicKey(byte[] bytePublicKey) {
         String hexPublicKey = HexUtil.bytesToHexString(bytePublicKey);
         return hexPublicKey;
     }
@@ -169,7 +169,7 @@ public class AccountUtil {
     /**
      * 签名
      */
-    protected static byte[] signature(BigInteger bigIntegerPrivateKey, byte[] input) {
+    private static byte[] signature(BigInteger bigIntegerPrivateKey, byte[] input) {
         ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
         ECPrivateKeyParameters ecPrivateKeyParameters = new ECPrivateKeyParameters(bigIntegerPrivateKey, ecParams);
         signer.init(true, ecPrivateKeyParameters);
@@ -189,7 +189,7 @@ public class AccountUtil {
     /**
      * 验证签名
      */
-    protected static boolean verifySignature(byte[] pub, byte[] rawData, byte[] signature) {
+    private static boolean verifySignature(byte[] pub, byte[] rawData, byte[] signature) {
         ECDSASigner signer = new ECDSASigner();
         ECPublicKeyParameters ecPublicKeyParameters = new ECPublicKeyParameters(ecParams.getCurve().decodePoint(pub), ecParams);
         signer.init(false, ecPublicKeyParameters);
@@ -208,7 +208,7 @@ public class AccountUtil {
     /**
      * 公钥生成base58格式地址
      */
-    protected static String base58AddressFrom(byte[] bytePublicKey) {
+    private static String base58AddressFrom(byte[] bytePublicKey) {
         byte[] pubKSha256Digest = SHA256Util.digest(bytePublicKey);
         byte[] pubKSha256DigestRipeMD160Digest = RipeMD160Util.digest(pubKSha256Digest);
 
