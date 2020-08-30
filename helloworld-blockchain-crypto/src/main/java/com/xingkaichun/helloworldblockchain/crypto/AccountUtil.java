@@ -106,7 +106,7 @@ public class AccountUtil {
        try {
            BigInteger bigIntegerPrivateKey = privateKeyFrom(privateKey);
            byte[] bytesSignature = signature(bigIntegerPrivateKey, ByteUtil.stringToBytes(rawData));
-           String signature = Base64.getEncoder().encodeToString(bytesSignature);
+           String signature = HexUtil.bytesToHexString(bytesSignature);
            return signature;
        } catch (Exception e) {
             throw new RuntimeException(e);
@@ -119,7 +119,7 @@ public class AccountUtil {
     public static boolean verifySignature(String publicKey, String rawData, String signature) {
         try {
             byte[] bytePublicKey = publicKeyFrom(publicKey);
-            byte[] bytesSignature = Base64.getDecoder().decode(signature);
+            byte[] bytesSignature = HexUtil.hexStringToBytes(signature);
             return verifySignature(bytePublicKey,ByteUtil.stringToBytes(rawData),bytesSignature);
         }catch(Exception e) {
             throw new RuntimeException(e);
