@@ -365,6 +365,8 @@ public class MinerDefaultImpl extends Miner {
         BigDecimal award = blockChainDataBase.getIncentive().mineAward(block);
 
         TransactionOutput output = new TransactionOutput();
+        output.setTransactionOutputSequence(BigInteger.ONE);
+        output.setTimestamp(timestamp);
         output.setAddress(minerAddress);
         output.setValue(award);
         output.setScriptLock(StackBasedVirtualMachine.createPayToClassicAddressOutputScript(minerAddress));

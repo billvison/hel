@@ -117,8 +117,10 @@ public class NodeTransportDtoTool {
         List<TransactionOutput> outputs = new ArrayList<>();
         List<TransactionOutputDTO> dtoOutputs = transactionDTO.getOutputs();
         if(dtoOutputs != null){
+            BigInteger transactionOutputSequence = BigInteger.ZERO;
             for(TransactionOutputDTO transactionOutputDTO:dtoOutputs){
-                TransactionOutput transactionOutput = classCast(transactionDTO,transactionOutputDTO);
+                transactionOutputSequence = transactionOutputSequence.add(BigInteger.ONE);
+                TransactionOutput transactionOutput = classCast(transactionDTO.getTimestamp(),transactionOutputSequence,transactionOutputDTO);
                 outputs.add(transactionOutput);
             }
         }
@@ -192,11 +194,13 @@ public class NodeTransportDtoTool {
     /**
      * 类型转换
      */
-    public static TransactionOutput classCast(TransactionDTO transactionDTO, TransactionOutputDTO transactionOutputDTO) {
+    public static TransactionOutput classCast(long timestamp, BigInteger transactionOutputSequence, TransactionOutputDTO transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
-        transactionOutput.setTransactionOutputHash(TransactionTool.calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
+        transactionOutput.setTransactionOutputSequence(transactionOutputSequence);
         transactionOutput.setAddress(transactionOutputDTO.getAddress());
         transactionOutput.setValue(new BigDecimal(transactionOutputDTO.getValue()));
+        transactionOutput.setTimestamp(timestamp);
+        transactionOutput.setTransactionOutputHash(TransactionTool.calculateTransactionOutputHash(timestamp,transactionOutputSequence,transactionOutputDTO));
         transactionOutput.setScriptLock(scriptLockFrom(transactionOutputDTO.getScriptLock()));
         return transactionOutput;
     }

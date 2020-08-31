@@ -36,6 +36,7 @@ public class MerkleTreeUtil {
                 int right = Math.min(left + 1, levelSize - 1);
                 byte[] leftBytes = tree.get(levelOffset + left);
                 byte[] rightBytes = tree.get(levelOffset + right);
+                //TODO 外面一次diget 这里两次 合适吗？
                 tree.add(SHA256Util.digestTwice(Arrays.concatenate(leftBytes, rightBytes)));
             }
             levelOffset += levelSize;

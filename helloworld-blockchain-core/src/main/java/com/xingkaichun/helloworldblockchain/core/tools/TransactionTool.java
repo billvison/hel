@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,8 +165,10 @@ public class TransactionTool {
         }
         List<String> outputHashList = new ArrayList<>();
         List<TransactionOutputDTO> outputs = transactionDTO.getOutputs();
+        BigInteger transactionOutputSequence = BigInteger.ZERO;
         for(TransactionOutputDTO transactionOutputDTO:outputs){
-            outputHashList.add(calculateTransactionOutputHash(transactionDTO,transactionOutputDTO));
+            transactionOutputSequence = transactionOutputSequence.add(BigInteger.ONE);
+            outputHashList.add(calculateTransactionOutputHash(transactionDTO.getTimestamp(),transactionOutputSequence,transactionOutputDTO));
         }
         return calculateTransactionHash(transactionDTO.getTimestamp(),inputHashList,outputHashList);
     }
@@ -189,22 +192,23 @@ public class TransactionTool {
      * 计算交易输出哈希
      */
     public static String calculateTransactionOutputHash(Transaction transaction,TransactionOutput output) {
-        return calculateTransactionOutputHash(transaction.getTimestamp(),output.getAddress(),output.getValue().toPlainString(),output.getScriptLock());
+        return calculateTransactionOutputHash(transaction.getTimestamp(),output.getTransactionOutputSequence(),output.getAddress(),output.getValue().toPlainString(),output.getScriptLock());
     }
 
     /**
      * 计算交易输出哈希
      */
-    public static String calculateTransactionOutputHash(TransactionDTO transactionDTO,TransactionOutputDTO transactionOutputDTO) {
-        return calculateTransactionOutputHash(transactionDTO.getTimestamp(),transactionOutputDTO.getAddress(),transactionOutputDTO.getValue(),transactionOutputDTO.getScriptLock());
+    public static String calculateTransactionOutputHash(long timestamp, BigInteger transactionOutputSequence, TransactionOutputDTO transactionOutputDTO) {
+        return calculateTransactionOutputHash(timestamp,transactionOutputSequence,transactionOutputDTO.getAddress(),transactionOutputDTO.getValue(),transactionOutputDTO.getScriptLock());
     }
 
     /**
      * 计算交易输出哈希
      */
-    private static String calculateTransactionOutputHash(long currentTimeMillis, String address, String value, List<String> scriptLock) {
+    private static String calculateTransactionOutputHash(long currentTimeMillis, BigInteger transactionOutputSequence, String address, String value, List<String> scriptLock) {
         String forHash = "[" + currentTimeMillis + "]";
         forHash += "[" + address + "]";
+        forHash += "[" + transactionOutputSequence.toString() + "]";
         forHash += "[" + value + "]";
         forHash += "[" + Joiner.on(" ").join(scriptLock) + "]";
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(forHash));
