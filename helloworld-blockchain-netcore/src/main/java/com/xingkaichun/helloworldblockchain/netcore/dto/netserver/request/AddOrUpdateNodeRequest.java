@@ -1,7 +1,5 @@
 package com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request;
 
-import java.math.BigInteger;
-
 /**
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
@@ -9,7 +7,7 @@ import java.math.BigInteger;
 public class AddOrUpdateNodeRequest {
 
     private int port;
-    private BigInteger blockChainHeight;
+    private Long blockChainHeight;
 
 
 
@@ -24,13 +22,13 @@ public class AddOrUpdateNodeRequest {
         this.port = port;
     }
 
-    public BigInteger getBlockChainHeight() {
+    public Long getBlockChainHeight() {
         return blockChainHeight;
     }
 
-    public void setBlockChainHeight(BigInteger blockChainHeight) {
+    public void setBlockChainHeight(Long blockChainHeight) {
         this.blockChainHeight = blockChainHeight;
     }
 
-    //endregion
+//endregion
 }

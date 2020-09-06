@@ -75,8 +75,13 @@ function getMinerAddress() {
         dataType: "json",
         async: false,
         success: function (data) {
-            miner_address.textContent = data.result.minerAddress;
-			// console.log(data.result.minerAddress);
+            console.log(data);
+            if(data.result.minerAddress != null && data.result.minerAddress!=''){
+                miner_address.textContent = "矿工地址："+data.result.minerAddress;
+            }else{
+                miner_address.textContent = "默认矿工地址："+data.result.defaultMinerAccount.address
+                + "默认矿工私钥："+data.result.defaultMinerAccount.privateKey;
+            }
         },
         error: function (e) {
         }

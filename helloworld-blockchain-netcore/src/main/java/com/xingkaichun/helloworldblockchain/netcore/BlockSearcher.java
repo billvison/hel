@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
-import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
@@ -12,7 +12,6 @@ import com.xingkaichun.helloworldblockchain.netcore.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -84,10 +83,10 @@ public class BlockSearcher {
             return;
         }
 
-        BigInteger localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
+        long localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
         //可能存在多个节点的数据都比本地节点的区块多，但它们节点的数据可能是相同的，不应该向每个节点都去请求数据。
         for(NodeDto node:nodes){
-            if(BigIntegerUtil.isLessThan(localBlockChainHeight,node.getBlockChainHeight())){
+            if(LongUtil.isLessThan(localBlockChainHeight,node.getBlockChainHeight())){
                 synchronizeRemoteNodeBlockService.synchronizeRemoteNodeBlock(node);
                 //同步之后，本地区块链高度已经发生改变了
                 localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();

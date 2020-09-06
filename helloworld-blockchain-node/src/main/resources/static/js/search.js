@@ -183,17 +183,17 @@ function blockByHeight(result){
 		transList = null;
 	}
 	var temp =
-			'<dl><dd>时间戳: ' + result.block.timestamp + '</dd>' +
-			'<dd>前哈希: ' + result.block.previousBlockHash + '</dd>' +
-			'<dd>区块高度: ' + result.block.height + '</dd>' +		
+			'<dl><dd>timestamp: ' + result.block.timestamp + '</dd>' +
+			'<dd>previousBlockHash: ' + result.block.previousBlockHash + '</dd>' +
+			'<dd>height: ' + result.block.height + '</dd>' +
 			'<dd>merkleTreeRoot: ' + result.block.merkleTreeRoot + '</dd>' +
 			'<dd>nonce: ' + result.block.nonce + '</dd>' +
-			'<dd>哈希: ' + result.block.hash + '</dd>' +
+			'<dd>hash: ' + result.block.hash + '</dd>' +
 			'<dd>explain: ' + result.block.consensusVariableHolder.explain + '</dd>' +
 			'<dd>transactionQuantity: ' + result.block.transactionQuantity + '</dd>' +
 			'<dd>startTransactionSequenceNumberInBlockChain: ' + result.block.startTransactionSequenceNumberInBlockChain + '</dd>' +
 			'<dd>endTransactionSequenceNumberInBlockChain: ' + result.block.endTransactionSequenceNumberInBlockChain + '</dd>' +
-			'<dd id="trans_list">交易: ' + transList + '</dd></dl>';
+			'<dd id="trans_list">transactions: ' + transList + '</dd></dl>';
 	return temp;
 }
 //展示搜索结果(根据地址搜索未花费交易输出)

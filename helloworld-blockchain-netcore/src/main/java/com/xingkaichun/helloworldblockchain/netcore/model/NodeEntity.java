@@ -1,7 +1,5 @@
 package com.xingkaichun.helloworldblockchain.netcore.model;
 
-import java.math.BigInteger;
-
 /**
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
@@ -9,7 +7,7 @@ import java.math.BigInteger;
 public class NodeEntity{
     private String ip;
     private Integer port;
-    private BigInteger blockChainHeight;
+    private Long blockChainHeight;
     private Boolean isNodeAvailable;
     private Integer errorConnectionTimes;
     private Boolean fork;
@@ -34,11 +32,11 @@ public class NodeEntity{
         this.port = port;
     }
 
-    public BigInteger getBlockChainHeight() {
+    public Long getBlockChainHeight() {
         return blockChainHeight;
     }
 
-    public void setBlockChainHeight(BigInteger blockChainHeight) {
+    public void setBlockChainHeight(Long blockChainHeight) {
         this.blockChainHeight = blockChainHeight;
     }
 

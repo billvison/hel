@@ -1,7 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.google.common.base.Joiner;
-import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.script.Script;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptExecuteResult;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
@@ -22,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,9 +163,9 @@ public class TransactionTool {
         }
         List<String> outputHashList = new ArrayList<>();
         List<TransactionOutputDTO> outputs = transactionDTO.getOutputs();
-        BigInteger transactionOutputSequence = BigInteger.ZERO;
+        long transactionOutputSequence = 0;
         for(TransactionOutputDTO transactionOutputDTO:outputs){
-            transactionOutputSequence = transactionOutputSequence.add(BigInteger.ONE);
+            transactionOutputSequence++;
             outputHashList.add(calculateTransactionOutputHash(transactionDTO.getTimestamp(),transactionOutputSequence,transactionOutputDTO));
         }
         return calculateTransactionHash(transactionDTO.getTimestamp(),inputHashList,outputHashList);
@@ -198,17 +196,17 @@ public class TransactionTool {
     /**
      * 计算交易输出哈希
      */
-    public static String calculateTransactionOutputHash(long timestamp, BigInteger transactionOutputSequence, TransactionOutputDTO transactionOutputDTO) {
+    public static String calculateTransactionOutputHash(long timestamp, long transactionOutputSequence, TransactionOutputDTO transactionOutputDTO) {
         return calculateTransactionOutputHash(timestamp,transactionOutputSequence,transactionOutputDTO.getAddress(),transactionOutputDTO.getValue(),transactionOutputDTO.getScriptLock());
     }
 
     /**
      * 计算交易输出哈希
      */
-    private static String calculateTransactionOutputHash(long currentTimeMillis, BigInteger transactionOutputSequence, String address, String value, List<String> scriptLock) {
+    private static String calculateTransactionOutputHash(long currentTimeMillis, long transactionOutputSequence, String address, String value, List<String> scriptLock) {
         String forHash = "[" + currentTimeMillis + "]";
         forHash += "[" + address + "]";
-        forHash += "[" + transactionOutputSequence.toString() + "]";
+        forHash += "[" + transactionOutputSequence + "]";
         forHash += "[" + value + "]";
         forHash += "[" + Joiner.on(" ").join(scriptLock) + "]";
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(forHash));

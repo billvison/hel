@@ -8,7 +8,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.netcore.model.NodeEntity;
 
 import java.io.File;
-import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -233,6 +232,7 @@ public class NodeDaoImpl implements NodeDao {
         try {
             String ip = resultSet.getString("ip");
             Integer port = resultSet.getInt("port");
+            //TODO long
             Integer blockChainHeight = resultSet.getInt("blockChainHeight");
             Integer isNodeAvailable = resultSet.getInt("isNodeAvailable");
             Integer errorConnectionTimes = resultSet.getInt("errorConnectionTimes");
@@ -241,7 +241,8 @@ public class NodeDaoImpl implements NodeDao {
             NodeEntity entity = new NodeEntity();
             entity.setIp(ip);
             entity.setPort(port);
-            entity.setBlockChainHeight(BigInteger.valueOf(blockChainHeight));
+            //TODO
+            entity.setBlockChainHeight(Long.valueOf(blockChainHeight));
             entity.setIsNodeAvailable(SqliteUtil.intToBoolean(isNodeAvailable));
             entity.setErrorConnectionTimes(errorConnectionTimes);
             entity.setFork(SqliteUtil.intToBoolean(fork));

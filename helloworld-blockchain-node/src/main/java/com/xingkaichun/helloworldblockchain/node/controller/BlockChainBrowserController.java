@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -232,7 +231,7 @@ public class BlockChainBrowserController {
     public ServiceResult<PingResponse> ping(@RequestBody PingRequest request){
         try {
             List<NodeDto> nodeList = nodeService.queryAllNoForkNodeList();
-            BigInteger blockChainHeight = blockChainCoreService.queryBlockChainHeight();
+            long blockChainHeight = blockChainCoreService.queryBlockChainHeight();
             PingResponse response = new PingResponse();
             response.setNodeList(nodeList);
             response.setBlockChainHeight(blockChainHeight);

@@ -1,7 +1,5 @@
 package com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request;
 
-import java.math.BigInteger;
-
 /**
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
@@ -11,18 +9,20 @@ public class RemoveBlockRequest {
     /**
      * 删除区块的高度。因为区块是连续的，所以大于等于这个高度的区块都将被删除
      */
-    private BigInteger blockHeight;
+    private Long blockHeight;
 
 
 
 
     //region get set
-    public BigInteger getBlockHeight() {
+
+    public Long getBlockHeight() {
         return blockHeight;
     }
 
-    public void setBlockHeight(BigInteger blockHeight) {
+    public void setBlockHeight(Long blockHeight) {
         this.blockHeight = blockHeight;
     }
+
     //endregion
 }

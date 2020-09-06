@@ -9,14 +9,13 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeServerApiR
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request.*;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.*;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.netcore.tools.NetTool;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.math.BigInteger;
 
 /**
  *
@@ -79,7 +78,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
         }
     }
 
-    public ServiceResult<EmptyResponse> unicastLocalBlockChainHeight(SimpleNodeDto node, BigInteger localBlockChainHeight) {
+    public ServiceResult<EmptyResponse> unicastLocalBlockChainHeight(SimpleNodeDto node, long localBlockChainHeight) {
         try {
             String url = String.format("http://%s:%d%s",node.getIp(), node.getPort(), NodeServerApiRoute.ADD_OR_UPDATE_NODE);
             AddOrUpdateNodeRequest request = new AddOrUpdateNodeRequest();
@@ -103,7 +102,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
     }
 
     @Override
-    public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(NodeDto node, BigInteger blockHeight) {
+    public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(NodeDto node, Long blockHeight) {
         try {
             String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeServerApiRoute.QUERY_BLOCK_HASH_BY_BLOCK_HEIGHT);
             QueryBlockHashByBlockHeightRequest request = new QueryBlockHashByBlockHeightRequest();
@@ -126,7 +125,7 @@ public class BlockchainNodeClientServiceImpl implements BlockchainNodeClientServ
     }
 
     @Override
-    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(NodeDto node, BigInteger blockHeight) {
+    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(NodeDto node, Long blockHeight) {
         try {
             String url = String.format("http://%s:%d%s",node.getIp(),node.getPort(), NodeServerApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT);
             QueryBlockDtoByBlockHeightRequest request = new QueryBlockDtoByBlockHeightRequest();

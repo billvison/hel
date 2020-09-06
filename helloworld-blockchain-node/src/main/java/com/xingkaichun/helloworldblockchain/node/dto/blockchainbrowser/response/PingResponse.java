@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.response
 
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -13,7 +12,7 @@ public class PingResponse {
 
     private String blockChainId;
     private Long blockChainVersion;
-    private BigInteger blockChainHeight ;
+    private Long blockChainHeight ;
     private List<NodeDto> nodeList;
 
 
@@ -37,11 +36,11 @@ public class PingResponse {
         this.blockChainVersion = blockChainVersion;
     }
 
-    public BigInteger getBlockChainHeight() {
+    public Long getBlockChainHeight() {
         return blockChainHeight;
     }
 
-    public void setBlockChainHeight(BigInteger blockChainHeight) {
+    public void setBlockChainHeight(Long blockChainHeight) {
         this.blockChainHeight = blockChainHeight;
     }
 

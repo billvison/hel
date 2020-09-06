@@ -1,9 +1,7 @@
 package com.xingkaichun.helloworldblockchain.setting;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -71,7 +69,7 @@ public class GlobalSetting {
      */
     public static class GenesisBlockConstant{
         //第一个区块的高度
-        public final static BigInteger FIRST_BLOCK_HEIGHT = BigInteger.ONE;
+        public final static long FIRST_BLOCK_HEIGHT = 1;
         //第一个区块的PREVIOUS_HASH
         public final static String FIRST_BLOCK_PREVIOUS_HASH = "xingkaichun";
     }

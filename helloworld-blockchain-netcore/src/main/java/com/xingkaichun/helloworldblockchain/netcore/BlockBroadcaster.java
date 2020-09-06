@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
-import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
@@ -12,7 +12,6 @@ import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 
@@ -69,10 +68,10 @@ public class BlockBroadcaster {
             return;
         }
 
-        BigInteger localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
+        long localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
         boolean isLocalBlockChainHighest = true;
         for(NodeDto node:nodes){
-            if(BigIntegerUtil.isLessThan(localBlockChainHeight,node.getBlockChainHeight())){
+            if(LongUtil.isLessThan(localBlockChainHeight,node.getBlockChainHeight())){
                 isLocalBlockChainHighest = false;
                 break;
             }
@@ -85,7 +84,7 @@ public class BlockBroadcaster {
             int broadcastNodeCount = 0;
             //排序节点
             Collections.sort(nodes,(NodeDto node1, NodeDto node2)->{
-                if(BigIntegerUtil.isGreatThan(node1.getBlockChainHeight(),node2.getBlockChainHeight())){
+                if(LongUtil.isGreatThan(node1.getBlockChainHeight(),node2.getBlockChainHeight())){
                     return -1;
                 } else if(node1.getBlockChainHeight() == node2.getBlockChainHeight()){
                     return 0;

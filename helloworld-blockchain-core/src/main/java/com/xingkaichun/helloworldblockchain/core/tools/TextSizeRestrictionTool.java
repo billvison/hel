@@ -7,13 +7,11 @@ import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,9 +31,9 @@ public class TextSizeRestrictionTool {
     //区块最多含有的交易数量
     public final static long BLOCK_MAX_TRANSACTION_SIZE = BLOCK_TEXT_MAX_SIZE/TRANSACTION_TEXT_MAX_SIZE;
     //nonce最大值
-    public final static BigInteger MAX_NONCE = new BigInteger(String.join("", Collections.nCopies(50, "9")));
+    public final static long MAX_NONCE = Long.MAX_VALUE;
     //nonce最小值
-    public final static BigInteger MIN_NONCE = BigInteger.ZERO;
+    public final static long MIN_NONCE = 0L;
 
 
 
@@ -51,11 +49,11 @@ public class TextSizeRestrictionTool {
         }
 
         //校验共识占用存储空间
-        BigInteger nonce = new BigInteger(block.getNonce());
-        if(BigIntegerUtil.isLessThan(nonce, TextSizeRestrictionTool.MIN_NONCE)){
+        long nonce = block.getNonce();
+        if(LongUtil.isLessThan(nonce, TextSizeRestrictionTool.MIN_NONCE)){
             return false;
         }
-        if(BigIntegerUtil.isGreatThan(nonce, TextSizeRestrictionTool.MAX_NONCE)){
+        if(LongUtil.isGreatThan(nonce, TextSizeRestrictionTool.MAX_NONCE)){
             return false;
         }
 

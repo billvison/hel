@@ -5,15 +5,13 @@ import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
-import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.StringUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigInteger;
 
 /**
  * 默认实现
@@ -87,17 +85,17 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             return;
         }
 
-        BigInteger maxBlockHeight = synchronizerDataBase.getMaxBlockHeight(availableSynchronizeNodeId);
-        if(maxBlockHeight == null){
+        long maxBlockHeight = synchronizerDataBase.getMaxBlockHeight(availableSynchronizeNodeId);
+        if(maxBlockHeight <= 0){
             return;
         }
-        BigInteger targetBlockChainHeight = targetBlockChainDataBase.queryBlockChainHeight();
-        if(!BigIntegerUtil.isEquals(targetBlockChainHeight,BigInteger.valueOf(0)) && BigIntegerUtil.isGreatEqualThan(targetBlockChainHeight,maxBlockHeight)){
+        long targetBlockChainHeight = targetBlockChainDataBase.queryBlockChainHeight();
+        if(!LongUtil.isEquals(targetBlockChainHeight,LongUtil.ZERO) && LongUtil.isGreatEqualThan(targetBlockChainHeight,maxBlockHeight)){
             synchronizerDataBase.clear(availableSynchronizeNodeId);
             return;
         }
 
-        BigInteger minBlockHeight = synchronizerDataBase.getMinBlockHeight(availableSynchronizeNodeId);
+        long minBlockHeight = synchronizerDataBase.getMinBlockHeight(availableSynchronizeNodeId);
         BlockDTO blockDTO = synchronizerDataBase.getBlockDto(availableSynchronizeNodeId,minBlockHeight);
         if(blockDTO != null){
             temporaryBlockChainDataBase.removeTailBlocksUtilBlockHeightLessThan(blockDTO.getHeight());
@@ -107,7 +105,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
                 if(!isAddBlockToBlockChainSuccess){
                     break;
                 }
-                minBlockHeight = minBlockHeight.add(BigInteger.ONE);
+                minBlockHeight++;
                 blockDTO = synchronizerDataBase.getBlockDto(availableSynchronizeNodeId,minBlockHeight);
             }
         }
@@ -138,13 +136,13 @@ public class SynchronizerDefaultImpl extends Synchronizer {
         if(targetBlockChainTailBlock == null){
             throw new RuntimeException("在这个时刻，targetBlockChainTailBlock必定不为null。");
         }
-        if(BigIntegerUtil.isGreatEqualThan(targetBlockChainTailBlock.getHeight(),temporaryBlockChainTailBlock.getHeight())){
+        if(LongUtil.isGreatEqualThan(targetBlockChainTailBlock.getHeight(),temporaryBlockChainTailBlock.getHeight())){
             return;
         }
         //未分叉区块高度
-        BigInteger noForkBlockHeight = targetBlockChainTailBlock.getHeight();
+        long noForkBlockHeight = targetBlockChainTailBlock.getHeight();
         while (true){
-            if(BigIntegerUtil.isLessEqualThan(noForkBlockHeight,BigInteger.valueOf(0))){
+            if(LongUtil.isLessEqualThan(noForkBlockHeight,LongUtil.ZERO)){
                 break;
             }
             Block targetBlock = targetBlockChainDataBase.queryNoTransactionBlockByBlockHeight(noForkBlockHeight);
@@ -159,9 +157,9 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             noForkBlockHeight = targetBlockChainDataBase.queryBlockChainHeight();
         }
 
-        BigInteger targetBlockChainHeight = targetBlockChainDataBase.queryBlockChainHeight() ;
+        long targetBlockChainHeight = targetBlockChainDataBase.queryBlockChainHeight() ;
         while(true){
-            targetBlockChainHeight = targetBlockChainHeight.add(BigInteger.valueOf(1));
+            targetBlockChainHeight++;
             Block currentBlock = temporaryBlockChainDataBase.queryBlockByBlockHeight(targetBlockChainHeight) ;
             if(currentBlock == null){
                 break;
@@ -181,7 +179,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
         Block temporaryBlockChainTailBlock = temporaryBlockChainDataBase.queryTailNoTransactionBlock() ;
         if(targetBlockChainTailBlock == null){
             //清空temporary
-            temporaryBlockChainDataBase.removeTailBlocksUtilBlockHeightLessThan(BigInteger.ONE);
+            temporaryBlockChainDataBase.removeTailBlocksUtilBlockHeightLessThan(LongUtil.ONE);
             return;
         }
         //删除Temporary区块链直到尚未分叉位置停止
@@ -197,9 +195,9 @@ public class SynchronizerDefaultImpl extends Synchronizer {
             temporaryBlockChainTailBlock = temporaryBlockChainDataBase.queryTailNoTransactionBlock();
         }
         //复制target数据至temporary
-        BigInteger temporaryBlockChainHeight = temporaryBlockChainDataBase.queryBlockChainHeight();
+        long temporaryBlockChainHeight = temporaryBlockChainDataBase.queryBlockChainHeight();
         while(true){
-            temporaryBlockChainHeight = temporaryBlockChainHeight.add(BigInteger.valueOf(1));
+            temporaryBlockChainHeight++;
             Block currentBlock = targetBlockChainDataBase.queryBlockByBlockHeight(temporaryBlockChainHeight) ;
             if(currentBlock == null){
                 break;
@@ -219,9 +217,9 @@ public class SynchronizerDefaultImpl extends Synchronizer {
         }
         //不严格校验,这里没有具体校验每一笔交易
         if(StringUtil.isEquals(block1.getPreviousBlockHash(),block2.getPreviousBlockHash())
-                && BigIntegerUtil.isEquals(block1.getHeight(),block2.getHeight())
+                && LongUtil.isEquals(block1.getHeight(),block2.getHeight())
                 && StringUtil.isEquals(block1.getMerkleTreeRoot(),block2.getMerkleTreeRoot())
-                && StringUtil.isEquals(block1.getNonce(),block2.getNonce())
+                && LongUtil.isEquals(block1.getNonce(),block2.getNonce())
                 && StringUtil.isEquals(block1.getHash(),block2.getHash())){
             return true;
         }

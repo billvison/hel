@@ -1,9 +1,8 @@
 package com.xingkaichun.helloworldblockchain.netcore.netserver;
 
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
-import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request.*;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.*;
@@ -11,11 +10,11 @@ import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreServic
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class HttpServerHandlerResolver {
     public ServiceResult<PingResponse> ping(ChannelHandlerContext ctx, PingRequest request){
         try {
             List<NodeDto> nodeList = nodeService.queryAllNoForkNodeList();
-            BigInteger blockChainHeight = blockChainCoreService.queryBlockChainHeight();
+            long blockChainHeight = blockChainCoreService.queryBlockChainHeight();
 
             //将ping的来路作为区块链节点
             ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());

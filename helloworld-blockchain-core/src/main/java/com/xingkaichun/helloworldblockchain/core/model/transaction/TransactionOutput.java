@@ -5,7 +5,6 @@ import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  * 交易输出
@@ -49,19 +48,19 @@ public class TransactionOutput implements Serializable {
      * 交易所在区块的区块高度
      * 冗余
      */
-    private BigInteger blockHeight;
+    private long blockHeight;
     /**
      * 交易输出在的交易在所在的区块中的交易序列号
      * 冗余
      * 在这个交易区块中的的排序号
      */
-    private BigInteger transactionSequenceNumberInBlock;
+    private long transactionSequenceNumberInBlock;
     /**
      * 交易输出序列号
      * 冗余
      * 在这个交易中的的排序号
      */
-    private BigInteger transactionOutputSequence;
+    private long transactionOutputSequence;
 
 
 
@@ -108,29 +107,29 @@ public class TransactionOutput implements Serializable {
         this.scriptLock = scriptLock;
     }
 
-    public BigInteger getBlockHeight() {
+    public long getBlockHeight() {
         return blockHeight;
     }
 
-    public void setBlockHeight(BigInteger blockHeight) {
+    public void setBlockHeight(long blockHeight) {
         this.blockHeight = blockHeight;
     }
 
-    public BigInteger getTransactionSequenceNumberInBlock() {
+    public long getTransactionSequenceNumberInBlock() {
         return transactionSequenceNumberInBlock;
     }
 
-    public void setTransactionSequenceNumberInBlock(BigInteger transactionSequenceNumberInBlock) {
+    public void setTransactionSequenceNumberInBlock(long transactionSequenceNumberInBlock) {
         this.transactionSequenceNumberInBlock = transactionSequenceNumberInBlock;
     }
 
-    public BigInteger getTransactionOutputSequence() {
+    public long getTransactionOutputSequence() {
         return transactionOutputSequence;
     }
 
-    public void setTransactionOutputSequence(BigInteger transactionOutputSequence) {
+    public void setTransactionOutputSequence(long transactionOutputSequence) {
         this.transactionOutputSequence = transactionOutputSequence;
     }
 
-    //endregion
+//endregion
 }

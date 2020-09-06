@@ -9,8 +9,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.Query
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.QueryBlockHashByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 
-import java.math.BigInteger;
-
 /**
  * 区块链节点客户端service
  *
@@ -31,16 +29,16 @@ public interface BlockchainNodeClientService {
     /**
      * 单播：将本地区块链高度传给指定节点
      */
-    ServiceResult<EmptyResponse> unicastLocalBlockChainHeight(SimpleNodeDto node, BigInteger localBlockChainHeight) ;
+    ServiceResult<EmptyResponse> unicastLocalBlockChainHeight(SimpleNodeDto node, long localBlockChainHeight) ;
 
     /**
      * 根据区块高度，获取对应的区块hash
      */
-    ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(NodeDto node, BigInteger blockHeight);
+    ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(NodeDto node, Long blockHeight);
 
     /**
      * 根据区块高度，获取对应的区块
      */
-    ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(NodeDto node, BigInteger blockHeight) ;
+    ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(NodeDto node, Long blockHeight) ;
 
 }

@@ -4,7 +4,6 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 
-import java.math.BigInteger;
 import java.util.List;
 
 
@@ -44,7 +43,7 @@ public abstract class BlockChainDataBase {
     /**
      * 删除区块高度大于等于@blockHeight@的区块
      */
-    public abstract void removeTailBlocksUtilBlockHeightLessThan(BigInteger blockHeight) ;
+    public abstract void removeTailBlocksUtilBlockHeightLessThan(long blockHeight) ;
     //endregion
 
 
@@ -69,15 +68,15 @@ public abstract class BlockChainDataBase {
     /**
      * 查询区块链的长度
      */
-    public abstract BigInteger queryBlockChainHeight() ;
+    public abstract long queryBlockChainHeight() ;
     /**
      * 查询区块链中总的交易数量
      */
-    public abstract BigInteger queryTransactionSize() ;
+    public abstract long queryTransactionSize() ;
     /**
      * 根据区块哈希查找区块高度
      */
-    public abstract BigInteger queryBlockHeightByBlockHash(String blockHash) ;
+    public abstract long queryBlockHeightByBlockHash(String blockHash) ;
     //endregion
 
 
@@ -94,11 +93,11 @@ public abstract class BlockChainDataBase {
     /**
      * 在区块链中根据区块高度查找区块
      */
-    public abstract Block queryBlockByBlockHeight(BigInteger blockHeight) ;
+    public abstract Block queryBlockByBlockHeight(long blockHeight) ;
     /**
      * 在区块链中根据区块高度查找【未存储交易信息】的区块
      */
-    public abstract Block queryNoTransactionBlockByBlockHeight(BigInteger blockHeight) ;
+    public abstract Block queryNoTransactionBlockByBlockHeight(long blockHeight) ;
     /**
      * 在区块链中根据区块哈希查找区块
      */
@@ -119,7 +118,7 @@ public abstract class BlockChainDataBase {
     /**
      * 根据交易高度查询交易
      */
-    public abstract List<Transaction> queryTransactionByTransactionHeight(BigInteger from,BigInteger size) ;
+    public abstract List<Transaction> queryTransactionByTransactionHeight(long from,long size) ;
     //endregion
 
 

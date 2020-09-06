@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.MerkleTreeUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +34,7 @@ public class BlockTool {
      * 计算区块的Hash值
      */
     public static String calculateBlockHash(Block block) {
-        String input = block.getTimestamp()+block.getPreviousBlockHash()+block.getHeight()+block.getMerkleTreeRoot()+block.getNonce();
+        String input = block.getTimestamp()+block.getPreviousBlockHash()+block.getMerkleTreeRoot()+block.getNonce();
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(input));
         return HexUtil.bytesToHexString(sha256Digest) + block.getTimestamp();
     }
@@ -329,7 +328,7 @@ public class BlockTool {
                 return false;
             }
             //校验区块高度是否连贯
-            if(!BigIntegerUtil.isEquals(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_HEIGHT,currentBlock.getHeight())){
+            if(!LongUtil.isEquals(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_HEIGHT,currentBlock.getHeight())){
                 return false;
             }
         } else {
@@ -342,7 +341,7 @@ public class BlockTool {
                 return false;
             }
             //校验区块高度是否连贯
-            if(!BigIntegerUtil.isEquals(previousBlock.getHeight().add(BigInteger.valueOf(1)),currentBlock.getHeight())){
+            if(!LongUtil.isEquals((previousBlock.getHeight()+1),currentBlock.getHeight())){
                 return false;
             }
         }

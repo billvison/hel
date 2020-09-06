@@ -6,7 +6,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainForkDao;
 import com.xingkaichun.helloworldblockchain.netcore.model.BlockchainForkBlockEntity;
 
 import java.io.File;
-import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class BlockChainForkDaoImpl implements BlockChainForkDao {
                 Integer blockHeight = resultSet.getInt("blockHeight");
                 String blockHash = resultSet.getString("blockHash");
                 BlockchainForkBlockEntity entity = new BlockchainForkBlockEntity();
-                entity.setBlockHeight(BigInteger.valueOf(blockHeight));
+                entity.setBlockHeight(blockHeight);
                 entity.setBlockHash(blockHash);
                 nodeList.add(entity);
             }
@@ -75,7 +74,8 @@ public class BlockChainForkDaoImpl implements BlockChainForkDao {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection().prepareStatement(sql1);
-            preparedStatement.setInt(1,entity.getBlockHeight().intValue());
+            //TODO LONG
+            preparedStatement.setInt(1, (int) entity.getBlockHeight());
             preparedStatement.setString(2,entity.getBlockHash());
             preparedStatement.executeUpdate();
         } catch (Exception e){

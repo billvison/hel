@@ -1,7 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.transport.dto;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -13,12 +12,12 @@ import java.util.List;
 public class BlockDTO implements Serializable {
     //区块产生的时间戳
     private long timestamp;
-    //区块高度
-    private BigInteger height;
+    //区块高度 TODO 可以删除吗？
+    private long height;
     //区块里的交易
     private List<TransactionDTO> transactions;
     //共识值
-    private String nonce;
+    private long nonce;
 
 
 
@@ -33,11 +32,11 @@ public class BlockDTO implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public BigInteger getHeight() {
+    public long getHeight() {
         return height;
     }
 
-    public void setHeight(BigInteger height) {
+    public void setHeight(long height) {
         this.height = height;
     }
 
@@ -49,12 +48,12 @@ public class BlockDTO implements Serializable {
         this.transactions = transactions;
     }
 
-    public String getNonce() {
+    public long getNonce() {
         return nonce;
     }
 
-    public void setNonce(String nonce) {
+    public void setNonce(long nonce) {
         this.nonce = nonce;
     }
-//endregion
+    //endregion
 }

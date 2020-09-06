@@ -26,14 +26,14 @@ public class ResourcePathTool {
         String dataRootPath = defaultDataRootPath;
         if(Strings.isNullOrEmpty(dataRootPath)){
             if(OperateSystemUtil.isWindowsOperateSystem()){
-                dataRootPath = "C:\\HelloworldBlockchainDataRoot\\";
+                dataRootPath = "C:\\HelloworldBlockchainData\\";
             }else if(OperateSystemUtil.isLinuxOperateSystem()){
-                dataRootPath = "/opt/HelloworldBlockchainDataRoot/";
+                dataRootPath = "/opt/HelloworldBlockchainData/";
             }
         }
         if(Strings.isNullOrEmpty(dataRootPath)){
             String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-            dataRootPath = new File(path,"HelloworldBlockchainDataRoot").getAbsolutePath();
+            dataRootPath = new File(path,"HelloworldBlockchainData").getAbsolutePath();
         }
         FileUtil.mkdir(dataRootPath);
         return dataRootPath;

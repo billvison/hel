@@ -6,13 +6,12 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -32,11 +31,11 @@ public class IncentiveDefaultImpl extends Incentive {
         //区块固定奖励
         BigDecimal mixedCoin = GlobalSetting.MinerConstant.INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT;
 
-        BigInteger blockHeight = block.getHeight();
-        if(BigIntegerUtil.isLessEqualThan(blockHeight,BigInteger.ONE)){
+        long blockHeight = block.getHeight();
+        if(LongUtil.isLessEqualThan(blockHeight,LongUtil.ONE)){
         }else {
-            BigInteger height = block.getHeight();
-            long multiple = (height.divide(new BigInteger("210000"))).longValue();
+            long height = block.getHeight();
+            long multiple = height/210000;
             while (multiple > 1){
                 mixedCoin = mixedCoin.divide(new BigDecimal("2"));
                 --multiple;

@@ -12,7 +12,7 @@ import com.xingkaichun.helloworldblockchain.core.script.StackBasedVirtualMachine
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
-import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -101,7 +100,7 @@ public class MinerDefaultImpl extends Miner {
             //第一个区块，除了创始人，其它矿工没有机会走到这里
             return false;
         } else {
-            if(BigIntegerUtil.isEquals(tailBlock.getHeight().add(BigInteger.valueOf(1)),block.getHeight()) && tailBlock.getHash().equals(block.getPreviousBlockHash())){
+            if((tailBlock.getHeight()+1==block.getHeight()) && tailBlock.getHash().equals(block.getPreviousBlockHash())){
                 return false;
             }
             return true;
@@ -160,8 +159,8 @@ public class MinerDefaultImpl extends Miner {
         miningBlock.setStartTimestamp(System.currentTimeMillis());
         miningBlock.setBlockChainDataBase(blockChainDataBase);
         miningBlock.setBlock(nextMineBlock);
-        miningBlock.setNextNonce(new BigInteger("0"));
-        miningBlock.setTryNonceSizeEveryBatch(new BigInteger("10000000"));
+        miningBlock.setNextNonce(0L);
+        miningBlock.setTryNonceSizeEveryBatch(10000000L);
         miningBlock.setMiningSuccess(false);
         return miningBlock;
     }
@@ -169,24 +168,23 @@ public class MinerDefaultImpl extends Miner {
     public void miningBlock(BlockChainDataBase blockChainDataBase, MiningBlock miningBlock) {
         //TODO 改善型功能 这里可以利用多处理器的性能进行计算 还可以进行矿池挖矿
         Block block = miningBlock.getBlock();
-        BigInteger startNonce = miningBlock.getNextNonce();
-        BigInteger tryNonceSizeEveryBatch = miningBlock.getTryNonceSizeEveryBatch();
+        long startNonce = miningBlock.getNextNonce();
+        long tryNonceSizeEveryBatch = miningBlock.getTryNonceSizeEveryBatch();
         while(true){
             if(!mineOption){
                 break;
             }
-            BigInteger nextNonce = miningBlock.getNextNonce();
-            if(nextNonce.subtract(startNonce).compareTo(tryNonceSizeEveryBatch)>0){
+            long nextNonce = miningBlock.getNextNonce();
+            if(LongUtil.isGreatThan(nextNonce-startNonce,tryNonceSizeEveryBatch)){
                 break;
             }
-            block.setNonce(nextNonce.toString());
+            block.setNonce(nextNonce);
             block.setHash(BlockTool.calculateBlockHash(block));
             if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
                 miningBlock.setMiningSuccess(true);
                 break;
             }
-            block.setNonce(null);
-            miningBlock.setNextNonce(nextNonce.add(new BigInteger("1")));
+            miningBlock.setNextNonce(nextNonce+1);
         }
     }
 
@@ -203,9 +201,9 @@ public class MinerDefaultImpl extends Miner {
         //矿工要挖矿的区块
         private Block block;
         //标记矿工下一个要验证的nonce
-        private BigInteger nextNonce;
+        private long nextNonce;
         //标记矿工每批次尝试验证的nonce个数
-        private BigInteger tryNonceSizeEveryBatch;
+        private long tryNonceSizeEveryBatch;
         //是否挖矿成功
         private Boolean miningSuccess;
         private List<Transaction> forMineBlockTransactionList;
@@ -240,19 +238,19 @@ public class MinerDefaultImpl extends Miner {
             this.block = block;
         }
 
-        public BigInteger getNextNonce() {
+        public long getNextNonce() {
             return nextNonce;
         }
 
-        public void setNextNonce(BigInteger nextNonce) {
+        public void setNextNonce(long nextNonce) {
             this.nextNonce = nextNonce;
         }
 
-        public BigInteger getTryNonceSizeEveryBatch() {
+        public long getTryNonceSizeEveryBatch() {
             return tryNonceSizeEveryBatch;
         }
 
-        public void setTryNonceSizeEveryBatch(BigInteger tryNonceSizeEveryBatch) {
+        public void setTryNonceSizeEveryBatch(long tryNonceSizeEveryBatch) {
             this.tryNonceSizeEveryBatch = tryNonceSizeEveryBatch;
         }
 
@@ -365,7 +363,7 @@ public class MinerDefaultImpl extends Miner {
         BigDecimal award = blockChainDataBase.getIncentive().mineAward(block);
 
         TransactionOutput output = new TransactionOutput();
-        output.setTransactionOutputSequence(BigInteger.ONE);
+        output.setTransactionOutputSequence(1);
         output.setTimestamp(timestamp);
         output.setAddress(minerAddress);
         output.setValue(award);
@@ -396,7 +394,7 @@ public class MinerDefaultImpl extends Miner {
             nonNonceBlock.setHeight(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_HEIGHT);
             nonNonceBlock.setPreviousBlockHash(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH);
         } else {
-            nonNonceBlock.setHeight(tailBlock.getHeight().add(BigInteger.valueOf(1)));
+            nonNonceBlock.setHeight(tailBlock.getHeight()+1);
             nonNonceBlock.setPreviousBlockHash(tailBlock.getHash());
         }
         nonNonceBlock.setTransactions(packingTransactionList);

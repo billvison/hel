@@ -4,13 +4,13 @@ import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.utils.FileUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.JdbcUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         try {
             preparedStatement = connection().prepareStatement(sql);
             preparedStatement.setString(1,nodeId);
-            preparedStatement.setBigDecimal(2,new BigDecimal(blockDTO.getHeight().toString()));
+            preparedStatement.setBigDecimal(2,new BigDecimal(blockDTO.getHeight()));
             preparedStatement.setString(3, NodeTransportDtoTool.encode(blockDTO));
             preparedStatement.setLong(4,System.currentTimeMillis());
             preparedStatement.executeUpdate();
@@ -75,7 +75,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
     }
 
     @Override
-    public BigInteger getMinBlockHeight(String nodeId) {
+    public long getMinBlockHeight(String nodeId) {
         String sql = "SELECT min(blockHeight) as minBlockHeight FROM DATA WHERE nodeId = ?";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -85,7 +85,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
                 BigDecimal blockHeight = resultSet.getBigDecimal("minBlockHeight");
-                return new BigInteger(blockHeight.toPlainString());
+                return blockHeight.longValue();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -93,11 +93,11 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             JdbcUtil.closeStatement(preparedStatement);
             JdbcUtil.closeResultSet(resultSet);
         }
-        return BigInteger.ZERO;
+        return LongUtil.ZERO;
     }
 
     @Override
-    public BigInteger getMaxBlockHeight(String nodeId) {
+    public long getMaxBlockHeight(String nodeId) {
         String sql = "SELECT max(blockHeight) as maxBlockHeight FROM DATA WHERE nodeId = ?";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -107,7 +107,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
                 BigDecimal blockHeight = resultSet.getBigDecimal("maxBlockHeight");
-                return new BigInteger(blockHeight.toPlainString());
+                return blockHeight.longValue();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -115,18 +115,18 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             JdbcUtil.closeStatement(preparedStatement);
             JdbcUtil.closeResultSet(resultSet);
         }
-        return null;
+        return LongUtil.ZERO;
     }
 
     @Override
-    public BlockDTO getBlockDto(String nodeId, BigInteger blockHeight) {
+    public BlockDTO getBlockDto(String nodeId, long blockHeight) {
         String selectBlockDataSql = "SELECT * FROM DATA WHERE nodeId = ? and blockHeight=?";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             preparedStatement = connection().prepareStatement(selectBlockDataSql);
             preparedStatement.setString(1,nodeId);
-            preparedStatement.setBigDecimal(2,new BigDecimal(blockHeight.toString()));
+            preparedStatement.setBigDecimal(2,new BigDecimal(blockHeight));
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
                 String stringBlockDto = resultSet.getString("blockDto");

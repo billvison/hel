@@ -9,7 +9,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.transaction.SubmitNormal
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -43,7 +42,7 @@ public interface BlockChainCoreService {
     /**
      * 根据区块高度获取区块DTO
      */
-    BlockDTO queryBlockDtoByBlockHeight(BigInteger blockHeight) ;
+    BlockDTO queryBlockDtoByBlockHeight(long blockHeight) ;
     /**
      * 根据区块哈希获取区块
      */
@@ -51,15 +50,15 @@ public interface BlockChainCoreService {
     /**
      * 根据区块高度获取区块DTO
      */
-    Block queryNoTransactionBlockDtoByBlockHeight(BigInteger blockHeight) ;
+    Block queryNoTransactionBlockDtoByBlockHeight(long blockHeight) ;
     /**
      * 根据区块高度获取区块Hash
      */
-    String queryBlockHashByBlockHeight(BigInteger blockHeight) ;
+    String queryBlockHashByBlockHeight(long blockHeight) ;
     /**
      * 获取区块链高度
      */
-    BigInteger queryBlockChainHeight() ;
+    long queryBlockChainHeight() ;
     /**
      * 查询挖矿中的交易
      */
@@ -67,7 +66,7 @@ public interface BlockChainCoreService {
 
     TransactionDTO queryMiningTransactionDtoByTransactionHash(String transactionHash) ;
 
-    void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) ;
+    void removeBlocksUtilBlockHeightLessThan(long blockHeight) ;
 
     /**
      * 保存交易到矿工交易数据库

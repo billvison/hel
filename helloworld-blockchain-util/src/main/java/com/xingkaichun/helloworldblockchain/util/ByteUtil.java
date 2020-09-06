@@ -2,8 +2,6 @@ package com.xingkaichun.helloworldblockchain.util;
 
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 
-import java.math.BigInteger;
-
 /**
  * Byte工具类
  *
@@ -19,11 +17,11 @@ public class ByteUtil {
         return new String(bytesValue, GlobalSetting.GLOBAL_CHARSET);
     }
 
-    public static byte[] bigIntegerToBytes(BigInteger bigIntegerValue) {
-        return stringToBytes(String.valueOf(bigIntegerValue));
+    public static byte[] longToBytes(long longValue) {
+        return stringToBytes(String.valueOf(longValue));
     }
 
-    public static BigInteger bytesToBigInteger(byte[] bytesValue) {
-        return new BigInteger(bytesToString(bytesValue));
+    public static long bytesToLong(byte[] bytesValue) {
+        return Long.valueOf(bytesToString(bytesValue));
     }
 }

@@ -2,12 +2,13 @@ package com.xingkaichun.helloworldblockchain.node.controller;
 
 import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
+import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
-import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainForkService;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
+import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainForkService;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.AdminConsoleApiRoute;
@@ -236,6 +237,8 @@ public class AdminConsoleController {
             ConfigurationDto minerAddressConfigurationDto =  configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
             QueryMinerAddressResponse response = new QueryMinerAddressResponse();
             response.setMinerAddress(minerAddressConfigurationDto.getConfValue());
+            Account defaultMinerAccount = configurationService.getDefaultMinerAccount();
+            response.setDefaultMinerAccount(defaultMinerAccount);
             return ServiceResult.createSuccessServiceResult("查询矿工的地址成功",response);
         } catch (Exception e){
             String message = "查询矿工的地址失败";

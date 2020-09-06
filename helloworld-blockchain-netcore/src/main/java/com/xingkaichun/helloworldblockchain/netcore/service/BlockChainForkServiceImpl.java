@@ -1,12 +1,11 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainForkDao;
 import com.xingkaichun.helloworldblockchain.netcore.dto.fork.BlockchainForkBlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.model.BlockchainForkBlockEntity;
 
-import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -42,7 +41,7 @@ public class BlockChainForkServiceImpl implements BlockChainForkService {
     }
 
     @Override
-    public boolean isFork(BigInteger blockHeight,String blockHash){
+    public boolean isFork(long blockHeight,String blockHash){
         String stringBlockHeight = String.valueOf(blockHeight);
         String blockHashTemp = blockHeightBlockHashMap.get(stringBlockHeight);
         if(blockHashTemp == null){
@@ -52,12 +51,12 @@ public class BlockChainForkServiceImpl implements BlockChainForkService {
     }
 
     @Override
-    public BigInteger getFixBlockHashMaxBlockHeight(BigInteger blockHeight){
-        BigInteger nearBlockHeight = BigInteger.ZERO;
+    public long getFixBlockHashMaxBlockHeight(long blockHeight){
+        long nearBlockHeight = LongUtil.ZERO;
         Set<String> set = blockHeightBlockHashMap.keySet();
         for(String stringBlockHeight:set){
-            BigInteger intBlockHeight = new BigInteger(stringBlockHeight);
-            if(BigIntegerUtil.isLessThan(intBlockHeight,blockHeight)  && BigIntegerUtil.isGreatThan(intBlockHeight,nearBlockHeight)){
+            long intBlockHeight = Long.valueOf(stringBlockHeight);
+            if(LongUtil.isLessThan(intBlockHeight,blockHeight)  && LongUtil.isGreatThan(intBlockHeight,nearBlockHeight)){
                 nearBlockHeight = intBlockHeight;
             }
         }
@@ -80,14 +79,14 @@ public class BlockChainForkServiceImpl implements BlockChainForkService {
             if(block == null){
                 return;
             }
-            if(entity.getBlockHash().equals(block.getHash()) && BigIntegerUtil.isEquals(entity.getBlockHeight(),block.getHeight())){
+            if(entity.getBlockHash().equals(block.getHash()) && LongUtil.isEquals(entity.getBlockHeight(),block.getHeight())){
                 continue;
             }
-            BigInteger deleteBlockHeight;
+            long deleteBlockHeight;
             if(i==0){
-                deleteBlockHeight = BigInteger.ONE;
+                deleteBlockHeight = LongUtil.ONE;
             }else {
-                deleteBlockHeight = blockchainForkBlockEntityList.get(i-1).getBlockHeight().add(BigInteger.ONE);
+                deleteBlockHeight = blockchainForkBlockEntityList.get(i-1).getBlockHeight()+LongUtil.ONE;
             }
             blockChainCoreService.removeBlocksUtilBlockHeightLessThan(deleteBlockHeight);
             return;

@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.core.model.transaction;
 
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -53,19 +52,17 @@ public class Transaction implements Serializable {
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
-    private BigInteger transactionSequenceNumberInBlock;
+    private long transactionSequenceNumberInBlock;
     /**
      * 在区块链中交易序列号
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
-    private BigInteger transactionSequenceNumberInBlockChain;
+    private long transactionSequenceNumberInBlockChain;
     /**
      * 交易所在区块的区块高度
-     *
-     * 冗余字段，这个值可以由区块链系统推算出来
      */
-    private BigInteger blockHeight;
+    private long blockHeight;
 
 
 
@@ -112,29 +109,29 @@ public class Transaction implements Serializable {
         this.outputs = outputs;
     }
 
-    public BigInteger getTransactionSequenceNumberInBlock() {
+    public long getTransactionSequenceNumberInBlock() {
         return transactionSequenceNumberInBlock;
     }
 
-    public void setTransactionSequenceNumberInBlock(BigInteger transactionSequenceNumberInBlock) {
+    public void setTransactionSequenceNumberInBlock(long transactionSequenceNumberInBlock) {
         this.transactionSequenceNumberInBlock = transactionSequenceNumberInBlock;
     }
 
-    public BigInteger getTransactionSequenceNumberInBlockChain() {
+    public long getTransactionSequenceNumberInBlockChain() {
         return transactionSequenceNumberInBlockChain;
     }
 
-    public void setTransactionSequenceNumberInBlockChain(BigInteger transactionSequenceNumberInBlockChain) {
+    public void setTransactionSequenceNumberInBlockChain(long transactionSequenceNumberInBlockChain) {
         this.transactionSequenceNumberInBlockChain = transactionSequenceNumberInBlockChain;
     }
 
-    public BigInteger getBlockHeight() {
+    public long getBlockHeight() {
         return blockHeight;
     }
 
-    public void setBlockHeight(BigInteger blockHeight) {
+    public void setBlockHeight(long blockHeight) {
         this.blockHeight = blockHeight;
     }
 
-    //endregion
+//endregion
 }

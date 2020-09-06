@@ -8,6 +8,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.script.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
+import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.EmptyResponse;
@@ -23,7 +24,6 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOut
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +56,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public List<Transaction> queryTransactionByTransactionHeight(PageCondition pageCondition) {
         BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
-        List<Transaction>  transactionList = blockChainDataBase.queryTransactionByTransactionHeight(BigInteger.valueOf(pageCondition.getFrom()),BigInteger.valueOf(pageCondition.getSize()));
+        List<Transaction>  transactionList = blockChainDataBase.queryTransactionByTransactionHeight(pageCondition.getFrom(),pageCondition.getSize());
         return transactionList;
     }
 
@@ -185,7 +185,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public String queryBlockHashByBlockHeight(BigInteger blockHeight) {
+    public String queryBlockHashByBlockHeight(long blockHeight) {
         Block block = blockChainCore.getBlockChainDataBase().queryNoTransactionBlockByBlockHeight(blockHeight);
         if(block == null){
             return null;
@@ -194,7 +194,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public BlockDTO queryBlockDtoByBlockHeight(BigInteger blockHeight) {
+    public BlockDTO queryBlockDtoByBlockHeight(long blockHeight) {
         Block block = blockChainCore.getBlockChainDataBase().queryBlockByBlockHeight(blockHeight);
         if(block == null){
             return null;
@@ -206,8 +206,8 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public Block queryNoTransactionBlockDtoByBlockHash(String blockHash) {
         BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
-        BigInteger blockHeight = blockChainDataBase.queryBlockHeightByBlockHash(blockHash);
-        if(blockHeight == null){
+        long blockHeight = blockChainDataBase.queryBlockHeightByBlockHash(blockHash);
+        if(blockHeight <= LongUtil.ZERO){
             return null;
         }
         Block block = blockChainDataBase.queryNoTransactionBlockByBlockHeight(blockHeight);
@@ -215,13 +215,13 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public Block queryNoTransactionBlockDtoByBlockHeight(BigInteger blockHeight) {
+    public Block queryNoTransactionBlockDtoByBlockHeight(long blockHeight) {
         Block block = blockChainCore.getBlockChainDataBase().queryNoTransactionBlockByBlockHeight(blockHeight);
         return block;
     }
 
     @Override
-    public BigInteger queryBlockChainHeight() {
+    public long queryBlockChainHeight() {
         return blockChainCore.getBlockChainDataBase().queryBlockChainHeight();
     }
 
@@ -241,7 +241,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     }
 
     @Override
-    public void removeBlocksUtilBlockHeightLessThan(BigInteger blockHeight) {
+    public void removeBlocksUtilBlockHeightLessThan(long blockHeight) {
         blockChainCore.getBlockChainDataBase().removeTailBlocksUtilBlockHeightLessThan(blockHeight);
     }
 

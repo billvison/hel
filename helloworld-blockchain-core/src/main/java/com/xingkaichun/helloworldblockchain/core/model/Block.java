@@ -4,7 +4,6 @@ package com.xingkaichun.helloworldblockchain.core.model;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -26,8 +25,9 @@ public class Block implements Serializable {
     private long timestamp;
     /**
      * 区块高度
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
-    private BigInteger height;
+    private long height;
     /**
      * 上一个区块的哈希
      * 冗余字段，这个值可以由区块链系统推算出来
@@ -53,9 +53,9 @@ public class Block implements Serializable {
      * 一般情况下，想要记账请解答一个难题，从而增大记账的难度。
      * 而这个随机数值就是难题的答案。难题的答案可能并不是唯一，一般情况下，很难获取答案。
      */
-    private String nonce;
+    private long nonce;
     /**
-     * 区块哈希：由timestamp、previousBlockHash、height、nonce、merkleRoot共同作用使用Hash算法生成。
+     * 区块哈希：由timestamp、previousBlockHash、nonce、merkleRoot共同作用使用Hash算法生成。
      * 为什么需要哈希这个字段？
      * 区块哈希确定了，反过来说其它字段的值也是确定的，也就是说区块的数据是确定的。
      * 我们知道区块链的区块需要指向上一个区块？怎么指向？
@@ -92,7 +92,7 @@ public class Block implements Serializable {
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
-    private BigInteger transactionQuantity;
+    private long transactionQuantity;
 
     /**
      * 区块中第一笔交易的序列号。
@@ -103,7 +103,7 @@ public class Block implements Serializable {
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
-    private BigInteger startTransactionSequenceNumberInBlockChain;
+    private long startTransactionSequenceNumberInBlockChain;
 
     /**
      * 区块中最后一笔交易的序列号
@@ -114,7 +114,7 @@ public class Block implements Serializable {
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
-    private BigInteger endTransactionSequenceNumberInBlockChain;
+    private long endTransactionSequenceNumberInBlockChain;
 
 
 
@@ -137,11 +137,11 @@ public class Block implements Serializable {
         this.previousBlockHash = previousBlockHash;
     }
 
-    public BigInteger getHeight() {
+    public long getHeight() {
         return height;
     }
 
-    public void setHeight(BigInteger height) {
+    public void setHeight(long height) {
         this.height = height;
     }
 
@@ -161,11 +161,11 @@ public class Block implements Serializable {
         this.merkleTreeRoot = merkleTreeRoot;
     }
 
-    public String getNonce() {
+    public long getNonce() {
         return nonce;
     }
 
-    public void setNonce(String nonce) {
+    public void setNonce(long nonce) {
         this.nonce = nonce;
     }
 
@@ -185,29 +185,29 @@ public class Block implements Serializable {
         this.consensusVariableHolder = consensusVariableHolder;
     }
 
-    public BigInteger getTransactionQuantity() {
+    public long getTransactionQuantity() {
         return transactionQuantity;
     }
 
-    public void setTransactionQuantity(BigInteger transactionQuantity) {
+    public void setTransactionQuantity(long transactionQuantity) {
         this.transactionQuantity = transactionQuantity;
     }
 
-    public BigInteger getStartTransactionSequenceNumberInBlockChain() {
+    public long getStartTransactionSequenceNumberInBlockChain() {
         return startTransactionSequenceNumberInBlockChain;
     }
 
-    public void setStartTransactionSequenceNumberInBlockChain(BigInteger startTransactionSequenceNumberInBlockChain) {
+    public void setStartTransactionSequenceNumberInBlockChain(long startTransactionSequenceNumberInBlockChain) {
         this.startTransactionSequenceNumberInBlockChain = startTransactionSequenceNumberInBlockChain;
     }
 
-    public BigInteger getEndTransactionSequenceNumberInBlockChain() {
+    public long getEndTransactionSequenceNumberInBlockChain() {
         return endTransactionSequenceNumberInBlockChain;
     }
 
-    public void setEndTransactionSequenceNumberInBlockChain(BigInteger endTransactionSequenceNumberInBlockChain) {
+    public void setEndTransactionSequenceNumberInBlockChain(long endTransactionSequenceNumberInBlockChain) {
         this.endTransactionSequenceNumberInBlockChain = endTransactionSequenceNumberInBlockChain;
     }
 
-    //endregion
+//endregion
 }

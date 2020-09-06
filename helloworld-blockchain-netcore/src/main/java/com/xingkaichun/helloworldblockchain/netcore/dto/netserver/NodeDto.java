@@ -1,14 +1,12 @@
 package com.xingkaichun.helloworldblockchain.netcore.dto.netserver;
 
-import java.math.BigInteger;
-
 /**
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class NodeDto extends SimpleNodeDto {
 
-    private BigInteger blockChainHeight;
+    private Long blockChainHeight;
     private Boolean isNodeAvailable;
     private Integer errorConnectionTimes;
     private Boolean fork;
@@ -18,11 +16,12 @@ public class NodeDto extends SimpleNodeDto {
 
     //region get set
 
-    public BigInteger getBlockChainHeight() {
+
+    public Long getBlockChainHeight() {
         return blockChainHeight;
     }
 
-    public void setBlockChainHeight(BigInteger blockChainHeight) {
+    public void setBlockChainHeight(Long blockChainHeight) {
         this.blockChainHeight = blockChainHeight;
     }
 

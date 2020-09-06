@@ -1,15 +1,13 @@
 package com.xingkaichun.helloworldblockchain.netcore.dto.fork;
 
 
-import java.math.BigInteger;
-
 /**
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class BlockchainForkBlockDto {
 
-    private BigInteger blockHeight;
+    private long blockHeight;
     private String blockHash;
 
 
@@ -17,11 +15,12 @@ public class BlockchainForkBlockDto {
 
     //region get set
 
-    public BigInteger getBlockHeight() {
+
+    public long getBlockHeight() {
         return blockHeight;
     }
 
-    public void setBlockHeight(BigInteger blockHeight) {
+    public void setBlockHeight(long blockHeight) {
         this.blockHeight = blockHeight;
     }
 

@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
+import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
@@ -7,7 +8,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.model.NodeEntity;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,7 +143,7 @@ public class NodeServiceImpl implements NodeService {
 
     private void fillNodeDefaultValue(NodeDto node) {
         if(node.getBlockChainHeight() == null){
-            node.setBlockChainHeight(BigInteger.ZERO);
+            node.setBlockChainHeight(LongUtil.ZERO);
         }
         if(node.getIsNodeAvailable() == null){
             node.setIsNodeAvailable(true);

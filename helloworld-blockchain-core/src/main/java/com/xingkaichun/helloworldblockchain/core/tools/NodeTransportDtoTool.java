@@ -9,7 +9,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.utils.BigIntegerUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
@@ -18,7 +18,6 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOut
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class NodeTransportDtoTool {
      * 类型转换
      */
     public static Block classCast(BlockChainDataBase blockChainDataBase, BlockDTO blockDTO) {
-        if(BigIntegerUtil.isLessThan(blockDTO.getHeight(),BigInteger.ONE)){
+        if(LongUtil.isLessThan(blockDTO.getHeight(),LongUtil.ONE)){
             throw new ClassCastException("区块的高度不能少于1");
         }
 
@@ -49,11 +48,12 @@ public class NodeTransportDtoTool {
 
         //求上一个区块的hash
         String previousBlockHash;
-        BigInteger height = blockDTO.getHeight();
-        if(BigIntegerUtil.isEquals(height,BigInteger.ONE)){
+        long height = blockDTO.getHeight();
+        //TODO
+        if(LongUtil.isEquals(height,LongUtil.ONE)){
             previousBlockHash = GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH;
         } else {
-            Block previousBlock = blockChainDataBase.queryNoTransactionBlockByBlockHeight(height.subtract(BigInteger.ONE));
+            Block previousBlock = blockChainDataBase.queryNoTransactionBlockByBlockHeight(height-LongUtil.ONE);
             if(previousBlock == null){
                 throw new ClassCastException("上一个区块不应该为null");
             }
@@ -117,9 +117,9 @@ public class NodeTransportDtoTool {
         List<TransactionOutput> outputs = new ArrayList<>();
         List<TransactionOutputDTO> dtoOutputs = transactionDTO.getOutputs();
         if(dtoOutputs != null){
-            BigInteger transactionOutputSequence = BigInteger.ZERO;
+            long transactionOutputSequence = 0;
             for(TransactionOutputDTO transactionOutputDTO:dtoOutputs){
-                transactionOutputSequence = transactionOutputSequence.add(BigInteger.ONE);
+                transactionOutputSequence++;
                 TransactionOutput transactionOutput = classCast(transactionDTO.getTimestamp(),transactionOutputSequence,transactionOutputDTO);
                 outputs.add(transactionOutput);
             }
@@ -194,7 +194,7 @@ public class NodeTransportDtoTool {
     /**
      * 类型转换
      */
-    public static TransactionOutput classCast(long timestamp, BigInteger transactionOutputSequence, TransactionOutputDTO transactionOutputDTO) {
+    public static TransactionOutput classCast(long timestamp, long transactionOutputSequence, TransactionOutputDTO transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
         transactionOutput.setTransactionOutputSequence(transactionOutputSequence);
         transactionOutput.setAddress(transactionOutputDTO.getAddress());
