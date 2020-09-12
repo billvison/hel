@@ -33,6 +33,7 @@ public class TransactionOutput implements Serializable {
      */
     private String transactionOutputHash;
     //交易输出的地址
+    //TODO 多余
     private String address;
     //交易输出的金额
     private BigDecimal value;

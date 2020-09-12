@@ -73,6 +73,7 @@ public class StackBasedVirtualMachine {
         ScriptLock script = new ScriptLock();
         script.add(ScriptOperationCodes.OP_DUP);
         script.add(ScriptOperationCodes.OP_HASH160);
+        //TODO HASH160
         script.add(ScriptOperationCodes.getOperationDataFromData(address));
         script.add(ScriptOperationCodes.OP_EQUALVERIFY);
         script.add(ScriptOperationCodes.OP_CHECKSIG);
