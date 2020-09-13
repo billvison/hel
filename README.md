@@ -4,8 +4,16 @@ HelloworldBlockchain是一个Helloworld级别的数字货币项目。
 HelloworldBlockchain开发调试简单，下载源码，导入idea(eclipse)，无需任何配置，找到类文件com.xingkaichun.helloworldblockchain.node.HelloWorldBlockChainNodeApplication，右键运行，即可启动项目。  
 项目架构清晰，详尽的全中文代码注释，代码以可读性为第一要素，适合区块链初学者学习研究。
 
+### 联系方式
+无论你心中有任何问题，都可扫二维码添加作者微信(微信号HelloworldBlockchain)
+<img alt="作者微信" width="150" height="150" src="http://139.9.125.122:8444/document/image/Wechat_HelloworldBlockchain.jpg"/>
+
 ### HelloworldBlockchain项目意义  
 探索与实践区块链技术。   
+
+### 演示
+http://139.9.125.122:8444/index.html  
+<img alt="HellowordlBlockchain首页" src="http://139.9.125.122:8444/document/image/HelloworldBlockchainIndexPage.png"/>
 
 ### 集成开发环境搭建
 #### eclipse
@@ -15,14 +23,6 @@ HelloworldBlockchain项目没有任何复杂依赖，请搜索eclipse如何导�
 #### intellij idea
 HelloworldBlockchain项目没有任何复杂依赖，请搜索idea如何导入已存在的maven项目。
 成功将项目导入idea后，找到类文件com.xingkaichun.helloworldblockchain.node.HelloWorldBlockChainNodeApplication，右键运行，正常情况下则会启动成功。接下来，快乐的调试代码吧！项目的前端地址是：http://localhost:8444 。
-
-### 作者联系方式  
-无论你心中有任何问题，都可扫二维码添加作者微信(微信号HelloworldBlockchain)
-<img alt="作者微信" width="150" height="150" src="http://139.9.125.122:8444/document/image/Wechat_HelloworldBlockchain.jpg"/>  
-
-### 部署展示  
-http://139.9.125.122:8444/index.html  
-<img alt="HellowordlBlockchain首页" src="http://139.9.125.122:8444/document/image/HelloworldBlockchainIndexPage.png"/>  
 
 ### 模块架构
 #### helloworld-blockchain-crypto
@@ -38,6 +38,17 @@ helloworld-blockchain-node： 它集成了三个角色的功能。启动区块�
 * 一是作为区块链浏览器的角色，对外提供了查询交易、查询区块、查询区块链网络节点、查询未花费输出等功能。
 * 二是作为节点管理员的角色，为用户提供管理本地节点的功能，例如增/删/改网络节点、激活/停用矿工、激活/停用同步器。
 * 三是开发调试角色，为开发人员提供了十分便利的调试功能。
+
+### 使用手册 [跳转到手册](http://139.9.125.122:8444/document/index.html)
+* 获取网站管理员的初始账户
+* 登录系统
+* 钱包地址是什么
+* 主动生成钱包
+* 默认矿工钱包
+* 设置挖矿地址
+* 启动/关闭挖矿
+* 查询区块信息
+* 查询账户余额
 
 ### 打包与发布
 项目打包
@@ -63,17 +74,6 @@ cd HelloworldBlockchainNode
 ./start.sh restart  
 ```  
 
-### 使用手册 [跳转到手册](http://139.9.125.122:8444/document/index.html)
-* 获取网站管理员的初始账户
-* 登录系统
-* 钱包地址是什么
-* 主动生成钱包
-* 默认矿工钱包
-* 设置挖矿地址
-* 启动/关闭挖矿  
-* 查询区块信息  
-* 查询账户余额
-
 ### 区块链学习
 在系统学习区块链前，可以关注抖音账号xingkaichun，视频都是几分钟一个，内容是作者讲解的区块链理论与概念，不涉及到具体项目与代码。建议学习完概念之后，然后再搭建本项目，最后再学习本项目源码。  
 
@@ -95,11 +95,11 @@ cd HelloworldBlockchainNode
 优点：计算简单，可以事先计算好交易手续费。  
 老的是以字节大小计算。设计到序列化二进制，不同语言实现，需要实现相同的序列化，不够灵活。
 
+## 进阶
+地址并不一定是由公钥产生。P2SH、P2WSH。  
+被签名的数据可以自由选择。SIGHASH。
+
 ## 开发一款数字货币注意事项
 保证区块哈希是区块的摘要，保证区块哈希能代表区块。  
 保证交易哈希是交易的摘要，保证交易哈希能代表交易。  
 保证交易输出哈希是交易输出的摘要，保证交易输出哈希能代表交易输出。
-
-## 进阶
-地址并不一定是由公钥产生。P2SH、P2WSH。  
-被签名的数据可以自由选择。SIGHASH。
