@@ -29,7 +29,6 @@ public class TransactionOutput implements Serializable {
      *
      * 这个字段也可以用来表示一张独一无二编号的支票
      * 还有另外一个独一无二的编号，区块高度+交易在区块中的编号+交易输出在交易中编号，这个编号有个缺点，只能在区块完全确定后，才能确定这个编号
-     * //TODO + 交易输出在交易中的序号
      */
     private String transactionOutputHash;
 
