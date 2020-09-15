@@ -12,9 +12,6 @@ import java.util.List;
  */
 public class TransactionOutputDTO implements Serializable {
 
-    //交易输出的地址
-    //TODO 多余
-    private String address;
     //交易输出的金额
     private String value;
     //脚本锁
@@ -24,14 +21,6 @@ public class TransactionOutputDTO implements Serializable {
 
 
     //region get set
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
 
     public String getValue() {
         return value;

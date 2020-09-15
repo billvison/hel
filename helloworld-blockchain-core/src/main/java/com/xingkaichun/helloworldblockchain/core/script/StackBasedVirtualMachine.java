@@ -8,6 +8,8 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 
+import java.util.List;
+
 /**
  * 基于栈的虚拟机
  *
@@ -78,5 +80,9 @@ public class StackBasedVirtualMachine {
         script.add(ScriptOperationCodes.OP_EQUALVERIFY);
         script.add(ScriptOperationCodes.OP_CHECKSIG);
         return script;
+    }
+
+    public static String getAddressByPayToClassicAddressOutputScript(List<String> scriptLock) {
+        return ScriptOperationCodes.getDataFromOperationData(scriptLock.get(2));
     }
 }

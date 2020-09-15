@@ -190,22 +190,21 @@ public class TransactionTool {
      * 计算交易输出哈希
      */
     public static String calculateTransactionOutputHash(Transaction transaction,TransactionOutput output) {
-        return calculateTransactionOutputHash(transaction.getTimestamp(),output.getTransactionOutputSequence(),output.getAddress(),output.getValue().toPlainString(),output.getScriptLock());
+        return calculateTransactionOutputHash(transaction.getTimestamp(),output.getTransactionOutputSequence(),output.getValue().toPlainString(),output.getScriptLock());
     }
 
     /**
      * 计算交易输出哈希
      */
     public static String calculateTransactionOutputHash(long timestamp, long transactionOutputSequence, TransactionOutputDTO transactionOutputDTO) {
-        return calculateTransactionOutputHash(timestamp,transactionOutputSequence,transactionOutputDTO.getAddress(),transactionOutputDTO.getValue(),transactionOutputDTO.getScriptLock());
+        return calculateTransactionOutputHash(timestamp,transactionOutputSequence,transactionOutputDTO.getValue(),transactionOutputDTO.getScriptLock());
     }
 
     /**
      * 计算交易输出哈希
      */
-    private static String calculateTransactionOutputHash(long currentTimeMillis, long transactionOutputSequence, String address, String value, List<String> scriptLock) {
+    private static String calculateTransactionOutputHash(long currentTimeMillis, long transactionOutputSequence, String value, List<String> scriptLock) {
         String forHash = "[" + currentTimeMillis + "]";
-        forHash += "[" + address + "]";
         forHash += "[" + transactionOutputSequence + "]";
         forHash += "[" + value + "]";
         forHash += "[" + Joiner.on(" ").join(scriptLock) + "]";

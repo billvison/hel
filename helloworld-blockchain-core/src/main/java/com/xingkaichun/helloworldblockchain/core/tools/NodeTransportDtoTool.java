@@ -9,6 +9,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.core.script.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
@@ -196,7 +197,7 @@ public class NodeTransportDtoTool {
     public static TransactionOutput classCast(long timestamp, long transactionOutputSequence, TransactionOutputDTO transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
         transactionOutput.setTransactionOutputSequence(transactionOutputSequence);
-        transactionOutput.setAddress(transactionOutputDTO.getAddress());
+        transactionOutput.setAddress(StackBasedVirtualMachine.getAddressByPayToClassicAddressOutputScript(transactionOutputDTO.getScriptLock()));
         transactionOutput.setValue(new BigDecimal(transactionOutputDTO.getValue()));
         transactionOutput.setTimestamp(timestamp);
         transactionOutput.setTransactionOutputHash(TransactionTool.calculateTransactionOutputHash(timestamp,transactionOutputSequence,transactionOutputDTO));
@@ -209,7 +210,6 @@ public class NodeTransportDtoTool {
      */
     public static TransactionOutputDTO classCast(TransactionOutput transactionOutput) {
         TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-        transactionOutputDTO.setAddress(transactionOutput.getAddress());
         transactionOutputDTO.setValue(transactionOutput.getValue().toPlainString());
         transactionOutputDTO.setScriptLock(transactionOutput.getScriptLock());
         return transactionOutputDTO;

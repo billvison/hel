@@ -32,9 +32,7 @@ public class TransactionOutput implements Serializable {
      * //TODO + 交易输出在交易中的序号
      */
     private String transactionOutputHash;
-    //交易输出的地址
-    //TODO 多余
-    private String address;
+
     //交易输出的金额
     private BigDecimal value;
     /**
@@ -44,6 +42,12 @@ public class TransactionOutput implements Serializable {
      * 这里我们给交易输出加上一把锁，自然拥有锁对应钥匙的用户可以使用这个交易输出。
      */
     private ScriptLock scriptLock;
+
+    /**
+     * 交易输出的地址
+     * 冗余；可以从脚本锁解析出地址
+     */
+    private String address;
 
     /**
      * 交易所在区块的区块高度

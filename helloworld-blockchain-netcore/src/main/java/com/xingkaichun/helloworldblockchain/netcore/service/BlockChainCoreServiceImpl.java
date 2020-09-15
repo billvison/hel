@@ -117,7 +117,6 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         if(outputs != null){
             for(NormalTransactionDto.Output o:outputs){
                 TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-                transactionOutputDTO.setAddress(o.getAddress());
                 transactionOutputDTO.setValue(o.getValue());
                 transactionOutputDTO.setScriptLock(StackBasedVirtualMachine.createPayToClassicAddressOutputScript(o.getAddress()));
                 transactionOutputDtoList.add(transactionOutputDTO);
@@ -151,7 +150,6 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
             //找零
             change = useValues.subtract(values);
             TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-            transactionOutputDTO.setAddress(account.getAddress());
             transactionOutputDTO.setValue(change.toPlainString());
             transactionOutputDTO.setScriptLock(StackBasedVirtualMachine.createPayToClassicAddressOutputScript(account.getAddress()));
             transactionOutputDtoList.add(transactionOutputDTO);
