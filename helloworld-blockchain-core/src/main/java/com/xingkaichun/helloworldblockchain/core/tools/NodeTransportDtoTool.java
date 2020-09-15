@@ -49,7 +49,6 @@ public class NodeTransportDtoTool {
         //求上一个区块的hash
         String previousBlockHash;
         long height = blockDTO.getHeight();
-        //TODO
         if(LongUtil.isEquals(height,LongUtil.ONE)){
             previousBlockHash = GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH;
         } else {

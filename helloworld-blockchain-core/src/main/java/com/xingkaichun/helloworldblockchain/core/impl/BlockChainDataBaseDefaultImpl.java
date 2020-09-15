@@ -39,7 +39,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 区块链
  *
  * 注意这是一个线程不安全的实现。在并发的情况下，不保证功能的正确性。
- * TODO 改善型功能 可以选择关闭区块浏览器的功能，若是关闭的话，则会节约很多的磁盘空间。
+ * TODO 改善型功能 可以选择关闭区块浏览器的功能，若是关闭的话，则会节约很多的磁盘空间。区块浏览器使用的数据，单独抽取方法组装。
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
@@ -276,7 +276,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
              * 激励交易输出可以为空，这时代表矿工放弃了奖励、或者依据规则挖矿激励就是零奖励。
              */
             List<TransactionInput> inputs = transaction.getInputs();
-            if(inputs != null && inputs.size()!=0){
+            if(inputs != null && inputs.size() != 0){
                 logger.debug("交易校验失败：激励交易不能有交易输入。");
                 return false;
             }
@@ -291,7 +291,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
              * 普通交易输出可以为空，这时代表用户将自己的币扔进了黑洞，强制销毁了。
              */
             List<TransactionInput> inputs = transaction.getInputs();
-            if(inputs == null || inputs.size()==0){
+            if(inputs == null || inputs.size() == 0){
                 logger.debug("交易校验失败：普通交易必须有交易输入。");
                 return false;
             }
@@ -422,12 +422,12 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         return EncodeDecodeUtil.decodeToTransaction(bytesTransaction);
     }
-    //TODO 高度应该从1开始
+
     @Override
     public List<Transaction> queryTransactionByTransactionHeight(long from,long size) {
         List<Transaction> transactionList = new ArrayList<>();
-        for(int i=0;LongUtil.isLessThan(i,size);i++){
-            byte[] byteTransaction = LevelDBUtil.get(blockChainDB, BlockChainDataBaseKeyTool.buildTransactionSequenceNumberInBlockChainToTransactionKey(from+i));
+        for(long index=from; LongUtil.isLessThan(index,from+size); index++){
+            byte[] byteTransaction = LevelDBUtil.get(blockChainDB, BlockChainDataBaseKeyTool.buildTransactionSequenceNumberInBlockChainToTransactionKey(index));
             if(byteTransaction == null){
                 break;
             }
@@ -457,7 +457,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         return EncodeDecodeUtil.decodeToTransactionOutput(bytesUtxo);
     }
-    //TODO form统一从1开始
+
     @Override
     public List<TransactionOutput> queryTransactionOutputListByAddress(String address,long from,long size) {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
@@ -486,7 +486,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         return transactionOutputList;
     }
-    //TODO form统一从1开始
+
     @Override
     public List<TransactionOutput> queryUnspendTransactionOutputListByAddress(String address,long from,long size) {
         List<TransactionOutput> transactionOutputList = new ArrayList<>();
@@ -554,10 +554,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         long transactionSize = queryTransactionSize();
         byte[] totalTransactionQuantityKey = BlockChainDataBaseKeyTool.buildTotalTransactionQuantityKey();
         if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-            //TODO 区块中的交易可能为空
-            writeBatch.put(totalTransactionQuantityKey, ByteUtil.longToBytes(transactionSize+block.getTransactions().size()));
+            writeBatch.put(totalTransactionQuantityKey, ByteUtil.longToBytes(transactionSize + BlockTool.getTransactionCount(block)));
         }else{
-            writeBatch.put(totalTransactionQuantityKey, ByteUtil.longToBytes(transactionSize-block.getTransactions().size()));
+            writeBatch.put(totalTransactionQuantityKey, ByteUtil.longToBytes(transactionSize - BlockTool.getTransactionCount(block)));
         }
         //存储区块Hash到区块高度的映射
         byte[] blockHashBlockHeightKey = BlockChainDataBaseKeyTool.buildBlockHashToBlockHeightKey(block.getHash());

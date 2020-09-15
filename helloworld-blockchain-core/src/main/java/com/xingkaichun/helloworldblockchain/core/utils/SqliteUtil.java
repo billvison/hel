@@ -8,15 +8,15 @@ package com.xingkaichun.helloworldblockchain.core.utils;
 public class SqliteUtil {
 
     /**
-     * sqlite没有boolean类型，用int类型代替，int转boolean
+     * sqlite没有boolean类型，用long类型代替，long转boolean
      */
-    public static boolean intToBoolean(Integer intValue){
-        return Integer.valueOf(0).compareTo(intValue)==0?false:true;
+    public static boolean longToBoolean(Long intValue){
+        return Long.valueOf(0).compareTo(intValue)==0?false:true;
     }
     /**
-     * sqlite没有boolean类型，用int类型代替，boolean转int
+     * sqlite没有boolean类型，用long类型代替，boolean转long
      */
-    public static int booleanToInt(Boolean booleanValue){
+    public static long booleanToLong(Boolean booleanValue){
         if(booleanValue == null || !booleanValue){
             return 0;
         }

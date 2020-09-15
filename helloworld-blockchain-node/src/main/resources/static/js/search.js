@@ -1,4 +1,4 @@
-var delay_load_index;
+var delay_load_index= 1;
 var address_index = 1;
 var click_times = 0;
 var search_result = document.getElementById("search_result"); //获取输出到的父容器
@@ -6,7 +6,7 @@ var search_result = document.getElementById("search_result"); //获取输出到�
 $("#search_select").change(function() {
 	//重置状态
 	$("#search_result").empty();
-    delay_load_index =0;
+    delay_load_index = 1;
     address_index = 1;
 	click_times = 0;
 
@@ -44,7 +44,7 @@ $("#search_select").change(function() {
 //公共函数:搜索
 function searchUnit() {
     //重置状态
-    delay_load_index =0;
+    delay_load_index = 1;
     address_index = 1;
 	click_times = 0;
 

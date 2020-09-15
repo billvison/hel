@@ -116,7 +116,7 @@ public abstract class BlockChainDataBase {
      */
     public abstract Transaction queryTransactionByTransactionHash(String transactionHash) ;
     /**
-     * 根据交易高度查询交易
+     * 根据交易高度查询交易。交易高度从1开始。
      */
     public abstract List<Transaction> queryTransactionByTransactionHeight(long from,long size) ;
     //endregion
@@ -133,11 +133,11 @@ public abstract class BlockChainDataBase {
      */
     public abstract TransactionOutput queryUnspendTransactionOutputByTransactionOutputHash(String unspendTransactionOutputHash) ;
     /**
-     * 根据地址查询交易输出
+     * 根据地址查询交易输出。from从0开始。
      */
     public abstract List<TransactionOutput> queryTransactionOutputListByAddress(String address,long from,long size) ;
     /**
-     * 根据地址查询未花费交易输出
+     * 根据地址查询未花费交易输出。from从0开始。
      */
     public abstract List<TransactionOutput> queryUnspendTransactionOutputListByAddress(String address,long from,long size) ;
     //endregion

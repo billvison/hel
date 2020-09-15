@@ -375,4 +375,9 @@ public class BlockTool {
         }
         return true;
     }
+
+    public static long getTransactionCount(Block block) {
+        List<Transaction> transactions = block.getTransactions();
+        return transactions == null?0:transactions.size();
+    }
 }

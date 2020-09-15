@@ -13,6 +13,6 @@ public enum TransactionType {
      * https://zhuanlan.zhihu.com/p/55310564
      * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
      */
-    COINBASE;
+    COINBASE
 
 }

@@ -23,7 +23,7 @@ public class BlockChainForkDaoImpl implements BlockChainForkDao {
 
     private void init() {
         String createTable1Sql1 = "CREATE TABLE IF NOT EXISTS [BlockchainFork](" +
-                "  [blockHeight] INT(20), " +
+                "  [blockHeight] INTEGER, " +
                 "  [blockHash] VARCHAR(100))";
         JdbcUtil.executeSql(connection(),createTable1Sql1);
     }
@@ -39,7 +39,7 @@ public class BlockChainForkDaoImpl implements BlockChainForkDao {
             preparedStatement = connection().prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                Integer blockHeight = resultSet.getInt("blockHeight");
+                long blockHeight = resultSet.getLong("blockHeight");
                 String blockHash = resultSet.getString("blockHash");
                 BlockchainForkBlockEntity entity = new BlockchainForkBlockEntity();
                 entity.setBlockHeight(blockHeight);
@@ -74,8 +74,7 @@ public class BlockChainForkDaoImpl implements BlockChainForkDao {
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection().prepareStatement(sql1);
-            //TODO LONG
-            preparedStatement.setInt(1, (int) entity.getBlockHeight());
+            preparedStatement.setLong(1, entity.getBlockHeight());
             preparedStatement.setString(2,entity.getBlockHash());
             preparedStatement.executeUpdate();
         } catch (Exception e){

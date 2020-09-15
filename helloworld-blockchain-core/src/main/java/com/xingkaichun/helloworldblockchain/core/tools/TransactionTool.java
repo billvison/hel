@@ -218,7 +218,6 @@ public class TransactionTool {
      * 交易中的金额是否符合系统的约束
      */
     public static boolean isTransactionAmountLegal(Transaction transaction) {
-        //TODO 交易输入>交易输出
         List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs != null){
             for(TransactionOutput output:outputs){

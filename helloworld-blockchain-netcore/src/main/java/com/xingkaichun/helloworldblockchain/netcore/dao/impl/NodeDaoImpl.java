@@ -26,11 +26,11 @@ public class NodeDaoImpl implements NodeDao {
     private void init() {
         String createTable1Sql1 = "CREATE TABLE IF NOT EXISTS [Node](" +
                 "  [ip] VARCHAR(20) NOT NULL, " +
-                "  [port] INTEGER(10) NOT NULL, " +
-                "  [blockChainHeight] INTEGER(20) NOT NULL, " +
-                "  [isNodeAvailable] INTEGER(10) NOT NULL, " +
-                "  [errorConnectionTimes] INTEGER(10) NOT NULL, " +
-                "  [fork] INTEGER(10) NOT NULL, " +
+                "  [port] INTEGER NOT NULL, " +
+                "  [blockChainHeight] INTEGER NOT NULL, " +
+                "  [isNodeAvailable] INTEGER NOT NULL, " +
+                "  [errorConnectionTimes] INTEGER NOT NULL, " +
+                "  [fork] INTEGER NOT NULL, " +
                 "  UNIQUE([ip], [port]));";
         JdbcUtil.executeSql(connection(),createTable1Sql1);
     }
@@ -45,7 +45,7 @@ public class NodeDaoImpl implements NodeDao {
         try {
             preparedStatement = connection().prepareStatement(sql);
             preparedStatement.setString(1,ip);
-            preparedStatement.setInt(2,port);
+            preparedStatement.setLong(2,port);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 return resultSetToNodeEntity(resultSet);
@@ -112,11 +112,11 @@ public class NodeDaoImpl implements NodeDao {
         try {
             preparedStatement1 = connection().prepareStatement(sql1);
             preparedStatement1.setString(1,node.getIp());
-            preparedStatement1.setInt(2,node.getPort());
-            preparedStatement1.setInt(3,node.getBlockChainHeight().intValue());
-            preparedStatement1.setInt(4,SqliteUtil.booleanToInt(node.getIsNodeAvailable()));
-            preparedStatement1.setInt(5,node.getErrorConnectionTimes());
-            preparedStatement1.setInt(6,SqliteUtil.booleanToInt(node.getFork()));
+            preparedStatement1.setLong(2,node.getPort());
+            preparedStatement1.setLong(3,node.getBlockChainHeight().intValue());
+            preparedStatement1.setLong(4,SqliteUtil.booleanToLong(node.getIsNodeAvailable()));
+            preparedStatement1.setLong(5,node.getErrorConnectionTimes());
+            preparedStatement1.setLong(6,SqliteUtil.booleanToLong(node.getFork()));
             preparedStatement1.executeUpdate();
         } catch (Exception e){
             throw new RuntimeException(e);
@@ -149,12 +149,12 @@ public class NodeDaoImpl implements NodeDao {
         PreparedStatement preparedStatement1 = null;
         try {
             preparedStatement1 = connection().prepareStatement(sql1);
-            preparedStatement1.setInt(1,node.getBlockChainHeight().intValue());
-            preparedStatement1.setInt(2,SqliteUtil.booleanToInt(node.getIsNodeAvailable()));
-            preparedStatement1.setInt(3,node.getErrorConnectionTimes());
-            preparedStatement1.setInt(4,SqliteUtil.booleanToInt(node.getFork()));
+            preparedStatement1.setLong(1,node.getBlockChainHeight().intValue());
+            preparedStatement1.setLong(2,SqliteUtil.booleanToLong(node.getIsNodeAvailable()));
+            preparedStatement1.setLong(3,node.getErrorConnectionTimes());
+            preparedStatement1.setLong(4,SqliteUtil.booleanToLong(node.getFork()));
             preparedStatement1.setString(5,node.getIp());
-            preparedStatement1.setInt(6,node.getPort());
+            preparedStatement1.setLong(6,node.getPort());
             preparedStatement1.executeUpdate();
         } catch (Exception e){
             throw new RuntimeException(e);
@@ -173,7 +173,7 @@ public class NodeDaoImpl implements NodeDao {
         try {
             preparedStatement1 = connection().prepareStatement(sql1);
             preparedStatement1.setString(1,ip);
-            preparedStatement1.setInt(2,port);
+            preparedStatement1.setLong(2,port);
             preparedStatement1.executeUpdate();
         } catch (Exception e){
             throw new RuntimeException(e);
@@ -232,20 +232,18 @@ public class NodeDaoImpl implements NodeDao {
         try {
             String ip = resultSet.getString("ip");
             Integer port = resultSet.getInt("port");
-            //TODO long
-            Integer blockChainHeight = resultSet.getInt("blockChainHeight");
-            Integer isNodeAvailable = resultSet.getInt("isNodeAvailable");
-            Integer errorConnectionTimes = resultSet.getInt("errorConnectionTimes");
-            Integer fork = resultSet.getInt("fork");
+            long blockChainHeight = resultSet.getLong("blockChainHeight");
+            long isNodeAvailable = resultSet.getLong("isNodeAvailable");
+            long errorConnectionTimes = resultSet.getLong("errorConnectionTimes");
+            long fork = resultSet.getLong("fork");
 
             NodeEntity entity = new NodeEntity();
             entity.setIp(ip);
             entity.setPort(port);
-            //TODO
             entity.setBlockChainHeight(Long.valueOf(blockChainHeight));
-            entity.setIsNodeAvailable(SqliteUtil.intToBoolean(isNodeAvailable));
-            entity.setErrorConnectionTimes(errorConnectionTimes);
-            entity.setFork(SqliteUtil.intToBoolean(fork));
+            entity.setIsNodeAvailable(SqliteUtil.longToBoolean(isNodeAvailable));
+            entity.setErrorConnectionTimes((int) errorConnectionTimes);
+            entity.setFork(SqliteUtil.longToBoolean(fork));
             return entity;
         } catch (SQLException e) {
             throw new RuntimeException(e);
