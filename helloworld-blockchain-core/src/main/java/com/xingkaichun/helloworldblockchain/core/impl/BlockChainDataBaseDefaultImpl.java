@@ -134,22 +134,26 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
 
-        //校验区块时间 TODO 比前一个大 比当前时间小
-        if(!BlockTool.isBlockTimestampLegal(block)){
-            logger.debug("区块生成的时间太滞后。");
-            return false;
-        }
-
         //校验区块的存储容量是否合法
         if(!TextSizeRestrictionTool.isBlockStorageCapacityLegal(block)){
             logger.debug("区块存储容量非法。");
             return false;
         }
 
-        //校验区块的连贯性
         Block previousBlock = queryTailNoTransactionBlock();
-        if(!BlockTool.isBlockHashBlockHeightBlockTimestampRight(previousBlock,block)){
-            logger.debug("区块校验失败：区块连贯性校验失败。");
+        //校验区块时间
+        if(!BlockTool.isBlockTimestampLegal(previousBlock,block)){
+            logger.debug("区块生成的时间太滞后。");
+            return false;
+        }
+        //校验区块前区块哈希
+        if(!BlockTool.isBlockPreviousBlockHashLegal(previousBlock,block)){
+            logger.debug("区块生成的时间太滞后。");
+            return false;
+        }
+        //校验区块高度
+        if(!BlockTool.isBlockHeightLegal(previousBlock,block)){
+            logger.debug("区块生成的时间太滞后。");
             return false;
         }
 

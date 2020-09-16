@@ -247,15 +247,44 @@ public class BlockTool {
     }
 
     /**
-     * 区块的时间是否合法
+     * 校验区块的时间是否合法
+     * 区块时间戳一定要比当前时间戳小。因为挖矿是个技术活，默认矿工有能力将自己机器的时间调整正确。所以矿工不可能穿越到未来挖矿。
+     * 区块时间戳一定要比前一个区块的时间戳大。
      */
-    public static boolean isBlockTimestampLegal(Block block) {
-        if(block.getTimestamp() > System.currentTimeMillis()){
+    public static boolean isBlockTimestampLegal(Block previousBlock, Block currentBlock) {
+        if(currentBlock.getTimestamp() > System.currentTimeMillis()){
             return false;
         }
-        return true;
+        if(previousBlock == null){
+            return true;
+        } else {
+            return currentBlock.getTimestamp() > previousBlock.getTimestamp();
+        }
     }
 
+    /**
+     * 校验区块的前哈希属性是否正确
+     */
+    public static boolean isBlockPreviousBlockHashLegal(Block previousBlock, Block currentBlock) {
+        if(previousBlock == null){
+            return GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH.equals(currentBlock.getPreviousBlockHash());
+        } else {
+            return previousBlock.getHash().equals(currentBlock.getPreviousBlockHash());
+        }
+    }
+
+    /**
+     * 校验区块的高度属性是否正确
+     */
+    public static boolean isBlockHeightLegal(Block previousBlock, Block currentBlock) {
+        if(previousBlock == null){
+            //校验区块高度是否连贯
+            return LongUtil.isEquals(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_HEIGHT,currentBlock.getHeight());
+        } else {
+            //校验区块高度是否连贯
+            return LongUtil.isEquals((previousBlock.getHeight()+1),currentBlock.getHeight());
+        }
+    }
     /**
      * 交易的时间是否合法
      */
@@ -319,36 +348,6 @@ public class BlockTool {
     }
 
     /**
-     * 简单的校验Block的连贯性:从高度、哈希、时间戳三个方面检查
-     */
-    public static boolean isBlockHashBlockHeightBlockTimestampRight(Block previousBlock,Block currentBlock) {
-        if(previousBlock == null){
-            //校验区块Hash是否连贯
-            if(!GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH.equals(currentBlock.getPreviousBlockHash())){
-                return false;
-            }
-            //校验区块高度是否连贯
-            if(!LongUtil.isEquals(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_HEIGHT,currentBlock.getHeight())){
-                return false;
-            }
-        } else {
-            //校验区块时间戳
-            if(currentBlock.getTimestamp() <= previousBlock.getTimestamp()){
-                return false;
-            }
-            //校验区块Hash是否连贯
-            if(!previousBlock.getHash().equals(currentBlock.getPreviousBlockHash())){
-                return false;
-            }
-            //校验区块高度是否连贯
-            if(!LongUtil.isEquals((previousBlock.getHeight()+1),currentBlock.getHeight())){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * 校验激励
      */
     public static boolean isIncentiveRight(BigDecimal targetMinerReward,Block block) {
@@ -380,4 +379,6 @@ public class BlockTool {
         List<Transaction> transactions = block.getTransactions();
         return transactions == null?0:transactions.size();
     }
+
+
 }
