@@ -197,7 +197,9 @@ public class NodeTransportDtoTool {
     public static TransactionOutput classCast(long timestamp, long transactionOutputSequence, TransactionOutputDTO transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
         transactionOutput.setTransactionOutputSequence(transactionOutputSequence);
-        transactionOutput.setAddress(StackBasedVirtualMachine.getAddressByPayToClassicAddressOutputScript(transactionOutputDTO.getScriptLock()));
+        String publicKeyHash = StackBasedVirtualMachine.getPublicKeyHashByPayToPublicKeyHashOutputScript(transactionOutputDTO.getScriptLock());
+        String address = AccountUtil.addressFromPublicKeyHash(publicKeyHash);
+        transactionOutput.setAddress(address);
         transactionOutput.setValue(new BigDecimal(transactionOutputDTO.getValue()));
         transactionOutput.setTimestamp(timestamp);
         transactionOutput.setTransactionOutputHash(TransactionTool.calculateTransactionOutputHash(timestamp,transactionOutputSequence,transactionOutputDTO));

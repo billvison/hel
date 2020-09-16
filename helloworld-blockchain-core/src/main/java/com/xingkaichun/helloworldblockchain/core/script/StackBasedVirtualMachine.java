@@ -32,9 +32,9 @@ public class StackBasedVirtualMachine {
                     stack.push(stack.peek());
                 }else if(ScriptOperationCodes.OP_HASH160.equals(command)){
                     String top = stack.peek();
-                    String address = AccountUtil.addressFromPublicKey(top);
+                    String publicKeyHash = AccountUtil.publicKeyHashFromPublicKey(top);
                     stack.pop();
-                    stack.push(address);
+                    stack.push(publicKeyHash);
                 }else if(ScriptOperationCodes.OP_EQUALVERIFY.equals(command)){
                     if(!stack.pop().equals(stack.pop())){
                         throw new RuntimeException("脚本执行失败");
@@ -64,25 +64,25 @@ public class StackBasedVirtualMachine {
         return script;
     }
 
-    public static ScriptKey createPayToClassicAddressInputScript(String sign,String publicKey) {
+    public static ScriptKey createPayToPublicKeyHashInputScript(String sign, String publicKey) {
         ScriptKey script = new ScriptKey();
         script.add(ScriptOperationCodes.getOperationDataFromData(sign));
         script.add(ScriptOperationCodes.getOperationDataFromData(publicKey));
         return script;
     }
 
-    public static ScriptLock createPayToClassicAddressOutputScript(String address) {
+    public static ScriptLock createPayToPublicKeyHashOutputScript(String address) {
         ScriptLock script = new ScriptLock();
         script.add(ScriptOperationCodes.OP_DUP);
         script.add(ScriptOperationCodes.OP_HASH160);
-        //TODO HASH160
-        script.add(ScriptOperationCodes.getOperationDataFromData(address));
+        String publicKeyHash = AccountUtil.publicKeyHashFromAddress(address);
+        script.add(ScriptOperationCodes.getOperationDataFromData(publicKeyHash));
         script.add(ScriptOperationCodes.OP_EQUALVERIFY);
         script.add(ScriptOperationCodes.OP_CHECKSIG);
         return script;
     }
 
-    public static String getAddressByPayToClassicAddressOutputScript(List<String> scriptLock) {
+    public static String getPublicKeyHashByPayToPublicKeyHashOutputScript(List<String> scriptLock) {
         return ScriptOperationCodes.getDataFromOperationData(scriptLock.get(2));
     }
 }

@@ -118,7 +118,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
             for(NormalTransactionDto.Output o:outputs){
                 TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
                 transactionOutputDTO.setValue(o.getValue());
-                transactionOutputDTO.setScriptLock(StackBasedVirtualMachine.createPayToClassicAddressOutputScript(o.getAddress()));
+                transactionOutputDTO.setScriptLock(StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(o.getAddress()));
                 transactionOutputDtoList.add(transactionOutputDTO);
                 values = values.add(new BigDecimal(o.getValue()));
             }
@@ -151,7 +151,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
             change = useValues.subtract(values);
             TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
             transactionOutputDTO.setValue(change.toPlainString());
-            transactionOutputDTO.setScriptLock(StackBasedVirtualMachine.createPayToClassicAddressOutputScript(account.getAddress()));
+            transactionOutputDTO.setScriptLock(StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(account.getAddress()));
             transactionOutputDtoList.add(transactionOutputDTO);
         }
 
@@ -172,7 +172,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
         for(TransactionInputDTO transactionInputDTO:transactionInputDtoList){
             String signature = signatureTransactionDTO(transactionDTO, account.getPrivateKey());
-            transactionInputDTO.setScriptKey(StackBasedVirtualMachine.createPayToClassicAddressInputScript(signature, account.getPublicKey()));
+            transactionInputDTO.setScriptKey(StackBasedVirtualMachine.createPayToPublicKeyHashInputScript(signature, account.getPublicKey()));
         }
         return transactionDTO;
     }

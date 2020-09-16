@@ -92,7 +92,47 @@ public class AccountUtil {
     public static String addressFromPublicKey(String publicKey) {
         try {
             byte[] bytePublicKey = HexUtil.hexStringToBytes(publicKey);
-            return base58AddressFrom(bytePublicKey);
+            return base58AddressFromPublicKey(bytePublicKey);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 公钥哈希生成地址
+     */
+    public static String addressFromPublicKeyHash(String publicKeyHash) {
+        try {
+            byte[] bytesPublicKeyHash = HexUtil.hexStringToBytes(publicKeyHash);
+            return base58AddressFromPublicKeyHash(bytesPublicKeyHash);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 公钥生成公钥哈希
+     */
+    public static String publicKeyHashFromPublicKey(String publicKey) {
+        try {
+            byte[] bytesPublicKey = publicKeyFrom(publicKey);
+            byte[] pubKSha256Digest = SHA256Util.digest(bytesPublicKey);
+            byte[] pubKSha256DigestRipeMD160Digest = RipeMD160Util.digest(pubKSha256Digest);
+            return HexUtil.bytesToHexString(pubKSha256DigestRipeMD160Digest);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 地址生成公钥哈希
+     */
+    public static String publicKeyHashFromAddress(String address) {
+        try {
+            byte[] bytesAddress = Base58Util.decode(address);
+            byte[] bytePublicKeyHash = new byte[20];
+            System.arraycopy(bytesAddress, 1, bytePublicKeyHash, 0, 20);
+            return HexUtil.bytesToHexString(bytePublicKeyHash);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -207,16 +247,22 @@ public class AccountUtil {
     /**
      * 公钥生成base58格式地址
      */
-    private static String base58AddressFrom(byte[] bytePublicKey) {
-        byte[] pubKSha256Digest = SHA256Util.digest(bytePublicKey);
-        byte[] pubKSha256DigestRipeMD160Digest = RipeMD160Util.digest(pubKSha256Digest);
+    private static String base58AddressFromPublicKey(byte[] bytePublicKey) {
+        byte[] publicKeySha256Digest = SHA256Util.digest(bytePublicKey);
+        byte[] publicKeySha256DigestRipeMD160Digest = RipeMD160Util.digest(publicKeySha256Digest);
+        return base58AddressFromPublicKeyHash(publicKeySha256DigestRipeMD160Digest);
+    }
 
+    /**
+     * 公钥哈希生成base58格式地址
+     */
+    private static String base58AddressFromPublicKeyHash(byte[] publicKeySha256DigestRipeMD160Digest) {
         //地址数组
         byte[] byteAddress = new byte[1 + 20 + 4];
 
         //将地址的版本号0x00存储进地址数组
         byteAddress[0] = 0x00;
-        System.arraycopy(pubKSha256DigestRipeMD160Digest, 0, byteAddress, 1, 20);
+        System.arraycopy(publicKeySha256DigestRipeMD160Digest, 0, byteAddress, 1, 20);
 
         //计算公钥Hash
         byte[] versionAndPubKSha256RipeMD160 = new byte[21];
