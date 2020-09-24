@@ -9,6 +9,7 @@ import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 
 /**
  * 工作量证明实现
+ * 相关拓展：比特币是如何做到平均10分钟出一个区块？https://zhuanlan.zhihu.com/p/258954220
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */

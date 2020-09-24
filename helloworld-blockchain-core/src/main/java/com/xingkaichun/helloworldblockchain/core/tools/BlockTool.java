@@ -204,7 +204,7 @@ public class BlockTool {
 
     /**
      * 是否有双花攻击
-     * TODO https://www.jianshu.com/p/d2b705a8c83f 解释双花
+     * 相关拓展：双花攻击 https://zhuanlan.zhihu.com/p/258952892
      */
     public static boolean isDoubleSpendAttackHappen(Transaction transaction) {
         List<TransactionInput> inputs = transaction.getInputs();
@@ -225,7 +225,7 @@ public class BlockTool {
 
     /**
      * 是否有双花攻击
-     * TODO https://www.jianshu.com/p/d2b705a8c83f 解释双花
+     * 相关拓展：双花攻击 https://zhuanlan.zhihu.com/p/258952892
      */
     public static boolean isDoubleSpendAttackHappen(Block block) {
         //在不同的交易中，哈希(交易的哈希、交易输入哈希、交易输出哈希)不应该被使用两次或是两次以上

@@ -31,7 +31,7 @@ public class Transaction implements Serializable {
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      *
-     * TODO https://blog.csdn.net/u014633283/article/details/104759834/
+     * 相关拓展：比特币曾经出现过两个交易ID相同的情况。https://zhuanlan.zhihu.com/p/258955441
      */
     private String transactionHash;
     /**

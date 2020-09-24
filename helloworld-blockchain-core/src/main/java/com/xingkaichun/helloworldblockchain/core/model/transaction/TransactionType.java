@@ -9,9 +9,7 @@ public enum TransactionType {
 
     NORMAL,
     /**
-     * TODO 介绍
-     * https://zhuanlan.zhihu.com/p/55310564
-     * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+     * 相关拓展：COINBASE是什么？https://zhuanlan.zhihu.com/p/258952493
      */
     COINBASE
 
