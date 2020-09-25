@@ -46,12 +46,12 @@ public class HelloWorldBlockChainNodeApplication {
 		ConfigurableApplicationContext context = SpringApplication.run(HelloWorldBlockChainNodeApplication.class, args);
 
 		NetBlockchainCore netBlockchainCore = context.getBean(NetBlockchainCore.class);
+		//启动
 		netBlockchainCore.start();
 	}
 
-
 	@Bean
-	public NetBlockchainCore buildNetBlockchainCore() {
+	public NetBlockchainCoreFactory netBlockchainCoreFactory() {
 		try {
 			String INIT_BLOCKCHAIN_FORK_FILE_NAME = "InitBlockchainFork.txt";
 			InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(INIT_BLOCKCHAIN_FORK_FILE_NAME);
@@ -59,33 +59,38 @@ public class HelloWorldBlockChainNodeApplication {
 			Type jsonType = new TypeToken<BlockchainForkDto>() {}.getType();
 			BlockchainForkDto blockchainForkDto = new Gson().fromJson(context,jsonType);
 
-			NetBlockchainCore netBlockchainCore = NetBlockchainCoreFactory.createNetBlcokchainCore(ResourcePathTool.getDataRootPath(blockchainDataPath),8444, blockchainForkDto);
-			return netBlockchainCore;
+			NetBlockchainCoreFactory netBlockchainCoreFactory = new NetBlockchainCoreFactory(ResourcePathTool.getDataRootPath(blockchainDataPath),8444, blockchainForkDto);
+			return netBlockchainCoreFactory;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Bean
-	public BlockChainCore buildBlockChainCore(NetBlockchainCore netBlockchainCore){
-		return netBlockchainCore.getBlockChainCore();
+	public NetBlockchainCore buildNetBlockchainCore(NetBlockchainCoreFactory netBlockchainCoreFactory) {
+		return netBlockchainCoreFactory.getNetBlockchainCore();
 	}
 
 	@Bean
-	public ConfigurationService buildConfigurationService(NetBlockchainCore netBlockchainCore){
-		return NetBlockchainCoreFactory.getConfigurationService();
+	public BlockChainCore buildBlockChainCore(NetBlockchainCoreFactory netBlockchainCoreFactory){
+		return netBlockchainCoreFactory.getBlockChainCore();
+	}
+
+	@Bean
+	public ConfigurationService buildConfigurationService(NetBlockchainCoreFactory netBlockchainCoreFactory){
+		return netBlockchainCoreFactory.getConfigurationService();
 	}
 	@Bean
-	public BlockChainCoreService buildBlockChainCoreService(NetBlockchainCore netBlockchainCore){
-		return NetBlockchainCoreFactory.getBlockChainCoreService();
+	public BlockChainCoreService buildBlockChainCoreService(NetBlockchainCoreFactory netBlockchainCoreFactory){
+		return netBlockchainCoreFactory.getBlockChainCoreService();
 	}
 	@Bean
-	public NodeService buildNodeService(NetBlockchainCore netBlockchainCore){
-		return NetBlockchainCoreFactory.getNodeService();
+	public NodeService buildNodeService(NetBlockchainCoreFactory netBlockchainCoreFactory){
+		return netBlockchainCoreFactory.getNodeService();
 	}
 	@Bean
-	public BlockChainForkService buildBlockChainFrokService(NetBlockchainCore netBlockchainCore){
-		return NetBlockchainCoreFactory.getBlockChainForkService();
+	public BlockChainForkService buildBlockChainFrokService(NetBlockchainCoreFactory netBlockchainCoreFactory){
+		return netBlockchainCoreFactory.getBlockChainForkService();
 	}
 
 

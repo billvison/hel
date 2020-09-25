@@ -57,7 +57,6 @@ public abstract class BlockChainDataBase {
     /**
      * 校验交易是否可以被添加进下一个区块之中。
      * 如果校验的是奖励交易，则需要整个区块的信息，因此这个函数包含了两个参数：交易所在的区块、交易
-     * //TODO 交易的时间校验？？是否需要区块  方法名
      */
     public abstract boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) ;
     //endregion
