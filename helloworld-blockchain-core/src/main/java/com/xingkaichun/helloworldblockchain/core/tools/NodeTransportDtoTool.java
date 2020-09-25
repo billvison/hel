@@ -1,6 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.google.gson.Gson;
+import com.xingkaichun.helloworldblockchain.core.model.synchronizer.SynchronizerBlockDTO;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptKey;
@@ -12,10 +13,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionTy
 import com.xingkaichun.helloworldblockchain.core.script.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 
 import java.math.BigDecimal;
@@ -33,7 +31,7 @@ public class NodeTransportDtoTool {
     /**
      * 类型转换
      */
-    public static Block classCast(BlockChainDataBase blockChainDataBase, BlockDTO blockDTO) {
+    public static Block classCast(BlockChainDataBase blockChainDataBase, SynchronizerBlockDTO blockDTO) {
         if(LongUtil.isLessThan(blockDTO.getHeight(),LongUtil.ONE)){
             throw new ClassCastException("区块的高度不能少于1");
         }
@@ -88,7 +86,6 @@ public class NodeTransportDtoTool {
 
         BlockDTO blockDTO = new BlockDTO();
         blockDTO.setTimestamp(block.getTimestamp());
-        blockDTO.setHeight(block.getHeight());
         blockDTO.setTransactions(transactionDtoList);
         blockDTO.setNonce(block.getNonce());
         return blockDTO;
@@ -245,5 +242,19 @@ public class NodeTransportDtoTool {
      */
     public static BlockDTO decodeToBlockDTO(String stringBlockDTO) {
         return gson.fromJson(stringBlockDTO,BlockDTO.class);
+    }
+
+    /**
+     * 编码 SynchronizerBlockDTO
+     */
+    public static String encode(SynchronizerBlockDTO synchronizerBlockDTO) {
+        return gson.toJson(synchronizerBlockDTO);
+    }
+
+    /**
+     * 解码 SynchronizerBlockDTO
+     */
+    public static SynchronizerBlockDTO decodeToSynchronizerBlockDTO(String stringSynchronizerBlockDTO) {
+        return gson.fromJson(stringSynchronizerBlockDTO,SynchronizerBlockDTO.class);
     }
 }

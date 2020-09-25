@@ -12,8 +12,6 @@ import java.util.List;
 public class BlockDTO implements Serializable {
     //区块产生的时间戳
     private long timestamp;
-    //区块高度 TODO 可以删除吗？
-    private long height;
     //区块里的交易
     private List<TransactionDTO> transactions;
     //共识值
@@ -30,14 +28,6 @@ public class BlockDTO implements Serializable {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public long getHeight() {
-        return height;
-    }
-
-    public void setHeight(long height) {
-        this.height = height;
     }
 
     public List<TransactionDTO> getTransactions() {
