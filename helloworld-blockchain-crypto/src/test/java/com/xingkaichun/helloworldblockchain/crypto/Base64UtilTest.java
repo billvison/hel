@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -68,6 +69,9 @@ public class Base64UtilTest {
             byte[] test = new byte[j];
             random.nextBytes(test);
             assert Arrays.equals(test, Base64Util.decode(Base64Util.encode(test)));
+
+            //前面字符只能包含'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',末尾可以有0到2个'='(等于号)作为填充。
+            assert Pattern.matches("^[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/]*[=]{0,2}$", Base64Util.encode(test));
         }
     }
 

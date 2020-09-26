@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
@@ -44,6 +45,9 @@ public class HexUtilTest {
             byte[] test = new byte[j];
             random.nextBytes(test);
             assert Arrays.equals(test, HexUtil.hexStringToBytes(HexUtil.bytesToHexString(test)));
+
+            //只包含0123456789abcdef这些字符
+            assert Pattern.matches("^[0123456789abcdef]*$", HexUtil.bytesToHexString(test));
         }
     }
 }
