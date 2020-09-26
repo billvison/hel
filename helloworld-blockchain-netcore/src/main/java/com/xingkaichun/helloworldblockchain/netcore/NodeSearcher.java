@@ -58,7 +58,7 @@ public class NodeSearcher {
      * 在区块链网络中搜寻新的节点
      */
     public void searchNewNodes() {
-        //TODO 改善型功能 性能调整，并发
+        //这里可以利用多线程进行性能优化，因为本项目是helloworld项目，因此只采用单线程轮询每一个节点查询新的网络节点，不做进一步优化拓展。
         List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
         for(NodeDto node:nodes){
             if(!autoSearchNodeOption()){

@@ -166,7 +166,7 @@ public class MinerDefaultImpl extends Miner {
     }
 
     public void miningBlock(BlockChainDataBase blockChainDataBase, MiningBlock miningBlock) {
-        //TODO 改善型功能 这里可以利用多处理器的性能进行计算 还可以进行矿池挖矿
+        //这里可以利用多核CPU进行性能优化，还可以拓展为矿池挖矿，因为本项目是helloworld项目，因此只采用单线程进行挖矿，不做进一步优化拓展。
         Block block = miningBlock.getBlock();
         long startNonce = miningBlock.getNextNonce();
         long tryNonceSizeEveryBatch = miningBlock.getTryNonceSizeEveryBatch();

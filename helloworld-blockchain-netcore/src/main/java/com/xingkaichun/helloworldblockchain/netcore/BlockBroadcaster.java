@@ -69,6 +69,7 @@ public class BlockBroadcaster {
         }
 
         long localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
+        //自己的高度在全网是最高的吗？是的话，传播自己的高度给其它节点，好让其它节点知道可以来同步自己的区块。
         boolean isLocalBlockChainHighest = true;
         for(NodeDto node:nodes){
             if(LongUtil.isLessThan(localBlockChainHeight,node.getBlockChainHeight())){
@@ -77,12 +78,10 @@ public class BlockBroadcaster {
             }
         }
 
-        //TODO 改善型功能 性能调整 根据网络带宽设置传播宽度，这里存在可能你所发送的节点一起向你请求数据。
-        //通知按照区块高度较高的先
         if(isLocalBlockChainHighest){
             //广播节点数量
             int broadcastNodeCount = 0;
-            //排序节点
+            //按照节点的高度进行排序，优先将自己的高度传播给高度大的节点。
             Collections.sort(nodes,(NodeDto node1, NodeDto node2)->{
                 if(LongUtil.isGreatThan(node1.getBlockChainHeight(),node2.getBlockChainHeight())){
                     return -1;
@@ -92,12 +91,19 @@ public class BlockBroadcaster {
                     return 1;
                 }
             });
+            /**
+             * 用单线程轮询通知其它节点。
+             * 这里可以利用多线程进行性能优化，因为本项目是helloworld项目，因此只采用单线程轮询每一个节点给它发送自己的高度，不做进一步优化拓展。
+             * 这里需要考虑，如果你通知的节点立刻向你获取数据，需要考虑自己的宽带网络资源。
+             * 这里采用只向部分节点发送的自己高度，且每给一个节点发送自己的高度后，睡眠几秒钟，可以认为这几秒带宽资源都分配给了这个节点。
+             */
             for(NodeDto node:nodes){
                 blockchainNodeClientService.unicastLocalBlockChainHeight(node,localBlockChainHeight);
                 ++broadcastNodeCount;
                 if(broadcastNodeCount>20){
                     return;
                 }
+                ThreadUtil.sleep(1000*10);
             }
         }
     }
