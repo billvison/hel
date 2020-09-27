@@ -189,7 +189,7 @@ function blockByHeight(result){
 			'<dd>merkleTreeRoot: ' + result.block.merkleTreeRoot + '</dd>' +
 			'<dd>nonce: ' + result.block.nonce + '</dd>' +
 			'<dd>hash: ' + result.block.hash + '</dd>' +
-			'<dd>explain: ' + result.block.consensusVariableHolder.explain + '</dd>' +
+			'<dd>bits: ' + result.block.bits + '</dd>' +
 			'<dd>transactionQuantity: ' + result.block.transactionQuantity + '</dd>' +
 			'<dd>startTransactionSequenceNumberInBlockChain: ' + result.block.startTransactionSequenceNumberInBlockChain + '</dd>' +
 			'<dd>endTransactionSequenceNumberInBlockChain: ' + result.block.endTransactionSequenceNumberInBlockChain + '</dd>' +

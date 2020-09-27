@@ -78,14 +78,13 @@ public class Block implements Serializable {
     private String hash;
 
     /**
-     * 计算共识的中间变量持有者
-     * 这个字段是冗余的。可以通过区块链系统计算出来。用于辅助共识计算。
-     * 在做共识计算时，可能会产生很多的中间变量，如果每次都重新计算一次，比较浪费算力，
-     * 这里的设计是将计算好的中间变量保存到这个持有者中，下次计算共识，直接从持有者中获取中间变量。
+     * 挖矿难度
+     * 这里保存的是一个十六进制数据。
+     * 如果区块哈希十六进制表示小于这个值，则认为挖矿成功
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
-    private ConsensusVariableHolder consensusVariableHolder;
+    private String bits;
 
     /**
      * 区块中的交易总笔数
@@ -177,12 +176,12 @@ public class Block implements Serializable {
         this.hash = hash;
     }
 
-    public ConsensusVariableHolder getConsensusVariableHolder() {
-        return consensusVariableHolder;
+    public String getBits() {
+        return bits;
     }
 
-    public void setConsensusVariableHolder(ConsensusVariableHolder consensusVariableHolder) {
-        this.consensusVariableHolder = consensusVariableHolder;
+    public void setBits(String bits) {
+        this.bits = bits;
     }
 
     public long getTransactionQuantity() {

@@ -3,9 +3,12 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.ConsensusVariableHolder;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigInteger;
 
 /**
  * 工作量证明实现
@@ -15,64 +18,52 @@ import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
  */
 public class ProofOfWorkConsensusImpl extends Consensus {
 
-    private final static String EXPLAIN = "explain";
-    private final static String TARGET_DIFFICULT = "targetDifficult";
+    private final static Logger logger = LoggerFactory.getLogger(ProofOfWorkConsensusImpl.class);
 
     @Override
     public boolean isReachConsensus(BlockChainDataBase blockChainDataBase,Block block) {
-        ConsensusVariableHolder consensusVariableHolder = block.getConsensusVariableHolder();
-        if(consensusVariableHolder == null){
-            consensusVariableHolder = calculateConsensusVariableHolder(blockChainDataBase,block);
-            block.setConsensusVariableHolder(consensusVariableHolder);
+        String bits = block.getBits();
+        if(bits == null || bits.isEmpty()){
+            bits = calculateDifficult(blockChainDataBase,block);
+            block.setBits(bits);
         }
-        String targetDifficult = consensusVariableHolder.get(TARGET_DIFFICULT);
+
         //区块Hash
         String hash = block.getHash();
         if(hash == null){
             hash = BlockTool.calculateBlockHash(block);
         }
-        return hash.startsWith(targetDifficult);
+        hash = hash.substring(0,64);
+        return new BigInteger(bits,16).compareTo(new BigInteger(hash,16)) > 0;
     }
 
 
-    public ConsensusVariableHolder calculateConsensusVariableHolder(BlockChainDataBase blockChainDataBase, Block block) {
+    public String calculateDifficult(BlockChainDataBase blockChainDataBase, Block block) {
 
-        ConsensusVariableHolder consensusVariableHolder = new ConsensusVariableHolder();
-        //目标难度
-        final String targetDifficult = GlobalSetting.MinerConstant.INIT_GENERATE_BLOCK_DIFFICULTY_STRING;
-        consensusVariableHolder.put(EXPLAIN,targetDifficult);
-        consensusVariableHolder.put(TARGET_DIFFICULT,targetDifficult);
-        return consensusVariableHolder;
-/*
-        int blockHeight = block.getHeight();
-        if(blockHeight <= 2){
-            consensusTarget.setValue(GlobalSetting.INIT_GENERATE_BLOCK_DIFFICULTY_STRING);
-            return consensusTarget;
+        long targetTimespan = 14 * 24 * 60 * 60 * 1000;
+        long targetSpacing = 10 * 60 * 1000;
+        long nInterval = targetTimespan / targetSpacing;
+
+        String targetDifficult;
+        long blockHeight = block.getHeight();
+        if(blockHeight == 1){
+            targetDifficult = GlobalSetting.MinerConstant.INIT_GENERATE_BLOCK_DIFFICULTY_STRING;
+            return targetDifficult;
         }
-        Block previousBlock = blockChainDataBase.findBlockByBlockHeight(blockHeight-1);
-        Block previousPreviousBlock = blockChainDataBase.findBlockByBlockHeight(blockHeight-2);
-
-        long previousBlockTimestamp = previousBlock.getTimestamp();
-        long previousPreviousBlockTimestamp = previousPreviousBlock.getTimestamp();
-        long blockIntervalTimestamp = previousBlockTimestamp - previousPreviousBlockTimestamp;
-
-        //允许产生区块时间的波动范围
-        long minTargetTimestamp = GlobalSetting.GENERATE_BLOCK_AVERAGE_TIMESTAMP / 4;
-        long maxTargetTimestamp = GlobalSetting.GENERATE_BLOCK_AVERAGE_TIMESTAMP * 4;
-
-        String stringConsensusTarget = previousBlock.getConsensusTarget().getValue();
-        if(blockIntervalTimestamp < minTargetTimestamp){
-            stringConsensusTarget = stringConsensusTarget + "0";
-            consensusTarget.setValue(stringConsensusTarget);
-            return consensusTarget;
-        } else if(blockIntervalTimestamp > maxTargetTimestamp){
-            stringConsensusTarget = stringConsensusTarget.substring(0,stringConsensusTarget.length()-1);
-            consensusTarget.setValue(stringConsensusTarget);
-            return consensusTarget;
-        } else {
-            consensusTarget.setValue(stringConsensusTarget);
-            return consensusTarget;
+        Block lastBlock = blockChainDataBase.queryBlockByBlockHeight(blockHeight-1);
+        long lastBlockHeight = lastBlock.getHeight();
+        if (lastBlockHeight % nInterval != 0){
+            targetDifficult = lastBlock.getBits();
+            return targetDifficult;
         }
-*/
+        Block Block14DayAgo = blockChainDataBase.queryBlockByBlockHeight(lastBlockHeight-nInterval+1);
+        long actualTimespan = lastBlock.getTimestamp() - Block14DayAgo.getTimestamp();
+        if (actualTimespan < targetTimespan/4)
+            actualTimespan = targetTimespan/4;
+        if (actualTimespan > targetTimespan*4)
+            actualTimespan = targetTimespan*4;
+
+        BigInteger bigIntegerTargetDifficult = new BigInteger(lastBlock.getBits(),16).multiply(new BigInteger(String.valueOf(actualTimespan))).divide(new BigInteger(String.valueOf(targetTimespan)));
+        return bigIntegerTargetDifficult.toString(16);
     }
 }

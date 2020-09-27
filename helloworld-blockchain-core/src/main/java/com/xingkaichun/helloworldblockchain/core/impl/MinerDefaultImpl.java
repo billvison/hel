@@ -181,6 +181,8 @@ public class MinerDefaultImpl extends Miner {
             block.setNonce(nextNonce);
             block.setHash(BlockTool.calculateBlockHash(block));
             if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
+                logger.info("祝贺您！挖矿成功！！！用时"+(System.currentTimeMillis()-miningBlock.getStartTimestamp()+"毫秒"));
+                logger.info("区块高度:"+block.getHeight()+",区块哈希:"+block.getHash());
                 miningBlock.setMiningSuccess(true);
                 break;
             }
