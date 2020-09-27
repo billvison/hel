@@ -10,7 +10,8 @@ import org.bouncycastle.util.encoders.Hex;
 public class HexUtil {
 
     /**
-     * byte数组转十六进制字符串(十六进制字符串小写，仅包含字符0123456789abcdef)
+     * byte数组转十六进制字符串(十六进制字符串小写，仅包含字符0123456789abcdef)。
+     * 不允许省略十六进制字符串前面的零，因此十六进制字符串的长度是字节个数的2倍。
      */
     public static String bytesToHexString(byte[] bytes) {
         return Hex.toHexString(bytes);
