@@ -3,9 +3,8 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
@@ -25,54 +24,48 @@ public class IncentiveDefaultImpl extends Incentive {
 
     @Override
     public BigDecimal mineAward(Block block) {
-        //TODO 奖励策略
-        //转账手续费
         BigDecimal fees = getFees(block);
-        //区块固定奖励
-        BigDecimal mixedCoin = GlobalSetting.MinerConstant.INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT;
+        BigDecimal subsidyCoin = getSubsidy(block);
+        BigDecimal total = subsidyCoin.add(fees);
+        return total;
+    }
 
+    /**
+     * 固定奖励
+     */
+    private BigDecimal getSubsidy(Block block) {
+        BigDecimal subsidy = GlobalSetting.MinerConstant.INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT;
         long blockHeight = block.getHeight();
         if(LongUtil.isLessEqualThan(blockHeight,LongUtil.ONE)){
         }else {
             long height = block.getHeight();
-            long multiple = height/210000;
-            while (multiple > 1){
-                mixedCoin = mixedCoin.divide(new BigDecimal("2"));
+            long multiple = (height-1) / 210000;
+            while (multiple >= 1){
+                subsidy = subsidy.divide(new BigDecimal("2"));
+                //小数位数
+                subsidy = subsidy.setScale(GlobalSetting.TransactionConstant.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES,BigDecimal.ROUND_DOWN);
                 --multiple;
             }
         }
-        //最小值
-        BigDecimal total = mixedCoin.add(fees);
-        if(total.compareTo(GlobalSetting.TransactionConstant.MIN_TRANSACTION_FEE)<0){
-            total = GlobalSetting.TransactionConstant.MIN_TRANSACTION_FEE;
-        }
-        //小数位数
-        BigDecimal setScaleTotal = total.setScale(GlobalSetting.TransactionConstant.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES,BigDecimal.ROUND_DOWN);
-        return setScaleTotal;
+        return subsidy;
     }
 
+    /**
+     * 交易手续费
+     */
     private BigDecimal getFees(Block block) {
-        List<Transaction> transactions = block.getTransactions();
         BigDecimal fees = BigDecimal.ZERO;
+        List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
-                if(transaction.getTransactionType() != TransactionType.NORMAL){
+                if(transaction.getTransactionType() == TransactionType.COINBASE){
                     continue;
                 }
-                BigDecimal input = BigDecimal.ZERO;
-                List<TransactionInput> inputs = transaction.getInputs();
-                if(inputs != null){
-                    for(TransactionInput txInput:inputs){
-                        input = input.add(txInput.getUnspendTransactionOutput().getValue());
-                    }
+                if(transaction.getTransactionType() != TransactionType.NORMAL){
+                    throw new RuntimeException("不能识别的交易类型");
                 }
-                BigDecimal output = BigDecimal.ZERO;
-                List<TransactionOutput> outputs = transaction.getOutputs();
-                if(outputs != null){
-                    for(TransactionOutput txOutput:outputs){
-                        output = output.add(txOutput.getValue());
-                    }
-                }
+                BigDecimal input = TransactionTool.getInputsValue(transaction);
+                BigDecimal output = TransactionTool.getOutputsValue(transaction);
                 BigDecimal fee = input.subtract(output);
                 fees = fees.add(fee);
             }
