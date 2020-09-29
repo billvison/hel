@@ -367,42 +367,6 @@ a.c_btn_imp:visited{
 .node_delete{
 	float: right;
 }
-/*my_fork*/
-.my_fork dt{
-	
-}
-.my_fork dd{
-	height: 40px;
-	line-height: 40px;
-	background: #f5f5f5;
-	border-radius: 5px;
-	margin-bottom: 20px;
-	padding-left: 20px;
-}
-.my_fork dd span{
-	margin-right: 50px;
-	float: left;
-}
-.my_fork dd .delete{
-	float: right;
-	margin-right: 20px;
-	color: #999;
-	cursor: pointer;
-}
-.fork_add{
-	height: 40px;
-	line-height: 40px;
-	background: #f5f5f5;
-	border-radius: 5px;
-	text-align: center;
-	cursor: pointer;
-}
-.fork_add:hover{
-	background: #fafafa;
-}
-.fork_save{
-	margin: 50px auto;
-}
 /*wallet*/
 .wallet{
 	height: 300px;

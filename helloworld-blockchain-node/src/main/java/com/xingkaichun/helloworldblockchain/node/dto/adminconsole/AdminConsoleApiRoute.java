@@ -19,7 +19,6 @@ public class AdminConsoleApiRoute {
     public static final String DELETE_NODE = "/Api/AdminConsole/DeleteNode";
     public static final String QUERY_ALL_NODE_LIST = "/Api/AdminConsole/QueryAllNodeList";
 
-    public static final String UPDATE_BLOCKCHAINBFORK = "/Api/AdminConsole/UpdateBlockchainFork";
     public static final String UPDATE_ADMIN_USER = "/Api/AdminConsole/UpdateAdminUserRequest";
     public static final String QUERY_MINER_ADDRESS = "/Api/AdminConsole/QueryMinerAddress";
     public static final String SET_MINER_ADDRESS = "/Api/AdminConsole/SetMinerAddress";

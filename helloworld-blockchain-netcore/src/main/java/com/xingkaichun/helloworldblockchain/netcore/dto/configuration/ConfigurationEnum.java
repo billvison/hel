@@ -17,7 +17,6 @@ public enum ConfigurationEnum {
     SEARCH_NEW_BLOCKS_TIME_INTERVAL(String.valueOf(1*60*1000),"在区块链网络中自动搜寻新的区块的间隔时间。"),
     CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL(String.valueOf(1*60*1000),"检查自己的区块链高度在区块链网络中是否是最大的高度的时间间隔。"),
     ADD_SEED_NODE_TO_LOCAL_BLOCKCHAIN_TIME_INTERVAL(String.valueOf(1*60*60*1000),"定时将种子节点加入本地区块链网络的时间间隔。"),
-    IS_BLOCKCHAIN_FORK_INIT("false","有没有初始化区块链分支。"),
     NODE_BROADCAST_TIME_INTERVAL(String.valueOf(1000*60*60*24),"广播自己节点的时间间隔。"),
     NODE_HIDE_MYSELF("false","隐藏自己，不让别人知道自己这个节点存在。"),
     BLOCK_SEARCH("false","不想知道别的节点。"),

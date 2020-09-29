@@ -17,6 +17,4 @@ public class BlockChainApiRoute {
     public static final String QUERY_MINING_TRANSACTION_LIST = "/Api/BlockChain/QueryMiningTransactionList";
     public static final String QUERY_BLOCKDTO_BY_BLOCK_HEIGHT = "/Api/BlockChain/QueryBlockDtoByBlockHeight";
     public static final String QUERY_BLOCKDTO_BY_BLOCK_HASH = "/Api/BlockChain/QueryBlockDtoByBlockHash";
-
-    public static final String QUERY_BLOCKCHAINBFORK = "/Api/BlockChain/QueryBlockchainFork";
 }

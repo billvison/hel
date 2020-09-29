@@ -19,9 +19,7 @@ import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService
  * @see com.xingkaichun.helloworldblockchain.netcore.BlockSearcher
  * 5.区块广播者
  * @see com.xingkaichun.helloworldblockchain.netcore.BlockBroadcaster
- * 6.分支维护者
- * @see com.xingkaichun.helloworldblockchain.netcore.ForkMaintainer
- * 7.种子节点维护者
+ * 6.种子节点维护者
  * @see com.xingkaichun.helloworldblockchain.netcore.SeedNodeMaintainer
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
@@ -35,17 +33,15 @@ public class NetBlockchainCore {
     private BlockSearcher blockSearcher;
     private BlockBroadcaster blockBroadcaster;
 
-    private ForkMaintainer forkMaintainer;
     private ConfigurationService configurationService;
 
 
-    public NetBlockchainCore(BlockChainCore blockChainCore, ForkMaintainer forkMaintainer
+    public NetBlockchainCore(BlockChainCore blockChainCore
             , BlockchainHttpServer blockchainHttpServer, ConfigurationService configurationService
             , SeedNodeMaintainer seedNodeMaintainer, NodeSearcher nodeSearcher
             , BlockSearcher blockSearcher , BlockBroadcaster blockBroadcaster) {
 
         this.blockChainCore = blockChainCore;
-        this.forkMaintainer = forkMaintainer;
         this.blockchainHttpServer = blockchainHttpServer;
         this.configurationService = configurationService;
         this.seedNodeMaintainer = seedNodeMaintainer;
@@ -92,8 +88,6 @@ public class NetBlockchainCore {
         blockSearcher.start();
         //启动区块广播者
         blockBroadcaster.start();
-        //启动区块链分叉维护者
-        forkMaintainer.start();
     }
 
 
@@ -122,10 +116,6 @@ public class NetBlockchainCore {
 
     public BlockBroadcaster getBlockBroadcaster() {
         return blockBroadcaster;
-    }
-
-    public ForkMaintainer getForkMaintainer() {
-        return forkMaintainer;
     }
 
     public ConfigurationService getConfigurationService() {

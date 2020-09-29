@@ -13,12 +13,10 @@ import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.page.PageCondition;
-import com.xingkaichun.helloworldblockchain.netcore.dto.fork.BlockchainForkBlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.transaction.NormalTransactionDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.transaction.SubmitNormalTransactionResultDto;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
-import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainForkService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.node.dto.blockchainbrowser.BlockChainApiRoute;
@@ -52,9 +50,6 @@ public class BlockChainBrowserController {
 
     @Autowired
     private NodeService nodeService;
-
-    @Autowired
-    private BlockChainForkService blockChainForkService;
 
    /**
      * 生成钱包(公钥、私钥、地址)
@@ -300,25 +295,6 @@ public class BlockChainBrowserController {
             return ServiceResult.createSuccessServiceResult("[根据区块哈希查询区块]成功",response);
         } catch (Exception e){
             String message = "[根据区块哈希查询区块]失败";
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
-
-    /**
-     * 获取当前区块链分支
-     */
-    @ResponseBody
-    @RequestMapping(value = BlockChainApiRoute.QUERY_BLOCKCHAINBFORK,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryBlockchainForkResponse> queryBlockchainFork(@RequestBody QueryBlockchainForkRequest request){
-        try {
-            List<BlockchainForkBlockDto> blockList = blockChainForkService.queryBlockchainFork();
-
-            QueryBlockchainForkResponse response = new QueryBlockchainForkResponse();
-            response.setBlockList(blockList);
-            return ServiceResult.createSuccessServiceResult("成功获取当前区块链分支",response);
-        } catch (Exception e){
-            String message = "获取当前区块链分支失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

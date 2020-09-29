@@ -4,13 +4,10 @@ import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockChainCoreFactory;
 import com.xingkaichun.helloworldblockchain.core.tools.ResourcePathTool;
 import com.xingkaichun.helloworldblockchain.core.utils.FileUtil;
-import com.xingkaichun.helloworldblockchain.netcore.dao.BlockChainForkDao;
 import com.xingkaichun.helloworldblockchain.netcore.dao.ConfigurationDao;
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
-import com.xingkaichun.helloworldblockchain.netcore.dao.impl.BlockChainForkDaoImpl;
 import com.xingkaichun.helloworldblockchain.netcore.dao.impl.ConfigurationDaoImpl;
 import com.xingkaichun.helloworldblockchain.netcore.dao.impl.NodeDaoImpl;
-import com.xingkaichun.helloworldblockchain.netcore.dto.fork.BlockchainForkDto;
 import com.xingkaichun.helloworldblockchain.netcore.netserver.BlockchainHttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.netserver.HttpServerHandlerResolver;
 import com.xingkaichun.helloworldblockchain.netcore.service.*;
@@ -26,14 +23,13 @@ public class NetBlockchainCoreFactory {
     private ConfigurationService configurationService;
     private BlockChainCoreService blockChainCoreService;
     private NodeService nodeService;
-    private BlockChainForkService blockChainForkService;
     private BlockChainCore blockChainCore;
 
     public NetBlockchainCoreFactory(){
-        this(ResourcePathTool.getDataRootPath(),8444,null);
+        this(ResourcePathTool.getDataRootPath(),8444);
     }
 
-    public NetBlockchainCoreFactory(String dataRootPath, int serverPort, BlockchainForkDto initBlockchainForkDto){
+    public NetBlockchainCoreFactory(String dataRootPath, int serverPort){
         if(dataRootPath == null){
             throw new NullPointerException("参数路径不能为空。");
         }
@@ -47,16 +43,12 @@ public class NetBlockchainCoreFactory {
         blockChainCore = BlockChainCoreFactory.createBlockChainCore(dataRootPath,minerAddress);
 
         NodeDao nodeDao = new NodeDaoImpl(dataRootPath);
-        BlockChainForkDao blockChainForkDao = new BlockChainForkDaoImpl(dataRootPath);
 
         nodeService = new NodeServiceImpl(nodeDao,configurationService);
         BlockchainNodeClientService blockchainNodeClientService = new BlockchainNodeClientServiceImpl(serverPort);
         blockChainCoreService = new BlockChainCoreServiceImpl(blockChainCore,nodeService,blockchainNodeClientService);
 
-        blockChainForkService = new BlockChainForkServiceImpl(blockChainForkDao,blockChainCoreService);
-        SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService = new SynchronizeRemoteNodeBlockServiceImpl(blockChainCore,nodeService, blockChainForkService,blockchainNodeClientService,configurationService);
-
-        ForkMaintainer forkMaintainer = new ForkMaintainer(blockChainForkService,configurationService, initBlockchainForkDto);
+        SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService = new SynchronizeRemoteNodeBlockServiceImpl(blockChainCore,nodeService,blockchainNodeClientService,configurationService);
 
         HttpServerHandlerResolver httpServerHandlerResolver = new HttpServerHandlerResolver(blockChainCoreService,nodeService,configurationService);
         BlockchainHttpServer blockchainHttpServer = new BlockchainHttpServer(serverPort, httpServerHandlerResolver);
@@ -67,7 +59,7 @@ public class NetBlockchainCoreFactory {
 
 
         netBlockchainCore
-                = new NetBlockchainCore(blockChainCore, forkMaintainer, blockchainHttpServer, configurationService
+                = new NetBlockchainCore(blockChainCore, blockchainHttpServer, configurationService
                 , seedNodeMaintainer,nodeSearcher,blockSearcher, blockBroadcaster);
     }
 
@@ -85,10 +77,6 @@ public class NetBlockchainCoreFactory {
     public NodeService getNodeService() {
         return nodeService;
     }
-    public BlockChainForkService getBlockChainForkService() {
-        return blockChainForkService;
-    }
-
     public BlockChainCore getBlockChainCore() {
         return blockChainCore;
     }

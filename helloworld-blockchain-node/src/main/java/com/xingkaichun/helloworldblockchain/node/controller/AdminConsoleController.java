@@ -8,7 +8,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.Configurat
 import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
-import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainForkService;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.AdminConsoleApiRoute;
@@ -41,9 +40,6 @@ public class AdminConsoleController {
 
     @Autowired
     private BlockChainCoreService blockChainCoreService;
-
-    @Autowired
-    private BlockChainForkService blockChainForkService;
 
     @Autowired
     private UserService userService;
@@ -188,23 +184,6 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("停用同步器成功",response);
         } catch (Exception e){
             String message = "停用同步器失败";
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
-
-    /**
-     * 更换当前区块链分支
-     */
-    @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.UPDATE_BLOCKCHAINBFORK,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<UpdateBlockchainForkResponse> updateBlockchainFork(@RequestBody UpdateBlockchainForkRequest request){
-        try {
-            blockChainForkService.updateBlockchainFork(request.getBlockList());
-            UpdateBlockchainForkResponse response = new UpdateBlockchainForkResponse();
-            return ServiceResult.createSuccessServiceResult("成功更换当前区块链分支",response);
-        } catch (Exception e){
-            String message = "更换当前区块链分支失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
