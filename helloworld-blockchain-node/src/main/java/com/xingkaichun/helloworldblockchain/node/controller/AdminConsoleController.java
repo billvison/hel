@@ -13,9 +13,6 @@ import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.AdminConsoleApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.request.*;
 import com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response.*;
-import com.xingkaichun.helloworldblockchain.node.dto.user.request.UpdateAdminUserRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.user.response.UpdateAdminUserResponse;
-import com.xingkaichun.helloworldblockchain.node.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +37,6 @@ public class AdminConsoleController {
 
     @Autowired
     private BlockChainCoreService blockChainCoreService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private ConfigurationService configurationService;
@@ -184,23 +178,6 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("停用同步器成功",response);
         } catch (Exception e){
             String message = "停用同步器失败";
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
-
-    /**
-     * 更新系统管理员用户
-     */
-    @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.UPDATE_ADMIN_USER,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<UpdateAdminUserResponse> updateAdminUserRequest(@RequestBody UpdateAdminUserRequest request){
-        try {
-            userService.updateUser(request.getUserDto());
-            UpdateAdminUserResponse response = new UpdateAdminUserResponse();
-            return ServiceResult.createSuccessServiceResult("更新系统用户成功",response);
-        } catch (Exception e){
-            String message = "更新系统用户失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.node.configurations;
 
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.node.dto.user.UserApiRoute;
 import com.xingkaichun.helloworldblockchain.node.interceptors.SecurityInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(securityInterceptor).addPathPatterns("/Api/AdminConsole/**");
+		registry.addInterceptor(securityInterceptor).addPathPatterns("/Api/AdminConsole/**").addPathPatterns(UserApiRoute.UPDATE_USER);
 	}
 
 	@Override

@@ -5,11 +5,13 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.user.UserApiRoute;
 import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
 import com.xingkaichun.helloworldblockchain.node.dto.user.request.LoginRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.user.request.QueryLoginUserInfoRequest;
-import com.xingkaichun.helloworldblockchain.node.dto.user.request.UserExitRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.user.request.GetLoginUserRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.user.request.UpdateUserRequest;
+import com.xingkaichun.helloworldblockchain.node.dto.user.request.ExitRequest;
 import com.xingkaichun.helloworldblockchain.node.dto.user.response.LoginResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.user.response.QueryLoginUserInfoResponse;
-import com.xingkaichun.helloworldblockchain.node.dto.user.response.UserExitResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.user.response.GetLoginUserResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.user.response.UpdateUserResponse;
+import com.xingkaichun.helloworldblockchain.node.dto.user.response.ExitResponse;
 import com.xingkaichun.helloworldblockchain.node.service.UserService;
 import com.xingkaichun.helloworldblockchain.node.util.SessionUtil;
 import org.slf4j.Logger;
@@ -24,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 用户相关功能的控制器
+ * 用户功能的控制器
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
@@ -42,27 +44,21 @@ public class UserController {
      */
     @ResponseBody
     @RequestMapping(value = UserApiRoute.LOGIN,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<LoginResponse> login(@RequestBody LoginRequest request, HttpServletRequest httpServletRequest){
+    public ServiceResult<LoginResponse> login(HttpServletRequest httpServletRequest, @RequestBody LoginRequest request){
         try {
-            if(request.getUserDto() == null || Strings.isNullOrEmpty(request.getUserDto().getUserName())){
+            UserDto userDto = request.getUserDto();
+            if(Strings.isNullOrEmpty(userDto.getUserName())){
                 return ServiceResult.createFailServiceResult("登录失败，用户名不能为空");
             }
-            if(Strings.isNullOrEmpty(request.getUserDto().getPassword())){
+            if(Strings.isNullOrEmpty(userDto.getPassword())){
                 return ServiceResult.createFailServiceResult("登录失败，密码不能为空");
             }
-            UserDto userDto = userService.queryUserByUserName(request.getUserDto().getUserName());
-            if(userDto == null){
-                return ServiceResult.createFailServiceResult("登录失败，请检查用户名与密码");
-            }
-            if(!userDto.getPassword().equals(request.getUserDto().getPassword())){
+            UserDto userDtoResponse = userService.login(httpServletRequest,userDto);
+            if(userDtoResponse == null){
                 return ServiceResult.createFailServiceResult("登录失败，请检查用户名与密码");
             }
             LoginResponse response = new LoginResponse();
-            LoginResponse.LoginUserDto loginUserDto = new LoginResponse.LoginUserDto();
-            loginUserDto.setUserId(userDto.getUserId());
-            loginUserDto.setUserName(userDto.getUserName());
-            response.setUserDto(loginUserDto);
-            SessionUtil.saveAdminUser(httpServletRequest,userDto);
+            response.setUserDto(userDtoResponse);
             return ServiceResult.createSuccessServiceResult("登录成功",response);
         } catch (Exception e){
             String message = "登录失败";
@@ -72,21 +68,18 @@ public class UserController {
     }
 
     /**
-     * 获取登录信息
+     * 获取登录用户信息
      */
     @ResponseBody
-    @RequestMapping(value = UserApiRoute.QUERY_LOGIN_USER_INFO,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryLoginUserInfoResponse> queryLoginUserInfo(@RequestBody QueryLoginUserInfoRequest request, HttpServletRequest httpServletRequest){
+    @RequestMapping(value = UserApiRoute.GET_LOGIN_USER,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<GetLoginUserResponse> getLoginUser(HttpServletRequest httpServletRequest, @RequestBody GetLoginUserRequest request){
         try {
-            UserDto userDto = SessionUtil.getAdminUser(httpServletRequest);
+            UserDto userDto = userService.getLoginUser(httpServletRequest);
             if(userDto == null){
                 return ServiceResult.createFailServiceResult("获取登录信息失败，用户未登录。");
             }
-            QueryLoginUserInfoResponse response = new QueryLoginUserInfoResponse();
-            QueryLoginUserInfoResponse.LoginUserDto loginUserDto = new QueryLoginUserInfoResponse.LoginUserDto();
-            loginUserDto.setUserId(userDto.getUserId());
-            loginUserDto.setUserName(userDto.getUserName());
-            response.setUserDto(loginUserDto);
+            GetLoginUserResponse response = new GetLoginUserResponse();
+            response.setUserDto(userDto);
             return ServiceResult.createSuccessServiceResult("获取登录信息成功",response);
         } catch (Exception e){
             String message = "获取登录信息失败";
@@ -99,14 +92,31 @@ public class UserController {
      * 用户退出
      */
     @ResponseBody
-    @RequestMapping(value = UserApiRoute.USER_EXIT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<UserExitResponse> userExit(@RequestBody UserExitRequest request, HttpServletRequest httpServletRequest){
+    @RequestMapping(value = UserApiRoute.EXIT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<ExitResponse> exit(HttpServletRequest httpServletRequest, @RequestBody ExitRequest request){
         try {
-            SessionUtil.clearAdminUser(httpServletRequest);
-            UserExitResponse response = new UserExitResponse();
+            SessionUtil.clearLoginUser(httpServletRequest);
+            ExitResponse response = new ExitResponse();
             return ServiceResult.createSuccessServiceResult("用户退出成功",response);
         } catch (Exception e){
             String message = "用户退出失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 修改用户信息
+     */
+    @ResponseBody
+    @RequestMapping(value = UserApiRoute.UPDATE_USER,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<UpdateUserResponse> updateUser(@RequestBody UpdateUserRequest request){
+        try {
+            userService.updateUser(request.getUserDto());
+            UpdateUserResponse response = new UpdateUserResponse();
+            return ServiceResult.createSuccessServiceResult("更新用户成功",response);
+        } catch (Exception e){
+            String message = "更新用户失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

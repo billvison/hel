@@ -6,11 +6,9 @@ import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
-public class LoginResponse {
+public class GetLoginUserResponse {
 
     private UserDto userDto;
-
-
 
     //region get set
 

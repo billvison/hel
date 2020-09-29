@@ -2,7 +2,7 @@
 function getUserInfo() {	
     $.ajax({
         type: "post",
-        url: "/Api/User/QueryLoginUserInfo",
+        url: "/Api/User/GetLoginUser",
         contentType: "application/json",
         data: `{}`,
         dataType: "json",
@@ -24,7 +24,7 @@ function modifyInfo() {
 	user.password = $(".modify_info input[name=password]").val();
     $.ajax({
         type: "post",
-        url: "/Api/AdminConsole/UpdateAdminUserRequest",
+        url: "/Api/User/UpdateUser",
         contentType: "application/json",
         data: `{
 				"userDto":{

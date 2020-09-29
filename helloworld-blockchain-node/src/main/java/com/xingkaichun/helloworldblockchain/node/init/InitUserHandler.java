@@ -22,14 +22,6 @@ public class InitUserHandler {
 
     @PostConstruct
     private void init(){
-        long userSize = userService.queryUserSize();
-        if(userSize > 0){
-            return;
-        }
-
-        UserDto userDto = new UserDto();
-        userDto.setUserName(DEFAULT_USER_NAME);
-        userDto.setPassword(DEFAULT_PASSWORD);
-        userService.addUser(userDto);
+        userService.initUser(DEFAULT_USER_NAME,DEFAULT_PASSWORD);
     }
 }

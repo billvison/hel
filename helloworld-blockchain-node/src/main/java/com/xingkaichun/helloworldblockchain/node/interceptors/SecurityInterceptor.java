@@ -22,7 +22,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object){
-		UserDto userDto = SessionUtil.getAdminUser(httpServletRequest);
+		UserDto userDto = SessionUtil.getLoginUser(httpServletRequest);
 		if(userDto == null){
 			logger.debug("用户未登录，无操作权限，请登录!");
 			return false;

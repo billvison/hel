@@ -6,7 +6,7 @@ function isLogin() {
 	var user_login = document.getElementById("user_login");
     $.ajax({
         type: "post",
-        url: url + "/Api/User/QueryLoginUserInfo",
+        url: url + "/Api/User/GetLoginUser",
         contentType: "application/json",
         data: `{}`,
         dataType: "json",

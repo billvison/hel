@@ -1,6 +1,9 @@
 package com.xingkaichun.helloworldblockchain.node.service;
 
 import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
+import com.xingkaichun.helloworldblockchain.node.dto.user.request.LoginRequest;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户service
@@ -9,9 +12,10 @@ import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
  */
 public interface UserService {
 
-
-    long queryUserSize();
-    UserDto queryUserByUserName(String userName);
-    void addUser(UserDto userDto);
     void updateUser(UserDto userDto);
+
+    UserDto login(HttpServletRequest httpServletRequest, UserDto userDto);
+    UserDto getLoginUser(HttpServletRequest httpServletRequest);
+
+    void initUser(String userName, String password);
 }

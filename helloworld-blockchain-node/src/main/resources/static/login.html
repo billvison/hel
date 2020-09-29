@@ -44,7 +44,7 @@
 		user.password = $(".login_frame input[name=password]").val();
 	    $.ajax({
 	        type: "post",
-	        url: url + "/Api/User/login",
+	        url: url + "/Api/User/Login",
 	        contentType: "application/json",
 	        data: `{
 				"userDto":{

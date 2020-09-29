@@ -11,19 +11,19 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class SessionUtil {
 
-    private final static String ADMIN_USER_KEY = "ADMIN_USER";
+    private final static String LOGIN_USER = "LOGIN_USER";
 
-    public static UserDto getAdminUser(HttpServletRequest httpServletRequest){
-        UserDto userDto = (UserDto) httpServletRequest.getSession().getAttribute(ADMIN_USER_KEY);
+    public static UserDto getLoginUser(HttpServletRequest httpServletRequest){
+        UserDto userDto = (UserDto) httpServletRequest.getSession().getAttribute(LOGIN_USER);
         return userDto;
     }
 
-    public static void saveAdminUser(HttpServletRequest httpServletRequest, UserDto userDto) {
-        httpServletRequest.getSession().setAttribute(ADMIN_USER_KEY,userDto);
+    public static void saveLoginUser(HttpServletRequest httpServletRequest, UserDto userDto) {
+        httpServletRequest.getSession().setAttribute(LOGIN_USER,userDto);
     }
 
-    public static void clearAdminUser(HttpServletRequest httpServletRequest) {
-        httpServletRequest.getSession().removeAttribute(ADMIN_USER_KEY);
+    public static void clearLoginUser(HttpServletRequest httpServletRequest) {
+        httpServletRequest.getSession().removeAttribute(LOGIN_USER);
         httpServletRequest.getSession().invalidate();
     }
 }

@@ -5,8 +5,8 @@ package com.xingkaichun.helloworldblockchain.netcore.dto.configuration;
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public enum ConfigurationEnum {
-    IS_MINER_ACTIVE("true","矿工是否处于激活状态？"),
-    IS_SYNCHRONIZER_ACTIVE("true","同步者是否处于激活状态？"),
+    IS_MINER_ACTIVE("false","矿工是否处于激活状态？"),
+    IS_SYNCHRONIZER_ACTIVE("false","同步者是否处于激活状态？"),
     MINER_ADDRESS(null,"用户设置的矿工钱包的地址。"),
     DEFAULT_MINER_ACCOUNT(null,"默认矿工账户，当用户没有设置自己的挖矿账户时，默认使用这个矿工账户"),
     AUTO_SEARCH_NODE("true","是否允许节点自动在区块链网络中搜索节点。"),
