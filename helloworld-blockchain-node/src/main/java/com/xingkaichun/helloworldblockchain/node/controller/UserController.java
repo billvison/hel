@@ -112,7 +112,14 @@ public class UserController {
     @RequestMapping(value = UserApiRoute.UPDATE_USER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<UpdateUserResponse> updateUser(@RequestBody UpdateUserRequest request){
         try {
-            userService.updateUser(request.getUserDto());
+            UserDto userDto = request.getUserDto();
+            if(Strings.isNullOrEmpty(userDto.getUserName())){
+                return ServiceResult.createFailServiceResult("用户名不能为空");
+            }
+            if(Strings.isNullOrEmpty(userDto.getPassword())){
+                return ServiceResult.createFailServiceResult("密码不能为空");
+            }
+            userService.updateUser(userDto);
             UpdateUserResponse response = new UpdateUserResponse();
             return ServiceResult.createSuccessServiceResult("更新用户成功",response);
         } catch (Exception e){

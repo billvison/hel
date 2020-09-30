@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.node.interceptors;
+package com.xingkaichun.helloworldblockchain.node.interceptor;
 
 import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
 import com.xingkaichun.helloworldblockchain.node.util.SessionUtil;

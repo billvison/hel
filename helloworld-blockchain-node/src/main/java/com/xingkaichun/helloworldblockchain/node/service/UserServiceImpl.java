@@ -51,18 +51,6 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-    @Override
-    public void initUser(String userName, String password) {
-        long userSize = userDao.queryUserSize();
-        if(userSize > 0){
-            return;
-        }
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUserName(userName);
-        userEntity.setPassword(password);
-        userDao.addUser(userEntity);
-    }
-
     private UserEntity convertUserDto2UserEntity(UserDto userDto) {
         UserEntity userEntity = new UserEntity();
         userEntity.setPassword(userDto.getPassword());

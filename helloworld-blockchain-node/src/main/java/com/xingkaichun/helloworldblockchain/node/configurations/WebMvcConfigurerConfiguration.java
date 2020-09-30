@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.node.configurations;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.node.dto.user.UserApiRoute;
-import com.xingkaichun.helloworldblockchain.node.interceptors.SecurityInterceptor;
+import com.xingkaichun.helloworldblockchain.node.interceptor.SecurityInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +29,11 @@ public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {
 	private final Logger logger = LoggerFactory.getLogger(WebMvcConfigurerConfiguration.class);
 
 	@Autowired
-	private SecurityInterceptor securityInterceptor;
+	private Gson gson;
 
 	@Autowired
-	private Gson gson;
+	private SecurityInterceptor securityInterceptor;
+
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
@@ -51,10 +52,10 @@ public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {
 	}
 
 	private void responseResult(HttpServletResponse httpServletResponse, Exception exception) {
-		httpServletResponse.setCharacterEncoding("UTF-8");
-		httpServletResponse.setHeader("Content-type", "application/json;charset=UTF-8");
-		httpServletResponse.setStatus(200);
 		try {
+			httpServletResponse.setCharacterEncoding("UTF-8");
+			httpServletResponse.setHeader("Content-type", "application/json;charset=UTF-8");
+			httpServletResponse.setStatus(200);
 			ServiceResult serviceResult = ServiceResult.createFailServiceResult(exception.getMessage());
 			String jsonStr = gson.toJson(serviceResult);
 			httpServletResponse.getWriter().write(jsonStr);
