@@ -51,7 +51,7 @@ public class NodeTransportDtoTool {
         if(LongUtil.isEquals(height,LongUtil.ONE)){
             previousBlockHash = GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH;
         } else {
-            Block previousBlock = blockChainDataBase.queryNoTransactionBlockByBlockHeight(height-LongUtil.ONE);
+            Block previousBlock = blockChainDataBase.queryBlockByBlockHeight(height-LongUtil.ONE);
             if(previousBlock == null){
                 throw new ClassCastException("上一个区块不应该为null");
             }

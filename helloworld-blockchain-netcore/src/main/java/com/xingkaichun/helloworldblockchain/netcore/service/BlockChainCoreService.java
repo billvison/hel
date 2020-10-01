@@ -44,14 +44,6 @@ public interface BlockChainCoreService {
      */
     BlockDTO queryBlockDtoByBlockHeight(long blockHeight) ;
     /**
-     * 根据区块哈希获取区块
-     */
-    Block queryNoTransactionBlockDtoByBlockHash(String blockHash) ;
-    /**
-     * 根据区块高度获取区块DTO
-     */
-    Block queryNoTransactionBlockDtoByBlockHeight(long blockHeight) ;
-    /**
      * 根据区块高度获取区块Hash
      */
     String queryBlockHashByBlockHeight(long blockHeight) ;
@@ -72,4 +64,14 @@ public interface BlockChainCoreService {
      * 保存交易到矿工交易数据库
      */
     void saveTransactionToMinerTransactionDatabase(TransactionDTO transactionDTO)  ;
+
+    /**
+     * 根据区块高度查询区块
+     */
+    Block queryBlockByBlockHeight(long blockHeight);
+
+    /**
+     * 根据区块哈希查询区块
+     */
+    Block queryBlockDtoByBlockHash(String blockHash);
 }

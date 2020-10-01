@@ -21,8 +21,6 @@ public class BlockChainDataBaseKeyTool {
     private final static String TRANSACTION_SEQUENCE_NUMBER_IN_BLOCKCHAIN_TO_TRANSACTION_PREFIX_FLAG = "D";
     //区块高度标识：存储区块链高度到区块的映射
     private final static String BLOCK_HEIGHT_TO_BLOCK_PREFIX_FLAG = "E";
-    //区块高度标识：存储区块链高度到没有交易信息的区块的映射
-    private final static String BLOCK_HEIGHT_TO_NO_TRANSACTION_BLOCK_PREFIX_FLAG = "F";
     //标识：存储区块Hash到区块高度的映射
     private final static String BLOCK_HASH_TO_BLOCK_HEIGHT_PREFIX_FLAG = "G";
     //交易标识：存储交易哈希到交易的映射
@@ -54,10 +52,6 @@ public class BlockChainDataBaseKeyTool {
     }
     public static byte[] buildBlockHeightToBlockKey(long blockHeight) {
         String stringKey = BLOCK_HEIGHT_TO_BLOCK_PREFIX_FLAG + blockHeight + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
-    }
-    public static byte[] buildBlockHeightToNoTransactionBlockKey(long blockHeight) {
-        String stringKey = BLOCK_HEIGHT_TO_NO_TRANSACTION_BLOCK_PREFIX_FLAG + blockHeight + END_FLAG;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     public static byte[] buildBlockHashToBlockHeightKey(String blockHash) {

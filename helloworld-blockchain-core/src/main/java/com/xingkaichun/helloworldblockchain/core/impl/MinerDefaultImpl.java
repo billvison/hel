@@ -95,7 +95,7 @@ public class MinerDefaultImpl extends Miner {
         if(block == null){
             return true;
         }
-        Block tailBlock = blockChainDataBase.queryTailNoTransactionBlock();
+        Block tailBlock = blockChainDataBase.queryTailBlock();
         if(tailBlock == null){
             //第一个区块，除了创始人，其它矿工没有机会走到这里
             return false;
@@ -387,7 +387,7 @@ public class MinerDefaultImpl extends Miner {
     public Block buildNextMineBlock(BlockChainDataBase blockChainDataBase, List<Transaction> packingTransactionList) {
         long timestamp = System.currentTimeMillis();
 
-        Block tailBlock = blockChainDataBase.queryTailNoTransactionBlock();
+        Block tailBlock = blockChainDataBase.queryTailBlock();
         Block nonNonceBlock = new Block();
         //这个挖矿时间不需要特别精确，没必要非要挖出矿的前一霎那时间。省去了挖矿时实时更新这个时间的繁琐。
         nonNonceBlock.setTimestamp(timestamp);

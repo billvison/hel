@@ -184,7 +184,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
 
     @Override
     public String queryBlockHashByBlockHeight(long blockHeight) {
-        Block block = blockChainCore.getBlockChainDataBase().queryNoTransactionBlockByBlockHeight(blockHeight);
+        Block block = blockChainCore.getBlockChainDataBase().queryBlockByBlockHeight(blockHeight);
         if(block == null){
             return null;
         }
@@ -199,23 +199,6 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         }
         BlockDTO blockDTO = NodeTransportDtoTool.classCast(block);
         return blockDTO;
-    }
-
-    @Override
-    public Block queryNoTransactionBlockDtoByBlockHash(String blockHash) {
-        BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
-        long blockHeight = blockChainDataBase.queryBlockHeightByBlockHash(blockHash);
-        if(blockHeight <= LongUtil.ZERO){
-            return null;
-        }
-        Block block = blockChainDataBase.queryNoTransactionBlockByBlockHeight(blockHeight);
-        return block;
-    }
-
-    @Override
-    public Block queryNoTransactionBlockDtoByBlockHeight(long blockHeight) {
-        Block block = blockChainCore.getBlockChainDataBase().queryNoTransactionBlockByBlockHeight(blockHeight);
-        return block;
     }
 
     @Override
@@ -246,5 +229,21 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
     @Override
     public void saveTransactionToMinerTransactionDatabase(TransactionDTO transactionDTO) {
         blockChainCore.getMiner().getMinerTransactionDtoDataBase().insertTransactionDTO(transactionDTO);
+    }
+
+    @Override
+    public Block queryBlockByBlockHeight(long blockHeight) {
+        return blockChainCore.getBlockChainDataBase().queryBlockByBlockHeight(blockHeight);
+    }
+
+    @Override
+    public Block queryBlockDtoByBlockHash(String blockHash) {
+        BlockChainDataBase blockChainDataBase = blockChainCore.getBlockChainDataBase();
+        long blockHeight = blockChainDataBase.queryBlockHeightByBlockHash(blockHash);
+        if(blockHeight <= LongUtil.ZERO){
+            return null;
+        }
+        Block block = blockChainDataBase.queryBlockByBlockHeight(blockHeight);
+        return block;
     }
 }

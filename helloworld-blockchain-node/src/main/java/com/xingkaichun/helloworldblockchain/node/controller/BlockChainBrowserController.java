@@ -265,7 +265,7 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(@RequestBody QueryBlockDtoByBlockHeightRequest request){
         try {
-            Block block = blockChainCoreService.queryNoTransactionBlockDtoByBlockHeight(request.getBlockHeight());
+            Block block = blockChainCoreService.queryBlockByBlockHeight(request.getBlockHeight());
             if(block == null){
                 return ServiceResult.createFailServiceResult(String.format("区块链中不存在区块高度[%d]，请检查输入高度。",request.getBlockHeight()));
             }
@@ -286,7 +286,7 @@ public class BlockChainBrowserController {
     @RequestMapping(value = BlockChainApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HASH,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryBlockDtoByBlockHashResponse> queryBlockDtoByBlockHash(@RequestBody QueryBlockDtoByBlockHashRequest request){
         try {
-            Block block = blockChainCoreService.queryNoTransactionBlockDtoByBlockHash(request.getBlockHash());
+            Block block = blockChainCoreService.queryBlockDtoByBlockHash(request.getBlockHash());
             if(block == null){
                 return ServiceResult.createFailServiceResult(String.format("区块链中不存在区块哈希[%s]，请检查输入高度。",request.getBlockHash()));
             }

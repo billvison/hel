@@ -139,7 +139,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             return false;
         }
 
-        Block previousBlock = queryTailNoTransactionBlock();
+        Block previousBlock = queryTailBlock();
         //校验区块时间
         if(!BlockTool.isBlockTimestampLegal(previousBlock,block)){
             logger.debug("区块生成的时间太滞后。");
@@ -370,26 +370,9 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         return queryBlockByBlockHeight(blockChainHeight);
     }
-    //TODO 删除NoTransactionBlock ？ 或是 新增区块头实体
-    @Override
-    public Block queryTailNoTransactionBlock() {
-        long blockChainHeight = queryBlockChainHeight();
-        if(LongUtil.isLessEqualThan(blockChainHeight,LongUtil.ZERO)){
-            return null;
-        }
-        return queryNoTransactionBlockByBlockHeight(blockChainHeight);
-    }
     @Override
     public Block queryBlockByBlockHeight(long blockHeight) {
         byte[] bytesBlock = LevelDBUtil.get(blockChainDB, BlockChainDataBaseKeyTool.buildBlockHeightToBlockKey(blockHeight));
-        if(bytesBlock==null){
-            return null;
-        }
-        return EncodeDecodeUtil.decodeToBlock(bytesBlock);
-    }
-    @Override
-    public Block queryNoTransactionBlockByBlockHeight(long blockHeight) {
-        byte[] bytesBlock = LevelDBUtil.get(blockChainDB, BlockChainDataBaseKeyTool.buildBlockHeightToNoTransactionBlockKey(blockHeight));
         if(bytesBlock==null){
             return null;
         }
@@ -403,14 +386,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
         return queryBlockByBlockHeight(blockHeight);
 
-    }
-    @Override
-    public Block queryNoTransactionBlockByBlockHash(String blockHash) {
-        long blockHeight = queryBlockHeightByBlockHash(blockHash);
-        if(LongUtil.isLessEqualThan(blockHeight,LongUtil.ZERO)){
-            return null;
-        }
-        return queryNoTransactionBlockByBlockHeight(blockHeight);
     }
     //endregion
 
@@ -542,16 +517,6 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             writeBatch.put(blockHeightKey, EncodeDecodeUtil.encode(block));
         }else{
             writeBatch.delete(blockHeightKey);
-        }
-        //TODO 区块头 亦或是 删除 存储无交易信息的区块
-        byte[] blockHeightToNoTransactionBlockKey = BlockChainDataBaseKeyTool.buildBlockHeightToNoTransactionBlockKey(block.getHeight());
-        if(BlockChainActionEnum.ADD_BLOCK == blockChainActionEnum){
-            List<Transaction> transactions = block.getTransactions();
-            block.setTransactions(null);
-            writeBatch.put(blockHeightToNoTransactionBlockKey, EncodeDecodeUtil.encode(block));
-            block.setTransactions(transactions);
-        }else{
-            writeBatch.delete(blockHeightToNoTransactionBlockKey);
         }
         //存储区块链中总的交易数量
         long transactionSize = queryTransactionSize();

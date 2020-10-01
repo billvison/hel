@@ -86,25 +86,13 @@ public abstract class BlockChainDataBase {
      */
     public abstract Block queryTailBlock() ;
     /**
-     * 查找区块链上的最后一个区块，返回的区块不包含交易信息
-     */
-    public abstract Block queryTailNoTransactionBlock() ;
-    /**
      * 在区块链中根据区块高度查找区块
      */
     public abstract Block queryBlockByBlockHeight(long blockHeight) ;
     /**
-     * 在区块链中根据区块高度查找【未存储交易信息】的区块
-     */
-    public abstract Block queryNoTransactionBlockByBlockHeight(long blockHeight) ;
-    /**
      * 在区块链中根据区块哈希查找区块
      */
     public abstract Block queryBlockByBlockHash(String blockHash) ;
-    /**
-     * 在区块链中根据区块哈希查找【未存储交易信息】区块
-     */
-    public abstract Block queryNoTransactionBlockByBlockHash(String blockHash) ;
     //endregion
 
 
