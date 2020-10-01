@@ -135,5 +135,5 @@ public class TransactionOutput implements Serializable {
         this.transactionOutputSequence = transactionOutputSequence;
     }
 
-//endregion
+    //endregion
 }
