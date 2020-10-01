@@ -39,7 +39,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 区块链
  *
  * 注意这是一个线程不安全的实现。在并发的情况下，不保证功能的正确性。
- * TODO 改善型功能 可以选择关闭区块浏览器的功能，若是关闭的话，则会节约很多的磁盘空间。区块浏览器使用的数据，单独抽取方法组装。
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
