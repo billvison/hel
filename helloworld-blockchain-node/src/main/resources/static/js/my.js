@@ -17,7 +17,6 @@ var fork_block_size = document.getElementById('fork_block_size');//硬分叉区�
 var node_error_delete = document.getElementById('node_error_delete');//删除节点连接错误阈值
 var node_search_interval = document.getElementById('node_search_interval');//主动寻找节点的时间间隔
 var search_new_block = document.getElementById('search_new_block');//主动寻找新的区块的时间间隔
-var check_local_block = document.getElementById('check_local_block');//主动检测自身是否是区块链网络区块链长度最大的时间间隔
 //获取区块高度
 function queryBlockHeight() {   
     $.ajax({
@@ -274,70 +273,5 @@ function toggleUnits(para){
 	}else{
 		activeMiner(para);
 	}
-}
-//获取配置信息
-function getConfig(){
-	var ary = [
-		"FORK_BLOCK_SIZE",
-		"NODE_ERROR_CONNECTION_TIMES_REMOVE_THRESHOLD",
-		"NODE_SEARCH_NEW_NODE_TIME_INTERVAL",
-		"SEARCH_NEW_BLOCKS_TIME_INTERVAL",
-		"CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL"
-	];
-	for (var i=0; i<ary.length; i++) {
-		var ospan = document.getElementById(ary[i]);
-		$.ajax({
-		    type: "post",
-		    url: url + "/Api/AdminConsole/GetConfigurationByConfigurationKey",
-		    contentType: "application/json",
-		    data: `{
-				"confKey":"${ary[i]}"
-			}`,
-		    dataType: "json",
-		    async: false,
-		    success: function (data) {
-				ospan.textContent = data.result.configurationDto.confValue;
-		    },
-		    error: function (e) {
-		    }
-		});
-	}
-}
-//配置
-getConfig();
-function setConfig(){
-	var cur_btn = event.srcElement ? event.srcElement : event.target;
-	var id = cur_btn.previousElementSibling.id;
-	console.log(id);
-	var getContent = '<dl><dt><h2>设置</h2></dt>' +
-				     '<dd><font>输入数字:</font><input name="value" type="text" class="c_txt"></dd></dl>';
-	var nextStaff = function(){
-		setConfigAjax();
-	}
-	popBox.createBox(getContent,1,nextStaff);
-	function setConfigAjax(){
-		var value = $(".n_popbox_msg input[name=value]").val();
-		$.ajax({
-		    type: "post",
-		    url: url + "/Api/AdminConsole/SetConfiguration",
-		    contentType: "application/json",
-		    data: `{
-				"configurationDto":{
-						"confKey":"${id}",
-						"confValue":"${value}"
-					}
-			}`,
-		    dataType: "json",
-		    async: false,
-		    success: function (data) {
-				if(data.serviceCode = "SUCCESS"){
-					alert(data.message);
-					cur_btn.previousElementSibling.textContent = value;
-				}  
-		    },
-		    error: function (e) {
-		    }
-		});
-	}	
 }
 

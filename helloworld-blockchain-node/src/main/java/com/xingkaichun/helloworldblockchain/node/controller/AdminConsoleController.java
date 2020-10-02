@@ -371,43 +371,4 @@ public class AdminConsoleController {
             return ServiceResult.createFailServiceResult(message);
         }
     }
-
-    /**
-     * 根据配置Key获取配置
-     */
-    @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.GET_CONFIGURATION_BY_CONFIGURATION_KEY_KEY,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<GetConfigurationByConfigurationKeyResponse> getConfigurationByConfigurationKey(@RequestBody GetConfigurationByConfigurationKeyRequest request){
-        try {
-            String confKey = request.getConfKey();
-            if(Strings.isNullOrEmpty(confKey)){
-                return ServiceResult.createFailServiceResult("查询的配置Key不能为空。");
-            }
-            ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(confKey);
-            GetConfigurationByConfigurationKeyResponse response = new GetConfigurationByConfigurationKeyResponse();
-            response.setConfigurationDto(configurationDto);
-            return ServiceResult.createSuccessServiceResult(String.format("查询配置[%s]成功",request.getConfKey()),response);
-        } catch (Exception e){
-            String message = String.format("查询配置[%s]失败",request.getConfKey());
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
-
-    /**
-     * 配置
-     */
-    @ResponseBody
-    @RequestMapping(value = AdminConsoleApiRoute.SET_CONFIGURATION,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<SetConfigurationResponse> setConfiguration(@RequestBody SetConfigurationRequest request){
-        try {
-            configurationService.setConfiguration(request.getConfigurationDto());
-            SetConfigurationResponse response = new SetConfigurationResponse();
-            return ServiceResult.createSuccessServiceResult("配置成功",response);
-        } catch (Exception e){
-            String message = "配置失败";
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
 }

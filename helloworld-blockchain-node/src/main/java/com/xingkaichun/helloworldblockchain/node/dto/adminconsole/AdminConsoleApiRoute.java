@@ -28,8 +28,4 @@ public class AdminConsoleApiRoute {
     public static final String REMOVE_BLOCK = "/Api/AdminConsole/RemoveBlock";
 
 
-    public static final String GET_CONFIGURATION_BY_CONFIGURATION_KEY_KEY = "/Api/AdminConsole/GetConfigurationByConfigurationKey";
-    public static final String SET_CONFIGURATION = "/Api/AdminConsole/SetConfiguration";
-
-
 }
