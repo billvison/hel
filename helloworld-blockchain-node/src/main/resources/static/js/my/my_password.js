@@ -36,12 +36,8 @@ function modifyInfo() {
         dataType: "json",
         async: false,
         success: function (data) {
-			if(data.serviceCode = "SUCCESS"){
-				alert("修改成功");
-			}else{
-				alert("修改失败");
-			}
-			console.log(data);
+        	console.log(data);
+			alert(data.message);
         },
         error: function (e) {
         }

@@ -46,18 +46,17 @@ public class HttpServerHandlerResolver {
             long blockChainHeight = blockChainCoreService.queryBlockChainHeight();
 
             //将ping的来路作为区块链节点
-            ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
-            if(Boolean.valueOf(configurationDto.getConfValue())){
-                NodeDto node = new NodeDto();
-                InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
-                String ip = insocket.getAddress().getHostAddress();
-                node.setIp(ip);
-                node.setPort(request.getPort());
-               if(nodeService.queryNode(node) == null){
-                   node.setIsNodeAvailable(true);
-                   nodeService.addNode(node);
-                   logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,request.getPort()));
-               }
+            NodeDto node = new NodeDto();
+            InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
+            String ip = insocket.getAddress().getHostAddress();
+            node.setIp(ip);
+            node.setPort(request.getPort());
+            if(nodeService.queryNode(node) == null){
+                node.setIsNodeAvailable(true);
+                if(configurationService.autoSearchNodeOption()){
+                    nodeService.addNode(node);
+                    logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,request.getPort()));
+                }
             }
 
             PingResponse response = new PingResponse();
@@ -79,31 +78,29 @@ public class HttpServerHandlerResolver {
     public ServiceResult<AddOrUpdateNodeResponse> addOrUpdateNode(ChannelHandlerContext ctx,AddOrUpdateNodeRequest request){
         try {
             NodeDto node = new NodeDto();
-            InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
-            String ip = insocket.getAddress().getHostAddress();
+            InetSocketAddress inetSocketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
+            String ip = inetSocketAddress.getAddress().getHostAddress();
             node.setIp(ip);
             node.setPort(request.getPort());
             node.setIsNodeAvailable(true);
             node.setBlockChainHeight(request.getBlockChainHeight());
             node.setErrorConnectionTimes(0);
 
-            ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
-            if(!Boolean.valueOf(configurationDto.getConfValue())){
-                NodeDto nodeInDb = nodeService.queryNode(node);
-                if(nodeInDb == null){
-                    return ServiceResult.createSuccessServiceResult("not allowed update node info",null);
-                }
-                logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,request.getPort()));
-            }
             if(nodeService.queryNode(node) == null){
-                nodeService.addNode(node);
+                if(configurationService.autoSearchNodeOption()){
+                    nodeService.addNode(node);
+                    logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,request.getPort()));
+                    return ServiceResult.createFailServiceResult("节点新增成功");
+                }else {
+                    return ServiceResult.createFailServiceResult("节点新增失败");
+                }
             }else {
                 nodeService.updateNode(node);
             }
             AddOrUpdateNodeResponse response = new AddOrUpdateNodeResponse();
-            return ServiceResult.createSuccessServiceResult("update node info success",response);
+            return ServiceResult.createSuccessServiceResult("节点更新成功",response);
         } catch (Exception e){
-            String message = "update node info failed";
+            String message = "节点更新失败";
             logger.error(message,e);
             return ServiceResult.createSuccessServiceResult(message,null);
         }

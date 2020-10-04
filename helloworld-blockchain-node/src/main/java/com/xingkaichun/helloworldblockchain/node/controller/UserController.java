@@ -121,9 +121,9 @@ public class UserController {
             }
             userService.updateUser(userDto);
             UpdateUserResponse response = new UpdateUserResponse();
-            return ServiceResult.createSuccessServiceResult("更新用户成功",response);
+            return ServiceResult.createSuccessServiceResult("修改用户成功",response);
         } catch (Exception e){
-            String message = "更新用户失败";
+            String message = "修改用户失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

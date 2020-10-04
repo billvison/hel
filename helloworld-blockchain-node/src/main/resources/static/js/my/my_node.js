@@ -112,7 +112,7 @@ function addNodepara() {
         dataType: "json",
         async: false,
         success: function (data) {
-			if(data.serviceCode = "SUCCESS"){
+			if(data.serviceCode == "SUCCESS"){
 				alert("新增成功");
 				queryNodeList();
 				console.log(data);

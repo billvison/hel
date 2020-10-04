@@ -19,8 +19,6 @@ import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService
  * @see com.xingkaichun.helloworldblockchain.netcore.BlockSearcher
  * 5.区块广播者
  * @see com.xingkaichun.helloworldblockchain.netcore.BlockBroadcaster
- * 6.种子节点维护者
- * @see com.xingkaichun.helloworldblockchain.netcore.SeedNodeMaintainer
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
@@ -28,8 +26,8 @@ public class NetBlockchainCore {
 
     private BlockChainCore blockChainCore;
     private BlockchainHttpServer blockchainHttpServer;
-    private SeedNodeMaintainer seedNodeMaintainer;
     private NodeSearcher nodeSearcher;
+    private NodeBroadcaster nodeBroadcaster;
     private BlockSearcher blockSearcher;
     private BlockBroadcaster blockBroadcaster;
 
@@ -38,14 +36,14 @@ public class NetBlockchainCore {
 
     public NetBlockchainCore(BlockChainCore blockChainCore
             , BlockchainHttpServer blockchainHttpServer, ConfigurationService configurationService
-            , SeedNodeMaintainer seedNodeMaintainer, NodeSearcher nodeSearcher
+            , NodeSearcher nodeSearcher, NodeBroadcaster nodeBroadcaster
             , BlockSearcher blockSearcher , BlockBroadcaster blockBroadcaster) {
 
         this.blockChainCore = blockChainCore;
         this.blockchainHttpServer = blockchainHttpServer;
         this.configurationService = configurationService;
-        this.seedNodeMaintainer = seedNodeMaintainer;
         this.nodeSearcher = nodeSearcher;
+        this.nodeBroadcaster = nodeBroadcaster;
         this.blockSearcher = blockSearcher;
         this.blockBroadcaster = blockBroadcaster;
         restoreConfiguration();
@@ -80,10 +78,10 @@ public class NetBlockchainCore {
         //启动区块链节点服务器
         blockchainHttpServer.start();
 
-        //启动种子节点维护者
-        seedNodeMaintainer.start();
         //启动节点搜寻器
         nodeSearcher.start();
+        //启动节点广播器
+        nodeBroadcaster.start();
         //启动区块搜寻器
         blockSearcher.start();
         //启动区块广播者
@@ -100,10 +98,6 @@ public class NetBlockchainCore {
 
     public BlockchainHttpServer getBlockchainHttpServer() {
         return blockchainHttpServer;
-    }
-
-    public SeedNodeMaintainer getSeedNodeMaintainer() {
-        return seedNodeMaintainer;
     }
 
     public NodeSearcher getNodeSearcher() {

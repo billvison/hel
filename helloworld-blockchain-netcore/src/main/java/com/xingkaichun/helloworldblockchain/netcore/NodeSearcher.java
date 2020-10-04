@@ -39,16 +39,36 @@ public class NodeSearcher {
     }
 
     public void start() {
+        /**
+         * 定时循环的将种子节点加入区块链系统。
+         * 因为有的种子节点可能会发生故障，然后本地节点链接不上种子节点，就将种子节点丢弃。
+         * 能作为种子节点的服务器，肯定会很快被修复正常的。所以定时循环的将种子节点加入区块链，保证与种子节点连接是通畅的。
+         */
         new Thread(()->{
             while (true){
                 try {
-                    if(autoSearchNodeOption()){
+                    if(configurationService.autoSearchNodeOption()){
+                        addSeedNode();
+                    }
+                } catch (Exception e) {
+                    logger.error("定时将种子节点加入区块链网络出现异常",e);
+                }
+                ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.ADD_SEED_NODE_TIME_INTERVAL.name());
+                ThreadUtil.sleep(Long.parseLong(configurationDto.getConfValue()));
+            }
+        }).start();
+
+        //搜索新的节点
+        new Thread(()->{
+            while (true){
+                try {
+                    if(configurationService.autoSearchNodeOption()){
                         searchNewNodes();
                     }
                 } catch (Exception e) {
                     logger.error("在区块链网络中搜索新的节点出现异常",e);
                 }
-                ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.NODE_SEARCH_NEW_NODE_TIME_INTERVAL.name());
+                ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.SEARCH_NEW_NODE_TIME_INTERVAL.name());
                 ThreadUtil.sleep(Long.parseLong(configurationDto.getConfValue()));
             }
         }).start();
@@ -61,7 +81,7 @@ public class NodeSearcher {
         //这里可以利用多线程进行性能优化，因为本项目是helloworld项目，因此只采用单线程轮询每一个节点查询新的网络节点，不做进一步优化拓展。
         List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
         for(NodeDto node:nodes){
-            if(!autoSearchNodeOption()){
+            if(!configurationService.autoSearchNodeOption()){
                 return;
             }
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
@@ -76,7 +96,9 @@ public class NodeSearcher {
                     node.setBlockChainHeight(pingResponse.getBlockChainHeight());
                     node.setErrorConnectionTimes(0);
                     if(nodeService.queryNode(node) == null){
-                        nodeService.addNode(node);
+                        if(configurationService.autoSearchNodeOption()){
+                            nodeService.addNode(node);
+                        }
                     }else {
                         nodeService.updateNode(node);
                     }
@@ -113,7 +135,9 @@ public class NodeSearcher {
                 node.setBlockChainHeight(pingResponseServiceResult.getResult().getBlockChainHeight());
                 node.setErrorConnectionTimes(0);
                 if(nodeService.queryNode(node) == null){
-                    nodeService.addNode(node);
+                    if(configurationService.autoSearchNodeOption()){
+                        nodeService.addNode(node);
+                    }
                     logger.debug(String.format("自动发现节点[%s:%d]，节点已加入节点数据库。",node.getIp(),node.getPort()));
                 }else {
                     nodeService.updateNode(node);
@@ -121,11 +145,22 @@ public class NodeSearcher {
             }
         }
     }
+
     /**
-     * 是否广播自己
+     * 添加种子节点
      */
-    private boolean autoSearchNodeOption() {
-        ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
-        return Boolean.valueOf(configurationDto.getConfValue());
+    private void addSeedNode() {
+        for(String strNode: GlobalSetting.SEED_NODE_LIST){
+            NodeDto node = new NodeDto();
+            String[] nodeDetail = strNode.split(":");
+            node.setIp(nodeDetail[0]);
+            node.setPort(Integer.parseInt(nodeDetail[1]));
+            NodeDto nodeDto = nodeService.queryNode(node);
+            if(nodeDto == null){
+                if(configurationService.autoSearchNodeOption()){
+                    nodeService.addNode(node);
+                }
+            }
+        }
     }
 }

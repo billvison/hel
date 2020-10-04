@@ -232,7 +232,7 @@ a.c_btn_imp:visited{
 #node_list h2{
 	padding-left: 20px;
 }
-#node_list h2,#fork_list h2,#wallet_info h2{
+#node_list h2,#fork_list h2{
 	font-size: 20px;
 	margin: 0 0 20px 0;
 }
@@ -367,11 +367,11 @@ a.c_btn_imp:visited{
 .node_delete{
 	float: right;
 }
-/*wallet*/
-.wallet{
+/*account*/
+.account{
 	height: 300px;
 	text-align: center;
-	background: url(../images/wallet.png) center center no-repeat;
+	background: url(../images/account.png) center center no-repeat;
 }
 h2.red{
 	font-size: 18px;

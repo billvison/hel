@@ -113,11 +113,11 @@ public class TextSizeRestrictionTool {
             for(TransactionOutput transactionOutput:outputs){
                 String address = transactionOutput.getAddress();
                 if(address.length()<=20){
-                    logger.debug("钱包地址长度过短");
+                    logger.debug("账户地址长度过短");
                     return false;
                 }
                 if(address.length()>=40){
-                    logger.debug("钱包地址长度过长");
+                    logger.debug("账户地址长度过长");
                     return false;
                 }
 

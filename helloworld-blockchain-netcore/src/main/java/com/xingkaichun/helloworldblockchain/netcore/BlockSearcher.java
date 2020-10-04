@@ -49,11 +49,9 @@ public class BlockSearcher {
         new Thread(()->{
             while (true){
                 try {
-                    if(blockSearchOption()){
-                        searchNewBlocks();
-                    }
+                    searchNewBlocks();
                 } catch (Exception e) {
-                    logger.error("在区块链网络中同步其它节点的区块出现异常",e);
+                    logger.error("在区块链网络中搜索新的区块出现异常",e);
                 }
                 ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.BLOCK_SEARCH_TIME_INTERVAL.name());
                 ThreadUtil.sleep(Long.parseLong(configurationDto.getConfValue()));
@@ -101,9 +99,6 @@ public class BlockSearcher {
     public void searchNewBlocks() {
         List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
         for(NodeDto node:nodes){
-            if(!blockSearchOption()){
-                return;
-            }
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
             boolean isPingSuccess = ServiceResult.isSuccess(pingResponseServiceResult);
             node.setIsNodeAvailable(isPingSuccess);
@@ -116,13 +111,5 @@ public class BlockSearcher {
                 nodeService.nodeErrorConnectionHandle(node);
             }
         }
-    }
-
-    /**
-     * 是否广播自己
-     */
-    private boolean blockSearchOption() {
-        ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.BLOCK_SEARCH.name());
-        return Boolean.valueOf(configurationDto.getConfValue());
     }
 }

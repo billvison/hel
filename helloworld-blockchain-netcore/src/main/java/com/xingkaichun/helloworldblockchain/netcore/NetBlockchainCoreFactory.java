@@ -52,15 +52,15 @@ public class NetBlockchainCoreFactory {
 
         HttpServerHandlerResolver httpServerHandlerResolver = new HttpServerHandlerResolver(blockChainCoreService,nodeService,configurationService);
         BlockchainHttpServer blockchainHttpServer = new BlockchainHttpServer(serverPort, httpServerHandlerResolver);
-        SeedNodeMaintainer seedNodeMaintainer = new SeedNodeMaintainer(nodeService,configurationService);
         NodeSearcher nodeSearcher = new NodeSearcher(configurationService,nodeService,blockchainNodeClientService);
+        NodeBroadcaster nodeBroadcaster = new NodeBroadcaster(configurationService,nodeService,blockchainNodeClientService);
         BlockSearcher blockSearcher = new BlockSearcher(nodeService,blockChainCoreService,synchronizeRemoteNodeBlockService,blockChainCore,configurationService,blockchainNodeClientService);
         BlockBroadcaster blockBroadcaster = new BlockBroadcaster(configurationService,nodeService,blockChainCoreService,blockchainNodeClientService);
 
 
         netBlockchainCore
                 = new NetBlockchainCore(blockChainCore, blockchainHttpServer, configurationService
-                , seedNodeMaintainer,nodeSearcher,blockSearcher, blockBroadcaster);
+                ,nodeSearcher,nodeBroadcaster,blockSearcher, blockBroadcaster);
     }
 
 

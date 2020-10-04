@@ -17,7 +17,7 @@ public class BlockChainCoreFactory {
      * 创建BlockChainCore实例
      *
      * @param blockchainDataPath 区块链数据存放位置
-     * @param minerAddress 矿工钱包地址
+     * @param minerAddress 矿工账户地址
      */
     public static BlockChainCore createBlockChainCore(String blockchainDataPath,String minerAddress) {
 

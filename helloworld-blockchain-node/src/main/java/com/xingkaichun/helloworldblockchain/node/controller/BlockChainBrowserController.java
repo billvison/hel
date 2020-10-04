@@ -48,18 +48,18 @@ public class BlockChainBrowserController {
     private NodeService nodeService;
 
    /**
-     * 生成钱包(公钥、私钥、地址)
+     * 生成账户(公钥、私钥、地址)
      */
     @ResponseBody
     @RequestMapping(value = BlockChainApiRoute.GENERATE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<GenerateAccountResponse> generateWallet(@RequestBody GenerateAccountRequest request){
+    public ServiceResult<GenerateAccountResponse> generateAccount(@RequestBody GenerateAccountRequest request){
         try {
             Account account = AccountUtil.randomAccount();
             GenerateAccountResponse response = new GenerateAccountResponse();
             response.setAccount(account);
-            return ServiceResult.createSuccessServiceResult("生成钱包成功",response);
+            return ServiceResult.createSuccessServiceResult("生成账户成功",response);
         } catch (Exception e){
-            String message = "生成钱包失败";
+            String message = "生成账户失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

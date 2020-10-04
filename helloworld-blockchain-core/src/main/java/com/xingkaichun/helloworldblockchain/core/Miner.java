@@ -10,7 +10,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
  */
 public abstract class Miner {
 
-    //矿工钱包地址
+    //矿工账户地址
     protected String minerAddress;
     //矿工挖矿所在的区块链
     protected BlockChainDataBase blockChainDataBase;

@@ -27,9 +27,15 @@ public interface ConfigurationService {
     Account getDefaultMinerAccount();
 
     /**
-     * 获取矿工钱包地址
-     * 如果有用户设置矿工钱包地址，则返回用户设置的矿工钱包地址；
-     * 否则，返回默认矿工账户钱包地址
+     * 获取矿工账户地址
+     * 如果有用户设置矿工账户地址，则返回用户设置的矿工账户地址；
+     * 否则，返回默认矿工账户账户地址
      */
     String getMinerAddress();
+
+
+    /**
+     * 是否自动搜寻区块链网络节点
+     */
+    boolean autoSearchNodeOption();
 }

@@ -211,7 +211,7 @@ public class AdminConsoleController {
     public ServiceResult<SetMinerAddressResponse> setMinerAddress(@RequestBody SetMinerAddressRequest request){
         try {
             if(blockChainCore.getMiner().isActive()){
-                return ServiceResult.createFailServiceResult("矿工正在挖矿，请先暂停挖矿，再设置矿工钱包地址");
+                return ServiceResult.createFailServiceResult("矿工正在挖矿，请先暂停挖矿，再设置矿工账户地址");
             }
             blockChainCore.getMiner().resetMinerAddress(request.getMinerAddress());
             ConfigurationDto configurationDto = new ConfigurationDto();
@@ -219,7 +219,7 @@ public class AdminConsoleController {
             configurationDto.setConfValue(request.getMinerAddress());
             configurationService.setConfiguration(configurationDto);
             SetMinerAddressResponse response = new SetMinerAddressResponse();
-            return ServiceResult.createSuccessServiceResult("成功重置矿工的钱包地址！",response);
+            return ServiceResult.createSuccessServiceResult("成功重置矿工账户地址！",response);
         } catch (Exception e){
             String message = "重置矿工的地址失败";
             logger.error(message,e);

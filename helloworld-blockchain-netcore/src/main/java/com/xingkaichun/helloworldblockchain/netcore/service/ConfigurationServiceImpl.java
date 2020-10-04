@@ -110,4 +110,10 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         }
         return minerAddress;
     }
+
+    @Override
+    public boolean autoSearchNodeOption() {
+        ConfigurationDto configurationDto = getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
+        return Boolean.valueOf(configurationDto.getConfValue());
+    }
 }

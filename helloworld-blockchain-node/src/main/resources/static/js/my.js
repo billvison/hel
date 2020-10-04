@@ -54,7 +54,7 @@ function removeBlock() {
 		    dataType: "json",
 		    async: false,
 		    success: function (data) {
-				if(data.serviceCode = "SUCCESS"){
+				if(data.serviceCode == "SUCCESS"){
 					alert(data.message);
 					queryBlockHeight();
 				}   
@@ -107,7 +107,7 @@ function modifyMinerAddress() {
 		    dataType: "json",
 		    async: false,
 		    success: function (data) {
-				if(data.serviceCode = "SUCCESS"){
+				if(data.serviceCode == "SUCCESS"){
 					alert(data.message);
 					getMinerAddress();
 					// miner_address.innerHTML = data.result.minerAddress;
