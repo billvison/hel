@@ -33,7 +33,6 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         if(hash == null){
             hash = BlockTool.calculateBlockHash(block);
         }
-        hash = hash.substring(0,64);
         return new BigInteger(bits,16).compareTo(new BigInteger(hash,16)) > 0;
     }
 

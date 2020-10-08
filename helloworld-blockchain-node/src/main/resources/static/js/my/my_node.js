@@ -68,9 +68,9 @@ function addNode(){
 	var getContent = 
 			'<dl><dt><h2>新增节点</h2></dt>' +
 			'<dd><font>ip: </font><input name="id" type="text" class="c_txt"></dd>' +
-			'<dd><font>端口: </font><input name="port" type="text" class="c_txt"></dd>' +
-			'<dd><font>区块链高度: </font><input name="blockHeight" type="text" class="c_txt"></dd>' +
-			'<dd><font>连接失败次数: </font><input name="errorConnection" type="text" class="c_txt"></dd>' +
+			'<dd><font>端口: </font><input name="port" type="text" class="c_txt" value="8444"></dd>' +
+			'<dd><font>区块链高度: </font><input name="blockHeight" type="text" class="c_txt" value="0"></dd>' +
+			'<dd><font>连接失败次数: </font><input name="errorConnection" type="text" class="c_txt" value="0"></dd>' +
 			'<dd><font>是否可用: </font>' +
 				'<select name="available"><option selected="selected" value="true">true</option><option value="false">false</option></select>' +
 			'</dd>' +
@@ -112,15 +112,10 @@ function addNodepara() {
         dataType: "json",
         async: false,
         success: function (data) {
+        	alert(data.message);
 			if(data.serviceCode == "SUCCESS"){
-				alert("新增成功");
 				queryNodeList();
-				console.log(data);
-			}else{
-				alert("新增失败");
-				console.log(data);
 			}
-			
         },
         error: function (e) {
         }

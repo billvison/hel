@@ -107,11 +107,10 @@ function modifyMinerAddress() {
 		    dataType: "json",
 		    async: false,
 		    success: function (data) {
+		    	alert(data.message);
 				if(data.serviceCode == "SUCCESS"){
-					alert(data.message);
 					getMinerAddress();
-					// miner_address.innerHTML = data.result.minerAddress;
-				}   
+				}
 		    },
 		    error: function (e) {
 		    }

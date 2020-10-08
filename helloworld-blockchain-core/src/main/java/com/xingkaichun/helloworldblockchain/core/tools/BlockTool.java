@@ -36,7 +36,7 @@ public class BlockTool {
     public static String calculateBlockHash(Block block) {
         String input = block.getTimestamp()+block.getPreviousBlockHash()+block.getMerkleTreeRoot()+block.getNonce();
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(input));
-        return HexUtil.bytesToHexString(sha256Digest) + block.getTimestamp();
+        return HexUtil.bytesToHexString(sha256Digest);
     }
 
     /**

@@ -61,6 +61,7 @@ public class Transaction implements Serializable {
     private long transactionSequenceNumberInBlockChain;
     /**
      * 交易所在区块的区块高度
+     * 冗余字段，这个值可以由区块链系统推算出来
      */
     private long blockHeight;
 

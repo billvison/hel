@@ -213,10 +213,14 @@ public class AdminConsoleController {
             if(blockChainCore.getMiner().isActive()){
                 return ServiceResult.createFailServiceResult("矿工正在挖矿，请先暂停挖矿，再设置矿工账户地址");
             }
-            blockChainCore.getMiner().resetMinerAddress(request.getMinerAddress());
+            String minerAddress = request.getMinerAddress();
+            if(minerAddress == null || "".equals(minerAddress)){
+                return ServiceResult.createFailServiceResult("请输入矿工地址");
+            }
+            blockChainCore.getMiner().resetMinerAddress(minerAddress);
             ConfigurationDto configurationDto = new ConfigurationDto();
             configurationDto.setConfKey(ConfigurationEnum.MINER_ADDRESS.name());
-            configurationDto.setConfValue(request.getMinerAddress());
+            configurationDto.setConfValue(minerAddress);
             configurationService.setConfiguration(configurationDto);
             SetMinerAddressResponse response = new SetMinerAddressResponse();
             return ServiceResult.createSuccessServiceResult("成功重置矿工账户地址！",response);

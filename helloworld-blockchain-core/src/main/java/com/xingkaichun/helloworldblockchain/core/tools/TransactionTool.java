@@ -183,7 +183,7 @@ public class TransactionTool {
             data += "[" + Joiner.on(" ").join(outputHashList) + "]";
         }
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(data));
-        return HexUtil.bytesToHexString(sha256Digest) + currentTimeMillis;
+        return HexUtil.bytesToHexString(sha256Digest);
     }
 
     /**
@@ -209,7 +209,7 @@ public class TransactionTool {
         forHash += "[" + value + "]";
         forHash += "[" + Joiner.on(" ").join(scriptLock) + "]";
         byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(forHash));
-        return HexUtil.bytesToHexString(sha256Digest) + currentTimeMillis;
+        return HexUtil.bytesToHexString(sha256Digest);
     }
 
 

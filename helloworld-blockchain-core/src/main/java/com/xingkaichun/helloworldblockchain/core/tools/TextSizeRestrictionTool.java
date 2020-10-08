@@ -27,7 +27,7 @@ public class TextSizeRestrictionTool {
     //交易文本字符串最大长度值
     public final static long TRANSACTION_TEXT_MAX_SIZE = 1024;
     //区块存储容量限制
-    public final static long BLOCK_TEXT_MAX_SIZE = 1000 * 1024;
+    public final static long BLOCK_TEXT_MAX_SIZE = 1024 * 1024;
     //区块最多含有的交易数量
     public final static long BLOCK_MAX_TRANSACTION_SIZE = BLOCK_TEXT_MAX_SIZE/TRANSACTION_TEXT_MAX_SIZE;
     //nonce最大值
@@ -44,7 +44,7 @@ public class TextSizeRestrictionTool {
     public static boolean isBlockStorageCapacityLegal(Block block) {
         //校验时间戳占用存储空间
         long timestamp = block.getTimestamp();
-        if(String.valueOf(timestamp).length()>20){
+        if(String.valueOf(timestamp).length() == 13){
             return false;
         }
 
@@ -92,7 +92,7 @@ public class TextSizeRestrictionTool {
         List<TransactionOutput> outputs = transaction.getOutputs();
 
         //校验时间的长度
-        if(String.valueOf(timestamp).length()>20){
+        if(String.valueOf(timestamp).length() == 13){
             logger.debug("交易校验失败：交易时间戳所占存储空间不正确。");
             return false;
         }
