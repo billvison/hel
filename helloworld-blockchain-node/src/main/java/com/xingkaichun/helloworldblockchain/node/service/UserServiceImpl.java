@@ -35,9 +35,8 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         UserDto userDto = convertUserEntity2UserDto(userEntity);
-        userDto.setPassword("******");
-
         SessionUtil.saveLoginUser(httpServletRequest,userDto);
+        userDto.setPassword("******");
         return userDto;
     }
 

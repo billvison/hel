@@ -43,7 +43,7 @@ public abstract class BlockChainDataBase {
     /**
      * 删除区块高度大于等于@blockHeight@的区块
      */
-    public abstract void removeTailBlocksUtilBlockHeightLessThan(long blockHeight) ;
+    public abstract void removeBlocksUtilBlockHeightLessThan(long blockHeight) ;
     //endregion
 
 

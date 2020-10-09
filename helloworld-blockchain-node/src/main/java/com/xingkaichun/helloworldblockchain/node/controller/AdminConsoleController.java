@@ -54,14 +54,8 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.IS_MINER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsMinerActiveResponse> isMineActive(@RequestBody IsMinerActiveRequest request){
         try {
-            ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_MINER_ACTIVE.name());
-            boolean isMineActiveByDatabase = Boolean.valueOf(configurationDto.getConfValue());
             boolean isMineActive = blockChainCore.getMiner().isActive();
-            if(isMineActiveByDatabase != isMineActive){
-                String message = String.format("配置%s与真实运行情况不一致，请检查原因。",ConfigurationEnum.IS_MINER_ACTIVE.name());
-                logger.error(message);
-                return ServiceResult.createFailServiceResult(message);
-            }
+
             IsMinerActiveResponse response = new IsMinerActiveResponse();
             response.setMinerInActiveState(isMineActive);
             return ServiceResult.createSuccessServiceResult("查询矿工是否处于激活状态成功",response);
@@ -123,14 +117,8 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.IS_SYNCHRONIZER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsSynchronizerActiveResponse> isSynchronizerActive(@RequestBody IsSynchronizerActiveRequest request){
         try {
-            ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.IS_SYNCHRONIZER_ACTIVE.name());
-            boolean isSynchronizerActiveByDatabase = Boolean.valueOf(configurationDto.getConfValue());
             boolean isSynchronizerActive = blockChainCore.getSynchronizer().isActive();
-            if(isSynchronizerActiveByDatabase != isSynchronizerActive){
-                String message = String.format("配置%s与真实运行情况不一致，请检查原因。",ConfigurationEnum.IS_SYNCHRONIZER_ACTIVE.name());
-                logger.error(message);
-                return ServiceResult.createFailServiceResult(message);
-            }
+
             IsSynchronizerActiveResponse response = new IsSynchronizerActiveResponse();
             response.setSynchronizerInActiveState(isSynchronizerActive);
             return ServiceResult.createSuccessServiceResult("查询同步器是否激活成功",response);
@@ -193,6 +181,7 @@ public class AdminConsoleController {
             ConfigurationDto minerAddressConfigurationDto =  configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
             QueryMinerAddressResponse response = new QueryMinerAddressResponse();
             response.setMinerAddress(minerAddressConfigurationDto.getConfValue());
+
             Account defaultMinerAccount = configurationService.getDefaultMinerAccount();
             response.setDefaultMinerAccount(defaultMinerAccount);
             return ServiceResult.createSuccessServiceResult("查询矿工的地址成功",response);
@@ -337,7 +326,7 @@ public class AdminConsoleController {
     }
 
     /**
-     * 设置否允许自动搜索区块链节点开关
+     * 设置是否允许自动搜索区块链节点
      */
     @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.SET_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
@@ -347,10 +336,11 @@ public class AdminConsoleController {
             configurationDto.setConfKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
             configurationDto.setConfValue(String.valueOf(request.isAutoSearchNode()));
             configurationService.setConfiguration(configurationDto);
+
             SetAutoSearchNodeResponse response = new SetAutoSearchNodeResponse();
-            return ServiceResult.createSuccessServiceResult("设置否允许自动搜索区块链节点开关成功",response);
+            return ServiceResult.createSuccessServiceResult("设置是否允许自动搜索区块链节点成功",response);
         } catch (Exception e){
-            String message = "设置否允许自动搜索区块链节点开关失败";
+            String message = "设置是否允许自动搜索区块链节点失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

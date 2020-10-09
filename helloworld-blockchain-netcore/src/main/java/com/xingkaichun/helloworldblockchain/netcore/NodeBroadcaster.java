@@ -39,6 +39,7 @@ public class NodeBroadcaster {
 
     public void start() {
         new Thread(()->{
+            //定时广告自己
             while (true){
                 try {
                     broadcastMyself();

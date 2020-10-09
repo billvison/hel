@@ -101,7 +101,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         }
     }
     @Override
-    public void removeTailBlocksUtilBlockHeightLessThan(long blockHeight) {
+    public void removeBlocksUtilBlockHeightLessThan(long blockHeight) {
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{

@@ -31,7 +31,7 @@ public class InitUserListener implements ApplicationListener<ApplicationReadyEve
          logger.info("初始化用户中...");
          long userSize = userDao.queryUserSize();
          if(userSize > 0){
-             System.out.println("由于已经存在用户了，不在创建默认用户。");
+             logger.info("系统中已经存在用户了，跳过初始化用户。");
              return;
          }
          UserEntity userEntity = new UserEntity();

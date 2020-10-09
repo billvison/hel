@@ -40,6 +40,7 @@ public class NodeSearcher {
 
     public void start() {
         /**
+         * 搜索种子节点
          * 定时循环的将种子节点加入区块链系统。
          * 因为有的种子节点可能会发生故障，然后本地节点链接不上种子节点，就将种子节点丢弃。
          * 能作为种子节点的服务器，肯定会很快被修复正常的。所以定时循环的将种子节点加入区块链，保证与种子节点连接是通畅的。
@@ -58,12 +59,15 @@ public class NodeSearcher {
             }
         }).start();
 
-        //搜索新的节点
+        /**
+         * 搜索区块链网络中的节点
+         * 通过 向已知的网络节点发送[获取它所知道的节点列表]的请求方式 搜索区块链网络中节点
+         */
         new Thread(()->{
             while (true){
                 try {
                     if(configurationService.autoSearchNodeOption()){
-                        searchNewNodes();
+                        searchNodes();
                     }
                 } catch (Exception e) {
                     logger.error("在区块链网络中搜索新的节点出现异常",e);
@@ -77,7 +81,7 @@ public class NodeSearcher {
     /**
      * 在区块链网络中搜寻新的节点
      */
-    public void searchNewNodes() {
+    public void searchNodes() {
         //这里可以利用多线程进行性能优化，因为本项目是helloworld项目，因此只采用单线程轮询每一个节点查询新的网络节点，不做进一步优化拓展。
         List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
         for(NodeDto node:nodes){
@@ -103,7 +107,7 @@ public class NodeSearcher {
                         nodeService.updateNode(node);
                     }
                     //处理节点传输过来它所知道的节点列表
-                    addNewAvailableNodeToDatabase(pingResponse.getNodeList());
+                    addAvailableNodeToDatabase(pingResponse.getNodeList());
                 }
             } else {
                 nodeService.nodeErrorConnectionHandle(node);
@@ -114,19 +118,22 @@ public class NodeSearcher {
     /**
      * 将远程节点知道的节点，一一进行验证这些节点的合法性，如果正常，则将这些节点加入自己的区块链网络。
      */
-    private void addNewAvailableNodeToDatabase(List<NodeDto> nodeList){
-        if(nodeList == null || nodeList.size()==0){
+    private void addAvailableNodeToDatabase(List<NodeDto> nodeList){
+        if(nodeList == null){
             return;
         }
         for(NodeDto node : nodeList){
-            addNewAvailableNodeToDatabase(node);
+            addAvailableNodeToDatabase(node);
         }
     }
 
     /**
      * 若一个新的(之前没有加入过本地数据库)、可用的(网络连接是好的)的节点加入本地数据库
      */
-    private void addNewAvailableNodeToDatabase(NodeDto node) {
+    private void addAvailableNodeToDatabase(NodeDto node) {
+        if(configurationService.autoSearchNodeOption()){
+            return;
+        }
         NodeDto localNode = nodeService.queryNode(node);
         if(localNode == null){
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
@@ -135,9 +142,7 @@ public class NodeSearcher {
                 node.setBlockChainHeight(pingResponseServiceResult.getResult().getBlockChainHeight());
                 node.setErrorConnectionTimes(0);
                 if(nodeService.queryNode(node) == null){
-                    if(configurationService.autoSearchNodeOption()){
-                        nodeService.addNode(node);
-                    }
+                    nodeService.addNode(node);
                     logger.debug(String.format("自动发现节点[%s:%d]，节点已加入节点数据库。",node.getIp(),node.getPort()));
                 }else {
                     nodeService.updateNode(node);
