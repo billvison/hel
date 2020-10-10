@@ -19,7 +19,6 @@ import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -362,7 +361,7 @@ public class MinerDefaultImpl extends Miner {
         transaction.setInputs(null);
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
-        BigDecimal award = blockChainDataBase.getIncentive().mineAward(block);
+        long award = blockChainDataBase.getIncentive().mineAward(block);
 
         TransactionOutput output = new TransactionOutput();
         output.setTransactionOutputSequence(1);

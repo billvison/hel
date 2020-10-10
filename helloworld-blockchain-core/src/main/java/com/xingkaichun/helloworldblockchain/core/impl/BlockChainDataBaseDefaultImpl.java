@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -298,14 +297,14 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
                 logger.debug("交易校验失败：普通交易必须有交易输入。");
                 return false;
             }
-            BigDecimal inputsValue = TransactionTool.getInputsValue(transaction);
-            BigDecimal outputsValue = TransactionTool.getOutputsValue(transaction);
-            if(inputsValue.compareTo(outputsValue) < 0) {
-                logger.debug("交易校验失败：交易的输入少于交易的输出。不合法的交易。");
+            long inputsValue = TransactionTool.getInputsValue(transaction);
+            long outputsValue = TransactionTool.getOutputsValue(transaction);
+            if(inputsValue < outputsValue) {
+                logger.debug("交易校验失败：交易的输入必须大于等于交易的输出。不合法的交易。");
                 return false;
             }
             //交易手续费
-            if(inputsValue.subtract(outputsValue).compareTo(GlobalSetting.TransactionConstant.MIN_TRANSACTION_FEE)<0){
+            if((inputsValue - outputsValue) < GlobalSetting.TransactionConstant.MIN_TRANSACTION_FEE){
                 logger.debug(String.format("交易校验失败：交易手续费不能小于%s。不合法的交易。", GlobalSetting.TransactionConstant.MIN_TRANSACTION_FEE));
                 return false;
             }

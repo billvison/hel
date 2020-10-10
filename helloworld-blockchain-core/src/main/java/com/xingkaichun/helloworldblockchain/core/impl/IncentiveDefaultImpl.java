@@ -10,7 +10,6 @@ import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -23,27 +22,25 @@ public class IncentiveDefaultImpl extends Incentive {
     private final static Logger logger = LoggerFactory.getLogger(IncentiveDefaultImpl.class);
 
     @Override
-    public BigDecimal mineAward(Block block) {
-        BigDecimal fees = getFees(block);
-        BigDecimal subsidyCoin = getSubsidy(block);
-        BigDecimal total = subsidyCoin.add(fees);
+    public long mineAward(Block block) {
+        long fees = getFees(block);
+        long subsidyCoin = getSubsidy(block);
+        long total = subsidyCoin + fees;
         return total;
     }
 
     /**
      * 固定奖励
      */
-    private BigDecimal getSubsidy(Block block) {
-        BigDecimal subsidy = GlobalSetting.MinerConstant.INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT;
+    private long getSubsidy(Block block) {
+        long subsidy = GlobalSetting.MinerConstant.INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT;
         long blockHeight = block.getHeight();
         if(LongUtil.isLessEqualThan(blockHeight,LongUtil.ONE)){
         }else {
             long height = block.getHeight();
             long multiple = (height-1) / 210000;
             while (multiple >= 1){
-                subsidy = subsidy.divide(new BigDecimal("2"));
-                //小数位数
-                subsidy = subsidy.setScale(GlobalSetting.TransactionConstant.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES,BigDecimal.ROUND_DOWN);
+                subsidy = subsidy/2;
                 --multiple;
             }
         }
@@ -53,8 +50,8 @@ public class IncentiveDefaultImpl extends Incentive {
     /**
      * 交易手续费
      */
-    private BigDecimal getFees(Block block) {
-        BigDecimal fees = BigDecimal.ZERO;
+    private long getFees(Block block) {
+        long fees = 0;
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
@@ -64,10 +61,10 @@ public class IncentiveDefaultImpl extends Incentive {
                 if(transaction.getTransactionType() != TransactionType.NORMAL){
                     throw new RuntimeException("不能识别的交易类型");
                 }
-                BigDecimal input = TransactionTool.getInputsValue(transaction);
-                BigDecimal output = TransactionTool.getOutputsValue(transaction);
-                BigDecimal fee = input.subtract(output);
-                fees = fees.add(fee);
+                long input = TransactionTool.getInputsValue(transaction);
+                long output = TransactionTool.getOutputsValue(transaction);
+                long fee = input - output;
+                fees += fee;
             }
         }
         return fees;

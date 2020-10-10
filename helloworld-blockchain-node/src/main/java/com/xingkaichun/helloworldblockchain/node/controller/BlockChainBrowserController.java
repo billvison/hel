@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
@@ -89,12 +88,6 @@ public class BlockChainBrowserController {
             for(NormalTransactionDto.Output output:outputs){
                 if(Strings.isNullOrEmpty(output.getAddress())){
                     return ServiceResult.createFailServiceResult("交易输出的地址不能为空。");
-                }
-                if(Strings.isNullOrEmpty(output.getValue())){
-                    return ServiceResult.createFailServiceResult("交易输出的金额不能为空。");
-                }
-                if(!NumberUtil.isNumber(output.getValue())){
-                    return ServiceResult.createFailServiceResult("交易输出的金额不是一个数值。");
                 }
             }
             SubmitNormalTransactionResultDto response = blockChainCoreService.submitTransaction(request.getNormalTransactionDto());

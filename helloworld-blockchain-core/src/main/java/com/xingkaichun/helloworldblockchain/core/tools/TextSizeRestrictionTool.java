@@ -11,7 +11,6 @@ import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ public class TextSizeRestrictionTool {
     //nonce最大值
     public final static long MAX_NONCE = Long.MAX_VALUE;
     //nonce最小值
-    public final static long MIN_NONCE = 0L;
+    public final static long MIN_NONCE = 0;
 
 
 
@@ -44,7 +43,8 @@ public class TextSizeRestrictionTool {
     public static boolean isBlockStorageCapacityLegal(Block block) {
         //校验时间戳占用存储空间
         long timestamp = block.getTimestamp();
-        if(String.valueOf(timestamp).length() == 13){
+        if(String.valueOf(timestamp).length() != 13){
+            logger.debug("区块校验失败：区块时间戳所占存储空间不正确。");
             return false;
         }
 
@@ -92,7 +92,7 @@ public class TextSizeRestrictionTool {
         List<TransactionOutput> outputs = transaction.getOutputs();
 
         //校验时间的长度
-        if(String.valueOf(timestamp).length() == 13){
+        if(String.valueOf(timestamp).length() != 13){
             logger.debug("交易校验失败：交易时间戳所占存储空间不正确。");
             return false;
         }
@@ -121,8 +121,8 @@ public class TextSizeRestrictionTool {
                     return false;
                 }
 
-                BigDecimal value = transactionOutput.getValue();
-                if(calculateBigDecimalTextSize(value)>100){
+                long value = transactionOutput.getValue();
+                if(calculateLongTextSize(value)>100){
                     logger.debug("交易校验失败：交易金额长度超过存储限制");
                     return false;
                 }
@@ -151,7 +151,7 @@ public class TextSizeRestrictionTool {
      * 计算脚本长度
      */
     private static long calculateTransactionTextSize(Transaction transaction) {
-        long size = 0L;
+        long size = 0;
         long timestamp = transaction.getTimestamp();
         size += String.valueOf(timestamp).length();
         List<TransactionInput> inputs = transaction.getInputs();
@@ -161,7 +161,7 @@ public class TextSizeRestrictionTool {
         return size;
     }
     private static long calculateTransactionOutputTextSize(List<TransactionOutput> outputs) {
-        long size = 0L;
+        long size = 0;
         if(outputs == null || outputs.size()==0){
             return size;
         }
@@ -171,20 +171,20 @@ public class TextSizeRestrictionTool {
         return size;
     }
     private static long calculateTransactionOutputTextSize(TransactionOutput output) {
-        long size = 0L;
+        long size = 0;
         if(output == null){
             return 0L;
         }
         String address = output.getAddress();
         size += address.length();
-        BigDecimal bigDecimal = output.getValue();
-        size += calculateBigDecimalTextSize(bigDecimal);
+        long value = output.getValue();
+        size += calculateLongTextSize(value);
         ScriptLock scriptLock = output.getScriptLock();
         size += calculateScriptTextSize(scriptLock);
         return size;
     }
     private static long calculateTransactionInputTextSize(List<TransactionInput> inputs) {
-        long size = 0L;
+        long size = 0;
         if(inputs == null || inputs.size()==0){
             return size;
         }
@@ -194,7 +194,7 @@ public class TextSizeRestrictionTool {
         return size;
     }
     private static long calculateTransactionInputTextSize(TransactionInput input) {
-        long size = 0L;
+        long size = 0;
         if(input == null){
             return size;
         }
@@ -205,7 +205,7 @@ public class TextSizeRestrictionTool {
         return size;
     }
     private static long calculateScriptTextSize(Script script) {
-        long size = 0L;
+        long size = 0;
         if(script == null || script.size()==0){
             return size;
         }
@@ -214,8 +214,8 @@ public class TextSizeRestrictionTool {
         }
         return size;
     }
-    private static long calculateBigDecimalTextSize(BigDecimal number){
-        return number.toPlainString().length();
+    private static long calculateLongTextSize(long number){
+        return String.valueOf(number).length();
     }
     //endregion
 }

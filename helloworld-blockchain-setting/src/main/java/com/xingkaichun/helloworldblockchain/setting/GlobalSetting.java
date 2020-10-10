@@ -1,6 +1,5 @@
 package com.xingkaichun.helloworldblockchain.setting;
 
-import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
@@ -85,7 +84,7 @@ public class GlobalSetting {
         //初始化产生区块的难度 默认初始难度 4G CPU 约 10分钟挖出区块的难度
         public final static String INIT_GENERATE_BLOCK_DIFFICULTY_STRING = "2FFF000000000000000000000000000000000000000000000000000000";
         //初始化挖矿激励金额
-        public final static BigDecimal INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT = new BigDecimal("50");
+        public final static long INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT = 50L;
         //挖矿激励减产周期
         public final static long MINE_BLOCK_INCENTIVE_REDUCE_BY_HALF_INTERVAL_TIMESTAMP = 1 * 24 * 60 * 60 * 1000;
 
@@ -104,13 +103,11 @@ public class GlobalSetting {
      * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
      */
     public static class TransactionConstant{
-        //交易金额的小数点保留位数限制
-        public final static int TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES = 0;
         //最大交易金额
-        public final static BigDecimal TRANSACTION_MAX_AMOUNT = new BigDecimal("1000000000000000000000000");
+        public final static long TRANSACTION_MAX_AMOUNT = Long.MAX_VALUE;
         //最小交易金额
-        public final static BigDecimal TRANSACTION_MIN_AMOUNT = new BigDecimal("1");
+        public final static long TRANSACTION_MIN_AMOUNT = 1L;
         //最小交易手续费
-        public final static BigDecimal MIN_TRANSACTION_FEE = new BigDecimal("1");
+        public final static long MIN_TRANSACTION_FEE = 1L;
     }
 }

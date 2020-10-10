@@ -8,7 +8,6 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionIn
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.script.StackBasedVirtualMachine;
-import com.xingkaichun.helloworldblockchain.core.utils.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
@@ -20,7 +19,6 @@ import com.xingkaichun.helloworldblockchain.util.ByteUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,18 +34,18 @@ public class TransactionTool {
     /**
      * 交易输入总额
      */
-    public static BigDecimal getInputsValue(Transaction transaction) {
+    public static long getInputsValue(Transaction transaction) {
         return getInputsValue(transaction.getInputs());
     }
     /**
      * 交易输入总额
      */
-    public static BigDecimal getInputsValue(List<TransactionInput> inputs) {
-        BigDecimal total = BigDecimal.ZERO;
+    public static long getInputsValue(List<TransactionInput> inputs) {
+        long total = 0;
         if(inputs != null){
             for(TransactionInput i : inputs) {
                 if(i.getUnspendTransactionOutput() == null) continue;
-                total = total.add(i.getUnspendTransactionOutput().getValue());
+                total += i.getUnspendTransactionOutput().getValue();
             }
         }
         return total;
@@ -58,17 +56,17 @@ public class TransactionTool {
     /**
      * 交易输出总额
      */
-    public static BigDecimal getOutputsValue(Transaction transaction) {
+    public static long getOutputsValue(Transaction transaction) {
         return getOutputsValue(transaction.getOutputs());
     }
     /**
      * 交易输出总额
      */
-    public static BigDecimal getOutputsValue(List<TransactionOutput> outputs) {
-        BigDecimal total = BigDecimal.ZERO;
+    public static long getOutputsValue(List<TransactionOutput> outputs) {
+        long total = 0;
         if(outputs != null){
             for(TransactionOutput o : outputs) {
-                total = total.add(o.getValue());
+                total += o.getValue();
             }
         }
         return total;
@@ -190,7 +188,7 @@ public class TransactionTool {
      * 计算交易输出哈希
      */
     public static String calculateTransactionOutputHash(Transaction transaction,TransactionOutput output) {
-        return calculateTransactionOutputHash(transaction.getTimestamp(),output.getTransactionOutputSequence(),output.getValue().toPlainString(),output.getScriptLock());
+        return calculateTransactionOutputHash(transaction.getTimestamp(),output.getTransactionOutputSequence(),output.getValue(),output.getScriptLock());
     }
 
     /**
@@ -203,7 +201,7 @@ public class TransactionTool {
     /**
      * 计算交易输出哈希
      */
-    private static String calculateTransactionOutputHash(long currentTimeMillis, long transactionOutputSequence, String value, List<String> scriptLock) {
+    private static String calculateTransactionOutputHash(long currentTimeMillis, long transactionOutputSequence, long value, List<String> scriptLock) {
         String forHash = "[" + currentTimeMillis + "]";
         forHash += "[" + transactionOutputSequence + "]";
         forHash += "[" + value + "]";
@@ -232,26 +230,16 @@ public class TransactionTool {
     /**
      * 是否是一个合法的交易金额：这里用于限制交易金额的最大值、最小值、小数保留位置
      */
-    public static boolean isTransactionAmountLegal(BigDecimal transactionAmount) {
+    public static boolean isTransactionAmountLegal(long transactionAmount) {
         try {
-            if(transactionAmount == null){
-                logger.debug("交易金额不合法：交易金额不能为空");
-                return false;
-            }
             //校验交易金额最小值
-            if(transactionAmount.compareTo(GlobalSetting.TransactionConstant.TRANSACTION_MIN_AMOUNT) < 0){
+            if(transactionAmount < GlobalSetting.TransactionConstant.TRANSACTION_MIN_AMOUNT){
                 logger.debug("交易金额不合法：交易金额不能小于系统默认交易金额最小值");
                 return false;
             }
             //校验交易金额最大值
-            if(transactionAmount.compareTo(GlobalSetting.TransactionConstant.TRANSACTION_MAX_AMOUNT) > 0){
+            if(transactionAmount > GlobalSetting.TransactionConstant.TRANSACTION_MAX_AMOUNT){
                 logger.debug("交易金额不合法：交易金额不能大于系统默认交易金额最大值");
-                return false;
-            }
-            //校验小数位数
-            long decimalPlaces = NumberUtil.obtainDecimalPlaces(transactionAmount);
-            if(decimalPlaces > GlobalSetting.TransactionConstant.TRANSACTION_AMOUNT_MAX_DECIMAL_PLACES){
-                logger.debug("交易金额不合法：交易金额的小数位数过多，大于系统默认小说最高精度");
                 return false;
             }
             return true;
@@ -264,7 +252,7 @@ public class TransactionTool {
     /**
      * 校验激励
      */
-    public static boolean isIncentiveRight(BigDecimal targetMinerReward, Transaction transaction) {
+    public static boolean isIncentiveRight(long targetMinerReward, Transaction transaction) {
         if(transaction.getTransactionType() != TransactionType.COINBASE){
             logger.debug("区块数据异常，区块中的第一笔交易应当是挖矿奖励交易。");
             return false;
@@ -279,7 +267,7 @@ public class TransactionTool {
             logger.debug("区块数据异常，挖矿奖励交易只能有一个交易输出。");
             return false;
         }
-        if(targetMinerReward.compareTo(outputs.get(0).getValue())<0){
+        if(targetMinerReward < outputs.get(0).getValue()){
             logger.debug("挖矿奖励数据异常，挖矿奖励金额大于系统核算奖励金额。");
             return false;
         }

@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -350,7 +349,7 @@ public class BlockTool {
     /**
      * 校验激励
      */
-    public static boolean isIncentiveRight(BigDecimal targetMinerReward,Block block) {
+    public static boolean isIncentiveRight(long targetMinerReward,Block block) {
         //挖矿激励交易有且只有一笔，挖矿激励交易只能是区块的第一笔交易
         List<Transaction> transactions = block.getTransactions();
         if(transactions == null || transactions.size()==0){

@@ -13,7 +13,7 @@ public class NormalTransactionDto {
 
     public static class Output{
         private String address;
-        private String value;
+        private long value;
 
 
 
@@ -28,11 +28,11 @@ public class NormalTransactionDto {
             this.address = address;
         }
 
-        public String getValue() {
+        public long getValue() {
             return value;
         }
 
-        public void setValue(String value) {
+        public void setValue(long value) {
             this.value = value;
         }
 

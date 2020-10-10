@@ -23,7 +23,6 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInp
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,32 +112,32 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         List<NormalTransactionDto.Output> outputs = normalTransactionDto.getOutputs();
         List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();
         //理应支付总金额
-        BigDecimal values = BigDecimal.ZERO;
+        long values = 0;
         if(outputs != null){
             for(NormalTransactionDto.Output o:outputs){
                 TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
                 transactionOutputDTO.setValue(o.getValue());
                 transactionOutputDTO.setScriptLock(StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(o.getAddress()));
                 transactionOutputDtoList.add(transactionOutputDTO);
-                values = values.add(new BigDecimal(o.getValue()));
+                values += o.getValue();
             }
         }
         //手续费
-        values = values.add(GlobalSetting.TransactionConstant.MIN_TRANSACTION_FEE);
+        values += GlobalSetting.TransactionConstant.MIN_TRANSACTION_FEE;
 
         List<TransactionOutput> utxoList = blockChainCore.getBlockChainDataBase().queryUnspendTransactionOutputListByAddress(account.getAddress(),0,100);
         //交易输入列表
         List<String> inputs = new ArrayList<>();
         //交易输入总金额
-        BigDecimal useValues = BigDecimal.ZERO;
+        long inputValues = 0;
         //找零
-        BigDecimal change = BigDecimal.ZERO;
+        long change = 0;
         boolean haveMoreMoneyToPay = false;
         for(TransactionOutput transactionOutput:utxoList){
-            useValues = useValues.add(transactionOutput.getValue());
+            inputValues += transactionOutput.getValue();
             //交易输入
             inputs.add(transactionOutput.getTransactionOutputHash());
-            if(useValues.compareTo(values)>=0){
+            if(inputValues >= values){
                 haveMoreMoneyToPay = true;
                 break;
             }
@@ -148,9 +147,9 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
             throw new ClassCastException("账户没有足够的金额去支付。");
         }else {
             //找零
-            change = useValues.subtract(values);
+            change = inputValues - values;
             TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-            transactionOutputDTO.setValue(change.toPlainString());
+            transactionOutputDTO.setValue(change);
             transactionOutputDTO.setScriptLock(StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(account.getAddress()));
             transactionOutputDtoList.add(transactionOutputDTO);
         }

@@ -4,7 +4,6 @@ package com.xingkaichun.helloworldblockchain.core.model.transaction;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * 交易输出
@@ -33,7 +32,7 @@ public class TransactionOutput implements Serializable {
     private String transactionOutputHash;
 
     //交易输出的金额
-    private BigDecimal value;
+    private long value;
     /**
      * 脚本锁
      * 交易输出不应该是任何用户都可以使用的，只有能证明这个交易输出属于该用户的用户才可以使用这个交易输出。
@@ -95,11 +94,11 @@ public class TransactionOutput implements Serializable {
         this.address = address;
     }
 
-    public BigDecimal getValue() {
+    public long getValue() {
         return value;
     }
 
-    public void setValue(BigDecimal value) {
+    public void setValue(long value) {
         this.value = value;
     }
 

@@ -13,7 +13,7 @@ import java.util.List;
 public class TransactionOutputDTO implements Serializable {
 
     //交易输出的金额
-    private String value;
+    private long value;
     //脚本锁
     private List<String> scriptLock;
 
@@ -22,11 +22,11 @@ public class TransactionOutputDTO implements Serializable {
 
     //region get set
 
-    public String getValue() {
+    public long getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(long value) {
         this.value = value;
     }
 

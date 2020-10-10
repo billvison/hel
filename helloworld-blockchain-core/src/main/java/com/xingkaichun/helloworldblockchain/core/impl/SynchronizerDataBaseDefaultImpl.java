@@ -1,16 +1,15 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
+import com.xingkaichun.helloworldblockchain.core.model.synchronizer.SynchronizerBlockDTO;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.utils.FileUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.JdbcUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
-import com.xingkaichun.helloworldblockchain.core.model.synchronizer.SynchronizerBlockDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +61,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         try {
             preparedStatement = connection().prepareStatement(sql);
             preparedStatement.setString(1,nodeId);
-            preparedStatement.setBigDecimal(2,new BigDecimal(synchronizerBlockDTO.getHeight()));
+            preparedStatement.setLong(2,synchronizerBlockDTO.getHeight());
             preparedStatement.setString(3, NodeTransportDtoTool.encode(synchronizerBlockDTO));
             preparedStatement.setLong(4,System.currentTimeMillis());
             preparedStatement.executeUpdate();
@@ -84,8 +83,8 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             preparedStatement.setString(1,nodeId);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
-                BigDecimal blockHeight = resultSet.getBigDecimal("minBlockHeight");
-                return blockHeight.longValue();
+                long blockHeight = resultSet.getLong("minBlockHeight");
+                return blockHeight;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -106,8 +105,8 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
             preparedStatement.setString(1,nodeId);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
-                BigDecimal blockHeight = resultSet.getBigDecimal("maxBlockHeight");
-                return blockHeight.longValue();
+                long blockHeight = resultSet.getLong("maxBlockHeight");
+                return blockHeight;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -126,7 +125,7 @@ public class SynchronizerDataBaseDefaultImpl extends SynchronizerDataBase {
         try {
             preparedStatement = connection().prepareStatement(selectBlockDataSql);
             preparedStatement.setString(1,nodeId);
-            preparedStatement.setBigDecimal(2,new BigDecimal(blockHeight));
+            preparedStatement.setLong(2,blockHeight);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
                 String stringSynchronizerBlockDTO = resultSet.getString("blockDto");

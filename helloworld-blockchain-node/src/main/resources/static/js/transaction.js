@@ -35,7 +35,7 @@ function getInputVal(){
 	for (var i=0; i<output_dl.length; i++) {
 		var output_dd = output_dl[i].querySelectorAll("dd");
 		all.char += '{\"address\"' + ':\"' + output_dd[0].firstChild.value + '\",' +
-			   '\"value\"' + ':\"' + output_dd[1].firstChild.value + '\"},';
+			   '\"value\"' + ':' + output_dd[1].firstChild.value + '},';
 		
 	}
 	all.char = all.char.substring(0, all.char.length - 1);
