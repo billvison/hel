@@ -12,7 +12,6 @@ import com.xingkaichun.helloworldblockchain.core.script.StackBasedVirtualMachine
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
-import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
@@ -34,20 +33,12 @@ public class MinerDefaultImpl extends Miner {
     //挖矿开关:默认打开挖矿的开关
     private boolean mineOption = true;
 
-    /**
-     * 存储正在挖矿中的区块
-     */
-    private ThreadLocal<MiningBlock> miningBlockThreadLocal;
-
     public MinerDefaultImpl(BlockChainDataBase blockChainDataBase, MinerTransactionDtoDataBase minerTransactionDtoDataBase, String minerAddress) {
         super(minerAddress,blockChainDataBase,minerTransactionDtoDataBase);
-        miningBlockThreadLocal = new ThreadLocal<>();
     }
     //endregion
 
 
-
-    //region 挖矿相关:启动挖矿线程、停止挖矿线程、跳过正在挖的矿
     @Override
     public void start() {
         while(true){
@@ -55,66 +46,36 @@ public class MinerDefaultImpl extends Miner {
             if(!mineOption){
                 continue;
             }
-            MiningBlock miningBlock = miningBlockThreadLocal.get();
-            //重新组装MiningBlock
-            if(isObtainMiningBlockAgain(blockChainDataBase,miningBlock)){
-                miningBlock = obtainMiningBlock(blockChainDataBase);
-                miningBlockThreadLocal.set(miningBlock);
-            }
-            miningBlock(blockChainDataBase,miningBlock);
-            //挖矿成功
-            if(miningBlock.getMiningSuccess()){
-                miningBlockThreadLocal.remove();
-                //将矿放入区块链
-                boolean isAddBlockToBlockChainSuccess = blockChainDataBase.addBlock(miningBlock.getBlock());
-                if(!isAddBlockToBlockChainSuccess){
-                    System.err.println("挖矿成功，但是放入区块链失败。");
-                    continue;
+
+            Block block = obtainMiningBlock(blockChainDataBase);
+            //随机nonce
+            long nonce = new Random(Long.MAX_VALUE).nextLong();
+            long startTimestamp = System.currentTimeMillis();
+            while(true){
+                if(!mineOption){
+                    break;
                 }
-                //将使用过的交易从挖矿交易数据库中交易
-                minerTransactionDtoDataBase.deleteTransactionDtoListByTransactionHashList(getTransactionHashList(miningBlock.getForMineBlockTransactionList()));
-                minerTransactionDtoDataBase.deleteTransactionDtoListByTransactionHashList(getTransactionHashList(miningBlock.getExceptionTransactionList()));
+                //在挖矿的期间，可能收集到新的交易。每隔一定的时间，重新组装挖矿中的block，组装新的挖矿中的block的时候，可以考虑将新收集到交易放进挖矿中的block。
+                if(System.currentTimeMillis()-startTimestamp>1000*10){
+                    break;
+                }
+
+                block.setNonce(nonce);
+                block.setHash(BlockTool.calculateBlockHash(block));
+                //挖矿成功
+                if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
+                    logger.info("祝贺您！挖矿成功！！！区块高度:"+block.getHeight()+",区块哈希:"+block.getHash());
+                    //将矿放入区块链
+                    boolean isAddBlockToBlockChainSuccess = blockChainDataBase.addBlock(block);
+                    if(!isAddBlockToBlockChainSuccess){
+                        logger.info("挖矿成功，但是放入区块链失败。");
+                        continue;
+                    }
+                    break;
+                }
+                nonce++;
             }
         }
-    }
-
-    /**
-     * 校验MiningBlock是否正确
-     */
-    private boolean isObtainMiningBlockAgain(BlockChainDataBase blockChainDataBase, MiningBlock miningBlock) {
-        if(miningBlock == null){
-            return true;
-        }
-        //挖矿超过一定时长还没有挖矿成功，这时重新打包交易，对自己来说，可以获取更多的奖励，对交易发送者来说，可以让自己的交易更快的写进区块链
-        //一定时间内还没有挖到矿，重新开始挖矿。
-        if(System.currentTimeMillis() > miningBlock.getStartTimestamp()+ GlobalSetting.MinerConstant.MAX_MINE_TIMESTAMP){
-            return true;
-        }
-        Block block = miningBlock.getBlock();
-        if(block == null){
-            return true;
-        }
-        Block tailBlock = blockChainDataBase.queryTailBlock();
-        if(tailBlock == null){
-            //第一个区块，除了创始人，其它矿工没有机会走到这里
-            return false;
-        } else {
-            if((tailBlock.getHeight()+1==block.getHeight()) && tailBlock.getHash().equals(block.getPreviousBlockHash())){
-                return false;
-            }
-            return true;
-        }
-    }
-
-    private List<String> getTransactionHashList(List<Transaction> transactionList) {
-        if(transactionList == null){
-            return null;
-        }
-        List<String> transactionHashList = new ArrayList<>();
-        for(Transaction transaction:transactionList){
-            transactionHashList.add(transaction.getTransactionHash());
-        }
-        return transactionHashList;
     }
 
     @Override
@@ -135,8 +96,7 @@ public class MinerDefaultImpl extends Miner {
     /**
      * 获取挖矿中的区块对象
      */
-    private MiningBlock obtainMiningBlock(BlockChainDataBase blockChainDataBase) {
-        MiningBlock miningBlock = new MiningBlock();
+    private Block obtainMiningBlock(BlockChainDataBase blockChainDataBase) {
         List<TransactionDTO> forMineBlockTransactionDtoList = minerTransactionDtoDataBase.selectTransactionDtoList(1,10000);
         List<Transaction> forMineBlockTransactionList = new ArrayList<>();
         if(forMineBlockTransactionDtoList != null){
@@ -145,213 +105,79 @@ public class MinerDefaultImpl extends Miner {
                     Transaction transaction = NodeTransportDtoTool.classCast(blockChainDataBase,transactionDTO);
                     forMineBlockTransactionList.add(transaction);
                 } catch (Exception e) {
-                    logger.info("类型转换异常,将从挖矿交易数据库中删除该交易",e);
-                    minerTransactionDtoDataBase.deleteTransactionDto(transactionDTO);
+                    String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
+                    logger.info("类型转换异常,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash,e);
+                    minerTransactionDtoDataBase.deleteByTransactionHash(transactionHash);
                 }
             }
         }
-        List<Transaction> exceptionTransactionList = removeExceptionTransaction_PointOfBlockView(blockChainDataBase,forMineBlockTransactionList);
-        miningBlock.setExceptionTransactionList(exceptionTransactionList);
-        miningBlock.setForMineBlockTransactionList(forMineBlockTransactionList);
+        removeExceptionTransaction_PointOfBlockView(blockChainDataBase,forMineBlockTransactionList);
         Block nextMineBlock = buildNextMineBlock(blockChainDataBase,forMineBlockTransactionList);
-
-        miningBlock.setStartTimestamp(System.currentTimeMillis());
-        miningBlock.setBlockChainDataBase(blockChainDataBase);
-        miningBlock.setBlock(nextMineBlock);
-        miningBlock.setNextNonce(0L);
-        miningBlock.setTryNonceSizeEveryBatch(10000000L);
-        miningBlock.setMiningSuccess(false);
-        return miningBlock;
+        return nextMineBlock;
     }
-
-    public void miningBlock(BlockChainDataBase blockChainDataBase, MiningBlock miningBlock) {
-        //这里可以利用多核CPU进行性能优化，还可以拓展为矿池挖矿，因为本项目是helloworld项目，因此只采用单线程进行挖矿，不做进一步优化拓展。
-        Block block = miningBlock.getBlock();
-        long startNonce = miningBlock.getNextNonce();
-        long tryNonceSizeEveryBatch = miningBlock.getTryNonceSizeEveryBatch();
-        while(true){
-            if(!mineOption){
-                break;
-            }
-            long nextNonce = miningBlock.getNextNonce();
-            if(LongUtil.isGreatThan(nextNonce-startNonce,tryNonceSizeEveryBatch)){
-                break;
-            }
-            block.setNonce(nextNonce);
-            block.setHash(BlockTool.calculateBlockHash(block));
-            if(blockChainDataBase.getConsensus().isReachConsensus(blockChainDataBase,block)){
-                logger.info("祝贺您！挖矿成功！！！用时"+(System.currentTimeMillis()-miningBlock.getStartTimestamp()+"毫秒"));
-                logger.info("区块高度:"+block.getHeight()+",区块哈希:"+block.getHash());
-                miningBlock.setMiningSuccess(true);
-                break;
-            }
-            miningBlock.setNextNonce(nextNonce+1);
-        }
-    }
-
-
-    /**
-     * 挖矿中的区块对象
-     * 为了辅助挖矿而创造的类，类里包含了一个需要挖矿的区块和一些辅助挖矿的对象。
-     */
-    public static class MiningBlock {
-        //挖矿开始的时间戳
-        private long startTimestamp;
-        //矿工挖矿的区块链
-        private BlockChainDataBase blockChainDataBase;
-        //矿工要挖矿的区块
-        private Block block;
-        //标记矿工下一个要验证的nonce
-        private long nextNonce;
-        //标记矿工每批次尝试验证的nonce个数
-        private long tryNonceSizeEveryBatch;
-        //是否挖矿成功
-        private Boolean miningSuccess;
-        private List<Transaction> forMineBlockTransactionList;
-        private List<Transaction> exceptionTransactionList;
-
-
-
-
-        //region get set
-
-        public long getStartTimestamp() {
-            return startTimestamp;
-        }
-
-        public void setStartTimestamp(long startTimestamp) {
-            this.startTimestamp = startTimestamp;
-        }
-
-        public BlockChainDataBase getBlockChainDataBase() {
-            return blockChainDataBase;
-        }
-
-        public void setBlockChainDataBase(BlockChainDataBase blockChainDataBase) {
-            this.blockChainDataBase = blockChainDataBase;
-        }
-
-        public Block getBlock() {
-            return block;
-        }
-
-        public void setBlock(Block block) {
-            this.block = block;
-        }
-
-        public long getNextNonce() {
-            return nextNonce;
-        }
-
-        public void setNextNonce(long nextNonce) {
-            this.nextNonce = nextNonce;
-        }
-
-        public long getTryNonceSizeEveryBatch() {
-            return tryNonceSizeEveryBatch;
-        }
-
-        public void setTryNonceSizeEveryBatch(long tryNonceSizeEveryBatch) {
-            this.tryNonceSizeEveryBatch = tryNonceSizeEveryBatch;
-        }
-
-        public Boolean getMiningSuccess() {
-            return miningSuccess;
-        }
-
-        public void setMiningSuccess(Boolean miningSuccess) {
-            this.miningSuccess = miningSuccess;
-        }
-
-        public List<Transaction> getForMineBlockTransactionList() {
-            return forMineBlockTransactionList;
-        }
-
-        public void setForMineBlockTransactionList(List<Transaction> forMineBlockTransactionList) {
-            this.forMineBlockTransactionList = forMineBlockTransactionList;
-        }
-
-        public List<Transaction> getExceptionTransactionList() {
-            return exceptionTransactionList;
-        }
-
-        public void setExceptionTransactionList(List<Transaction> exceptionTransactionList) {
-            this.exceptionTransactionList = exceptionTransactionList;
-        }
-
-        //endregion
-    }
-    //endregion
-
 
     /**
      * 打包处理过程: 将异常的交易丢弃掉【站在区块的角度校验交易】
      */
-    public List<Transaction> removeExceptionTransaction_PointOfBlockView(BlockChainDataBase blockChainDataBase,List<Transaction> packingTransactionList) {
-        List<Transaction> exceptionTransactionList = new ArrayList<>();
-        //区块中允许没有交易
+    public void removeExceptionTransaction_PointOfBlockView(BlockChainDataBase blockChainDataBase,List<Transaction> packingTransactionList) {
         if(packingTransactionList==null || packingTransactionList.size()==0){
-            return exceptionTransactionList;
+            return;
         }
-        List<Transaction> exceptionTransactionList_PointOfTransactionView = removeExceptionTransaction_PointOfTransactionView(blockChainDataBase,packingTransactionList);
-        if(exceptionTransactionList_PointOfTransactionView != null){
-            exceptionTransactionList.addAll(exceptionTransactionList_PointOfTransactionView);
-        }
+        removeExceptionTransaction_PointOfTransactionView(blockChainDataBase,packingTransactionList);
 
         Set<String> hashSet = new HashSet<>();
         Iterator<Transaction> iterator = packingTransactionList.iterator();
         while (iterator.hasNext()){
-            Transaction tx = iterator.next();
-            List<TransactionInput> inputs = tx.getInputs();
-            boolean multiTimeUseOneUTXO = false;
-            //同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
+            Transaction transaction = iterator.next();
+            List<TransactionInput> inputs = transaction.getInputs();
+            boolean isError = false;
+            //校验双花：同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
             for(TransactionInput input:inputs){
                 String unspendTransactionOutputHash = input.getUnspendTransactionOutput().getTransactionOutputHash();
-                if(!hashSet.add(unspendTransactionOutputHash)){
-                    multiTimeUseOneUTXO = true;
+                if(hashSet.contains(unspendTransactionOutputHash)){
+                    isError = true;
                     break;
+                }else {
+                    hashSet.add(unspendTransactionOutputHash);
                 }
             }
-            //校验新产生的哈希的唯一性
-            List<TransactionOutput> outputs = tx.getOutputs();
+            //校验哈希，哈希不能重复使用
+            List<TransactionOutput> outputs = transaction.getOutputs();
             for(TransactionOutput transactionOutput:outputs){
                 String transactionOutputHash = transactionOutput.getTransactionOutputHash();
-                if(!hashSet.add(transactionOutputHash)){
-                    multiTimeUseOneUTXO = true;
+                if(hashSet.contains(transactionOutputHash)){
+                    isError = true;
                     break;
+                }else {
+                    hashSet.add(transactionOutputHash);
                 }
             }
-            if(multiTimeUseOneUTXO){
+            if(isError){
                 iterator.remove();
-                exceptionTransactionList.add(tx);
+                minerTransactionDtoDataBase.deleteByTransactionHash(transaction.getTransactionHash());
                 logger.debug("交易校验失败：交易的输入中同一个UTXO被多次使用。不合法的交易。");
             }
         }
-        return exceptionTransactionList;
     }
 
     /**
      * 打包处理过程: 将异常的交易丢弃掉【站在单笔交易的角度校验交易】
      */
-    private List<Transaction> removeExceptionTransaction_PointOfTransactionView(BlockChainDataBase blockChainDataBase,List<Transaction> transactionList) {
-        List<Transaction> exceptionTransactionList = new ArrayList<>();
+    private void removeExceptionTransaction_PointOfTransactionView(BlockChainDataBase blockChainDataBase,List<Transaction> transactionList) {
         if(transactionList==null || transactionList.size()==0){
-            return exceptionTransactionList;
+            return;
         }
         Iterator<Transaction> iterator = transactionList.iterator();
         while (iterator.hasNext()){
-            Transaction tx = iterator.next();
-            boolean transactionCanAddToNextBlock = blockChainDataBase.isTransactionCanAddToNextBlock(null,tx);
+            Transaction transaction = iterator.next();
+            boolean transactionCanAddToNextBlock = blockChainDataBase.isTransactionCanAddToNextBlock(null,transaction);
             if(!transactionCanAddToNextBlock){
                 iterator.remove();
-                exceptionTransactionList.add(tx);
-                System.out.println("交易校验失败：丢弃交易。");
+                minerTransactionDtoDataBase.deleteByTransactionHash(transaction.getTransactionHash());
+                logger.debug("交易校验失败：丢弃交易。交易哈希"+transaction.getTransactionHash());
             }
         }
-        return exceptionTransactionList;
     }
-
-    //region 挖矿奖励相关
 
     @Override
     public Transaction buildMineAwardTransaction(long timestamp, BlockChainDataBase blockChainDataBase, Block block) {
@@ -377,9 +203,6 @@ public class MinerDefaultImpl extends Miner {
         return transaction;
     }
 
-    //endregion
-
-    //region 构建区块、计算区块hash、校验区块Nonce
     /**
      * 构建挖矿区块
      */
@@ -409,5 +232,4 @@ public class MinerDefaultImpl extends Miner {
         nonNonceBlock.setMerkleTreeRoot(merkleTreeRoot);
         return nonNonceBlock;
     }
-    //endregion
 }

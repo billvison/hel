@@ -7,8 +7,6 @@ import com.xingkaichun.helloworldblockchain.core.utils.LevelDBUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
-import org.iq80.leveldb.WriteBatch;
-import org.iq80.leveldb.impl.WriteBatchImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,21 +69,8 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
     }
 
     @Override
-    public void deleteTransactionDto(TransactionDTO transactionDTO) {
-        String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
+    public void deleteByTransactionHash(String transactionHash) {
         LevelDBUtil.delete(transactionPoolDB,transactionHash);
-    }
-
-    @Override
-    public void deleteTransactionDtoListByTransactionHashList(List<String> transactionHashList) {
-        if(transactionHashList == null || transactionHashList.size()==0){
-            return;
-        }
-        WriteBatch writeBatch = new WriteBatchImpl();
-        for(String transactionHash:transactionHashList){
-            writeBatch.delete(LevelDBUtil.stringToBytes(transactionHash));
-        }
-        LevelDBUtil.write(transactionPoolDB,writeBatch);
     }
 
     @Override

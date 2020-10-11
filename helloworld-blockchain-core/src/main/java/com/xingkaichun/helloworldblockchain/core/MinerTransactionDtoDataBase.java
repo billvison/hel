@@ -20,19 +20,14 @@ public abstract class MinerTransactionDtoDataBase {
     public abstract void insertTransactionDTO(TransactionDTO transactionDTO) ;
 
     /**
-     * 获取交易
+     * 批量提取交易
      */
     public abstract List<TransactionDTO> selectTransactionDtoList(long from, long size) ;
 
     /**
      * 删除交易
      */
-    public abstract void deleteTransactionDto(TransactionDTO transactionDTO) ;
-
-    /**
-     * 删除交易
-     */
-    public abstract void deleteTransactionDtoListByTransactionHashList(List<String> transactionHashList) ;
+    public abstract void deleteByTransactionHash(String transactionHash) ;
 
     /**
      * 查询交易
