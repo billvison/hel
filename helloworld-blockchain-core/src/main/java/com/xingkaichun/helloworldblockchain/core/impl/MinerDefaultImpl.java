@@ -99,7 +99,10 @@ public class MinerDefaultImpl extends Miner {
             //第一个区块，除了创始人，其它矿工没有机会走到这里
             return false;
         } else {
-            return (tailBlock.getHeight() + 1 != block.getHeight()) || !tailBlock.getHash().equals(block.getPreviousBlockHash());
+            if((tailBlock.getHeight()+1==block.getHeight()) && tailBlock.getHash().equals(block.getPreviousBlockHash())){
+                return false;
+            }
+            return true;
         }
     }
 

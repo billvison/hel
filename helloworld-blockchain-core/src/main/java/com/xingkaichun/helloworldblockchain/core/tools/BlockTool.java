@@ -6,6 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionIn
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
+import com.xingkaichun.helloworldblockchain.core.utils.StringUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.MerkleTreeUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
@@ -379,5 +380,24 @@ public class BlockTool {
         return transactions == null?0:transactions.size();
     }
 
-
+    /**
+     * 两个区块是否相等
+     * 注意：这里没有严格校验,例如没有校验交易是否完全一样
+     * @author 邢开春 xingkaichun@qq.com
+     */
+    public static boolean isBlockEquals(Block block1, Block block2) {
+        if(block1 == null && block2 == null){
+            return true;
+        }
+        if(block1 == null || block2 == null){
+            return false;
+        }
+        if(StringUtil.isEquals(block1.getHash(),block2.getHash()) &&
+                StringUtil.isEquals(block1.getPreviousBlockHash(),block2.getPreviousBlockHash())
+                && StringUtil.isEquals(block1.getMerkleTreeRoot(),block2.getMerkleTreeRoot())
+                && LongUtil.isEquals(block1.getNonce(),block2.getNonce())){
+            return true;
+        }
+        return false;
+    }
 }

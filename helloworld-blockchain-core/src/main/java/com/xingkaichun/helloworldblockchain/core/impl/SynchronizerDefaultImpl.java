@@ -5,9 +5,9 @@ import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDataBase;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.synchronizer.SynchronizerBlockDTO;
+import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.NodeTransportDtoTool;
 import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.StringUtil;
 import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
@@ -188,7 +188,7 @@ public class SynchronizerDefaultImpl extends Synchronizer {
                 break;
             }
             Block targetBlockChainBlock = targetBlockChainDataBase.queryBlockByBlockHeight(temporaryBlockChainTailBlock.getHeight());
-            if(isBlockEqual(targetBlockChainBlock,temporaryBlockChainTailBlock)){
+            if(BlockTool.isBlockEquals(targetBlockChainBlock,temporaryBlockChainTailBlock)){
                 break;
             }
             temporaryBlockChainDataBase.removeTailBlock();
@@ -207,22 +207,5 @@ public class SynchronizerDefaultImpl extends Synchronizer {
                 return;
             }
         }
-    }
-    private boolean isBlockEqual(Block block1, Block block2) {
-        if(block1 == null && block2 == null){
-            return true;
-        }
-        if(block1 == null || block2 == null){
-            return false;
-        }
-        //不严格校验,这里没有具体校验每一笔交易
-        if(StringUtil.isEquals(block1.getPreviousBlockHash(),block2.getPreviousBlockHash())
-                && LongUtil.isEquals(block1.getHeight(),block2.getHeight())
-                && StringUtil.isEquals(block1.getMerkleTreeRoot(),block2.getMerkleTreeRoot())
-                && LongUtil.isEquals(block1.getNonce(),block2.getNonce())
-                && StringUtil.isEquals(block1.getHash(),block2.getHash())){
-            return true;
-        }
-        return false;
     }
 }
