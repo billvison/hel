@@ -16,7 +16,7 @@ import java.sql.*;
  */
 public class ConfigurationDaoImpl implements ConfigurationDao {
 
-    private final static Logger logger = LoggerFactory.getLogger(ConfigurationDaoImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationDaoImpl.class);
 
 
     public ConfigurationDaoImpl(String blockchainDataPath) {
@@ -40,7 +40,7 @@ public class ConfigurationDaoImpl implements ConfigurationDao {
             preparedStatement = connection().prepareStatement(sql);
             preparedStatement.setString(1,confKey);
             resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+            if (resultSet.next()){
                 String confValue = resultSet.getString("confValue");
                 return confValue;
             }

@@ -46,7 +46,7 @@ public class BlockSearcher {
     }
 
     public void start() {
-        /**
+        /*
          * 搜索其它节点的区块高度
          */
         new Thread(()->{
@@ -61,7 +61,7 @@ public class BlockSearcher {
             }
         }).start();
 
-        /**
+        /*
          * 同步区块
          */
         new Thread(()->{
@@ -103,7 +103,7 @@ public class BlockSearcher {
     /**
      * 在区块链网络中搜寻新的节点
      */
-    public void searchBlocks() {
+    private void searchBlocks() {
         List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
         for(NodeDto node:nodes){
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);

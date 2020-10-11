@@ -39,7 +39,7 @@ public class NodeSearcher {
     }
 
     public void start() {
-        /**
+        /*
          * 搜索种子节点
          * 定时循环的将种子节点加入区块链系统。
          * 因为有的种子节点可能会发生故障，然后本地节点链接不上种子节点，就将种子节点丢弃。
@@ -59,7 +59,7 @@ public class NodeSearcher {
             }
         }).start();
 
-        /**
+        /*
          * 搜索区块链网络中的节点
          * 通过 向已知的网络节点发送[获取它所知道的节点列表]的请求方式 搜索区块链网络中节点
          */
@@ -81,7 +81,7 @@ public class NodeSearcher {
     /**
      * 在区块链网络中搜寻新的节点
      */
-    public void searchNodes() {
+    private void searchNodes() {
         //这里可以利用多线程进行性能优化，因为本项目是helloworld项目，因此只采用单线程轮询每一个节点查询新的网络节点，不做进一步优化拓展。
         List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
         for(NodeDto node:nodes){

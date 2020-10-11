@@ -17,9 +17,9 @@ import io.netty.util.CharsetUtil;
  */
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-	HttpServerHandlerResolver httpServerHandlerResolver;
+	private HttpServerHandlerResolver httpServerHandlerResolver;
 
-	protected HttpServerHandler(HttpServerHandlerResolver httpServerHandlerResolver) {
+	public HttpServerHandler(HttpServerHandlerResolver httpServerHandlerResolver) {
 		super();
 		this.httpServerHandlerResolver = httpServerHandlerResolver;
 	}

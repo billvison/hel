@@ -13,12 +13,11 @@ import java.math.BigInteger;
 import java.util.Random;
 
 import static org.bitcoinj.core.Utils.HEX;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class AccountUtilTest {
 
-    private final static Account ACCOUNT_1 = new Account("d5c654eeff2cf1c6af16d721f31854ef447dfc61a6344bf1ba7108ec77d29b80"
+    private static final Account ACCOUNT_1 = new Account("d5c654eeff2cf1c6af16d721f31854ef447dfc61a6344bf1ba7108ec77d29b80"
             ,"044a99261b7a4b4bad2cac46defa41936b5807bf35dc5d7645d4976431666c741f3be030868718a20f875c69e9f1b781502429584f2c754c0aa8432719df1ed65e"
             ,"13e2eYT45FbRMBuyg7CHjZuEkjfMCD7xGg"
     );
@@ -34,9 +33,9 @@ public class AccountUtilTest {
     public void accountFromPrivateKeyTest()
     {
         Account account = AccountUtil.accountFromPrivateKey(ACCOUNT_1.getPrivateKey());
-        assertTrue(ACCOUNT_1.getPrivateKey().equals(account.getPrivateKey()));
-        assertTrue(ACCOUNT_1.getPublicKey().equals(account.getPublicKey()));
-        assertTrue(ACCOUNT_1.getAddress().equals(account.getAddress()));
+        assertEquals(ACCOUNT_1.getPrivateKey(),account.getPrivateKey());
+        assertEquals(ACCOUNT_1.getPublicKey(),account.getPublicKey());
+        assertEquals(ACCOUNT_1.getAddress(),account.getAddress());
         assertAccount(account);
     }
 
@@ -44,7 +43,7 @@ public class AccountUtilTest {
     public void addressFromPublicKeyTest()
     {
         String address = AccountUtil.addressFromPublicKey(ACCOUNT_1.getPublicKey());
-        assertTrue(ACCOUNT_1.getAddress().equals(address));
+        assertEquals(ACCOUNT_1.getAddress(),address);
     }
 
     @Test
@@ -123,21 +122,21 @@ public class AccountUtilTest {
 
     private static void assertAccount(Account account){
         Account accountFromPrivateKey = AccountUtil.accountFromPrivateKey(account.getPrivateKey());
-        assertTrue(account.getPrivateKey().equals(accountFromPrivateKey.getPrivateKey()));
-        assertTrue(account.getPublicKey().equals(accountFromPrivateKey.getPublicKey()));
-        assertTrue(account.getAddress().equals(accountFromPrivateKey.getAddress()));
+        assertEquals(account.getPrivateKey(),accountFromPrivateKey.getPrivateKey());
+        assertEquals(account.getPublicKey(),accountFromPrivateKey.getPublicKey());
+        assertEquals(account.getAddress(),accountFromPrivateKey.getAddress());
 
         //用bitcoinj解析账户，并对比私钥、公钥、地址
         ECKey bitcoinjECKey = ECKey.fromPrivate(privateKeyFromProxy(account.getPrivateKey()),false);
-        assertTrue(account.getPrivateKey().equals(bitcoinjECKey.getPrivateKeyAsHex()));
-        assertTrue(account.getPublicKey().equals(bitcoinjECKey.getPublicKeyAsHex()));
+        assertEquals(account.getPrivateKey(),bitcoinjECKey.getPrivateKeyAsHex());
+        assertEquals(account.getPublicKey(),bitcoinjECKey.getPublicKeyAsHex());
         Address bitcoinjAddress = Address.fromKey(NetworkParameters.fromID(NetworkParameters.ID_MAINNET),bitcoinjECKey, Script.ScriptType.P2PKH);
-        assertTrue(account.getAddress().equals(bitcoinjAddress.toString()));
+        assertEquals(account.getAddress(),bitcoinjAddress.toString());
     }
 
 
     private static String randomPrivateKey() {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         int length = new Random().nextInt(63)+2;
         for(int i=0;i<length;i++) {
             result.append(Integer.toHexString(new Random().nextInt(16)));
@@ -152,7 +151,7 @@ public class AccountUtilTest {
 
     private static BigInteger privateKeyFromProxy(String privateKey) {
         try {
-            Method method1 = Class.forName("com.xingkaichun.helloworldblockchain.crypto.AccountUtil").getDeclaredMethod("privateKeyFrom", new Class[]{String.class});
+            Method method1 = Class.forName("com.xingkaichun.helloworldblockchain.crypto.AccountUtil").getDeclaredMethod("privateKeyFrom", String.class);
             method1.setAccessible(true);
             return (BigInteger) method1.invoke(AccountUtil.class, privateKey);
         } catch (Exception e) {
@@ -161,7 +160,7 @@ public class AccountUtilTest {
     }
     private static byte[] publicKeyFromProxy(String publicKey) {
         try {
-            Method method1 = Class.forName("com.xingkaichun.helloworldblockchain.crypto.AccountUtil").getDeclaredMethod("publicKeyFrom", new Class[]{String.class});
+            Method method1 = Class.forName("com.xingkaichun.helloworldblockchain.crypto.AccountUtil").getDeclaredMethod("publicKeyFrom", String.class);
             method1.setAccessible(true);
             return (byte[]) method1.invoke(AccountUtil.class, publicKey);
         } catch (Exception e) {
@@ -170,7 +169,7 @@ public class AccountUtilTest {
     }
     private static byte[] signatureProxy(BigInteger bigIntegerPrivateKey, byte[] input) {
         try {
-            Method method1 = Class.forName("com.xingkaichun.helloworldblockchain.crypto.AccountUtil").getDeclaredMethod("signature", new Class[]{BigInteger.class,byte[].class});
+            Method method1 = Class.forName("com.xingkaichun.helloworldblockchain.crypto.AccountUtil").getDeclaredMethod("signature", BigInteger.class,byte[].class);
             method1.setAccessible(true);
             return (byte[]) method1.invoke(AccountUtil.class, bigIntegerPrivateKey,input);
         } catch (Exception e) {
@@ -179,7 +178,7 @@ public class AccountUtilTest {
     }
     private static boolean verifySignatureProxy(byte[] pub, byte[] rawData, byte[] signature) {
         try {
-            Method method1 = Class.forName("com.xingkaichun.helloworldblockchain.crypto.AccountUtil").getDeclaredMethod("verifySignature", new Class[]{byte[].class,byte[].class,byte[].class});
+            Method method1 = Class.forName("com.xingkaichun.helloworldblockchain.crypto.AccountUtil").getDeclaredMethod("verifySignature", byte[].class,byte[].class,byte[].class);
             method1.setAccessible(true);
             return (boolean) method1.invoke(AccountUtil.class, pub,rawData,signature);
         } catch (Exception e) {

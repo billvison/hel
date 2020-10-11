@@ -16,7 +16,7 @@ import java.net.URL;
  */
 public class NetTool {
 
-    private final static Logger logger = LoggerFactory.getLogger(NetTool.class);
+    private static final Logger logger = LoggerFactory.getLogger(NetTool.class);
 
     private static Gson gson = new Gson();
 

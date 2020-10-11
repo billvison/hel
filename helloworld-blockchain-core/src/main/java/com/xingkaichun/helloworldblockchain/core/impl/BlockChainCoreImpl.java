@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BlockChainCoreImpl extends BlockChainCore {
 
-    private final static Logger logger = LoggerFactory.getLogger(BlockChainCoreImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(BlockChainCoreImpl.class);
 
     public BlockChainCoreImpl(BlockChainDataBase blockChainDataBase, Miner miner, Synchronizer synchronizer) {
         super(blockChainDataBase,miner,synchronizer);

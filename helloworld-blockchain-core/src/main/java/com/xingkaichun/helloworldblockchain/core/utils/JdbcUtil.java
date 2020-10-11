@@ -20,7 +20,7 @@ import java.sql.Statement;
  */
 public class JdbcUtil {
 
-    private final static Logger logger = LoggerFactory.getLogger(JdbcUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(JdbcUtil.class);
 
     private static String jdbcConnectionFormat;
 
@@ -65,7 +65,7 @@ public class JdbcUtil {
         }
     }
 
-    public static boolean executeSql(Connection connection, String sql) {
+    public static void executeSql(Connection connection, String sql) {
         Statement stmt = null;
         try {
             stmt = connection.createStatement();
@@ -76,6 +76,5 @@ public class JdbcUtil {
         } finally {
             JdbcUtil.closeStatement(stmt);
         }
-        return true;
     }
 }

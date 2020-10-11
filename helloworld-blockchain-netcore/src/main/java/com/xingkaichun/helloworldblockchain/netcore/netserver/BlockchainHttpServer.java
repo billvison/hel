@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BlockchainHttpServer {
 
-	private final static Logger logger = LoggerFactory.getLogger(BlockchainHttpServer.class);
+	private static final Logger logger = LoggerFactory.getLogger(BlockchainHttpServer.class);
 
 	private int serverPort;
 	private HttpServerHandlerResolver httpServerHandlerResolver;

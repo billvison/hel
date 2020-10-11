@@ -3,7 +3,6 @@ package com.xingkaichun.helloworldblockchain.crypto;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -47,7 +46,7 @@ public class SHA256UtilTest {
     }
 
 
-    protected byte[] toByteArray(String input)
+    private byte[] toByteArray(String input)
     {
         byte[] bytes = new byte[input.length()];
         for (int i = 0; i != bytes.length; i++)

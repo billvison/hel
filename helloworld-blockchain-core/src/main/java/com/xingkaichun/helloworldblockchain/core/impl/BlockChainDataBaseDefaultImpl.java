@@ -43,9 +43,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
     //region 变量与构造函数
-    private final static Logger logger = LoggerFactory.getLogger(BlockChainDataBaseDefaultImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(BlockChainDataBaseDefaultImpl.class);
 
-    private final static String BlockChain_DataBase_DirectName = "BlockChainDataBase";
+    private static final String BlockChain_DataBase_DirectName = "BlockChainDataBase";
     //区块链数据库
     private DB blockChainDB;
 
@@ -173,8 +173,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             logger.debug("区块数据异常，区块中占用的部分主键已经被使用了。");
             return false;
         }
-        //新产生的Hash不能有已经被使用过的
-        if(!isNewHashUsed(block)){
+        //新产生的Hash被使用过
+        if(!isHashUsed(block)){
             logger.debug("区块数据异常，区块中占用的部分主键已经被使用了。");
             return false;
         }
@@ -265,8 +265,8 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             logger.debug("校验数据异常，校验中占用的部分主键已经被使用了。");
             return false;
         }
-        //新产生的Hash不能有已经被使用过的
-        if(!isNewHashUsed(transaction)){
+        //新产生的Hash不能被使用过
+        if(!isHashUsed(transaction)){
             logger.debug("校验数据异常，校验中占用的部分主键已经被使用了。");
             return false;
         }
@@ -274,7 +274,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
 
         //根据交易类型，做进一步的校验
         if(transaction.getTransactionType() == TransactionType.COINBASE){
-            /**
+            /*
              * 激励交易输出可以为空，这时代表矿工放弃了奖励、或者依据规则挖矿激励就是零奖励。
              */
             List<TransactionInput> inputs = transaction.getInputs();
@@ -289,7 +289,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             }
             return true;
         } else if(transaction.getTransactionType() == TransactionType.NORMAL){
-            /**
+            /*
              * 普通交易输出可以为空，这时代表用户将自己的币扔进了黑洞，强制销毁了。
              */
             List<TransactionInput> inputs = transaction.getInputs();
@@ -720,7 +720,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * 区块中新产生的哈希是否已经被区块链系统使用了？
      */
-    private boolean isNewHashUsed(Block block) {
+    private boolean isHashUsed(Block block) {
         //校验区块Hash是否已经被使用了
         String blockHash = block.getHash();
         if(isHashUsed(blockHash)){
@@ -731,7 +731,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
         List<Transaction> blockTransactions = block.getTransactions();
         if(blockTransactions != null){
             for(Transaction transaction:blockTransactions){
-                if(!isNewHashUsed(transaction)){
+                if(!isHashUsed(transaction)){
                     return false;
                 }
             }
@@ -741,11 +741,11 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
     /**
      * 交易中新产生的哈希是否已经被区块链系统使用了？
      */
-    private boolean isNewHashUsed(Transaction transaction) {
+    private boolean isHashUsed(Transaction transaction) {
         //校验交易Hash是否已经被使用了
         String transactionHash = transaction.getTransactionHash();
         if(isHashUsed(transactionHash)){
-            logger.debug("区块数据异常，区块Hash已经被使用了。");
+            logger.debug("交易数据异常，交易Hash已经被使用了。");
             return false;
         }
         //交易输出Hash是否已经被使用了
@@ -754,6 +754,7 @@ public class BlockChainDataBaseDefaultImpl extends BlockChainDataBase {
             for(TransactionOutput transactionOutput : outputs) {
                 String transactionOutputHash = transactionOutput.getTransactionOutputHash();
                 if(isHashUsed(transactionOutputHash)){
+                    logger.debug("交易数据异常，交易输出Hash已经被使用了。");
                     return false;
                 }
             }

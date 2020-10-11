@@ -18,13 +18,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class InitUserListener implements ApplicationListener<ApplicationReadyEvent> {
 
-    private final static Logger logger = LoggerFactory.getLogger(InitUserListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(InitUserListener.class);
 
     @Autowired
     private UserDao userDao;
 
-    String DEFAULT_USER_NAME = "admin";
-    String DEFAULT_PASSWORD = "123456";
+    private static final String DEFAULT_USER_NAME = "admin";
+    private static final String DEFAULT_PASSWORD = "123456";
 
 
      public void onApplicationEvent(ApplicationReadyEvent event) {

@@ -16,7 +16,7 @@ import java.io.*;
  */
 public class EncodeDecodeUtil {
 
-    private final static Logger logger = LoggerFactory.getLogger(EncodeDecodeUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(EncodeDecodeUtil.class);
 
     public static byte[] encode(Transaction transaction) {
         try {
@@ -98,8 +98,7 @@ public class EncodeDecodeUtil {
     public static byte[] encode(TransactionDTO transactionDTO) {
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ObjectOutputStream objectOutputStream = null;
-            objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
             objectOutputStream.writeObject(transactionDTO);
             byte[] bytesTransactionDTO = byteArrayOutputStream.toByteArray();
             return bytesTransactionDTO;
@@ -111,8 +110,7 @@ public class EncodeDecodeUtil {
     public static TransactionDTO decodeToTransactionDTO(byte[] bytesTransactionDTO) {
         try {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytesTransactionDTO);
-            ObjectInputStream objectInputStream = null;
-            objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
             TransactionDTO transactionDTO = (TransactionDTO) objectInputStream.readObject();
             return transactionDTO;
         } catch (IOException | ClassNotFoundException e) {

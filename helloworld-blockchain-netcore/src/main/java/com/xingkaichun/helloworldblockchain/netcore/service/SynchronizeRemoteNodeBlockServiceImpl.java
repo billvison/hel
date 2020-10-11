@@ -41,7 +41,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
      * 可能发现同步过来的区块的最大高度已经小于本地区块链的高度了。
      * 所以可以尝试一次多同步几个区块，至少保证本地计算能力达不到同步过来的高度。
      */
-    private long SYNCHRONIZE_BLOCK_SIZE_FROM_LOCAL_BLOCKCHAIN_HEIGHT = 10;
+    private static final long SYNCHRONIZE_BLOCK_SIZE_FROM_LOCAL_BLOCKCHAIN_HEIGHT = 10;
 
 
     public SynchronizeRemoteNodeBlockServiceImpl(BlockChainCore blockChainCore, NodeService nodeService, BlockchainNodeClientService blockchainNodeClientService, ConfigurationService configurationService) {
@@ -139,7 +139,6 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 if(!ServiceResult.isSuccess(queryBlockHashByBlockHeightResponseServiceResult)){
                     break;
                 }
-                String blockHash = queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash();
                 synchronizerDataBase.addBlockDTO(nodeId,blockDTO);
                 tempBlockHeight = tempBlockHeight + LongUtil.ONE;
                 //若是有分叉时，一次同步的最后一个区块至少要比本地区块链的高度大于N个
@@ -161,7 +160,6 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 if(!ServiceResult.isSuccess(queryBlockHashByBlockHeightResponseServiceResult)){
                     break;
                 }
-                String blockHash = queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash();
                 Block block = NodeTransportDtoTool.classCast(blockChainDataBase,blockDTO);
                 boolean isAddBlockSuccess = blockChainDataBase.addBlock(block);
                 if(!isAddBlockSuccess){

@@ -1,6 +1,3 @@
-/**
- * Welcome to https://waylau.com
- */
 package com.xingkaichun.helloworldblockchain.netcore.netserver;
 
 import io.netty.channel.ChannelInitializer;
@@ -14,7 +11,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
  */
 public class HttpServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-	HttpServerHandlerResolver httpServerHandlerResolver;
+	private HttpServerHandlerResolver httpServerHandlerResolver;
 
 	public HttpServerChannelInitializer(HttpServerHandlerResolver httpServerHandlerResolver) {
 		super();

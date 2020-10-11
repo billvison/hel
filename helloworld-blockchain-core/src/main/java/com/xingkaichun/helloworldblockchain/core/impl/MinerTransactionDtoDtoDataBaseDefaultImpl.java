@@ -23,9 +23,9 @@ import java.util.List;
  */
 public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionDtoDataBase {
 
-    private final static Logger logger = LoggerFactory.getLogger(MinerTransactionDtoDtoDataBaseDefaultImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(MinerTransactionDtoDtoDataBaseDefaultImpl.class);
 
-    private final static String MinerTransaction_DataBase_DirectName = "MinerTransactionDtoDataBase";
+    private static final String MinerTransaction_DataBase_DirectName = "MinerTransactionDtoDataBase";
     private DB transactionPoolDB;
 
     public MinerTransactionDtoDtoDataBaseDefaultImpl(String blockchainDataPath) {
@@ -39,7 +39,7 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
 
     public void insertTransactionDTO(TransactionDTO transactionDTO) {
         //交易已经持久化进交易池数据库 丢弃交易
-        synchronized (this.getClass()){
+        synchronized (MinerTransactionDtoDtoDataBaseDefaultImpl.class){
             String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
             LevelDBUtil.put(transactionPoolDB,transactionHash, EncodeDecodeUtil.encode(transactionDTO));
         }
@@ -47,7 +47,7 @@ public class MinerTransactionDtoDtoDataBaseDefaultImpl extends MinerTransactionD
 
     @Override
     public List<TransactionDTO> selectTransactionDtoList(long from, long size) {
-        synchronized (this.getClass()){
+        synchronized (MinerTransactionDtoDtoDataBaseDefaultImpl.class){
             List<TransactionDTO> transactionDtoList = new ArrayList<>();
             int cunrrentFrom = 0;
             int cunrrentSize = 0;

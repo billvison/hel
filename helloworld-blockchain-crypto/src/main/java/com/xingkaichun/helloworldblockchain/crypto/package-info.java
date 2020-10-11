@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
-/**
+/*
  * 该包存放加密相关的类。
  *
  * 现在提供如下加密相关的功能：

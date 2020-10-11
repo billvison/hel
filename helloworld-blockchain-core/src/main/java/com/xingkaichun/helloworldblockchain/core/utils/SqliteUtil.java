@@ -11,7 +11,7 @@ public class SqliteUtil {
      * sqlite没有boolean类型，用long类型代替，long转boolean
      */
     public static boolean longToBoolean(Long intValue){
-        return Long.valueOf(0).compareTo(intValue)==0?false:true;
+        return Long.valueOf(0).compareTo(intValue) != 0;
     }
     /**
      * sqlite没有boolean类型，用long类型代替，boolean转long

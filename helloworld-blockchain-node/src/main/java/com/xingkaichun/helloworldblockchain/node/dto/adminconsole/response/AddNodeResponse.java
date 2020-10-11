@@ -6,7 +6,7 @@ package com.xingkaichun.helloworldblockchain.node.dto.adminconsole.response;
  */
 public class AddNodeResponse {
 
-    boolean addNodeSuccess ;
+    private boolean addNodeSuccess ;
 
 
 

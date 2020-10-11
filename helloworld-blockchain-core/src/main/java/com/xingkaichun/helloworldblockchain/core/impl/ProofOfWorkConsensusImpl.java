@@ -18,7 +18,7 @@ import java.math.BigInteger;
  */
 public class ProofOfWorkConsensusImpl extends Consensus {
 
-    private final static Logger logger = LoggerFactory.getLogger(ProofOfWorkConsensusImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProofOfWorkConsensusImpl.class);
 
     @Override
     public boolean isReachConsensus(BlockChainDataBase blockChainDataBase,Block block) {
@@ -39,8 +39,8 @@ public class ProofOfWorkConsensusImpl extends Consensus {
 
     public String calculateDifficult(BlockChainDataBase blockChainDataBase, Block block) {
 
-        long targetTimespan = 14 * 24 * 60 * 60 * 1000;
-        long targetSpacing = 10 * 60 * 1000;
+        long targetTimespan = 1000 * 60 * 60 * 24 * 14;
+        long targetSpacing = 1000 * 60 * 10;
         long nInterval = targetTimespan / targetSpacing;
 
         String targetDifficult;

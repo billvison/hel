@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class IncentiveDefaultImpl extends Incentive {
 
-    private final static Logger logger = LoggerFactory.getLogger(IncentiveDefaultImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(IncentiveDefaultImpl.class);
 
     @Override
     public long mineAward(Block block) {

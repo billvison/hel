@@ -7,13 +7,13 @@ package com.xingkaichun.helloworldblockchain.core.utils;
  */
 public class StringUtil {
 
-    public static boolean isEquals(String obj1,String obj2){
-        if(obj1 == obj2){
+    public static boolean isEquals(String str1,String str2){
+        if(str1 == str2){
             return true;
         }
-        if(obj1 == null || obj2 == null){
+        if(str1 == null || str2 == null){
             return false;
         }
-        return obj1.equals(obj2);
+        return str1.equals(str2);
     }
 }

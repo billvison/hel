@@ -130,8 +130,6 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
         List<String> inputs = new ArrayList<>();
         //交易输入总金额
         long inputValues = 0;
-        //找零
-        long change = 0;
         boolean haveMoreMoneyToPay = false;
         for(TransactionOutput transactionOutput:utxoList){
             inputValues += transactionOutput.getValue();
@@ -147,7 +145,7 @@ public class BlockChainCoreServiceImpl implements BlockChainCoreService {
             throw new ClassCastException("账户没有足够的金额去支付。");
         }else {
             //找零
-            change = inputValues - values;
+            long change = inputValues - values;
             TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
             transactionOutputDTO.setValue(change);
             transactionOutputDTO.setScriptLock(StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(account.getAddress()));

@@ -55,7 +55,7 @@ public class NodeBroadcaster {
     /**
      * 广播自己
      */
-    public void broadcastMyself() {
+    private void broadcastMyself() {
         List<NodeDto> nodes = nodeService.queryAllNodeList();
         for(NodeDto node:nodes){
             blockchainNodeClientService.pingNode(node);

@@ -27,7 +27,7 @@ import java.util.Set;
  */
 public class BlockTool {
 
-    private final static Logger logger = LoggerFactory.getLogger(BlockTool.class);
+    private static final Logger logger = LoggerFactory.getLogger(BlockTool.class);
 
     /**
      * 计算区块的Hash值

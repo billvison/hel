@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class SessionUtil {
 
-    private final static String LOGIN_USER = "LOGIN_USER";
+    private static final String LOGIN_USER = "LOGIN_USER";
 
     public static UserDto getLoginUser(HttpServletRequest httpServletRequest){
         UserDto userDto = (UserDto) httpServletRequest.getSession().getAttribute(LOGIN_USER);

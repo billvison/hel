@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ThreadUtil {
 
-    private final static Logger logger = LoggerFactory.getLogger(ThreadUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(ThreadUtil.class);
 
     public static void sleep(long millis){
         try {

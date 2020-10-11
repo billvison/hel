@@ -47,7 +47,7 @@ public class NodeDaoImpl implements NodeDao {
             preparedStatement.setString(1,ip);
             preparedStatement.setLong(2,port);
             resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+            if (resultSet.next()){
                 return resultSetToNodeEntity(resultSet);
             }
         } catch (Exception e){
@@ -164,7 +164,7 @@ public class NodeDaoImpl implements NodeDao {
     }
 
     @Override
-    public boolean deleteNode(String ip, int port){
+    public void deleteNode(String ip, int port){
         checkIp(ip);
         checkPort(port);
 
@@ -180,7 +180,6 @@ public class NodeDaoImpl implements NodeDao {
         } finally {
             JdbcUtil.closeStatement(preparedStatement1);
         }
-        return true;
     }
 
     @Override
@@ -240,7 +239,7 @@ public class NodeDaoImpl implements NodeDao {
             NodeEntity entity = new NodeEntity();
             entity.setIp(ip);
             entity.setPort(port);
-            entity.setBlockChainHeight(Long.valueOf(blockChainHeight));
+            entity.setBlockChainHeight(blockChainHeight);
             entity.setIsNodeAvailable(SqliteUtil.longToBoolean(isNodeAvailable));
             entity.setErrorConnectionTimes((int) errorConnectionTimes);
             entity.setFork(SqliteUtil.longToBoolean(fork));

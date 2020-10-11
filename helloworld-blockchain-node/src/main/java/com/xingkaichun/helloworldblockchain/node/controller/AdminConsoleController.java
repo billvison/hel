@@ -232,9 +232,6 @@ public class AdminConsoleController {
             if(Strings.isNullOrEmpty(node.getIp())){
                 return ServiceResult.createFailServiceResult("节点IP不能为空");
             }
-            if(Strings.isNullOrEmpty(node.getIp())){
-                return ServiceResult.createFailServiceResult("节点端口不能为空");
-            }
             if(nodeService.queryNode(node) != null){
                 return ServiceResult.createFailServiceResult("节点已经存在，不需要重复添加");
             }

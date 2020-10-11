@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 public class LevelDBUtil {
 
-    private final static Logger logger = LoggerFactory.getLogger(LevelDBUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(LevelDBUtil.class);
 
     private static WriteOptions writeOptions = new WriteOptions();
 

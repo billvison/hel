@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class TransactionTool {
 
-    private final static Logger logger = LoggerFactory.getLogger(TransactionTool.class);
+    private static final Logger logger = LoggerFactory.getLogger(TransactionTool.class);
 
     /**
      * 交易输入总额
@@ -100,7 +100,9 @@ public class TransactionTool {
                 Script payToClassicAddressScript = StackBasedVirtualMachine.createPayToClassicAddressScript(transactionInput.getScriptKey(),transactionInput.getUnspendTransactionOutput().getScriptLock());
                 StackBasedVirtualMachine stackBasedVirtualMachine = new StackBasedVirtualMachine();
                 ScriptExecuteResult scriptExecuteResult = stackBasedVirtualMachine.executeScript(transaction,payToClassicAddressScript);
-                return Boolean.valueOf(scriptExecuteResult.pop());
+                if(scriptExecuteResult.size()!=1 || !Boolean.valueOf(scriptExecuteResult.pop())){
+                    return false;
+                }
             }
         }
         return true;

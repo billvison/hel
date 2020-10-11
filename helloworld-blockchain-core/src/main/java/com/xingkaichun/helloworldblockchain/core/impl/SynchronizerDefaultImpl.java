@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SynchronizerDefaultImpl extends Synchronizer {
 
-    private final static Logger logger = LoggerFactory.getLogger(SynchronizerDefaultImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SynchronizerDefaultImpl.class);
 
     //本节点的区块链，同步器的目标就是让本节点区块链增长长度。
     private BlockChainDataBase targetBlockChainDataBase;

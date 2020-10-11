@@ -8,7 +8,7 @@ import static org.junit.Assert.assertArrayEquals;
 
 public class RipeMD160Test {
 
-    final static String[] messages = {
+    private static final String[] messages = {
             "",
             "a",
             "abc",
@@ -19,7 +19,7 @@ public class RipeMD160Test {
             "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
     };
 
-    final static String[] digests = {
+    private static final String[] digests = {
             "9c1185a5c5e9fc54612808977ee8f548b2258d31",
             "0bdc9d2d256b3ee9daae347be6f4dc835a467ffe",
             "8eb208f7e05d987a9b044a8e98c6b087f15a0bfc",
@@ -40,7 +40,7 @@ public class RipeMD160Test {
     }
 
 
-    protected byte[] toByteArray(String input)
+    private byte[] toByteArray(String input)
     {
         byte[] bytes = new byte[input.length()];
         for (int i = 0; i != bytes.length; i++)

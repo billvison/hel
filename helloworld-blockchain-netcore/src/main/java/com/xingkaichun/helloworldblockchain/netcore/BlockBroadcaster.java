@@ -59,7 +59,7 @@ public class BlockBroadcaster {
     }
 
 
-    /**
+    /*
      * 发现自己的区块链高度比全网节点都要高，则广播自己的区块链高度
      */
     private void broadcastBlcokChainHeight() {
@@ -83,13 +83,13 @@ public class BlockBroadcaster {
             Collections.sort(nodes,(NodeDto node1, NodeDto node2)->{
                 if(LongUtil.isGreatThan(node1.getBlockChainHeight(),node2.getBlockChainHeight())){
                     return -1;
-                } else if(node1.getBlockChainHeight() == node2.getBlockChainHeight()){
+                } else if(LongUtil.isEquals(node1.getBlockChainHeight(),node2.getBlockChainHeight())){
                     return 0;
                 } else {
                     return 1;
                 }
             });
-            /**
+            /*
              * 用单线程轮询通知其它节点。
              * 这里可以利用多线程进行性能优化，因为本项目是helloworld项目，因此只采用单线程轮询每一个节点给它发送自己的高度，不做进一步优化拓展。
              * 这里需要考虑，如果你通知的节点立刻向你获取数据，需要考虑自己的宽带网络资源。

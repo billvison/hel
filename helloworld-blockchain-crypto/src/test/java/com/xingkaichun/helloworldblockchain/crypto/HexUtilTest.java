@@ -29,14 +29,14 @@ public class HexUtilTest {
         String hexStr = "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930";
         byte[] b = HexUtil.hexStringToBytes(hexStr);
         String h = HexUtil.bytesToHexString(b);
-        assertTrue(hexStr.equals(h));
+        assertEquals(hexStr,h);
 
 
         String hexStr2 = "0bcdef34";
         byte[] bytes2 = new byte[]{(byte)0x0b, (byte)0xcd, (byte)0xef, (byte)0x34};
-        assertTrue(hexStr2.equals(HexUtil.bytesToHexString(bytes2)));
+        assertEquals(hexStr2,HexUtil.bytesToHexString(bytes2));
         assertArrayEquals(bytes2,HexUtil.hexStringToBytes(hexStr2));
-        assertTrue(hexStr2.equals(HexUtil.bytesToHexString(HexUtil.hexStringToBytes(hexStr2))));
+        assertEquals(hexStr2,HexUtil.bytesToHexString(HexUtil.hexStringToBytes(hexStr2)));
 
 
         Random random = new Random();

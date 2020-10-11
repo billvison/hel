@@ -71,7 +71,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         insertOrUpdate(configurationEntity);
     }
 
-    void insertOrUpdate(ConfigurationEntity configurationEntity){
+    private void insertOrUpdate(ConfigurationEntity configurationEntity){
         String configuratioValue = configurationDao.getConfiguratioValue(configurationEntity.getConfKey());
         if(Strings.isNullOrEmpty(configuratioValue)){
             configurationDao.addConfiguration(configurationEntity);
@@ -83,7 +83,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     @Override
     public Account getDefaultMinerAccount() {
-        synchronized (this.getClass()){
+        synchronized (ConfigurationServiceImpl.class){
             Gson gson = new Gson();
             ConfigurationDto configurationDto = getConfigurationByConfigurationKey(ConfigurationEnum.DEFAULT_MINER_ACCOUNT.name());
             if(configurationDto != null && !Strings.isNullOrEmpty(configurationDto.getConfValue())){
@@ -100,7 +100,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     @Override
     public String getMinerAddress() {
-        String minerAddress = null;
+        String minerAddress;
         ConfigurationDto minerAddressConfigurationDto = getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
         if(minerAddressConfigurationDto != null && !Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
             minerAddress = minerAddressConfigurationDto.getConfValue();

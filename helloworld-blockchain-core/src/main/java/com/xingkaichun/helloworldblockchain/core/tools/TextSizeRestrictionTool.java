@@ -20,19 +20,19 @@ import java.util.List;
  */
 public class TextSizeRestrictionTool {
 
-    private final static Logger logger = LoggerFactory.getLogger(TextSizeRestrictionTool.class);
+    private static final Logger logger = LoggerFactory.getLogger(TextSizeRestrictionTool.class);
 
 
     //交易文本字符串最大长度值
-    public final static long TRANSACTION_TEXT_MAX_SIZE = 1024;
+    public static final long TRANSACTION_TEXT_MAX_SIZE = 1024;
     //区块存储容量限制
-    public final static long BLOCK_TEXT_MAX_SIZE = 1024 * 1024;
+    public static final long BLOCK_TEXT_MAX_SIZE = 1024 * 1024;
     //区块最多含有的交易数量
-    public final static long BLOCK_MAX_TRANSACTION_SIZE = BLOCK_TEXT_MAX_SIZE/TRANSACTION_TEXT_MAX_SIZE;
+    public static final long BLOCK_MAX_TRANSACTION_SIZE = BLOCK_TEXT_MAX_SIZE/TRANSACTION_TEXT_MAX_SIZE;
     //nonce最大值
-    public final static long MAX_NONCE = Long.MAX_VALUE;
+    public static final long MAX_NONCE = Long.MAX_VALUE;
     //nonce最小值
-    public final static long MIN_NONCE = 0;
+    public static final long MIN_NONCE = 0;
 
 
 

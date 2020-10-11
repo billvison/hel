@@ -145,8 +145,8 @@ public class AccountUtil {
        try {
            BigInteger bigIntegerPrivateKey = privateKeyFrom(privateKey);
            byte[] bytesSignature = signature(bigIntegerPrivateKey, ByteUtil.stringToBytes(rawData));
-           String signature = HexUtil.bytesToHexString(bytesSignature);
-           return signature;
+           String hexSignature = HexUtil.bytesToHexString(bytesSignature);
+           return hexSignature;
        } catch (Exception e) {
             throw new RuntimeException(e);
        }

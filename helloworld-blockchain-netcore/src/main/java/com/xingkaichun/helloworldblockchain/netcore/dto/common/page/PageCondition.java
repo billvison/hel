@@ -18,7 +18,7 @@ public class PageCondition {
         this.size = size;
     }
 
-    public final static PageCondition DEFAULT_PAGE_CONDITION = new PageCondition(Long.valueOf(1),Long.valueOf(10));
+    public static final PageCondition DEFAULT_PAGE_CONDITION = new PageCondition(1L,10L);
 
 
 
