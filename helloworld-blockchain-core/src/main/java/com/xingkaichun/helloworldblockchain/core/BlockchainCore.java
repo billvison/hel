@@ -70,8 +70,17 @@ public abstract class BlockchainCore {
      * 根据区块哈希查询区块
      */
     public abstract Block queryBlockByBlockHash(String blockHash);
+    /**
+     * 查询区块链尾巴区块
+     */
+    public abstract Block queryTailBlock();
 
 
+
+    public abstract void deleteTailBlock();
+
+
+    public abstract boolean addBlock(Block currentBlock);
 
     /**
      * 根据交易哈希获取交易

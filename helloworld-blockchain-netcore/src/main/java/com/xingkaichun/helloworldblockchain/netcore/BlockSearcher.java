@@ -1,6 +1,8 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
+import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.PingResponse;
@@ -9,6 +11,7 @@ import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.service.SynchronizeRemoteNodeBlockService;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.util.ThreadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,15 +32,19 @@ public class BlockSearcher {
     private NodeService nodeService;
     private SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService;
     private BlockchainCore blockchainCore;
+    private BlockchainCore slaveBlockchainCore;
     private BlockchainNodeClient blockchainNodeClient;
 
 
     public BlockSearcher(NodeService nodeService
-            , SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService, BlockchainCore blockchainCore
+            , SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService
+            , BlockchainCore blockchainCore
+            , BlockchainCore slaveBlockchainCore
             , BlockchainNodeClient blockchainNodeClient) {
         this.nodeService = nodeService;
         this.synchronizeRemoteNodeBlockService = synchronizeRemoteNodeBlockService;
         this.blockchainCore = blockchainCore;
+        this.slaveBlockchainCore = slaveBlockchainCore;
         this.blockchainNodeClient = blockchainNodeClient;
     }
 
@@ -86,7 +93,15 @@ public class BlockSearcher {
         //可能存在多个节点的数据都比本地节点的区块多，但它们节点的数据可能是相同的，不应该向每个节点都去请求数据。
         for(NodeDto node:nodes){
             if(LongUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
+                //提高主区块链核心的高度
+                promoteTargetBlockchainDataBase(blockchainCore, slaveBlockchainCore);
+                //同步主区块链核心数据到从区块链核心
+                copyTargetBlockchainDataBaseToTemporaryBlockchainDataBase(blockchainCore, slaveBlockchainCore);
+                //同步节点的区块到从区块链核心
                 synchronizeRemoteNodeBlockService.synchronizeRemoteNodeBlock(node);
+                //提高主区块链核心的高度
+                promoteTargetBlockchainDataBase(blockchainCore, slaveBlockchainCore);
+
                 //同步之后，本地区块链高度已经发生改变了
                 localBlockchainHeight = blockchainCore.queryBlockchainHeight();
             }
@@ -110,6 +125,111 @@ public class BlockSearcher {
                 nodeService.updateNode(node);
             } else {
                 nodeService.nodeConnectionErrorHandle(node);
+            }
+        }
+    }
+
+
+
+    /**
+     * 使得temporaryBlockchainDataBase和targetBlockchainDataBase的区块链数据一模一样
+     * @param blockchainCore
+     * @param slaveBlockchainCore
+     */
+    private void copyTargetBlockchainDataBaseToTemporaryBlockchainDataBase(BlockchainCore blockchainCore,
+                                                                           BlockchainCore slaveBlockchainCore) {
+        Block targetBlockchainTailBlock = blockchainCore.queryTailBlock() ;
+        Block temporaryBlockchainTailBlock = slaveBlockchainCore.queryTailBlock() ;
+        if(targetBlockchainTailBlock == null){
+            //清空temporary
+            slaveBlockchainCore.deleteBlocksUtilBlockHeightLessThan(LongUtil.ONE);
+            return;
+        }
+        //删除Temporary区块链直到尚未分叉位置停止
+        while(true){
+            if(temporaryBlockchainTailBlock == null){
+                break;
+            }
+            Block targetBlockchainBlock = blockchainCore.queryBlockByBlockHeight(temporaryBlockchainTailBlock.getHeight());
+            if(BlockTool.isBlockEquals(targetBlockchainBlock,temporaryBlockchainTailBlock)){
+                break;
+            }
+            slaveBlockchainCore.deleteTailBlock();
+            temporaryBlockchainTailBlock = slaveBlockchainCore.queryTailBlock();
+        }
+        //复制target数据至temporary
+        long temporaryBlockchainHeight = slaveBlockchainCore.queryBlockchainHeight();
+        while(true){
+            temporaryBlockchainHeight++;
+            Block currentBlock = blockchainCore.queryBlockByBlockHeight(temporaryBlockchainHeight) ;
+            if(currentBlock == null){
+                break;
+            }
+            boolean isAddBlockToBlockchainSuccess = slaveBlockchainCore.addBlock(currentBlock);
+            if(!isAddBlockToBlockchainSuccess){
+                return;
+            }
+        }
+    }
+
+
+    /**
+     * 若targetBlockchainDataBase的高度小于blockchainDataBaseTemporary的高度，
+     * 则targetBlockchainDataBase同步blockchainDataBaseTemporary的数据。
+     * @param blockchainCore
+     * @param slaveBlockchainCore
+     */
+    private void promoteTargetBlockchainDataBase(BlockchainCore blockchainCore,
+                                                 BlockchainCore slaveBlockchainCore) {
+        Block targetBlockchainTailBlock = blockchainCore.queryTailBlock();
+        Block temporaryBlockchainTailBlock = slaveBlockchainCore.queryTailBlock() ;
+        //不需要调整
+        if(temporaryBlockchainTailBlock == null){
+            return;
+        }
+        if(targetBlockchainTailBlock == null){
+            Block block = slaveBlockchainCore.queryBlockByBlockHeight(GlobalSetting.GenesisBlock.HEIGHT +1);
+            boolean isAddBlockToBlockchainSuccess = blockchainCore.addBlock(block);
+            if(!isAddBlockToBlockchainSuccess){
+                return;
+            }
+            targetBlockchainTailBlock = blockchainCore.queryTailBlock();
+        }
+        if(targetBlockchainTailBlock == null){
+            throw new RuntimeException("在这个时刻，targetBlockchainTailBlock必定不为null。");
+        }
+        if(LongUtil.isGreatEqualThan(targetBlockchainTailBlock.getHeight(),temporaryBlockchainTailBlock.getHeight())){
+            return;
+        }
+        //未分叉区块高度
+        long noForkBlockHeight = targetBlockchainTailBlock.getHeight();
+        while (true){
+            if(LongUtil.isLessEqualThan(noForkBlockHeight,LongUtil.ZERO)){
+                break;
+            }
+            Block targetBlock = blockchainCore.queryBlockByBlockHeight(noForkBlockHeight);
+            if(targetBlock == null){
+                break;
+            }
+            Block temporaryBlock = slaveBlockchainCore.queryBlockByBlockHeight(noForkBlockHeight);
+            if(StringUtil.isEquals(targetBlock.getHash(),temporaryBlock.getHash()) &&
+                    StringUtil.isEquals(targetBlock.getPreviousBlockHash(),temporaryBlock.getPreviousBlockHash())){
+                break;
+            }
+            blockchainCore.deleteTailBlock();
+            noForkBlockHeight = blockchainCore.queryBlockchainHeight();
+        }
+
+        long targetBlockchainHeight = blockchainCore.queryBlockchainHeight() ;
+        while(true){
+            targetBlockchainHeight++;
+            Block currentBlock = slaveBlockchainCore.queryBlockByBlockHeight(targetBlockchainHeight) ;
+            if(currentBlock == null){
+                break;
+            }
+            boolean isAddBlockToBlockchainSuccess = blockchainCore.addBlock(currentBlock);
+            if(!isAddBlockToBlockchainSuccess){
+                break;
             }
         }
     }

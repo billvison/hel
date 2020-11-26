@@ -40,6 +40,7 @@ public class NetBlockchainCoreFactory {
         FileUtil.mkdir(dataRootPath);
 
         BlockchainCore blockchainCore = BlockchainCoreFactory.createBlockchainCore(dataRootPath);
+        BlockchainCore slaveBlockchainCore = BlockchainCoreFactory.createBlockchainCore(dataRootPath+"/slave");
 
         ConfigurationDao configurationDao = new ConfigurationDaoImpl(dataRootPath);
         ConfigurationService configurationService = new ConfigurationServiceImpl(blockchainCore,configurationDao);
@@ -48,16 +49,16 @@ public class NetBlockchainCoreFactory {
         NodeService nodeService = new NodeServiceImpl(nodeDao);
         BlockchainNodeClient blockchainNodeClient = new BlockchainNodeClientImpl();
 
-        SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService = new SynchronizeRemoteNodeBlockServiceImpl(blockchainCore,nodeService, blockchainNodeClient,configurationService);
+        SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService = new SynchronizeRemoteNodeBlockServiceImpl(blockchainCore,slaveBlockchainCore,nodeService, blockchainNodeClient,configurationService);
 
         HttpServerHandlerResolver httpServerHandlerResolver = new HttpServerHandlerResolver(blockchainCore,nodeService,configurationService);
         BlockchainNodeHttpServer blockchainNodeHttpServer = new BlockchainNodeHttpServer(httpServerHandlerResolver);
         NodeSearcher nodeSearcher = new NodeSearcher(configurationService,nodeService, blockchainNodeClient);
         NodeBroadcaster nodeBroadcaster = new NodeBroadcaster(nodeService, blockchainNodeClient);
-        BlockSearcher blockSearcher = new BlockSearcher(nodeService,synchronizeRemoteNodeBlockService,blockchainCore, blockchainNodeClient);
+        BlockSearcher blockSearcher = new BlockSearcher(nodeService,synchronizeRemoteNodeBlockService,blockchainCore, slaveBlockchainCore, blockchainNodeClient);
         BlockBroadcaster blockBroadcaster = new BlockBroadcaster(nodeService,blockchainCore, blockchainNodeClient);
         NetBlockchainCore netBlockchainCore
-                = new NetBlockchainCore(blockchainCore, blockchainNodeHttpServer, configurationService
+                = new NetBlockchainCore(blockchainCore, slaveBlockchainCore, blockchainNodeHttpServer, configurationService
                 ,nodeSearcher,nodeBroadcaster,blockSearcher, blockBroadcaster
                 ,nodeService, blockchainNodeClient);
         return netBlockchainCore;

@@ -141,6 +141,20 @@ public class BlockchainCoreImpl extends BlockchainCore {
         return blockchainDataBase.queryBlockByBlockHash(blockHash);
     }
 
+    @Override
+    public Block queryTailBlock() {
+        return blockchainDataBase.queryTailBlock();
+    }
+
+    @Override
+    public void deleteTailBlock() {
+        blockchainDataBase.deleteTailBlock();
+    }
+
+    @Override
+    public boolean addBlock(Block block) {
+        return blockchainDataBase.addBlock(block);
+    }
 
 
     @Override
