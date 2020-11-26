@@ -34,7 +34,6 @@ public class BlockchainCoreFactory {
         Wallet wallet = new WalletImpl(blockchainDataPath);
         Miner miner = new MinerDefaultImpl(wallet,blockchainDataBase,minerTransactionDtoDataBase);
 
-        SynchronizerDatabase synchronizerDataBase = new SynchronizerDatabaseDefaultImpl(blockchainDataPath);
         BlockchainDatabase temporaryBlockchainDatabase = new BlockchainDatabaseDefaultImpl(new File(blockchainDataPath,"TemporaryBlockchainDataBase").getAbsolutePath(),incentive,consensus);
 
         BlockchainCore blockchainCore = new BlockchainCoreImpl(blockchainDataBase,wallet,miner);

@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class WalletImpl extends Wallet {
 
-    private static final Logger logger = LoggerFactory.getLogger(SynchronizerDatabaseDefaultImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(WalletImpl.class);
 
     private static final String WALLET_DATABASE_DIRECT_NAME = "WalletDatabase";
     private static final String WALLET_DATABASE_FILE_NAME = "Wallet.db";
