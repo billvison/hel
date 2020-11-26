@@ -40,9 +40,8 @@ function deleteNode() {
         contentType: "application/json",
         data: `{
 			"node":{
-					    "ip": "${node_attr.id}",
-			            "port": ${node_attr.port}
-				   }
+					    "ip": "${node_attr.id}"
+			}
 		}`,
         dataType: "json",
         async: false,
@@ -68,7 +67,6 @@ function addNode(){
 	var getContent = 
 			'<dl><dt><h2>新增节点</h2></dt>' +
 			'<dd><font>ip: </font><input name="id" type="text" class="c_txt"></dd>' +
-			'<dd><font>端口: </font><input name="port" type="text" class="c_txt" value="8444"></dd>' +
 			'<dd><font>区块链高度: </font><input name="blockHeight" type="text" class="c_txt" value="0"></dd>' +
 			'<dd><font>连接失败次数: </font><input name="errorConnection" type="text" class="c_txt" value="0"></dd>' +
 			'<dd><font>是否可用: </font>' +
@@ -102,8 +100,7 @@ function addNodepara() {
         data: `{
 			"node":{
 			            "ip": "${inputVal.id}",
-			            "port": ${inputVal.port},
-			            "blockChainHeight": ${inputVal.blockHeight},
+			            "blockchainHeight": ${inputVal.blockHeight},
 			            "isNodeAvailable": ${inputVal.available},
 			            "errorConnectionTimes": ${inputVal.errorConnection},
 			            "fork": ${inputVal.fork}
@@ -152,7 +149,6 @@ function modifyNode(){
 	var getContent = 
 			'<dl><dt><h2>修改节点</h2></dt>' +
 			'<dd><font>ip: </font><input name="id" readonly="readonly" value="'+clicked_c.id+'" type="text" class="c_txt undo"></dd>' +
-			'<dd><font>端口: </font><input name="port" readonly="readonly" value="'+clicked_c.port+'" type="text" class="c_txt undo"></dd>' +
 			'<dd><font>区块链高度: </font><input name="blockHeight" value="'+clicked_c.blockHeight+'" type="text" class="c_txt"></dd>' +
 			'<dd><font>连接失败次数: </font><input name="errorConnection" value="'+clicked_c.errorConnection+'" type="text" class="c_txt"></dd>' +
 			'<dd><font>是否可用: </font>' +
@@ -176,8 +172,7 @@ function modifyNodePara() {
         data: `{
 			"node":{
 			            "ip": "${inputVal.id}",
-			            "port": ${inputVal.port},
-			            "blockChainHeight": ${inputVal.blockHeight},
+			            "blockchainHeight": ${inputVal.blockHeight},
 			            "isNodeAvailable": ${inputVal.available},
 			            "errorConnectionTimes": ${inputVal.errorConnection},
 			            "fork": ${inputVal.fork}

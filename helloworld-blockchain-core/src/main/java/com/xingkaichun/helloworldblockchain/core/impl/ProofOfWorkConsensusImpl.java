@@ -1,9 +1,10 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
-import com.xingkaichun.helloworldblockchain.core.BlockChainDataBase;
+import com.xingkaichun.helloworldblockchain.core.BlockchainDatabase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +22,10 @@ public class ProofOfWorkConsensusImpl extends Consensus {
     private static final Logger logger = LoggerFactory.getLogger(ProofOfWorkConsensusImpl.class);
 
     @Override
-    public boolean isReachConsensus(BlockChainDataBase blockChainDataBase,Block block) {
+    public boolean isReachConsensus(BlockchainDatabase blockchainDataBase, Block block) {
         String bits = block.getBits();
-        if(bits == null || bits.isEmpty()){
-            bits = calculateDifficult(blockChainDataBase,block);
+        if(StringUtil.isNullOrEmpty(bits)){
+            bits = calculateDifficult(blockchainDataBase,block);
             block.setBits(bits);
         }
 
@@ -37,7 +38,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
     }
 
 
-    public String calculateDifficult(BlockChainDataBase blockChainDataBase, Block block) {
+    public String calculateDifficult(BlockchainDatabase blockchainDataBase, Block block) {
 
         long targetTimespan = 1000 * 60 * 60 * 24 * 14;
         long targetSpacing = 1000 * 60 * 10;
@@ -49,13 +50,13 @@ public class ProofOfWorkConsensusImpl extends Consensus {
             targetDifficult = GlobalSetting.MinerConstant.INIT_GENERATE_BLOCK_DIFFICULTY_STRING;
             return targetDifficult;
         }
-        Block lastBlock = blockChainDataBase.queryBlockByBlockHeight(blockHeight-1);
+        Block lastBlock = blockchainDataBase.queryBlockByBlockHeight(blockHeight-1);
         long lastBlockHeight = lastBlock.getHeight();
         if (lastBlockHeight % nInterval != 0){
             targetDifficult = lastBlock.getBits();
             return targetDifficult;
         }
-        Block Block14DayAgo = blockChainDataBase.queryBlockByBlockHeight(lastBlockHeight-nInterval+1);
+        Block Block14DayAgo = blockchainDataBase.queryBlockByBlockHeight(lastBlockHeight-nInterval+1);
         long actualTimespan = lastBlock.getTimestamp() - Block14DayAgo.getTimestamp();
         if (actualTimespan < targetTimespan/4)
             actualTimespan = targetTimespan/4;

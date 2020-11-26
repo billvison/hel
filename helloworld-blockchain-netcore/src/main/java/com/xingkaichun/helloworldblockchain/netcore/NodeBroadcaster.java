@@ -1,12 +1,10 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
-import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
-import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
-import com.xingkaichun.helloworldblockchain.netcore.service.BlockchainNodeClientService;
-import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
+import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeClient;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.ThreadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,16 +23,14 @@ public class NodeBroadcaster {
 
     private static final Logger logger = LoggerFactory.getLogger(NodeBroadcaster.class);
 
-    private ConfigurationService configurationService;
     private NodeService nodeService;
-    private BlockchainNodeClientService blockchainNodeClientService;
+    private BlockchainNodeClient blockchainNodeClient;
 
-    public NodeBroadcaster(ConfigurationService configurationService, NodeService nodeService
-            , BlockchainNodeClientService blockchainNodeClientService) {
+    public NodeBroadcaster(NodeService nodeService
+            , BlockchainNodeClient blockchainNodeClient) {
 
-        this.configurationService = configurationService;
         this.nodeService = nodeService;
-        this.blockchainNodeClientService = blockchainNodeClientService;
+        this.blockchainNodeClient = blockchainNodeClient;
     }
 
     public void start() {
@@ -46,8 +42,7 @@ public class NodeBroadcaster {
                 } catch (Exception e) {
                     logger.error("在区块链网络中广播自己出现异常",e);
                 }
-                ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.NODE_BROADCAST_TIME_INTERVAL.name());
-                ThreadUtil.sleep(Long.parseLong(configurationDto.getConfValue()));
+                ThreadUtil.sleep(GlobalSetting.NodeConstant.NODE_BROADCAST_TIME_INTERVAL);
             }
         }).start();
     }
@@ -58,7 +53,7 @@ public class NodeBroadcaster {
     private void broadcastMyself() {
         List<NodeDto> nodes = nodeService.queryAllNodeList();
         for(NodeDto node:nodes){
-            blockchainNodeClientService.pingNode(node);
+            blockchainNodeClient.pingNode(node);
         }
     }
 }

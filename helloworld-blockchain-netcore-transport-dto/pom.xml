@@ -12,15 +12,12 @@
     <artifactId>helloworld-blockchain-netcore-transport-dto</artifactId>
 
     <name>helloworld-blockchain-netcore-transport-dto</name>
-
-    <properties>
-    </properties>
+    <url>http://www.helloworldblockchain.com</url>
 
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

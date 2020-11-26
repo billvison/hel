@@ -12,12 +12,6 @@ import java.util.List;
 public class Transaction implements Serializable {
 
     /**
-     * 交易时间戳
-     * 这个时间戳是由用户生成的，用户机器的时间戳可能超前或是滞后真正的时间戳，
-     * 你无法强制要求用户的机器的时间戳是正确的，因此在使用这个时间戳时必须要考虑这种可能。
-     */
-    private long timestamp;
-    /**
      * 交易的Hash等于交易的摘要。交易的哈希确定了，具体的交易也就确定了。
      *
      * 这里强制要求区块链系统不允许同一个[交易的Hash]被使用两次或是两次以上。
@@ -52,13 +46,13 @@ public class Transaction implements Serializable {
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
-    private long transactionSequenceNumberInBlock;
+    private long transactionIndexInBlock;
     /**
      * 在区块链中交易序列号
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
-    private long transactionSequenceNumberInBlockChain;
+    private long transactionIndexInBlockchain;
     /**
      * 交易所在区块的区块高度
      * 冗余字段，这个值可以由区块链系统推算出来
@@ -69,14 +63,6 @@ public class Transaction implements Serializable {
 
 
     //region get set
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
 
     public String getTransactionHash() {
         return transactionHash;
@@ -110,20 +96,20 @@ public class Transaction implements Serializable {
         this.outputs = outputs;
     }
 
-    public long getTransactionSequenceNumberInBlock() {
-        return transactionSequenceNumberInBlock;
+    public long getTransactionIndexInBlock() {
+        return transactionIndexInBlock;
     }
 
-    public void setTransactionSequenceNumberInBlock(long transactionSequenceNumberInBlock) {
-        this.transactionSequenceNumberInBlock = transactionSequenceNumberInBlock;
+    public void setTransactionIndexInBlock(long transactionIndexInBlock) {
+        this.transactionIndexInBlock = transactionIndexInBlock;
     }
 
-    public long getTransactionSequenceNumberInBlockChain() {
-        return transactionSequenceNumberInBlockChain;
+    public long getTransactionIndexInBlockchain() {
+        return transactionIndexInBlockchain;
     }
 
-    public void setTransactionSequenceNumberInBlockChain(long transactionSequenceNumberInBlockChain) {
-        this.transactionSequenceNumberInBlockChain = transactionSequenceNumberInBlockChain;
+    public void setTransactionIndexInBlockchain(long transactionIndexInBlockchain) {
+        this.transactionIndexInBlockchain = transactionIndexInBlockchain;
     }
 
     public long getBlockHeight() {

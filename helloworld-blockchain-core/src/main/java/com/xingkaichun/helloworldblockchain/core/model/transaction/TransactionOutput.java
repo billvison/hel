@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core.model.transaction;
 
 
-import com.xingkaichun.helloworldblockchain.core.model.script.ScriptLock;
+import com.xingkaichun.helloworldblockchain.core.model.script.OutputScript;
 
 import java.io.Serializable;
 
@@ -10,26 +10,7 @@ import java.io.Serializable;
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
-public class TransactionOutput implements Serializable {
-
-    /**
-     * 交易时间戳
-     * 冗余 可以从com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction类timestamp字段获取
-     */
-    private long timestamp;
-    /**
-     * 交易输出的Hash是交易输出的摘要。交易输出的哈希确定了，具体的交易输出也就确定了。
-     *
-     * 区块链系统不允许同一个[交易输出的Hash]被使用两次或是两次以上。
-     * 这个值的构成应当足够简单去验证这个值是否是唯一的。
-     * 当区块数据足够庞大时，用户节点只有最近一部分区块与UTXO数据，这时节点必须也可以校验它的唯一性。
-     * 这里建议它的构成是一串字符+时间戳。
-     * 最近的区块只包含最近产生的交易，因此只要有最近的区块就可校验它的唯一性。
-     *
-     * 这个字段也可以用来表示一张独一无二编号的支票
-     * 还有另外一个独一无二的编号，区块高度+交易在区块中的编号+交易输出在交易中编号，这个编号有个缺点，只能在区块完全确定后，才能确定这个编号
-     */
-    private String transactionOutputHash;
+public class TransactionOutput extends TransactionOutputId implements Serializable {
 
     //交易输出的金额
     private long value;
@@ -39,7 +20,7 @@ public class TransactionOutput implements Serializable {
      * 如何证明用户拥有这个交易输出？
      * 这里我们给交易输出加上一把锁，自然拥有锁对应钥匙的用户可以使用这个交易输出。
      */
-    private ScriptLock scriptLock;
+    private OutputScript outputScript;
 
     /**
      * 交易输出的地址
@@ -53,37 +34,36 @@ public class TransactionOutput implements Serializable {
      */
     private long blockHeight;
     /**
+     * 交易所在区块的区块哈希
+     * 冗余
+     */
+    private String blockHash;
+    /**
      * 交易输出在的交易在所在的区块中的交易序列号
      * 冗余
      * 在这个交易区块中的的排序号
      */
-    private long transactionSequenceNumberInBlock;
-    /**
-     * 交易输出序列号
-     * 冗余
-     * 在这个交易中的的排序号
-     */
-    private long transactionOutputSequence;
+    private long transactionIndexInBlock;
 
 
 
 
     //region get set
 
-    public long getTimestamp() {
-        return timestamp;
+    public long getValue() {
+        return value;
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public void setValue(long value) {
+        this.value = value;
     }
 
-    public String getTransactionOutputHash() {
-        return transactionOutputHash;
+    public OutputScript getOutputScript() {
+        return outputScript;
     }
 
-    public void setTransactionOutputHash(String transactionOutputHash) {
-        this.transactionOutputHash = transactionOutputHash;
+    public void setOutputScript(OutputScript outputScript) {
+        this.outputScript = outputScript;
     }
 
     public String getAddress() {
@@ -94,22 +74,6 @@ public class TransactionOutput implements Serializable {
         this.address = address;
     }
 
-    public long getValue() {
-        return value;
-    }
-
-    public void setValue(long value) {
-        this.value = value;
-    }
-
-    public ScriptLock getScriptLock() {
-        return scriptLock;
-    }
-
-    public void setScriptLock(ScriptLock scriptLock) {
-        this.scriptLock = scriptLock;
-    }
-
     public long getBlockHeight() {
         return blockHeight;
     }
@@ -118,20 +82,20 @@ public class TransactionOutput implements Serializable {
         this.blockHeight = blockHeight;
     }
 
-    public long getTransactionSequenceNumberInBlock() {
-        return transactionSequenceNumberInBlock;
+    public String getBlockHash() {
+        return blockHash;
     }
 
-    public void setTransactionSequenceNumberInBlock(long transactionSequenceNumberInBlock) {
-        this.transactionSequenceNumberInBlock = transactionSequenceNumberInBlock;
+    public void setBlockHash(String blockHash) {
+        this.blockHash = blockHash;
     }
 
-    public long getTransactionOutputSequence() {
-        return transactionOutputSequence;
+    public long getTransactionIndexInBlock() {
+        return transactionIndexInBlock;
     }
 
-    public void setTransactionOutputSequence(long transactionOutputSequence) {
-        this.transactionOutputSequence = transactionOutputSequence;
+    public void setTransactionIndexInBlock(long transactionIndexInBlock) {
+        this.transactionIndexInBlock = transactionIndexInBlock;
     }
 
     //endregion

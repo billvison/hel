@@ -10,22 +10,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>helloworld-blockchain-node</artifactId>
+
     <name>helloworld-blockchain-node</name>
+    <url>http://www.helloworldblockchain.com</url>
 
     <dependencies>
-        <dependency>
-            <groupId>com.xingkaichun.helloworldblockchain</groupId>
-            <artifactId>helloworld-blockchain-core</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.xingkaichun.helloworldblockchain</groupId>
             <artifactId>helloworld-blockchain-netcore</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -37,22 +35,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>

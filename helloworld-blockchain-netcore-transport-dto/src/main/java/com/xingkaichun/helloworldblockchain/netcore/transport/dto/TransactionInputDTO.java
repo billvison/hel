@@ -1,40 +1,39 @@
 package com.xingkaichun.helloworldblockchain.netcore.transport.dto;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 交易输入
- * 属性含义参考 com.xingkaichun.helloworldblockchain.core.model.TransactionInput
+ * 属性含义参考 com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class TransactionInputDTO implements Serializable {
 
-    //交易的输入
-    private String unspendTransactionOutputHash;
+    //未花费输出
+    private UnspendTransactionOutputDTO unspendTransactionOutputDTO;
     //脚本钥匙
-    private List<String> scriptKey;
+    private InputScriptDTO inputScriptDTO;
 
 
 
 
     //region get set
 
-    public String getUnspendTransactionOutputHash() {
-        return unspendTransactionOutputHash;
+    public UnspendTransactionOutputDTO getUnspendTransactionOutputDTO() {
+        return unspendTransactionOutputDTO;
     }
 
-    public void setUnspendTransactionOutputHash(String unspendTransactionOutputHash) {
-        this.unspendTransactionOutputHash = unspendTransactionOutputHash;
+    public void setUnspendTransactionOutputDTO(UnspendTransactionOutputDTO unspendTransactionOutputDTO) {
+        this.unspendTransactionOutputDTO = unspendTransactionOutputDTO;
     }
 
-    public List<String> getScriptKey() {
-        return scriptKey;
+    public InputScriptDTO getInputScriptDTO() {
+        return inputScriptDTO;
     }
 
-    public void setScriptKey(List<String> scriptKey) {
-        this.scriptKey = scriptKey;
+    public void setInputScriptDTO(InputScriptDTO inputScriptDTO) {
+        this.inputScriptDTO = inputScriptDTO;
     }
 
     //endregion

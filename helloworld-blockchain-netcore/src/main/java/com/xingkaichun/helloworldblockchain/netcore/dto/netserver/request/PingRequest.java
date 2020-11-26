@@ -6,20 +6,12 @@ package com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request;
  */
 public class PingRequest {
 
-    private int port;
 
 
 
 
     //region get set
 
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
 
     //endregion
 }

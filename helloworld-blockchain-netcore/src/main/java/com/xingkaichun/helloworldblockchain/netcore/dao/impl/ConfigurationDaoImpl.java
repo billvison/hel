@@ -1,9 +1,9 @@
 package com.xingkaichun.helloworldblockchain.netcore.dao.impl;
 
-import com.xingkaichun.helloworldblockchain.core.utils.FileUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.JdbcUtil;
+import com.xingkaichun.helloworldblockchain.util.FileUtil;
+import com.xingkaichun.helloworldblockchain.util.JdbcUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dao.ConfigurationDao;
-import com.xingkaichun.helloworldblockchain.netcore.model.ConfigurationEntity;
+import com.xingkaichun.helloworldblockchain.netcore.entity.ConfigurationEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,10 +21,10 @@ public class ConfigurationDaoImpl implements ConfigurationDao {
 
     public ConfigurationDaoImpl(String blockchainDataPath) {
         this.blockchainDataPath = blockchainDataPath;
-        init();
+        initDatabase();
     }
 
-    private void init() {
+    private void initDatabase() {
         String createTable1Sql1 = "CREATE TABLE IF NOT EXISTS [Configuration](" +
                 "  [confKey] VARCHAR(100)," +
                 "  [confValue] VARCHAR(100));";
@@ -32,8 +32,8 @@ public class ConfigurationDaoImpl implements ConfigurationDao {
     }
 
     @Override
-    public String getConfiguratioValue(String confKey) {
-        String sql = "select confValue from Configuration where confKey = ?";
+    public ConfigurationEntity getConfigurationValue(String confKey) {
+        String sql = "select confKey,confValue from Configuration where confKey = ?";
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
@@ -42,7 +42,10 @@ public class ConfigurationDaoImpl implements ConfigurationDao {
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
                 String confValue = resultSet.getString("confValue");
-                return confValue;
+                ConfigurationEntity entity = new ConfigurationEntity();
+                entity.setConfKey(confKey);
+                entity.setConfValue(confValue);
+                return entity;
             }
         } catch (SQLException e){
             throw new RuntimeException(e);

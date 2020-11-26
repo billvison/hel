@@ -1,21 +1,23 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
+import com.google.common.primitives.Bytes;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.StringUtil;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.util.ByteUtil;
+import com.xingkaichun.helloworldblockchain.util.LongUtil;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.MerkleTreeUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.util.ByteUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,212 +36,87 @@ public class BlockTool {
      * 计算区块的Hash值
      */
     public static String calculateBlockHash(Block block) {
-        String input = block.getTimestamp()+block.getPreviousBlockHash()+block.getMerkleTreeRoot()+block.getNonce();
-        byte[] sha256Digest = SHA256Util.digest(ByteUtil.stringToBytes(input));
+        BlockDTO blockDto = Model2DtoTool.block2BlockDTO(block);
+        return calculateBlockHash(blockDto);
+    }
+    /**
+     * 计算区块的Hash值
+     */
+    public static String calculateBlockHash(BlockDTO blockDto) {
+        byte[] bytesTimestamp = ByteUtil.longToBytes8(blockDto.getTimestamp());
+        byte[] bytesPreviousBlockHash = HexUtil.hexStringToBytes(blockDto.getPreviousBlockHash());
+        byte[] bytesMerkleTreeRoot = HexUtil.hexStringToBytes(calculateBlockMerkleTreeRoot(blockDto));
+        byte[] bytesNonce = ByteUtil.longToBytes8(blockDto.getNonce());
+
+        byte[] bytesData = Bytes.concat(ByteUtil.concatLengthBytes(bytesTimestamp),
+                ByteUtil.concatLengthBytes(bytesPreviousBlockHash),
+                ByteUtil.concatLengthBytes(bytesMerkleTreeRoot),
+                ByteUtil.concatLengthBytes(bytesNonce));
+        byte[] sha256Digest = SHA256Util.digestTwice(bytesData);
         return HexUtil.bytesToHexString(sha256Digest);
     }
-
-    /**
-     * 区块中写入的默克尔树根是否正确
-     */
-    public static boolean isBlockWriteHashRight(Block block){
-        String targetHash = calculateBlockHash(block);
-        return targetHash.equals(block.getHash());
-    }
-
     /**
      * 计算区块的默克尔树根值
      */
     public static String calculateBlockMerkleTreeRoot(Block block) {
-        List<Transaction> transactions = block.getTransactions();
-        List<byte[]> hashList = new ArrayList<>();
+        BlockDTO blockDto = Model2DtoTool.block2BlockDTO(block);
+        return calculateBlockMerkleTreeRoot(blockDto);
+    }
+    /**
+     * 计算区块的默克尔树根值
+     */
+    public static String calculateBlockMerkleTreeRoot(BlockDTO blockDto) {
+        List<TransactionDTO> transactions = blockDto.getTransactionDtoList();
+        List<byte[]> bytesTransactionHashList = new ArrayList<>();
         if(transactions != null){
-            for(Transaction transaction : transactions) {
-                hashList.add(SHA256Util.digest(ByteUtil.stringToBytes(transaction.getTransactionHash())));
+            for(TransactionDTO transactionDto : transactions) {
+                String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
+                byte[] bytesTransactionHash = HexUtil.hexStringToBytes(transactionHash);
+                bytesTransactionHashList.add(bytesTransactionHash);
             }
         }
-        return HexUtil.bytesToHexString(MerkleTreeUtil.calculateMerkleRootByHash(hashList));
+        return HexUtil.bytesToHexString(MerkleTreeUtil.calculateMerkleTreeRoot(bytesTransactionHashList));
     }
     /**
-     * 区块中写入的默克尔树根是否正确
+     * 区块新产生的哈希是否存在重复
      */
-    public static boolean isBlockWriteMerkleTreeRootRight(Block block){
-        String targetMerkleRoot = calculateBlockMerkleTreeRoot(block);
-        return targetMerkleRoot.equals(block.getMerkleTreeRoot());
-    }
-
-    /**
-     * 校验交易的属性是否与计算得来的一致
-     */
-    public static boolean isBlockTransactionWriteRight(@Nonnull Block block) {
-        List<Transaction> transactions = block.getTransactions();
-        if(transactions == null || transactions.size()==0){
-            return true;
-        }
-        for(Transaction transaction:transactions){
-            if(!isTransactionWriteRight(block, transaction)){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 校验交易的属性是否与计算得来的一致
-     */
-    public static boolean isTransactionWriteRight(Block block, @Nonnull Transaction transaction) {
-        //校验挖矿交易的时间戳
-        if(block != null){
-            if(transaction.getTransactionType() == TransactionType.COINBASE){
-                if(block.getTimestamp() != transaction.getTimestamp()){
-                    return false;
-                }
-            }
-        }
-        if(!TransactionTool.isTransactionHashRight(transaction)){
-            return false;
-        }
-        List<TransactionOutput> outputs = transaction.getOutputs();
-        if(outputs == null || outputs.size()==0){
-            return true;
-        }
-        for(TransactionOutput transactionOutput:outputs){
-            if(!TransactionTool.isTransactionOutputHashRight(transaction,transactionOutput)){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 校验区块中新产生的主键是否正确
-     * 正确的条件是：
-     * 主键不能已经被使用过了
-     * 主键不能被连续使用一次以上
-     * 主键符合约束
-     */
-    public static boolean isNewGenerateHashHappenTwiceAndMoreInnerBlock(Block block) {
+    public static boolean isExistDuplicateNewHash(Block block) {
         String blockHash = block.getHash();
         List<Transaction> blockTransactions = block.getTransactions();
         //在不同的交易中，新生产的哈希(区块的哈希、交易的哈希、交易输出哈希)不应该被使用两次或是两次以上
         Set<String> hashSet = new HashSet<>();
-        if(!saveHash(hashSet,blockHash)){
+        if(hashSet.contains(blockHash)){
             return false;
+        }else {
+            hashSet.add(blockHash);
         }
         for(Transaction transaction : blockTransactions){
             String transactionHash = transaction.getTransactionHash();
-            if(!saveHash(hashSet,transactionHash)){
+            if(hashSet.contains(transactionHash)){
                 return false;
-            }
-            List<TransactionOutput> outputs = transaction.getOutputs();
-            if(outputs != null){
-                for(TransactionOutput transactionOutput : outputs) {
-                    String transactionOutputHash = transactionOutput.getTransactionOutputHash();
-                    if(!saveHash(hashSet,transactionOutputHash)){
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    public static boolean isNewGenerateHashHappenTwiceAndMoreInnerTransaction(Transaction transaction) {
-        String transactionHash = transaction.getTransactionHash();
-        //校验：只从交易对象层面校验，交易中新产生的哈希是否有重复
-        Set<String> hashSet = new HashSet<>();
-        if(!saveHash(hashSet,transactionHash)){
-            return false;
-        }
-        List<TransactionOutput> outputs = transaction.getOutputs();
-        if(outputs != null){
-            for(TransactionOutput transactionOutput : outputs) {
-                String transactionOutputHash = transactionOutput.getTransactionOutputHash();
-                if(!saveHash(hashSet,transactionOutputHash)){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-
-
-    /**
-     * 将hash保存进Set
-     * 如果Set里已经包含了hash，返回false
-     * 否则，将hash保存进Set，返回true
-     */
-    private static boolean saveHash(Set<String> hashSet, String hash) {
-        if(hashSet.contains(hash)){
-            return false;
-        } else {
-            hashSet.add(hash);
-        }
-        return true;
-    }
-
-    /**
-     * 校验区块中交易类型的次序
-     */
-    public static boolean isBlockTransactionTypeRight(Block block) {
-        List<Transaction> transactions = block.getTransactions();
-        for(int i=0; i<transactions.size(); i++){
-            Transaction transaction = transactions.get(i);
-            if(i == 0){
-                if(transaction.getTransactionType() != TransactionType.COINBASE){
-                    logger.debug("区块数据异常，区块第一笔交易必须是CoinBase。");
-                    return false;
-                }
             }else {
-                if(transaction.getTransactionType() != TransactionType.NORMAL){
-                    logger.debug("区块数据异常，区块非第一笔交易必须是普通交易。");
-                    return false;
-                }
+                hashSet.add(transactionHash);
             }
         }
         return true;
     }
 
-
     /**
-     * 是否有双花攻击
-     * 相关拓展：双花攻击 https://zhuanlan.zhihu.com/p/258952892
+     * 是否存在重复的交易输入
      */
-    public static boolean isDoubleSpendAttackHappen(Transaction transaction) {
-        List<TransactionInput> inputs = transaction.getInputs();
-        if(inputs == null || inputs.size()==0){
-            return false;
-        }
-        Set<String> hashSet = new HashSet<>();
-        for(TransactionInput transactionInput : inputs) {
-            TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
-            String unspendTransactionOutputHash = unspendTransactionOutput.getTransactionOutputHash();
-            if(hashSet.contains(unspendTransactionOutputHash)){
-                return true;
-            }
-            hashSet.add(unspendTransactionOutputHash);
-        }
-        return false;
-    }
-
-    /**
-     * 是否有双花攻击
-     * 相关拓展：双花攻击 https://zhuanlan.zhihu.com/p/258952892
-     */
-    public static boolean isDoubleSpendAttackHappen(Block block) {
-        //在不同的交易中，哈希(交易的哈希、交易输入哈希、交易输出哈希)不应该被使用两次或是两次以上
-        Set<String> hashSet = new HashSet<>();
+    public static boolean isExistDuplicateTransactionInput(Block block) {
+        Set<String> transactionOutputIdSet = new HashSet<>();
         for(Transaction transaction : block.getTransactions()){
             List<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null){
                 for(TransactionInput transactionInput : inputs) {
                     TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
-                    String unspendTransactionOutputHash = unspendTransactionOutput.getTransactionOutputHash();
-                    if(hashSet.contains(unspendTransactionOutputHash)){
+                    String transactionOutputId = unspendTransactionOutput.getTransactionOutputId();
+                    if(transactionOutputIdSet.contains(transactionOutputId)){
                         return true;
+                    }else {
+                        transactionOutputIdSet.add(transactionOutputId);
                     }
-                    hashSet.add(unspendTransactionOutputHash);
                 }
             }
         }
@@ -267,9 +144,9 @@ public class BlockTool {
      */
     public static boolean isBlockPreviousBlockHashLegal(Block previousBlock, Block currentBlock) {
         if(previousBlock == null){
-            return GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_PREVIOUS_HASH.equals(currentBlock.getPreviousBlockHash());
+            return StringUtil.isEquals(GlobalSetting.GenesisBlock.HASH,currentBlock.getPreviousBlockHash());
         } else {
-            return previousBlock.getHash().equals(currentBlock.getPreviousBlockHash());
+            return StringUtil.isEquals(previousBlock.getHash(),currentBlock.getPreviousBlockHash());
         }
     }
 
@@ -278,73 +155,10 @@ public class BlockTool {
      */
     public static boolean isBlockHeightLegal(Block previousBlock, Block currentBlock) {
         if(previousBlock == null){
-            //校验区块高度是否连贯
-            return LongUtil.isEquals(GlobalSetting.GenesisBlockConstant.FIRST_BLOCK_HEIGHT,currentBlock.getHeight());
+            return LongUtil.isEquals((GlobalSetting.GenesisBlock.HEIGHT +1),currentBlock.getHeight());
         } else {
-            //校验区块高度是否连贯
             return LongUtil.isEquals((previousBlock.getHeight()+1),currentBlock.getHeight());
         }
-    }
-    /**
-     * 交易的时间是否合法
-     */
-    public static boolean isTransactionTimestampLegal(Block block, Transaction transaction) {
-        //校验交易的时间是否合理
-        //交易的时间不能太滞后于当前时间
-        if(transaction.getTimestamp() > System.currentTimeMillis() + GlobalSetting.MinerConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
-            logger.debug("交易校验失败：交易的时间戳太滞后了。");
-            return false;
-        }
-        //校验交易时间戳
-        if(block != null){
-            //将区块放入区块链的时候，校验交易的逻辑
-            //交易超前 区块生成时间
-            if(transaction.getTimestamp() < block.getTimestamp() - GlobalSetting.MinerConstant.TRANSACTION_TIMESTAMP_MAX_BEFORE_CURRENT_TIMESTAMP){
-                logger.debug("交易校验失败：交易的时间戳太老旧了。");
-                return false;
-            }
-            //交易滞后 区块生成时间
-            if(transaction.getTimestamp() > block.getTimestamp() + GlobalSetting.MinerConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP){
-                logger.debug("交易校验失败：交易的时间戳太老旧了。");
-                return false;
-            }
-        }else {
-            //挖矿时，校验交易的逻辑
-            //交易超前 区块生成时间
-            if(transaction.getTimestamp() < System.currentTimeMillis() - GlobalSetting.MinerConstant.TRANSACTION_TIMESTAMP_MAX_BEFORE_CURRENT_TIMESTAMP/2){
-                logger.debug("交易校验失败：交易的时间戳太老旧了。");
-                return false;
-            }
-            //交易滞后 区块生成时间
-            if(transaction.getTimestamp() > System.currentTimeMillis() + GlobalSetting.MinerConstant.TRANSACTION_TIMESTAMP_MAX_AFTER_CURRENT_TIMESTAMP/2){
-                logger.debug("交易校验失败：交易的时间戳太老旧了。");
-                return false;
-            }
-        }
-        return true;
-    }
-
-
-
-    /**
-     * 区块中的某些属性是由其它属性计算得出，区块对象可能是由外部节点同步过来的。
-     * 这里对区块对象中写入的属性值进行严格的校验，通过实际的计算一遍属性值与写入值进行比较，如果不同，则说明区块属性值不正确。
-     */
-    public static boolean isBlockWriteRight(Block block) {
-        //校验写入的可计算得到的值是否与计算得来的一致
-        //校验交易的属性是否与计算得来的一致
-        if(!BlockTool.isBlockTransactionWriteRight(block)){
-            return false;
-        }
-        //校验写入的MerkleRoot是否与计算得来的一致
-        if(!BlockTool.isBlockWriteMerkleTreeRootRight(block)){
-            return false;
-        }
-        //校验写入的Hash是否与计算得来的一致
-        if(!BlockTool.isBlockWriteHashRight(block)){
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -375,6 +189,9 @@ public class BlockTool {
         return true;
     }
 
+    /**
+     * 获取区块中交易的数量
+     */
     public static long getTransactionCount(Block block) {
         List<Transaction> transactions = block.getTransactions();
         return transactions == null?0:transactions.size();
@@ -383,7 +200,6 @@ public class BlockTool {
     /**
      * 两个区块是否相等
      * 注意：这里没有严格校验,例如没有校验交易是否完全一样
-     * @author 邢开春 xingkaichun@qq.com
      */
     public static boolean isBlockEquals(Block block1, Block block2) {
         if(block1 == null && block2 == null){
@@ -392,12 +208,20 @@ public class BlockTool {
         if(block1 == null || block2 == null){
             return false;
         }
-        if(StringUtil.isEquals(block1.getHash(),block2.getHash()) &&
-                StringUtil.isEquals(block1.getPreviousBlockHash(),block2.getPreviousBlockHash())
-                && StringUtil.isEquals(block1.getMerkleTreeRoot(),block2.getMerkleTreeRoot())
-                && LongUtil.isEquals(block1.getNonce(),block2.getNonce())){
+        if(LongUtil.isEquals(block1.getTimestamp(),block2.getTimestamp()) &&
+                StringUtil.isEquals(block1.getHash(),block2.getHash()) &&
+                StringUtil.isEquals(block1.getPreviousBlockHash(),block2.getPreviousBlockHash()) &&
+                StringUtil.isEquals(block1.getMerkleTreeRoot(),block2.getMerkleTreeRoot()) &&
+                LongUtil.isEquals(block1.getNonce(),block2.getNonce())){
             return true;
         }
         return false;
+    }
+
+    /**
+     * 获取矿工奖励
+     */
+    public static long getMinerIncentiveValue(Block block) {
+        return block.getTransactions().get(0).getOutputs().get(0).getValue();
     }
 }

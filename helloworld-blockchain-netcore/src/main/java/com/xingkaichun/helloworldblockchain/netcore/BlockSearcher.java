@@ -1,14 +1,15 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
-import com.xingkaichun.helloworldblockchain.core.BlockChainCore;
-import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
+import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.PingResponse;
-import com.xingkaichun.helloworldblockchain.netcore.service.*;
+import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeClient;
+import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
+import com.xingkaichun.helloworldblockchain.netcore.service.SynchronizeRemoteNodeBlockService;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.LongUtil;
+import com.xingkaichun.helloworldblockchain.util.ThreadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,23 +27,18 @@ public class BlockSearcher {
     private static final Logger logger = LoggerFactory.getLogger(BlockSearcher.class);
 
     private NodeService nodeService;
-    private BlockChainCoreService blockChainCoreService;
     private SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService;
-    private BlockChainCore blockChainCore;
-    private ConfigurationService configurationService;
-    private BlockchainNodeClientService blockchainNodeClientService;
+    private BlockchainCore blockchainCore;
+    private BlockchainNodeClient blockchainNodeClient;
 
 
-    public BlockSearcher(NodeService nodeService, BlockChainCoreService blockChainCoreService
-            , SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService, BlockChainCore blockChainCore
-            , ConfigurationService configurationService,BlockchainNodeClientService blockchainNodeClientService) {
-
+    public BlockSearcher(NodeService nodeService
+            , SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService, BlockchainCore blockchainCore
+            , BlockchainNodeClient blockchainNodeClient) {
         this.nodeService = nodeService;
-        this.blockChainCoreService = blockChainCoreService;
         this.synchronizeRemoteNodeBlockService = synchronizeRemoteNodeBlockService;
-        this.blockChainCore = blockChainCore;
-        this.configurationService = configurationService;
-        this.blockchainNodeClientService = blockchainNodeClientService;
+        this.blockchainCore = blockchainCore;
+        this.blockchainNodeClient = blockchainNodeClient;
     }
 
     public void start() {
@@ -56,8 +52,7 @@ public class BlockSearcher {
                 } catch (Exception e) {
                     logger.error("搜索其它节点的区块高度出现异常",e);
                 }
-                ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.BLOCK_SEARCH_TIME_INTERVAL.name());
-                ThreadUtil.sleep(Long.parseLong(configurationDto.getConfValue()));
+                ThreadUtil.sleep(GlobalSetting.NodeConstant.BLOCK_SEARCH_TIME_INTERVAL);
             }
         }).start();
 
@@ -67,14 +62,13 @@ public class BlockSearcher {
         new Thread(()->{
             while (true){
                 try {
-                    if(blockChainCore.getSynchronizer().isActive()){
-                        downloadBlocks();
+                    if(blockchainCore.getSynchronizer().isActive()){
+                        synchronizeBlocks();
                     }
                 } catch (Exception e) {
                     logger.error("在区块链网络中同步其它节点的区块出现异常",e);
                 }
-                ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.SEARCH_NEW_BLOCKS_TIME_INTERVAL.name());
-                ThreadUtil.sleep(Long.parseLong(configurationDto.getConfValue()));
+                ThreadUtil.sleep(GlobalSetting.NodeConstant.SEARCH_NEW_BLOCKS_TIME_INTERVAL);
             }
         }).start();
     }
@@ -82,40 +76,40 @@ public class BlockSearcher {
     /**
      * 搜索新的区块，并同步这些区块到本地区块链系统
      */
-    private void downloadBlocks() {
+    private void synchronizeBlocks() {
         List<NodeDto> nodes = nodeService.queryAllNoForkAliveNodeList();
         if(nodes == null || nodes.size()==0){
             return;
         }
 
-        long localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
+        long localBlockchainHeight = blockchainCore.queryBlockchainHeight();
         //可能存在多个节点的数据都比本地节点的区块多，但它们节点的数据可能是相同的，不应该向每个节点都去请求数据。
         for(NodeDto node:nodes){
-            if(LongUtil.isLessThan(localBlockChainHeight,node.getBlockChainHeight())){
+            if(LongUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
                 synchronizeRemoteNodeBlockService.synchronizeRemoteNodeBlock(node);
                 //同步之后，本地区块链高度已经发生改变了
-                localBlockChainHeight = blockChainCoreService.queryBlockChainHeight();
+                localBlockchainHeight = blockchainCore.queryBlockchainHeight();
             }
         }
     }
 
 
     /**
-     * 在区块链网络中搜寻新的节点
+     * 在区块链网络中搜寻新的区块
      */
     private void searchBlocks() {
         List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
         for(NodeDto node:nodes){
-            ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
+            ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClient.pingNode(node);
             boolean isPingSuccess = ServiceResult.isSuccess(pingResponseServiceResult);
             node.setIsNodeAvailable(isPingSuccess);
             if(isPingSuccess){
                 PingResponse pingResponse = pingResponseServiceResult.getResult();
-                node.setBlockChainHeight(pingResponse.getBlockChainHeight());
+                node.setBlockchainHeight(pingResponse.getBlockchainHeight());
                 node.setErrorConnectionTimes(0);
                 nodeService.updateNode(node);
             } else {
-                nodeService.nodeErrorConnectionHandle(node);
+                nodeService.nodeConnectionErrorHandle(node);
             }
         }
     }

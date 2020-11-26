@@ -18,14 +18,14 @@
     <module>helloworld-blockchain-util</module>
   </modules>
 
-  <name>HelloworldBlockchain-Parent</name>
-  <url>http://www.xingkaichun.com</url>
+  <name>helloworld-blockchain-parent</name>
+  <url>http://www.helloworldblockchain.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <junit.version>4.12</junit.version>
+    <junit.version>4.13.1</junit.version>
     <org.springframework.boot.version>2.0.1.RELEASE</org.springframework.boot.version>
     <leveldb.version>0.12</leveldb.version>
     <slf4j.version>1.7.1</slf4j.version>
@@ -35,6 +35,8 @@
     <netty-all.version>4.1.49.Final</netty-all.version>
     <sqldroid.version>1.0.3</sqldroid.version>
     <bitcoinj.version>0.15.8</bitcoinj.version>
+    <guava.version>28.0-jre</guava.version>
+    <mybatis.spring.version>2.0.1</mybatis.spring.version>
   </properties>
 
   <dependencyManagement>
@@ -43,7 +45,6 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
-        <scope>test</scope>
       </dependency>
 
 
@@ -90,12 +91,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.mybatis.spring.boot</groupId>
-        <artifactId>mybatis-spring-boot-starter</artifactId>
-        <version>2.0.1</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcprov-jdk15on</artifactId>
         <version>${bcprov.version}</version>
@@ -134,7 +129,7 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>28.0-jre</version>
+        <version>${guava.version}</version>
       </dependency>
 
       <dependency>

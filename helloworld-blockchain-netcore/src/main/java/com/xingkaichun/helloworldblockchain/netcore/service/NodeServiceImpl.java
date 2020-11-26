@@ -1,12 +1,11 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
-import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
-import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.BaseNodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.SimpleNodeDto;
-import com.xingkaichun.helloworldblockchain.netcore.model.NodeEntity;
+import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.LongUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +17,9 @@ import java.util.List;
 public class NodeServiceImpl implements NodeService {
 
     private NodeDao nodeDao;
-    private ConfigurationService configurationService;
 
-    public NodeServiceImpl(NodeDao nodeDao, ConfigurationService configurationService) {
+    public NodeServiceImpl(NodeDao nodeDao) {
         this.nodeDao = nodeDao;
-        this.configurationService = configurationService;
     }
 
     @Override
@@ -40,15 +37,14 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public void nodeErrorConnectionHandle(SimpleNodeDto simpleNodeDto){
-        NodeEntity nodeEntity = nodeDao.queryNode(simpleNodeDto.getIp(), simpleNodeDto.getPort());
+    public void nodeConnectionErrorHandle(BaseNodeDto baseNodeDto){
+        NodeEntity nodeEntity = nodeDao.queryNode(baseNodeDto.getIp());
         if(nodeEntity == null){
             return;
         }
         int errorConnectionTimes = nodeEntity.getErrorConnectionTimes()+1;
-        ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.NODE_ERROR_CONNECTION_TIMES_REMOVE_THRESHOLD.name());
-        if(errorConnectionTimes >= Long.parseLong(configurationDto.getConfValue())){
-            nodeDao.deleteNode(simpleNodeDto.getIp(), simpleNodeDto.getPort());
+        if(errorConnectionTimes >= GlobalSetting.NodeConstant.NODE_ERROR_CONNECTION_TIMES_DELETE_THRESHOLD){
+            nodeDao.deleteNode(baseNodeDto.getIp());
         } else {
             nodeEntity.setErrorConnectionTimes(errorConnectionTimes);
             nodeEntity.setIsNodeAvailable(false);
@@ -57,16 +53,14 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public void addOrUpdateNodeForkPropertity(SimpleNodeDto simpleNodeDto){
-        NodeEntity nodeEntity = nodeDao.queryNode(simpleNodeDto.getIp(), simpleNodeDto.getPort());
+    public void updateOrInsertForkPropertity(BaseNodeDto baseNodeDto){
+        NodeEntity nodeEntity = nodeDao.queryNode(baseNodeDto.getIp());
         if(nodeEntity == null){
-            NodeDto node = new NodeDto();
-            node.setIp(simpleNodeDto.getIp());
-            node.setPort(simpleNodeDto.getPort());
-            node.setFork(true);
-            fillNodeDefaultValue(node);
-            NodeEntity nodeEntity1 = classCast(node);
-            nodeDao.addNode(nodeEntity1);
+            nodeEntity = new NodeEntity();
+            nodeEntity.setIp(baseNodeDto.getIp());
+            nodeEntity.setFork(true);
+            fillNodeDefaultValue(nodeEntity);
+            nodeDao.addNode(nodeEntity);
         }else {
             nodeEntity.setFork(true);
             nodeDao.updateNode(nodeEntity);
@@ -74,8 +68,8 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public void deleteNode(SimpleNodeDto simpleNodeDto){
-        nodeDao.deleteNode(simpleNodeDto.getIp(), simpleNodeDto.getPort());
+    public void deleteNode(BaseNodeDto baseNodeDto){
+        nodeDao.deleteNode(baseNodeDto.getIp());
     }
 
     @Override
@@ -87,9 +81,9 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public void addNode(NodeDto node){
-        fillNodeDefaultValue(node);
-        NodeEntity nodeEntityByPass = classCast(node);
-        nodeDao.addNode(nodeEntityByPass);
+        NodeEntity nodeEntity = classCast(node);
+        fillNodeDefaultValue(nodeEntity);
+        nodeDao.addNode(nodeEntity);
     }
 
     @Override
@@ -99,8 +93,8 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public NodeDto queryNode(SimpleNodeDto simpleNodeDto){
-        NodeEntity nodeEntity = nodeDao.queryNode(simpleNodeDto.getIp(), simpleNodeDto.getPort());
+    public NodeDto queryNode(BaseNodeDto baseNodeDto){
+        NodeEntity nodeEntity = nodeDao.queryNode(baseNodeDto.getIp());
         if(nodeEntity == null){
             return null;
         }
@@ -122,10 +116,9 @@ public class NodeServiceImpl implements NodeService {
     private NodeDto classCast(NodeEntity nodeEntity) {
         NodeDto node = new NodeDto();
         node.setIp(nodeEntity.getIp());
-        node.setPort(nodeEntity.getPort());
         node.setIsNodeAvailable(nodeEntity.getIsNodeAvailable());
         node.setErrorConnectionTimes(nodeEntity.getErrorConnectionTimes());
-        node.setBlockChainHeight(nodeEntity.getBlockChainHeight());
+        node.setBlockchainHeight(nodeEntity.getBlockchainHeight());
         node.setFork(nodeEntity.getFork());
         return node;
     }
@@ -133,26 +126,25 @@ public class NodeServiceImpl implements NodeService {
     private NodeEntity classCast(NodeDto node) {
         NodeEntity nodeEntity = new NodeEntity();
         nodeEntity.setIp(node.getIp());
-        nodeEntity.setPort(node.getPort());
         nodeEntity.setIsNodeAvailable(node.getIsNodeAvailable());
         nodeEntity.setErrorConnectionTimes(node.getErrorConnectionTimes());
-        nodeEntity.setBlockChainHeight(node.getBlockChainHeight());
+        nodeEntity.setBlockchainHeight(node.getBlockchainHeight());
         nodeEntity.setFork(node.getFork());
         return nodeEntity;
     }
 
-    private void fillNodeDefaultValue(NodeDto node) {
-        if(node.getBlockChainHeight() == null){
-            node.setBlockChainHeight(LongUtil.ZERO);
+    private void fillNodeDefaultValue(NodeEntity nodeEntity) {
+        if(nodeEntity.getBlockchainHeight() == null){
+            nodeEntity.setBlockchainHeight(LongUtil.ZERO);
         }
-        if(node.getIsNodeAvailable() == null){
-            node.setIsNodeAvailable(true);
+        if(nodeEntity.getIsNodeAvailable() == null){
+            nodeEntity.setIsNodeAvailable(true);
         }
-        if(node.getErrorConnectionTimes() == null){
-            node.setErrorConnectionTimes(0);
+        if(nodeEntity.getErrorConnectionTimes() == null){
+            nodeEntity.setErrorConnectionTimes(0);
         }
-        if(node.getFork() == null){
-            node.setFork(false);
+        if(nodeEntity.getFork() == null){
+            nodeEntity.setFork(false);
         }
     }
 }

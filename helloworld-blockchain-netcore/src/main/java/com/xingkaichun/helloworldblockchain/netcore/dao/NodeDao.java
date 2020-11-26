@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.dao;
 
-import com.xingkaichun.helloworldblockchain.netcore.model.NodeEntity;
+import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface NodeDao {
     /**
      * 查询节点
      */
-    NodeEntity queryNode(String ip, int port);
+    NodeEntity queryNode(String ip);
     /**
      * 获取所有未分叉节点
      */
@@ -34,7 +34,7 @@ public interface NodeDao {
     /**
      * 删除节点
      */
-    void deleteNode(String ip, int port);
+    void deleteNode(String ip);
     /**
      * 查询所有节点
      */

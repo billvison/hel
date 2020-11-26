@@ -1,15 +1,13 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
-import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.PingResponse;
-import com.xingkaichun.helloworldblockchain.netcore.service.BlockchainNodeClientService;
+import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeClient;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.ThreadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,14 +26,14 @@ public class NodeSearcher {
 
     private ConfigurationService configurationService;
     private NodeService nodeService;
-    private BlockchainNodeClientService blockchainNodeClientService;
+    private BlockchainNodeClient blockchainNodeClient;
 
     public NodeSearcher(ConfigurationService configurationService, NodeService nodeService
-            , BlockchainNodeClientService blockchainNodeClientService) {
+            , BlockchainNodeClient blockchainNodeClient) {
 
         this.configurationService = configurationService;
         this.nodeService = nodeService;
-        this.blockchainNodeClientService = blockchainNodeClientService;
+        this.blockchainNodeClient = blockchainNodeClient;
     }
 
     public void start() {
@@ -48,14 +46,13 @@ public class NodeSearcher {
         new Thread(()->{
             while (true){
                 try {
-                    if(configurationService.autoSearchNodeOption()){
+                    if(configurationService.isAutoSearchNode()){
                         addSeedNode();
                     }
                 } catch (Exception e) {
                     logger.error("定时将种子节点加入区块链网络出现异常",e);
                 }
-                ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.ADD_SEED_NODE_TIME_INTERVAL.name());
-                ThreadUtil.sleep(Long.parseLong(configurationDto.getConfValue()));
+                ThreadUtil.sleep(GlobalSetting.NodeConstant.ADD_SEED_NODE_TIME_INTERVAL);
             }
         }).start();
 
@@ -66,14 +63,13 @@ public class NodeSearcher {
         new Thread(()->{
             while (true){
                 try {
-                    if(configurationService.autoSearchNodeOption()){
+                    if(configurationService.isAutoSearchNode()){
                         searchNodes();
                     }
                 } catch (Exception e) {
                     logger.error("在区块链网络中搜索新的节点出现异常",e);
                 }
-                ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.SEARCH_NEW_NODE_TIME_INTERVAL.name());
-                ThreadUtil.sleep(Long.parseLong(configurationDto.getConfValue()));
+                ThreadUtil.sleep(GlobalSetting.NodeConstant.SEARCH_NEW_NODE_TIME_INTERVAL);
             }
         }).start();
     }
@@ -85,32 +81,27 @@ public class NodeSearcher {
         //这里可以利用多线程进行性能优化，因为本项目是helloworld项目，因此只采用单线程轮询每一个节点查询新的网络节点，不做进一步优化拓展。
         List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
         for(NodeDto node:nodes){
-            if(!configurationService.autoSearchNodeOption()){
+            if(!configurationService.isAutoSearchNode()){
                 return;
             }
-            ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
+            ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClient.pingNode(node);
             boolean isPingSuccess = ServiceResult.isSuccess(pingResponseServiceResult);
             node.setIsNodeAvailable(isPingSuccess);
             if(isPingSuccess){
                 PingResponse pingResponse = pingResponseServiceResult.getResult();
-                //链ID不同
-                if(!GlobalSetting.BLOCK_CHAIN_ID.equals(pingResponse.getBlockChainId())){
-                    nodeService.deleteNode(node);
-                }else {
-                    node.setBlockChainHeight(pingResponse.getBlockChainHeight());
-                    node.setErrorConnectionTimes(0);
-                    if(nodeService.queryNode(node) == null){
-                        if(configurationService.autoSearchNodeOption()){
-                            nodeService.addNode(node);
-                        }
-                    }else {
-                        nodeService.updateNode(node);
+                node.setBlockchainHeight(pingResponse.getBlockchainHeight());
+                node.setErrorConnectionTimes(0);
+                if(nodeService.queryNode(node) == null){
+                    if(configurationService.isAutoSearchNode()){
+                        nodeService.addNode(node);
                     }
-                    //处理节点传输过来它所知道的节点列表
-                    addAvailableNodeToDatabase(pingResponse.getNodeList());
+                }else {
+                    nodeService.updateNode(node);
                 }
+                //处理节点传输过来它所知道的节点列表
+                addAvailableNodeToDatabase(pingResponse.getNodeList());
             } else {
-                nodeService.nodeErrorConnectionHandle(node);
+                nodeService.nodeConnectionErrorHandle(node);
             }
         }
     }
@@ -131,19 +122,19 @@ public class NodeSearcher {
      * 若一个新的(之前没有加入过本地数据库)、可用的(网络连接是好的)的节点加入本地数据库
      */
     private void addAvailableNodeToDatabase(NodeDto node) {
-        if(configurationService.autoSearchNodeOption()){
+        if(configurationService.isAutoSearchNode()){
             return;
         }
         NodeDto localNode = nodeService.queryNode(node);
         if(localNode == null){
-            ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClientService.pingNode(node);
+            ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClient.pingNode(node);
             if(ServiceResult.isSuccess(pingResponseServiceResult)){
                 node.setIsNodeAvailable(true);
-                node.setBlockChainHeight(pingResponseServiceResult.getResult().getBlockChainHeight());
+                node.setBlockchainHeight(pingResponseServiceResult.getResult().getBlockchainHeight());
                 node.setErrorConnectionTimes(0);
                 if(nodeService.queryNode(node) == null){
                     nodeService.addNode(node);
-                    logger.debug(String.format("自动发现节点[%s:%d]，节点已加入节点数据库。",node.getIp(),node.getPort()));
+                    logger.debug(String.format("自动发现节点[%s]，节点已加入节点数据库。",node.getIp()));
                 }else {
                     nodeService.updateNode(node);
                 }
@@ -155,14 +146,12 @@ public class NodeSearcher {
      * 添加种子节点
      */
     private void addSeedNode() {
-        for(String strNode: GlobalSetting.SEED_NODE_LIST){
+        for(String nodeIp: GlobalSetting.SEED_NODE_LIST){
             NodeDto node = new NodeDto();
-            String[] nodeDetail = strNode.split(":");
-            node.setIp(nodeDetail[0]);
-            node.setPort(Integer.parseInt(nodeDetail[1]));
+            node.setIp(nodeIp);
             NodeDto nodeDto = nodeService.queryNode(node);
             if(nodeDto == null){
-                if(configurationService.autoSearchNodeOption()){
+                if(configurationService.isAutoSearchNode()){
                     nodeService.addNode(node);
                 }
             }

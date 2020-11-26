@@ -13,38 +13,24 @@
 <body>
 <div class="nav">
     <div class="container">
-		<h1>HelloworldBlockchain</h1>
+		<h1><a href="/">HelloworldBlockchain</a></h1>
 		<ul class="nav_menu">
-			<li><a href="index.html">搜索</a></li>
-			<li><a href="/document/index.html" target="_blank">文档</a></li>
 			<li><a href="node.html">节点</a></li>
-			<li><a href="transaction.html">交易</a></li>
 			<li><a href="account.html">账户</a></li>
 			<li><a href="my.html" class="on">管理</a></li>
 		</ul>
 		<div class="login" id="user_login"></div>
 	</div>
 </div>
-<script type="text/javascript" src="js/islogin.js"></script>
-<script type="text/javascript">
-	if(login_state.state == "FAIL"){
-		window.location = "login.html";
-	}
-</script>
 <div class="container main">
 	<ul class="my_menu">
 		<li><a href="my.html" class="on">设置</a></li>
 		<li><a href="my/my_node.html">节点管理</a></li>
-		<li><a href="my/my_password.html">修改账户</a></li>
 	</ul>
 	<div class="my_miner">
 		<div class="my_info">
-			当前区块高度：<span id="block_heght"></span>
-			<button class="btn_important" onclick="removeBlock()">删除区块</button>		
-		</div>
-		<div class="my_info">
-			<span id="miner_address"></span>
-			<button class="btn_important" onclick="modifyMinerAddress()">修改地址</button>		
+			当前区块高度：<span id="block_height"></span>
+			<button class="btn_important" onclick="deleteBlock()">删除区块</button>
 		</div>
 		<div class="my_info">
 			挖矿状态：<span id="miner_status"></span>
@@ -55,7 +41,7 @@
 			<button id="syn_handle" class="btn_important" onclick="toggleUnits('syn')"></button>
 		</div>
 		<div class="my_info">
-			自动搜索节点：<span id="node_status"></span>
+			节点搜寻策略：<span id="node_status"></span>
 			<button id="node_handle" class="btn_important" onclick="toggleUnits('node')"></button>
 		</div>
 	</div>

@@ -12,9 +12,7 @@
     <artifactId>helloworld-blockchain-setting</artifactId>
 
     <name>helloworld-blockchain-setting</name>
-
-    <properties>
-    </properties>
+    <url>http://www.helloworldblockchain.com</url>
 
     <dependencies>
     </dependencies>

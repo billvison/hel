@@ -3,7 +3,7 @@ function generateAccount(){
 	var account = {};
 	$.ajax({
 	    type: "post",
-	    url: "/Api/BlockChain/GenerateAccount",
+	    url: "/Api/Blockchain/GenerateAccount",
 	    contentType: "application/json",
 	    data: `{}`,
 	    dataType: "json",

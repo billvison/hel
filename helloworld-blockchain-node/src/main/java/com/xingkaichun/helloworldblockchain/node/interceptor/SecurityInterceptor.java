@@ -1,14 +1,12 @@
 package com.xingkaichun.helloworldblockchain.node.interceptor;
 
-import com.xingkaichun.helloworldblockchain.node.dto.user.UserDto;
-import com.xingkaichun.helloworldblockchain.node.util.SessionUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Security过滤器
@@ -18,15 +16,25 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class SecurityInterceptor implements HandlerInterceptor {
 
-	private static final Logger logger = LoggerFactory.getLogger(SecurityInterceptor.class);
+	//*代表允许所有ip访问。
+	private static final String ALL_IP = "*";
+
+	//允许的ip列表，多个ip之间以逗号(,)分隔。
+	@Value("#{'${permit.ip}'.split(',')}")
+	private List<String> permitIpList;
 
 	@Override
 	public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object){
-		UserDto userDto = SessionUtil.getLoginUser(httpServletRequest);
-		if(userDto == null){
-			logger.debug("用户未登录，无操作权限，请登录!");
-			return false;
+		if(permitIpList != null){
+			//*代表允许所有ip访问
+			if(permitIpList.contains(ALL_IP)){
+				return true;
+			}
+			String remoteHost = httpServletRequest.getRemoteHost();
+			if(permitIpList.contains(remoteHost)){
+				return true;
+			}
 		}
-		return true;
+		throw new RuntimeException("该IP无访问权限!");
 	}
 }

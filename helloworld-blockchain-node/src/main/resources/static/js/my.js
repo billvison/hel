@@ -7,7 +7,7 @@ var url = "";
 var miner = {};//矿工信息
 var syn = {};//同步信息
 var node = {};//节点信息
-var block_heght = document.getElementById('block_heght');//获取区块高度
+var block_height = document.getElementById('block_height');//获取区块高度
 var miner_status = document.getElementById('miner_status');//获取矿工状态
 var miner_handle = document.getElementById('miner_handle');//获取激活按钮
 var syn_status = document.getElementById('syn_status');//获取同步状态
@@ -21,13 +21,13 @@ var search_new_block = document.getElementById('search_new_block');//主动寻�
 function queryBlockHeight() {   
     $.ajax({
         type: "post",
-        url: url + "/Api/BlockChain/Ping",
+        url: url + "/Api/Blockchain/QueryBlockchainHeight",
         contentType: "application/json",
         data: `{}`,
         dataType: "json",
         async: false,
         success: function (data) {
-            block_heght.textContent = data.result.blockChainHeight;			
+            block_height.textContent = data.result.blockchainHeight;
         },
         error: function (e) {
         }
@@ -35,7 +35,7 @@ function queryBlockHeight() {
 }
 queryBlockHeight();
 //删除区块
-function removeBlock() {
+function deleteBlock() {
 	var getContent = '<dl><dt><h2>删除区块</h2></dt>' +
 				     '<dd><font>输入区块高度:</font><input name="block_height" type="text" class="c_txt"></dd></dl>';
 	var nextStaff = function(){
@@ -46,7 +46,7 @@ function removeBlock() {
 		var height = $(".n_popbox_msg input[name=block_height]").val();
 		$.ajax({
 		    type: "post",
-		    url: url + "/Api/AdminConsole/RemoveBlock",
+		    url: url + "/Api/AdminConsole/DeleteBlock",
 		    contentType: "application/json",
 		    data: `{
 				"blockHeight":"${height}"
@@ -58,59 +58,6 @@ function removeBlock() {
 					alert(data.message);
 					queryBlockHeight();
 				}   
-		    },
-		    error: function (e) {
-		    }
-		});
-	}
-}
-//获取矿工地址
-function getMinerAddress() {   
-    $.ajax({
-        type: "post",
-        url: url + "/Api/AdminConsole/QueryMinerAddress",
-        contentType: "application/json",
-        data: `{}`,
-        dataType: "json",
-        async: false,
-        success: function (data) {
-            console.log(data);
-            if(data.result.minerAddress != null && data.result.minerAddress!=''){
-                miner_address.textContent = "矿工地址："+data.result.minerAddress;
-            }else{
-                miner_address.textContent = "默认矿工地址："+data.result.defaultMinerAccount.address
-                + "默认矿工私钥："+data.result.defaultMinerAccount.privateKey;
-            }
-        },
-        error: function (e) {
-        }
-    });
-}
-getMinerAddress();
-//修改矿工地址
-function modifyMinerAddress() {
-	var getContent = '<dl><dt><h2>修改地址地址</h2></dt>' +
-				     '<dd><font>请输入新地址:</font><input name="address" type="text" class="c_txt"></dd></dl>';
-	var nextStaff = function(){
-		modifyAddressAjax();
-	}
-	popBox.createBox(getContent,1,nextStaff);
-	function modifyAddressAjax(){
-		var address = $(".n_popbox_msg input[name=address]").val();
-		$.ajax({
-		    type: "post",
-		    url: url + "/Api/AdminConsole/SetMinerAddress",
-		    contentType: "application/json",
-		    data: `{
-				"minerAddress":"${address}"
-			}`,
-		    dataType: "json",
-		    async: false,
-		    success: function (data) {
-		    	alert(data.message);
-				if(data.serviceCode == "SUCCESS"){
-					getMinerAddress();
-				}
 		    },
 		    error: function (e) {
 		    }
@@ -178,17 +125,16 @@ function searchNodeStatus() {
         async: false,
         success: function (data) {
             node.staus = data.result.autoSearchNewNode;
-			// console.log(data);
         },
         error: function (e) {
         }
     });
 	if (node.staus){
-		node_status.innerHTML = "允许";
-		node_handle.innerHTML = "禁止";
+		node_status.innerHTML = "自动寻找";
+		node_handle.innerHTML = "手动添加";
 	}else{
-		node_status.innerHTML = "禁止";
-		node_handle.innerHTML = "允许";
+		node_status.innerHTML = "手动添加";
+		node_handle.innerHTML = "自动寻找";
 	}	
     return node.staus;
 }

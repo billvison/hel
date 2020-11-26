@@ -1,119 +1,117 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
-import com.google.common.base.Strings;
-import com.google.gson.Gson;
-import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
-import com.xingkaichun.helloworldblockchain.crypto.model.Account;
+import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.dao.ConfigurationDao;
-import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
-import com.xingkaichun.helloworldblockchain.netcore.model.ConfigurationEntity;
+import com.xingkaichun.helloworldblockchain.netcore.entity.ConfigurationEntity;
 
 /**
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 public class ConfigurationServiceImpl implements ConfigurationService {
+    //矿工是否处于激活状态？
+    private static final String IS_MINER_ACTIVE = "IS_MINER_ACTIVE";
+    //同步者是否处于激活状态？
+    private static final String IS_SYNCHRONIZER_ACTIVE = "IS_SYNCHRONIZER_ACTIVE";
+    //是否自动搜寻区块链网络节点？
+    private static final String IS_AUTO_SEARCH_NODE = "IS_AUTO_SEARCH_NODE";
 
+    private BlockchainCore blockchainCore;
     private ConfigurationDao configurationDao;
 
-    public ConfigurationServiceImpl(ConfigurationDao configurationDao) {
+    public ConfigurationServiceImpl(BlockchainCore blockchainCore,ConfigurationDao configurationDao) {
+        this.blockchainCore = blockchainCore;
         this.configurationDao = configurationDao;
     }
 
-    @Override
-    public ConfigurationDto getConfigurationByConfigurationKey(String confKey) {
-        if(Strings.isNullOrEmpty(confKey)){
-            return null;
-        }
-        ConfigurationDto configurationDto = new ConfigurationDto();
-        configurationDto.setConfKey(confKey);
-        String configurationValue = configurationDao.getConfiguratioValue(confKey);
-        if(!Strings.isNullOrEmpty(configurationValue)){
-            configurationDto.setConfValue(configurationValue);
-            return configurationDto;
-        }
-
-        //默认值
-        for (ConfigurationEnum configurationEnum:ConfigurationEnum.values()){
-            if(configurationEnum.name().equals(confKey)){
-                configurationDto.setConfValue(configurationEnum.getDefaultConfValue());
-                return configurationDto;
-            }
-        }
-        throw new RuntimeException(String.format("系统中不存在配置%s",confKey));
-    }
-
-    //事务
-    @Override
-    public void setConfiguration(ConfigurationDto configurationDto) {
-        String confKey = configurationDto.getConfKey();
-        String confValue = configurationDto.getConfValue();
-        if(Strings.isNullOrEmpty(confKey)){
-            throw new NullPointerException("ConfKey不能为空");
-        }
-        if(Strings.isNullOrEmpty(confValue)){
-            throw new NullPointerException("ConfValue不能为空");
-        }
-        //检查是否存在配置
-        boolean exist = false;
-        for (ConfigurationEnum configurationEnum: ConfigurationEnum.values()){
-            if(configurationEnum.name().equals(confKey)){
-                exist = true;
-            }
-        }
-        if(!exist){
-            throw new RuntimeException(String.format("系统中不存在配置%s",confKey));
-        }
-        ConfigurationEntity configurationEntity = new ConfigurationEntity();
-        configurationEntity.setConfKey(confKey);
-        configurationEntity.setConfValue(confValue);
-        insertOrUpdate(configurationEntity);
-    }
-
-    private void insertOrUpdate(ConfigurationEntity configurationEntity){
-        String configuratioValue = configurationDao.getConfiguratioValue(configurationEntity.getConfKey());
-        if(Strings.isNullOrEmpty(configuratioValue)){
+    private void setConfiguration(ConfigurationEntity configurationEntity) {
+        ConfigurationEntity configurationEntityInDb = configurationDao.getConfigurationValue(configurationEntity.getConfKey());
+        if(configurationEntityInDb == null){
             configurationDao.addConfiguration(configurationEntity);
         }else {
             configurationDao.updateConfiguration(configurationEntity);
         }
     }
 
-
     @Override
-    public Account getDefaultMinerAccount() {
-        synchronized (ConfigurationServiceImpl.class){
-            Gson gson = new Gson();
-            ConfigurationDto configurationDto = getConfigurationByConfigurationKey(ConfigurationEnum.DEFAULT_MINER_ACCOUNT.name());
-            if(configurationDto != null && !Strings.isNullOrEmpty(configurationDto.getConfValue())){
-                Account account = gson.fromJson(configurationDto.getConfValue(),Account.class);
-                return account;
-            }
-            Account defaultAccount = AccountUtil.randomAccount();
-            ConfigurationDto defaultAccountConfigurationDto =
-                    new ConfigurationDto(ConfigurationEnum.DEFAULT_MINER_ACCOUNT.name(),gson.toJson(defaultAccount));
-            setConfiguration(defaultAccountConfigurationDto);
-            return defaultAccount;
-        }
-    }
-
-    @Override
-    public String getMinerAddress() {
-        String minerAddress;
-        ConfigurationDto minerAddressConfigurationDto = getConfigurationByConfigurationKey(ConfigurationEnum.MINER_ADDRESS.name());
-        if(minerAddressConfigurationDto != null && !Strings.isNullOrEmpty(minerAddressConfigurationDto.getConfValue())){
-            minerAddress = minerAddressConfigurationDto.getConfValue();
+    public void restoreMinerConfiguration() {
+        if(isMinerActive()){
+            blockchainCore.getMiner().active();
         }else {
-            Account account = getDefaultMinerAccount();
-            minerAddress = account.getAddress();
+            blockchainCore.getMiner().deactive();
         }
-        return minerAddress;
     }
 
     @Override
-    public boolean autoSearchNodeOption() {
-        ConfigurationDto configurationDto = getConfigurationByConfigurationKey(ConfigurationEnum.AUTO_SEARCH_NODE.name());
-        return Boolean.valueOf(configurationDto.getConfValue());
+    public boolean isMinerActive() {
+        ConfigurationEntity configurationEntity = configurationDao.getConfigurationValue(IS_MINER_ACTIVE);
+        if(configurationEntity == null){
+            //默认值
+            return false;
+        }
+        return Boolean.valueOf(configurationEntity.getConfValue());
+    }
+
+    @Override
+    public void activeMiner() {
+        blockchainCore.getMiner().active();
+        ConfigurationEntity configurationEntity = new ConfigurationEntity(IS_MINER_ACTIVE,String.valueOf(true));
+        setConfiguration(configurationEntity);
+    }
+
+    @Override
+    public void deactiveMiner() {
+        blockchainCore.getMiner().deactive();
+        ConfigurationEntity configurationEntity = new ConfigurationEntity(IS_MINER_ACTIVE,String.valueOf(false));
+        setConfiguration(configurationEntity);
+    }
+
+    @Override
+    public void restoreSynchronizerConfiguration() {
+        if(isSynchronizerActive()){
+            blockchainCore.getSynchronizer().active();
+        }else {
+            blockchainCore.getSynchronizer().deactive();
+        }
+    }
+
+    @Override
+    public boolean isSynchronizerActive() {
+        ConfigurationEntity configurationEntity = configurationDao.getConfigurationValue(IS_SYNCHRONIZER_ACTIVE);
+        if(configurationEntity == null){
+            //默认值
+            return false;
+        }
+        return Boolean.valueOf(configurationEntity.getConfValue());
+    }
+
+    @Override
+    public void activeSynchronizer() {
+        blockchainCore.getSynchronizer().active();
+        ConfigurationEntity configurationEntity = new ConfigurationEntity(IS_SYNCHRONIZER_ACTIVE,String.valueOf(true));
+        setConfiguration(configurationEntity);
+    }
+
+    @Override
+    public void deactiveSynchronizer() {
+        blockchainCore.getSynchronizer().active();
+        ConfigurationEntity configurationEntity = new ConfigurationEntity(IS_SYNCHRONIZER_ACTIVE,String.valueOf(false));
+        setConfiguration(configurationEntity);
+    }
+
+    @Override
+    public boolean isAutoSearchNode() {
+        ConfigurationEntity configurationEntity = configurationDao.getConfigurationValue(IS_AUTO_SEARCH_NODE);
+        if(configurationEntity == null){
+            //默认值
+            return true;
+        }
+        return Boolean.valueOf(configurationEntity.getConfValue());
+    }
+
+    @Override
+    public void setAutoSearchNode(boolean autoSearchNode) {
+        ConfigurationEntity configurationDto = new ConfigurationEntity(IS_AUTO_SEARCH_NODE,String.valueOf(autoSearchNode));
+        setConfiguration(configurationDto);
     }
 }

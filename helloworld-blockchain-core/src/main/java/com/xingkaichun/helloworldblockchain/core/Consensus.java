@@ -24,6 +24,6 @@ public abstract class Consensus implements Serializable {
      * 区块满足共识的要求了吗？
      * 如果满足共识的要求，这个区块就可以添加进区块链，否则，不可以。
      */
-    public abstract boolean isReachConsensus(BlockChainDataBase blockChainDataBase, Block block) ;
+    public abstract boolean isReachConsensus(BlockchainDatabase blockchainDataBase, Block block) ;
 }
 

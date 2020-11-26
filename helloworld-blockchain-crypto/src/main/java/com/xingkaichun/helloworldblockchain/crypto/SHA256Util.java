@@ -28,6 +28,7 @@ public class SHA256Util {
 
     /**
      * 获取进行两次Sha256操作的消息摘要
+     * //TODO 为什么采用双重哈希操作
      */
     public static byte[] digestTwice(byte[] input) {
         return digest(digest(input));

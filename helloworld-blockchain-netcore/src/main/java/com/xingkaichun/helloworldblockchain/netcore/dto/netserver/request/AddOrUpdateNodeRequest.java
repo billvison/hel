@@ -6,28 +6,19 @@ package com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request;
  */
 public class AddOrUpdateNodeRequest {
 
-    private int port;
-    private Long blockChainHeight;
+    private Long blockchainHeight;
 
 
 
 
     //region get set
 
-    public int getPort() {
-        return port;
+    public Long getBlockchainHeight() {
+        return blockchainHeight;
     }
 
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public Long getBlockChainHeight() {
-        return blockChainHeight;
-    }
-
-    public void setBlockChainHeight(Long blockChainHeight) {
-        this.blockChainHeight = blockChainHeight;
+    public void setBlockchainHeight(Long blockchainHeight) {
+        this.blockchainHeight = blockchainHeight;
     }
 
 //endregion

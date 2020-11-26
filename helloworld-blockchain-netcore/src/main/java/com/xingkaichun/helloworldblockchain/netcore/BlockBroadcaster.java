@@ -1,14 +1,12 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
-import com.xingkaichun.helloworldblockchain.core.utils.LongUtil;
-import com.xingkaichun.helloworldblockchain.core.utils.ThreadUtil;
-import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.configuration.ConfigurationEnum;
+import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
-import com.xingkaichun.helloworldblockchain.netcore.service.BlockChainCoreService;
-import com.xingkaichun.helloworldblockchain.netcore.service.BlockchainNodeClientService;
-import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
+import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeClient;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.LongUtil;
+import com.xingkaichun.helloworldblockchain.util.ThreadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,30 +28,26 @@ public class BlockBroadcaster {
 
     private static final Logger logger = LoggerFactory.getLogger(BlockBroadcaster.class);
 
-    private ConfigurationService configurationService;
     private NodeService nodeService;
-    private BlockChainCoreService blockChainCoreService;
-    private BlockchainNodeClientService blockchainNodeClientService;
+    private BlockchainCore blockchainCore;
+    private BlockchainNodeClient blockchainNodeClient;
 
-    public BlockBroadcaster(ConfigurationService configurationService, NodeService nodeService
-            , BlockChainCoreService blockChainCoreService, BlockchainNodeClientService blockchainNodeClientService) {
+    public BlockBroadcaster(NodeService nodeService, BlockchainCore blockchainCore, BlockchainNodeClient blockchainNodeClient) {
 
-        this.configurationService = configurationService;
         this.nodeService = nodeService;
-        this.blockChainCoreService = blockChainCoreService;
-        this.blockchainNodeClientService = blockchainNodeClientService;
+        this.blockchainCore = blockchainCore;
+        this.blockchainNodeClient = blockchainNodeClient;
     }
 
     public void start() {
         new Thread(()->{
             while (true){
                 try {
-                    broadcastBlcokChainHeight();
+                    broadcastBlockChainHeight();
                 } catch (Exception e) {
                     logger.error("在区块链网络中广播自己的区块高度出现异常",e);
                 }
-                ConfigurationDto configurationDto = configurationService.getConfigurationByConfigurationKey(ConfigurationEnum.CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL.name());
-                ThreadUtil.sleep(Long.parseLong(configurationDto.getConfValue()));
+                ThreadUtil.sleep(GlobalSetting.NodeConstant.CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL);
             }
         }).start();
     }
@@ -62,52 +56,43 @@ public class BlockBroadcaster {
     /*
      * 发现自己的区块链高度比全网节点都要高，则广播自己的区块链高度
      */
-    private void broadcastBlcokChainHeight() {
+    private void broadcastBlockChainHeight() {
         List<NodeDto> nodes = nodeService.queryAllNoForkAliveNodeList();
         if(nodes == null || nodes.size()==0){
             return;
         }
 
-        long blockChainHeight = blockChainCoreService.queryBlockChainHeight();
-        //自己的高度在全网是最高的吗？是的话，传播自己的高度给其它节点，好让其它节点知道可以来同步自己的区块。
-        boolean isHighest = true;
+        long blockchainHeight = blockchainCore.queryBlockchainHeight();
+        //按照节点的高度进行排序
+        Collections.sort(nodes,(NodeDto node1, NodeDto node2)->{
+            if(LongUtil.isGreatThan(node1.getBlockchainHeight(),node2.getBlockchainHeight())){
+                return -1;
+            } else if(LongUtil.isEquals(node1.getBlockchainHeight(),node2.getBlockchainHeight())){
+                return 0;
+            } else {
+                return 1;
+            }
+        });
+        /*
+         * 将自己的高度传播给比自己高度低的若干个节点，好让其它节点知道可以来同步自己的区块。
+         *
+         * 用单线程轮询通知其它节点。
+         * 这里可以利用多线程进行性能优化，因为本项目是helloworld项目，因此只采用单线程轮询每一个节点给它发送自己的高度，不做进一步优化拓展。
+         * 这里需要考虑，如果你通知的节点立刻向你获取数据，需要考虑自己的宽带网络资源。
+         * 这里采用只向部分节点发送的自己高度，且每给一个节点发送自己的高度后，睡眠几秒钟，可以认为这几秒带宽资源都分配给了这个节点。
+         */
+        //广播节点的数量
+        int broadcastNodeCount = 0;
         for(NodeDto node:nodes){
-            if(LongUtil.isLessThan(blockChainHeight,node.getBlockChainHeight())){
-                isHighest = false;
-                break;
+            if(LongUtil.isLessEqualThan(blockchainHeight,node.getBlockchainHeight())){
+                continue;
             }
-        }
-
-        if(isHighest){
-            //按照节点的高度进行排序，优先将自己的高度传播给高度大的节点。
-            Collections.sort(nodes,(NodeDto node1, NodeDto node2)->{
-                if(LongUtil.isGreatThan(node1.getBlockChainHeight(),node2.getBlockChainHeight())){
-                    return -1;
-                } else if(LongUtil.isEquals(node1.getBlockChainHeight(),node2.getBlockChainHeight())){
-                    return 0;
-                } else {
-                    return 1;
-                }
-            });
-            /*
-             * 用单线程轮询通知其它节点。
-             * 这里可以利用多线程进行性能优化，因为本项目是helloworld项目，因此只采用单线程轮询每一个节点给它发送自己的高度，不做进一步优化拓展。
-             * 这里需要考虑，如果你通知的节点立刻向你获取数据，需要考虑自己的宽带网络资源。
-             * 这里采用只向部分节点发送的自己高度，且每给一个节点发送自己的高度后，睡眠几秒钟，可以认为这几秒带宽资源都分配给了这个节点。
-             */
-            //广播节点数量
-            int broadcastNodeCount = 0;
-            for(NodeDto node:nodes){
-                if(LongUtil.isLessEqualThan(blockChainHeight,node.getBlockChainHeight())){
-                    continue;
-                }
-                blockchainNodeClientService.unicastLocalBlockChainHeight(node,blockChainHeight);
-                ++broadcastNodeCount;
-                if(broadcastNodeCount > 20){
-                    return;
-                }
-                ThreadUtil.sleep(1000*10);
+            blockchainNodeClient.unicastLocalBlockchainHeight(node,blockchainHeight);
+            ++broadcastNodeCount;
+            if(broadcastNodeCount > 10){
+                return;
             }
+            ThreadUtil.sleep(1000*10);
         }
     }
 }

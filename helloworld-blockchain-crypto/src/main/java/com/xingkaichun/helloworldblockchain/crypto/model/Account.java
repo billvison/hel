@@ -14,8 +14,11 @@ import java.io.Serializable;
  */
 public class Account implements Serializable {
 
+    //私钥
     private String privateKey;
+    //公钥
     private String publicKey;
+    //地址
     private String address;
 
     public Account(String privateKey, String publicKey, String address) {
@@ -26,29 +29,18 @@ public class Account implements Serializable {
 
 
     //region get set
+    //不需要暴露set方法
 
     public String getPrivateKey() {
         return privateKey;
-    }
-
-    public void setPrivateKey(String privateKey) {
-        this.privateKey = privateKey;
     }
 
     public String getPublicKey() {
         return publicKey;
     }
 
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
-    }
-
     public String getAddress() {
         return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     //endregion

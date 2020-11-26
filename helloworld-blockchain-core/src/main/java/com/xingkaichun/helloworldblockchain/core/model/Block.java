@@ -102,19 +102,7 @@ public class Block implements Serializable {
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
-    private long startTransactionSequenceNumberInBlockChain;
-
-    /**
-     * 区块中最后一笔交易的序列号
-     * 这个序列号是站在整个区块链的角度而产生的，而不是站在这个区块的角度而产生的。
-     * 它的值取值：
-     * 区块中没有交易，值为0
-     * 区块中有交易，值等于 高度低于当前区块的所有区块中包含的交易数量之和+当前区块中包含的交易数量
-     *
-     * 冗余字段，这个值可以由区块链系统推算出来
-     */
-    private long endTransactionSequenceNumberInBlockChain;
-
+    private long startTransactionIndexInBlockchain;
 
 
 
@@ -192,21 +180,12 @@ public class Block implements Serializable {
         this.transactionQuantity = transactionQuantity;
     }
 
-    public long getStartTransactionSequenceNumberInBlockChain() {
-        return startTransactionSequenceNumberInBlockChain;
+    public long getStartTransactionIndexInBlockchain() {
+        return startTransactionIndexInBlockchain;
     }
 
-    public void setStartTransactionSequenceNumberInBlockChain(long startTransactionSequenceNumberInBlockChain) {
-        this.startTransactionSequenceNumberInBlockChain = startTransactionSequenceNumberInBlockChain;
+    public void setStartTransactionIndexInBlockchain(long startTransactionIndexInBlockchain) {
+        this.startTransactionIndexInBlockchain = startTransactionIndexInBlockchain;
     }
-
-    public long getEndTransactionSequenceNumberInBlockChain() {
-        return endTransactionSequenceNumberInBlockChain;
-    }
-
-    public void setEndTransactionSequenceNumberInBlockChain(long endTransactionSequenceNumberInBlockChain) {
-        this.endTransactionSequenceNumberInBlockChain = endTransactionSequenceNumberInBlockChain;
-    }
-
-//endregion
+    //endregion
 }
