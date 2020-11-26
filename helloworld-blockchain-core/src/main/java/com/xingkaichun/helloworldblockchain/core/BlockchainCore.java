@@ -17,8 +17,6 @@ import java.util.List;
  * @see BlockchainDatabase
  * 矿工：可以收集交易，挖矿，将新挖取的矿放进区块链数据库
  * @see com.xingkaichun.helloworldblockchain.core.Miner
- * 区块链同步器：区块链是一个分布式的数据库，同步器可以同步其它节点的区块链数据。
- * @see com.xingkaichun.helloworldblockchain.core.Synchronizer
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
@@ -30,14 +28,11 @@ public abstract class BlockchainCore {
     protected Miner miner ;
     //钱包
     protected Wallet wallet ;
-    //区块链同步器
-    protected Synchronizer synchronizer ;
 
-    public BlockchainCore(BlockchainDatabase blockchainDataBase, Wallet wallet, Miner miner, Synchronizer synchronizer) {
+    public BlockchainCore(BlockchainDatabase blockchainDataBase, Wallet wallet, Miner miner) {
         this.blockchainDataBase = blockchainDataBase;
         this.wallet = wallet;
         this.miner = miner;
-        this.synchronizer = synchronizer;
     }
 
     /**
@@ -148,10 +143,6 @@ public abstract class BlockchainCore {
 
     public Miner getMiner() {
         return miner;
-    }
-
-    public Synchronizer getSynchronizer() {
-        return synchronizer;
     }
 
     public Wallet getWallet() {

@@ -55,7 +55,7 @@ public class NetBlockchainCoreFactory {
         BlockchainNodeHttpServer blockchainNodeHttpServer = new BlockchainNodeHttpServer(httpServerHandlerResolver);
         NodeSearcher nodeSearcher = new NodeSearcher(configurationService,nodeService, blockchainNodeClient);
         NodeBroadcaster nodeBroadcaster = new NodeBroadcaster(nodeService, blockchainNodeClient);
-        BlockSearcher blockSearcher = new BlockSearcher(nodeService,synchronizeRemoteNodeBlockService,blockchainCore, slaveBlockchainCore, blockchainNodeClient);
+        BlockSearcher blockSearcher = new BlockSearcher(configurationService,nodeService,synchronizeRemoteNodeBlockService,blockchainCore, slaveBlockchainCore, blockchainNodeClient);
         BlockBroadcaster blockBroadcaster = new BlockBroadcaster(nodeService,blockchainCore, blockchainNodeClient);
         NetBlockchainCore netBlockchainCore
                 = new NetBlockchainCore(blockchainCore, slaveBlockchainCore, blockchainNodeHttpServer, configurationService

@@ -7,6 +7,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeClient;
+import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.service.SynchronizeRemoteNodeBlockService;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
@@ -29,6 +30,7 @@ public class BlockSearcher {
 
     private static final Logger logger = LoggerFactory.getLogger(BlockSearcher.class);
 
+    private ConfigurationService configurationService;
     private NodeService nodeService;
     private SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService;
     private BlockchainCore blockchainCore;
@@ -36,11 +38,12 @@ public class BlockSearcher {
     private BlockchainNodeClient blockchainNodeClient;
 
 
-    public BlockSearcher(NodeService nodeService
+    public BlockSearcher(ConfigurationService configurationService, NodeService nodeService
             , SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService
             , BlockchainCore blockchainCore
             , BlockchainCore slaveBlockchainCore
             , BlockchainNodeClient blockchainNodeClient) {
+        this.configurationService = configurationService;
         this.nodeService = nodeService;
         this.synchronizeRemoteNodeBlockService = synchronizeRemoteNodeBlockService;
         this.blockchainCore = blockchainCore;
@@ -69,7 +72,7 @@ public class BlockSearcher {
         new Thread(()->{
             while (true){
                 try {
-                    if(blockchainCore.getSynchronizer().isActive()){
+                    if(configurationService.isSynchronizerActive()){
                         synchronizeBlocks();
                     }
                 } catch (Exception e) {

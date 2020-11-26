@@ -36,9 +36,8 @@ public class BlockchainCoreFactory {
 
         SynchronizerDatabase synchronizerDataBase = new SynchronizerDatabaseDefaultImpl(blockchainDataPath);
         BlockchainDatabase temporaryBlockchainDatabase = new BlockchainDatabaseDefaultImpl(new File(blockchainDataPath,"TemporaryBlockchainDataBase").getAbsolutePath(),incentive,consensus);
-        Synchronizer synchronizer = new SynchronizerDefaultImpl(blockchainDataBase, temporaryBlockchainDatabase,synchronizerDataBase);
 
-        BlockchainCore blockchainCore = new BlockchainCoreImpl(blockchainDataBase,wallet,miner,synchronizer);
+        BlockchainCore blockchainCore = new BlockchainCoreImpl(blockchainDataBase,wallet,miner);
         return blockchainCore;
     }
 }

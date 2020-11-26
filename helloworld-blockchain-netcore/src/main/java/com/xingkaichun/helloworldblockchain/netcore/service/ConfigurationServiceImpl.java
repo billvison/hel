@@ -16,6 +16,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     //是否自动搜寻区块链网络节点？
     private static final String IS_AUTO_SEARCH_NODE = "IS_AUTO_SEARCH_NODE";
 
+    //同步开关:默认同步其它节点区块链数据
+    private boolean synchronizeOption = true;
+
     private BlockchainCore blockchainCore;
     private ConfigurationDao configurationDao;
 
@@ -69,9 +72,9 @@ public class ConfigurationServiceImpl implements ConfigurationService {
     @Override
     public void restoreSynchronizerConfiguration() {
         if(isSynchronizerActive()){
-            blockchainCore.getSynchronizer().active();
+            synchronizeOption = true;
         }else {
-            blockchainCore.getSynchronizer().deactive();
+            synchronizeOption = false;
         }
     }
 
@@ -87,14 +90,14 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
     @Override
     public void activeSynchronizer() {
-        blockchainCore.getSynchronizer().active();
+        synchronizeOption = true;
         ConfigurationEntity configurationEntity = new ConfigurationEntity(IS_SYNCHRONIZER_ACTIVE,String.valueOf(true));
         setConfiguration(configurationEntity);
     }
 
     @Override
     public void deactiveSynchronizer() {
-        blockchainCore.getSynchronizer().active();
+        synchronizeOption = false;
         ConfigurationEntity configurationEntity = new ConfigurationEntity(IS_SYNCHRONIZER_ACTIVE,String.valueOf(false));
         setConfiguration(configurationEntity);
     }

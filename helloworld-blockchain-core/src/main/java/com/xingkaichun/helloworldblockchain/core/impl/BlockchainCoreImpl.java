@@ -32,22 +32,12 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
     private static final Logger logger = LoggerFactory.getLogger(BlockchainCoreImpl.class);
 
-    public BlockchainCoreImpl(BlockchainDatabase blockchainDataBase, Wallet wallet, Miner miner, Synchronizer synchronizer) {
-        super(blockchainDataBase,wallet,miner,synchronizer);
+    public BlockchainCoreImpl(BlockchainDatabase blockchainDataBase, Wallet wallet, Miner miner) {
+        super(blockchainDataBase,wallet,miner);
     }
 
     @Override
     public void start() {
-        //启动区块链同步器线程
-        new Thread(
-                ()->{
-                    try {
-                        synchronizer.start();
-                    } catch (Exception e) {
-                        logger.error("区块链同步器在运行中发生异常并退出，请检查修复异常！",e);
-                    }
-                }
-        ).start();
         //启动矿工线程
         new Thread(
                 ()->{

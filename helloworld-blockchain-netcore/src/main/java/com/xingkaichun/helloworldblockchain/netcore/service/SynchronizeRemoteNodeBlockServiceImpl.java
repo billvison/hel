@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.netcore.service;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockchainDatabase;
-import com.xingkaichun.helloworldblockchain.core.Synchronizer;
 import com.xingkaichun.helloworldblockchain.core.SynchronizerDatabase;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
@@ -46,12 +45,8 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     @Override
     public void synchronizeRemoteNodeBlock(NodeDto node) {
         BlockchainDatabase blockchainDataBase = blockchainCore.getBlockchainDataBase();
-        Synchronizer synchronizer = blockchainCore.getSynchronizer();
-        SynchronizerDatabase synchronizerDataBase = synchronizer.getSynchronizerDataBase();
 
         String nodeId = buildNodeId(node);
-        //这里直接清除老旧的数据，这里希望同步的操作可以在进程没有退出之前完成。
-        synchronizerDataBase.clear(nodeId);
         Block tailBlock = blockchainDataBase.queryTailBlock();
         long localBlockchainHeight = tailBlock==null? LongUtil.ZERO:tailBlock.getHeight();
 
@@ -90,7 +85,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 }
                 //分叉长度过大，不可同步。这里，认为这已经形成了硬分叉(两条完全不同的区块链)。
                 if (LongUtil.isGreatThan(localBlockchainHeight, forkBlockHeight + GlobalSetting.NodeConstant.FORK_BLOCK_SIZE)) {
-                    forkNodeHandler(node, synchronizerDataBase);
+                    forkNodeHandler(node);
                     return;
                 }
                 ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeightResponseServiceResult = blockchainNodeClient.queryBlockHashByBlockHeight(node,forkBlockHeight);
@@ -132,20 +127,17 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
             while (true){
                 BlockDTO blockDTO = getBlockDtoByBlockHeight(node,tempBlockHeight);
                 if(blockDTO == null){
-                    synchronizerDataBase.clear(nodeId);
                     return;
                 }
 
                 ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeightResponseServiceResult = blockchainNodeClient.queryBlockHashByBlockHeight(node,tempBlockHeight);
                 if(!ServiceResult.isSuccess(queryBlockHashByBlockHeightResponseServiceResult)){
-                    synchronizerDataBase.clear(nodeId);
                     return;
                 }
 
                 Block block = Dto2ModelTool.blockDto2Block(blockchainDataBase,blockDTO);
                 boolean isAddBlockSuccess = blockchainDataBase.addBlock(block);
                 if(!isAddBlockSuccess){
-                    synchronizerDataBase.clear(nodeId);
                     return;
                 }
                 tempBlockHeight = tempBlockHeight + LongUtil.ONE;
@@ -156,8 +148,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     /**
      * 这里表明真的分叉区块个数过多了，形成了新的分叉，区块链协议不支持同步了。
      */
-    private void forkNodeHandler(NodeDto node, SynchronizerDatabase synchronizerDataBase) {
-        synchronizerDataBase.clear(buildNodeId(node));
+    private void forkNodeHandler(NodeDto node) {
         nodeService.updateOrInsertForkPropertity(node);
     }
 
@@ -166,21 +157,11 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     }
 
     private BlockDTO getBlockDtoByBlockHeight(NodeDto node, long blockHeight) {
-        BlockDTO localBlockDTO = getLocalBlockDtoByBlockHeight(node,blockHeight);
-        if(localBlockDTO != null){
-            return localBlockDTO;
-        }
         ServiceResult<QueryBlockDtoByBlockHeightResponse> blockDtoServiceResult = blockchainNodeClient.queryBlockDtoByBlockHeight(node,blockHeight);
         if(!ServiceResult.isSuccess(blockDtoServiceResult)){
             return null;
         }
         BlockDTO blockDTO = blockDtoServiceResult.getResult().getBlockDTO();
-        return blockDTO;
-    }
-
-    private BlockDTO getLocalBlockDtoByBlockHeight(NodeDto node, long blockHeight) {
-        SynchronizerDatabase synchronizerDataBase = blockchainCore.getSynchronizer().getSynchronizerDataBase();
-        BlockDTO blockDTO = synchronizerDataBase.getBlockDto(buildNodeId(node),blockHeight);
         return blockDTO;
     }
 }
