@@ -108,8 +108,7 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
                 if(blockDTO == null){
                     break;
                 }
-                //TODO
-                Block block = null;//Dto2ModelTool.blockDto2Block(slaveBlockchainCore,blockDTO);
+                Block block = Dto2ModelTool.blockDto2Block(slaveBlockchainCore.getBlockchainDataBase(),blockDTO);
                 boolean isAddBlockSuccess = slaveBlockchainCore.addBlock(block);
                 if(!isAddBlockSuccess){
                     return;
