@@ -178,8 +178,8 @@ public class BlockSearcher {
 
 
     /**
-     * 若masterBlockchainCore的高度小于blockchainDataBaseTemporary的高度，
-     * 则masterBlockchainCore同步blockchainDataBaseTemporary的数据。
+     * 若masterBlockchainCore的高度小于slaveBlockchainCore的高度，
+     * 则masterBlockchainCore同步slaveBlockchainCore的数据。
      * @param blockchainCore
      * @param slaveBlockchainCore
      */
