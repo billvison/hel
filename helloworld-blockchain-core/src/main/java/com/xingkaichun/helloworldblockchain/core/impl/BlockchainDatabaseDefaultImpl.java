@@ -269,7 +269,8 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     public long queryBlockHeightByBlockHash(String blockHash) {
         byte[] bytesBlockHeight = LevelDBUtil.get(blockchainDB, BlockchainDatabaseKeyTool.buildBlockHashToBlockHeightKey(blockHash));
         if(bytesBlockHeight == null){
-            return LongUtil.ZERO;
+            //这个高度在区块链中一定不存在，说明根据区块哈希没有查询到区块高度
+            return GlobalSetting.GenesisBlock.HEIGHT - 1;
         }
         return LevelDBUtil.bytesToLong(bytesBlockHeight);
     }
@@ -509,20 +510,16 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * 补充区块的属性
      */
     private void fillBlockProperty(Block block) {
-        long transactionIndexInBlock = LongUtil.ZERO;
+        long transactionIndexInBlock = 1;
         long transactionIndexInBlockchain = queryTransactionCount();
         long blockHeight = block.getHeight();
         String blockHash = block.getHash();
         List<Transaction> transactions = block.getTransactions();
-        long transactionQuantity = transactions==null?LongUtil.ZERO:transactions.size();
+        long transactionQuantity = transactions==null?0:transactions.size();
         block.setTransactionQuantity(transactionQuantity);
-        block.setStartTransactionIndexInBlockchain(
-                LongUtil.isEquals(transactionQuantity,LongUtil.ZERO)?
-                        LongUtil.ZERO:
-                        (transactionIndexInBlockchain+1));
+        block.setStartTransactionIndexInBlockchain(LongUtil.isEquals(transactionQuantity,0)?0:(transactionIndexInBlockchain+1));
         if(transactions != null){
             for(Transaction transaction:transactions){
-                transactionIndexInBlock++;
                 transactionIndexInBlockchain++;
                 transaction.setBlockHeight(blockHeight);
                 transaction.setTransactionIndexInBlock(transactionIndexInBlock);
@@ -539,6 +536,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                         transactionOutput.setTransactionIndexInBlock(transaction.getTransactionIndexInBlock());
                     }
                 }
+                transactionIndexInBlock++;
             }
         }
     }

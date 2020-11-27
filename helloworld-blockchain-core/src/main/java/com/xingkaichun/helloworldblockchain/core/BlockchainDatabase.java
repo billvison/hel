@@ -76,6 +76,7 @@ public abstract class BlockchainDatabase {
     public abstract long queryTransactionCount() ;
     /**
      * 根据区块哈希查找区块高度
+     * 如果区块哈希不存在，将返回一个比GlobalSetting.GenesisBlock.HEIGHT小的数。
      */
     public abstract long queryBlockHeightByBlockHash(String blockHash) ;
     /**

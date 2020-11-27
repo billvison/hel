@@ -135,7 +135,7 @@ public class NodeServiceImpl implements NodeService {
 
     private void fillNodeDefaultValue(NodeEntity nodeEntity) {
         if(nodeEntity.getBlockchainHeight() == null){
-            nodeEntity.setBlockchainHeight(LongUtil.ZERO);
+            nodeEntity.setBlockchainHeight(GlobalSetting.GenesisBlock.HEIGHT);
         }
         if(nodeEntity.getIsNodeAvailable() == null){
             nodeEntity.setIsNodeAvailable(true);
