@@ -3,8 +3,6 @@ package com.xingkaichun.helloworldblockchain.core;
 import com.xingkaichun.helloworldblockchain.core.impl.*;
 import com.xingkaichun.helloworldblockchain.core.tools.ResourcePathTool;
 
-import java.io.File;
-
 /**
  * 创建BlockchainCore的工厂
  *
@@ -33,9 +31,6 @@ public class BlockchainCoreFactory {
         MinerTransactionDtoDatabase minerTransactionDtoDataBase = new MinerTransactionDtoDtoDatabaseDefaultImpl(blockchainDataPath);
         Wallet wallet = new WalletImpl(blockchainDataPath);
         Miner miner = new MinerDefaultImpl(wallet,blockchainDataBase,minerTransactionDtoDataBase);
-
-        BlockchainDatabase temporaryBlockchainDatabase = new BlockchainDatabaseDefaultImpl(new File(blockchainDataPath,"TemporaryBlockchainDataBase").getAbsolutePath(),incentive,consensus);
-
         BlockchainCore blockchainCore = new BlockchainCoreImpl(blockchainDataBase,wallet,miner);
         return blockchainCore;
     }

@@ -100,7 +100,7 @@ public class BlockSearcher {
                 //提高主区块链核心的高度
                 promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
                 //同步主区块链核心数据到从区块链核心
-                copyMasterBlockchainCoreToTemporaryBlockchainDataBase(blockchainCore, slaveBlockchainCore);
+                copyMasterBlockchainCoreToSlaveBlockchainCore(blockchainCore, slaveBlockchainCore);
                 //同步节点的区块到从区块链核心
                 synchronizeRemoteNodeBlock(blockchainCore,slaveBlockchainCore,nodeService,blockchainNodeClient,node);
                 //提高主区块链核心的高度
@@ -136,11 +136,11 @@ public class BlockSearcher {
 
 
     /**
-     * 使得temporaryBlockchainDataBase和masterBlockchainCore的区块链数据一模一样
+     * 使得slaveBlockchainCore和masterBlockchainCore的区块链数据一模一样
      * @param blockchainCore
      * @param slaveBlockchainCore
      */
-    private void copyMasterBlockchainCoreToTemporaryBlockchainDataBase(BlockchainCore blockchainCore,
+    private void copyMasterBlockchainCoreToSlaveBlockchainCore(BlockchainCore blockchainCore,
                                                                            BlockchainCore slaveBlockchainCore) {
         Block targetBlockchainTailBlock = blockchainCore.queryTailBlock() ;
         Block temporaryBlockchainTailBlock = slaveBlockchainCore.queryTailBlock() ;
