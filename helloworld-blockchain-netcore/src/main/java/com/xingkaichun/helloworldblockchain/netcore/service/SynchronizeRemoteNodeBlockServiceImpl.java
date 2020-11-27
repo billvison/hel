@@ -45,7 +45,6 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
     public void synchronizeRemoteNodeBlock(NodeDto node) {
         BlockchainDatabase blockchainDataBase = blockchainCore.getBlockchainDataBase();
 
-        String nodeId = buildNodeId(node);
         Block tailBlock = blockchainDataBase.queryTailBlock();
         long localBlockchainHeight = tailBlock==null? LongUtil.ZERO:tailBlock.getHeight();
 
@@ -148,10 +147,6 @@ public class SynchronizeRemoteNodeBlockServiceImpl implements SynchronizeRemoteN
      */
     private void forkNodeHandler(NodeDto node) {
         nodeService.updateOrInsertForkPropertity(node);
-    }
-
-    private String buildNodeId(NodeDto node) {
-        return node.getIp();
     }
 
     private BlockDTO getBlockDtoByBlockHeight(NodeDto node, long blockHeight) {
