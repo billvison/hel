@@ -251,8 +251,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     public long queryBlockchainHeight() {
         byte[] bytesBlockchainHeight = LevelDBUtil.get(blockchainDB, BlockchainDatabaseKeyTool.buildBlockchainHeightKey());
         if(bytesBlockchainHeight == null){
-            //区块链中没有区块，高度默认为0。
-            return LongUtil.ZERO;
+            return GlobalSetting.GenesisBlock.HEIGHT;
         }
         return LevelDBUtil.bytesToLong(bytesBlockchainHeight);
     }
@@ -261,7 +260,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     public long queryTransactionCount() {
         byte[] byteTotalTransactionCount = LevelDBUtil.get(blockchainDB, BlockchainDatabaseKeyTool.buildBlockchainTransactionCountKey());
         if(byteTotalTransactionCount == null){
-            return LongUtil.ZERO;
+            return 0;
         }
         return LevelDBUtil.bytesToLong(byteTotalTransactionCount);
     }
@@ -291,7 +290,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     @Override
     public Block queryTailBlock() {
         long blockchainHeight = queryBlockchainHeight();
-        if(LongUtil.isLessEqualThan(blockchainHeight,LongUtil.ZERO)){
+        if(LongUtil.isLessEqualThan(blockchainHeight, GlobalSetting.GenesisBlock.HEIGHT)){
             return null;
         }
         return queryBlockByBlockHeight(blockchainHeight);
@@ -307,7 +306,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     @Override
     public Block queryBlockByBlockHash(String blockHash) {
         long blockHeight = queryBlockHeightByBlockHash(blockHash);
-        if(LongUtil.isLessEqualThan(blockHeight,LongUtil.ZERO)){
+        if(LongUtil.isLessEqualThan(blockHeight, GlobalSetting.GenesisBlock.HEIGHT)){
             return null;
         }
         return queryBlockByBlockHeight(blockHeight);
