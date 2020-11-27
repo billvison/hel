@@ -84,6 +84,32 @@ public class BlockSearcher {
         }).start();
     }
 
+
+
+
+    /**
+     * 在区块链网络中搜寻新的区块
+     */
+    private void searchBlocks() {
+        List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
+        for(NodeDto node:nodes){
+            ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClient.pingNode(node);
+            boolean isPingSuccess = ServiceResult.isSuccess(pingResponseServiceResult);
+            node.setIsNodeAvailable(isPingSuccess);
+            if(isPingSuccess){
+                PingResponse pingResponse = pingResponseServiceResult.getResult();
+                node.setBlockchainHeight(pingResponse.getBlockchainHeight());
+                node.setErrorConnectionTimes(0);
+                nodeService.updateNode(node);
+            } else {
+                nodeService.nodeConnectionErrorHandle(node);
+            }
+        }
+    }
+
+
+
+
     /**
      * 搜索新的区块，并同步这些区块到本地区块链系统
      */
@@ -111,29 +137,6 @@ public class BlockSearcher {
             }
         }
     }
-
-
-    /**
-     * 在区块链网络中搜寻新的区块
-     */
-    private void searchBlocks() {
-        List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
-        for(NodeDto node:nodes){
-            ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClient.pingNode(node);
-            boolean isPingSuccess = ServiceResult.isSuccess(pingResponseServiceResult);
-            node.setIsNodeAvailable(isPingSuccess);
-            if(isPingSuccess){
-                PingResponse pingResponse = pingResponseServiceResult.getResult();
-                node.setBlockchainHeight(pingResponse.getBlockchainHeight());
-                node.setErrorConnectionTimes(0);
-                nodeService.updateNode(node);
-            } else {
-                nodeService.nodeConnectionErrorHandle(node);
-            }
-        }
-    }
-
-
 
     /**
      * 使得slaveBlockchainCore和masterBlockchainCore的区块链数据一模一样
