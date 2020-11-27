@@ -336,11 +336,6 @@ public class BlockSearcher {
                     return;
                 }
 
-                ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeightResponseServiceResult = blockchainNodeClient.queryBlockHashByBlockHeight(node,tempBlockHeight);
-                if(!ServiceResult.isSuccess(queryBlockHashByBlockHeightResponseServiceResult)){
-                    return;
-                }
-
                 Block block = Dto2ModelTool.blockDto2Block(blockchainDataBase,blockDTO);
                 boolean isAddBlockSuccess = blockchainDataBase.addBlock(block);
                 if(!isAddBlockSuccess){
