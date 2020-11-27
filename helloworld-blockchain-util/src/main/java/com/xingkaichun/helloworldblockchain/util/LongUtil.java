@@ -7,8 +7,6 @@ package com.xingkaichun.helloworldblockchain.util;
  */
 public class LongUtil {
     public static final long ZERO = 0;
-    public static final long ONE = 1;
-
 
     public static boolean isEquals(long long1,long long2){
         return long1 == long2;

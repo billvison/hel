@@ -35,7 +35,7 @@ public class IncentiveDefaultImpl extends Incentive {
     private long getSubsidy(Block block) {
         long subsidy = GlobalSetting.MinerConstant.INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT;
         long blockHeight = block.getHeight();
-        if(LongUtil.isLessEqualThan(blockHeight,LongUtil.ONE)){
+        if(LongUtil.isLessEqualThan(blockHeight,1)){
         }else {
             long height = block.getHeight();
             long multiple = (height-1) / 210000;

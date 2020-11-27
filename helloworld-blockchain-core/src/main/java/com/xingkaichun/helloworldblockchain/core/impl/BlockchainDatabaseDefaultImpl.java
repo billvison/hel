@@ -520,7 +520,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         block.setStartTransactionIndexInBlockchain(
                 LongUtil.isEquals(transactionQuantity,LongUtil.ZERO)?
                         LongUtil.ZERO:
-                        (transactionIndexInBlockchain+LongUtil.ONE));
+                        (transactionIndexInBlockchain+1));
         if(transactions != null){
             for(Transaction transaction:transactions){
                 transactionIndexInBlock++;
