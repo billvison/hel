@@ -36,7 +36,7 @@ public interface NodeService {
     /**
      * 设置节点为分叉节点
      */
-    void updateOrInsertForkPropertity(BaseNodeDto node);
+    void setNodeFork(BaseNodeDto node);
 
     /**
      * 删除节点

@@ -11,7 +11,10 @@ import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeCl
 import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeClientImpl;
 import com.xingkaichun.helloworldblockchain.netcore.node.server.BlockchainNodeHttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.node.server.HttpServerHandlerResolver;
-import com.xingkaichun.helloworldblockchain.netcore.service.*;
+import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
+import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationServiceImpl;
+import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
+import com.xingkaichun.helloworldblockchain.netcore.service.NodeServiceImpl;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
 
 /**
@@ -49,13 +52,11 @@ public class NetBlockchainCoreFactory {
         NodeService nodeService = new NodeServiceImpl(nodeDao);
         BlockchainNodeClient blockchainNodeClient = new BlockchainNodeClientImpl();
 
-        SynchronizeRemoteNodeBlockService synchronizeRemoteNodeBlockService = new SynchronizeRemoteNodeBlockServiceImpl(blockchainCore,slaveBlockchainCore,nodeService, blockchainNodeClient,configurationService);
-
         HttpServerHandlerResolver httpServerHandlerResolver = new HttpServerHandlerResolver(blockchainCore,nodeService,configurationService);
         BlockchainNodeHttpServer blockchainNodeHttpServer = new BlockchainNodeHttpServer(httpServerHandlerResolver);
         NodeSearcher nodeSearcher = new NodeSearcher(configurationService,nodeService, blockchainNodeClient);
         NodeBroadcaster nodeBroadcaster = new NodeBroadcaster(nodeService, blockchainNodeClient);
-        BlockSearcher blockSearcher = new BlockSearcher(configurationService,nodeService,synchronizeRemoteNodeBlockService,blockchainCore, slaveBlockchainCore, blockchainNodeClient);
+        BlockSearcher blockSearcher = new BlockSearcher(configurationService,nodeService,blockchainCore, slaveBlockchainCore, blockchainNodeClient);
         BlockBroadcaster blockBroadcaster = new BlockBroadcaster(nodeService,blockchainCore, blockchainNodeClient);
         NetBlockchainCore netBlockchainCore
                 = new NetBlockchainCore(blockchainCore, slaveBlockchainCore, blockchainNodeHttpServer, configurationService

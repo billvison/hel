@@ -53,7 +53,7 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public void updateOrInsertForkPropertity(BaseNodeDto baseNodeDto){
+    public void setNodeFork(BaseNodeDto baseNodeDto){
         NodeEntity nodeEntity = nodeDao.queryNode(baseNodeDto.getIp());
         if(nodeEntity == null){
             nodeEntity = new NodeEntity();
