@@ -515,9 +515,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         long blockHeight = block.getHeight();
         String blockHash = block.getHash();
         List<Transaction> transactions = block.getTransactions();
-        long transactionQuantity = transactions==null?0:transactions.size();
-        block.setTransactionQuantity(transactionQuantity);
-        block.setStartTransactionIndexInBlockchain(LongUtil.isEquals(transactionQuantity,0)?0:(transactionIndexInBlockchain+1));
+        long transactionCount = BlockTool.getTransactionCount(block);
+        block.setTransactionCount(transactionCount);
+        block.setStartTransactionIndexInBlockchain(LongUtil.isEquals(transactionCount,0)?0:(transactionIndexInBlockchain+1));
         if(transactions != null){
             for(Transaction transaction:transactions){
                 transactionIndexInBlockchain++;
@@ -676,11 +676,11 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      */
     private void storeBlockchainTransactionCount(WriteBatch writeBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         long transactionCount = queryTransactionCount();
-        byte[] bytesBlockchainTransactionQuantityKey = BlockchainDatabaseKeyTool.buildBlockchainTransactionCountKey();
+        byte[] bytesBlockchainTransactionCountKey = BlockchainDatabaseKeyTool.buildBlockchainTransactionCountKey();
         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-            writeBatch.put(bytesBlockchainTransactionQuantityKey, LevelDBUtil.longToBytes(transactionCount + BlockTool.getTransactionCount(block)));
+            writeBatch.put(bytesBlockchainTransactionCountKey, LevelDBUtil.longToBytes(transactionCount + BlockTool.getTransactionCount(block)));
         }else{
-            writeBatch.put(bytesBlockchainTransactionQuantityKey, LevelDBUtil.longToBytes(transactionCount - BlockTool.getTransactionCount(block)));
+            writeBatch.put(bytesBlockchainTransactionCountKey, LevelDBUtil.longToBytes(transactionCount - BlockTool.getTransactionCount(block)));
         }
     }
     /**

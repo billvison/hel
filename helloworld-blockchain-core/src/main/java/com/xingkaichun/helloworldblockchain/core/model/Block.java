@@ -91,7 +91,7 @@ public class Block implements Serializable {
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
-    private long transactionQuantity;
+    private long transactionCount;
 
     /**
      * 区块中第一笔交易的序列号。
@@ -172,12 +172,12 @@ public class Block implements Serializable {
         this.bits = bits;
     }
 
-    public long getTransactionQuantity() {
-        return transactionQuantity;
+    public long getTransactionCount() {
+        return transactionCount;
     }
 
-    public void setTransactionQuantity(long transactionQuantity) {
-        this.transactionQuantity = transactionQuantity;
+    public void setTransactionCount(long transactionCount) {
+        this.transactionCount = transactionCount;
     }
 
     public long getStartTransactionIndexInBlockchain() {
