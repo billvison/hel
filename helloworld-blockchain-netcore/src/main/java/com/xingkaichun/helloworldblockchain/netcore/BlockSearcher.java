@@ -98,13 +98,13 @@ public class BlockSearcher {
         for(NodeDto node:nodes){
             if(LongUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
                 //提高主区块链核心的高度
-                promoteTargetBlockchainDataBase(blockchainCore, slaveBlockchainCore);
+                promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
                 //同步主区块链核心数据到从区块链核心
-                copyTargetBlockchainDataBaseToTemporaryBlockchainDataBase(blockchainCore, slaveBlockchainCore);
+                copyMasterBlockchainCoreToTemporaryBlockchainDataBase(blockchainCore, slaveBlockchainCore);
                 //同步节点的区块到从区块链核心
                 synchronizeRemoteNodeBlock(blockchainCore,slaveBlockchainCore,nodeService,blockchainNodeClient,node);
                 //提高主区块链核心的高度
-                promoteTargetBlockchainDataBase(blockchainCore, slaveBlockchainCore);
+                promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
 
                 //同步之后，本地区块链高度已经发生改变了
                 localBlockchainHeight = blockchainCore.queryBlockchainHeight();
@@ -136,11 +136,11 @@ public class BlockSearcher {
 
 
     /**
-     * 使得temporaryBlockchainDataBase和targetBlockchainDataBase的区块链数据一模一样
+     * 使得temporaryBlockchainDataBase和masterBlockchainCore的区块链数据一模一样
      * @param blockchainCore
      * @param slaveBlockchainCore
      */
-    private void copyTargetBlockchainDataBaseToTemporaryBlockchainDataBase(BlockchainCore blockchainCore,
+    private void copyMasterBlockchainCoreToTemporaryBlockchainDataBase(BlockchainCore blockchainCore,
                                                                            BlockchainCore slaveBlockchainCore) {
         Block targetBlockchainTailBlock = blockchainCore.queryTailBlock() ;
         Block temporaryBlockchainTailBlock = slaveBlockchainCore.queryTailBlock() ;
@@ -178,12 +178,12 @@ public class BlockSearcher {
 
 
     /**
-     * 若targetBlockchainDataBase的高度小于blockchainDataBaseTemporary的高度，
-     * 则targetBlockchainDataBase同步blockchainDataBaseTemporary的数据。
+     * 若masterBlockchainCore的高度小于blockchainDataBaseTemporary的高度，
+     * 则masterBlockchainCore同步blockchainDataBaseTemporary的数据。
      * @param blockchainCore
      * @param slaveBlockchainCore
      */
-    private void promoteTargetBlockchainDataBase(BlockchainCore blockchainCore,
+    private void promoteMasterBlockchainCore(BlockchainCore blockchainCore,
                                                  BlockchainCore slaveBlockchainCore) {
         Block targetBlockchainTailBlock = blockchainCore.queryTailBlock();
         Block temporaryBlockchainTailBlock = slaveBlockchainCore.queryTailBlock() ;
