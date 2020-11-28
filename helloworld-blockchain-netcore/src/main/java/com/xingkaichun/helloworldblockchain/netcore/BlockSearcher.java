@@ -143,11 +143,10 @@ public class BlockSearcher {
      * @param masterBlockchainCore
      * @param slaveBlockchainCore
      */
-    private void copyMasterBlockchainCoreToSlaveBlockchainCore(BlockchainCore masterBlockchainCore,
-                                                                           BlockchainCore slaveBlockchainCore) {
-        Block targetBlockchainTailBlock = masterBlockchainCore.queryTailBlock() ;
+    private void copyMasterBlockchainCoreToSlaveBlockchainCore(BlockchainCore masterBlockchainCore,BlockchainCore slaveBlockchainCore) {
+        Block masterBlockchainTailBlock = masterBlockchainCore.queryTailBlock() ;
         Block slaveBlockchainTailBlock = slaveBlockchainCore.queryTailBlock() ;
-        if(targetBlockchainTailBlock == null){
+        if(masterBlockchainTailBlock == null){
             //清空slave
             slaveBlockchainCore.deleteBlocksUtilBlockHeightLessThan(GlobalSetting.GenesisBlock.HEIGHT);
             return;
@@ -157,22 +156,21 @@ public class BlockSearcher {
             if(slaveBlockchainTailBlock == null){
                 break;
             }
-            Block targetBlockchainBlock = masterBlockchainCore.queryBlockByBlockHeight(slaveBlockchainTailBlock.getHeight());
-            if(BlockTool.isBlockEquals(targetBlockchainBlock,slaveBlockchainTailBlock)){
+            Block masterBlockchainBlock = masterBlockchainCore.queryBlockByBlockHeight(slaveBlockchainTailBlock.getHeight());
+            if(BlockTool.isBlockEquals(masterBlockchainBlock,slaveBlockchainTailBlock)){
                 break;
             }
             slaveBlockchainCore.deleteTailBlock();
             slaveBlockchainTailBlock = slaveBlockchainCore.queryTailBlock();
         }
-        //复制target数据至slave
-        long slaveBlockchainHeight = slaveBlockchainCore.queryBlockchainHeight();
+        //复制master数据至slave
         while(true){
-            slaveBlockchainHeight++;
-            Block currentBlock = masterBlockchainCore.queryBlockByBlockHeight(slaveBlockchainHeight) ;
-            if(currentBlock == null){
+            long slaveBlockchainHeight = slaveBlockchainCore.queryBlockchainHeight();
+            Block nextBlock = masterBlockchainCore.queryBlockByBlockHeight(slaveBlockchainHeight+1) ;
+            if(nextBlock == null){
                 break;
             }
-            boolean isAddBlockToBlockchainSuccess = slaveBlockchainCore.addBlock(currentBlock);
+            boolean isAddBlockToBlockchainSuccess = slaveBlockchainCore.addBlock(nextBlock);
             if(!isAddBlockToBlockchainSuccess){
                 return;
             }
@@ -181,8 +179,7 @@ public class BlockSearcher {
 
 
     /**
-     * 若masterBlockchainCore的高度小于slaveBlockchainCore的高度，
-     * 则masterBlockchainCore同步slaveBlockchainCore的数据。
+     * 增加主区块链的区块
      * @param masterBlockchainCore
      * @param slaveBlockchainCore
      */
@@ -190,7 +187,7 @@ public class BlockSearcher {
                                                  BlockchainCore slaveBlockchainCore) {
         Block masterBlockchainTailBlock = masterBlockchainCore.queryTailBlock();
         Block slaveBlockchainTailBlock = slaveBlockchainCore.queryTailBlock() ;
-        //不需要调整
+        //不需要调整：主区块链的高度一定大于或等于辅区块链的高度
         if(slaveBlockchainTailBlock == null){
             return;
         }
@@ -202,39 +199,52 @@ public class BlockSearcher {
             }
             masterBlockchainTailBlock = masterBlockchainCore.queryTailBlock();
         }
-        if(masterBlockchainTailBlock == null){
-            throw new RuntimeException("在这个时刻，targetBlockchainTailBlock必定不为null。");
-        }
         if(LongUtil.isGreatEqualThan(masterBlockchainTailBlock.getHeight(),slaveBlockchainTailBlock.getHeight())){
             return;
         }
-        //未分叉区块高度
-        long noForkBlockHeight = masterBlockchainTailBlock.getHeight();
+
+        //是否硬分叉
+        long blockHeight = masterBlockchainTailBlock.getHeight();
         while (true){
-            if(LongUtil.isLessEqualThan(noForkBlockHeight,GlobalSetting.GenesisBlock.HEIGHT)){
+            if(LongUtil.isLessEqualThan(blockHeight,GlobalSetting.GenesisBlock.HEIGHT)){
                 break;
             }
-            Block targetBlock = masterBlockchainCore.queryBlockByBlockHeight(noForkBlockHeight);
-            if(targetBlock == null){
+            Block masterBlock = masterBlockchainCore.queryBlockByBlockHeight(blockHeight);
+            Block slaveBlock = slaveBlockchainCore.queryBlockByBlockHeight(blockHeight);
+            if(BlockTool.isBlockEquals(masterBlock,slaveBlock)){
                 break;
             }
-            Block slaveBlock = slaveBlockchainCore.queryBlockByBlockHeight(noForkBlockHeight);
-            if(StringUtil.isEquals(targetBlock.getHash(),slaveBlock.getHash()) &&
-                    StringUtil.isEquals(targetBlock.getPreviousBlockHash(),slaveBlock.getPreviousBlockHash())){
+            if(LongUtil.isGreatEqualThan(masterBlockchainTailBlock.getHeight()-blockHeight+1,GlobalSetting.NodeConstant.FORK_BLOCK_SIZE)){
+                //硬分叉，终止。
+                return;
+            }
+            blockHeight--;
+        }
+
+
+        //删除主区块链分叉区块
+        long masterBlockchainTailBlockHeight = masterBlockchainTailBlock.getHeight();
+        while (true){
+            if(LongUtil.isLessEqualThan(masterBlockchainTailBlockHeight,GlobalSetting.GenesisBlock.HEIGHT)){
+                break;
+            }
+            Block masterBlock = masterBlockchainCore.queryBlockByBlockHeight(masterBlockchainTailBlockHeight);
+            Block slaveBlock = slaveBlockchainCore.queryBlockByBlockHeight(masterBlockchainTailBlockHeight);
+            if(StringUtil.isEquals(masterBlock.getHash(),slaveBlock.getHash())){
                 break;
             }
             masterBlockchainCore.deleteTailBlock();
-            noForkBlockHeight = masterBlockchainCore.queryBlockchainHeight();
+            masterBlockchainTailBlockHeight = masterBlockchainCore.queryBlockchainHeight();
         }
 
-        long targetBlockchainHeight = masterBlockchainCore.queryBlockchainHeight() ;
+        //主区块链增加区块
         while(true){
-            targetBlockchainHeight++;
-            Block currentBlock = slaveBlockchainCore.queryBlockByBlockHeight(targetBlockchainHeight) ;
-            if(currentBlock == null){
+            masterBlockchainTailBlockHeight = masterBlockchainCore.queryBlockchainHeight();
+            Block nextBlock = slaveBlockchainCore.queryBlockByBlockHeight(masterBlockchainTailBlockHeight+1) ;
+            if(nextBlock == null){
                 break;
             }
-            boolean isAddBlockToBlockchainSuccess = masterBlockchainCore.addBlock(currentBlock);
+            boolean isAddBlockToBlockchainSuccess = masterBlockchainCore.addBlock(nextBlock);
             if(!isAddBlockToBlockchainSuccess){
                 break;
             }
