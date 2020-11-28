@@ -13,7 +13,6 @@ public interface ConfigurationService {
     void activeMiner() ;
     void deactiveMiner() ;
 
-    void restoreSynchronizerConfiguration();
     boolean isSynchronizerActive();
     void activeSynchronizer() ;
     void deactiveSynchronizer() ;//AUTO_SEARCH_NODE

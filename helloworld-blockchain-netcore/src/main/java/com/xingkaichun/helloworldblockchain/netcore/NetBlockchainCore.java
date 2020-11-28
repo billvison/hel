@@ -13,7 +13,6 @@ import com.xingkaichun.helloworldblockchain.netcore.node.server.BlockchainNodeHt
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,8 +73,6 @@ public class NetBlockchainCore {
     private void restoreConfiguration() {
         //恢复矿工配置
         configurationService.restoreMinerConfiguration();
-        //恢复同步者配置
-        configurationService.restoreSynchronizerConfiguration();
     }
 
 
