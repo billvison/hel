@@ -209,6 +209,9 @@ public class BlockchainCoreImpl extends BlockchainCore {
             //TODO 优化 可能不止100
             String address = AccountUtil.accountFromPrivateKey(privateKey).getAddress();
             List<TransactionOutput> utxoList = blockchainDataBase.queryUnspendTransactionOutputListByAddress(address,0,100);
+            if(utxoList == null){
+                continue;
+            }
             for(TransactionOutput transactionOutput:utxoList){
                 if(haveEnoughMoneyToPay){
                     break;
