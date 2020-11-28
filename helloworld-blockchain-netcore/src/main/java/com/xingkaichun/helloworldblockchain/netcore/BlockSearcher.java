@@ -1,7 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
-import com.xingkaichun.helloworldblockchain.core.BlockchainDatabase;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
@@ -127,7 +126,7 @@ public class BlockSearcher {
                 promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
                 //同步主区块链核心数据到从区块链核心
                 copyMasterBlockchainCoreToSlaveBlockchainCore(blockchainCore, slaveBlockchainCore);
-                //同步节点的区块到从区块链核心
+                //同步远程节点的区块
                 synchronizeRemoteNodeBlock(blockchainCore,slaveBlockchainCore,nodeService,blockchainNodeClient,node);
                 //提高主区块链核心的高度
                 promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
@@ -151,7 +150,7 @@ public class BlockSearcher {
             slaveBlockchainCore.deleteBlocksUtilBlockHeightLessThan(GlobalSetting.GenesisBlock.HEIGHT);
             return;
         }
-        //删除slave区块链直到尚未分叉位置停止
+        //删除slave区块直至slave区块和master区块保持一致
         while(true){
             if(slaveBlockchainTailBlock == null){
                 break;
@@ -252,49 +251,41 @@ public class BlockSearcher {
     }
 
 
-    public void synchronizeRemoteNodeBlock(BlockchainCore blockchainCore, BlockchainCore slaveBlockchainCore, NodeService nodeService, BlockchainNodeClient blockchainNodeClient, NodeDto node) {
-        BlockchainDatabase blockchainDataBase = blockchainCore.getBlockchainDataBase();
+    public void synchronizeRemoteNodeBlock(BlockchainCore masterBlockchainCore, BlockchainCore slaveBlockchainCore, NodeService nodeService, BlockchainNodeClient blockchainNodeClient, NodeDto node) {
 
-        Block tailBlock = blockchainDataBase.queryTailBlock();
-        long localBlockchainHeight = tailBlock==null? GlobalSetting.GenesisBlock.HEIGHT :tailBlock.getHeight();
+        Block masterBlockchainCoreTailBlock = masterBlockchainCore.queryTailBlock();
+        long masterBlockchainCoreTailBlockHeight = masterBlockchainCore.queryBlockchainHeight();
 
         //本地区块链与node区块链是否分叉？
         boolean fork = false;
-        if(LongUtil.isEquals(localBlockchainHeight,GlobalSetting.GenesisBlock.HEIGHT)){
+        if(LongUtil.isEquals(masterBlockchainCoreTailBlockHeight,GlobalSetting.GenesisBlock.HEIGHT)){
             fork = false;
         } else {
-            localBlockchainHeight = tailBlock.getHeight();
-            ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeightResponseServiceResult = blockchainNodeClient.queryBlockHashByBlockHeight(node,localBlockchainHeight);
+            ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeightResponseServiceResult = blockchainNodeClient.queryBlockHashByBlockHeight(node,masterBlockchainCoreTailBlockHeight);
             if(!ServiceResult.isSuccess(queryBlockHashByBlockHeightResponseServiceResult)){
                 return;
             }
             String blockHash = queryBlockHashByBlockHeightResponseServiceResult.getResult().getBlockHash();
-            //远程节点的高度没有本地大
+            //没有查询到区块哈希，代表着远程节点的高度没有本地大
             if(StringUtil.isNullOrEmpty(blockHash)){
                 return;
+            }
+            //没有分叉
+            if(StringUtil.isEquals(masterBlockchainCoreTailBlock.getHash(),blockHash)){
+                fork = false;
             } else {
-                //没有分叉
-                if(StringUtil.isEquals(tailBlock.getHash(),blockHash)){
-                    fork = false;
-                } else {
-                    //有分叉
-                    fork = true;
-                }
+                //有分叉
+                fork = true;
             }
         }
 
         if(fork){
             //分叉
             //分叉的高度
-            long forkBlockHeight = localBlockchainHeight;
+            long forkBlockHeight = masterBlockchainCoreTailBlockHeight;
             while (true) {
                 if (LongUtil.isLessEqualThan(forkBlockHeight, GlobalSetting.GenesisBlock.HEIGHT)) {
                     break;
-                }
-                //分叉长度过大，不可同步。这里，认为这已经形成了硬分叉(两条完全不同的区块链)。
-                if (LongUtil.isGreatThan(localBlockchainHeight, forkBlockHeight + GlobalSetting.NodeConstant.FORK_BLOCK_SIZE)) {
-                    nodeService.setNodeFork(node);
-                    return;
                 }
                 ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeightResponseServiceResult = blockchainNodeClient.queryBlockHashByBlockHeight(node,forkBlockHeight);
                 if(!ServiceResult.isSuccess(queryBlockHashByBlockHeightResponseServiceResult)){
@@ -304,6 +295,11 @@ public class BlockSearcher {
                 Block localBlock = slaveBlockchainCore.queryBlockByBlockHeight(forkBlockHeight);
                 if(StringUtil.isEquals(blockHash,localBlock.getHash())){
                     break;
+                }
+                //分叉长度过大，不可同步。这里，认为这已经形成了硬分叉(两条完全不同的区块链)。
+                if (LongUtil.isGreatThan(masterBlockchainCoreTailBlockHeight, forkBlockHeight + GlobalSetting.NodeConstant.FORK_BLOCK_SIZE)) {
+                    nodeService.setNodeFork(node);
+                    return;
                 }
                 forkBlockHeight--;
             }
@@ -329,15 +325,15 @@ public class BlockSearcher {
                 forkBlockHeight++;
 
                 //若是有分叉时，一次同步的最后一个区块至少要比本地区块链的高度大于N个
-                if(LongUtil.isGreatEqualThan(forkBlockHeight,localBlockchainHeight + GlobalSetting.NodeConstant.FORK_BLOCK_SIZE)){
+                if(LongUtil.isGreatEqualThan(forkBlockHeight,masterBlockchainCoreTailBlockHeight + GlobalSetting.NodeConstant.FORK_BLOCK_SIZE)){
                     return;
                 }
             }
         } else {
             //未分叉
-            long tempBlockHeight = localBlockchainHeight + 1;
             while (true){
-                ServiceResult<QueryBlockDtoByBlockHeightResponse> blockDtoServiceResult = blockchainNodeClient.queryBlockDtoByBlockHeight(node,tempBlockHeight);
+                masterBlockchainCoreTailBlockHeight = masterBlockchainCore.queryBlockchainHeight();
+                ServiceResult<QueryBlockDtoByBlockHeightResponse> blockDtoServiceResult = blockchainNodeClient.queryBlockDtoByBlockHeight(node,masterBlockchainCoreTailBlockHeight+1);
                 if(!ServiceResult.isSuccess(blockDtoServiceResult)){
                     return;
                 }
@@ -346,12 +342,11 @@ public class BlockSearcher {
                     return;
                 }
 
-                Block block = Dto2ModelTool.blockDto2Block(blockchainDataBase,blockDTO);
-                boolean isAddBlockSuccess = blockchainDataBase.addBlock(block);
+                Block block = Dto2ModelTool.blockDto2Block(masterBlockchainCore.getBlockchainDataBase(),blockDTO);
+                boolean isAddBlockSuccess = masterBlockchainCore.addBlock(block);
                 if(!isAddBlockSuccess){
                     return;
                 }
-                tempBlockHeight++;
             }
         }
     }
