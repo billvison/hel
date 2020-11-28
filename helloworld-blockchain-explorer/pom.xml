@@ -9,9 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>helloworld-blockchain-node</artifactId>
+    <artifactId>helloworld-blockchain-explorer</artifactId>
 
-    <name>helloworld-blockchain-node</name>
+    <name>helloworld-blockchain-explorer</name>
     <url>http://www.helloworldblockchain.com</url>
 
     <dependencies>

@@ -18,14 +18,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @SpringBootApplication
 @ServletComponentScan
-public class HelloWorldBlockchainNodeApplication {
+public class HelloWorldBlockchainExplorerApplication {
 
 	@Value("${blockchainDataPath:}")
 	private String blockchainDataPath;
 
 
 	public static void main(String[] args) {
-		SpringApplication.run(HelloWorldBlockchainNodeApplication.class, args);
+		SpringApplication.run(HelloWorldBlockchainExplorerApplication.class, args);
 	}
 
 

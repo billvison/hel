@@ -284,9 +284,6 @@ public class BlockSearcher {
             //分叉的高度
             long forkBlockHeight = masterBlockchainCoreTailBlockHeight;
             while (true) {
-                if (LongUtil.isLessEqualThan(forkBlockHeight, GlobalSetting.GenesisBlock.HEIGHT)) {
-                    break;
-                }
                 ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeightResponseServiceResult = blockchainNodeClient.queryBlockHashByBlockHeight(node,forkBlockHeight);
                 if(!ServiceResult.isSuccess(queryBlockHashByBlockHeightResponseServiceResult)){
                     return;
@@ -301,14 +298,15 @@ public class BlockSearcher {
                     nodeService.setNodeFork(node);
                     return;
                 }
+                if (LongUtil.isLessEqualThan(forkBlockHeight, GlobalSetting.GenesisBlock.HEIGHT+1)) {
+                    //再向后已经没有区块了
+                    break;
+                }
                 forkBlockHeight--;
             }
             //从分叉高度开始同步
             slaveBlockchainCore.deleteBlocks(forkBlockHeight);
             while (true){
-                if(LongUtil.isLessEqualThan(forkBlockHeight, GlobalSetting.GenesisBlock.HEIGHT)){
-                    return;
-                }
                 ServiceResult<QueryBlockDtoByBlockHeightResponse> blockDtoServiceResult = blockchainNodeClient.queryBlockDtoByBlockHeight(node,forkBlockHeight);
                 if(!ServiceResult.isSuccess(blockDtoServiceResult)){
                     return;
