@@ -15,7 +15,7 @@ public interface ConfigurationService {
 
     boolean isSynchronizerActive();
     void activeSynchronizer() ;
-    void deactiveSynchronizer() ;//AUTO_SEARCH_NODE
+    void deactiveSynchronizer() ;
 
     boolean isAutoSearchNode();
     void setAutoSearchNode(boolean autoSearchNode);
