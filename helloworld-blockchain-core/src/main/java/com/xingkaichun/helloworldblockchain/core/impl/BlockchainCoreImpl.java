@@ -201,29 +201,42 @@ public class BlockchainCoreImpl extends BlockchainCore {
         long inputValues = 0;
         long feeValues = 0;
         boolean haveEnoughMoneyToPay = false;
-        //序号
         for(String privateKey : payerPrivateKeyList){
             if(haveEnoughMoneyToPay){
                 break;
             }
-            //TODO 优化 可能不止100
             String address = AccountUtil.accountFromPrivateKey(privateKey).getAddress();
-            List<TransactionOutput> utxoList = blockchainDataBase.queryUnspendTransactionOutputListByAddress(address,0,100);
-            if(utxoList == null){
-                continue;
-            }
-            for(TransactionOutput transactionOutput:utxoList){
+            long from = 0;
+            long size = 100;
+            boolean breakWhile = false;
+            while (true){
                 if(haveEnoughMoneyToPay){
                     break;
                 }
-                inputValues += transactionOutput.getValue();
-                //交易输入
-                inputs.add(transactionOutput);
-                inputPrivateKeyList.add(privateKey);
-                //大于的一部分可以用于交易手续费
-                if(inputValues > outputValues){
-                    haveEnoughMoneyToPay = true;
+                if(breakWhile){
+                    break;
                 }
+                List<TransactionOutput> utxoList = blockchainDataBase.queryUnspendTransactionOutputListByAddress(address,from,size);
+                if(utxoList == null){
+                    break;
+                }
+                for(TransactionOutput transactionOutput:utxoList){
+                    if(haveEnoughMoneyToPay){
+                        breakWhile = true;
+                        break;
+                    }
+                    inputValues += transactionOutput.getValue();
+                    //交易输入
+                    inputs.add(transactionOutput);
+                    inputPrivateKeyList.add(privateKey);
+                    //大于的一部分可以用于交易手续费
+                    if(inputValues > outputValues){
+                        haveEnoughMoneyToPay = true;
+                        breakWhile = true;
+                        break;
+                    }
+                }
+                from += size;
             }
         }
 
