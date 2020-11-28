@@ -49,7 +49,7 @@ public abstract class BlockchainCore {
     /**
      * 删除区块高度大于等于@blockHeight@的区块
      */
-    public abstract void deleteBlocksUtilBlockHeightLessThan(long blockHeight) ;
+    public abstract void deleteBlocks(long blockHeight) ;
     /**
      * 根据区块高度获取区块Hash
      */

@@ -92,7 +92,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         }
     }
     @Override
-    public void deleteBlocksUtilBlockHeightLessThan(long blockHeight) {
+    public void deleteBlocks(long blockHeight) {
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{

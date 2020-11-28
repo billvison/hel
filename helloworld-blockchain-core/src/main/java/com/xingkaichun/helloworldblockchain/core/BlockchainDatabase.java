@@ -43,9 +43,8 @@ public abstract class BlockchainDatabase {
     public abstract void deleteTailBlock() ;
     /**
      * 删除区块高度大于等于@blockHeight@的区块
-     * //TODO 换个更合适的方法名？例如：deleteBlockHeightGreatEqualThan
      */
-    public abstract void deleteBlocksUtilBlockHeightLessThan(long blockHeight) ;
+    public abstract void deleteBlocks(long blockHeight) ;
     //endregion
 
 

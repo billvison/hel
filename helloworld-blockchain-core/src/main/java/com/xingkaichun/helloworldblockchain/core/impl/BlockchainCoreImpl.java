@@ -148,8 +148,8 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
 
     @Override
-    public void deleteBlocksUtilBlockHeightLessThan(long blockHeight) {
-        blockchainDataBase.deleteBlocksUtilBlockHeightLessThan(blockHeight);
+    public void deleteBlocks(long blockHeight) {
+        blockchainDataBase.deleteBlocks(blockHeight);
     }
 
 

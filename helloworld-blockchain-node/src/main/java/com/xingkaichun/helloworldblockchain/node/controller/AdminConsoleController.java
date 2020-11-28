@@ -360,7 +360,7 @@ public class AdminConsoleController {
             if(request.getBlockHeight() == null){
                 return ServiceResult.createFailServiceResult("删除区块失败，区块高度不能空。");
             }
-            getBlockchainCore().deleteBlocksUtilBlockHeightLessThan(request.getBlockHeight());
+            getBlockchainCore().deleteBlocks(request.getBlockHeight());
             DeleteBlockResponse response = new DeleteBlockResponse();
             return ServiceResult.createSuccessServiceResult("删除区块成功",response);
         } catch (Exception e){

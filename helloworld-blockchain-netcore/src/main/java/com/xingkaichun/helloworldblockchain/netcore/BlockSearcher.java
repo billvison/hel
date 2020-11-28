@@ -147,7 +147,7 @@ public class BlockSearcher {
         Block slaveBlockchainTailBlock = slaveBlockchainCore.queryTailBlock() ;
         if(masterBlockchainTailBlock == null){
             //清空slave
-            slaveBlockchainCore.deleteBlocksUtilBlockHeightLessThan(GlobalSetting.GenesisBlock.HEIGHT);
+            slaveBlockchainCore.deleteBlocks(GlobalSetting.GenesisBlock.HEIGHT);
             return;
         }
         //删除slave区块直至slave区块和master区块保持一致
@@ -304,7 +304,7 @@ public class BlockSearcher {
                 forkBlockHeight--;
             }
             //从分叉高度开始同步
-            slaveBlockchainCore.deleteBlocksUtilBlockHeightLessThan(forkBlockHeight);
+            slaveBlockchainCore.deleteBlocks(forkBlockHeight);
             while (true){
                 if(LongUtil.isLessEqualThan(forkBlockHeight, GlobalSetting.GenesisBlock.HEIGHT)){
                     return;
