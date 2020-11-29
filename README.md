@@ -16,11 +16,11 @@ http://139.9.125.122/index.html
 ### 集成开发环境搭建
 #### eclipse
 HelloworldBlockchain项目没有任何复杂依赖，请搜索eclipse如何导入已存在的maven项目。
-成功将项目导入eclipse后，找到类文件com.xingkaichun.helloworldblockchain.node.HelloWorldBlockchainNodeApplication，右键运行，正常情况下则会启动成功。接下来，快乐的调试代码吧！项目的前端地址是：http://localhost:8444 。
+成功将项目导入eclipse后，找到类文件com.xingkaichun.helloworldblockchain.explorer.HelloWorldBlockchainExplorerApplication，右键运行，正常情况下则会启动成功。接下来，快乐的调试代码吧！项目的前端地址是：http://localhost/ 。
 
 #### intellij idea
 HelloworldBlockchain项目没有任何复杂依赖，请搜索idea如何导入已存在的maven项目。
-成功将项目导入idea后，找到类文件com.xingkaichun.helloworldblockchain.node.HelloWorldBlockchainNodeApplication，右键运行，正常情况下则会启动成功。接下来，快乐的调试代码吧！项目的前端地址是：http://localhost:8444 。
+成功将项目导入idea后，找到类文件com.xingkaichun.helloworldblockchain.explorer.HelloWorldBlockchainExplorerApplication，右键运行，正常情况下则会启动成功。接下来，快乐的调试代码吧！项目的前端地址是：http://localhost/ 。
 
 ### 模块架构
 #### helloworld-blockchain-crypto
