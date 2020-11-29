@@ -123,9 +123,6 @@ public abstract class BlockchainCore {
      * 提交交易到区块链
      */
     public abstract void submitTransaction(TransactionDTO transactionDTO) ;
-
-
-
     /**
      * 查询挖矿中的交易
      */
