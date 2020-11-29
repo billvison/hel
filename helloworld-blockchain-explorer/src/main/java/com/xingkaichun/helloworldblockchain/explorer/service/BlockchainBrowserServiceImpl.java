@@ -187,20 +187,17 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         transactionView.setTransactionInputViewList(transactionInputViewList);
         transactionView.setTransactionOutputViewList(transactionOutputViewList);
 
-        if(transactionInputViewList != null){
-            List<String> inputScriptList = new ArrayList<>();
-            for (TransactionInputView transactionInputView : transactionInputViewList){
-                inputScriptList.add(transactionInputView.getInputScript());
-            }
-            transactionView.setInputScriptList(inputScriptList);
+        List<String> inputScriptList = new ArrayList<>();
+        for (TransactionInputView transactionInputView : transactionInputViewList){
+            inputScriptList.add(transactionInputView.getInputScript());
         }
-        if(transactionOutputViewList != null){
-            List<String> outputScriptList = new ArrayList<>();
-            for (TransactionOutputView transactionOutputView : transactionOutputViewList){
-                outputScriptList.add(transactionOutputView.getOutputScript());
-            }
-            transactionView.setOutputScriptList(outputScriptList);
+        transactionView.setInputScriptList(inputScriptList);
+
+        List<String> outputScriptList = new ArrayList<>();
+        for (TransactionOutputView transactionOutputView : transactionOutputViewList){
+            outputScriptList.add(transactionOutputView.getOutputScript());
         }
+        transactionView.setOutputScriptList(outputScriptList);
         return transactionView;
     }
 

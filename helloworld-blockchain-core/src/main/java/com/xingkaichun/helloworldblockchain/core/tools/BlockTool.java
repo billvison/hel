@@ -208,14 +208,11 @@ public class BlockTool {
         if(block1 == null || block2 == null){
             return false;
         }
-        if(LongUtil.isEquals(block1.getTimestamp(),block2.getTimestamp()) &&
-                StringUtil.isEquals(block1.getHash(),block2.getHash()) &&
-                StringUtil.isEquals(block1.getPreviousBlockHash(),block2.getPreviousBlockHash()) &&
-                StringUtil.isEquals(block1.getMerkleTreeRoot(),block2.getMerkleTreeRoot()) &&
-                LongUtil.isEquals(block1.getNonce(),block2.getNonce())){
-            return true;
-        }
-        return false;
+        return LongUtil.isEquals(block1.getTimestamp(), block2.getTimestamp()) &&
+                StringUtil.isEquals(block1.getHash(), block2.getHash()) &&
+                StringUtil.isEquals(block1.getPreviousBlockHash(), block2.getPreviousBlockHash()) &&
+                StringUtil.isEquals(block1.getMerkleTreeRoot(), block2.getMerkleTreeRoot()) &&
+                LongUtil.isEquals(block1.getNonce(), block2.getNonce());
     }
 
     /**

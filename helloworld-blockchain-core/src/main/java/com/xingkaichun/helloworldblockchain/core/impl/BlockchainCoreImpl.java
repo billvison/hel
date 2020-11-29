@@ -163,10 +163,8 @@ public class BlockchainCoreImpl extends BlockchainCore {
             return response;
         }
         List<String> privateKeyList = new ArrayList<>();
-        if(allAccountList != null){
-            for(Account account:allAccountList){
-                privateKeyList.add(account.getPrivateKey());
-            }
+        for(Account account:allAccountList){
+            privateKeyList.add(account.getPrivateKey());
         }
         //存放找零
         Account account = allAccountList.get(0);
@@ -208,12 +206,8 @@ public class BlockchainCoreImpl extends BlockchainCore {
             String address = AccountUtil.accountFromPrivateKey(privateKey).getAddress();
             long from = 0;
             long size = 100;
-            boolean breakWhile = false;
             while (true){
                 if(haveEnoughMoneyToPay){
-                    break;
-                }
-                if(breakWhile){
                     break;
                 }
                 List<TransactionOutput> utxoList = blockchainDataBase.queryUnspendTransactionOutputListByAddress(address,from,size);
@@ -222,7 +216,6 @@ public class BlockchainCoreImpl extends BlockchainCore {
                 }
                 for(TransactionOutput transactionOutput:utxoList){
                     if(haveEnoughMoneyToPay){
-                        breakWhile = true;
                         break;
                     }
                     inputValues += transactionOutput.getValue();
@@ -232,7 +225,6 @@ public class BlockchainCoreImpl extends BlockchainCore {
                     //大于的一部分可以用于交易手续费
                     if(inputValues > outputValues){
                         haveEnoughMoneyToPay = true;
-                        breakWhile = true;
                         break;
                     }
                 }
@@ -268,7 +260,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
             transactionOutputDTO.setValue(change);
             OutputScript outputScript = StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(payerChangeAddress);
             transactionOutputDTO.setOutputScriptDTO(Model2DtoTool.outputScript2OutputScriptDTO(outputScript));
-            transactionDTO.getTransactionOutputDtoList().add(transactionOutputDTO);
+            transactionOutputDtoList.add(transactionOutputDTO);
         }
 
         //签名
@@ -292,11 +284,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
             buildTransactionResponse.setPayerChangeValue(change);
         }
         buildTransactionResponse.setTransactionInputList(inputs);
-        List<TransactionOutputDTO> transactionOutputDtoList2 = new ArrayList<>();
-        for(TransactionOutputDTO transactionOutputDTO:transactionOutputDtoList){
-            transactionOutputDtoList2.add(transactionOutputDTO);
-        }
-        buildTransactionResponse.setTransactionOutpuDtoList(transactionOutputDtoList2);
+        buildTransactionResponse.setTransactionOutpuDtoList(transactionOutputDtoList);
         buildTransactionResponse.setTransactionDTO(transactionDTO);
         return buildTransactionResponse;
     }

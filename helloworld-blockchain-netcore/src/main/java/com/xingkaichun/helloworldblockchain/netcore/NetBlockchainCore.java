@@ -36,7 +36,6 @@ import java.util.List;
 public class NetBlockchainCore {
 
     private BlockchainCore blockchainCore;
-    private BlockchainCore slaveBlockchainCore;
     private BlockchainNodeHttpServer blockchainNodeHttpServer;
     private NodeSearcher nodeSearcher;
     private NodeBroadcaster nodeBroadcaster;
@@ -47,14 +46,12 @@ public class NetBlockchainCore {
     private NodeService nodeService;
     private BlockchainNodeClient blockchainNodeClient;
     public NetBlockchainCore(BlockchainCore blockchainCore
-            ,BlockchainCore slaveBlockchainCore
             , BlockchainNodeHttpServer blockchainNodeHttpServer, ConfigurationService configurationService
             , NodeSearcher nodeSearcher, NodeBroadcaster nodeBroadcaster
             , BlockSearcher blockSearcher , BlockBroadcaster blockBroadcaster
             , NodeService nodeService, BlockchainNodeClient blockchainNodeClient) {
 
         this.blockchainCore = blockchainCore;
-        this.slaveBlockchainCore = slaveBlockchainCore;
         this.blockchainNodeHttpServer = blockchainNodeHttpServer;
         this.configurationService = configurationService;
         this.nodeSearcher = nodeSearcher;

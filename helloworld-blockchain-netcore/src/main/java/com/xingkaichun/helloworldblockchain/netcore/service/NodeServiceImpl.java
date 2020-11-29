@@ -5,7 +5,6 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.BaseNodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.util.LongUtil;
 
 import java.util.ArrayList;
 import java.util.List;

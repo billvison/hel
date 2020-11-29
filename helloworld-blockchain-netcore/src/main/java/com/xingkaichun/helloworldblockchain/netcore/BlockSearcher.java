@@ -139,8 +139,8 @@ public class BlockSearcher {
 
     /**
      * 使得slaveBlockchainCore和masterBlockchainCore的区块链数据一模一样
-     * @param masterBlockchainCore
-     * @param slaveBlockchainCore
+     * @param masterBlockchainCore 主区块链核心
+     * @param slaveBlockchainCore 从区块链核心
      */
     private void copyMasterBlockchainCoreToSlaveBlockchainCore(BlockchainCore masterBlockchainCore,BlockchainCore slaveBlockchainCore) {
         Block masterBlockchainTailBlock = masterBlockchainCore.queryTailBlock() ;
@@ -179,8 +179,8 @@ public class BlockSearcher {
 
     /**
      * 增加主区块链的区块
-     * @param masterBlockchainCore
-     * @param slaveBlockchainCore
+     * @param masterBlockchainCore 主区块链核心
+     * @param slaveBlockchainCore 从区块链核心
      */
     private void promoteMasterBlockchainCore(BlockchainCore masterBlockchainCore,
                                                  BlockchainCore slaveBlockchainCore) {
@@ -271,12 +271,8 @@ public class BlockSearcher {
                 return;
             }
             //没有分叉
-            if(StringUtil.isEquals(masterBlockchainCoreTailBlock.getHash(),blockHash)){
-                fork = false;
-            } else {
-                //有分叉
-                fork = true;
-            }
+            //有分叉
+            fork = !StringUtil.isEquals(masterBlockchainCoreTailBlock.getHash(), blockHash);
         }
 
         if(fork){

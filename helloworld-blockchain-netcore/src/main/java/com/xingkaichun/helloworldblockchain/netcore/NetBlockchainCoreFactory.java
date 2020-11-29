@@ -59,7 +59,7 @@ public class NetBlockchainCoreFactory {
         BlockSearcher blockSearcher = new BlockSearcher(configurationService,nodeService,blockchainCore, slaveBlockchainCore, blockchainNodeClient);
         BlockBroadcaster blockBroadcaster = new BlockBroadcaster(nodeService,blockchainCore, blockchainNodeClient);
         NetBlockchainCore netBlockchainCore
-                = new NetBlockchainCore(blockchainCore, slaveBlockchainCore, blockchainNodeHttpServer, configurationService
+                = new NetBlockchainCore(blockchainCore, blockchainNodeHttpServer, configurationService
                 ,nodeSearcher,nodeBroadcaster,blockSearcher, blockBroadcaster
                 ,nodeService, blockchainNodeClient);
         return netBlockchainCore;

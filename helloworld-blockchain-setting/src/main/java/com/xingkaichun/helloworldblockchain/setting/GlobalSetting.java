@@ -42,10 +42,7 @@ public class GlobalSetting {
          * 检查系统版本是否支持。
          */
         public static boolean isVersionLegal(long timestamp){
-            if(timestamp > BLOCK_CHAIN_VERSION_LIST.get(BLOCK_CHAIN_VERSION_LIST.size()-1)){
-                return false;
-            }
-            return true;
+            return timestamp <= BLOCK_CHAIN_VERSION_LIST.get(BLOCK_CHAIN_VERSION_LIST.size() - 1);
         }
         /**
          * 获得系统版本。

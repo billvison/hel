@@ -241,8 +241,7 @@ public class StructureSizeTool {
             }
         }
         //校验交易的结构
-        for(int i=0; i<transactions.size(); i++){
-            Transaction transaction = transactions.get(i);
+        for(Transaction transaction:transactions){
             if(!isTransactionStructureLegal(transaction)){
                 logger.debug("交易数据异常：交易结构异常。");
                 return false;

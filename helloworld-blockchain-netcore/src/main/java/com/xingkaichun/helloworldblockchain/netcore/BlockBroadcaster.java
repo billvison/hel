@@ -10,7 +10,6 @@ import com.xingkaichun.helloworldblockchain.util.ThreadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,10 +63,10 @@ public class BlockBroadcaster {
 
         long blockchainHeight = blockchainCore.queryBlockchainHeight();
         //按照节点的高度进行排序
-        Collections.sort(nodes,(NodeDto node1, NodeDto node2)->{
-            if(LongUtil.isGreatThan(node1.getBlockchainHeight(),node2.getBlockchainHeight())){
+        nodes.sort((NodeDto node1, NodeDto node2) -> {
+            if (LongUtil.isGreatThan(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
                 return -1;
-            } else if(LongUtil.isEquals(node1.getBlockchainHeight(),node2.getBlockchainHeight())){
+            } else if (LongUtil.isEquals(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
                 return 0;
             } else {
                 return 1;
