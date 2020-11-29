@@ -42,21 +42,27 @@ public abstract class BlockchainCore {
 
 
 
+
     /**
-     * 获取区块链高度
+     * 将一个区块添加到区块链
      */
-    public abstract long queryBlockchainHeight() ;
+    public abstract boolean addBlock(Block block);
+    /**
+     * 删除区块链的尾巴区块(最后一个区块)
+     */
+    public abstract void deleteTailBlock();
     /**
      * 删除区块高度大于等于@blockHeight@的区块
      */
     public abstract void deleteBlocks(long blockHeight) ;
     /**
+     * 获取区块链高度
+     */
+    public abstract long queryBlockchainHeight() ;
+    /**
      * 根据区块高度获取区块Hash
      */
     public abstract String queryBlockHashByBlockHeight(long blockHeight) ;
-
-
-
     /**
      * 根据区块高度查询区块
      */
@@ -72,10 +78,8 @@ public abstract class BlockchainCore {
 
 
 
-    public abstract void deleteTailBlock();
 
 
-    public abstract boolean addBlock(Block currentBlock);
 
     /**
      * 根据交易哈希获取交易
