@@ -1,7 +1,7 @@
 ### 欢迎来到HelloworldBlockchain  
 HelloworldBlockchain是一个Helloworld级别的区块链公链系统。  
 HelloworldBlockchain是一个Helloworld级别的数字货币项目。  
-HelloworldBlockchain开发调试简单，下载源码，导入idea(eclipse)，无需任何配置，找到类文件com.xingkaichun.helloworldblockchain.explorer.HelloWorldBlockchainExplorerApplication，右键运行，即可启动项目。  
+HelloworldBlockchain开发调试简单，下载源码，导入idea(eclipse)，无需任何配置，找到类文件，右键运行，即可启动项目。  
 项目架构清晰，详尽的全中文代码注释，代码以可读性为第一要素，适合区块链初学者学习研究。
 
 ### 联系方式
@@ -24,7 +24,7 @@ HelloworldBlockchain项目没有任何复杂依赖，请搜索idea如何导入�
 
 ### 模块架构
 #### helloworld-blockchain-crypto
-该模块封装了加密相关的工具。1.数字货币账户工具：①账户(私钥、公钥、地址)生成工具。②私钥、公钥、地址的相互转换工具。 2.数字签名与校验。 3.消息摘要：SHA-256、RipeMD160。 4.字节编码方案：base64、base58、hex等等。
+该模块封装了加密相关的工具。1.数字货币账户工具：①账户(私钥、公钥、地址)生成工具。②私钥、公钥、地址的相互转换工具。2.数字签名与签名验证。3.消息摘要：SHA-256、RipeMD160。4.字节编码方案：base58、hex。5.数据结构：默克尔树工具。
 #### helloworld-blockchain-core
 该模块是整个区块链系统的核心，它代表着一个单机版区块链系统，它在底层维护着一条区块链的完整数据。设计之初，为了精简，它就被设计为不含有网络模块。除了网络模块，它含有一个区块链系统应有的功能，包含1.区块链账户生成 2.挖矿 3.新增区块到区块链 4.新增交易，交易将会被矿工挖矿使用 5.数据校验：区块验证、交易验证 6.分叉处理 7.链上区块回滚 8.链上区块查询、交易查询、账户资金查询...... 等等。
 #### helloworld-blockchain-netcore
