@@ -52,7 +52,7 @@ public class StructureSizeTool {
         //校验区块中的交易占用的存储空间
         long blockTextSize = calculateBlockTextSize(blockDTO);
         if(blockTextSize > GlobalSetting.BlockConstant.BLOCK_TEXT_MAX_SIZE){
-            logger.debug(String.format("区块数据异常，区块容量超过限制。"));
+            logger.debug(String.format("区块数据大小[%s]超过限制[%s]。",blockTextSize,GlobalSetting.BlockConstant.BLOCK_TEXT_MAX_SIZE));
             return false;
         }
 
@@ -107,8 +107,9 @@ public class StructureSizeTool {
         }
 
         //校验整笔交易所占存储空间
+        long transactionTextSize = calculateTransactionTextSize(transactionDTO);
         if(calculateTransactionTextSize(transactionDTO) > GlobalSetting.BlockConstant.TRANSACTION_TEXT_MAX_SIZE){
-            logger.debug("交易数据异常，交易所占存储空间太大。");
+            logger.debug(String.format("交易数据大小[%s]超过存储容量限制[%s]。",transactionTextSize,GlobalSetting.BlockConstant.TRANSACTION_TEXT_MAX_SIZE));
             return false;
         }
         return true;
@@ -223,7 +224,7 @@ public class StructureSizeTool {
         //校验区块中交易的数量
         long transactionCount = BlockTool.getTransactionCount(block);
         if(transactionCount > GlobalSetting.BlockConstant.BLOCK_MAX_TRANSACTION_COUNT){
-            logger.debug(String.format("区块数据异常，区块里包含的交易数量超过限制。"));
+            logger.debug(String.format("区块包含交易数量是[%s]超过限制[%s]。",transactionCount,GlobalSetting.BlockConstant.BLOCK_MAX_TRANSACTION_COUNT));
             return false;
         }
         for(int i=0; i<transactions.size(); i++){
@@ -287,7 +288,7 @@ public class StructureSizeTool {
                     Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
                     Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
                     Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
-
+                continue;
             }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA128.getCode(),bytesOperationCode)){
                 String operationData = scriptDTO.get(++i);
                 byte[] bytesOperationData = HexUtil.hexStringToBytes(operationData);

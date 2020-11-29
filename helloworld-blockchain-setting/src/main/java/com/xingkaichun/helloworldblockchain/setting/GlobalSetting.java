@@ -66,14 +66,15 @@ public class GlobalSetting {
      * 挖矿设置
      */
     public static class MinerConstant{
-        //产生区块的平均时间
+        //每个区块平均产生时间
         public static final long GENERATE_BLOCK_AVERAGE_TIMESTAMP = 1000 *  60 * 2;
+        //挖矿激励减产的周期
+        public static final long MINE_BLOCK_INCENTIVE_REDUCE_BY_HALF_INTERVAL_TIMESTAMP = GENERATE_BLOCK_AVERAGE_TIMESTAMP * 2;
+
         //初始化产生区块的难度 默认初始难度 4G CPU 约 10分钟挖出区块的难度
         public static final String INIT_GENERATE_BLOCK_DIFFICULTY_STRING = "2FFFF000000000000000000000000000000000000000000000000000000";
         //初始化挖矿激励金额
         public static final long INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT = 50L;
-        //挖矿激励减产周期
-        public static final long MINE_BLOCK_INCENTIVE_REDUCE_BY_HALF_INTERVAL_TIMESTAMP = 1000 * 60 * 60 * 24;
 
         //每轮挖矿最大时长。挖矿时间太长，则新提交的交易就很延迟才能包含到区块里。
         public static final long MINE_TIMESTAMP_PER_ROUND = 1000 * 60 * 2;

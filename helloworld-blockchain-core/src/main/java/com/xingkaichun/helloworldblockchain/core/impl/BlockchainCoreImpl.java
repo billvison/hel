@@ -215,9 +215,6 @@ public class BlockchainCoreImpl extends BlockchainCore {
                     break;
                 }
                 for(TransactionOutput transactionOutput:utxoList){
-                    if(haveEnoughMoneyToPay){
-                        break;
-                    }
                     inputValues += transactionOutput.getValue();
                     //交易输入
                     inputs.add(transactionOutput);

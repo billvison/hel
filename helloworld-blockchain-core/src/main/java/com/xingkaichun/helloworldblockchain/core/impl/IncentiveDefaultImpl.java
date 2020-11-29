@@ -5,7 +5,6 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
-import com.xingkaichun.helloworldblockchain.util.LongUtil;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,15 +33,13 @@ public class IncentiveDefaultImpl extends Incentive {
      */
     private long getSubsidy(Block block) {
         long subsidy = GlobalSetting.MinerConstant.INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT;
-        long blockHeight = block.getHeight();
-        if(LongUtil.isLessEqualThan(blockHeight,1)){
-        }else {
-            long height = block.getHeight();
-            long multiple = (height-1) / 210000;
-            while (multiple >= 1){
-                subsidy = subsidy/2;
-                --multiple;
-            }
+        //减半区块数量
+        long halfIntervalBlockCount = GlobalSetting.MinerConstant.MINE_BLOCK_INCENTIVE_REDUCE_BY_HALF_INTERVAL_TIMESTAMP /
+                GlobalSetting.MinerConstant.GENERATE_BLOCK_AVERAGE_TIMESTAMP;
+        long height = block.getHeight();
+        while (height > halfIntervalBlockCount){
+            subsidy = subsidy/2;
+            height -= halfIntervalBlockCount;
         }
         return subsidy;
     }
