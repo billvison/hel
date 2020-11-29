@@ -5,7 +5,7 @@ package com.xingkaichun.helloworldblockchain.explorer.dto.account;
  */
 public class AddAccountRequest {
 
-    String privateKey;
+    private String privateKey;
 
 
     public String getPrivateKey() {
