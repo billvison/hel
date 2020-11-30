@@ -10,7 +10,9 @@ import static org.junit.Assert.assertArrayEquals;
 
 public class SHA256UtilTest {
 
-    private static String[] messages =
+    private static final Random RANDOM = new Random();
+
+    private static final String[] messages =
             {
                     "",
                     "a",
@@ -18,7 +20,7 @@ public class SHA256UtilTest {
                     "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
             };
 
-    private static String[] digests =
+    private static final String[] digests =
             {
                     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
                     "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",
@@ -40,7 +42,7 @@ public class SHA256UtilTest {
     {
         for (int j = 0; j < 100; j++) {
             byte[] randomBytes = new byte[j];
-            new Random().nextBytes(randomBytes);
+            RANDOM.nextBytes(randomBytes);
             assertArrayEquals(SHA256Util.digest(SHA256Util.digest(randomBytes)), SHA256Util.digestTwice(randomBytes));
         }
     }

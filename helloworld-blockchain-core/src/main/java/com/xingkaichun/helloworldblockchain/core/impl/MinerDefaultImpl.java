@@ -31,6 +31,8 @@ public class MinerDefaultImpl extends Miner {
 
     private static final Logger logger = LoggerFactory.getLogger(MinerDefaultImpl.class);
 
+    private static final Random RANDOM = new Random();
+
     //region 属性与构造函数
     //挖矿开关:默认打开挖矿的开关
     private boolean mineOption = true;
@@ -51,7 +53,7 @@ public class MinerDefaultImpl extends Miner {
             Account minerAccount = wallet.createAccount();
             Block block = obtainMiningBlock(minerAccount);
             //随机nonce。好处：不同实例，从不同的nonce开始尝试计算符合要求的nonce。
-            long nonce = new Random(Long.MAX_VALUE).nextLong();
+            long nonce = RANDOM.nextLong();
             long startTimestamp = System.currentTimeMillis();
             while(true){
                 if(!mineOption){

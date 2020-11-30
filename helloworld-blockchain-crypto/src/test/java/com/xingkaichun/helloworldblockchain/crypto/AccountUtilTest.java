@@ -17,6 +17,8 @@ import static org.junit.Assert.*;
 
 public class AccountUtilTest {
 
+    private static final Random RANDOM = new Random();
+
     private static final Account ACCOUNT_1 = new Account("d5c654eeff2cf1c6af16d721f31854ef447dfc61a6344bf1ba7108ec77d29b80"
             ,"044a99261b7a4b4bad2cac46defa41936b5807bf35dc5d7645d4976431666c741f3be030868718a20f875c69e9f1b781502429584f2c754c0aa8432719df1ed65e"
             ,"13e2eYT45FbRMBuyg7CHjZuEkjfMCD7xGg"
@@ -73,7 +75,7 @@ public class AccountUtilTest {
 
         //随机生成32位数组字节
         byte[] randomByte = new byte[32];
-        new Random().nextBytes(randomByte);
+        RANDOM.nextBytes(randomByte);
         Sha256Hash randomSha256Hash = Sha256Hash.wrap(randomByte);
 
         byte[] signByAccount = signatureProxy(privateKeyFromProxy(account.getPrivateKey()),randomByte);
