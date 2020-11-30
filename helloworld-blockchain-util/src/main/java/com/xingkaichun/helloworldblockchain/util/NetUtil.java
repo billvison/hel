@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 网络工具类
@@ -36,7 +37,7 @@ public class NetUtil {
             connection.setReadTimeout(3000);
             connection.setConnectTimeout(3000);
             connection.connect();
-            out = new OutputStreamWriter(connection.getOutputStream());
+            out = new OutputStreamWriter(connection.getOutputStream(),StandardCharsets.UTF_8);
             out.append(gson.toJson(requestBody));
             out.flush();
             out.close();
@@ -49,7 +50,7 @@ public class NetUtil {
                 is = connection.getErrorStream();
             }
             StringBuilder data = new StringBuilder();
-            br = new BufferedReader(new InputStreamReader(is));
+            br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
             String line;
             while ( (line = br.readLine()) != null) {
                 data.append(line);

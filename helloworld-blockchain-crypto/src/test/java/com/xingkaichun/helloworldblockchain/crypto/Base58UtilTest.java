@@ -3,11 +3,13 @@ package com.xingkaichun.helloworldblockchain.crypto;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 
 public class Base58UtilTest {
@@ -16,7 +18,7 @@ public class Base58UtilTest {
     @Test
     public void encodeTest()
     {
-        assertEquals("JxF12TrwUP45BMd", Base58Util.encode("Hello World".getBytes()));
+        assertEquals("JxF12TrwUP45BMd", Base58Util.encode("Hello World".getBytes(StandardCharsets.UTF_8)));
 
         BigInteger bi = BigInteger.valueOf(3471844090L);
         assertEquals("16Ho7Hs", Base58Util.encode(bi.toByteArray()));
@@ -33,7 +35,7 @@ public class Base58UtilTest {
         assertArrayEquals(new byte[1], Base58Util.decode("1"));
         assertArrayEquals(new byte[4], Base58Util.decode("1111"));
 
-        assertArrayEquals("Hello World".getBytes(), Base58Util.decode("JxF12TrwUP45BMd"));
+        assertArrayEquals("Hello World".getBytes(StandardCharsets.UTF_8), Base58Util.decode("JxF12TrwUP45BMd"));
         assertEquals(0, Base58Util.decode("").length);
     }
 
