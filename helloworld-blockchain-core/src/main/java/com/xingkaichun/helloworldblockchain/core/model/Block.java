@@ -29,7 +29,6 @@ public class Block implements Serializable {
     private long height;
     /**
      * 上一个区块的哈希
-     * 冗余字段，这个值可以由区块链系统推算出来
      */
     private String previousBlockHash;
     /**
