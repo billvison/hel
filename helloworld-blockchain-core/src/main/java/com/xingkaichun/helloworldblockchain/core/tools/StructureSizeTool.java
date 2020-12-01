@@ -9,6 +9,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionTy
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.ByteUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -289,10 +290,10 @@ public class StructureSizeTool {
                     Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
                     Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
                 continue;
-            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA128.getCode(),bytesOperationCode)){
+            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA1024.getCode(),bytesOperationCode)){
                 String operationData = scriptDTO.get(++i);
                 byte[] bytesOperationData = HexUtil.hexStringToBytes(operationData);
-                if(bytesOperationData.length > 128){
+                if(ByteUtil.size(bytesOperationData) > OperationCodeEnum.OP_PUSHDATA1024.getSize()){
                     return false;
                 }
             }else {

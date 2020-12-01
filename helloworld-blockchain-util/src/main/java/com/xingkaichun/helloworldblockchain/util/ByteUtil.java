@@ -44,4 +44,15 @@ public class ByteUtil {
         }
         return concatBytes;
     }
+
+
+    /**
+     * 字节数组所占比特的位数
+     */
+    public static long size(byte[] value) {
+        if(value == null){
+            return 0;
+        }
+        return value.length * 8;
+    }
 }
