@@ -30,7 +30,7 @@ public class MerkleTreeUtil {
                 int right = Math.min(left + 1, levelSize - 1);
                 byte[] leftBytes = tree.get(levelOffset + left);
                 byte[] rightBytes = tree.get(levelOffset + right);
-                tree.add(SHA256Util.digestTwice(Arrays.concatenate(leftBytes, rightBytes)));
+                tree.add(SHA256Util.doubleDigest(Arrays.concatenate(leftBytes, rightBytes)));
             }
             levelOffset += levelSize;
         }

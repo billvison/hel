@@ -43,7 +43,7 @@ public class SHA256UtilTest {
         for (int j = 0; j < 100; j++) {
             byte[] randomBytes = new byte[j];
             RANDOM.nextBytes(randomBytes);
-            assertArrayEquals(SHA256Util.digest(SHA256Util.digest(randomBytes)), SHA256Util.digestTwice(randomBytes));
+            assertArrayEquals(SHA256Util.digest(SHA256Util.digest(randomBytes)), SHA256Util.doubleDigest(randomBytes));
         }
     }
 

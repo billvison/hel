@@ -28,9 +28,10 @@ public class SHA256Util {
 
     /**
      * 获取进行两次Sha256操作的消息摘要
-     * //TODO 为什么采用双重哈希操作
+     * 相比单次哈希，双重哈希更安全。
+     * 使用双重哈希，不需要考虑单次哈希的漏洞(长度扩展攻击等)，所以为什么不优先使用双重哈希呢？
      */
-    public static byte[] digestTwice(byte[] input) {
+    public static byte[] doubleDigest(byte[] input) {
         return digest(digest(input));
     }
 }
