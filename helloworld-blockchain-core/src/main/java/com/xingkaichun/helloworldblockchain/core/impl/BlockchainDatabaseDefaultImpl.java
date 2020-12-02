@@ -328,14 +328,23 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     }
 
     @Override
+    public Transaction queryTransactionByTransactionHeight(long transactionHeight) {
+        byte[] byteTransaction = LevelDBUtil.get(blockchainDB, BlockchainDatabaseKeyTool.buildTransactionIndexInBlockchainToTransactionKey(transactionHeight));
+        if(byteTransaction == null){
+            return null;
+        }
+        Transaction transaction = EncodeDecodeTool.decodeToTransaction(byteTransaction);
+        return transaction;
+    }
+
+    @Override
     public List<Transaction> queryTransactionListByTransactionHeight(long from,long size) {
         List<Transaction> transactionList = new ArrayList<>();
         for(long index=from; LongUtil.isLessThan(index,from+size); index++){
-            byte[] byteTransaction = LevelDBUtil.get(blockchainDB, BlockchainDatabaseKeyTool.buildTransactionIndexInBlockchainToTransactionKey(index));
-            if(byteTransaction == null){
+            Transaction transaction = queryTransactionByTransactionHeight(index);
+            if(transaction == null){
                 break;
             }
-            Transaction transaction = EncodeDecodeTool.decodeToTransaction(byteTransaction);
             transactionList.add(transaction);
         }
         return transactionList;

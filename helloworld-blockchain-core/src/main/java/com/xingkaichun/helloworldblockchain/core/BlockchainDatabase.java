@@ -111,6 +111,10 @@ public abstract class BlockchainDatabase {
     /**
      * 根据交易高度查询交易。交易高度从1开始。
      */
+    public abstract Transaction queryTransactionByTransactionHeight(long transactionHeight) ;
+    /**
+     * 根据交易高度查询交易。交易高度从1开始。
+     */
     public abstract List<Transaction> queryTransactionListByTransactionHeight(long from,long size) ;
     /**
      * 根据地址查询交易列表。from从0开始。

@@ -85,6 +85,11 @@ public abstract class BlockchainCore {
     public abstract Transaction queryTransactionByTransactionHash(String transactionHash) ;
     /**
      * 根据交易高度获取交易
+     * @param transactionHeight 交易高度。注意：区块高度从1开始。
+     */
+    public abstract Transaction queryTransactionByTransactionHeight(long transactionHeight) ;
+    /**
+     * 根据交易高度获取交易
      * @param from 从区块高度为from的区块开始获取交易。注意：区块高度从1开始。
      * @param size 获取交易的数量。
      */

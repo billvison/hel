@@ -84,6 +84,12 @@ public class BlockchainCoreImpl extends BlockchainCore {
     }
 
     @Override
+    public Transaction queryTransactionByTransactionHeight(long transactionHeight) {
+        Transaction  transaction = blockchainDataBase.queryTransactionByTransactionHeight(transactionHeight);
+        return transaction;
+    }
+
+    @Override
     public List<Transaction> queryTransactionListByTransactionHeight(long from,long size) {
         List<Transaction>  transactionList = blockchainDataBase.queryTransactionListByTransactionHeight(from,size);
         return transactionList;
