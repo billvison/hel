@@ -54,14 +54,14 @@ public class IncentiveDefaultImpl extends Incentive {
             for(Transaction transaction:transactions){
                 if(transaction.getTransactionType() == TransactionType.COINBASE){
                     continue;
-                }
-                if(transaction.getTransactionType() != TransactionType.NORMAL){
+                }else if(transaction.getTransactionType() == TransactionType.NORMAL){
+                    long input = TransactionTool.getInputsValue(transaction);
+                    long output = TransactionTool.getOutputsValue(transaction);
+                    long fee = input - output;
+                    fees += fee;
+                }else{
                     throw new RuntimeException("不能识别的交易类型");
                 }
-                long input = TransactionTool.getInputsValue(transaction);
-                long output = TransactionTool.getOutputsValue(transaction);
-                long fee = input - output;
-                fees += fee;
             }
         }
         return fees;

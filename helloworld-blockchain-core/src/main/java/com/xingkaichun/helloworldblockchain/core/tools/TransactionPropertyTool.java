@@ -23,30 +23,12 @@ public class TransactionPropertyTool {
      * 校验交易的属性是否与计算得来的一致
      */
     public static boolean isWritePropertiesRight(Transaction transaction) {
-        if(!isTransactionTimestampRight(transaction)){
-            return false;
-        }
         if(!isTransactionHashRight(transaction)){
             return false;
         }
         List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs == null || outputs.size()==0){
             return true;
-        }
-        return true;
-    }
-
-    /**
-     * 交易的时间戳是否正确
-     */
-    public static boolean isTransactionTimestampRight(Transaction transaction) {
-        if(transaction.getTransactionType() == TransactionType.COINBASE){
-
-        }else if(transaction.getTransactionType() == TransactionType.NORMAL){
-
-        }else {
-            logger.debug("不能识别的交易类型");
-            return false;
         }
         return true;
     }
