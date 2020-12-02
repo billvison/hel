@@ -14,7 +14,7 @@ import java.util.List;
  * 单机版[没有网络交互版本]区块链核心，代表一个完整的单机版区块链核心系统。
  * 单机版区块链核心系统，由以下几部分组成：
  * 区块链数据库：用于持久化本地区块链的数据
- * @see BlockchainDatabase
+ * @see com.xingkaichun.helloworldblockchain.core.BlockchainDatabase
  * 矿工：可以收集交易，挖矿，将新挖取的矿放进区块链数据库
  * @see com.xingkaichun.helloworldblockchain.core.Miner
  *
@@ -36,7 +36,7 @@ public abstract class BlockchainCore {
     }
 
     /**
-     * 激活区块链核心。激活矿工、激活区块链同步器。
+     * 激活区块链核心。包含激活矿工等操作。
      */
     public abstract void start();
 
@@ -79,18 +79,18 @@ public abstract class BlockchainCore {
 
 
 
-
-
     /**
      * 根据交易哈希获取交易
      */
     public abstract Transaction queryTransactionByTransactionHash(String transactionHash) ;
     /**
      * 根据交易高度获取交易
+     * @param from 从区块高度为from的区块开始获取交易。注意：区块高度从1开始。
+     * @param size 获取交易的数量。
      */
     public abstract List<Transaction> queryTransactionListByTransactionHeight(long from,long size) ;
     /**
-     * 根据地址查询交易列表。from从0开始。
+     * 根据地址查询(有该地址参与的)交易列表。from从0开始。
      */
     public abstract List<Transaction> queryTransactionListByAddress(String address,long from,long size) ;
 
@@ -106,6 +106,8 @@ public abstract class BlockchainCore {
      * 根据地址获取[已花费交易输出列表]。from从0开始。
      */
     public abstract List<TransactionOutput> querySpendTransactionOutputListByAddress(String address,long from,long size) ;
+
+
 
 
     /**
