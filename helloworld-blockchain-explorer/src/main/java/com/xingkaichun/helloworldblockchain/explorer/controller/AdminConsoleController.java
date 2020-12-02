@@ -388,7 +388,7 @@ public class AdminConsoleController {
                     return ServiceResult.createFailServiceResult("交易输出的地址不能为空。");
                 }
             }
-            BuildTransactionResponse buildTransactionResponse = netBlockchainCore.buildTransaction(request);
+            BuildTransactionResponse buildTransactionResponse = getBlockchainCore().buildTransactionDTO(request);
             return ServiceResult.createSuccessServiceResult("构建交易成功",buildTransactionResponse);
         } catch (Exception e){
             String message = "构建交易失败";

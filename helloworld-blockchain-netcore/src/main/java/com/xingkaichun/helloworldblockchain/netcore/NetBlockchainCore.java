@@ -1,8 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
-import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionRequest;
-import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionResponse;
 import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeClient;
 import com.xingkaichun.helloworldblockchain.netcore.node.server.BlockchainNodeHttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
@@ -80,18 +78,6 @@ public class NetBlockchainCore {
         blockSearcher.start();
         //启动区块广播者
         blockBroadcaster.start();
-    }
-
-
-
-
-
-
-
-
-    public BuildTransactionResponse buildTransaction(BuildTransactionRequest request) {
-        BuildTransactionResponse buildTransactionResponse = blockchainCore.buildTransactionDTO(request);
-        return buildTransactionResponse;
     }
 
     //region get set
