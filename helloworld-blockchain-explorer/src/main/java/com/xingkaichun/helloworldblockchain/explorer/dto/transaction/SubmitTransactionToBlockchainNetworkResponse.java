@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.model.transaction;
+package com.xingkaichun.helloworldblockchain.explorer.dto.transaction;
 
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 

@@ -3,19 +3,10 @@ package com.xingkaichun.helloworldblockchain.netcore;
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionRequest;
 import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionResponse;
-import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.SubmitTransactionToNodeResponse;
-import com.xingkaichun.helloworldblockchain.netcore.model.transaction.SubmitTransactionToBlockchainNetworkRequest;
-import com.xingkaichun.helloworldblockchain.netcore.model.transaction.SubmitTransactionToBlockchainNetworkResponse;
 import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeClient;
 import com.xingkaichun.helloworldblockchain.netcore.node.server.BlockchainNodeHttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 网络版区块链核心，代表一个完整的网络版区块链核心系统。
@@ -102,33 +93,6 @@ public class NetBlockchainCore {
         BuildTransactionResponse buildTransactionResponse = blockchainCore.buildTransactionDTO(request);
         return buildTransactionResponse;
     }
-
-    public SubmitTransactionToBlockchainNetworkResponse submitTransaction(SubmitTransactionToBlockchainNetworkRequest request) {
-        TransactionDTO transactionDTO = request.getTransactionDTO();
-        //将交易提交到本地区块链
-        blockchainCore.submitTransaction(transactionDTO);
-        //提交交易到网络
-        List<NodeDto> nodes = nodeService.queryAllNoForkAliveNodeList();
-        List<SubmitTransactionToBlockchainNetworkResponse.Node> successSubmitNode = new ArrayList<>();
-        List<SubmitTransactionToBlockchainNetworkResponse.Node> failSubmitNode = new ArrayList<>();
-        if(nodes != null){
-            for(NodeDto node:nodes){
-                ServiceResult<SubmitTransactionToNodeResponse> submitSuccess = blockchainNodeClient.submitTransaction(node,transactionDTO);
-                if(ServiceResult.isSuccess(submitSuccess)){
-                    successSubmitNode.add(new SubmitTransactionToBlockchainNetworkResponse.Node(node.getIp()));
-                } else {
-                    failSubmitNode.add(new SubmitTransactionToBlockchainNetworkResponse.Node(node.getIp()));
-                }
-            }
-        }
-
-        SubmitTransactionToBlockchainNetworkResponse response = new SubmitTransactionToBlockchainNetworkResponse();
-        response.setTransactionDTO(transactionDTO);
-        response.setSuccessSubmitNode(successSubmitNode);
-        response.setFailSubmitNode(failSubmitNode);
-        return response;
-    }
-
 
     //region get set
     public BlockchainCore getBlockchainCore() {
