@@ -52,8 +52,8 @@ public class BlockTool {
                 ByteUtil.concatLengthBytes(bytesPreviousBlockHash),
                 ByteUtil.concatLengthBytes(bytesMerkleTreeRoot),
                 ByteUtil.concatLengthBytes(bytesNonce));
-        byte[] sha256Digest = SHA256Util.doubleDigest(bytesData);
-        return HexUtil.bytesToHexString(sha256Digest);
+        byte[] sha256DoubleDigest = SHA256Util.doubleDigest(bytesData);
+        return HexUtil.bytesToHexString(sha256DoubleDigest);
     }
     /**
      * 计算区块的默克尔树根值
