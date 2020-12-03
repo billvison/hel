@@ -408,7 +408,7 @@ public class BlockchainBrowserController {
             blockDto.setTransactionCount(BlockTool.getTransactionCount(block));
             blockDto.setTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));
             blockDto.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
-            blockDto.setMinerDifficulty(block.getBits());
+            blockDto.setDifficulty(block.getDifficulty());
             blockDto.setNonce(String.valueOf(block.getNonce()));
             blockDto.setHash(block.getHash());
             blockDto.setPreviousBlockHash(block.getPreviousBlockHash());

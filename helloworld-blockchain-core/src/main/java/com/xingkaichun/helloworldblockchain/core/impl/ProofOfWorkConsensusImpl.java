@@ -23,10 +23,10 @@ public class ProofOfWorkConsensusImpl extends Consensus {
 
     @Override
     public boolean isReachConsensus(BlockchainDatabase blockchainDataBase, Block block) {
-        String bits = block.getBits();
-        if(StringUtil.isNullOrEmpty(bits)){
-            bits = calculateDifficult(blockchainDataBase,block);
-            block.setBits(bits);
+        String difficulty = block.getDifficulty();
+        if(StringUtil.isNullOrEmpty(difficulty)){
+            difficulty = calculateDifficult(blockchainDataBase,block);
+            block.setDifficulty(difficulty);
         }
 
         //区块Hash
@@ -34,7 +34,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         if(hash == null){
             hash = BlockTool.calculateBlockHash(block);
         }
-        return new BigInteger(bits,16).compareTo(new BigInteger(hash,16)) > 0;
+        return new BigInteger(difficulty,16).compareTo(new BigInteger(hash,16)) > 0;
     }
 
 
@@ -53,7 +53,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         Block lastBlock = blockchainDataBase.queryBlockByBlockHeight(blockHeight-1);
         long lastBlockHeight = lastBlock.getHeight();
         if (lastBlockHeight % nInterval != 0){
-            targetDifficult = lastBlock.getBits();
+            targetDifficult = lastBlock.getDifficulty();
             return targetDifficult;
         }
         Block Block14DayAgo = blockchainDataBase.queryBlockByBlockHeight(lastBlockHeight-nInterval+1);
@@ -63,7 +63,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         if (actualTimespan > targetTimespan*4)
             actualTimespan = targetTimespan*4;
 
-        BigInteger bigIntegerTargetDifficult = new BigInteger(lastBlock.getBits(),16).multiply(new BigInteger(String.valueOf(actualTimespan))).divide(new BigInteger(String.valueOf(targetTimespan)));
+        BigInteger bigIntegerTargetDifficult = new BigInteger(lastBlock.getDifficulty(),16).multiply(new BigInteger(String.valueOf(actualTimespan))).divide(new BigInteger(String.valueOf(targetTimespan)));
         return bigIntegerTargetDifficult.toString(16);
     }
 }

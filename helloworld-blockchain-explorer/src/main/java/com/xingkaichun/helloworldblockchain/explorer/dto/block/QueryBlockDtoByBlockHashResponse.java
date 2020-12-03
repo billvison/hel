@@ -36,7 +36,7 @@ public class QueryBlockDtoByBlockHashResponse {
         private String time;
         private long minerIncentiveValue;
 
-        private String minerDifficulty;
+        private String difficulty;
         private String nonce;
         private String hash;
         private String previousBlockHash;
@@ -91,12 +91,12 @@ public class QueryBlockDtoByBlockHashResponse {
             this.minerIncentiveValue = minerIncentiveValue;
         }
 
-        public String getMinerDifficulty() {
-            return minerDifficulty;
+        public String getDifficulty() {
+            return difficulty;
         }
 
-        public void setMinerDifficulty(String minerDifficulty) {
-            this.minerDifficulty = minerDifficulty;
+        public void setDifficulty(String difficulty) {
+            this.difficulty = difficulty;
         }
 
         public String getNonce() {
