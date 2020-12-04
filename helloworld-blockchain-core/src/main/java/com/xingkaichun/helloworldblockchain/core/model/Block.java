@@ -50,9 +50,11 @@ public class Block implements Serializable {
      * 区块链是个分布式账本，每个人都拥有记账的权利。如果每个人都很简单的就能够记账，账本就会特别难达成一致。
      * 一般情况下，想要记账请解答一个难题，从而增大记账的难度。
      * 而这个随机数值就是难题的答案。难题的答案可能并不是唯一，一般情况下，很难获取答案。
-     * TODO 256bit ???
+     *
+     * 比特币采用4byte存储，nonce可供选择的范围过于少(2^32=4294967296)，普通矿机一秒就将耗尽nonce的取值范围。
+     * 因此，这里放大了nonce的取值范围。
      */
-    private long nonce;
+    private String nonce;
     /**
      * 区块哈希：由timestamp、previousBlockHash、nonce、merkleRoot共同作用使用Hash算法生成。
      * 为什么需要哈希这个字段？
@@ -146,11 +148,11 @@ public class Block implements Serializable {
         this.merkleTreeRoot = merkleTreeRoot;
     }
 
-    public long getNonce() {
+    public String getNonce() {
         return nonce;
     }
 
-    public void setNonce(long nonce) {
+    public void setNonce(String nonce) {
         this.nonce = nonce;
     }
 

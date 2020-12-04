@@ -90,10 +90,8 @@ public class GlobalSetting {
         public static final long TRANSACTION_TEXT_MAX_SIZE = 1024 * 1024;
         //区块存储容量限制
         public static final long BLOCK_TEXT_MAX_SIZE = TRANSACTION_TEXT_MAX_SIZE * BLOCK_MAX_TRANSACTION_COUNT;
-        //nonce最大值
-        public static final long MAX_NONCE = Long.MAX_VALUE;
-        //nonce最小值
-        public static final long MIN_NONCE = 0;
+        //nonce的长度 32字节
+        public static final long NONCE_TEXT_SIZE = 32 * 2;
     }
 
     /**

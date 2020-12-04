@@ -43,10 +43,11 @@ public class BlockTool {
      * 计算区块的Hash值
      */
     public static String calculateBlockHash(BlockDTO blockDto) {
+        //TODO 固定长度
         byte[] bytesTimestamp = ByteUtil.longToBytes8(blockDto.getTimestamp());
         byte[] bytesPreviousBlockHash = HexUtil.hexStringToBytes(blockDto.getPreviousBlockHash());
         byte[] bytesMerkleTreeRoot = HexUtil.hexStringToBytes(calculateBlockMerkleTreeRoot(blockDto));
-        byte[] bytesNonce = ByteUtil.longToBytes8(blockDto.getNonce());
+        byte[] bytesNonce = HexUtil.hexStringToBytes(blockDto.getNonce());
 
         byte[] bytesData = Bytes.concat(ByteUtil.concatLengthBytes(bytesTimestamp),
                 ByteUtil.concatLengthBytes(bytesPreviousBlockHash),
@@ -212,7 +213,7 @@ public class BlockTool {
                 StringUtil.isEquals(block1.getHash(), block2.getHash()) &&
                 StringUtil.isEquals(block1.getPreviousBlockHash(), block2.getPreviousBlockHash()) &&
                 StringUtil.isEquals(block1.getMerkleTreeRoot(), block2.getMerkleTreeRoot()) &&
-                LongUtil.isEquals(block1.getNonce(), block2.getNonce());
+                StringUtil.isEquals(block1.getNonce(), block2.getNonce());
     }
 
     /**

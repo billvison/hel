@@ -42,11 +42,9 @@ public class StructureSizeTool {
         //区块的前哈希的长度不需要校验  假设前哈希长度不正确，则在随后的业务逻辑中走不通
 
         //校验共识占用存储空间
-        long nonce = blockDTO.getNonce();
-        if(LongUtil.isLessThan(nonce, GlobalSetting.BlockConstant.MIN_NONCE)){
-            return false;
-        }
-        if(LongUtil.isGreatThan(nonce, GlobalSetting.BlockConstant.MAX_NONCE)){
+        long nonceTextSize =calculateNonceTextSize(blockDTO.getNonce());
+        if(!LongUtil.isEquals(nonceTextSize, GlobalSetting.BlockConstant.NONCE_TEXT_SIZE)){
+            logger.debug(String.format("nonce[%s]长度不是[%s]。",blockDTO.getNonce(),GlobalSetting.BlockConstant.NONCE_TEXT_SIZE));
             return false;
         }
 
@@ -131,8 +129,8 @@ public class StructureSizeTool {
         String previousBlockHash = blockDTO.getPreviousBlockHash();
         size += previousBlockHash.length();
 
-        long nonce = blockDTO.getNonce();
-        size += calculateLongTextSize(nonce);
+        String nonce = blockDTO.getNonce();
+        size += calculateNonceTextSize(nonce);
 
         List<TransactionDTO> transactionDtoList = blockDTO.getTransactionDtoList();
         for(TransactionDTO transactionDTO:transactionDtoList){
@@ -140,6 +138,11 @@ public class StructureSizeTool {
         }
         return size;
     }
+
+    private static long calculateNonceTextSize(String nonce) {
+        return nonce.length();
+    }
+
     public static long calculateTransactionTextSize(Transaction transaction) {
         return calculateTransactionTextSize(Model2DtoTool.transaction2TransactionDTO(transaction));
     }

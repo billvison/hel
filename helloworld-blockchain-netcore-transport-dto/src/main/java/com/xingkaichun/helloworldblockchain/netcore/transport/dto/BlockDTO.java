@@ -22,7 +22,7 @@ public class BlockDTO implements Serializable {
     //区块里的交易
     private List<TransactionDTO> transactionDtoList;
     //共识值
-    private long nonce;
+    private String nonce;
 
 
 
@@ -45,11 +45,11 @@ public class BlockDTO implements Serializable {
         this.transactionDtoList = transactionDtoList;
     }
 
-    public long getNonce() {
+    public String getNonce() {
         return nonce;
     }
 
-    public void setNonce(long nonce) {
+    public void setNonce(String nonce) {
         this.nonce = nonce;
     }
 

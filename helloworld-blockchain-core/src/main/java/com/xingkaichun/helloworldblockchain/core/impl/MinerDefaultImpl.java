@@ -13,6 +13,7 @@ import com.xingkaichun.helloworldblockchain.core.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
+import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.util.ThreadUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
@@ -53,7 +54,7 @@ public class MinerDefaultImpl extends Miner {
             Account minerAccount = wallet.createAccount();
             Block block = obtainMiningBlock(minerAccount);
             //随机nonce。好处：不同实例，从不同的nonce开始尝试计算符合要求的nonce。
-            long nonce = RANDOM.nextLong();
+            byte[] nonceBytes = new byte[32];
             long startTimestamp = System.currentTimeMillis();
             while(true){
                 if(!mineOption){
@@ -63,8 +64,8 @@ public class MinerDefaultImpl extends Miner {
                 if(System.currentTimeMillis()-startTimestamp > GlobalSetting.MinerConstant.MINE_TIMESTAMP_PER_ROUND){
                     break;
                 }
-
-                block.setNonce(nonce);
+                RANDOM.nextBytes(nonceBytes);
+                block.setNonce(HexUtil.bytesToHexString(nonceBytes));
                 block.setHash(BlockTool.calculateBlockHash(block));
                 //挖矿成功
                 if(blockchainDataBase.getConsensus().isReachConsensus(blockchainDataBase,block)){
@@ -79,7 +80,6 @@ public class MinerDefaultImpl extends Miner {
                     wallet.addAccount(minerAccount);
                     break;
                 }
-                nonce++;
             }
         }
     }
