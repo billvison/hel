@@ -296,7 +296,7 @@ public class StructureSizeTool {
             }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA1024.getCode(),bytesOperationCode)){
                 String operationData = scriptDTO.get(++i);
                 byte[] bytesOperationData = HexUtil.hexStringToBytes(operationData);
-                if(ByteUtil.size(bytesOperationData) > OperationCodeEnum.OP_PUSHDATA1024.getSize()){
+                if(ByteUtil.bitCount(bytesOperationData) > OperationCodeEnum.OP_PUSHDATA1024.getSize()){
                     return false;
                 }
             }else {
