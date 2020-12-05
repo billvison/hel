@@ -6,15 +6,15 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.util.ByteUtil;
-import com.xingkaichun.helloworldblockchain.util.LongUtil;
-import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.MerkleTreeUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.ByteUtil;
+import com.xingkaichun.helloworldblockchain.util.LongUtil;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,16 +43,13 @@ public class BlockTool {
      * 计算区块的Hash值
      */
     public static String calculateBlockHash(BlockDTO blockDto) {
-        //TODO 固定长度
-        byte[] bytesTimestamp = ByteUtil.longToBytes8(blockDto.getTimestamp());
+        //时间戳、前哈希、默克尔树根、随机数各占32字节
+        byte[] bytesTimestamp = ByteUtil.longToBytes32(blockDto.getTimestamp());
         byte[] bytesPreviousBlockHash = HexUtil.hexStringToBytes(blockDto.getPreviousBlockHash());
         byte[] bytesMerkleTreeRoot = HexUtil.hexStringToBytes(calculateBlockMerkleTreeRoot(blockDto));
         byte[] bytesNonce = HexUtil.hexStringToBytes(blockDto.getNonce());
 
-        byte[] bytesData = Bytes.concat(ByteUtil.concatLengthBytes(bytesTimestamp),
-                ByteUtil.concatLengthBytes(bytesPreviousBlockHash),
-                ByteUtil.concatLengthBytes(bytesMerkleTreeRoot),
-                ByteUtil.concatLengthBytes(bytesNonce));
+        byte[] bytesData = Bytes.concat(bytesTimestamp,bytesPreviousBlockHash,bytesMerkleTreeRoot,bytesNonce);
         byte[] sha256DoubleDigest = SHA256Util.doubleDigest(bytesData);
         return HexUtil.bytesToHexString(sha256DoubleDigest);
     }
