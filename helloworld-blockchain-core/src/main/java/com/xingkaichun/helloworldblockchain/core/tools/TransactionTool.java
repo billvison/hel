@@ -125,7 +125,7 @@ public class TransactionTool {
      * 计算交易哈希
      */
     public static String calculateTransactionHash(TransactionDTO transactionDTO){
-        byte[] bytesTransaction = bytesTransaction(transactionDTO);
+        byte[] bytesTransaction = bytesTransaction4CalculateTransactionHash(transactionDTO);
         byte[] sha256Digest = SHA256Util.doubleDigest(bytesTransaction);
         return HexUtil.bytesToHexString(sha256Digest);
     }
@@ -133,7 +133,7 @@ public class TransactionTool {
     /**
      * 字节型脚本
      */
-    public static byte[] bytesTransaction(TransactionDTO transactionDTO) {
+    public static byte[] bytesTransaction4CalculateTransactionHash(TransactionDTO transactionDTO) {
         List<byte[]> bytesUnspendTransactionOutputList = new ArrayList<>();
         List<TransactionInputDTO> inputs = transactionDTO.getTransactionInputDtoList();
         if(inputs != null){
