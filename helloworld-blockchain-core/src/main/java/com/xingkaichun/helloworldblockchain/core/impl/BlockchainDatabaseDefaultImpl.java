@@ -233,7 +233,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             }
             //脚本
             if(!TransactionTool.verifyScript(transaction)) {
-                logger.debug("交易校验失败：交易脚本钥匙解锁交易脚本锁异常。");
+                logger.debug("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。");
                 return false;
             }
             return true;

@@ -15,7 +15,7 @@ public class TransactionOutput extends TransactionOutputId implements Serializab
     //交易输出的金额
     private long value;
     /**
-     * 脚本锁
+     * [输出脚本]
      * 交易输出不应该是任何用户都可以使用的，只有能证明这个交易输出属于该用户的用户才可以使用这个交易输出。
      * 如何证明用户拥有这个交易输出？
      * 这里我们给交易输出加上一把锁，自然拥有锁对应钥匙的用户可以使用这个交易输出。
@@ -24,7 +24,7 @@ public class TransactionOutput extends TransactionOutputId implements Serializab
 
     /**
      * 交易输出的地址
-     * 冗余；可以从脚本锁解析出地址
+     * 冗余；可以从[输出脚本]解析出地址
      */
     private String address;
 

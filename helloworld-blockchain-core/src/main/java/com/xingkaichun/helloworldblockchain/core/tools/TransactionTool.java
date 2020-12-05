@@ -110,7 +110,7 @@ public class TransactionTool {
                 }
             }
         }catch (Exception e){
-            logger.debug("交易校验失败：交易脚本钥匙解锁交易脚本锁异常。",e);
+            logger.debug("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。",e);
             return false;
         }
         return true;

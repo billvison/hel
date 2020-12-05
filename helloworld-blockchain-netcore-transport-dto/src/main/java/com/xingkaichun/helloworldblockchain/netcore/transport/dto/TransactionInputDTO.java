@@ -12,7 +12,7 @@ public class TransactionInputDTO implements Serializable {
 
     //未花费输出
     private UnspendTransactionOutputDTO unspendTransactionOutputDTO;
-    //脚本钥匙
+    //[输入脚本]
     private InputScriptDTO inputScriptDTO;
 
 

@@ -13,7 +13,7 @@ public class TransactionOutputDTO implements Serializable {
 
     //交易输出的金额
     private long value;
-    //脚本锁
+    //[输出脚本]
     private OutputScriptDTO outputScriptDTO;
 
 
