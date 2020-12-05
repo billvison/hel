@@ -76,16 +76,18 @@ public class TransactionTool {
     /**
      * 获取用于签名的交易数据
      */
-    public static String getSignatureData(Transaction transaction) {
-        String data = transaction.getTransactionHash();
-        return data;
+    public static byte[] getSignatureData(Transaction transaction) {
+        TransactionDTO transactionDTO = Model2DtoTool.transaction2TransactionDTO(transaction);
+        byte[] bytesTransaction = bytesTransaction4CalculateTransactionHash(transactionDTO);
+        byte[] sha256Digest = SHA256Util.doubleDigest(bytesTransaction);
+        return sha256Digest;
     }
 
     /**
      * 交易签名
      */
     public static String signature(String privateKey, Transaction transaction) {
-        byte[] bytesMessage = HexUtil.hexStringToBytes(getSignatureData(transaction));
+        byte[] bytesMessage = getSignatureData(transaction);
         byte[] bytesSignature = AccountUtil.signature(privateKey,bytesMessage);
         String stringSignature = HexUtil.bytesToHexString(bytesSignature);
         return stringSignature;
