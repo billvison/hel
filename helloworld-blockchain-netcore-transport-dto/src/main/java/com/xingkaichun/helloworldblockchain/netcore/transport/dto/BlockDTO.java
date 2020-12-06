@@ -21,7 +21,7 @@ public class BlockDTO implements Serializable {
     private String previousBlockHash;
     //区块里的交易
     private List<TransactionDTO> transactionDtoList;
-    //共识值
+    //随机数
     private String nonce;
 
 
