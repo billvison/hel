@@ -78,6 +78,7 @@ public class TransactionTool {
      */
     public static byte[] getToBeSignedData(Transaction transaction) {
         TransactionDTO transactionDTO = Model2DtoTool.transaction2TransactionDTO(transaction);
+        //签名有不同的策略，这里签名使用的数据直接就是计算交易hash的数据。
         byte[] bytesTransaction = bytesTransaction4CalculateTransactionHash(transactionDTO);
         byte[] sha256Digest = SHA256Util.doubleDigest(bytesTransaction);
         return sha256Digest;
