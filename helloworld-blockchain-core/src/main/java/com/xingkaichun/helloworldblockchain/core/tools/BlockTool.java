@@ -49,8 +49,8 @@ public class BlockTool {
         byte[] bytesMerkleTreeRoot = HexUtil.hexStringToBytes(calculateBlockMerkleTreeRoot(blockDto));
         byte[] bytesNonce = HexUtil.hexStringToBytes(blockDto.getNonce());
 
-        byte[] bytesData = Bytes.concat(bytesTimestamp,bytesPreviousBlockHash,bytesMerkleTreeRoot,bytesNonce);
-        byte[] sha256DoubleDigest = SHA256Util.doubleDigest(bytesData);
+        byte[] bytesInput = Bytes.concat(bytesTimestamp,bytesPreviousBlockHash,bytesMerkleTreeRoot,bytesNonce);
+        byte[] sha256DoubleDigest = SHA256Util.doubleDigest(bytesInput);
         return HexUtil.bytesToHexString(sha256DoubleDigest);
     }
     /**
