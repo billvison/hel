@@ -4,8 +4,8 @@ import com.xingkaichun.helloworldblockchain.core.BlockchainDatabase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
-import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         String targetDifficult;
         long blockHeight = block.getHeight();
         if(blockHeight == 1){
-            targetDifficult = GlobalSetting.MinerConstant.INIT_GENERATE_BLOCK_DIFFICULTY_STRING;
+            targetDifficult = GlobalSetting.GenesisBlock.DIFFICULTY;
             return targetDifficult;
         }
         Block lastBlock = blockchainDataBase.queryBlockByBlockHeight(blockHeight-1);
