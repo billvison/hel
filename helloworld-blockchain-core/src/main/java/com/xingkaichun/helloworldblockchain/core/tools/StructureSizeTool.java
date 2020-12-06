@@ -273,6 +273,11 @@ public class StructureSizeTool {
             }
             return true;
         }else if(TransactionType.NORMAL == transactionType){
+            List<TransactionInput> inputs = transaction.getInputs();
+            if(inputs == null || inputs.size()<1){
+                logger.debug("交易数据异常：普通交易的交易输入个数至少是1。");
+                return false;
+            }
             return true;
         }else {
             logger.debug("交易数据异常：不能识别的交易的类型。");
