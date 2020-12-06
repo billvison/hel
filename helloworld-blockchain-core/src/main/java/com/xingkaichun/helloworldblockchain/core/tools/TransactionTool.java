@@ -142,7 +142,7 @@ public class TransactionTool {
             for(TransactionInputDTO transactionInputDTO:inputs){
                 UnspendTransactionOutputDTO unspendTransactionOutputDto = transactionInputDTO.getUnspendTransactionOutputDTO();
                 byte[] bytesTransactionHash = HexUtil.hexStringToBytes(unspendTransactionOutputDto.getTransactionHash());
-                byte[] bytesTransactionOutputIndex = ByteUtil.longToBytes8(unspendTransactionOutputDto.getTransactionOutputIndex());
+                byte[] bytesTransactionOutputIndex = ByteUtil.longToBytes32(unspendTransactionOutputDto.getTransactionOutputIndex());
                 byte[] bytesUnspendTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesTransactionHash),
                         ByteUtil.concatLengthBytes(bytesTransactionOutputIndex));
                 bytesUnspendTransactionOutputList.add(bytesUnspendTransactionOutput);
@@ -153,16 +153,16 @@ public class TransactionTool {
         List<TransactionOutputDTO> outputs = transactionDTO.getTransactionOutputDtoList();
         if(outputs != null){
             for(TransactionOutputDTO transactionOutputDTO:outputs){
-                byte[] bytesValue = ByteUtil.longToBytes8(transactionOutputDTO.getValue());
                 byte[] bytesOutputScript = ScriptTool.bytesScript(transactionOutputDTO.getOutputScriptDTO());
-                byte[] bytesTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesValue),
-                        ByteUtil.concatLengthBytes(bytesOutputScript));
+                byte[] bytesValue = ByteUtil.longToBytes32(transactionOutputDTO.getValue());
+                byte[] bytesTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesOutputScript),ByteUtil.concatLengthBytes(bytesValue));
                 bytesTransactionOutputList.add(bytesTransactionOutput);
             }
         }
 
         byte[] data = Bytes.concat(ByteUtil.concatLengthBytes(bytesUnspendTransactionOutputList),
                 ByteUtil.concatLengthBytes(bytesTransactionOutputList));
+
         return data;
     }
 
