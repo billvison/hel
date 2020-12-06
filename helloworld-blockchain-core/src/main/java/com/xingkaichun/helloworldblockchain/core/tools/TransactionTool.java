@@ -134,7 +134,7 @@ public class TransactionTool {
     }
 
     /**
-     * 字节型脚本
+     * 字节型交易，要求字节数组能反过来转换为交易。
      */
     public static byte[] bytesTransaction4CalculateTransactionHash(TransactionDTO transactionDTO) {
         List<byte[]> bytesUnspendTransactionOutputList = new ArrayList<>();
@@ -144,8 +144,11 @@ public class TransactionTool {
                 UnspendTransactionOutputDTO unspendTransactionOutputDto = transactionInputDTO.getUnspendTransactionOutputDTO();
                 byte[] bytesTransactionHash = HexUtil.hexStringToBytes(unspendTransactionOutputDto.getTransactionHash());
                 byte[] bytesTransactionOutputIndex = ByteUtil.longToBytes32BigEndian(unspendTransactionOutputDto.getTransactionOutputIndex());
+                byte[] bytesInputScript = ScriptTool.bytesScript(transactionInputDTO.getInputScriptDTO());
+
                 byte[] bytesUnspendTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesTransactionHash),
-                        ByteUtil.concatLengthBytes(bytesTransactionOutputIndex));
+                        ByteUtil.concatLengthBytes(bytesTransactionOutputIndex),
+                        ByteUtil.concatLengthBytes(bytesInputScript));
                 bytesUnspendTransactionOutputList.add(bytesUnspendTransactionOutput);
             }
         }
