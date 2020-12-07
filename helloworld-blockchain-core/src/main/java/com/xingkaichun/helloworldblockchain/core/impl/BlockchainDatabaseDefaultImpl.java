@@ -979,7 +979,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      */
     private boolean isIncentiveRight(Block block, Transaction transaction) {
         //激励校验
-        if(!TransactionTool.isIncentiveRight(incentive.mineAward(block),transaction)){
+        if(!TransactionTool.isIncentiveRight(incentive.reward(block),transaction)){
             logger.debug("区块数据异常，激励异常。");
             return false;
         }
@@ -989,7 +989,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * 区块激励正确吗？
      */
     private boolean isIncentiveRight(Block block) {
-        if(!BlockTool.isIncentiveRight(incentive.mineAward(block),block)){
+        if(!BlockTool.isIncentiveRight(incentive.reward(block),block)){
             logger.debug("区块数据异常，激励异常。");
             return false;
         }

@@ -21,7 +21,7 @@ public class IncentiveDefaultImpl extends Incentive {
     private static final Logger logger = LoggerFactory.getLogger(IncentiveDefaultImpl.class);
 
     @Override
-    public long mineAward(Block block) {
+    public long reward(Block block) {
         long fees = getFees(block);
         long subsidyCoin = getSubsidy(block);
         long total = subsidyCoin + fees;

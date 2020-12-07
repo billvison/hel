@@ -186,7 +186,7 @@ public class MinerDefaultImpl extends Miner {
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
         TransactionOutput output = new TransactionOutput();
         output.setAddress(address);
-        output.setValue(blockchainDataBase.getIncentive().mineAward(block));
+        output.setValue(blockchainDataBase.getIncentive().reward(block));
         output.setOutputScript(StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(address));
         outputs.add(output);
 
