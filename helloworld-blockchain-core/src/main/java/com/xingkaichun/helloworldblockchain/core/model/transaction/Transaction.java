@@ -12,19 +12,12 @@ import java.util.List;
 public class Transaction implements Serializable {
 
     /**
-     * 交易的Hash等于交易的摘要。交易的哈希确定了，具体的交易也就确定了。
-     *
-     * 这里强制要求区块链系统不允许同一个[交易的Hash]被使用两次或是两次以上。
-     * 这个值的构成应当足够简单去验证这个值是否是唯一的。
-     * 当区块数据足够庞大时，用户节点只有最近一部分区块与UTXO数据，这时节点必须也可以校验它的唯一性。
-     * 这里建议它的构成是一串字符+时间戳。
-     * 最近的区块只包含最近产生的交易，因此只要有最近的区块就可校验它的唯一性。
-     *
-     * 这个字段也可以用来表示一个独一无二的交易编号
-     * 还有另外一个独一无二的编号，区块高度+交易在区块中的编号，这个编号有个缺点，只能在区块完全确定后，才能确定这个编号
+     * 交易哈希
+     * 交易哈希用来表示一个独一无二的交易编号。
+     * 交易哈希是交易的摘要。可以认为交易哈希和交易一一对应。交易确定了，交易哈希也就确定了。交易哈希确定了，交易也就确定了。
+     * 这里要求区块链系统不允许同一个哈希被使用两次或是两次以上(一个哈希同时被交易哈希、区块哈希使用也不行)。
      *
      * 冗余字段，这个值可以由区块链系统推算出来
-     *
      * 相关拓展：比特币曾经出现过两个交易ID相同的情况。https://zhuanlan.zhihu.com/p/258955441
      */
     private String transactionHash;
@@ -42,13 +35,13 @@ public class Transaction implements Serializable {
      */
     private List<TransactionOutput> outputs;
     /**
-     * 在区块中的交易序列号
+     * 交易在区块中的序列号
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
     private long transactionIndexInBlock;
     /**
-     * 在区块链中交易序列号
+     * 交易在区块链中的序列号
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
@@ -120,5 +113,5 @@ public class Transaction implements Serializable {
         this.blockHeight = blockHeight;
     }
 
-//endregion
+    //endregion
 }
