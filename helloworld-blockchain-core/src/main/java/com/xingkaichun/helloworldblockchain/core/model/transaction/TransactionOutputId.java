@@ -2,6 +2,11 @@ package com.xingkaichun.helloworldblockchain.core.model.transaction;
 
 import java.io.Serializable;
 
+/**
+ * 交易输出ID
+ *
+ * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ */
 public class TransactionOutputId implements Serializable {
     /**
      * 交易哈希
@@ -9,9 +14,8 @@ public class TransactionOutputId implements Serializable {
      */
     private String transactionHash;
     /**
-     * 交易输出序列号
+     * 交易输出在[此笔交易所有的交易输出]中的序列号
      * 冗余
-     * 在这个交易中的的排序号
      */
     private long transactionOutputIndex;
 

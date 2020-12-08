@@ -12,13 +12,16 @@ import java.io.Serializable;
  */
 public class TransactionOutput extends TransactionOutputId implements Serializable {
 
-    //交易输出的金额
+    /**
+     * 交易输出的金额
+     */
     private long value;
     /**
      * [输出脚本]
      * 交易输出不应该是任何用户都可以使用的，(只有证明了拥有交易输出所有权)的用户才可以使用这个交易输出。
      * 如何证明用户拥有这个交易输出？
-     * 这里我们给交易输出加上一把锁，自然拥有锁对应钥匙的用户可以使用这个交易输出。
+     * [输出脚本]相当于一把锁，[输入脚本]相当于一把钥匙，
+     * 自然当钥匙可以打开锁时，就可以证明能拿出钥匙[输入脚本]的用户拥有锁[输出脚本]。
      */
     private OutputScript outputScript;
 
@@ -29,17 +32,17 @@ public class TransactionOutput extends TransactionOutputId implements Serializab
     private String address;
 
     /**
-     * 交易所在区块的区块高度
+     * [[产生交易输出的]交易所在的]区块的区块高度
      * 冗余
      */
     private long blockHeight;
     /**
-     * 交易所在区块的区块哈希
+     * [[产生交易输出的]交易所在的]区块的区块哈希
      * 冗余
      */
     private String blockHash;
     /**
-     * 交易输出在的交易在所在的区块中的交易序列号
+     * [[产生交易输出的]交易在]区块中的交易序列号
      * 冗余
      * 在这个交易区块中的的排序号
      */
