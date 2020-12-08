@@ -16,7 +16,7 @@ public class TransactionOutput extends TransactionOutputId implements Serializab
     private long value;
     /**
      * [输出脚本]
-     * 交易输出不应该是任何用户都可以使用的，只有能证明这个交易输出属于该用户的用户才可以使用这个交易输出。
+     * 交易输出不应该是任何用户都可以使用的，(只有证明了拥有交易输出所有权)的用户才可以使用这个交易输出。
      * 如何证明用户拥有这个交易输出？
      * 这里我们给交易输出加上一把锁，自然拥有锁对应钥匙的用户可以使用这个交易输出。
      */
