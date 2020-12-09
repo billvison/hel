@@ -93,8 +93,12 @@ public class GlobalSetting {
         public static final long TRANSACTION_TEXT_MAX_SIZE = 1024 * 1024;
         //区块存储容量限制
         public static final long BLOCK_TEXT_MAX_SIZE = TRANSACTION_TEXT_MAX_SIZE * BLOCK_MAX_TRANSACTION_COUNT;
-        //nonce的长度 32字节
+        //nonce的长度  32字节
         public static final long NONCE_TEXT_SIZE = 32 * 2;
+        //时间戳的长度 32字节
+        public static final long TIMESTAMP_TEXT_SIZE = 32 * 2;
+        //金额的长度 32字节
+        public static final long VALUE_TEXT_SIZE = 32 * 2;
     }
 
     /**

@@ -124,7 +124,7 @@ public class StructureSizeTool {
     public static long calculateBlockTextSize(BlockDTO blockDTO) {
         long size = 0;
         long timestamp = blockDTO.getTimestamp();
-        size += calculateLongTextSize(timestamp);
+        size += calculateTimestampTextSize(timestamp);
 
         String previousBlockHash = blockDTO.getPreviousBlockHash();
         size += previousBlockHash.length();
@@ -141,10 +141,6 @@ public class StructureSizeTool {
 
     private static long calculateNonceTextSize(String nonce) {
         return nonce.length();
-    }
-
-    public static long calculateTransactionTextSize(Transaction transaction) {
-        return calculateTransactionTextSize(Model2DtoTool.transaction2TransactionDTO(transaction));
     }
     public static long calculateTransactionTextSize(TransactionDTO transactionDTO) {
         long size = 0;
@@ -169,7 +165,7 @@ public class StructureSizeTool {
         OutputScriptDTO outputScriptDTO = transactionOutputDTO.getOutputScriptDTO();
         size += calculateScriptTextSize(outputScriptDTO);
         long value = transactionOutputDTO.getValue();
-        size += calculateLongTextSize(value);
+        size += calculateValueTextSize(value);
         return size;
     }
     private static long calculateTransactionOutputTextSize(UnspendTransactionOutputDTO unspendTransactionOutputDTO) {
@@ -177,7 +173,7 @@ public class StructureSizeTool {
         String address = unspendTransactionOutputDTO.getTransactionHash();
         size += address.length();
         long value = unspendTransactionOutputDTO.getTransactionOutputIndex();
-        size += calculateLongTextSize(value);
+        size += calculateValueTextSize(value);
         return size;
     }
     private static long calculateTransactionInputTextSize(List<TransactionInputDTO> inputs) {
@@ -211,8 +207,11 @@ public class StructureSizeTool {
         }
         return size;
     }
-    private static long calculateLongTextSize(long number){
-        return String.valueOf(number).length();
+    private static long calculateValueTextSize(long value){
+        return GlobalSetting.BlockConstant.VALUE_TEXT_SIZE;
+    }
+    private static long calculateTimestampTextSize(long timestamp) {
+        return GlobalSetting.BlockConstant.TIMESTAMP_TEXT_SIZE;
     }
     //endregion
 
