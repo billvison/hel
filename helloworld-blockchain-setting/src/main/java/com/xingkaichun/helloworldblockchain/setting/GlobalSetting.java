@@ -109,7 +109,7 @@ public class GlobalSetting {
      * 节点设置
      */
     public static class NodeConstant{
-        //两个区块链有分叉时，区块差异个数大于这个值，则真的分叉了。
+        //两个区块链有分叉时，区块差异数量大于这个值，则真的分叉了。
         public static final long FORK_BLOCK_SIZE = 100;
         //在区块链网络中自动搜寻新的节点的间隔时间
         public static final long SEARCH_NEW_NODE_TIME_INTERVAL = 1000 * 60 * 2;

@@ -268,14 +268,14 @@ public class StructureSizeTool {
             }
             List<TransactionOutput> outputs = transaction.getOutputs();
             if(outputs == null || outputs.size()!=1){
-                logger.debug("交易数据异常：CoinBase交易有且只能有一笔交易。");
+                logger.debug("交易数据异常：CoinBase交易有且只能有一笔交易输出。");
                 return false;
             }
             return true;
         }else if(TransactionType.NORMAL == transactionType){
             List<TransactionInput> inputs = transaction.getInputs();
             if(inputs == null || inputs.size()<1){
-                logger.debug("交易数据异常：普通交易的交易输入个数至少是1。");
+                logger.debug("交易数据异常：普通交易的交易输入数量至少是1。");
                 return false;
             }
             return true;

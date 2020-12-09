@@ -45,7 +45,7 @@ public class HexUtilTest {
             random.nextBytes(test);
             assert Arrays.equals(test, HexUtil.hexStringToBytes(HexUtil.bytesToHexString(test)));
 
-            //十六进制字符串的长度是字节个数的2倍
+            //十六进制字符串的长度是字节数量的2倍
             assertEquals(test.length*2, HexUtil.bytesToHexString(test).length());
 
             //只包含0123456789abcdef这些字符
