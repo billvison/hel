@@ -12,7 +12,7 @@ import java.util.List;
 public class ByteUtil {
 
     /**
-     * long转换为(大端模式)32个字节的字节数组(32*8=256个bit)。
+     * long转换为(大端模式)8个字节的字节数组(8*8=64个bit)。
      */
     public static byte[] longToBytes8BigEndian(long value) {
         byte[] bytes = new byte[8];
