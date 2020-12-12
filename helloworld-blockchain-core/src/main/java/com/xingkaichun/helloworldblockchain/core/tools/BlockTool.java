@@ -43,8 +43,7 @@ public class BlockTool {
      * 计算区块的Hash值
      */
     public static String calculateBlockHash(BlockDTO blockDto) {
-        //时间戳、前哈希、默克尔树根、随机数各占32字节
-        byte[] bytesTimestamp = ByteUtil.longToBytes32BigEndian(blockDto.getTimestamp());
+        byte[] bytesTimestamp = ByteUtil.longToBytes8BigEndian(blockDto.getTimestamp());
         byte[] bytesPreviousBlockHash = HexUtil.hexStringToBytes(blockDto.getPreviousBlockHash());
         byte[] bytesMerkleTreeRoot = HexUtil.hexStringToBytes(calculateBlockMerkleTreeRoot(blockDto));
         byte[] bytesNonce = HexUtil.hexStringToBytes(blockDto.getNonce());
