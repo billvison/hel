@@ -44,9 +44,9 @@ public enum OperationCodeEnum {
     OP_CHECKSIG(new byte[]{(byte)0x03},"OP_CHECKSIG",0),
     /**
      * 操作前，栈元素为(A B C D E)(栈顶<---栈底)
-     * 将脚本中的下一个数据[最大1024位比特]A2放入栈，如果下一个数据的长度大于1024比特，抛出异常。
+     * 将脚本中的下一个数据[最大1024字节]A2放入栈，如果下一个数据的长度大于1024字节，抛出异常。
      * 操作后，栈元素为(A2 A B C D E)(栈顶<---栈底)
-     * OPERATION_CODE_PUSH_DATA //TODO 字节单位
+     * OPERATION_CODE_PUSH_DATA
      */
     OP_PUSHDATA1024(new byte[]{(byte)0x04}, "OP_PUSHDATA1024",1024);
 
