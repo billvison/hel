@@ -402,7 +402,7 @@ public class BlockchainBrowserController {
             QueryBlockDtoByBlockHashResponse.BlockDto blockDto = new QueryBlockDtoByBlockHashResponse.BlockDto();
             blockDto.setHeight(block.getHeight());
             blockDto.setConfirmCount(BlockTool.getTransactionCount(block));
-            blockDto.setBlockSize(StructureSizeTool.calculateBlockTextSize(block)+"字符");
+            blockDto.setBlockSize(StructureSizeTool.calculateBlockByteSize(block)+"字符");
             blockDto.setTransactionCount(BlockTool.getTransactionCount(block));
             blockDto.setTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));
             blockDto.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
@@ -444,7 +444,7 @@ public class BlockchainBrowserController {
             for(Block block : blockList){
                 QueryLast10BlockDtoResponse.BlockDto blockDto = new QueryLast10BlockDtoResponse.BlockDto();
                 blockDto.setHeight(block.getHeight());
-                blockDto.setBlockSize(StructureSizeTool.calculateBlockTextSize(block)+"字符");
+                blockDto.setBlockSize(StructureSizeTool.calculateBlockByteSize(block)+"字符");
                 blockDto.setTransactionCount(BlockTool.getTransactionCount(block));
                 blockDto.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
                 blockDto.setTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));

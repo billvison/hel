@@ -89,16 +89,14 @@ public class GlobalSetting {
     public static class BlockConstant {
         //区块最多含有的交易数量
         public static final long BLOCK_MAX_TRANSACTION_COUNT = 1024;
-        //交易文本字符串最大长度值
+        //交易文本字符串最大长度值 TODO 1024能有几笔交易输出？
         public static final long TRANSACTION_TEXT_MAX_SIZE = 1024 * 1024;
         //区块存储容量限制
         public static final long BLOCK_TEXT_MAX_SIZE = TRANSACTION_TEXT_MAX_SIZE * BLOCK_MAX_TRANSACTION_COUNT;
         //nonce的长度  32字节
-        public static final long NONCE_TEXT_SIZE = 32 * 2;
-        //时间戳的长度 32字节
-        public static final long TIMESTAMP_TEXT_SIZE = 32 * 2;
-        //金额的长度 32字节
-        public static final long VALUE_TEXT_SIZE = 32 * 2;
+        public static final long NONCE_TEXT_SIZE = 32;
+        //计算区块大小时，数值型字段对应的存储空间为8字节。
+        public static final long NUMBER_TEXT_SIZE = 8;
     }
 
     /**
