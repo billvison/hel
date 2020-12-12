@@ -28,7 +28,7 @@ import java.util.List;
 public class StructureSizeTool {
 
     private static final Logger logger = LoggerFactory.getLogger(StructureSizeTool.class);
-
+    //TODO 尺寸限制以字节为单位 规定时间戳转换为字节的方式
     //region 校验存储容量
     /**
      * 校验区块的存储容量是否合法：用来限制区块所占存储空间的大小。
