@@ -245,7 +245,7 @@ public class StructureSizeTool {
     //endregion
 
 
-    
+
     //region 校验结构
     /**
      * 校验区块的结构
