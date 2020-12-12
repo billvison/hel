@@ -116,12 +116,19 @@ public class AccountUtil {
     public static String publicKeyHashFromPublicKey(String publicKey) {
         try {
             byte[] bytesPublicKey = publicKeyFrom(publicKey);
-            byte[] pubKSha256Digest = SHA256Util.digest(bytesPublicKey);
-            byte[] pubKSha256DigestRipeMD160Digest = RipeMD160Util.digest(pubKSha256Digest);
-            return HexUtil.bytesToHexString(pubKSha256DigestRipeMD160Digest);
+            byte[] publicKeyHash = publicKeyHashFromPublicKey(bytesPublicKey);
+            return HexUtil.bytesToHexString(publicKeyHash);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    /**
+     * 公钥生成公钥哈希
+     * 对公钥进行两次哈希(第一次采用SHA256算法进行哈希，第二次采用RipeMD160算法进行哈希)得到的结果，就是公钥哈希
+     */
+    private static byte[] publicKeyHashFromPublicKey(byte[] publicKey) {
+        byte[] publicKeyHash = RipeMD160Util.digest(SHA256Util.digest(publicKey));
+        return publicKeyHash;
     }
 
     /**
@@ -245,9 +252,8 @@ public class AccountUtil {
      * 公钥生成base58格式地址
      */
     private static String base58AddressFromPublicKey(byte[] bytePublicKey) {
-        byte[] publicKeySha256Digest = SHA256Util.digest(bytePublicKey);
-        byte[] publicKeySha256DigestRipeMD160Digest = RipeMD160Util.digest(publicKeySha256Digest);
-        return base58AddressFromPublicKeyHash(publicKeySha256DigestRipeMD160Digest);
+        byte[] publicKeyHash = publicKeyHashFromPublicKey(bytePublicKey);
+        return base58AddressFromPublicKeyHash(publicKeyHash);
     }
 
     /**
