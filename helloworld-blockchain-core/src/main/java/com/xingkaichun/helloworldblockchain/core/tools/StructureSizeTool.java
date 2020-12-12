@@ -72,7 +72,6 @@ public class StructureSizeTool {
     public static boolean isTransactionStorageCapacityLegal(Transaction transaction) {
         return isTransactionStorageCapacityLegal(Model2DtoTool.transaction2TransactionDTO(transaction));
     }
-
     public static boolean isTransactionStorageCapacityLegal(TransactionDTO transactionDTO) {
         //校验交易输入
         List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getTransactionInputDtoList();
@@ -113,6 +112,34 @@ public class StructureSizeTool {
         }
         return true;
     }
+    /**
+     * 校验脚本操作码、操作数的存储容量
+     * 校验脚本的存储容量
+     */
+    public static boolean isScriptStorageCapacityLegal(ScriptDTO scriptDTO) {
+        for(int i=0;i<scriptDTO.size();i++){
+            String operationCode = scriptDTO.get(i);
+            byte[] bytesOperationCode = HexUtil.hexStringToBytes(operationCode);
+            if(Arrays.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode) ||
+                    Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
+                    Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
+                    Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
+                continue;
+            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA1024.getCode(),bytesOperationCode)){
+                String operationData = scriptDTO.get(++i);
+                if(operationData.length()/2 > OperationCodeEnum.OP_PUSHDATA1024.getSize()){
+                    return false;
+                }
+            }else {
+                return false;
+            }
+        }
+        if(calculateScriptByteSize(scriptDTO) > GlobalSetting.ScriptConstant.SCRIPT_TEXT_MAX_SIZE){
+            logger.debug("交易校验失败：交易输出脚本所占存储空间超出限制。");
+            return false;
+        }
+        return true;
+    }
     //endregion
 
 
@@ -138,15 +165,12 @@ public class StructureSizeTool {
         }
         return size;
     }
-
     private static long calculateHashByteSize(String hash) {
         return hash.length()/2;
     }
-
     private static long calculateNonceByteSize(String nonce) {
         return nonce.length()/2;
     }
-
     public static long calculateTransactionByteSize(TransactionDTO transactionDTO) {
         long size = 0;
         List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getTransactionInputDtoList();
@@ -173,7 +197,6 @@ public class StructureSizeTool {
         size += calculateValueByteSize(value);
         return size;
     }
-
     private static long calculateTransactionInputByteSize(List<TransactionInputDTO> inputs) {
         long size = 0;
         if(inputs == null || inputs.size()==0){
@@ -221,6 +244,9 @@ public class StructureSizeTool {
     }
     //endregion
 
+
+    
+    //region 校验结构
     /**
      * 校验区块的结构
      */
@@ -259,7 +285,6 @@ public class StructureSizeTool {
         }
         return true;
     }
-
     /**
      * 校验交易的结构
      */
@@ -289,33 +314,5 @@ public class StructureSizeTool {
             return false;
         }
     }
-
-    /**
-     * 校验脚本操作码、操作数的存储容量
-     * 校验脚本的存储容量
-     */
-    public static boolean isScriptStorageCapacityLegal(ScriptDTO scriptDTO) {
-        for(int i=0;i<scriptDTO.size();i++){
-            String operationCode = scriptDTO.get(i);
-            byte[] bytesOperationCode = HexUtil.hexStringToBytes(operationCode);
-            if(Arrays.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
-                continue;
-            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA1024.getCode(),bytesOperationCode)){
-                String operationData = scriptDTO.get(++i);
-                if(operationData.length()/2 > OperationCodeEnum.OP_PUSHDATA1024.getSize()){
-                    return false;
-                }
-            }else {
-                return false;
-            }
-        }
-        if(calculateScriptByteSize(scriptDTO) > GlobalSetting.ScriptConstant.SCRIPT_TEXT_MAX_SIZE){
-            logger.debug("交易校验失败：交易输出脚本所占存储空间超出限制。");
-            return false;
-        }
-        return true;
-    }
+    //endregion
 }
