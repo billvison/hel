@@ -83,7 +83,7 @@ public class StackBasedVirtualMachine {
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));
         return script;
     }
-
+    //TODO 校验脚本类型 与 长度
     public static String getPublicKeyHashByPayToPublicKeyHashOutputScript(List<String> outputScript) {
         return outputScript.get(3);
     }
