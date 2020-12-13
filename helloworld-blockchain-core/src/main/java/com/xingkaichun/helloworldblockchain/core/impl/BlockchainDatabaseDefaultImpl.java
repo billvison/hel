@@ -130,7 +130,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             return false;
         }
         //校验区块的存储容量
-        if(!StructureSizeTool.isBlockStorageCapacityLegal(block)){
+        if(!SizeTool.isBlockStorageCapacityLegal(block)){
             logger.debug("区块数据异常，请校验区块的大小。");
             return false;
         }
@@ -188,7 +188,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             return false;
         }
         //校验交易的存储容量
-        if(!StructureSizeTool.isTransactionStorageCapacityLegal(transaction)){
+        if(!SizeTool.isTransactionStorageCapacityLegal(transaction)){
             logger.debug("交易数据异常，请校验交易的大小。");
             return false;
         }

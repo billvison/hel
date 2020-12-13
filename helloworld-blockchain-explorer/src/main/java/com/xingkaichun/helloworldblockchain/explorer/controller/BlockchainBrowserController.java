@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
-import com.xingkaichun.helloworldblockchain.core.tools.StructureSizeTool;
+import com.xingkaichun.helloworldblockchain.core.tools.SizeTool;
 import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
@@ -402,7 +402,7 @@ public class BlockchainBrowserController {
             QueryBlockDtoByBlockHashResponse.BlockDto blockDto = new QueryBlockDtoByBlockHashResponse.BlockDto();
             blockDto.setHeight(block.getHeight());
             blockDto.setConfirmCount(BlockTool.getTransactionCount(block));
-            blockDto.setBlockSize(StructureSizeTool.calculateBlockByteSize(block)+"字符");
+            blockDto.setBlockSize(SizeTool.calculateBlockByteSize(block)+"字符");
             blockDto.setTransactionCount(BlockTool.getTransactionCount(block));
             blockDto.setTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));
             blockDto.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
@@ -444,7 +444,7 @@ public class BlockchainBrowserController {
             for(Block block : blockList){
                 QueryLast10BlockDtoResponse.BlockDto blockDto = new QueryLast10BlockDtoResponse.BlockDto();
                 blockDto.setHeight(block.getHeight());
-                blockDto.setBlockSize(StructureSizeTool.calculateBlockByteSize(block)+"字符");
+                blockDto.setBlockSize(SizeTool.calculateBlockByteSize(block)+"字符");
                 blockDto.setTransactionCount(BlockTool.getTransactionCount(block));
                 blockDto.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
                 blockDto.setTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));
