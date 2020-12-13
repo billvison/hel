@@ -125,7 +125,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         }
 
         //校验区块的结构
-        if(!StructureSizeTool.isBlockStructureLegal(block)){
+        if(!StructureTool.isBlockStructureLegal(block)){
             logger.debug("区块数据异常，请校验区块的结构。");
             return false;
         }
@@ -183,7 +183,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     @Override
     public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) {
         //校验交易的结构
-        if(!StructureSizeTool.isTransactionStructureLegal(transaction)){
+        if(!StructureTool.isTransactionStructureLegal(transaction)){
             logger.debug("交易数据异常，请校验交易的结构。");
             return false;
         }
