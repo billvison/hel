@@ -142,7 +142,7 @@ public class SizeTool {
 
 
 
-    //region 计算文本大小
+    //region 计算大小
     public static long calculateBlockByteSize(Block block) {
         return calculateBlockByteSize(Model2DtoTool.block2BlockDTO(block));
     }
@@ -152,7 +152,7 @@ public class SizeTool {
         size += calculateTimestampByteSize(timestamp);
 
         String previousBlockHash = blockDTO.getPreviousBlockHash();
-        size += calculateHashByteSize(previousBlockHash);
+        size += calculatePreviousBlockHashByteSize(previousBlockHash);
 
         String nonce = blockDTO.getNonce();
         size += calculateNonceByteSize(nonce);
@@ -162,12 +162,6 @@ public class SizeTool {
             size += calculateTransactionByteSize(transactionDTO);
         }
         return size;
-    }
-    private static long calculateHashByteSize(String hash) {
-        return hash.length();
-    }
-    private static long calculateNonceByteSize(String nonce) {
-        return nonce.length();
     }
     public static long calculateTransactionByteSize(TransactionDTO transactionDTO) {
         long size = 0;
@@ -216,7 +210,7 @@ public class SizeTool {
     private static long calculateTransactionOutputByteSize(UnspendTransactionOutputDTO unspendTransactionOutputDTO) {
         long size = 0;
         String transactionHash = unspendTransactionOutputDTO.getTransactionHash();
-        size += calculateHashByteSize(transactionHash);
+        size += calculateTransactionHashByteSize(transactionHash);
         long transactionOutputIndex = unspendTransactionOutputDTO.getTransactionOutputIndex();
         size += calculateTransactionOutputIndexByteSize(transactionOutputIndex);
         return size;
@@ -230,6 +224,17 @@ public class SizeTool {
             size += scriptCode.length();
         }
         return size;
+    }
+
+
+    private static long calculatePreviousBlockHashByteSize(String previousBlockHash) {
+        return previousBlockHash.length();
+    }
+    private static long calculateTransactionHashByteSize(String transactionHash) {
+        return transactionHash.length();
+    }
+    private static long calculateNonceByteSize(String nonce) {
+        return nonce.length();
     }
     private static long calculateValueByteSize(long value){
         return String.valueOf(value).length();
