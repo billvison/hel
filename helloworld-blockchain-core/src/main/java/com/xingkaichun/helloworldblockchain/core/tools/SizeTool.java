@@ -124,6 +124,7 @@ public class SizeTool {
                 continue;
             }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA1024.getCode(),bytesOperationCode)){
                 String operationData = scriptDTO.get(++i);
+                //TODO
                 if(operationData.length()/2 > OperationCodeEnum.OP_PUSHDATA1024.getSize()){
                     return false;
                 }
@@ -163,10 +164,10 @@ public class SizeTool {
         return size;
     }
     private static long calculateHashByteSize(String hash) {
-        return hash.length()/2;
+        return hash.length();
     }
     private static long calculateNonceByteSize(String nonce) {
-        return nonce.length()/2;
+        return nonce.length();
     }
     public static long calculateTransactionByteSize(TransactionDTO transactionDTO) {
         long size = 0;
@@ -226,18 +227,18 @@ public class SizeTool {
             return size;
         }
         for(String scriptCode:script){
-            size += scriptCode.length()/2;
+            size += scriptCode.length();
         }
         return size;
     }
     private static long calculateValueByteSize(long value){
-        return GlobalSetting.BlockConstant.NUMBER_TEXT_SIZE;
+        return String.valueOf(value).length();
     }
     private static long calculateTimestampByteSize(long timestamp) {
-        return GlobalSetting.BlockConstant.NUMBER_TEXT_SIZE;
+        return String.valueOf(timestamp).length();
     }
     private static long calculateTransactionOutputIndexByteSize(long transactionOutputIndex) {
-        return GlobalSetting.BlockConstant.NUMBER_TEXT_SIZE;
+        return String.valueOf(transactionOutputIndex).length();
     }
     //endregion
 }
