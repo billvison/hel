@@ -124,8 +124,7 @@ public class SizeTool {
                 continue;
             }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA1024.getCode(),bytesOperationCode)){
                 String operationData = scriptDTO.get(++i);
-                //TODO
-                if(operationData.length()/2 > OperationCodeEnum.OP_PUSHDATA1024.getSize()){
+                if(operationData.length() > OperationCodeEnum.OP_PUSHDATA1024.getSize()){
                     return false;
                 }
             }else {

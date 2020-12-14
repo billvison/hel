@@ -95,8 +95,6 @@ public class GlobalSetting {
         public static final long BLOCK_TEXT_MAX_SIZE = TRANSACTION_TEXT_MAX_SIZE * BLOCK_MAX_TRANSACTION_COUNT;
         //nonce的长度  32字节
         public static final long NONCE_TEXT_SIZE = 32;
-        //计算区块大小时，数值型字段对应的存储空间为8字节。
-        public static final long NUMBER_TEXT_SIZE = 8;
     }
 
     /**
