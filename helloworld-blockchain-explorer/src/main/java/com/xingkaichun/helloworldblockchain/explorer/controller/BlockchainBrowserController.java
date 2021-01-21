@@ -317,7 +317,6 @@ public class BlockchainBrowserController {
             PingResponse response = new PingResponse();
             response.setNodeList(nodeList);
             response.setBlockchainHeight(blockchainHeight);
-            response.setBlockchainVersion(GlobalSetting.SystemVersionConstant.obtainVersion());
             return ServiceResult.createSuccessServiceResult("查询节点信息成功",response);
         } catch (Exception e){
             String message = "查询节点信息失败";

@@ -61,7 +61,6 @@ public class HttpServerHandlerResolver {
             PingResponse response = new PingResponse();
             response.setNodeList(nodeList);
             response.setBlockchainHeight(blockchainHeight);
-            response.setBlockchainVersion(GlobalSetting.SystemVersionConstant.obtainVersion());
             return ServiceResult.createSuccessServiceResult("ping node info success",response);
         } catch (Exception e){
             String message = "ping node info failed";

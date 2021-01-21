@@ -119,7 +119,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     @Override
     public boolean isBlockCanAddToBlockchain(Block block) {
         //检查系统版本是否支持
-        if(!GlobalSetting.SystemVersionConstant.isVersionLegal(block.getTimestamp())){
+        if(!GlobalSetting.SystemVersionConstant.isVersionLegal(block.getHeight())){
             logger.debug("系统版本过低，不支持校验区块，请尽快升级系统。");
             return false;
         }
