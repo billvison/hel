@@ -20,7 +20,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
 	private static final String ALL_IP = "*";
 
 	//允许的ip列表，多个ip之间以逗号(,)分隔。
-	@Value("#{'${permit.ip}'.split(',')}")
+	@Value("#{'${permit.ips}'.split(',')}")
 	private List<String> permitIpList;
 
 	@Override
