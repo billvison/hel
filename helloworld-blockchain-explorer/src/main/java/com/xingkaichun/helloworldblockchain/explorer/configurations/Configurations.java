@@ -19,6 +19,7 @@ public class Configurations {
 		return new Gson();
 	}
 
+	//TODO 删除
 	@Bean
 	public ObjectMapper objectMapper() {
 		return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);

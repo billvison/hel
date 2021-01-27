@@ -236,7 +236,7 @@ public class AdminConsoleController {
 
 
     /**
-     * 查询开启自动寻找区块链节点的功能
+     * 是否开启自动寻找区块链节点的功能
      */
     @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.IS_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
