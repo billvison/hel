@@ -15,8 +15,6 @@ import com.xingkaichun.helloworldblockchain.explorer.dto.account.GenerateAccount
 import com.xingkaichun.helloworldblockchain.explorer.dto.account.QueryAccountDetailByAddressRequest;
 import com.xingkaichun.helloworldblockchain.explorer.dto.account.QueryAccountDetailByAddressResponse;
 import com.xingkaichun.helloworldblockchain.explorer.dto.block.*;
-import com.xingkaichun.helloworldblockchain.explorer.dto.node.PingRequest;
-import com.xingkaichun.helloworldblockchain.explorer.dto.node.PingResponse;
 import com.xingkaichun.helloworldblockchain.explorer.dto.node.QueryBlockchainHeightRequest;
 import com.xingkaichun.helloworldblockchain.explorer.dto.node.QueryBlockchainHeightResponse;
 import com.xingkaichun.helloworldblockchain.explorer.dto.transaction.*;
@@ -24,9 +22,7 @@ import com.xingkaichun.helloworldblockchain.explorer.service.BlockchainBrowserSe
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.PageCondition;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.DateUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import org.slf4j.Logger;
@@ -134,7 +130,7 @@ public class BlockchainBrowserController {
     }
 
     /**
-     * 根据交易高度查询交易
+     * 根据区块哈希与交易高度查询交易列表
      */
     @ResponseBody
     @RequestMapping(value = BlockchainApiRoute.QUERY_TRANSACTION_LIST_BY_BLOCK_HASH_TRANSACTION_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
@@ -245,7 +241,7 @@ public class BlockchainBrowserController {
     }
 
     /**
-     * 根据地址获取未花费交易输出
+     * 根据地址获取已花费交易输出
      */
     @ResponseBody
     @RequestMapping(value = BlockchainApiRoute.QUERY_SPEND_TRANSACTION_OUTPUT_LIST_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
@@ -302,26 +298,6 @@ public class BlockchainBrowserController {
             String message = "[查询交易输出]失败";
             logger.error(message,e);
             return ServiceResult.createFailServiceResult(message);
-        }
-    }
-
-    /**
-     * Ping节点
-     */
-    @ResponseBody
-    @RequestMapping(value = BlockchainApiRoute.PING,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<PingResponse> ping(@RequestBody PingRequest request){
-        try {
-            List<NodeDto> nodeList = netBlockchainCore.getNodeService().queryAllNoForkNodeList();
-            long blockchainHeight = getBlockchainCore().queryBlockchainHeight();
-            PingResponse response = new PingResponse();
-            response.setNodeList(nodeList);
-            response.setBlockchainHeight(blockchainHeight);
-            return ServiceResult.createSuccessServiceResult("查询节点信息成功",response);
-        } catch (Exception e){
-            String message = "查询节点信息失败";
-            logger.error(message,e);
-            return ServiceResult.createSuccessServiceResult(message,null);
         }
     }
 
