@@ -6,6 +6,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,20 +19,24 @@ public class IpInterceptor implements HandlerInterceptor {
 
 	//*代表允许所有ip访问。
 	private static final String ALL_IP = "*";
+	//默认允许访问的ip列表。
+	public static final List<String> DEFAULT_PERMIT_VISIT_IP = Arrays.asList("127.0.0.1","0:0:0:0:0:0:0:1");
 
 	//允许的ip列表，多个ip之间以逗号(,)分隔。
-	@Value("#{'${permit.ips}'.split(',')}")
-	private List<String> permitIpList;
+	@Value("#{'${permitVisitIp}'.split(',')}")
+	private List<String> permitVisitIp;
 
 	@Override
 	public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object){
-		if(permitIpList != null){
-			//*代表允许所有ip访问
-			if(permitIpList.contains(ALL_IP)){
+		if(permitVisitIp != null){
+			if(permitVisitIp.contains(ALL_IP)){
 				return true;
 			}
 			String remoteHost = httpServletRequest.getRemoteHost();
-			if(permitIpList.contains(remoteHost)){
+			if(DEFAULT_PERMIT_VISIT_IP.contains(remoteHost)){
+				return true;
+			}
+			if(permitVisitIp.contains(remoteHost)){
 				return true;
 			}
 		}
