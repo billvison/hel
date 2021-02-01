@@ -29,11 +29,10 @@ public class ResourcePathTool {
                 dataRootPath = "C:\\HelloworldBlockchainData\\";
             }else if(OperateSystemUtil.isLinuxOperateSystem()){
                 dataRootPath = "/opt/HelloworldBlockchainData/";
+            }else {
+                String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+                dataRootPath = new File(path,"HelloworldBlockchainData").getAbsolutePath();
             }
-        }
-        if(Strings.isNullOrEmpty(dataRootPath)){
-            String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-            dataRootPath = new File(path,"HelloworldBlockchainData").getAbsolutePath();
         }
         FileUtil.mkdir(dataRootPath);
         return dataRootPath;
