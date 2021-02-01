@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
- * Security过滤器
+ * IP拦截器：只允许指定的IP访问服务器
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
 @Component
-public class SecurityInterceptor implements HandlerInterceptor {
+public class IpInterceptor implements HandlerInterceptor {
 
 	//*代表允许所有ip访问。
 	private static final String ALL_IP = "*";

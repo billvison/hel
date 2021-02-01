@@ -2,7 +2,7 @@ package com.xingkaichun.helloworldblockchain.explorer.configurations;
 
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.explorer.interceptor.SecurityInterceptor;
+import com.xingkaichun.helloworldblockchain.explorer.interceptor.IpInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +31,12 @@ public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {
 	private Gson gson;
 
 	@Autowired
-	private SecurityInterceptor securityInterceptor;
+	private IpInterceptor ipInterceptor;
 
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(securityInterceptor).addPathPatterns("/**");
+		registry.addInterceptor(ipInterceptor).addPathPatterns("/**");
 	}
 
 	@Override
