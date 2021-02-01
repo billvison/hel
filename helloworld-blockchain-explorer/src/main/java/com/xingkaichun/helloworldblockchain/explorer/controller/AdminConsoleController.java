@@ -7,9 +7,6 @@ import com.xingkaichun.helloworldblockchain.core.model.pay.Recipient;
 import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
-import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
-import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.explorer.dto.AdminConsoleApiRoute;
 import com.xingkaichun.helloworldblockchain.explorer.dto.account.*;
 import com.xingkaichun.helloworldblockchain.explorer.dto.block.DeleteBlockRequest;
@@ -17,15 +14,17 @@ import com.xingkaichun.helloworldblockchain.explorer.dto.block.DeleteBlockRespon
 import com.xingkaichun.helloworldblockchain.explorer.dto.miner.*;
 import com.xingkaichun.helloworldblockchain.explorer.dto.node.*;
 import com.xingkaichun.helloworldblockchain.explorer.dto.synchronizer.*;
+import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
+import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +35,7 @@ import java.util.List;
  *
  * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
  */
-@Controller
-@RequestMapping
+@RestController
 public class AdminConsoleController {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminConsoleController.class);
@@ -48,7 +46,6 @@ public class AdminConsoleController {
     /**
      * 矿工是否激活
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.IS_MINER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsMinerActiveResponse> isMineActive(@RequestBody IsMinerActiveRequest request){
         try {
@@ -65,7 +62,6 @@ public class AdminConsoleController {
     /**
      * 激活矿工
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.ACTIVE_MINER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<ActiveMinerResponse> activeMiner(@RequestBody ActiveMinerRequest request){
         try {
@@ -82,7 +78,6 @@ public class AdminConsoleController {
     /**
      * 停用矿工
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.DEACTIVE_MINER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeactiveMinerResponse> deactiveMiner(@RequestBody DeactiveMinerRequest request){
         try {
@@ -102,7 +97,6 @@ public class AdminConsoleController {
     /**
      * 同步器是否激活
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.IS_SYNCHRONIZER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsSynchronizerActiveResponse> isSynchronizerActive(@RequestBody IsSynchronizerActiveRequest request){
         try {
@@ -119,7 +113,6 @@ public class AdminConsoleController {
     /**
      * 激活同步器
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.ACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<ActiveSynchronizerResponse> activeSynchronizer(@RequestBody ActiveSynchronizerRequest request){
         try {
@@ -136,7 +129,6 @@ public class AdminConsoleController {
     /**
      * 停用同步器
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.DEACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeactiveSynchronizerResponse> deactiveSynchronizer(@RequestBody DeactiveSynchronizerRequest request){
         try {
@@ -156,7 +148,6 @@ public class AdminConsoleController {
     /**
      * 新增节点
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.ADD_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<AddNodeResponse> addNode(@RequestBody AddNodeRequest request){
         try {
@@ -180,7 +171,6 @@ public class AdminConsoleController {
     /**
      * 更新节点信息
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.UPDATE_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<UpdateNodeResponse> updateNode(@RequestBody UpdateNodeRequest request){
         try {
@@ -202,7 +192,6 @@ public class AdminConsoleController {
     /**
      * 删除节点
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.DELETE_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeleteNodeResponse> deleteNode(@RequestBody DeleteNodeRequest request){
         try {
@@ -218,7 +207,6 @@ public class AdminConsoleController {
     /**
      * 查询所有节点
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.QUERY_ALL_NODE_LIST,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryAllNodeListResponse> queryAllNodeList(@RequestBody QueryAllNodeListRequest request){
         try {
@@ -238,7 +226,6 @@ public class AdminConsoleController {
     /**
      * 是否开启自动寻找区块链节点的功能
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.IS_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsAutoSearchNodeResponse> isAutoSearchNewNode(@RequestBody IsAutoSearchNodeRequest request){
         try {
@@ -255,7 +242,6 @@ public class AdminConsoleController {
     /**
      * 设置是否允许自动寻找区块链节点
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.SET_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<SetAutoSearchNodeResponse> setAutoSearchNode(@RequestBody SetAutoSearchNodeRequest request){
         try {
@@ -274,7 +260,6 @@ public class AdminConsoleController {
     /**
      * 新增账户
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.ADD_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<AddAccountResponse> addAccount(@RequestBody AddAccountRequest request){
         try {
@@ -296,7 +281,6 @@ public class AdminConsoleController {
     /**
      * 删除账户
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.DELETE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeleteAccountResponse> deleteAccount(@RequestBody DeleteAccountRequest request){
         try {
@@ -317,7 +301,6 @@ public class AdminConsoleController {
     /**
      * 查询所有的账户
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.QUERY_ALL_ACCOUNT_LIST,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryAllAccountListResponse> queryAllAccountList(@RequestBody QueryAllAccountListRequest request){
         try {
@@ -353,7 +336,6 @@ public class AdminConsoleController {
     /**
      * 删除区块
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.DELETE_BLOCK,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeleteBlockResponse> deleteBlock(@RequestBody DeleteBlockRequest request){
         try {
@@ -375,7 +357,6 @@ public class AdminConsoleController {
     /**
      * 构建交易
      */
-    @ResponseBody
     @RequestMapping(value = AdminConsoleApiRoute.BUILD_TRANSACTION,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<BuildTransactionResponse> buildTransaction(@RequestBody BuildTransactionRequest request){
         try {
