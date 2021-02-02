@@ -34,7 +34,7 @@ public class AdminConsoleApiRoute {
 
 
 
-    //是否开启自动寻找区块链节点的功能
+    //是否开启了自动寻找区块链节点的功能
     public static final String IS_AUTO_SEARCH_NODE = "/Api/AdminConsole/IsAutoSearchNode";
     //设置是否允许自动寻找区块链节点
     public static final String SET_AUTO_SEARCH_NODE = "/Api/AdminConsole/SetAutoSearchNode";
