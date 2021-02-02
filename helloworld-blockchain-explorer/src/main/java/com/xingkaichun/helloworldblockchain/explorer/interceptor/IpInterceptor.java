@@ -20,23 +20,23 @@ public class IpInterceptor implements HandlerInterceptor {
 	//*代表允许所有ip访问。
 	private static final String ALL_IP = "*";
 	//默认允许访问的ip列表。
-	public static final List<String> DEFAULT_PERMIT_VISIT_IP = Arrays.asList("127.0.0.1","0:0:0:0:0:0:0:1");
+	public static final List<String> DEFAULT_PERMIT_VISIT_IP_LIST = Arrays.asList("127.0.0.1","0:0:0:0:0:0:0:1");
 
 	//允许的ip列表，多个ip之间以逗号(,)分隔。
-	@Value("#{'${permitVisitIp}'.split(',')}")
-	private List<String> permitVisitIp;
+	@Value("#{'${permitVisitIpList}'.split(',')}")
+	private List<String> permitVisitIpList;
 
 	@Override
 	public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object){
-		if(permitVisitIp != null){
-			if(permitVisitIp.contains(ALL_IP)){
+		if(permitVisitIpList != null){
+			if(permitVisitIpList.contains(ALL_IP)){
 				return true;
 			}
 			String remoteHost = httpServletRequest.getRemoteHost();
-			if(DEFAULT_PERMIT_VISIT_IP.contains(remoteHost)){
+			if(DEFAULT_PERMIT_VISIT_IP_LIST.contains(remoteHost)){
 				return true;
 			}
-			if(permitVisitIp.contains(remoteHost)){
+			if(permitVisitIpList.contains(remoteHost)){
 				return true;
 			}
 		}
