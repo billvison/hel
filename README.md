@@ -55,5 +55,5 @@ cd helloworld-blockchain-explorer
 运行启动脚本  
 ./start.sh restart  
 ```  
-### 系统强制升级机制
-系统每一个发布版本，都带有一个截止运行日期。该版本到期后，必须强制升级系统，系统才能正常运行。参考GlobalSetting.SystemVersionConstant.isVersionLegal。
+### 系统升级
+每一个发布版本，都带有一个截止运行日期。该版本到期后，必须升级系统，系统才能正常运行。参考GlobalSetting.SystemVersionConstant.isVersionLegal。
