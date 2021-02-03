@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AccountList</title>
+        <script src="../lib/jquery/jquery-1.12.4.min.js"></script>
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../assets/common/reset.css">
+        <link rel="stylesheet" href="../assets/common/common.css">
+        <link rel="stylesheet" href="../assets/css/AccountList.css">
+        <script src="../lib/bootstrap/bootstrap.min.js"></script>
+        <script src="../assets/common/common.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-default nav">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="javascript:;">HelloworldBlockchain</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse"
+                    id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#">账户</a></li>
+                        <li><a href="#">管理</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+
+
+        <ul class="list fwb mt-50">
+            <!-- 开头 -->
+            <li>
+                <span class="f7">总余额</span>
+                <div class="f7"><button type="button" class="btn btn-primary" onclick="increase()">增加账户</button></div>
+                <div class="f7"><button type="button" class="btn btn-default" onclick="transferAccounts()">转账</button></div>
+            </li>
+            <!-- 内容 -->
+            
+        </ul>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="dialog-background j_escHide"></div>
+        <div class="dialog-section j_escHide">
+            <div class="dialog-header fwb">转账</div>
+            <div class="dialog-close j_dialogClose" onclick="Close()"><i class="glyphicon glyphicon-remove"></i></div>
+            <div class="receive">交易接收方</div>
+            <div class="im">
+                <div>
+                    <input type="" class="one" placeholder="请输入转账地址">
+                    <input type="text" class="money" placeholder="请输入转账金额">
+                    <button class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></button>
+                </div>
+            </div>
+            <div class="comit">
+                <button type="button" class="btn btn-primary" onclick="onConfirm()">确认转账</button>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+        <script>
+
+            const obj = {}
+
+            $(async function(){
+                const data = await $ajax({
+                    url : "http://119.3.57.171/Api/AdminConsole/QueryAllAccountList"
+                })
+                let accountDtoList = data.result.accountDtoList
+                $(accountDtoList).each((index, item) => {
+                    $('.list').append(`
+                        <li class="surface mt-25">
+                            <div class="qweasdqwe f1">
+                                <div class="one"><span>${item.address}</span><span>余额 ${item.value}</span></div>
+                                <div class="adqwxcvqwd">${item.privateKey}</div>
+                            </div>
+                            <button type="button" class="btn btn-danger">删除</button>
+                        </li>
+                    `)
+                })
+            }())
+            $('body').delegate('.btn-success', 'click', function(){
+                $('.comit').before(`<div class="im">
+                    <div>
+                        <input type="" class="one" placeholder="请输入转账地址">
+                        <input type="text" class="money" placeholder="请输入转账金额">
+                        <button class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></button>
+                    </div>
+                </div>
+                `)
+            });
+            $('body').delegate('.surface > .btn-danger', 'click', async function(){
+                let privateKey = $(this).prev().find('.one>span:first-child').text();
+                const data = await $ajax({
+                    url : "http://119.3.57.171/Api/AdminConsole/DeleteAccount",
+                    data:`{"address":"${privateKey}"}`,
+                });
+                if(data.result.deleteAccountSuccess){
+                    $(this).parent().remove()
+                }
+            })
+            function Close(){
+                $('.dialog-background').hide()
+                $('.dialog-section').hide()
+            }
+
+            async function increase(){
+                const text = window.prompt('增加账户');
+                await $ajax({
+                    url : "http://119.3.57.171/Api/AdminConsole/AddAccount",
+                    data:`{"privateKey":"${text}"}`
+                })
+            }
+
+            function transferAccounts(){
+                $('.dialog-background').show()
+                $('.dialog-section').show()
+            }
+            async function onConfirm(){
+                let recipientList = [];
+                Array.from($('.im')).forEach(item => {
+                    recipientList.push({address:$(item).find('.one').val(),value:$(item).find('.money').val()})
+                });
+                const data = await $ajax({
+                    url : "http://119.3.57.171/Api/AdminConsole/BuildTransactionDto",
+                    data:JSON.stringify({recipientList})
+                })
+                if(data.serviceCode === 'SUCCESS'){
+                    Close();
+                    obj.transactionDTO = data.result.transactionDTO;
+                    data.result.transactionOutpuDtoList.forEach(item => {
+                        obj.transactionDTO.transactionOutputDtoList.push(item)
+                    })
+                    console.log(obj);
+                    let receive = data.result.transactionOutpuDtoList.map(item => {
+                        return `<div class="city">
+                            <span>转账地址 : ${item.outputScriptDTO[3]}</span></span>
+                            <span>转账金额 : ${item.value}</span>
+                        </div>`
+                    });
+                    let receive2 = data.result.transactionInputList.map(item => {
+                        return `<div class="city">
+                            <span>地址 : ${item.address}</span>
+                            <span>余额 : ${item.value}</span>
+                        </div>
+                        <div>交易哈希 : ${item.transactionHash} 交易输出索引号 : ${item.transactionOutputIndex}</div>
+                        `
+                    })
+
+                    const str = `<ul class="list fwb mt-50 imc">
+                        <!-- 开头 -->
+                        <li class="dac"><span>转账详情</span></li>
+                        <!-- 内容 -->
+                        <li class="mt-25 db">
+                            <div class="zhifu">交易支付方</div>
+                            <div class="zhifu2">${receive2.join('')}</div>
+                        </li>
+                        <!-- 内容 -->
+                        <li class="mt-50 db">
+                            <div class="zhifu">交易接收方</div>
+                            <div class="zhifu2">${receive.join('')}</div>
+                        </li>
+                        <li class="mt-50 db">
+                            <div class="zhifu">找零</div>
+                            <div class="zhifu2">
+                                <div class="city">
+                                    <span>找零地址 : ${data.result.payerChangeAddress}</span>
+                                    <span>金额 : ${data.result.payerChangeValue}</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="mt-50 db">
+                            <div class="zhifu"></div>
+                            <div class="zhifu2">
+                                <div class="city">
+                                    <span>交易手续费</span>
+                                    <span>金额 : ${data.result.fee}</span>
+                                </div>
+                            </div>
+                            <div class="zhifu"></div>
+                            <div class="zhifu2">
+                                <div class="city">
+                                    <span>交易哈希 : ${data.result.transactionHash}</span>
+                                </div>
+                            </div>
+                        </li>
+            
+                        <button type="button" class="btn btn-success confirm" >确认转账</button>
+            
+            
+                    </ul>`
+                    $('.list').remove();
+
+                    $('body').append(str)
+                }
+            }
+            $('body').delegate('.confirm', 'click', async function(){
+                const data = await $ajax({
+                    url : "http://119.3.57.171/Api/Blockchain/SubmitTransactionToBlockchainNetwork",
+                    data:JSON.stringify(obj),
+                });
+                if('SUCCESS' === data.serviceCode){
+                    alert(data.message)
+                }
+            })
+
+        </script>
+    </body>
+</html>

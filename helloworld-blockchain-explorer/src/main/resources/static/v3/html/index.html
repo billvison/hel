@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>index</title>
+        <script src="../lib/jquery/jquery-1.12.4.min.js"></script>
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../assets/common/reset.css">
+        <link rel="stylesheet" href="../assets/common/common.css">
+        <link rel="stylesheet" href="../assets/css/index.css">
+        <script src="../lib/bootstrap/bootstrap.min.js"></script>
+        <script src="../assets/common/common.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-default nav">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="javascript:;">HelloworldBlockchain</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse"
+                    id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#">账户</a></li>
+                        <li><a href="#">管理</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <div class="box">
+        </div>
+        <div class="page">
+            <button onclick="load()">加载更多</button>
+        </div>
+        <script>
+            let urlParameters = location.search.substr(0).split('=')
+            var reqJson = '{ "blockHash": "' + urlParameters[1] + '", "pageCondition": { "from": 1, "size": 10 } }';
+            var reqJso2 = '{ "blockHash": "'+ urlParameters[1] +'"}';
+            $(async function(){
+                const data = await $ajax({
+                    url : "http://119.3.57.171/Api/Blockchain/QueryTransactionListByBlockHashTransactionHeight",
+                    data:reqJson
+                });
+                const data2 = await $ajax({
+                    url : "http://119.3.57.171/Api/Blockchain/QueryBlockDtoByBlockHash",
+                    data:reqJso2
+                });
+                let {blockDto} = data2.result;
+                let result = data.result.transactionViewList;
+                $('.box').append(`
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading fwb">000004123c4b5628eb4f6e1f7046b3a7165cf1200431136df15709ce06aacd6b</div>
+                    <!-- Table -->
+                    <table id="Last10BlockTable" class="table mb-0">
+                        <button type="button" class="btn btn-default btn-lg Summary">摘要</button>
+                        <thead>
+                            <tr class="fwb lt">
+                                <th class="das col-md-6 w100"><span>高度</span><span>${blockDto.height}</span></th>
+                                <th class="lf col-md-6"><span>挖矿难度</span><span class="fr pr-100">${blockDto.difficulty}</span></th>
+                            </tr>
+                            <tr class="fwb">
+                                <th class="das"><span>确认数</span><span>${result[0].confirmCount}</span></th>
+                                <th class="lf"><span>随机数</span><span class="fr pr-100">${blockDto.nonce}</span></th>
+                            </tr>
+                            <tr class="fwb">
+                                <th class="das"><span>区块大小</span><span>${blockDto.blockSize}</span></th>
+                                <th class="lf"><span>区块哈希</span><span class="fr pr-100">${blockDto.hash}</span></th>
+                            </tr>
+                            <tr class="fwb">
+                                <th class="das"><span>交易数量</span><span>${blockDto.transactionCount}</span></th>
+                                <th class="lf"><span>上一个区块哈希</span><span class="fr pr-100">${blockDto.previousBlockHash}</span></th>
+                            </tr>
+                            <tr class="fwb">
+                                <th class="das"><span>时间</span><span>${blockDto.time}</span></th>
+                                <th class="lf"><span>下一个区块哈希</span><span class="fr pr-100">${blockDto.nextBlockHash || ''}</span></th>
+                            </tr>
+                            <tr class="fwb bb">
+                                <th class="das"><span>矿工奖励</span><span>${blockDto.minerIncentiveValue}</span></th>
+                                <th class="lf"><span>默克尔树根</span><span class="fr pr-100">${blockDto.merkleTreeRoot}</span></th>
+                            </tr>
+                            
+                        </thead>
+                    </table>
+                    
+                    <button type="button" class="btn btn-default btn-lg Summary">交易</button>
+                </div>`)
+
+
+                
+                $(result).each((index, item) => {
+                    let left = $(item.transactionInputViewList).map((index, item1) => {
+                        return `<li class="das">
+                            <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i></div>
+                            <span>${item1.value}</span>
+                        </li>
+                        `
+                    })
+                    let right = $(item.transactionOutputViewList).map((index1, item1) => {
+                        return `
+                                <li class="das">
+                                    <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i></div>
+                                    <span>${item1.value}</span>
+                                </li>
+                        `
+                    })
+                    
+                    $('.box').append(`
+                    <ul class="list fwb">
+                        <!-- 开头 -->
+                        <li>
+                            <span class="f7">${item.transactionHash}</span>
+                            <span class="f3">${item.transactionType}</span>
+                            <span class="f2">${item.transactionFee} HelloworldCoin </span>
+                            <span class="f1">${item.blockTime}</span>
+                        </li>
+                        <li class="surface">
+
+                            <ul class="left">
+                                ${Array.from(left).join('')}   
+                            </ul>
+
+                            <ul class="right">
+                                ${Array.from(right).join('')}    
+                            </ul>
+                        </li>
+                    </ul>
+                    `)
+                })
+
+
+                
+            }())
+            async function load(){
+                const JSONreqJson = JSON.parse(reqJson);
+                JSONreqJson.pageCondition.from ++;
+                reqJson = JSON.stringify(JSONreqJson);
+                const data = await $ajax({
+                    url : "http://119.3.57.171/Api/Blockchain/QueryTransactionListByBlockHashTransactionHeight",
+                    data:reqJson
+                });
+                let result = data.result.transactionViewList;
+                console.log(data);
+                $(result).each((index, item) => {
+                    console.log(item);
+                    let left = $(item.transactionInputViewList).map((index, item1) => {
+                        return `<li class="das">
+                            <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i></div>
+                            <span>${item1.value}</span>
+                        </li>
+                        `
+                    })
+                    let right = $(item.transactionOutputViewList).map((index1, item1) => {
+                        return `
+                                <li class="das">
+                                    <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i></div>
+                                    <span>${item1.value}</span>
+                                </li>
+                        `
+                    })
+                    
+                    $('.box').append(`
+                    <ul class="list fwb">
+                        <!-- 开头 -->
+                        <li>
+                            <span class="f7">${item.transactionHash}</span>
+                            <span class="f3">${item.transactionType}</span>
+                            <span class="f2">${item.transactionFee} HelloworldCoin </span>
+                            <span class="f1">${item.blockTime}</span>
+                        </li>
+                        <li class="surface">
+
+                            <ul class="left">
+                                ${Array.from(left).join('')}   
+                            </ul>
+
+                            <ul class="right">
+                                ${Array.from(right).join('')}    
+                            </ul>
+                        </li>
+                    </ul>
+                    `)
+                })
+            }
+        </script>
+    </body>
+</html>

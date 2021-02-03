@@ -1,0 +1,184 @@
+.list {
+  font-size: 14px;
+  line-height: 40px;
+  padding: 25px;
+  width: 1200px;
+  margin: 50px auto 0;
+  text-align: center;
+  border: 2px solid #f5f5f5;
+}
+.list > li:first-child {
+  background: #f5f5f5;
+}
+.list > li {
+  vertical-align: top;
+  border-top: 1px solid #ddd;
+  display: flex;
+  padding: 0 15px;
+  white-space: nowrap;
+}
+.list .right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.list .left,
+.list .right {
+  width: 45%;
+}
+.list .surface {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #ddd;
+  padding-right: 0 !important;
+  text-align: left;
+}
+.list .surface .qweasdqwe div:first-child {
+  display: flex;
+}
+.list .surface .qweasdqwe div:first-child span {
+  flex: 1;
+  padding-left: 158px;
+}
+.list .surface .qweasdqwe .adqwxcvqwd {
+  padding-left: 158px;
+}
+.f7 {
+  flex: 7;
+}
+.f3 {
+  flex: 3;
+}
+.f2 {
+  flex: 2;
+}
+.f1 {
+  flex: 1;
+}
+.mt-25 {
+  margin-top: 25px;
+}
+.dialog-background {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 990;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+}
+.dialog-section {
+  display: none;
+  position: fixed;
+  left: 50%;
+  width: 580px;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  overflow: visible;
+  z-index: 999;
+  top: 50%;
+  padding: 0;
+  margin: 0;
+  padding-bottom: 20px;
+  background-color: #FFF;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+.dialog-section .dialog-header {
+  position: relative;
+  width: auto;
+  height: 39px;
+  padding: 0 46px 0 16px;
+  margin: 0;
+  border-bottom: 1px solid #d9d9d9;
+  font-size: 16px;
+  line-height: 39px;
+  white-space: nowrap;
+  background-color: #e6e6e6;
+}
+.dialog-section .dialog-close {
+  display: inline-block;
+  vertical-align: middle;
+  background-image: url(images/icons-dialog.png);
+  background-repeat: no-repeat;
+  position: absolute;
+  right: 16px;
+  top: 12px;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  margin: 0;
+  background-position: 0 -135px;
+  cursor: pointer;
+}
+.dialog-section .receive,
+.dialog-section .im {
+  padding-left: 16px;
+  line-height: 40px;
+  margin-top: 25px;
+}
+.dialog-section .receive input,
+.dialog-section .im input {
+  border: 1px solid #ddd;
+}
+.dialog-section .receive .one,
+.dialog-section .im .one {
+  width: 250px;
+  margin-right: 25px;
+}
+.dialog-section .comit {
+  padding-left: 16px;
+  line-height: 40px;
+  margin-top: 25px;
+}
+.dialog-section button {
+  line-height: 30px;
+  vertical-align: top;
+}
+.imc {
+  padding-bottom: 100px;
+  font-weight: 400;
+}
+.imc li {
+  padding: 0 !important;
+  border: 1px solid #ddd;
+}
+.imc .zhifu2 {
+  margin-top: 25px;
+  width: 1000px;
+  border: 1px solid #ddd;
+  border-left: none;
+}
+.imc .zhifu2 .city {
+  display: flex;
+  border-left: none;
+}
+.imc .zhifu2 .city span {
+  flex: 1;
+  border: 1px solid #ddd;
+}
+.imc .zhifu2 .city span:first-child {
+  border-left: none;
+  margin-right: 15px;
+}
+.imc .zhifu2 .city + div {
+  margin-top: 25px;
+  width: 1000px;
+  border: 1px solid #ddd;
+  border-bottom: none;
+  border-left: none;
+}
+.imc .zhifu {
+  width: 500px;
+  border: 1px solid #ddd;
+  border-top: none;
+  font-weight: bold;
+  border-left: none;
+}
+.confirm {
+  width: 100%;
+  margin-top: 50px;
+  display: block;
+}

@@ -1,0 +1,1637 @@
+{
+	"info": {
+		"_postman_id": "d11395d8-f09c-4166-be11-1931ebedd5f9",
+		"name": "helloworldblockchain",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "node",
+			"item": [
+				{
+					"name": "/Api/Node/Ping",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://139.9.125.122:8444/Api/NodeServer/Ping",
+							"protocol": "http",
+							"host": [
+								"139",
+								"9",
+								"125",
+								"122"
+							],
+							"port": "8444",
+							"path": [
+								"Api",
+								"NodeServer",
+								"Ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/Node/AddOrUpdateNode",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"blockChainHeight\":0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8445/Api/NodeServer/AddOrUpdateNode",
+							"host": [
+								"localhost"
+							],
+							"port": "8445",
+							"path": [
+								"Api",
+								"NodeServer",
+								"AddOrUpdateNode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/Node/QueryBlockHashByBlockHeight",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"blockHeight\":1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://139.9.125.122:8444/Api/NodeServer/QueryBlockHashByBlockHeight",
+							"protocol": "http",
+							"host": [
+								"139",
+								"9",
+								"125",
+								"122"
+							],
+							"port": "8444",
+							"path": [
+								"Api",
+								"NodeServer",
+								"QueryBlockHashByBlockHeight"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/Node/QueryBlockDtoByBlockHeight",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"blockHeight\":9\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://139.9.125.122:8444/Api/NodeServer/QueryBlockDtoByBlockHeight",
+							"protocol": "http",
+							"host": [
+								"139",
+								"9",
+								"125",
+								"122"
+							],
+							"port": "8444",
+							"path": [
+								"Api",
+								"NodeServer",
+								"QueryBlockDtoByBlockHeight"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "blockchainbrowser",
+			"item": [
+				{
+					"name": "/Api/BlockChain/QueryTransactionListByTransactionHeight",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"pageCondition\":{\n\t\t\"from\":2,\n\t\t\"size\":2\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/Api/BlockChain/QueryTransactionListByTransactionHeight",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"Api",
+								"BlockChain",
+								"QueryTransactionListByTransactionHeight"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/BlockChain/QueryUnspendTransactionOutputListByAddress",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"address\":\"1L2PkzW3woE8dEPEwLBninhmMGgWn1H2sg\",\n\t\"pageCondition\":{\n\t\t\"from\":0,\n\t\t\"size\":10\n\t}\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/Api/Blockchain/QueryUnspendTransactionOutputListByAddress",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"Api",
+								"Blockchain",
+								"QueryUnspendTransactionOutputListByAddress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/BlockChain/QueryTransactionOutputListByAddress",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"address\":\"1L2PkzW3woE8dEPEwLBninhmMGgWn1H2sg\",\n\t\"pageCondition\":{\n\t\t\"from\":0,\n\t\t\"size\":10\n\t}\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/Api/Blockchain/QueryTransactionOutputListByAddress",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"Api",
+								"Blockchain",
+								"QueryTransactionOutputListByAddress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/BlockChain/GenerateWalletDTO",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/Api/BlockChain/GenerateWalletDTO",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"Api",
+								"BlockChain",
+								"GenerateWalletDTO"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/BlockChain/Ping",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/Api/BlockChain/Ping",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"Api",
+								"BlockChain",
+								"Ping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/BlockChain/QueryMiningTransactionList",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"pageCondition\":{\n\t\t\"from\":2,\n\t\t\"size\":3\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/Api/BlockChain/QueryMiningTransactionList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"Api",
+								"BlockChain",
+								"QueryMiningTransactionList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/BlockChain/QueryMiningTransactionByTransactionUUID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"transactionUUID\":\"dfab7eb3-2002-4bd9-9c50-60b500455c7a\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/Api/BlockChain/QueryMiningTransactionByTransactionUUID",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"Api",
+								"BlockChain",
+								"QueryMiningTransactionByTransactionUUID"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/BlockChain/QueryTransactionListByAddress",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"address\":\"1L2PkzW3woE8dEPEwLBninhmMGgWn1H2sg\",\r\n\t\"pageCondition\":{\r\n\t\t\"from\":0,\r\n\t\t\"size\":10\r\n\t}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/Api/Blockchain/QueryTransactionListByAddress",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"Api",
+								"Blockchain",
+								"QueryTransactionListByAddress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/BlockChain/QuerySpendTransactionOutputListByAddress",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"address\":\"1L2PkzW3woE8dEPEwLBninhmMGgWn1H2sg\",\r\n\t\"pageCondition\":{\r\n\t\t\"from\":0,\r\n\t\t\"size\":10\r\n\t}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"Api",
+								"Blockchain",
+								"QuerySpendTransactionOutputListByAddress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/BlockChain/QueryBlockDtoByBlockHeight",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"blockHeight\":4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:80/Api/BlockChain/QueryBlockDtoByBlockHeight",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "80",
+							"path": [
+								"Api",
+								"BlockChain",
+								"QueryBlockDtoByBlockHeight"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "adminconsole",
+			"item": [
+				{
+					"name": "node",
+					"item": [
+						{
+							"name": "/Api/AdminConsole/AddNode",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\t\n\t\"node\":{\n            \"ip\": \"localhost\",\n            \"port\": 8444,\n            \"blockChainHeight\": 10,\n            \"isNodeAvailable\": true,\n            \"errorConnectionTimes\": 0,\n            \"fork\": false\n\t}\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8445/Api/AdminConsole/AddNode",
+									"host": [
+										"localhost"
+									],
+									"port": "8445",
+									"path": [
+										"Api",
+										"AdminConsole",
+										"AddNode"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/Api/AdminConsole/QueryNodeList",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8444/Api/AdminConsole/QueryNodeList",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8444",
+									"path": [
+										"Api",
+										"AdminConsole",
+										"QueryNodeList"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/Api/AdminConsole/DeleteNode",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"node\":{\n\t\t    \"ip\": \"localhost\",\n            \"port\": 10001\n\t}\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8445/Api/AdminConsole/DeleteNode",
+									"host": [
+										"localhost"
+									],
+									"port": "8445",
+									"path": [
+										"Api",
+										"AdminConsole",
+										"DeleteNode"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/Api/AdminConsole/UpdateNode",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"node\":{\n            \"ip\": \"localhost\",\n            \"port\": 10001,\n            \"blockChainHeight\": 12,\n            \"isNodeAvailable\": false,\n            \"errorConnectionTimes\": 22,\n            \"fork\": true\n\t}\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8444/Api/AdminConsole/UpdateNode",
+									"host": [
+										"localhost"
+									],
+									"port": "8444",
+									"path": [
+										"Api",
+										"AdminConsole",
+										"UpdateNode"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "miner",
+					"item": [
+						{
+							"name": "/Api/AdminConsole/IsMinerActive",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost/Api/AdminConsole/IsMinerActive",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"Api",
+										"AdminConsole",
+										"IsMinerActive"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/Api/AdminConsole/ActiveMiner",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost/Api/AdminConsole/ActiveMiner",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"Api",
+										"AdminConsole",
+										"ActiveMiner"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/Api/AdminConsole/DeactiveMiner",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost/Api/AdminConsole/DeactiveMiner",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"Api",
+										"AdminConsole",
+										"DeactiveMiner"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "account",
+					"item": [
+						{
+							"name": "/Api/AdminConsole/QueryAllAccountList",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:80/Api/AdminConsole/QueryAllAccountList",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "80",
+									"path": [
+										"Api",
+										"AdminConsole",
+										"QueryAllAccountList"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/Api/AdminConsole/AddAccount",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"account\": {\r\n        \"privateKey\": \"15d9d5e60a70deff17e574cacf9be07f2d7b529dd1618fa814d27b5ffc4e1dde\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://119.3.57.171/Api/AdminConsole/AddAccount",
+									"protocol": "http",
+									"host": [
+										"119",
+										"3",
+										"57",
+										"171"
+									],
+									"path": [
+										"Api",
+										"AdminConsole",
+										"AddAccount"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/Api/AdminConsole/DeleteAccount",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"address\": \"1NZLfNRGFFSHSL3nCQTQHkGBrkdPLJ5JL2\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://119.3.57.171/Api/AdminConsole/DeleteAccount",
+									"protocol": "http",
+									"host": [
+										"119",
+										"3",
+										"57",
+										"171"
+									],
+									"path": [
+										"Api",
+										"AdminConsole",
+										"DeleteAccount"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "synchronizer",
+					"item": [
+						{
+							"name": "/Api/AdminConsole/IsSynchronizerActive",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8444/Api/AdminConsole/IsSynchronizerActive",
+									"host": [
+										"localhost"
+									],
+									"port": "8444",
+									"path": [
+										"Api",
+										"AdminConsole",
+										"IsSynchronizerActive"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/Api/AdminConsole/ActiveSynchronizer",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8445/Api/AdminConsole/ActiveSynchronizer",
+									"host": [
+										"localhost"
+									],
+									"port": "8445",
+									"path": [
+										"Api",
+										"AdminConsole",
+										"ActiveSynchronizer"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/Api/AdminConsole/DeactiveSynchronizer",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8444/Api/AdminConsole/DeactiveSynchronizer",
+									"host": [
+										"localhost"
+									],
+									"port": "8444",
+									"path": [
+										"Api",
+										"AdminConsole",
+										"DeactiveSynchronizer"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "/Api/AdminConsole/QueryMinerAddress",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8445/Api/AdminConsole/QueryMinerAddress",
+							"host": [
+								"localhost"
+							],
+							"port": "8445",
+							"path": [
+								"Api",
+								"AdminConsole",
+								"QueryMinerAddress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/AdminConsole/SetMinerAddress",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"minerAddress\":\"1111111111111111111\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8445/Api/AdminConsole/SetMinerAddress",
+							"host": [
+								"localhost"
+							],
+							"port": "8445",
+							"path": [
+								"Api",
+								"AdminConsole",
+								"SetMinerAddress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/AdminConsole/UpdateAdminUserRequest",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"userDto\":{\n\t\t\"userId\":1,\n\t\t\"userName\":\"c88876cb-2bba-49c3-89d1-28c29cc67c08\",\n\t\t\"password\":\"123456\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8445/Api/AdminConsole/UpdateAdminUserRequest",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8445",
+							"path": [
+								"Api",
+								"AdminConsole",
+								"UpdateAdminUserRequest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/AdminConsole/IsAutoSearchNode",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8445/Api/AdminConsole/IsAutoSearchNode",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8445",
+							"path": [
+								"Api",
+								"AdminConsole",
+								"IsAutoSearchNode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/AdminConsole/SetAutoSearchNode",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"autoSearchNode\":false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8445/Api/AdminConsole/SetAutoSearchNode",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8445",
+							"path": [
+								"Api",
+								"AdminConsole",
+								"SetAutoSearchNode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/AdminConsole/DeleteBlock",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"blockHeight\":8\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://139.9.125.122:8444/Api/AdminConsole/DeleteBlock",
+							"protocol": "http",
+							"host": [
+								"139",
+								"9",
+								"125",
+								"122"
+							],
+							"port": "8444",
+							"path": [
+								"Api",
+								"AdminConsole",
+								"DeleteBlock"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/AdminConsole/GetConfigurationByConfigurationKey",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"confKey\":\"FORK_BLOCK_SIZE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8445/Api/AdminConsole/GetConfigurationByConfigurationKey",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8445",
+							"path": [
+								"Api",
+								"AdminConsole",
+								"GetConfigurationByConfigurationKey"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/AdminConsole/SetConfiguration",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"configurationDto\":{\n\t\t\"confKey\":\"FORK_BLOCK_SIZE\",\n\t\t\"confValue\":\"80\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8445/Api/AdminConsole/SetConfiguration",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8445",
+							"path": [
+								"Api",
+								"AdminConsole",
+								"SetConfiguration"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "now",
+			"item": [
+				{
+					"name": "/Api/Blockchain/QueryLast10BlockDto",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://119.3.57.171/Api/Blockchain/QueryLast10BlockDto",
+							"protocol": "http",
+							"host": [
+								"119",
+								"3",
+								"57",
+								"171"
+							],
+							"path": [
+								"Api",
+								"Blockchain",
+								"QueryLast10BlockDto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/Blockchain/QueryBlockDtoByBlockHash",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"blockHash\":\"000004123c4b5628eb4f6e1f7046b3a7165cf1200431136df15709ce06aacd6b\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://119.3.57.171/Api/Blockchain/QueryBlockDtoByBlockHash",
+							"protocol": "http",
+							"host": [
+								"119",
+								"3",
+								"57",
+								"171"
+							],
+							"path": [
+								"Api",
+								"Blockchain",
+								"QueryBlockDtoByBlockHash"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/Blockchain/QueryTransactionListByBlockHashTransactionHeight",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"blockHash\": \"000004123c4b5628eb4f6e1f7046b3a7165cf1200431136df15709ce06aacd6b\",\r\n    \"pageCondition\": {\r\n        \"from\": 2,\r\n        \"size\": 1\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://119.3.57.171/Api/Blockchain/QueryTransactionListByBlockHashTransactionHeight",
+							"protocol": "http",
+							"host": [
+								"119",
+								"3",
+								"57",
+								"171"
+							],
+							"path": [
+								"Api",
+								"Blockchain",
+								"QueryTransactionListByBlockHashTransactionHeight"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/BlockChain/QueryTransactionByTransactionHash",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"transactionHash\":\"eb9cc830a98c9e5b502d4c12a71eeb6569a32896d52e9ea3f9744d4a4579233d\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://139.9.125.122/Api/Blockchain/QueryTransactionByTransactionHash",
+							"protocol": "http",
+							"host": [
+								"139",
+								"9",
+								"125",
+								"122"
+							],
+							"path": [
+								"Api",
+								"Blockchain",
+								"QueryTransactionByTransactionHash"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/BlockChain/QueryTransactionOutputByTransactionOutputId",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transactionOutputId\":{\r\n        \"transactionHash\":\"1fba0e8a705eb5174c0c00c934741ab80cdba974f8de4ff20c6b23db0b86aea2\",\r\n        \"transactionOutputIndex\":0\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://119.3.57.171/Api/Blockchain/QueryTransactionOutputByTransactionOutputId",
+							"protocol": "http",
+							"host": [
+								"119",
+								"3",
+								"57",
+								"171"
+							],
+							"path": [
+								"Api",
+								"Blockchain",
+								"QueryTransactionOutputByTransactionOutputId"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/AdminConsole/BuildTransactionDto",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"recipientList\":[\r\n        {\r\n            \"address\":\"1Fw7PFHWrEnh4Ac9Xd7kE4nF4rna1umeUa\",\r\n            \"value\":20\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://119.3.57.171/Api/AdminConsole/BuildTransactionDto",
+							"protocol": "http",
+							"host": [
+								"119",
+								"3",
+								"57",
+								"171"
+							],
+							"path": [
+								"Api",
+								"AdminConsole",
+								"BuildTransactionDto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/Blockchain/SubmitTransactionToBlockchainNetwork",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"transactionDTO\": {\n        \"transactionInputDtoList\": [\n            {\n                \"unspendTransactionOutputDTO\": {\n                    \"transactionHash\": \"1fba0e8a705eb5174c0c00c934741ab80cdba974f8de4ff20c6b23db0b86aea2\",\n                    \"transactionOutputIndex\": 0\n                },\n                \"inputScriptDTO\": [\n                    \"04\",\n                    \"3046022100c909c2fc9e985dac0862b3524052b164e9f21c64479ba292ee4d4ca8c58d3c4e022100d5caba4ef5ac44b02bb7dd30c198c742b38446d521ee17e2081c8c81c7295b9f\",\n                    \"04\",\n                    \"04b26e4ed1a13d84f48596645921c115bb053db84279433323578a32b6644cfa6bd498c48fa34ff7443b47b95cabb9a559cf5bc98407a01149337721b98469c584\"\n                ]\n            }\n        ],\n        \"transactionOutputDtoList\": [\n            {\n                \"outputScriptDTO\": [\n                    \"00\",\n                    \"01\",\n                    \"04\",\n                    \"a3cd8d37e794f726da20dc9df0affcfe025f0fb2\",\n                    \"02\",\n                    \"03\"\n                ],\n                \"value\": 20\n            },\n            {\n                \"outputScriptDTO\": [\n                    \"00\",\n                    \"01\",\n                    \"04\",\n                    \"f4eaf2b34f575686fcbea90f934cc72cfc017a9c\",\n                    \"02\",\n                    \"03\"\n                ],\n                \"value\": 30\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://119.3.57.171/Api/Blockchain/SubmitTransactionToBlockchainNetwork",
+							"protocol": "http",
+							"host": [
+								"119",
+								"3",
+								"57",
+								"171"
+							],
+							"path": [
+								"Api",
+								"Blockchain",
+								"SubmitTransactionToBlockchainNetwork"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/Api/Blockchain/QueryAccountDetailByAddress",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"address\":\"1L2PkzW3woE8dEPEwLBninhmMGgWn1H2sg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://119.3.57.171/Api/Blockchain/QueryAccountDetailByAddress",
+							"protocol": "http",
+							"host": [
+								"119",
+								"3",
+								"57",
+								"171"
+							],
+							"path": [
+								"Api",
+								"Blockchain",
+								"QueryAccountDetailByAddress"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	]
+}
