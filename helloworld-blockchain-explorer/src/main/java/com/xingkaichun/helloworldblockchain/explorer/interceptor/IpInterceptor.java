@@ -22,7 +22,6 @@ public class IpInterceptor implements HandlerInterceptor {
 	//默认允许访问的ip列表。
 	private static final List<String> DEFAULT_PERMIT_VISIT_IP_LIST = Arrays.asList("127.0.0.1","0:0:0:0:0:0:0:1");
 
-	//TODO 界面配置
 	//允许的ip列表，多个ip之间以逗号(,)分隔。
 	@Value("${permitVisitIpList:null}")
 	private String permitVisitIpList;
@@ -35,11 +34,11 @@ public class IpInterceptor implements HandlerInterceptor {
 		}
 
 		if(permitVisitIpList != null && !permitVisitIpList.isEmpty()){
-			List<String> permitVisitIps = Arrays.asList(permitVisitIpList.split(","));
-			if(permitVisitIps.contains(ALL_IP)){
+			List<String> permitVisitIpListTemp = Arrays.asList(permitVisitIpList.split(","));
+			if(permitVisitIpListTemp.contains(ALL_IP)){
 				return true;
 			}
-			if(permitVisitIps.contains(remoteHost)){
+			if(permitVisitIpListTemp.contains(remoteHost)){
 				return true;
 			}
 		}
