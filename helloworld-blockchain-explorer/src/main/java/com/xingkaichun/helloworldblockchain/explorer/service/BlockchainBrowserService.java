@@ -44,7 +44,7 @@ public interface BlockchainBrowserService {
      * 根据区块哈希与交易高度查询交易列表
      */
     List<TransactionView> queryTransactionListByBlockHashTransactionHeight(String blockHash, long from, long size);
-    
+
     /**
      * 提交交易到区块链网络
      */
