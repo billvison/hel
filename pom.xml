@@ -13,7 +13,7 @@
     <module>helloworld-blockchain-explorer</module>
     <module>helloworld-blockchain-crypto</module>
     <module>helloworld-blockchain-netcore</module>
-    <module>helloworld-blockchain-netcore-transport-dto</module>
+    <module>helloworld-blockchain-netcore-dto</module>
     <module>helloworld-blockchain-setting</module>
     <module>helloworld-blockchain-util</module>
   </modules>
@@ -70,7 +70,7 @@
       </dependency>
       <dependency>
         <groupId>com.xingkaichun.helloworldblockchain</groupId>
-        <artifactId>helloworld-blockchain-netcore-transport-dto</artifactId>
+        <artifactId>helloworld-blockchain-netcore-dto</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
