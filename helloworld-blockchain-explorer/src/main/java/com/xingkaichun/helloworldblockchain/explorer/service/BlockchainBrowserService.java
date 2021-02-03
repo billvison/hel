@@ -31,6 +31,7 @@ public interface BlockchainBrowserService {
      * 根据地址获取已花费交易输出
      */
     List<TransactionOutputDetailView> querySpendTransactionOutputListByAddress(String address, long from, long size);
+
     /**
      * 根据交易哈希查询交易
      */
@@ -43,6 +44,7 @@ public interface BlockchainBrowserService {
      * 根据区块哈希与交易高度查询交易列表
      */
     List<TransactionView> queryTransactionListByBlockHashTransactionHeight(String blockHash, long from, long size);
+    
     /**
      * 提交交易到区块链网络
      */
