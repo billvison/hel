@@ -5,16 +5,11 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.*;
 import com.xingkaichun.helloworldblockchain.core.tools.ScriptTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
+import com.xingkaichun.helloworldblockchain.explorer.dto.transaction.*;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
-import com.xingkaichun.helloworldblockchain.explorer.dto.transaction.TransactionInputView;
-import com.xingkaichun.helloworldblockchain.explorer.dto.transaction.TransactionOutputDetailView;
-import com.xingkaichun.helloworldblockchain.explorer.dto.transaction.TransactionOutputView;
-import com.xingkaichun.helloworldblockchain.explorer.dto.transaction.TransactionView;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.SubmitTransactionToNodeResponse;
-import com.xingkaichun.helloworldblockchain.explorer.dto.transaction.SubmitTransactionToBlockchainNetworkRequest;
-import com.xingkaichun.helloworldblockchain.explorer.dto.transaction.SubmitTransactionToBlockchainNetworkResponse;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +30,7 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
 
     @Override
     public TransactionOutputDetailView queryTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId) {
+        //查询交易输出
         TransactionOutput transactionOutput = getBlockchainCore().getBlockchainDataBase().queryTransactionOutputByTransactionOutputId(transactionOutputId);
         if(transactionOutput == null){
             return null;
@@ -49,20 +45,21 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         transactionOutputDetailView.setTransactionOutputIndex(transactionOutput.getTransactionOutputIndex());
         transactionOutputId.setTransactionHash(transactionOutput.getTransactionHash());
         transactionOutputId.setTransactionOutputIndex(transactionOutput.getTransactionOutputIndex());
+
+        //是否是未花费输出
         TransactionOutput transactionOutputTemp = getBlockchainCore().getBlockchainDataBase().queryUnspendTransactionOutputByTransactionOutputId(transactionOutputId);
         transactionOutputDetailView.setSpend(transactionOutputTemp==null);
 
         //来源
-        Transaction inputTransaction = getBlockchainCore().getBlockchainDataBase().queryTransactionByTransactionHash(transactionOutputId.getTransactionHash());
-        TransactionView inputTransactionView = queryTransactionByTransactionHash(inputTransaction.getTransactionHash());
+        TransactionView inputTransactionView = queryTransactionByTransactionHash(transactionOutputId.getTransactionHash());
 
         //去向
         TransactionView outputTransactionView = null;
         if(transactionOutputTemp==null){
             String transactionHash = getBlockchainCore().getBlockchainDataBase().queryToTransactionHashByTransactionOutputId(transactionOutputId);
-            Transaction outputTransaction = getBlockchainCore().getBlockchainDataBase().queryTransactionByTransactionHash(transactionHash);
             outputTransactionView = queryTransactionByTransactionHash(transactionHash);
 
+            Transaction outputTransaction = getBlockchainCore().getBlockchainDataBase().queryTransactionByTransactionHash(transactionHash);
             List<TransactionInput> inputs = outputTransaction.getInputs();
             if(inputs != null){
                 for(TransactionInput transactionInput:inputs){
@@ -172,14 +169,10 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         if(transaction == null){
             return null;
         }
-        long blockchainHeight = getBlockchainCore().queryBlockchainHeight();
-        Block block = getBlockchainCore().queryBlockByBlockHeight(transaction.getBlockHeight());
-        TransactionView transactionView = new TransactionView();
 
+        TransactionView transactionView = new TransactionView();
         transactionView.setTransactionHash(transaction.getTransactionHash());
         transactionView.setBlockHeight(transaction.getBlockHeight());
-        transactionView.setConfirmCount(blockchainHeight-block.getHeight());
-        transactionView.setBlockTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));
 
         transactionView.setTransactionFee(TransactionTool.calculateTransactionFee(transaction));
         transactionView.setTransactionType(transaction.getTransactionType().name());
@@ -187,6 +180,11 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         transactionView.setTransactionOutputCount(TransactionTool.getTransactionOutputCount(transaction));
         transactionView.setTransactionInputValues(TransactionTool.getInputsValue(transaction));
         transactionView.setTransactionOutputValues(TransactionTool.getOutputsValue(transaction));
+
+        long blockchainHeight = getBlockchainCore().queryBlockchainHeight();
+        Block block = getBlockchainCore().queryBlockByBlockHeight(transaction.getBlockHeight());
+        transactionView.setConfirmCount(blockchainHeight-block.getHeight()+1);
+        transactionView.setBlockTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));
 
         List<TransactionInput> inputs = transaction.getInputs();
         List<TransactionInputView> transactionInputViewList = new ArrayList<>();
@@ -201,6 +199,7 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
                 transactionInputViewList.add(transactionInputView);
             }
         }
+        transactionView.setTransactionInputViewList(transactionInputViewList);
 
         List<TransactionOutput> outputs = transaction.getOutputs();
         List<TransactionOutputView> transactionOutputViewList = new ArrayList<>();
@@ -215,8 +214,6 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
                 transactionOutputViewList.add(transactionOutputView);
             }
         }
-
-        transactionView.setTransactionInputViewList(transactionInputViewList);
         transactionView.setTransactionOutputViewList(transactionOutputViewList);
 
         List<String> inputScriptList = new ArrayList<>();
