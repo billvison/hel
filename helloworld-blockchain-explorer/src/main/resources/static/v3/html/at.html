@@ -196,11 +196,23 @@
                 }
             });
             $('body').delegate('.surface .btn-default', 'click',async function(){    
-                $('.updata').show();
-                $('.undata-content').show();
                 let ip = $(this).parent().prev().prev().prev().prev().prev().text();
                 $('.undata-content').find('.ip').val(ip);
                 $('.undata-content').find('.ip').attr('disabled', 'true');
+                $(this).parent().prev().prev().text() == '是' ? (flag1 = true) : (flag1 = false);
+                $(this).parent().prev().text() == '是' ? (flag2 = true) : (flag2 = false);
+                $('.choice1').children().trigger('click');
+                $('.choice2').children().trigger('click');
+                console.log();
+
+                $('.undata-content .errorConnectionTimes').val($(this).parent().prev().prev().prev().text())
+
+                
+                
+
+
+                $('.updata').show();
+                $('.undata-content').show();
             })
 
             $('.xiugai').click(async function(){
