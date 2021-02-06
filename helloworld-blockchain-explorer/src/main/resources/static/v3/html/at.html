@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>at</title>
+        <script src="../lib/jquery/jquery-1.12.4.min.js"></script>
+        <link rel="stylesheet" href="../lib/bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="../assets/common/reset.css">
+        <link rel="stylesheet" href="../assets/common/common.css">
+        <link rel="stylesheet" href="../assets/css/at.css">
+        <script src="../lib/bootstrap/bootstrap.min.js"></script>
+        <script src="../assets/common/common.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-default nav">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="javascript:;">HelloworldBlockchain</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse"
+                    id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#">节点</a></li>
+                        <li><a href="#">管理</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+
+        <ul class="list fwb mt-50">
+            <!-- 开头 -->
+            <li>
+                <span class="mr-50">节点管理</span>
+                <img class="mr-50 btbimg" src="../assets/image/btb.png" alt="">
+                <di class="mr-50"v><button type="button" class="btn btn-default" onclick="addItem()">增加</button></div>
+            </li>
+
+
+            <li class="surface">
+                <span class="f1">ip</span>
+                <span class="f1">高度</span>
+                <span class="f1">连接失败次数</span>
+                <span class="f1">是否可用</span>
+                <span class="f1">是否分叉</span>
+                <span>管理</span>
+            </li>
+            
+
+        </ul>
+
+
+        <div class="dialog-background j_escHide"></div>
+        <div class="dialog-section j_escHide">
+            <div class="dialog-header fwb">新增</div>
+            <div class="dialog-close j_dialogClose" onclick="Close()">
+                <img src="../assets/image/chahao.png" alt="">
+            </div>
+            <div class="receive">交易接收方</div>
+            <form class="im">
+                <div class="form-group">
+                    <input type="" class="form-control ip" id="exampleInputEmail3" placeholder="请输入ip">
+                </div>
+                <div class="choice1">
+                    <!-- 高亮 -->
+                    <img class="one" src="../assets/image/checkbox.png" alt="">
+                    <!-- 灰色 -->
+                    <img class="tow" src="../assets/image/checkbox_gron.png" alt="">
+                    <span>是否可用</span>
+                </div>
+                <div class="form-group">
+                    <input type="" class="form-control errorConnectionTimes" id="exampleInputPassword3" placeholder="请输入连接失败次数">
+                </div>
+                <div class="choice2">
+                    <!-- 高亮 -->
+                    <img class="one" src="../assets/image/checkbox.png" alt="">
+                    <!-- 灰色 -->
+                    <img class="tow" src="../assets/image/checkbox_gron.png" alt="">
+                    <span>是否分叉</span>
+                </div>
+                <div class="comit">
+                    <button type="button" class="btn btn-primary xinzeng">确认新增</button>
+                </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="updata j_escHide updata"></div>
+        <div class="undata-content j_escHide">
+            <div class="dialog-header fwb">修改</div>
+            <div class="dialog-close j_dialogClose" onclick="Close()">
+                <img src="../assets/image/chahao.png" alt="">
+            </div>
+            <div class="receive">交易接收方</div>
+            <form class="im">
+                <div class="form-group">
+                    <input type="" class="form-control ip" id="exampleInputEmail3" placeholder="请输入ip">
+                </div>
+                <div class="choice1">
+                    <!-- 高亮 -->
+                    <img class="one" src="../assets/image/checkbox.png" alt="">
+                    <!-- 灰色 -->
+                    <img class="tow" src="../assets/image/checkbox_gron.png" alt="">
+                    <span>是否可用</span>
+                </div>
+                <div class="form-group">
+                    <input type="" class="form-control errorConnectionTimes" id="exampleInputPassword3" placeholder="请输入连接失败次数">
+                </div>
+                <div class="choice2">
+                    <!-- 高亮 -->
+                    <img class="one" src="../assets/image/checkbox.png" alt="">
+                    <!-- 灰色 -->
+                    <img class="tow" src="../assets/image/checkbox_gron.png" alt="">
+                    <span>是否分叉</span>
+                </div>
+                <div class="comit">
+                    <button type="button" class="btn btn-primary xiugai">确认修改</button>
+                </div>
+                </div>
+            </form>
+        </div>
+
+        <script>
+            $('.undata-content .dialog-close').click(function(){
+                $('.updata').hide();
+                $('.undata-content').hide();
+            })
+            $('.one').hide();
+            let flag1 = false; //是否可用
+            $('.choice1').children().click(function(){
+                flag1 = !flag1;
+                if(flag1){
+                    $(this).parent().find('.one').show();
+                    $(this).parent().find('.tow').hide()
+                }else{
+                    $(this).parent().find('.tow').show();
+                    $(this).parent().find('.one').hide()
+                }
+            });
+            let flag2 = false; //是否可用
+            $('.choice2').children().click(function(){
+                flag2 = !flag2;
+                if(flag2){
+                    $(this).parent().find('.one').show();
+                    $(this).parent().find('.tow').hide()
+                }else{
+                    $(this).parent().find('.tow').show();
+                    $(this).parent().find('.one').hide()
+                }
+            })
+            function Close(){
+                $('.dialog-background').hide()
+                $('.dialog-section').hide()
+            }
+            $(async function(){
+                const data = await $ajax({
+                    url : "http://119.3.57.171/Api/AdminConsole/QueryAllNodeList"
+                });
+                const { nodeList } = data.result
+                let $list = $('.list');
+                $(nodeList).each((index, item) => {
+                    $list.append(`
+                        <li class="surface">
+                            <span class="f1">${item.ip}</span>
+                            <span class="f1">${item.blockchainHeight}</span>
+                            <span class="f1">${item.errorConnectionTimes}</span>
+                            <span class="f1">${item.isNodeAvailable ? '是' : '否'}</span>
+                            <span class="f1">${item.fork ? '是' : '否'}</span>
+                            <div>
+                                <img src="../assets/image/modify.png" alt="">
+                                <button class="btn btn-default" type="submit" ip="${item.ip}">修改</button>
+                                <img src="../assets/image/delete.png" alt="">
+                                <button class="btn btn-danger" type="submit">删除</button>
+                            </div>
+                        </li>
+                    `)
+                })
+            }());
+            function addItem(){
+                $('.dialog-background').show()
+                $('.dialog-section').show()
+            }
+            $('.xinzeng').click(async function(){
+                const data = await $ajax({
+                    url : "http://119.3.57.171/Api/AdminConsole/AddNode",
+                    data:`{"node":{"ip": "${$('.ip').val()}","isNodeAvailable": ${flag1},"errorConnectionTimes": ${$('.dialog-section .errorConnectionTimes').val()},"fork": ${flag2}}}`
+                });
+                if(data.serviceCode ==="SUCCESS" || "FAIL"){
+                    Close();
+                    alert(data.message);
+                    location.reload();
+                }
+            });
+            $('body').delegate('.surface .btn-default', 'click',async function(){    
+                $('.updata').show();
+                $('.undata-content').show();
+                let ip = $(this).parent().prev().prev().prev().prev().prev().text();
+                $('.undata-content').find('.ip').val(ip);
+                $('.undata-content').find('.ip').attr('disabled', 'true');
+            })
+
+            $('.xiugai').click(async function(){
+                let ip = $(this).parent().prev().prev().prev().prev().children('.ip').val();
+                let errorConnectionTimes = $('.undata-content .errorConnectionTimes').val();
+                const data = await $ajax({
+                    url : "http://119.3.57.171/Api/AdminConsole/UpdateNode",
+                    data:`{"node":{"ip": "${ip}","isNodeAvailable": ${flag1},"errorConnectionTimes": ${errorConnectionTimes},"fork": ${flag2}}}`
+                });
+                alert(data.message);
+                location.reload();
+            });
+
+            $('body').delegate('.surface .btn-danger', 'click', async function(){
+                let ip = $(this).parents('.surface').children('span').eq(0).text();
+                const data = await $ajax({
+                    url : "http://119.3.57.171/Api/AdminConsole/DeleteNode",
+                    data:`{"node":{"ip": "${ip}"}}`
+                });
+                alert(data.message);
+                location.reload();
+            })
+        </script>
+    </body>
+</html>
