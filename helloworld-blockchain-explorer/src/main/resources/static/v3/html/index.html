@@ -40,17 +40,13 @@
             let urlParameters = location.search.substr(0).split('=')
             var reqJson = '{ "blockHash": "' + urlParameters[1] + '", "pageCondition": { "from": 1, "size": 10 } }';
             var reqJso2 = '{ "blockHash": "'+ urlParameters[1] +'"}';
+
             $(async function(){
-                const data = await $ajax({
-                    url : "http://119.3.57.171/Api/Blockchain/QueryTransactionListByBlockHashTransactionHeight",
-                    data:reqJson
-                });
                 const data2 = await $ajax({
                     url : "http://119.3.57.171/Api/Blockchain/QueryBlockDtoByBlockHash",
                     data:reqJso2
                 });
                 let {blockDto} = data2.result;
-                let result = data.result.transactionViewList;
                 $('.box').append(`
                 <div class="panel panel-default">
                     <!-- Default panel contents -->
@@ -64,7 +60,7 @@
                                 <th class="lf col-md-6"><span>挖矿难度</span><span class="fr pr-100">${blockDto.difficulty}</span></th>
                             </tr>
                             <tr class="fwb">
-                                <th class="das"><span>确认数</span><span>${result[0].confirmCount}</span></th>
+                                <th class="das"><span>确认数</span><span>${blockDto.confirmCount}</span></th>
                                 <th class="lf"><span>随机数</span><span class="fr pr-100">${blockDto.nonce}</span></th>
                             </tr>
                             <tr class="fwb">
@@ -89,55 +85,9 @@
                     
                     <button type="button" class="btn btn-default btn-lg Summary">交易</button>
                 </div>`)
-
-
-                
-                $(result).each((index, item) => {
-                    let left = $(item.transactionInputViewList).map((index, item1) => {
-                        return `
-                            <li class="das">
-                                <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
-                            </li>
-                        `
-                    })
-                    let right = $(item.transactionOutputViewList).map((index1, item1) => {
-                        return `
-                            <li class="das">
-                                <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
-                            </li>
-                        `
-                    })
-                    
-                    $('.box').append(`
-                    <ul class="list fwb">
-                        <!-- 开头 -->
-                        <li>
-                            <span class="f7">${item.transactionHash}</span>
-                            <span class="f3">${item.transactionType}</span>
-                            <span class="f2">${item.transactionFee} HelloworldCoin </span>
-                            <span class="f1">${item.blockTime}</span>
-                        </li>
-                        <li class="surface">
-
-                            <ul class="left">
-                                ${Array.from(left).join('')}   
-                            </ul>
-
-                            <ul class="right">
-                                ${Array.from(right).join('')}    
-                            </ul>
-                        </li>
-                    </ul>
-                    `)
-                })
-
-
-                
             }())
+
             async function load(){
-                const JSONreqJson = JSON.parse(reqJson);
-                JSONreqJson.pageCondition.from += JSONreqJson.pageCondition.size;
-                reqJson = JSON.stringify(JSONreqJson);
                 const data = await $ajax({
                     url : "http://119.3.57.171/Api/Blockchain/QueryTransactionListByBlockHashTransactionHeight",
                     data:reqJson
@@ -187,7 +137,13 @@
                     </ul>
                     `)
                 })
+
+                const JSONreqJson = JSON.parse(reqJson);
+                JSONreqJson.pageCondition.from += JSONreqJson.pageCondition.size;
+                reqJson = JSON.stringify(JSONreqJson);
             }
+
+            $(load())
         </script>
     </body>
 </html>
