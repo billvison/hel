@@ -94,18 +94,17 @@
                 
                 $(result).each((index, item) => {
                     let left = $(item.transactionInputViewList).map((index, item1) => {
-                        return `<li class="das">
-                            <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i></div>
-                            <span>${item1.value}</span>
-                        </li>
+                        return `
+                            <li class="das">
+                                <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
+                            </li>
                         `
                     })
                     let right = $(item.transactionOutputViewList).map((index1, item1) => {
                         return `
-                                <li class="das">
-                                    <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i></div>
-                                    <span>${item1.value}</span>
-                                </li>
+                            <li class="das">
+                                <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
+                            </li>
                         `
                     })
                     
@@ -152,18 +151,17 @@
                 $(result).each((index, item) => {
                     console.log(item);
                     let left = $(item.transactionInputViewList).map((index, item1) => {
-                        return `<li class="das">
-                            <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i></div>
-                            <span>${item1.value}</span>
-                        </li>
+                        return `
+                            <li class="das">
+                                <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
+                            </li>
                         `
                     })
                     let right = $(item.transactionOutputViewList).map((index1, item1) => {
                         return `
-                                <li class="das">
-                                    <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i></div>
-                                    <span>${item1.value}</span>
-                                </li>
+                            <li class="das">
+                                <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
+                            </li>
                         `
                     })
                     
