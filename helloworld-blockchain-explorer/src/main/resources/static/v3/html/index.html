@@ -18,7 +18,7 @@
             <div class="container-fluid">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="./at.html">HelloworldBlockchain</a>
+                    <a class="navbar-brand" href="./block.html">HelloworldBlockchain</a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -73,11 +73,11 @@
                             </tr>
                             <tr class="fwb">
                                 <th class="das"><span>交易数量</span><span>${blockDto.transactionCount}</span></th>
-                                <th class="lf"><span>上一个区块哈希</span><span class="fr pr-100">${blockDto.previousBlockHash}</span></th>
+                                <th class="lf"><span>上一个区块哈希</span><span class="fr pr-100"><a href='./index.html?hash=${blockDto.previousBlockHash}'>${blockDto.previousBlockHash}</a></span></th>
                             </tr>
                             <tr class="fwb">
                                 <th class="das"><span>时间</span><span>${blockDto.time}</span></th>
-                                <th class="lf"><span>下一个区块哈希</span><span class="fr pr-100">${blockDto.nextBlockHash || ''}</span></th>
+                                <th class="lf"><span>下一个区块哈希</span><span class="fr pr-100"><a href='./index.html?hash=${blockDto.nextBlockHash}'>${blockDto.nextBlockHash || ''}</a></span></th>
                             </tr>
                             <tr class="fwb bb">
                                 <th class="das"><span>矿工奖励</span><span>${blockDto.minerIncentiveValue}</span></th>
@@ -137,7 +137,7 @@
             }())
             async function load(){
                 const JSONreqJson = JSON.parse(reqJson);
-                JSONreqJson.pageCondition.from ++;
+                JSONreqJson.pageCondition.from += JSONreqJson.pageCondition.size;
                 reqJson = JSON.stringify(JSONreqJson);
                 const data = await $ajax({
                     url : "http://119.3.57.171/Api/Blockchain/QueryTransactionListByBlockHashTransactionHeight",
@@ -145,6 +145,10 @@
                 });
                 let result = data.result.transactionViewList;
                 console.log(data);
+                if(data.serviceCode = 'SUCCESS' && (data.result.transactionViewList == null || data.result.transactionViewList.length==0)){
+                    alert("没有更多数据了!");
+                    return;
+                }
                 $(result).each((index, item) => {
                     console.log(item);
                     let left = $(item.transactionInputViewList).map((index, item1) => {
