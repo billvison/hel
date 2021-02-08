@@ -39,6 +39,7 @@
             <li>
                 <span class="f7">总余额</span>
                 <div class="f7"><button type="button" class="btn btn-primary" onclick="increase()">增加账户</button></div>
+                <div class="f7"><button type="button" class="btn btn-primary" onclick="create()">创建新账户</button></div>
                 <div class="f7"><button type="button" class="btn btn-default" onclick="transferAccounts()">转账</button></div>
             </li>
         </ul>
@@ -140,10 +141,27 @@
 
             async function increase(){
                 const text = window.prompt('增加账户');
-                await $ajax({
+                const data = await $ajax({
                     url : "http://119.3.57.171/Api/AdminConsole/AddAccount",
                     data:`{"privateKey":"${text}"}`
                 })
+                alert(data.message);
+                if(data.serviceCode == 'SUCCESS'){
+                    document.location.reload();
+                }
+            }
+
+            async function create(){
+                const data = await $ajax({
+                    url : "http://119.3.57.171/Api/Blockchain/GenerateAccount",
+                    data:`{}`
+                })
+                //TODO 美化
+                var account = data.result.account;
+                var content = '<h2 class="red">提示: 请在您信任的站点生成账户！</h2>' +
+                                 '<div><span>账号(区块链领域学名:地址)</span>&nbsp;&nbsp;'+account.address+'</div>' +
+                                 '<div><span>密码(区块链领域学名:私钥)</span>&nbsp;&nbsp;'+account.privateKey+'</div>' ;
+                alert(content);
             }
 
             function transferAccounts(){
