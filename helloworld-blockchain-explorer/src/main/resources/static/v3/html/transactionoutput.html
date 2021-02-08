@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>区块详情-HelloworldBlockchain</title>
+        <script src="../lib/jquery/jquery-1.12.4.min.js"></script>
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../assets/common/reset.css">
+        <link rel="stylesheet" href="../assets/common/common.css">
+        <link rel="stylesheet" href="../assets/css/index.css">
+        <link rel="stylesheet" href="../assets/css/transaction.css">
+        <script src="../lib/bootstrap/bootstrap.min.js"></script>
+        <script src="../assets/common/common.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-default nav">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./block.html">HelloworldBlockchain</a>
+                </div>
+
+                <div class="collapse navbar-collapse"
+                    id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="./at.html">节点管理</a></li>
+                        <li><a href="./AccountList.html">账户管理</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <div class="box">
+            <div class="panel panel-default">
+                <div class="panel-heading fwb"></div>
+                <button type="button" class="btn btn-default btn-lg Summary">摘要</button>
+                <table id="Last10BlockTable" class="table mb-0">
+                        
+                    <thead>
+                        <tr class="fwb lt">
+                            <th class="das col-md-6 w100"><span>块高度 : </span><span class="blockHeight"></span></th>
+                            <th class="lf col-md-6"><span>区块哈希 : </span><span class="fr pr-100 blockHash"></span></th>
+                        </tr>
+                        <tr class="fwb">
+                            <th class="das"><span>是否已花费 : </span><span class="spend"></span></th>
+                            <th class="lf"><span>交易哈希 : </span><span class="fr pr-100 transactionHash"></span></th>
+                        </tr>
+
+
+                        <tr class="fwb">
+                            <th class="das"><span> </span><span class="transactionType"></span></th>
+                            <th class="lf"><span>交易输出索引 : </span><span class="fr pr-100 transactionOutputIndex"></span></th>
+                        </tr>
+                        
+                    </thead>
+                </table>
+            </div>
+            
+        </div>
+
+
+        <table class="table table1 table-hover">
+            <tr class="success">
+                <td>输入脚本</td>
+            </tr>
+        </table>
+
+
+        <table class="table table2 table-hover">
+            <tr class="danger">
+                <td>输出脚本</td>
+            </tr>
+        </table>
+        
+        <button type="button" class="btn btn-default btn-lg Summary">输入交易</button>
+
+
+        <ul class="list fwb">
+                <!-- 开头 -->
+            <li class="tou">
+                <span class="f7"></span>
+                <span class="f3"></span>
+                <span class="f2"></span>
+                <span class="f1"></span>
+            </li>
+            <li class="surface">
+                <ul class="left"></ul>
+                <ul class="right"> </ul>
+            </li>
+        </ul>
+
+        <button type="button" class="btn btn-default btn-lg Summary">输出交易</button>
+        <ul class="list fwb">
+            <!-- 开头 -->
+            <li class="tou2">
+                <span class="f7"></span>
+                <span class="f3"></span>
+                <span class="f2"></span>
+                <span class="f1"></span>
+            </li>
+            <li class="surface">
+                <ul class="left"></ul>
+                <ul class="right"> </ul>
+            </li>
+        </ul>
+        <script>
+            $(async function(){
+                const data2 = await $ajax({
+                    url : "http://119.3.57.171/Api/Blockchain/QueryTransactionOutputByTransactionOutputId",
+                    data:`{
+                        "transactionOutputId":{
+                            "transactionHash":"1fba0e8a705eb5174c0c00c934741ab80cdba974f8de4ff20c6b23db0b86aea2",
+                            "transactionOutputIndex":0
+                        }
+                    }`
+                });
+                const { inputTransaction, transactionHash, transactionOutputIndex, blockHeight, inputScript,outputScript,outputTransaction, blockHash, spend } = data2.result.transactionOutputDetailView;
+                const { transactionInputViewList, transactionOutputViewList } = outputTransaction;
+                const { transactionType,transactionFee,blockTime   } = inputTransaction
+                $('.panel-heading').text('交易哈希 : ' + transactionHash + ' 交易输出索引 : ' + transactionOutputIndex);
+                $('.blockHeight').text(blockHeight)
+                $('.blockHash').text(blockHash)
+                console.log(data2.result.transactionOutputDetailView);
+                $('.transactionHash').text(transactionHash)
+                $('.transactionOutputIndex').text(transactionOutputIndex)
+                $('.spend').text(spend ? '是' : '否');
+                
+                $('.tou').children().eq(0).text(transactionHash);
+                $('.tou').children().eq(1).text(transactionType);
+                $('.tou').children().eq(2).text(transactionFee);
+                $('.tou').children().eq(3).text(blockTime);
+                $('.tou2').children().eq(0).text(transactionHash);
+                $('.tou2').children().eq(1).text(transactionType);
+                $('.tou2').children().eq(2).text(transactionFee);
+                $('.tou2').children().eq(3).text(blockTime);
+                $('.table1 tbody').append(`
+                    <tr class="info">
+                        <td>${inputScript}</td>
+                    </tr>
+                `);
+                $('.table2 tbody').append(`
+                    <tr class="warning">
+                        <td>${outputScript}</td>
+                    </tr>
+                `)
+
+                
+                let $left = $('.surface .left');
+                let $right = $('.surface .right');
+                $(transactionInputViewList).each((index, item) => {
+                    $left.append(`
+                        <li class="das">
+                            <div>
+                                <span class="mr25">${item.address}</span>
+                                <i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span>
+                            </div>
+                        </li>
+                    `)
+                })
+                $(transactionOutputViewList).each((index, item1) => {
+                    $right.append(`
+                    <li class="das">
+                        <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
+                    </li>
+                    `)
+                })
+            }())
+        </script>
+    </body>
+</html>
