@@ -103,12 +103,13 @@
         </ul>
         <script>
             $(async function(){
+                let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
                 const data2 = await $ajax({
                     url : "http://119.3.57.171/Api/Blockchain/QueryTransactionOutputByTransactionOutputId",
                     data:`{
                         "transactionOutputId":{
-                            "transactionHash":"1fba0e8a705eb5174c0c00c934741ab80cdba974f8de4ff20c6b23db0b86aea2",
-                            "transactionOutputIndex":0
+                            "transactionHash":"${urlParameters.get("transactionHash")}",
+                            "transactionOutputIndex":${urlParameters.get("transactionOutputIndex")}
                         }
                     }`
                 });
@@ -134,13 +135,13 @@
                     </tr>
                 `)
 
-                $('.tou').children().eq(0).text(transactionHash);
-                $('.tou').children().eq(1).text(transactionType);
-                $('.tou').children().eq(2).text(transactionFee);
-                $('.tou').children().eq(3).text(blockTime);
+                $('.tou').children().eq(0).text(inputTransaction.transactionHash);
+                $('.tou').children().eq(1).text(inputTransaction.transactionType);
+                $('.tou').children().eq(2).text(inputTransaction.transactionFee);
+                $('.tou').children().eq(3).text(inputTransaction.blockTime);
                 let $left = $('#surface1 .left');
                 let $right = $('#surface1 .right');
-                $(transactionInputViewList).each((index, item) => {
+                $(inputTransaction.transactionInputViewList).each((index, item) => {
                     $left.append(`
                         <li class="das">
                             <div>
@@ -150,7 +151,7 @@
                         </li>
                     `)
                 })
-                $(transactionOutputViewList).each((index, item1) => {
+                $(inputTransaction.transactionOutputViewList).each((index, item1) => {
                     $right.append(`
                     <li class="das">
                         <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
@@ -160,11 +161,11 @@
 
                 let $left2 = $('#surface2 .left');
                 let $right2 = $('#surface2 .right');
-                $('.tou2').children().eq(0).text(transactionHash);
-                $('.tou2').children().eq(1).text(transactionType);
-                $('.tou2').children().eq(2).text(transactionFee);
-                $('.tou2').children().eq(3).text(blockTime);
-                $(transactionInputViewList).each((index, item) => {
+                $('.tou2').children().eq(0).text(outputTransaction.transactionHash);
+                $('.tou2').children().eq(1).text(outputTransaction.transactionType);
+                $('.tou2').children().eq(2).text(outputTransaction.transactionFee);
+                $('.tou2').children().eq(3).text(outputTransaction.blockTime);
+                $(outputTransaction.transactionInputViewList).each((index, item) => {
                     $left2.append(`
                         <li class="das">
                             <div>
@@ -174,7 +175,7 @@
                         </li>
                     `)
                 })
-                $(transactionOutputViewList).each((index, item1) => {
+                $(outputTransaction.transactionOutputViewList).each((index, item1) => {
                     $right2.append(`
                     <li class="das">
                         <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>

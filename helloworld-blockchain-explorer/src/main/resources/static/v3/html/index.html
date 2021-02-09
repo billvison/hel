@@ -103,7 +103,7 @@
                     let left = $(item.transactionInputViewList).map((index, item1) => {
                         return `
                             <li class="das">
-                                <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
+                                <div><span class="mr25">${item1.address}</span><a target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
                             </li>
                         `
                     })
