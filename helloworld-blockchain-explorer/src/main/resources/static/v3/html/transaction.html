@@ -99,9 +99,10 @@
 
         <script>
             $(async function(){
+                let urlParameters = location.search.substr(0).split('=')
                 const data2 = await $ajax({
-                    url : "http://139.9.125.122/Api/Blockchain/QueryTransactionByTransactionHash",
-                    data:`{"transactionHash":"eb9cc830a98c9e5b502d4c12a71eeb6569a32896d52e9ea3f9744d4a4579233d"}`
+                    url : "http://119.3.57.171/Api/Blockchain/QueryTransactionByTransactionHash",
+                    data:`{"transactionHash":"`+ urlParameters[1] +`"}`
                 });
                 let {inputScriptList, outputScriptList, transactionHash,transactionInputViewList, transactionOutputValues, blockHeight, transactionFee, confirmCount, transactionInputCount, transactionType, blockTime, transactionInputValues , transactionOutputCount, transactionOutputViewList} = data2.result.transactionView;
                 $('.panel-heading').text(transactionHash);
