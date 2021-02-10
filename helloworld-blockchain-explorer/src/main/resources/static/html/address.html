@@ -62,11 +62,12 @@
         <div class="container"></div>
         
         <script>
+            let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
             let size = 1;
             $(async function(){
                 const data2 = await $ajax({
                     url : "http://119.3.57.171/Api/Blockchain/QueryAccountDetailByAddress",
-                    data:`{"address":"1L2PkzW3woE8dEPEwLBninhmMGgWn1H2sg"}`
+                    data:`{"address":"${urlParameters.get("address")}"}`
                 });
                 const { address, balance, receipt, spend  } = data2.result;
                 $('.address').text(address);
