@@ -39,9 +39,9 @@
             <button onclick="load()">加载更多</button>
         </div>
         <script>
-            let urlParameters = location.search.substr(0).split('=')
-            var reqJson = '{ "blockHash": "' + urlParameters[1] + '", "pageCondition": { "from": 1, "size": 10 } }';
-            var reqJso2 = '{ "blockHash": "'+ urlParameters[1] +'"}';
+            let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
+            var reqJson = `{ "blockHash": "${urlParameters.get("hash")}", "pageCondition": { "from": 1, "size": 10 } }`;
+            var reqJso2 = `{ "blockHash": "${urlParameters.get("hash")}"}`;
 
             $(async function(){
                 const data2 = await $ajax({
