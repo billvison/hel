@@ -1,0 +1,10 @@
+.surface span {
+  flex: 10;
+}
+.surface div {
+  flex: 1;
+}
+.surface div button {
+  width: 150px;
+  display: inline-block;
+}

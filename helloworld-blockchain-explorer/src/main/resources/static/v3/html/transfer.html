@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="../assets/common/reset.css">
         <link rel="stylesheet" href="../assets/common/common.css">
         <link rel="stylesheet" href="../assets/css/AccountList.css">
+        <link rel="stylesheet" href="../assets/css/transfer.css">
         <script src="../lib/bootstrap/bootstrap.min.js"></script>
         <script src="../assets/common/common.js"></script>
     </head>
@@ -31,18 +32,6 @@
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
-
-
-
-        <ul class="list fwb mt-50">
-            <!-- 开头 -->
-            <li>
-                <span class="f7">总余额</span>
-                <div class="f7"><button type="button" class="btn btn-primary" onclick="increase()">增加账户</button></div>
-                <div class="f7"><button type="button" class="btn btn-primary" onclick="create()">创建新账户</button></div>
-                <div class="f7"><button type="button" class="btn btn-default" onclick="transferAccounts()">转账</button></div>
-            </li>
-        </ul>
 
         
 
@@ -68,10 +57,10 @@
 
 
 
-        <div class="dialog-background j_escHide"></div>
-        <div class="dialog-section j_escHide">
+        <div class="dialog-background j_escHide show"></div>
+        <div class="dialog-section j_escHide show">
             <div class="dialog-header fwb">转账</div>
-            <div class="dialog-close j_dialogClose" onclick="Close()"><i class="glyphicon glyphicon-remove"></i></div>
+            <!-- <div class="dialog-close j_dialogClose" onclick="Close()"><i class="glyphicon glyphicon-remove"></i></div> -->
             <div class="receive">交易接收方</div>
             <div class="im">
                 <div>
@@ -135,8 +124,8 @@
                 }
             })
             function Close(){
-                $('.dialog-background').hide()
-                $('.dialog-section').hide()
+                $('.dialog-background').removeClass('show')
+                $('.dialog-section').removeClass('show')
             }
 
             async function increase(){
@@ -165,7 +154,8 @@
             }
 
             function transferAccounts(){
-                window.location = "./transfer.html"
+                $('.dialog-background').show()
+                $('.dialog-section').show()
             }
             async function onConfirm(){
                 let recipientList = [];
@@ -182,7 +172,6 @@
                     data.result.transactionOutpuDtoList.forEach(item => {
                         obj.transactionDTO.transactionOutputDtoList.push(item)
                     })
-                    console.log(obj);
                     let receive = data.result.transactionOutpuDtoList.map(item => {
                         return `<div class="city">
                             <span>转账地址 : ${item.outputScriptDTO[3]}</span></span>
