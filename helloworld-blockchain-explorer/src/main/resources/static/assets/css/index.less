@@ -1,115 +1,16 @@
-body{
-    padding-bottom: 100px !important;
+
+.bd>*{
+    font-weight: bold;
 }
-.panel-default{
-    margin-top: 50px;
-}
-.Summary{
-    margin: 30px 0;
-}
-i{
-    color: red;
-}
-.page{
-    margin-top:50px;
-    display: flex;
-    justify-content: center;
-    button{
-        width: 350px;
-        line-height: 32px;
-        border: 2px solid #ddd;
-        &:first-child{
-            margin-right: 100px;
+.panel{
+    min-width: 1300px;
+    margin-top: 150px;
+    a{
+        color: #337ab7;
+        text-decoration: none;
+        &:hover{
+            color: #23527c !important;
+            text-decoration: underline !important;
         }
     }
-}
-.panel-default{
-    border: none !important;
-}
-
-.table{
-    margin-bottom: 50px !important;
-}
-.bb{
-    border-bottom: 1px solid #ddd !important;
-}
-
-.b-f5{
-    background-color: #f5f5f5 !important;
-}
-.mb-0{
-    margin-bottom: 0 !important;
-}
-.list{
-    font-size: 14px;
-    line-height: 40px;
-    &>li:first-child{
-        background: #f5f5f5;
-    }
-    &>li{
-        vertical-align: top;
-        border-top: 1px solid #ddd;
-        display: flex;
-        padding:0 15px;
-        white-space: nowrap;
-    }
-    .right{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-    .left,
-    .right{
-        width: 45%;
-    }
-    .surface{
-        display: flex;
-        justify-content: space-between;
-    }
-}
-.f7{
-    flex: 7;
-}
-.f3{
-    flex: 3;
-}
-.f2{
-    flex: 2;
-}
-.f1{
-    flex: 1;
-}
-
-input {
-    display: none;
-  }
-label {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
-    border: 1px solid #2eb5f0;
-    position: relative;
-    cursor: pointer;
-}
-label::before {
-    display: inline-block;
-    content: " ";
-    width: 12px;
-    border: 2px solid #fff;
-    height: 4px;
-    border-top: none;
-    border-right: none;
-    transform: rotate(-45deg);
-    top: 5px;
-    left: 3px;
-    position: absolute;
-    opacity: 0;
-}
-input:checked+label {
-    background: #2eb5f0;
-}
-input:checked+label::before{
-    opacity: 1;
-    transform: all 0.5s;
 }
