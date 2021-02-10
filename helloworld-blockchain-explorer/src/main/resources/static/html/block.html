@@ -71,11 +71,11 @@
                             </tr>
                             <tr class="fwb">
                                 <th class="das"><span>交易数量</span><span>${blockDto.transactionCount}</span></th>
-                                <th class="lf"><span>上一个区块哈希</span><span class="fr pr-100"><a href='./index.html?hash=${blockDto.previousBlockHash}'>${blockDto.previousBlockHash}</a></span></th>
+                                <th class="lf"><span>上一个区块哈希</span><span class="fr pr-100"><a href='./block.html?hash=${blockDto.previousBlockHash}'>${blockDto.previousBlockHash}</a></span></th>
                             </tr>
                             <tr class="fwb">
                                 <th class="das"><span>时间</span><span>${blockDto.time}</span></th>
-                                <th class="lf"><span>下一个区块哈希</span><span class="fr pr-100"><a href='./index.html?hash=${blockDto.nextBlockHash}'>${blockDto.nextBlockHash || ''}</a></span></th>
+                                <th class="lf"><span>下一个区块哈希</span><span class="fr pr-100"><a href='./block.html?hash=${blockDto.nextBlockHash}'>${blockDto.nextBlockHash || ''}</a></span></th>
                             </tr>
                             <tr class="fwb bb">
                                 <th class="das"><span>矿工奖励</span><span>${blockDto.minerIncentiveValue}</span></th>
