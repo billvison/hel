@@ -41,7 +41,7 @@
                 <span id="balance" class="f7">总余额</span>
                 <div class="f7"><button type="button" class="btn btn-primary" onclick="increase()">增加账户</button></div>
                 <div class="f7"><button type="button" class="btn btn-primary" onclick="create()">创建新账户</button></div>
-                <div class="f7"><button type="button" class="btn btn-default" onclick="transferAccounts()">转账</button></div>
+                <div class="f7"><button type="button" class="btn btn-primary" onclick="window.open('./transfer.html')">转账</button></div>
             </li>
         </ul>
 
@@ -74,7 +74,7 @@
                     $('.list').append(`
                         <li class="surface mt-25">
                             <div class="qweasdqwe f1">
-                                <div class="one"><span>地址 <a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><span>余额 ${item.value}</span></div>
+                                <div class="one"><span>地址<a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><span>余额 ${item.value}</span></div>
                                 <div class="adqwxcvqwd">私钥 ${item.privateKey}</div>
                             </div>
                             <button type="button" class="btn btn-danger">删除</button>
@@ -93,14 +93,22 @@
                 `)
             });
             $('body').delegate('.surface > .btn-danger', 'click', async function(){
-                let privateKey = $(this).prev().find('.one>span:first-child').text();
-                const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/DeleteAccount",
-                    data:`{"address":"${privateKey}"}`,
+                let privateKey = $(this).prev().find('.one>span:first-child>a').text();
+                layer.confirm('确认删除？', {
+                  btn: ['删除','取消']
+                }, function(){
+                    $.ajax({
+                         type: "post",
+                         url : "http://119.3.57.171/Api/AdminConsole/DeleteAccount",
+                         data:`{"address":"${privateKey}"}`,
+                         dataType: "json",
+                         contentType: "application/json",
+                         success(data){
+                            location.reload();
+                         }
+                     });
+                }, function(){
                 });
-                if(data.result.deleteAccountSuccess){
-                    $(this).parent().remove()
-                }
             })
             function Close(){
                 $('.dialog-background').hide()
@@ -137,9 +145,6 @@
                 layer.alert(content);
             }
 
-            function transferAccounts(){
-                window.location = "./transfer.html"
-            }
             async function onConfirm(){
                 let recipientList = [];
                 Array.from($('.im')).forEach(item => {
