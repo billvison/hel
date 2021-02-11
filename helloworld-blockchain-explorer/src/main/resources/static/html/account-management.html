@@ -33,41 +33,15 @@
             </div><!-- /.container-fluid -->
         </nav>
 
-
-
         <ul class="list fwb mt-50">
             <!-- 开头 -->
             <li>
-                <span class="f7">总余额</span>
+                <span id="balance" class="f7">总余额</span>
                 <div class="f7"><button type="button" class="btn btn-primary" onclick="increase()">增加账户</button></div>
                 <div class="f7"><button type="button" class="btn btn-primary" onclick="create()">创建新账户</button></div>
                 <div class="f7"><button type="button" class="btn btn-default" onclick="transferAccounts()">转账</button></div>
             </li>
         </ul>
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         <div class="dialog-background j_escHide"></div>
         <div class="dialog-section j_escHide">
@@ -86,29 +60,20 @@
             </div>
         </div>
 
-
-
-
-
-
-
-
-
         <script>
-
             const obj = {}
-
             $(async function(){
                 const data = await $ajax({
                     url : "http://119.3.57.171/Api/AdminConsole/QueryAllAccountList"
                 })
+                $("#balance").text("总余额 "+data.result.balance);
                 let accountDtoList = data.result.accountDtoList
                 $(accountDtoList).each((index, item) => {
                     $('.list').append(`
                         <li class="surface mt-25">
                             <div class="qweasdqwe f1">
-                                <div class="one"><span>${item.address}</span><span>余额 ${item.value}</span></div>
-                                <div class="adqwxcvqwd">${item.privateKey}</div>
+                                <div class="one"><span>地址 <a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><span>余额 ${item.value}</span></div>
+                                <div class="adqwxcvqwd">私钥 ${item.privateKey}</div>
                             </div>
                             <button type="button" class="btn btn-danger">删除</button>
                         </li>

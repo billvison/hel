@@ -65,15 +65,15 @@
         
         <script>
             let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
-            let size = 1;
+            let size = 10;
             $(async function(){
                 const data = await $ajax({
                     url : "http://119.3.57.171/Api/Blockchain/QueryAccountDetailByAddress",
                     data:`{"address":"${urlParameters.get("address")}"}`
                 });
                 const { address, balance, receipt, spend  } = data.result;
-                $('.address').text(address);
                 $('.panel-heading').text('地址 ' + address);
+                $('.address').text(address);
                 $('.receipt').text(receipt);
                 $('.spend').text(spend);
                 $('.balance').text(balance);
@@ -85,7 +85,7 @@
                     const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QueryTransactionListByAddress",
                         data:`{
-                            "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
+                            "address":"${urlParameters.get("address")}",
                             "pageCondition":{
                                 "from":0,
                                 "size":${size}
@@ -130,9 +130,9 @@
                     
                 }else if($(this).index() === 1){
                     const data = await $ajax({
-                        url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
+                        url : "http://119.3.57.171:80/Api/Blockchain/QueryUnspendTransactionOutputListByAddress",
                         data:`{
-                            "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
+                            "address":"${urlParameters.get("address")}",
                             "pageCondition":{
                                 "from":0,
                                 "size":${size}
@@ -154,7 +154,7 @@
                     const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QueryTransactionOutputListByAddress",
                         data:`{
-                            "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
+                            "address":"${urlParameters.get("address")}",
                             "pageCondition":{
                                 "from":0,
                                 "size":${size}
@@ -174,11 +174,10 @@
                         `)
                     })
                 }else{
-
                     const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
                         data:`{
-                            "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
+                            "address":"${urlParameters.get("address")}",
                             "pageCondition":{
                                 "from":0,
                                 "size":${size}
@@ -204,7 +203,7 @@
                     const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
                         data:`{
-                            "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
+                            "address":"${urlParameters.get("address")}",
                             "pageCondition":{
                                 "from":0,
                                 "size":${size}
@@ -223,9 +222,9 @@
                     })
                 }else if(index === 1){
                     const data = await $ajax({
-                        url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
+                        url : "http://119.3.57.171:80/Api/Blockchain/QueryUnspendTransactionOutputListByAddress",
                         data:`{
-                            "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
+                            "address":"${urlParameters.get("address")}",
                             "pageCondition":{
                                 "from":0,
                                 "size":${size}
@@ -246,7 +245,7 @@
                     const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
                         data:`{
-                            "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
+                            "address":"${urlParameters.get("address")}",
                             "pageCondition":{
                                 "from":0,
                                 "size":${size}
@@ -264,20 +263,16 @@
                         `)
                     })
                 }else{
-
-
                     const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
                         data:`{
-                            "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
+                            "address":"${urlParameters.get("address")}",
                             "pageCondition":{
                                 "from":0,
                                 "size":${size}
                             }
                         }`
                     });
-
-
                     transactionOutputDetailViewList.forEach(item => {
                         $('.container .table').append(`
                         <tr class="mt-50">
@@ -287,8 +282,6 @@
                         </tr>
                         `)
                     })
-
-
                 }
             }
         </script>
