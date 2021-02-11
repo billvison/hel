@@ -101,11 +101,11 @@
         <script>
             $(async function(){
                 let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
-                const data2 = await $ajax({
+                const data = await $ajax({
                     url : "http://119.3.57.171/Api/Blockchain/QueryTransactionByTransactionHash",
                     data:`{"transactionHash":"${urlParameters.get("transactionHash")}"}`
                 });
-                let {inputScriptList, outputScriptList, transactionHash,transactionInputViewList, transactionOutputValues, blockHeight, transactionFee, confirmCount, transactionInputCount, transactionType, blockTime, transactionInputValues , transactionOutputCount, transactionOutputViewList} = data2.result.transactionView;
+                let {inputScriptList, outputScriptList, transactionHash,transactionInputViewList, transactionOutputValues, blockHeight, transactionFee, confirmCount, transactionInputCount, transactionType, blockTime, transactionInputValues , transactionOutputCount, transactionOutputViewList} = data.result.transactionView;
                 $('.panel-heading').text(transactionHash);
                 $('.blockHeight').text(blockHeight);
                 $('.transactionFee').text(transactionFee);

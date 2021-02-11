@@ -105,7 +105,7 @@
         <script>
             $(async function(){
                 let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
-                const data2 = await $ajax({
+                const data = await $ajax({
                     url : "http://119.3.57.171/Api/Blockchain/QueryTransactionOutputByTransactionOutputId",
                     data:`{
                         "transactionOutputId":{
@@ -114,13 +114,13 @@
                         }
                     }`
                 });
-                const { inputTransaction, transactionHash, transactionOutputIndex, blockHeight, inputScript,outputScript,outputTransaction, blockHash, spend } = data2.result.transactionOutputDetailView;
+                const { inputTransaction, transactionHash, transactionOutputIndex, blockHeight, inputScript,outputScript,outputTransaction, blockHash, spend } = data.result.transactionOutputDetailView;
                 const { transactionInputViewList, transactionOutputViewList } = outputTransaction;
                 const { transactionType,transactionFee,blockTime   } = inputTransaction
                 $('.panel-heading').text('交易哈希 : ' + transactionHash + ' 交易输出索引 : ' + transactionOutputIndex);
                 $('.blockHeight').text(blockHeight)
                 $('.blockHash').text(blockHash)
-                console.log(data2.result.transactionOutputDetailView);
+                console.log(data.result.transactionOutputDetailView);
                 $('.transactionHash').text(transactionHash)
                 $('.transactionOutputIndex').text(transactionOutputIndex)
                 $('.spend').text(spend ? '是' : '否');

@@ -64,11 +64,11 @@
             let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
             let size = 1;
             $(async function(){
-                const data2 = await $ajax({
+                const data = await $ajax({
                     url : "http://119.3.57.171/Api/Blockchain/QueryAccountDetailByAddress",
                     data:`{"address":"${urlParameters.get("address")}"}`
                 });
-                const { address, balance, receipt, spend  } = data2.result;
+                const { address, balance, receipt, spend  } = data.result;
                 $('.address').text(address);
                 $('.panel-heading').text('地址 : ' + address);
                 $('.receipt').text(receipt);
@@ -79,7 +79,7 @@
                 size = 1;
                 $('.container').empty();
                 if($(this).index() === 0){
-                    const data2 = await $ajax({
+                    const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QueryTransactionListByAddress",
                         data:`{
                             "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
@@ -89,7 +89,7 @@
                             }
                         }`
                     });
-                    const transactionViewList = data2.result.transactionViewList;
+                    const transactionViewList = data.result.transactionViewList;
                     transactionViewList.forEach(item => {
                         let res = '';
                         item.transactionInputViewList.forEach(item => {
@@ -126,7 +126,7 @@
                     })
                     
                 }else if($(this).index() === 1){
-                    const data2 = await $ajax({
+                    const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
                         data:`{
                             "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
@@ -136,7 +136,7 @@
                             }
                         }`
                     });
-                    let {transactionOutputDetailViewList} = data2.result;
+                    let {transactionOutputDetailViewList} = data.result;
                     $('.container').append(`<table class="table table-hover tac"></table>${transactionOutputDetailViewList.length ? '<div class="page"><button onclick="load(1)">加载更多</button></div>' : ''}`)
                     transactionOutputDetailViewList.forEach(item => {
                         $('.container .table').append(`
@@ -148,7 +148,7 @@
                         `)
                     })
                 }else if($(this).index() === 2){
-                    const data2 = await $ajax({
+                    const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QueryTransactionOutputListByAddress",
                         data:`{
                             "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
@@ -158,7 +158,7 @@
                             }
                         }`
                     });
-                    let {transactionOutputDetailViewList} = data2.result;
+                    let {transactionOutputDetailViewList} = data.result;
                     $('.container').append(`<table class="table table-hover tac"> </table>
                     ${transactionOutputDetailViewList.length ? '<div class="page"><button onclick="load(2)">加载更多</button></div>' : ''}`)
                     transactionOutputDetailViewList.forEach(item => {
@@ -172,7 +172,7 @@
                     })
                 }else{
 
-                    const data2 = await $ajax({
+                    const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
                         data:`{
                             "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
@@ -182,7 +182,7 @@
                             }
                         }`
                     });
-                    let {transactionOutputDetailViewList} = data2.result;
+                    let {transactionOutputDetailViewList} = data.result;
                     $('.container').append(`<table class="table table-hover tac"></table>${transactionOutputDetailViewList.length ? '<div class="page"><button onclick="load(3)">加载更多</button></div>' : ''}`)
                     transactionOutputDetailViewList.forEach(item => {
                         $('.container .table').append(`
@@ -198,7 +198,7 @@
             async function load(index){
                 size ++;
                 if(index === 0){
-                    const data2 = await $ajax({
+                    const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
                         data:`{
                             "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
@@ -208,7 +208,7 @@
                             }
                         }`
                     });
-                    let {transactionOutputDetailViewList} = data2.result;
+                    let {transactionOutputDetailViewList} = data.result;
                     transactionOutputDetailViewList.forEach(item => {
                         $('.container .table').append(`
                         <tr class="mt-50">
@@ -219,7 +219,7 @@
                         `)
                     })
                 }else if(index === 1){
-                    const data2 = await $ajax({
+                    const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
                         data:`{
                             "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
@@ -229,7 +229,7 @@
                             }
                         }`
                     });
-                    let {transactionOutputDetailViewList} = data2.result;
+                    let {transactionOutputDetailViewList} = data.result;
                     transactionOutputDetailViewList.forEach(item => {
                         $('.container .table').append(`
                         <tr class="mt-50">
@@ -240,7 +240,7 @@
                         `)
                     })
                 }else if(index === 2){
-                    const data2 = await $ajax({
+                    const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
                         data:`{
                             "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
@@ -250,7 +250,7 @@
                             }
                         }`
                     });
-                    let {transactionOutputDetailViewList} = data2.result;
+                    let {transactionOutputDetailViewList} = data.result;
                     transactionOutputDetailViewList.forEach(item => {
                         $('.container .table').append(`
                         <tr class="mt-50">
@@ -263,7 +263,7 @@
                 }else{
 
 
-                    const data2 = await $ajax({
+                    const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
                         data:`{
                             "address":"1PL1LHRmEACMQxns2aSic65ip7yQBmUush",
