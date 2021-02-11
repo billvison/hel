@@ -104,14 +104,14 @@
                     let left = $(item.transactionInputViewList).map((index, item1) => {
                         return `
                             <li class="das">
-                                <div><span class="mr25"><a target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span><a target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
+                                <div><span class="mr25"><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
                             </li>
                         `
                     })
                     let right = $(item.transactionOutputViewList).map((index1, item1) => {
                         return `
                             <li class="das">
-                                <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
+                                <div><span class="mr25"><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
                             </li>
                         `
                     })
@@ -120,7 +120,7 @@
                     <ul class="list fwb">
                         <!-- 开头 -->
                         <li>
-                            <span class="f7"><a target="_blank" href="./transaction.html?transactionHash=${item.transactionHash}">${item.transactionHash}</a></span>
+                            <span class="f7"><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${item.transactionHash}">${item.transactionHash}</a></span>
                             <span class="f3">${item.transactionType}</span>
                             <span class="f2">${item.transactionFee} HelloworldCoin </span>
                             <span class="f1">${item.blockTime}</span>
