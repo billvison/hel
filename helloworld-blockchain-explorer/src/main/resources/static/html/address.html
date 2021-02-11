@@ -62,10 +62,13 @@
             <button type="button" class="btn btn-default btn-lg">已花费的交易输出【支出】</button>
         </p>
         <div class="container"></div>
-        
+
         <script>
             let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
-            let size = 10;
+            let tab0index = 1;
+            let tab1index = 1;
+            let tab2index = 1;
+            let tab3index = 1;
             $(async function(){
                 const data = await $ajax({
                     url : "http://119.3.57.171/Api/Blockchain/QueryAccountDetailByAddress",
@@ -79,19 +82,39 @@
                 $('.balance').text(balance);
             }());
             $('.diap button').click(async function(){
-                size = 1;
                 $('.container').empty();
                 if($(this).index() === 0){
+                    $('.container').append(`<table class="table table-hover tac"></table>'<div class="page"><button onclick="load(0)">加载更多</button></div>'`)
+                    tab0index = 1;
+                    load(0);
+                }else if($(this).index() === 1){
+                    $('.container').append(`<table class="table table-hover tac"></table>'<div class="page"><button onclick="load(1)">加载更多</button></div>'`)
+                    tab1index = 1;
+                    load(1);
+                }else if($(this).index() === 2){
+                    $('.container').append(`<table class="table table-hover tac"></table>'<div class="page"><button onclick="load(2)">加载更多</button></div>'`)
+                    tab2index = 1;
+                    load(2);
+                }else{
+                    $('.container').append(`<table class="table table-hover tac"></table>'<div class="page"><button onclick="load(3)">加载更多</button></div>'`)
+                    tab3index = 1;
+                    load(3);
+                }
+            })
+            $('.diap').children().eq(0).click();
+            async function load(index){
+                if(index === 0){
                     const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QueryTransactionListByAddress",
                         data:`{
                             "address":"${urlParameters.get("address")}",
                             "pageCondition":{
-                                "from":0,
-                                "size":${size}
+                                "from": ${tab0index},
+                                "size": 1
                             }
                         }`
                     });
+                    tab0index = tab0index + 1;
                     const transactionViewList = data.result.transactionViewList;
                     transactionViewList.forEach(item => {
                         let res = '';
@@ -111,113 +134,22 @@
                             </li>
                             `
                         });
+                        $('.container').children().last().remove();
                         $('.container').append(`
                             <ul class="list fwb mt-25">
                                 <!-- 开头 -->
-                            <li class="tou">
-                                <span class="f7">${item.transactionHash}</span>
-                                <span class="f3">${item.transactionType}</span>
-                                <span class="f2">${item.transactionFee}</span>
-                                <span class="f1">${item.blockTime}</span>
-                            </li>
-                            <li class="surface">
-                                <ul class="left">${res}</ul>
-                                <ul class="right">${res2}</ul>
-                            </li>
-                        </ul>
-                        ${item.transactionOutputViewList ? '<div class="page"><button onclick="load(0)">加载更多</button></div>' : ''}`)
-                    })
-                    
-                }else if($(this).index() === 1){
-                    const data = await $ajax({
-                        url : "http://119.3.57.171:80/Api/Blockchain/QueryUnspendTransactionOutputListByAddress",
-                        data:`{
-                            "address":"${urlParameters.get("address")}",
-                            "pageCondition":{
-                                "from":0,
-                                "size":${size}
-                            }
-                        }`
-                    });
-                    let {transactionOutputDetailViewList} = data.result;
-                    $('.container').append(`<table class="table table-hover tac"></table>${transactionOutputDetailViewList.length ? '<div class="page"><button onclick="load(1)">加载更多</button></div>' : ''}`)
-                    transactionOutputDetailViewList.forEach(item => {
-                        $('.container .table').append(`
-                        <tr class="mt-50">
-                            <td class="tdborder">交易哈希 : ${item.blockHash}</td>
-                            <td class="tdborder">交易输出索引号 : ${item.transactionOutputIndex}</td>
-                            <td class="tdborder">去向 : ${item.transactionHash}</td>
-                        </tr>
-                        `)
-                    })
-                }else if($(this).index() === 2){
-                    const data = await $ajax({
-                        url : "http://119.3.57.171:80/Api/Blockchain/QueryTransactionOutputListByAddress",
-                        data:`{
-                            "address":"${urlParameters.get("address")}",
-                            "pageCondition":{
-                                "from":0,
-                                "size":${size}
-                            }
-                        }`
-                    });
-                    let {transactionOutputDetailViewList} = data.result;
-                    $('.container').append(`<table class="table table-hover tac"> </table>
-                    ${transactionOutputDetailViewList.length ? '<div class="page"><button onclick="load(2)">加载更多</button></div>' : ''}`)
-                    transactionOutputDetailViewList.forEach(item => {
-                        $('.container .table').append(`
-                        <tr class="mt-50">
-                            <td class="tdborder">交易哈希 : ${item.blockHash}</td>
-                            <td class="tdborder">交易输出索引号 : ${item.transactionOutputIndex}</td>
-                            <td class="tdborder">去向 : ${item.transactionHash}</td>
-                        </tr>
-                        `)
-                    })
-                }else{
-                    const data = await $ajax({
-                        url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
-                        data:`{
-                            "address":"${urlParameters.get("address")}",
-                            "pageCondition":{
-                                "from":0,
-                                "size":${size}
-                            }
-                        }`
-                    });
-                    let {transactionOutputDetailViewList} = data.result;
-                    $('.container').append(`<table class="table table-hover tac"></table>${transactionOutputDetailViewList.length ? '<div class="page"><button onclick="load(3)">加载更多</button></div>' : ''}`)
-                    transactionOutputDetailViewList.forEach(item => {
-                        $('.container .table').append(`
-                        <tr class="mt-50">
-                            <td class="tdborder">交易哈希 : ${item.blockHash}</td>
-                            <td class="tdborder">交易输出索引号 : ${item.transactionOutputIndex}</td>
-                            <td class="tdborder">去向 : ${item.transactionHash}</td>
-                        </tr>
-                        `)
-                    })
-                }
-            })
-            async function load(index){
-                size ++;
-                if(index === 0){
-                    const data = await $ajax({
-                        url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
-                        data:`{
-                            "address":"${urlParameters.get("address")}",
-                            "pageCondition":{
-                                "from":0,
-                                "size":${size}
-                            }
-                        }`
-                    });
-                    let {transactionOutputDetailViewList} = data.result;
-                    transactionOutputDetailViewList.forEach(item => {
-                        $('.container .table').append(`
-                        <tr class="mt-50">
-                            <td class="tdborder">交易哈希 : ${item.blockHash}</td>
-                            <td class="tdborder">交易输出索引号 : ${item.transactionOutputIndex}</td>
-                            <td class="tdborder">去向 : ${item.transactionHash}</td>
-                        </tr>
+                                <li class="tou">
+                                    <span class="f7">${item.transactionHash}</span>
+                                    <span class="f3">${item.transactionType}</span>
+                                    <span class="f2">${item.transactionFee}</span>
+                                    <span class="f1">${item.blockTime}</span>
+                                </li>
+                                <li class="surface">
+                                    <ul class="left">${res}</ul>
+                                    <ul class="right">${res2}</ul>
+                                </li>
+                            </ul>
+                            ${item.transactionOutputViewList ? '<div class="page"><button onclick="load(0)">加载更多</button></div>' : ''}
                         `)
                     })
                 }else if(index === 1){
@@ -226,18 +158,19 @@
                         data:`{
                             "address":"${urlParameters.get("address")}",
                             "pageCondition":{
-                                "from":0,
-                                "size":${size}
+                                "from": ${tab1index},
+                                "size": 1
                             }
                         }`
                     });
+                    tab1index = tab1index + 1;
                     let {transactionOutputDetailViewList} = data.result;
                     transactionOutputDetailViewList.forEach(item => {
                         $('.container .table').append(`
                         <tr class="mt-50">
                             <td class="tdborder">交易哈希 : ${item.blockHash}</td>
                             <td class="tdborder">交易输出索引号 : ${item.transactionOutputIndex}</td>
-                            <td class="tdborder">去向 : ${item.transactionHash}</td>
+                            <td class="tdborder">金额 : ${item.value}</td>
                         </tr>
                         `)
                     })
@@ -247,18 +180,19 @@
                         data:`{
                             "address":"${urlParameters.get("address")}",
                             "pageCondition":{
-                                "from":0,
-                                "size":${size}
+                                "from": ${tab2index},
+                                "size": 1
                             }
                         }`
                     });
+                    tab2index = tab2index + 1;
                     let {transactionOutputDetailViewList} = data.result;
                     transactionOutputDetailViewList.forEach(item => {
                         $('.container .table').append(`
                         <tr class="mt-50">
                             <td class="tdborder">交易哈希 : ${item.blockHash}</td>
                             <td class="tdborder">交易输出索引号 : ${item.transactionOutputIndex}</td>
-                            <td class="tdborder">去向 : ${item.transactionHash}</td>
+                            <td class="tdborder">金额 : ${item.value}</td>
                         </tr>
                         `)
                     })
@@ -268,17 +202,19 @@
                         data:`{
                             "address":"${urlParameters.get("address")}",
                             "pageCondition":{
-                                "from":0,
-                                "size":${size}
+                                "from": ${tab3index},
+                                "size": 1
                             }
                         }`
                     });
+                    tab3index = tab3index + 1;
+                    let {transactionOutputDetailViewList} = data.result;
                     transactionOutputDetailViewList.forEach(item => {
                         $('.container .table').append(`
                         <tr class="mt-50">
                             <td class="tdborder">交易哈希 : ${item.blockHash}</td>
                             <td class="tdborder">交易输出索引号 : ${item.transactionOutputIndex}</td>
-                            <td class="tdborder">去向 : ${item.transactionHash}</td>
+                            <td class="tdborder">金额 : ${item.value}</td>
                         </tr>
                         `)
                     })
