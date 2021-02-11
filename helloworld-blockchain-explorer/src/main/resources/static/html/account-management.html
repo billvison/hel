@@ -11,6 +11,8 @@
         <link rel="stylesheet" href="../assets/css/account-management.css">
         <script src="../lib/bootstrap/bootstrap.min.js"></script>
         <script src="../assets/common/common.js"></script>
+        <link rel="stylesheet" href="https://www.layuicdn.com/layui-v2.5.7/css/layui.css" media="all">
+        <script src="https://www.layuicdn.com/layer-v3.1.1/layer.js" charset="utf-8"></script>
     </head>
     <body>
         <nav class="navbar navbar-default nav">
@@ -106,15 +108,21 @@
             }
 
             async function increase(){
-                const text = window.prompt('增加账户');
-                const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/AddAccount",
-                    data:`{"privateKey":"${text}"}`
-                })
-                alert(data.message);
-                if(data.serviceCode == 'SUCCESS'){
-                    document.location.reload();
-                }
+                layer.prompt({title: '增加账户，请输出私钥', formType: 2}, function(pass, index){
+                    $.ajax({
+                         type: "post",
+                         url : "http://119.3.57.171/Api/AdminConsole/AddAccount",
+                         data: `{"privateKey":"${pass}"}`,
+                         dataType: "json",
+                         contentType: "application/json",
+                         success(data){
+                            layer.msg(data.message);
+                            if(data.serviceCode == 'SUCCESS'){
+                                layer.close(index);
+                            }
+                         }
+                     });
+                });
             }
 
             async function create(){
@@ -122,12 +130,11 @@
                     url : "http://119.3.57.171/Api/Blockchain/GenerateAccount",
                     data:`{}`
                 })
-                //TODO 美化
                 var account = data.result.account;
                 var content = '<h2 class="red">提示: 请在您信任的站点生成账户！</h2>' +
                                  '<div><span>账号(区块链领域学名:地址)</span>&nbsp;&nbsp;'+account.address+'</div>' +
                                  '<div><span>密码(区块链领域学名:私钥)</span>&nbsp;&nbsp;'+account.privateKey+'</div>' ;
-                alert(content);
+                layer.alert(content);
             }
 
             function transferAccounts(){
