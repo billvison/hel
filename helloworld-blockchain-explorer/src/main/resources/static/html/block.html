@@ -53,34 +53,34 @@
                     <!-- Default panel contents -->
                     <div class="panel-heading fwb">000004123c4b5628eb4f6e1f7046b3a7165cf1200431136df15709ce06aacd6b</div>
                     <!-- Table -->
-                    <table id="Last10BlockTable" class="table mb-0">
+                    <table class="table">
                         <button type="button" class="btn btn-default btn-lg Summary">摘要</button>
                         <thead>
-                            <tr class="fwb lt">
+                            <tr>
                                 <th style="width:10%">高度</th>
                                 <th style="width:40%">${blockDto.height}</th>
                                 <th style="width:10%">挖矿难度</th>
                                 <th style="width:40%">${blockDto.difficulty}</th>
                             </tr>
-                            <tr class="fwb">
+                            <tr>
                                 <th>确认数</th>
                                 <th>${blockDto.confirmCount}</th>
                                 <th>随机数</th>
                                 <th>${blockDto.nonce}</th>
                             </tr>
-                            <tr class="fwb">
+                            <tr>
                                 <th>区块大小</th>
                                 <th>${blockDto.blockSize}</th>
                                 <th>区块哈希</th>
                                 <th>${blockDto.hash}</th>
                             </tr>
-                            <tr class="fwb">
+                            <tr>
                                 <th>交易数量</th>
                                 <th>${blockDto.transactionCount}</th>
                                 <th>上一个区块哈希</th>
                                 <th><a href='./block.html?hash=${blockDto.previousBlockHash}'>${blockDto.previousBlockHash}</a></th>
                             </tr>
-                            <tr class="fwb">
+                            <tr>
                                 <th>时间</th>
                                 <th>${blockDto.time}</th>
                                 <th>下一个区块哈希</th>
