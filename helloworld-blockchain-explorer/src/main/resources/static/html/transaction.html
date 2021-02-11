@@ -40,32 +40,32 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>块高度</th>
-                            <th class="blockHeight"></th>
-                            <th>交易手续费</th>
-                            <th class="transactionFee"></th>
+                            <th style="width:10%">块高度</th>
+                            <th style="width:40%" class="blockHeight"></th>
+                            <th style="width:40%">交易手续费</th>
+                            <th style="width:10%" class="transactionFee"></th>
                         </tr>
                         <tr>
-                            <th>确认数</th>
-                            <th class="confirmCount"></th>
+                            <th>区块哈希</th>
+                            <th class="blockHash"></th>
                             <th>交易输入数量</th>
                             <th class="transactionInputCount"></th>
                         </tr>
                         <tr>
-                            <th>交易类型</th>
-                            <th class="transactionType"></th>
+                            <th>确认数</th>
+                            <th class="confirmCount"></th>
                             <th>交易输入金额</th>
                             <th class="transactionInputValues"></th>
                         </tr>
                         <tr>
-                            <th>时间</th>
-                            <th class="blockTime"></th>
+                            <th>交易类型</th>
+                            <th class="transactionType"></th>
                             <th>交易输出数量</th>
                             <th class="transactionOutputCount"></th>
                         </tr>
                         <tr>
-                            <th></th>
-                            <th></th>
+                            <th>时间</th>
+                            <th class="blockTime"></th>
                             <th>交易输出金额</th>
                             <th class="transactionOutputValues"></th>
                         </tr>
@@ -110,9 +110,10 @@
                     url : "http://119.3.57.171/Api/Blockchain/QueryTransactionByTransactionHash",
                     data:`{"transactionHash":"${urlParameters.get("transactionHash")}"}`
                 });
-                let {inputScriptList, outputScriptList, transactionHash,transactionInputViewList, transactionOutputValues, blockHeight, transactionFee, confirmCount, transactionInputCount, transactionType, blockTime, transactionInputValues , transactionOutputCount, transactionOutputViewList} = data.result.transactionView;
-                $('.panel-heading').text(transactionHash);
-                $('.blockHeight').text(blockHeight);
+                let {inputScriptList, outputScriptList, transactionHash,transactionInputViewList, transactionOutputValues, blockHeight, blockHash,transactionFee, confirmCount, transactionInputCount, transactionType, blockTime, transactionInputValues , transactionOutputCount, transactionOutputViewList} = data.result.transactionView;
+                $('.panel-heading').text("交易哈希 " + transactionHash);
+                $('.blockHeight').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHeight}</a>`);
+                $('.blockHash').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHash}</a>`);
                 $('.transactionFee').text(transactionFee);
                 $('.confirmCount').text(confirmCount);
                 $('.transactionInputCount').text(transactionInputCount);

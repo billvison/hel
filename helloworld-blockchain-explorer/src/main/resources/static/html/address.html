@@ -243,7 +243,7 @@
                     })
                 }else if(index === 2){
                     const data = await $ajax({
-                        url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
+                        url : "http://119.3.57.171:80/Api/Blockchain/QueryTransactionOutputListByAddress",
                         data:`{
                             "address":"${urlParameters.get("address")}",
                             "pageCondition":{

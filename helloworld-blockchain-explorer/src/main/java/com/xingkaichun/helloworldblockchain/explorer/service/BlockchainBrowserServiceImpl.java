@@ -14,6 +14,7 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO
 import com.xingkaichun.helloworldblockchain.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.security.util.ByteArrayLexOrder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,6 +186,7 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         Block block = getBlockchainCore().queryBlockByBlockHeight(transaction.getBlockHeight());
         transactionView.setConfirmCount(blockchainHeight-block.getHeight()+1);
         transactionView.setBlockTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));
+        transactionView.setBlockHash(block.getHash());
 
         List<TransactionInput> inputs = transaction.getInputs();
         List<TransactionInputView> transactionInputViewList = new ArrayList<>();

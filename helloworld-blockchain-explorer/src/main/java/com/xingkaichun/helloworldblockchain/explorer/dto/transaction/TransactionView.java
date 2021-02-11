@@ -4,6 +4,7 @@ import java.util.List;
 
 public class TransactionView {
     private long blockHeight;
+    private String blockHash;
     private long confirmCount;
     private String transactionHash;
     private String blockTime;
@@ -134,4 +135,11 @@ public class TransactionView {
         this.outputScriptList = outputScriptList;
     }
 
+    public String getBlockHash() {
+        return blockHash;
+    }
+
+    public void setBlockHash(String blockHash) {
+        this.blockHash = blockHash;
+    }
 }
