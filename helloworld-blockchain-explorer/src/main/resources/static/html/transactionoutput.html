@@ -40,20 +40,20 @@
                         <tr>
                             <th style="width:10%">块高度</th>
                             <th style="width:40%" class="blockHeight"></th>
-                            <th style="width:10%">区块哈希</th>
-                            <th style="width:40%" class="blockHash"></th>
-                        </tr>
-                        <tr>
-                            <th>是否已花费</th>
-                            <th class="spend"></th>
                             <th>交易哈希</th>
                             <th class="transactionHash"></th>
                         </tr>
                         <tr>
-                            <th>交易类型</th>
-                            <th class="transactionType"></th>
+                            <th style="width:10%">区块哈希</th>
+                            <th style="width:40%" class="blockHash"></th>
                             <th>交易输出索引</th>
                             <th class="transactionOutputIndex"></th>
+                        </tr>
+                        <tr>
+                            <th>是否已花费</th>
+                            <th class="spend"></th>
+                            <th>交易输出类型</th>
+                            <th class="transactionType"></th>
                         </tr>
                     </thead>
                 </table>
@@ -117,14 +117,14 @@
                     }`
                 });
                 const { inputTransaction, transactionHash, transactionOutputIndex, blockHeight, inputScript,outputScript,outputTransaction, blockHash, spend } = data.result.transactionOutputDetailView;
-                const { transactionInputViewList, transactionOutputViewList } = outputTransaction;
                 const { transactionType,transactionFee,blockTime   } = inputTransaction
                 $('.panel-heading').text('交易哈希 ' + transactionHash + '    交易输出索引 ' + transactionOutputIndex);
-                $('.blockHeight').text(blockHeight)
-                $('.blockHash').text(blockHash)
+                $('.blockHeight').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHeight}</a>`)
+                $('.blockHash').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHash}</a>`)
                 console.log(data.result.transactionOutputDetailView);
-                $('.transactionHash').text(transactionHash)
+                $('.transactionHash').html(`<a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${transactionHash}">${transactionHash}</a>`)
                 $('.transactionOutputIndex').text(transactionOutputIndex)
+                $('.transactionType').text(inputTransaction.transactionType)
                 $('.spend').text(spend ? '是' : '否');
 
                 $('.table1 tbody').append(`
@@ -138,7 +138,7 @@
                     </tr>
                 `)
 
-                $('.tou').children().eq(0).text(inputTransaction.transactionHash);
+                $('.tou').children().eq(0).html(`<a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${inputTransaction.transactionHash}">${inputTransaction.transactionHash}</a>`);
                 $('.tou').children().eq(1).text(inputTransaction.transactionType);
                 $('.tou').children().eq(2).text(inputTransaction.transactionFee);
                 $('.tou').children().eq(3).text(inputTransaction.blockTime);
@@ -147,44 +147,40 @@
                 $(inputTransaction.transactionInputViewList).each((index, item) => {
                     $left.append(`
                         <li class="das">
-                            <div>
-                                <span class="mr25">${item.address}</span>
-                                <i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span>
-                            </div>
+                            <div><span class="mr25"><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span></div>
                         </li>
                     `)
                 })
-                $(inputTransaction.transactionOutputViewList).each((index, item1) => {
+                $(inputTransaction.transactionOutputViewList).each((index, item) => {
                     $right.append(`
                     <li class="das">
-                        <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
+                        <div><span class="mr25"><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span></div>
                     </li>
                     `)
                 })
 
-                let $left2 = $('#surface2 .left');
-                let $right2 = $('#surface2 .right');
-                $('.tou2').children().eq(0).text(outputTransaction.transactionHash);
-                $('.tou2').children().eq(1).text(outputTransaction.transactionType);
-                $('.tou2').children().eq(2).text(outputTransaction.transactionFee);
-                $('.tou2').children().eq(3).text(outputTransaction.blockTime);
-                $(outputTransaction.transactionInputViewList).each((index, item) => {
-                    $left2.append(`
-                        <li class="das">
-                            <div>
-                                <span class="mr25">${item.address}</span>
-                                <i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span>
-                            </div>
-                        </li>
-                    `)
-                })
-                $(outputTransaction.transactionOutputViewList).each((index, item1) => {
-                    $right2.append(`
-                    <li class="das">
-                        <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
-                    </li>
-                    `)
-                })
+                if(outputTransaction != null){
+                    let $left2 = $('#surface2 .left');
+                    let $right2 = $('#surface2 .right');
+                    $('.tou2').children().eq(0).html(`<a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${outputTransaction.transactionHash}">${outputTransaction.transactionHash}</a>`);
+                    $('.tou2').children().eq(1).text(outputTransaction.transactionType);
+                    $('.tou2').children().eq(2).text(outputTransaction.transactionFee);
+                    $('.tou2').children().eq(3).text(outputTransaction.blockTime);
+                    $(outputTransaction.transactionInputViewList).each((index, item) => {
+                        $left2.append(`
+                            <li class="das">
+                                <div><span class="mr25"><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span></div>
+                            </li>
+                        `)
+                    })
+                    $(outputTransaction.transactionOutputViewList).each((index, item) => {
+                        $right2.append(`
+                            <li class="das">
+                                <div><span class="mr25"><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span></div>
+                            </li>
+                        `)
+                    })
+                }
             }())
         </script>
     </body>

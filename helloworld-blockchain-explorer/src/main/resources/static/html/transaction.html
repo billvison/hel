@@ -88,19 +88,16 @@
             </ul>
         </div>
 
-
         <table class="table table1 table-hover">
             <tr class="success">
                 <td>输入脚本</td>
             </tr>
         </table>
 
-
         <table class="table table2 table-hover">
             <tr class="danger">
                 <td>输出脚本</td>
             </tr>
-            
         </table>
 
         <script>
@@ -122,7 +119,9 @@
                 $('.blockTime').text(blockTime);
                 $('.transactionOutputValues').text(transactionOutputValues);
                 $('.transactionOutputCount').text(transactionOutputCount);
-                $('.tou').children().eq(0).text(transactionHash);
+
+
+                $('.tou').children().eq(0).html(`<a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${transactionHash}">${transactionHash}</a>`);
                 $('.tou').children().eq(1).text(transactionType);
                 $('.tou').children().eq(2).text(transactionFee);
                 $('.tou').children().eq(3).text(blockTime);
@@ -131,17 +130,14 @@
                 $(transactionInputViewList).each((index, item) => {
                     $left.append(`
                         <li class="das">
-                            <div>
-                                <span class="mr25">${item.address}</span>
-                                <i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span>
-                            </div>
+                            <div><span class="mr25"><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span></div>
                         </li>
                     `)
                 })
-                $(transactionOutputViewList).each((index, item1) => {
+                $(transactionOutputViewList).each((index, item) => {
                     $right.append(`
                     <li class="das">
-                        <div><span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
+                        <div><span class="mr25"><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span></div>
                     </li>
                     `)
                 })
@@ -152,7 +148,6 @@
                         </tr>
                     `);
                 })
-
                 outputScriptList.forEach(item => {
                     $('.table2 tbody').append(`
                         <tr class="warning">
