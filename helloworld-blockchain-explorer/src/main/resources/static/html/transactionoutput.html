@@ -118,7 +118,7 @@
                 });
                 const { inputTransaction, transactionHash, transactionOutputIndex, blockHeight, inputScript,outputScript,outputTransaction, blockHash, spend } = data.result.transactionOutputDetailView;
                 const { transactionType,transactionFee,blockTime   } = inputTransaction
-                $('.panel-heading').text('交易哈希 ' + transactionHash + '    交易输出索引 ' + transactionOutputIndex);
+                $('.panel-heading').text('交易输出['+'交易哈希 ' + transactionHash + '    交易输出索引 ' + transactionOutputIndex+']');
                 $('.blockHeight').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHeight}</a>`)
                 $('.blockHash').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHash}</a>`)
                 console.log(data.result.transactionOutputDetailView);
