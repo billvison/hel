@@ -119,7 +119,7 @@
                 const { inputTransaction, transactionHash, transactionOutputIndex, blockHeight, inputScript,outputScript,outputTransaction, blockHash, spend } = data.result.transactionOutputDetailView;
                 const { transactionInputViewList, transactionOutputViewList } = outputTransaction;
                 const { transactionType,transactionFee,blockTime   } = inputTransaction
-                $('.panel-heading').text('交易哈希 : ' + transactionHash + ' 交易输出索引 : ' + transactionOutputIndex);
+                $('.panel-heading').text('交易哈希 ' + transactionHash + '    交易输出索引 ' + transactionOutputIndex);
                 $('.blockHeight').text(blockHeight)
                 $('.blockHash').text(blockHash)
                 console.log(data.result.transactionOutputDetailView);
