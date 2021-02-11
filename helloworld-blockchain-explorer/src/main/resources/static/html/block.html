@@ -57,30 +57,41 @@
                         <button type="button" class="btn btn-default btn-lg Summary">摘要</button>
                         <thead>
                             <tr class="fwb lt">
-                                <th class="das col-md-6 w100"><span>高度</span><span>${blockDto.height}</span></th>
-                                <th class="lf col-md-6"><span>挖矿难度</span><span class="fr pr-100">${blockDto.difficulty}</span></th>
+                                <th style="width:10%">高度</th>
+                                <th style="width:40%">${blockDto.height}</th>
+                                <th style="width:10%">挖矿难度</th>
+                                <th style="width:40%">${blockDto.difficulty}</th>
                             </tr>
                             <tr class="fwb">
-                                <th class="das"><span>确认数</span><span>${blockDto.confirmCount}</span></th>
-                                <th class="lf"><span>随机数</span><span class="fr pr-100">${blockDto.nonce}</span></th>
+                                <th>确认数</th>
+                                <th>${blockDto.confirmCount}</th>
+                                <th>随机数</th>
+                                <th>${blockDto.nonce}</th>
                             </tr>
                             <tr class="fwb">
-                                <th class="das"><span>区块大小</span><span>${blockDto.blockSize}</span></th>
-                                <th class="lf"><span>区块哈希</span><span class="fr pr-100">${blockDto.hash}</span></th>
+                                <th>区块大小</th>
+                                <th>${blockDto.blockSize}</th>
+                                <th>区块哈希</th>
+                                <th>${blockDto.hash}</th>
                             </tr>
                             <tr class="fwb">
-                                <th class="das"><span>交易数量</span><span>${blockDto.transactionCount}</span></th>
-                                <th class="lf"><span>上一个区块哈希</span><span class="fr pr-100"><a href='./block.html?hash=${blockDto.previousBlockHash}'>${blockDto.previousBlockHash}</a></span></th>
+                                <th>交易数量</th>
+                                <th>${blockDto.transactionCount}</th>
+                                <th>上一个区块哈希</th>
+                                <th><a href='./block.html?hash=${blockDto.previousBlockHash}'>${blockDto.previousBlockHash}</a></th>
                             </tr>
                             <tr class="fwb">
-                                <th class="das"><span>时间</span><span>${blockDto.time}</span></th>
-                                <th class="lf"><span>下一个区块哈希</span><span class="fr pr-100"><a href='./block.html?hash=${blockDto.nextBlockHash}'>${blockDto.nextBlockHash || ''}</a></span></th>
+                                <th>时间</th>
+                                <th>${blockDto.time}</th>
+                                <th>下一个区块哈希</th>
+                                <th><a href='./block.html?hash=${blockDto.nextBlockHash}'>${blockDto.nextBlockHash || ''}</a></th>
                             </tr>
                             <tr class="fwb bb">
-                                <th class="das"><span>矿工奖励</span><span>${blockDto.minerIncentiveValue}</span></th>
-                                <th class="lf"><span>默克尔树根</span><span class="fr pr-100">${blockDto.merkleTreeRoot}</span></th>
+                                <th>矿工奖励</th>
+                                <th>${blockDto.minerIncentiveValue}</th>
+                                <th>默克尔树根</th>
+                                <th>${blockDto.merkleTreeRoot}</th>
                             </tr>
-                            
                         </thead>
                     </table>
                     
