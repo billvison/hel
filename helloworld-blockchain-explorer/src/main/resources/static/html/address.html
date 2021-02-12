@@ -56,12 +56,34 @@
         </div>
 
         <p class="diap">
-            <button type="button" class="btn btn-default btn-lg">交易</button>
-            <button type="button" class="btn btn-default btn-lg">未花费的交易输出【余额】</button>
-            <button type="button" class="btn btn-default btn-lg">交易输出【收入】</button>
-            <button type="button" class="btn btn-default btn-lg">已花费的交易输出【支出】</button>
+            <button type="button" class="btn btn-default btn-lg" onclick="load(0)">交易</button>
+            <button type="button" class="btn btn-default btn-lg" onclick="load(1)">余额(未花费的交易输出)</button>
+            <button type="button" class="btn btn-default btn-lg" onclick="load(2)">收入(交易输出)</button>
+            <button type="button" class="btn btn-default btn-lg" onclick="load(3)">支出(已花费的交易输出)</button>
         </p>
-        <div class="container"></div>
+        <div id="tab0">
+            <div class="container" id="container0">
+            </div>
+            <div class="page" id="page0"><button onclick="load(0)">加载更多</button></div>
+        </div>
+        <div id="tab1">
+            <div class="container" id="container1">
+            </div>
+            <table class="table table-hover tac"></table>
+            <div class="page" id="page1"><button onclick="load(1)">加载更多</button></div>
+        </div>
+        <div id="tab2">
+            <div class="container" id="container2">
+            </div>
+            <table class="table table-hover tac"></table>
+            <div class="page" id="page2"><button onclick="load(2)">加载更多</button></div>
+        </div>
+        <div id="tab3">
+            <div class="container" id="container3">
+            </div>
+            <table class="table table-hover tac"></table>
+            <div class="page" id="page3"><button onclick="load(3)">加载更多</button></div>
+        </div>
 
         <script>
             let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
@@ -81,28 +103,13 @@
                 $('.spend').text(spend);
                 $('.balance').text(balance);
             }());
-            $('.diap button').click(async function(){
-                $('.container').empty();
-                if($(this).index() === 0){
-                    $('.container').append(`<table class="table table-hover tac"></table>'<div class="page"><button onclick="load(0)">加载更多</button></div>'`)
-                    tab0index = 1;
-                    load(0);
-                }else if($(this).index() === 1){
-                    $('.container').append(`<table class="table table-hover tac"></table>'<div class="page"><button onclick="load(1)">加载更多</button></div>'`)
-                    tab1index = 1;
-                    load(1);
-                }else if($(this).index() === 2){
-                    $('.container').append(`<table class="table table-hover tac"></table>'<div class="page"><button onclick="load(2)">加载更多</button></div>'`)
-                    tab2index = 1;
-                    load(2);
-                }else{
-                    $('.container').append(`<table class="table table-hover tac"></table>'<div class="page"><button onclick="load(3)">加载更多</button></div>'`)
-                    tab3index = 1;
-                    load(3);
-                }
-            })
-            $('.diap').children().eq(0).click();
+            load(0);
             async function load(index){
+                $("#tab0").hide();
+                $("#tab1").hide();
+                $("#tab2").hide();
+                $("#tab3").hide();
+                $("#tab"+index).show();
                 if(index === 0){
                     const data = await $ajax({
                         url : "http://119.3.57.171:80/Api/Blockchain/QueryTransactionListByAddress",
@@ -116,6 +123,9 @@
                     });
                     tab0index = tab0index + 1;
                     const transactionViewList = data.result.transactionViewList;
+                    if(transactionViewList == null || transactionViewList.length == 0){
+                        $("#page0").html("交易数据加载完毕。");
+                    }
                     transactionViewList.forEach(item => {
                         let res = '';
                         item.transactionInputViewList.forEach(item => {
@@ -134,8 +144,7 @@
                             </li>
                             `
                         });
-                        $('.container').children().last().remove();
-                        $('.container').append(`
+                        $('#container0').append(`
                             <ul class="list fwb mt-25">
                                 <!-- 开头 -->
                                 <li class="tou">
@@ -149,7 +158,6 @@
                                     <ul class="right">${res2}</ul>
                                 </li>
                             </ul>
-                            ${item.transactionOutputViewList ? '<div class="page"><button onclick="load(0)">加载更多</button></div>' : ''}
                         `)
                     })
                 }else if(index === 1){
@@ -165,8 +173,11 @@
                     });
                     tab1index = tab1index + 1;
                     let {transactionOutputDetailViewList} = data.result;
+                    if(transactionOutputDetailViewList == null || transactionOutputDetailViewList.length == 0){
+                        $("#page1").html("余额数据加载完毕。");
+                    }
                     transactionOutputDetailViewList.forEach(item => {
-                        $('.container .table').append(`
+                        $('#container1 .table').append(`
                         <tr class="mt-50">
                             <td class="tdborder">交易哈希 : ${item.blockHash}</td>
                             <td class="tdborder">交易输出索引号 : ${item.transactionOutputIndex}</td>
@@ -187,8 +198,11 @@
                     });
                     tab2index = tab2index + 1;
                     let {transactionOutputDetailViewList} = data.result;
+                    if(transactionOutputDetailViewList == null || transactionOutputDetailViewList.length == 0){
+                        $("#page2").html("收入数据加载完毕。");
+                    }
                     transactionOutputDetailViewList.forEach(item => {
-                        $('.container .table').append(`
+                        $('#container2 .table').append(`
                         <tr class="mt-50">
                             <td class="tdborder">交易哈希 : ${item.blockHash}</td>
                             <td class="tdborder">交易输出索引号 : ${item.transactionOutputIndex}</td>
@@ -209,8 +223,11 @@
                     });
                     tab3index = tab3index + 1;
                     let {transactionOutputDetailViewList} = data.result;
+                    if(transactionOutputDetailViewList == null || transactionOutputDetailViewList.length == 0){
+                        $("#page3").html("支出数据加载完毕。");
+                    }
                     transactionOutputDetailViewList.forEach(item => {
-                        $('.container .table').append(`
+                        $('#container3 .table').append(`
                         <tr class="mt-50">
                             <td class="tdborder">交易哈希 : ${item.blockHash}</td>
                             <td class="tdborder">交易输出索引号 : ${item.transactionOutputIndex}</td>
