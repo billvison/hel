@@ -6,3 +6,6 @@ a:hover {
   color: #23527c !important;
   text-decoration: underline !important;
 }
+ul,li {
+ list-style: none;
+}
