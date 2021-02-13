@@ -45,23 +45,6 @@
             </li>
         </ul>
 
-        <div class="dialog-background j_escHide"></div>
-        <div class="dialog-section j_escHide">
-            <div class="dialog-header fwb">转账</div>
-            <div class="dialog-close j_dialogClose" onclick="Close()"><i class="glyphicon glyphicon-remove"></i></div>
-            <div class="receive">交易接收方</div>
-            <div class="im">
-                <div>
-                    <input type="" class="one" placeholder="请输入转账地址">
-                    <input type="text" class="money" placeholder="请输入转账金额">
-                    <button class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></button>
-                </div>
-            </div>
-            <div class="comit">
-                <button type="button" class="btn btn-primary" onclick="onConfirm()">确认转账</button>
-            </div>
-        </div>
-
         <script>
             const obj = {}
             $(async function(){
@@ -82,16 +65,7 @@
                     `)
                 })
             }())
-            $('body').delegate('.btn-success', 'click', function(){
-                $('.comit').before(`<div class="im">
-                    <div>
-                        <input type="" class="one" placeholder="请输入转账地址">
-                        <input type="text" class="money" placeholder="请输入转账金额">
-                        <button class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></button>
-                    </div>
-                </div>
-                `)
-            });
+
             $('body').delegate('.surface > .btn-danger', 'click', async function(){
                 let privateKey = $(this).prev().find('.one>span:first-child>a').text();
                 layer.confirm('确认删除？', {
@@ -110,10 +84,6 @@
                 }, function(){
                 });
             })
-            function Close(){
-                $('.dialog-background').hide()
-                $('.dialog-section').hide()
-            }
 
             async function increase(){
                 layer.prompt({title: '增加账户，请输出私钥', formType: 2}, function(pass, index){
@@ -144,95 +114,6 @@
                                  '<div><span>密码(区块链领域学名:私钥)</span>&nbsp;&nbsp;'+account.privateKey+'</div>' ;
                 layer.alert(content);
             }
-
-            async function onConfirm(){
-                let recipientList = [];
-                Array.from($('.im')).forEach(item => {
-                    recipientList.push({address:$(item).find('.one').val(),value:$(item).find('.money').val()})
-                });
-                const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/BuildTransactionDto",
-                    data:JSON.stringify({recipientList})
-                })
-                if(data.serviceCode === 'SUCCESS'){
-                    Close();
-                    obj.transactionDTO = data.result.transactionDTO;
-                    data.result.transactionOutpuDtoList.forEach(item => {
-                        obj.transactionDTO.transactionOutputDtoList.push(item)
-                    })
-                    console.log(obj);
-                    let receive = data.result.transactionOutpuDtoList.map(item => {
-                        return `<div class="city">
-                            <span>转账地址 : ${item.outputScriptDTO[3]}</span></span>
-                            <span>转账金额 : ${item.value}</span>
-                        </div>`
-                    });
-                    let receive2 = data.result.transactionInputList.map(item => {
-                        return `<div class="city">
-                            <span>地址 : ${item.address}</span>
-                            <span>余额 : ${item.value}</span>
-                        </div>
-                        <div>交易哈希 : ${item.transactionHash} 交易输出索引号 : ${item.transactionOutputIndex}</div>
-                        `
-                    })
-
-                    const str = `<ul class="list fwb mt-50 imc">
-                        <!-- 开头 -->
-                        <li class="dac"><span>转账详情</span></li>
-                        <!-- 内容 -->
-                        <li class="mt-25 db">
-                            <div class="zhifu">交易支付方</div>
-                            <div class="zhifu2">${receive2.join('')}</div>
-                        </li>
-                        <!-- 内容 -->
-                        <li class="mt-50 db">
-                            <div class="zhifu">交易接收方</div>
-                            <div class="zhifu2">${receive.join('')}</div>
-                        </li>
-                        <li class="mt-50 db">
-                            <div class="zhifu">找零</div>
-                            <div class="zhifu2">
-                                <div class="city">
-                                    <span>找零地址 : ${data.result.payerChangeAddress}</span>
-                                    <span>金额 : ${data.result.payerChangeValue}</span>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="mt-50 db">
-                            <div class="zhifu"></div>
-                            <div class="zhifu2">
-                                <div class="city">
-                                    <span>交易手续费</span>
-                                    <span>金额 : ${data.result.fee}</span>
-                                </div>
-                            </div>
-                            <div class="zhifu"></div>
-                            <div class="zhifu2">
-                                <div class="city">
-                                    <span>交易哈希 : ${data.result.transactionHash}</span>
-                                </div>
-                            </div>
-                        </li>
-            
-                        <button type="button" class="btn btn-success confirm" >确认转账</button>
-            
-            
-                    </ul>`
-                    $('.list').remove();
-
-                    $('body').append(str)
-                }
-            }
-            $('body').delegate('.confirm', 'click', async function(){
-                const data = await $ajax({
-                    url : "http://119.3.57.171/Api/Blockchain/SubmitTransactionToBlockchainNetwork",
-                    data:JSON.stringify(obj),
-                });
-                if('SUCCESS' === data.serviceCode){
-                    alert(data.message)
-                }
-            })
-
         </script>
     </body>
 </html>
