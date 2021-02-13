@@ -20,3 +20,11 @@ input::-webkit-input-placeholder,textarea::-webkit-input-placeholder{font-family
 textarea:focus{outline:0}
 input::-webkit-inner-spin-button,input::-webkit-outer-spin-button{-webkit-appearance:none}
 input[type=number]{-moz-appearance:textfield}
+a {
+  color: #337ab7;
+  text-decoration: none;
+}
+a:hover {
+  color: #23527c !important;
+  text-decoration: underline !important;
+}
