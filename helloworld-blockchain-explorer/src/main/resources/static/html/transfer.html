@@ -36,13 +36,15 @@
         </nav>
 
         <div>
-            <div class="panel-heading fwb">支付</div>
+            <div class="panel panel-default">
+                <div class="panel-heading fwb">支付</div>
+            </div>
             <div class="im">
                 <div>
-                    <input type="text" class="one" placeholder="请输入转账地址">
-                    <input type="number" class="money" placeholder="请输入转账金额">
+                    <input type="text" class="one" placeholder="请输入转账地址" style="border: 1px solid #2aabd2; width:400px;height:33px;">
+                    <input type="number" class="money" placeholder="请输入转账金额" style="border: 1px solid #2aabd2; width:200px;height:33px;">
                     <button class="btn btn-success add"><i class="glyphicon glyphicon-plus"></i></button>
-                    <button class="btn btn-success delete"><i class="glyphicon glyphicon-minus"></i></button>
+                    <button class="btn btn-success delete" onclick="javascript:this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)"><i class="glyphicon glyphicon-minus"></i></button>
                 </div>
             </div>
             <div class="comit">
@@ -55,10 +57,10 @@
             $('body').delegate('.add', 'click', function(){
                 $('.comit').before(`<div class="im">
                     <div>
-                        <input type="text" class="one" placeholder="请输入转账地址">
-                        <input type="number" class="money" placeholder="请输入转账金额">
+                        <input type="text" class="one" placeholder="请输入转账地址" style="border: 1px solid #2aabd2; width:400px;height:33px;">
+                        <input type="number" class="money" placeholder="请输入转账金额" style="border: 1px solid #2aabd2; width:200px;height:33px;">
                         <button class="btn btn-success add"><i class="glyphicon glyphicon-plus"></i></button>
-                        <button class="btn btn-success delete"><i class="glyphicon glyphicon-minus"></i></button>
+                        <button class="btn btn-success delete" onclick="javascript:this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)"><i class="glyphicon glyphicon-minus"></i></button>
                     </div>
                 </div>
                 `)
