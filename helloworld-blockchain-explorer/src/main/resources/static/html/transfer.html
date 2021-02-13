@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="../assets/css/transfer.css">
         <script src="../lib/bootstrap/bootstrap.min.js"></script>
         <script src="../assets/common/common.js"></script>
+        <script src="https://www.layuicdn.com/layer-v3.1.1/layer.js" charset="utf-8"></script>
     </head>
     <body>
         <nav class="navbar navbar-default nav">
@@ -34,37 +35,34 @@
             </div><!-- /.container-fluid -->
         </nav>
 
-        <div class="dialog-background j_escHide show"></div>
-        <div class="dialog-section j_escHide show">
-            <div class="dialog-header fwb">转账</div>
-            <div class="receive">交易接收方</div>
+        <div>
+            <div class="panel-heading fwb">支付</div>
             <div class="im">
                 <div>
                     <input type="text" class="one" placeholder="请输入转账地址">
                     <input type="number" class="money" placeholder="请输入转账金额">
-                    <button class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></button>
+                    <button class="btn btn-success add"><i class="glyphicon glyphicon-plus"></i></button>
+                    <button class="btn btn-success delete"><i class="glyphicon glyphicon-minus"></i></button>
                 </div>
             </div>
             <div class="comit">
                 <button type="button" class="btn btn-primary" onclick="onConfirm()">确认转账</button>
             </div>
         </div>
-
-
         <script>
             const obj = {}
-
-            $('body').delegate('.btn-success', 'click', function(){
+            let layIndex;
+            $('body').delegate('.add', 'click', function(){
                 $('.comit').before(`<div class="im">
                     <div>
                         <input type="text" class="one" placeholder="请输入转账地址">
                         <input type="number" class="money" placeholder="请输入转账金额">
-                        <button class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></button>
+                        <button class="btn btn-success add"><i class="glyphicon glyphicon-plus"></i></button>
+                        <button class="btn btn-success delete"><i class="glyphicon glyphicon-minus"></i></button>
                     </div>
                 </div>
                 `)
             });
-
             async function onConfirm(){
                 let recipientList = [];
                 Array.from($('.im')).forEach(item => {
@@ -131,14 +129,18 @@
                                 </div>
                             </div>
                         </li>
-            
                         <button type="button" class="btn btn-success confirm" >确认转账</button>
-            
-            
                     </ul>`
-                    $('.list').remove();
-
-                    $('body').append(str)
+                    layIndex = layer.open({
+                      type: 1,
+                      title: false,
+                      area: ['1200px', '800px'],
+                      closeBtn: 0,
+                      shadeClose: true,
+                      content: str
+                    });
+                }else {
+                    alert(data.message);
                 }
             }
             $('body').delegate('.confirm', 'click', async function(){
@@ -149,6 +151,7 @@
                 if('SUCCESS' === data.serviceCode){
                     alert(data.message)
                 }
+                layer.close(layIndex);
             })
         </script>
     </body>
