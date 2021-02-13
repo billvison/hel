@@ -40,12 +40,12 @@
             <table id="Last10BlockTable" class="table">
                 <thead>
                     <tr>
-                        <th>高度</th>
-                        <th>块大小</th>
-                        <th>交易数量</th>
-                        <th>块收益</th>
-                        <th>时间</th>
-                        <th>块哈希</th>
+                        <th style="width:13%;text-align:center;">高度</th>
+                        <th style="width:8%;text-align:center;">块大小</th>
+                        <th style="width:8%;text-align:center;">交易数量</th>
+                        <th style="width:8%;text-align:center;">块收益</th>
+                        <th style="width:13%;text-align:center;">时间</th>
+                        <th style="width:50%;text-align:center;">块哈希</th>
                     </tr>
                 </thead>
             </table>
@@ -60,12 +60,12 @@
                 $(blockDtoList).each((index, item) => {
                     $('thead').append(`
                     <tr class="loop">
-                        <th><a target="_blank" href="./block.html?hash=${item.hash}">${item.height}</a></th>
-                        <th>${item.blockSize}</th>
-                        <th>${item.transactionCount}</th>
-                        <th>${item.minerIncentiveValue}</th>
-                        <th>${item.time}</th>
-                        <th><a target="_blank" href="./block.html?hash=${item.hash}">${item.hash}</a></th>
+                        <th style="text-align:center;"><a target="_blank" href="./block.html?hash=${item.hash}">${item.height}</a></th>
+                        <th style="text-align:center;">${item.blockSize}</th>
+                        <th style="text-align:center;">${item.transactionCount}</th>
+                        <th style="text-align:center;">${item.minerIncentiveValue}</th>
+                        <th style="text-align:center;">${item.time}</th>
+                        <th style="text-align:center;"><a target="_blank" href="./block.html?hash=${item.hash}">${item.hash}</a></th>
                     </tr>
                     `)
                 })
