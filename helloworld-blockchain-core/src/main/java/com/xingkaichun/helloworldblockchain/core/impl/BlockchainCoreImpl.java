@@ -217,7 +217,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
                     break;
                 }
                 List<TransactionOutput> utxoList = blockchainDataBase.queryUnspendTransactionOutputListByAddress(address,from,size);
-                if(utxoList == null){
+                if(utxoList == null || utxoList.isEmpty()){
                     break;
                 }
                 for(TransactionOutput transactionOutput:utxoList){

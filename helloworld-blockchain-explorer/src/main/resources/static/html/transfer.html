@@ -37,12 +37,11 @@
         <div class="dialog-background j_escHide show"></div>
         <div class="dialog-section j_escHide show">
             <div class="dialog-header fwb">转账</div>
-            <!-- <div class="dialog-close j_dialogClose" onclick="Close()"><i class="glyphicon glyphicon-remove"></i></div> -->
             <div class="receive">交易接收方</div>
             <div class="im">
                 <div>
-                    <input type="" class="one" placeholder="请输入转账地址">
-                    <input type="text" class="money" placeholder="请输入转账金额">
+                    <input type="text" class="one" placeholder="请输入转账地址">
+                    <input type="number" class="money" placeholder="请输入转账金额">
                     <button class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></button>
                 </div>
             </div>
@@ -55,77 +54,17 @@
         <script>
             const obj = {}
 
-            $(async function(){
-                const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/QueryAllAccountList"
-                })
-                let accountDtoList = data.result.accountDtoList
-                $(accountDtoList).each((index, item) => {
-                    $('.list').append(`
-                        <li class="surface mt-25">
-                            <div class="qweasdqwe f1">
-                                <div class="one"><span>${item.address}</span><span>余额 ${item.value}</span></div>
-                                <div class="adqwxcvqwd">${item.privateKey}</div>
-                            </div>
-                            <button type="button" class="btn btn-danger">删除</button>
-                        </li>
-                    `)
-                })
-            }())
             $('body').delegate('.btn-success', 'click', function(){
                 $('.comit').before(`<div class="im">
                     <div>
-                        <input type="" class="one" placeholder="请输入转账地址">
-                        <input type="text" class="money" placeholder="请输入转账金额">
+                        <input type="text" class="one" placeholder="请输入转账地址">
+                        <input type="number" class="money" placeholder="请输入转账金额">
                         <button class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></button>
                     </div>
                 </div>
                 `)
             });
-            $('body').delegate('.surface > .btn-danger', 'click', async function(){
-                let privateKey = $(this).prev().find('.one>span:first-child').text();
-                const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/DeleteAccount",
-                    data:`{"address":"${privateKey}"}`,
-                });
-                if(data.result.deleteAccountSuccess){
-                    $(this).parent().remove()
-                }
-            })
-            function Close(){
-                $('.dialog-background').removeClass('show')
-                $('.dialog-section').removeClass('show')
-            }
 
-            async function increase(){
-                const text = window.prompt('增加账户');
-                const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/AddAccount",
-                    data:`{"privateKey":"${text}"}`
-                })
-                alert(data.message);
-                if(data.serviceCode == 'SUCCESS'){
-                    document.location.reload();
-                }
-            }
-
-            async function create(){
-                const data = await $ajax({
-                    url : "http://119.3.57.171/Api/Blockchain/GenerateAccount",
-                    data:`{}`
-                })
-                //TODO 美化
-                var account = data.result.account;
-                var content = '<h2 class="red">提示: 请在您信任的站点生成账户！</h2>' +
-                                 '<div><span>账号(区块链领域学名:地址)</span>&nbsp;&nbsp;'+account.address+'</div>' +
-                                 '<div><span>密码(区块链领域学名:私钥)</span>&nbsp;&nbsp;'+account.privateKey+'</div>' ;
-                alert(content);
-            }
-
-            function transferAccounts(){
-                $('.dialog-background').show()
-                $('.dialog-section').show()
-            }
             async function onConfirm(){
                 let recipientList = [];
                 Array.from($('.im')).forEach(item => {
@@ -136,7 +75,6 @@
                     data:JSON.stringify({recipientList})
                 })
                 if(data.serviceCode === 'SUCCESS'){
-                    Close();
                     obj.transactionDTO = data.result.transactionDTO;
                     data.result.transactionOutpuDtoList.forEach(item => {
                         obj.transactionDTO.transactionOutputDtoList.push(item)
