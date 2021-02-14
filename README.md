@@ -41,14 +41,14 @@ helloworld-blockchain-node： 它集成了两个角色的功能。启动区块�
 该模块存放全局配置
 
 ### 打包与发布
-项目打包
+#### 项目打包
 ```  
 进入项目目录(请根据本地的实际项目目录运行命令)  
 cd C:\Users\xingkaichun\IdeaProjects\HelloworldBlockchain   
 运行项目打包命令   
 mvn -DskipTests=true clean package install  
 ```  
-发布项目
+#### 发布项目
 ```  
 进入打包结果目录(请根据本地的实际项目目录运行命令)  
 cd C:\Users\xingkaichun\IdeaProjects\HelloworldBlockchain\helloworld-blockchain-explorer\target  
@@ -60,4 +60,5 @@ cd helloworld-blockchain-explorer
 ./start.sh restart  
 ```  
 ### 系统升级
+因为系统还不稳定，暂时
 每一个发布版本，都带有一个截止运行日期。该版本到期后，必须升级系统，系统才能正常运行。参考GlobalSetting.SystemVersionConstant.isVersionLegal。
