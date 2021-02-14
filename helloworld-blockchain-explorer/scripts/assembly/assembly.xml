@@ -17,7 +17,7 @@
 
         <fileSet>
             <directory>src/main/resources/static</directory>
-            <outputDirectory>${project.name}/front-end/static/</outputDirectory>
+            <outputDirectory>${project.name}/static/</outputDirectory>
             <fileMode>0644</fileMode>
         </fileSet>
 

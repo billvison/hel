@@ -1,14 +1,14 @@
 ### 欢迎来到HelloworldBlockchain  
 HelloworldBlockchain是一个Helloworld级别的区块链公链系统。  
 HelloworldBlockchain是一个Helloworld级别的数字货币项目。  
-HelloworldBlockchain开发调试简单，下载源码，导入idea(eclipse)，无需任何配置，找到类文件，右键运行，即可启动项目。  
-项目架构清晰，详尽的全中文代码注释，代码以可读性为第一要素，适合区块链初学者学习研究。
+HelloworldBlockchain开发调试简单，下载源码，导入idea(eclipse)，无需任何配置，找到启动类文件，右键运行，即可启动项目。  
+项目架构清晰，文档齐全，中文注释，可读性高，特别适合区块链初学者学习研究。
 
 ### 联系方式
-作者微信号HelloworldBlockchain
+作者微信号xing_kai_chun
 
 ### HelloworldBlockchain项目意义  
-探索与实践区块链技术。   
+初学者探索与实践区块链技术。
 
 ### 演示
 http://139.9.125.122/index.html
