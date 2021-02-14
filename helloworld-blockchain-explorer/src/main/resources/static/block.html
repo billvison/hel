@@ -14,7 +14,7 @@
         <script src="./assets/common/common.js"></script>
     </head>
     <body>
-        <nav class="navbar navbar-default nav">
+        <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
@@ -22,7 +22,7 @@
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li><a href="./node-management.html">节点管理</a></li>
                         <li><a href="./account-management.html">账户管理</a></li>
@@ -32,11 +32,14 @@
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
-        <div class="box">
+        <div style="height:50px;"></div>
+        <div id="box">
         </div>
-        <div class="page">
+
+        <div align="center">
             <button onclick="load()">加载更多</button>
         </div>
+
         <script>
             let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
             var reqJson = `{ "blockHash": "${urlParameters.get("hash")}", "pageCondition": { "from": 1, "size": 10 } }`;
@@ -48,53 +51,52 @@
                     data: reqJso2
                 });
                 let {blockDto} = data.result;
-                $('.box').append(`
+                $('#box').append(`
                 <div class="panel panel-default">
                     <!-- Default panel contents -->
                     <div class="panel-heading">区块哈希&nbsp;${urlParameters.get("hash")}</div>
+                    <button type="button" class="btn btn-default btn-lg Summary">摘要</button>
                     <!-- Table -->
                     <table class="table">
-                        <button type="button" class="btn btn-default btn-lg Summary">摘要</button>
-                        <thead>
+                        <tbody>
                             <tr>
-                                <th style="width:10%">高度</th>
-                                <th style="width:40%">${blockDto.height}</th>
-                                <th style="width:10%">挖矿难度</th>
-                                <th style="width:40%">${blockDto.difficulty}</th>
+                                <td style="width:10%">高度</td>
+                                <td style="width:40%">${blockDto.height}</td>
+                                <td style="width:10%">挖矿难度</td>
+                                <td style="width:40%">${blockDto.difficulty}</td>
                             </tr>
                             <tr>
-                                <th>确认数</th>
-                                <th>${blockDto.confirmCount}</th>
-                                <th>随机数</th>
-                                <th>${blockDto.nonce}</th>
+                                <td>确认数</td>
+                                <td>${blockDto.confirmCount}</td>
+                                <td>随机数</td>
+                                <td>${blockDto.nonce}</td>
                             </tr>
                             <tr>
-                                <th>区块大小</th>
-                                <th>${blockDto.blockSize}</th>
-                                <th>区块哈希</th>
-                                <th>${blockDto.hash}</th>
+                                <td>区块大小</td>
+                                <td>${blockDto.blockSize}</td>
+                                <td>区块哈希</td>
+                                <td>${blockDto.hash}</td>
                             </tr>
                             <tr>
-                                <th>交易数量</th>
-                                <th>${blockDto.transactionCount}</th>
-                                <th>上一个区块哈希</th>
-                                <th><a href='./block.html?hash=${blockDto.previousBlockHash}'>${blockDto.previousBlockHash}</a></th>
+                                <td>交易数量</td>
+                                <td>${blockDto.transactionCount}</td>
+                                <td>上一个区块哈希</td>
+                                <td><a href='./block.html?hash=${blockDto.previousBlockHash}'>${blockDto.previousBlockHash}</a></td>
                             </tr>
                             <tr>
-                                <th>时间</th>
-                                <th>${blockDto.time}</th>
-                                <th>下一个区块哈希</th>
-                                <th><a href='./block.html?hash=${blockDto.nextBlockHash}'>${blockDto.nextBlockHash || ''}</a></th>
+                                <td>时间</td>
+                                <td>${blockDto.time}</td>
+                                <td>下一个区块哈希</td>
+                                <td><a href='./block.html?hash=${blockDto.nextBlockHash}'>${blockDto.nextBlockHash || ''}</a></td>
                             </tr>
                             <tr>
-                                <th>矿工奖励</th>
-                                <th>${blockDto.minerIncentiveValue}</th>
-                                <th>默克尔树根</th>
-                                <th>${blockDto.merkleTreeRoot}</th>
+                                <td>矿工奖励</td>
+                                <td>${blockDto.minerIncentiveValue}</td>
+                                <td>默克尔树根</td>
+                                <td>${blockDto.merkleTreeRoot}</td>
                             </tr>
-                        </thead>
+                        </tbody>
                     </table>
-                    
                     <button type="button" class="btn btn-default btn-lg Summary">交易列表</button>
                 </div>`)
             }())
@@ -127,7 +129,7 @@
                         `
                     })
                     
-                    $('.box').append(`
+                    $('#box').append(`
                     <ul class="list">
                         <!-- 开头 -->
                         <li>

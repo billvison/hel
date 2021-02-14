@@ -1,13 +1,3 @@
-.page {
-  margin-top: 50px;
-  display: flex;
-  justify-content: center;
-}
-.page button {
-  width: 350px;
-  line-height: 32px;
-  border: 2px solid #ddd;
-}
 .table {
   margin-bottom: 50px !important;
 }
@@ -41,7 +31,7 @@
 }
 .list .left,
 .list .right {
-  width: 45%;
+  width: 50%;
 }
 .list .surface {
   display: flex;
