@@ -51,7 +51,7 @@
                 $('.box').append(`
                 <div class="panel panel-default">
                     <!-- Default panel contents -->
-                    <div class="panel-heading fwb">区块哈希&nbsp;${urlParameters.get("hash")}</div>
+                    <div class="panel-heading">区块哈希&nbsp;${urlParameters.get("hash")}</div>
                     <!-- Table -->
                     <table class="table">
                         <button type="button" class="btn btn-default btn-lg Summary">摘要</button>
@@ -128,7 +128,7 @@
                     })
                     
                     $('.box').append(`
-                    <ul class="list fwb">
+                    <ul class="list">
                         <!-- 开头 -->
                         <li>
                             <span class="f7"><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${item.transactionHash}">${item.transactionHash}</a></span>
