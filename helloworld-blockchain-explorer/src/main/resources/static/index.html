@@ -24,8 +24,7 @@
                     <a class="navbar-brand" href="./index.html">HelloworldBlockchain</a>
                 </div>
                 <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse"
-                    id="bs-example-navbar-collapse-1">
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li><a href="./node-management.html">节点管理</a></li>
                         <li><a href="./account-management.html">账户管理</a></li>
@@ -38,7 +37,7 @@
         <div style="height:50px;"></div>
         <div class="panel panel-default">
             <!-- Default panel contents -->
-            <div class="panel-heading fwb">☺最近出块☺</div>
+            <div class="panel-heading">☺最近出块☺</div>
 
             <!-- Table -->
             <table class="table">
@@ -52,6 +51,8 @@
                         <th style="width:50%;">块哈希</th>
                     </tr>
                 </thead>
+                <tbody>
+                </tbody>
             </table>
         </div>
 
@@ -62,7 +63,7 @@
                 })
                 const blockDtoList = data.result.blockDtoList;
                 $(blockDtoList).each((index, item) => {
-                    $('thead').append(`
+                    $('tbody').append(`
                     <tr class="loop">
                         <th><a target="_blank" href="./block.html?hash=${item.hash}">${item.height}</a></th>
                         <th>${item.blockSize}</th>
