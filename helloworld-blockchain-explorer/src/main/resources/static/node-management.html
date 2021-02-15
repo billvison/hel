@@ -8,9 +8,9 @@
         <script src="./lib/jquery/jquery-1.12.4.min.js"></script>
         <script src="./lib/bootstrap/bootstrap.min.js"></script>
         <link rel="stylesheet" href="./lib/bootstrap/bootstrap.min.css">
+        <script src="https://www.layuicdn.com/layer-v3.1.1/layer.js" charset="utf-8"></script>
 
         <link rel="stylesheet" href="./assets/common/reset.css">
-        <link rel="stylesheet" href="./assets/css/node-management.css">
         <script src="./assets/common/common.js"></script>
     </head>
     <body>
@@ -34,136 +34,35 @@
             </div>
         </nav>
 
-          <ul class="list fwb mt-50">
-            <li>
-                <span class="mr-50">节点管理</span>
-                <di class="mr-50"v><button type="button" class="btn btn-default" onclick="addItem()">增加</button></div>
-            </li>
-            <table class="table">
+
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">节点管理<button type="button" class="btn btn-default" id="show-add-page">增加</button></div>
+            <!-- Table -->
+            <table class="table" id="table-node-list">
                 <thead>
-                    <tr>
-                        <th>ip</th>
-                        <th>高度</th>
-                        <th>连接失败次数</th>
-                        <th>是否可用</th>
-                        <th>是否分叉</th>
-                        <th>管理</th>
-                    </tr>
+                <tr>
+                    <th>ip</th>
+                    <th>高度</th>
+                    <th>连接失败次数</th>
+                    <th>是否可用</th>
+                    <th>是否分叉</th>
+                    <th>管理</th>
+                </tr>
                 </thead>
-                <tbody class="list-t">
+                <tbody>
                 </tbody>
             </table>
-          
-        </ul>
-       
-
-
-        <div class="dialog-background j_escHide"></div>
-        <div class="dialog-section j_escHide">
-            <div class="dialog-header fwb">新增</div>
-            <div class="dialog-close j_dialogClose" onclick="Close()">
-                <img src="./assets/image/chahao.png" alt="">
-            </div>
-            <form class="im">
-                <div class="form-group">
-                    <input type="" class="form-control ip" id="exampleInputEmail3" placeholder="请输入ip">
-                </div>
-                <div class="choice1">
-                    <!-- 高亮 -->
-                    <img class="one" src="./assets/image/checkbox.png" alt="">
-                    <!-- 灰色 -->
-                    <img class="tow" src="./assets/image/checkbox_gron.png" alt="">
-                    <span>是否可用</span>
-                </div>
-                <div class="form-group">
-                    <input type="" class="form-control errorConnectionTimes" id="exampleInputPassword3" placeholder="请输入连接失败次数" value="0">
-                </div>
-                <div class="choice2">
-                    <!-- 高亮 -->
-                    <img class="one" src="./assets/image/checkbox.png" alt="">
-                    <!-- 灰色 -->
-                    <img class="tow" src="./assets/image/checkbox_gron.png" alt="">
-                    <span>是否分叉</span>
-                </div>
-                <div class="comit">
-                    <button type="button" class="btn btn-primary xinzeng">确认新增</button>
-                </div>
-                </div>
-            </form>
         </div>
 
-        <div class="updata j_escHide updata"></div>
-        <div class="undata-content j_escHide">
-            <div class="dialog-header fwb">修改</div>
-            <div class="dialog-close j_dialogClose" onclick="Close()">
-                <img src="./assets/image/chahao.png" alt="">
-            </div>
-            <form class="im">
-                <div class="form-group">
-                    <input type="" class="form-control ip" id="exampleInputEmail3" placeholder="请输入ip">
-                </div>
-                <div class="choice1">
-                    <!-- 高亮 -->
-                    <img class="one" src="./assets/image/checkbox.png" alt="">
-                    <!-- 灰色 -->
-                    <img class="tow" src="./assets/image/checkbox_gron.png" alt="">
-                    <span>是否可用</span>
-                </div>
-                <div class="form-group">
-                    <input type="" class="form-control errorConnectionTimes" id="exampleInputPassword3" placeholder="请输入连接失败次数">
-                </div>
-                <div class="choice2">
-                    <!-- 高亮 -->
-                    <img class="one" src="./assets/image/checkbox.png" alt="">
-                    <!-- 灰色 -->
-                    <img class="tow" src="./assets/image/checkbox_gron.png" alt="">
-                    <span>是否分叉</span>
-                </div>
-                <div class="comit">
-                    <button type="button" class="btn btn-primary xiugai">确认修改</button>
-                </div>
-                </div>
-            </form>
-        </div>
 
-        <script>
-            $('.undata-content .dialog-close').click(function(){
-                $('.updata').hide();
-                $('.undata-content').hide();
-            })
-            $('.one').hide();
-            let flag1 = false; //是否可用
-            $('.choice1').children().click(function(){
-                flag1 = !flag1;
-                if(flag1){
-                    $(this).parent().find('.one').show();
-                    $(this).parent().find('.tow').hide()
-                }else{
-                    $(this).parent().find('.tow').show();
-                    $(this).parent().find('.one').hide()
-                }
-            });
-            let flag2 = false; //是否可用
-            $('.choice2').children().click(function(){
-                flag2 = !flag2;
-                if(flag2){
-                    $(this).parent().find('.one').show();
-                    $(this).parent().find('.tow').hide()
-                }else{
-                    $(this).parent().find('.tow').show();
-                    $(this).parent().find('.one').hide()
-                }
-            })
-            function Close(){
-                $('.dialog-background').hide()
-                $('.dialog-section').hide()
-            }
+        <script type="text/javascript">
             $(async function(){
                 const data = await $ajax({
                     url : "http://119.3.57.171/Api/AdminConsole/QueryAllNodeList"
                 });
                 const { nodeList } = data.result
-                let $list = $('.list-t');
+                let $list = $('#table-node-list');
                 $(nodeList).each((index, item) => {
                     $list.append(`
                     <tr>
@@ -172,60 +71,119 @@
                         <td>${item.errorConnectionTimes}</td>
                         <td>${item.isNodeAvailable ? '是' : '否'}</td>
                         <td>${item.fork ? '是' : '否'}</td>
-                        <td class="surface"> 
-                            
-                            <button  type="submit" ip="${item.ip}" class="btn btn-default" data-dismiss="modal">修改</button>
-                    <button type="submit" class="btn btn-danger" >删除</button>
-                            
-                      </td>
+                        <td>
+                            <button type="submit" ip="${item.ip}" class="btn btn-default update-node">修改</button>
+                            <button type="submit" class="btn btn-danger delete-node" name="">删除</button>
+                        </td>
                     </tr>
                     `)
                 })
             }());
-            function addItem(){
-                $('.dialog-background').show()
-                $('.dialog-section').show()
-            }
-            $('.xinzeng').click(async function(){
+
+            $('#show-add-page').click(async function(){
+                const str = `
+                <h2>新增节点</h2>
+                <table class="table" id="table-add-node">
+                    <tbody>
+                        <tr>
+                            <th>ip：<input type="text" placeholder="请输入ip" id="table-add-node-text-ip"></th>
+                        </tr>
+                        <tr>
+                            <th>是否可用：<input type="radio" name="table-add-node-checkbox-available" value="true" checked/><span>可用</span>
+                            <th><input type="radio" name="table-add-node-checkbox-available" value="false"/><span>不可用</span>
+                        </tr>
+                        </tr>
+                        <tr>
+                            <th>错误次数：<input type="text" placeholder="请输入连接失败次数" value="0" id="table-add-node-text-errorConnectionTimes"></th>
+                        </tr>
+                        <tr>
+                            <th>分叉：<input type="radio" name="table-add-node-checkbox-fork" value="true"/><span>分叉</span>
+                            <th><input type="radio" name="table-add-node-checkbox-fork" value="false" checked/><span>未分叉</span>
+                        </th>
+                        </tr>
+                        <tr>
+                            <th><button type="button" class="btn btn-primary" id="table-add-node-button-add">确认新增</button></th>
+                            <th><button type="button" class="btn btn-primary" onclick="layer.close(layer.index);">取消新增</button></th>
+                        </tr>
+                    </tbody>
+                </table>`
+
+                var layIndex = layer.open({
+                  title:"新增节点",
+                  type: 1,
+                  title: false,
+                  closeBtn: 0,
+                  shadeClose: true,
+                  content: str
+                });
+            });
+
+            $('body').delegate('#table-add-node-button-add', 'click', async function(){
                 const data = await $ajax({
                     url : "http://119.3.57.171/Api/AdminConsole/AddNode",
-                    data:`{"node":{"ip": "${$('.ip').val()}","isNodeAvailable": ${flag1},"errorConnectionTimes": ${$('.dialog-section .errorConnectionTimes').val()},"fork": ${flag2}}}`
+                    data:`{"node":{"ip": ${$('#table-add-node-text-ip').val()},"isNodeAvailable": ${$("input[name='table-add-node-checkbox-available']:checked").val()},"errorConnectionTimes": ${$('#table-add-node-text-errorConnectionTimes').val()},"fork": ${$("input[name='table-add-node-checkbox-fork']:checked").val()}}}`
                 });
-                if(data.serviceCode ==="SUCCESS" || "FAIL"){
-                    Close();
-                    alert(data.message);
+                alert(data.message);
+                if(data.serviceCode == "SUCCESS"){
                     location.reload();
                 }
-            });
-            $('body').delegate('.surface .btn-default', 'click',async function(){  
-                let ip = $(this).parent().prev().prev().prev().prev().prev().text();
-                $('.undata-content').find('.ip').val(ip);
-                $('.undata-content').find('.ip').attr('disabled', 'true');
-                $(this).parent().prev().prev().text() == '是' ? (flag1 = true) : (flag1 = false);
-                $(this).parent().prev().text() == '是' ? (flag2 = true) : (flag2 = false);
-                $('.choice1').children().trigger('click');
-                $('.choice2').children().trigger('click');
-                console.log();
-
-                $('.undata-content .errorConnectionTimes').val($(this).parent().prev().prev().prev().text())
-
-                $('.updata').show();
-                $('.undata-content').show();
             })
 
-            $('.xiugai').click(async function(){
-                let ip = $(this).parent().prev().prev().prev().prev().children('.ip').val();
-                let errorConnectionTimes = $('.undata-content .errorConnectionTimes').val();
+            $('body').delegate('.update-node', 'click', async function(){
+                const str = `
+                <h2>修改节点</h2>
+                <table class="table" id="table-add-node">
+                    <tbody>
+                        <tr>
+                            <th>ip：<input type="text" placeholder="请输入ip" id="table-update-node-text-ip" readonly="readonly"></th>
+                        </tr>
+                        <tr>
+                            <th>是否可用：<input type="radio" name="table-update-node-checkbox-available" value="true" checked/><span>可用</span>
+                            <th><input type="radio" name="table-update-node-checkbox-available" value="false"/><span>不可用</span>
+                        </tr>
+                        </tr>
+                        <tr>
+                            <th>错误次数：<input type="text" placeholder="请输入连接失败次数" value="0" id="table-update-node-text-errorConnectionTimes"></th>
+                        </tr>
+                        <tr>
+                            <th>分叉：<input type="radio" name="table-update-node-checkbox-fork" value="true"/><span>分叉</span>
+                            <th><input type="radio" name="table-update-node-checkbox-fork" value="false" checked/><span>未分叉</span>
+                        </th>
+                        </tr>
+                        <tr>
+                            <th><button type="button" class="btn btn-primary" id="table-update-node-button-add">确认修改</button></th>
+                            <th><button type="button" class="btn btn-primary" onclick="layer.close(layer.index);">取消修改</button></th>
+                        </tr>
+                    </tbody>
+                </table>`
+
+                var layIndex = layer.open({
+                  type: 1,
+                  title: false,
+                  closeBtn: 0,
+                  shadeClose: true,
+                  content: str
+                });
+
+                $('#table-update-node-text-ip').val($(this).parent().parent().children().eq(0).text());
+                $('#table-update-node-text-errorConnectionTimes').val($(this).parent().parent().children().eq(2).text());
+                var isavailable = $(this).parent().parent().children().eq(3).text()=="是"?true:false;
+                var isfork = $(this).parent().parent().children().eq(4).text()=="是"?true:false;
+                $("[name='table-update-node-checkbox-available'][value='"+isavailable+"']").attr("checked", "checked");
+                $("[name='table-update-node-checkbox-fork'][value='"+isfork+"']").attr("checked", "checked");
+            });
+
+            $('body').delegate('#table-update-node-button-add', 'click', async function(){
                 const data = await $ajax({
                     url : "http://119.3.57.171/Api/AdminConsole/UpdateNode",
-                    data:`{"node":{"ip": "${ip}","isNodeAvailable": ${flag1},"errorConnectionTimes": ${errorConnectionTimes},"fork": ${flag2}}}`
+                    data:`{"node":{"ip": "${$('#table-update-node-text-ip').val()}","isNodeAvailable": ${$("input[name='table-update-node-checkbox-available']:checked").val()},"errorConnectionTimes": ${$('#table-update-node-text-errorConnectionTimes').val()},"fork": ${$("input[name='table-update-node-checkbox-fork']:checked").val()}}}}}`
                 });
                 alert(data.message);
                 location.reload();
-            });
+            })
 
-            $('body').delegate('.surface .btn-danger', 'click', async function(){
-                let ip = $(this).parent().prev().prev().prev().prev().prev().text();
+            $('body').delegate('.delete-node', 'click', async function(){
+                let ip = $(this).parent().parent().children(":first").text();
                 const data = await $ajax({
                     url : "http://119.3.57.171/Api/AdminConsole/DeleteNode",
                     data:`{"node":{"ip": "${ip}"}}`
