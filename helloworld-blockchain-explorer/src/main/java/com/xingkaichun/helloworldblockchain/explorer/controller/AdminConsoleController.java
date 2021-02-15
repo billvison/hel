@@ -33,7 +33,7 @@ import java.util.List;
  * 管理员控制台的控制器：用于控制本地区块链节点，如激活矿工、停用矿工、同步其它节点数据等。
  * 这里的操作都需要一定得权限才可以操作，不适合对所有人开放。
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 @RestController
 public class AdminConsoleController {

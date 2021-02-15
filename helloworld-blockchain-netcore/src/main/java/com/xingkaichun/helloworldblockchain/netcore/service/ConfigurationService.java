@@ -4,7 +4,7 @@ package com.xingkaichun.helloworldblockchain.netcore.service;
 /**
  * 配置service
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public interface ConfigurationService {
 

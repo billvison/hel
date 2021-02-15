@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.netcore.entity.ConfigurationEntity;
  * 配置dao
  * 读取配置，保存配置，应用启动后，利用它恢复配置。
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public interface ConfigurationDao {
 

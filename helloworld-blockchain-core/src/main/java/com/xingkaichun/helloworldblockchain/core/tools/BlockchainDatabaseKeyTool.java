@@ -7,7 +7,7 @@ import com.xingkaichun.helloworldblockchain.util.LevelDBUtil;
 /**
  * 区块链数据库主键工具类
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public class BlockchainDatabaseKeyTool {
     //区块链高度key：它对应的值是区块链的高度

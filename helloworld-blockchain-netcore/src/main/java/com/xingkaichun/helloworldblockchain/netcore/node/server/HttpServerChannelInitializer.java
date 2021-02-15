@@ -7,7 +7,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
 
 /**
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public class HttpServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 

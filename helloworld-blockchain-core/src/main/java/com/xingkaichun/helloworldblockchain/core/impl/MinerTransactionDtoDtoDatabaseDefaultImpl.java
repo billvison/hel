@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * 默认实现
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public class MinerTransactionDtoDtoDatabaseDefaultImpl extends MinerTransactionDtoDatabase {
 

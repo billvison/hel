@@ -5,7 +5,7 @@ import java.util.Stack;
 /**
  * 脚本执行结果
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public class ScriptExecuteResult extends Stack<String> {
 

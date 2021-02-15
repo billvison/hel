@@ -17,7 +17,7 @@ import java.util.List;
  * 例如，系统启动后，广播自己，让区块链网络的其它节点知道自己已经上线了。
  * 再例如，由于未知原因，部分节点与自己中断了联系，自己已经不在它们的节点列表中了，
  * 而自己的列表中有它们，这时候可以广播一下自己，这些中断联系的节点将会恢复与自己联系。
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public class NodeBroadcaster {
 

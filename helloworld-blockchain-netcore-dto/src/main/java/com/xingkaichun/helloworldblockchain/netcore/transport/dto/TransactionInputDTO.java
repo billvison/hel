@@ -6,7 +6,7 @@ import java.io.Serializable;
  * 交易输入
  * 属性含义参考 com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public class TransactionInputDTO implements Serializable {
 

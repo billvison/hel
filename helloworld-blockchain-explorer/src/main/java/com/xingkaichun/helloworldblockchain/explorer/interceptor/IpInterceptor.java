@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * IP拦截器：只允许指定的IP访问服务器
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 @Component
 public class IpInterceptor implements HandlerInterceptor {

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 钱包
  * 管理拥有的账户（增加账户、删除账户、查询账户、获取账户等）
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public abstract class Wallet {
 

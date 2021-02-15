@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 /**
  * RipeMD160消息摘要工具类
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public class RipeMD160Util {
 

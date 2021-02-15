@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 全局设置
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public class GlobalSetting {
 

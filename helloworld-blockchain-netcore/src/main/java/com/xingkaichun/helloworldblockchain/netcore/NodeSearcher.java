@@ -18,7 +18,7 @@ import java.util.List;
  * 节点搜索器
  * 在区块链网络中搜寻新的节点。
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public class NodeSearcher {
 

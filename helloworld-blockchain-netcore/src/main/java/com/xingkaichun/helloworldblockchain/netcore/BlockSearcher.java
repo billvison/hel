@@ -27,7 +27,7 @@ import java.util.List;
  * 1.主动搜索是否存在新的区块
  * 2.如果发现区块链网络中有可以进行同步的区块，则尝试同步区块放入本地区块链。
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public class BlockSearcher {
 

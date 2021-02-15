@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * model转dto工具
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public class Model2DtoTool {
 

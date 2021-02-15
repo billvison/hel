@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 节点dao
  * 管理（增删改查）已知的网络节点。
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public interface NodeDao {
 

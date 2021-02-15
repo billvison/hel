@@ -18,7 +18,7 @@ import java.util.List;
  * 矿工：可以收集交易，挖矿，将新挖取的矿放进区块链数据库
  * @see com.xingkaichun.helloworldblockchain.core.Miner
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public abstract class BlockchainCore {
 

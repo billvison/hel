@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * WebMvcConfigurer
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 @Configuration
 public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {

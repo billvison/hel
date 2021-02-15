@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 区块链浏览器service
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public interface BlockchainBrowserService {
 

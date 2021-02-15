@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.tools.ResourcePathTool;
 /**
  * 创建BlockchainCore的工厂
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public class BlockchainCoreFactory {
 

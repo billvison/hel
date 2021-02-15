@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 @Configuration
 public class Configurations {

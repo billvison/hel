@@ -9,5 +9,5 @@ package com.xingkaichun.helloworldblockchain.crypto;
  * 消息摘要方案：SHA-256摘要方案、RipeMD160摘要方案。
  * 字节编码方案：base64编码方案、base58编码方案、十六进制编码方案。
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */

@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 基于栈的虚拟机
  *
- * @author 邢开春 微信HelloworldBlockchain 邮箱xingkaichun@qq.com
+ * @author 邢开春
  */
 public class StackBasedVirtualMachine {
 
