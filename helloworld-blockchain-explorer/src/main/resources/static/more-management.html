@@ -9,6 +9,7 @@
         <script src="./lib/bootstrap/bootstrap.min.js"></script>
         <link rel="stylesheet" href="./lib/bootstrap/bootstrap.min.css">
 
+        <link rel="stylesheet" href="./assets/common/reset.css">
         <script src="./assets/common/common.js"></script>
     </head>
     <body>
@@ -31,29 +32,29 @@
         </nav>
         <div class="panel panel-default">
             <!-- Default panel contents -->
-            <div class="panel-heading fwb">☺更多管理☺</div>
+            <div class="panel-heading">☺更多管理☺</div>
             <!-- Table -->
             <table class="table">
                 <thead>
                     <tr>
                         <td style="width:30%;">当前区块高度</td>
                         <td style="width:40%;" id="blockHeight"></td>
-                        <td style="width:30%;"><button class="btn btn-primary btn-lg" type="submit" onclick="button_DeleteBlock">删除区块</button></td>
+                        <td style="width:30%;"><button class="btn btn-primary" type="submit" onclick="button_DeleteBlock">删除区块</button></td>
                     </tr>
                     <tr>
                         <td>挖矿状态</td>
                         <td id="minerStatus"></td>
-                        <td ><button class="btn btn-primary btn-lg" type="submit" onclick="clickOpen()" id="minerSwitch">占位符</button></td>
+                        <td ><button class="btn btn-primary" type="submit" onclick="clickOpen()" id="minerSwitch">占位符</button></td>
                     </tr>
                     <tr>
                         <td>同步区块状态</td>
                         <td id="synchronizerStatus"></td>
-                        <td><button class="btn btn-primary btn-lg" type="submit" id="synchronizerSwitch">占位符</button></td>
+                        <td><button class="btn btn-primary" type="submit" id="synchronizerSwitch">占位符</button></td>
                     </tr>
                     <tr>
                         <td>节点搜寻策略</td>
                         <td id="searchNodeStrategy"></td>
-                        <td ><button class="btn btn-primary btn-lg" type="submit" id="searchNodeStrategySwitch">占位符</button></td>
+                        <td ><button class="btn btn-primary" type="submit" id="searchNodeStrategySwitch">占位符</button></td>
                     </tr>
                 </thead>
             </table>

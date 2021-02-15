@@ -37,7 +37,7 @@
 
         <div class="panel panel-default">
             <!-- Default panel contents -->
-            <div class="panel-heading">节点管理<button type="button" class="btn btn-default" id="show-add-page">增加</button></div>
+            <div class="panel-heading">☺节点管理☺<button type="button" class="btn btn-default" id="show-add-page">增加</button></div>
             <!-- Table -->
             <table class="table" id="table-node-list">
                 <thead>
@@ -85,8 +85,8 @@
                 <table class="table" id="table-add-node">
                     <tbody>
                         <tr>
-                            <th>ip：</th>
-                            <th><input type="text" placeholder="请输入ip" id="table-add-node-text-ip"></th>
+                            <th style="width:25%">ip：</th>
+                            <th style="width:75%"><input type="text" placeholder="请输入ip" id="table-add-node-text-ip"></th>
                         </tr>
                         <tr>
                             <th>是否可用：</th>
@@ -107,8 +107,11 @@
                             </th>
                         </tr>
                         <tr>
-                            <th><button type="button" class="btn btn-primary" id="table-add-node-button-add">确认新增</button></th>
-                            <th><button type="button" class="btn btn-primary" onclick="layer.close(layer.index);">取消新增</button></th>
+                            <th></th>
+                            <th>
+                                <button type="button" class="btn btn-primary" id="table-add-node-button-add">确认新增</button>
+                                <button type="button" class="btn btn-primary" onclick="layer.close(layer.index);">取消新增</button>
+                            </th>
                         </tr>
                     </tbody>
                 </table>`
@@ -116,7 +119,7 @@
                 var layIndex = layer.open({
                   title:"新增节点",
                   type: 1,
-                  closeBtn: 0,
+                  closeBtn: 1,
                   shadeClose: true,
                   content: str
                 });
@@ -138,8 +141,8 @@
                 <table class="table" id="table-add-node">
                     <tbody>
                         <tr>
-                            <th>ip：</th>
-                            <th><input type="text" placeholder="请输入ip" id="table-update-node-text-ip" readonly="readonly"></th>
+                            <th style="width:25%">ip：</th>
+                            <th style="width:75%"><input type="text" placeholder="请输入ip" id="table-update-node-text-ip" readonly="readonly"></th>
                         </tr>
                         <tr>
                             <th>是否可用：</td>
@@ -161,8 +164,11 @@
                             </th>
                         </tr>
                         <tr>
-                            <th><button type="button" class="btn btn-primary" id="table-update-node-button-add">确认修改</button></th>
-                            <th><button type="button" class="btn btn-primary" onclick="layer.close(layer.index);">取消修改</button></th>
+                            <th></th>
+                            <th>
+                                <button type="button" class="btn btn-primary" id="table-update-node-button-add">确认修改</button>
+                                <button type="button" class="btn btn-primary" onclick="layer.close(layer.index);">取消修改</button>
+                            </th>
                         </tr>
                     </tbody>
                 </table>`
@@ -170,7 +176,7 @@
                 var layIndex = layer.open({
                   type: 1,
                   title: '修改节点',
-                  closeBtn: 0,
+                  closeBtn: 1,
                   shadeClose: true,
                   content: str
                 });
