@@ -2,20 +2,14 @@
   font-size: 14px;
   line-height: 40px;
   padding: 25px;
-  width: 1200px;
+  width: 100%;
   margin: 50px auto 0;
   text-align: center;
   border: 2px solid #f5f5f5;
 }
-.list > li:first-child {
-  background: #f5f5f5;
-}
-.list > li {
-  vertical-align: top;
-  border-top: 1px solid #ddd;
-  display: flex;
-  padding: 0 15px;
-  white-space: nowrap;
+th {
+  border-top: 0;
+  text-align: center;
 }
 .f1 {
   flex: 1;
@@ -28,23 +22,6 @@
 }
 .surface {
   padding: 0 0 !important;
-}
-.surface > span {
-  flex: 2;
-}
-.surface > div,
-.surface > span:last-child {
-  flex: 3;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-}
-.surface > div > img {
-  width: 20px;
-}
-.surface > span,
-.surface > div {
-  border: 1px solid #ddd;
 }
 .dialog-background,
 .updata {
@@ -64,7 +41,7 @@
   display: none;
   position: fixed;
   left: 50%;
-  width: 580px;
+  width: 80%;
   transform: translate(-50%, -50%);
   opacity: 1;
   overflow: visible;
