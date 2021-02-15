@@ -4,23 +4,32 @@ HelloworldBlockchain是一个Helloworld级别的区块链公链系统。
 HelloworldBlockchain是一个Helloworld级别的数字货币项目。  
 HelloworldBlockchain开发调试简单，下载源码，导入idea(eclipse)，无需任何配置，找到启动类文件，右键运行，即可启动项目。  
 
+
+
 ### 联系方式
 作者微信号xing_kai_chun
+
+
 
 ### HelloworldBlockchain项目意义  
 初学者探索与实践区块链技术。
 
+
+
 ### 演示
 http://119.3.57.171/
+
+
 
 ### 集成开发环境搭建
 #### eclipse
 HelloworldBlockchain项目没有任何复杂依赖，请搜索eclipse如何导入已存在的maven项目。
 成功将项目导入eclipse后，找到类文件com.xingkaichun.helloworldblockchain.explorer.HelloWorldBlockchainExplorerApplication，右键运行，正常情况下则会启动成功。接下来，快乐的调试代码吧！项目的前端地址是：http://localhost/ 。
-
 #### intellij idea
 HelloworldBlockchain项目没有任何复杂依赖，请搜索idea如何导入已存在的maven项目。
 成功将项目导入idea后，找到类文件com.xingkaichun.helloworldblockchain.explorer.HelloWorldBlockchainExplorerApplication，右键运行，正常情况下则会启动成功。接下来，快乐的调试代码吧！项目的前端地址是：http://localhost/ 。
+
+
 
 ### 模块架构
 #### helloworld-blockchain-crypto
@@ -49,7 +58,7 @@ HelloworldBlockchain项目没有任何复杂依赖，请搜索idea如何导入�
 cd C:\Users\xingkaichun\IdeaProjects\HelloworldBlockchain   
 运行项目打包命令   
 mvn -DskipTests=true clean package install  
-```  
+```
 #### 发布项目
 ```  
 进入打包结果目录(请根据本地的实际项目目录运行命令)  
