@@ -2,7 +2,7 @@ package com.xingkaichun.helloworldblockchain.explorer.dto;
 
 /**
  * 管理区块链路由
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class AdminConsoleApiRoute {
     //矿工是否激活

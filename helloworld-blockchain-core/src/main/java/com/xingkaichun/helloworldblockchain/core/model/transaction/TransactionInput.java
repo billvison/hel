@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * 交易输入
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class TransactionInput implements Serializable {
 

@@ -5,7 +5,7 @@ import org.bitcoinj.core.Base58;
 /**
  * Base58工具类
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class Base58Util {
 

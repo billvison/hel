@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * 区块链浏览器控制器
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 @RestController
 public class BlockchainBrowserController {

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 全局设置
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class GlobalSetting {
 

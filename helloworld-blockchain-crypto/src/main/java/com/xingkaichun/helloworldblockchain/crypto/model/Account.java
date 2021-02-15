@@ -10,7 +10,7 @@ import java.io.Serializable;
  * 非对称秘钥由私钥、公钥构成。私钥可以推导出公钥。公钥不能逆推出私钥。
  * 公钥可以推导出数字货币的地址。地址不能逆推出公钥。
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class Account implements Serializable {
 

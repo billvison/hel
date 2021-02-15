@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * 节点请求处理器
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class HttpServerHandlerResolver {
 

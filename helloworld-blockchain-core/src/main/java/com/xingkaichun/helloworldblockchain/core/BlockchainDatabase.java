@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 区块链数据库：该类用于区块链数据的持久化。
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public abstract class BlockchainDatabase {
 

@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.core;
 /**
  * 矿工:挖矿、分配挖矿奖励、将挖取的区块放入区块链
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public abstract class Miner {
 

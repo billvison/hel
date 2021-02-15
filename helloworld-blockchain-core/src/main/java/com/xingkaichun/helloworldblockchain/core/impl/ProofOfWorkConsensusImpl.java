@@ -15,7 +15,7 @@ import java.math.BigInteger;
  * 工作量证明实现
  * 相关拓展：比特币是如何做到平均10分钟出一个区块？https://zhuanlan.zhihu.com/p/258954220
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class ProofOfWorkConsensusImpl extends Consensus {
 

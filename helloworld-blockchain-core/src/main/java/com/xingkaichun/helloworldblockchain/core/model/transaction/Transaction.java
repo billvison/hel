@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 交易
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class Transaction implements Serializable {
 

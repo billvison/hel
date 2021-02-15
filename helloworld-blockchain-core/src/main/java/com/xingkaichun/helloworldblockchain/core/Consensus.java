@@ -17,7 +17,7 @@ import java.io.Serializable;
  * 同时产生了多个区块怎么办，区块链网络以哪一个区块为准？
  * 这个问题，一个解决办法就是约定区块链网络中的节点以链长的为准，让它们继续竞争下去，比较谁能尽快的产生下一个区块。
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public abstract class Consensus implements Serializable {
 

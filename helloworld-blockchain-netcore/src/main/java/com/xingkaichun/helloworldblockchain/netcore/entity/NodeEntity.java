@@ -2,7 +2,7 @@ package com.xingkaichun.helloworldblockchain.netcore.entity;
 
 /**
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class NodeEntity{
     private String ip;

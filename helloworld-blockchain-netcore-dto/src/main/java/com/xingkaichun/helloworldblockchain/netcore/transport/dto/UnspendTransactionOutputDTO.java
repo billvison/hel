@@ -6,7 +6,7 @@ import java.io.Serializable;
  * 未花费交易输出
  * 属性含义参考 com.xingkaichun.helloworldblockchain.core.model.transaction.UnspendTransactionOutput
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class UnspendTransactionOutputDTO implements Serializable {
 

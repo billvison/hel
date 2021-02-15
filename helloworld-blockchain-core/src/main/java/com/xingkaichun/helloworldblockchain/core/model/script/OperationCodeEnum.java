@@ -4,7 +4,7 @@ package com.xingkaichun.helloworldblockchain.core.model.script;
 /**
  * 操作码枚举
  * 每一个操作码，请准确描述操作处理过程。
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public enum OperationCodeEnum {
 

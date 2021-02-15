@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 @Configuration
 public class Configurations {

@@ -12,7 +12,7 @@ import java.sql.*;
 
 /**
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class ConfigurationDaoImpl implements ConfigurationDao {
 

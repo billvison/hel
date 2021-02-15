@@ -7,7 +7,7 @@ import java.util.TimeZone;
 /**
  * 时间工具类
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class DateUtil {
 

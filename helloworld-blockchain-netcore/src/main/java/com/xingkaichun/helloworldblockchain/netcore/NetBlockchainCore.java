@@ -20,7 +20,7 @@ import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
  * 5.区块广播者
  * @see com.xingkaichun.helloworldblockchain.netcore.BlockBroadcaster
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class NetBlockchainCore {
 

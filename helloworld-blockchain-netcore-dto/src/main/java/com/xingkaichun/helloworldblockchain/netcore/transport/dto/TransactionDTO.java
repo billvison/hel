@@ -8,7 +8,7 @@ import java.util.List;
  * 交易
  * 属性含义参考 com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class TransactionDTO implements Serializable {
 

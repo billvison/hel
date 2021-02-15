@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * (区块、交易)结构工具类
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class StructureTool {
 

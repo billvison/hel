@@ -7,7 +7,7 @@ import java.io.Serializable;
  * 交易输出
  * 属性含义参考 com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class TransactionOutputDTO implements Serializable {
 

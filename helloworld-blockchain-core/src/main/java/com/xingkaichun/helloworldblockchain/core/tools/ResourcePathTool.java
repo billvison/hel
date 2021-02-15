@@ -8,7 +8,7 @@ import java.io.File;
 /**
  * 资源路径工具类
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class ResourcePathTool {
 

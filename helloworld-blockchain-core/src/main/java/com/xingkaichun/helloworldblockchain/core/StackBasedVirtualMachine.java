@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 基于栈的虚拟机
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class StackBasedVirtualMachine {
 

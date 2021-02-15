@@ -20,7 +20,7 @@ import com.xingkaichun.helloworldblockchain.util.FileUtil;
 /**
  * 网络版区块链核心工厂
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class NetBlockchainCoreFactory {
 

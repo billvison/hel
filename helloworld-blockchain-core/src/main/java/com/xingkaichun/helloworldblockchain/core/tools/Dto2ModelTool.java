@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * dto转model工具
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class Dto2ModelTool {
 

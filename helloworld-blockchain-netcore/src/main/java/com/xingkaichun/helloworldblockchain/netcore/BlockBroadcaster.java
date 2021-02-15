@@ -21,7 +21,7 @@ import java.util.List;
  * 随便说一句，区块广播者会自动的将矿工挖取的区块自动的传播出去。矿工把区块放入区块链后，
  * 当区块广播者广播区块链高度时，也就相当于通知其它节点自己挖出了新的区块。
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class BlockBroadcaster {
 

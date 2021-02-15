@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.util;
 /**
  * Long工具类
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class LongUtil {
 

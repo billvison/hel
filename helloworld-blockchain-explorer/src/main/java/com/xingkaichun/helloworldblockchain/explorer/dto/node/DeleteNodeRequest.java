@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.BaseNodeDto;
 
 /**
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class DeleteNodeRequest {
 

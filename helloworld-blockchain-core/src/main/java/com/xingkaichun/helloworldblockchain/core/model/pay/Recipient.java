@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.model.pay;
 /**
  * 付款接收方
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class Recipient {
 

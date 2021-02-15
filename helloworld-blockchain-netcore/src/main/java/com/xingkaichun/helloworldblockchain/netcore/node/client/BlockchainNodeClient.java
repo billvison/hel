@@ -9,7 +9,7 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO
 /**
  * 区块链节点客户端service
  * 向其它节点请求、提交数据
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public interface BlockchainNodeClient {
 

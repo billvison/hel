@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * IP拦截器：只允许指定的IP访问服务器
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 @Component
 public class IpInterceptor implements HandlerInterceptor {

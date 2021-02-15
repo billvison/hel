@@ -16,7 +16,7 @@ import java.sql.Statement;
  * android平台用SQLDroid
  * https://github.com/SQLDroid/SQLDroid
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class JdbcUtil {
 

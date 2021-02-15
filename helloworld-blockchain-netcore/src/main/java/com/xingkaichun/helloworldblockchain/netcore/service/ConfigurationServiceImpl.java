@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.netcore.entity.ConfigurationEntity;
 
 /**
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class ConfigurationServiceImpl implements ConfigurationService {
     //矿工是否处于激活状态？

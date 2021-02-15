@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author 邢开春
+ * @author 邢开春 409060350@qq.com
  */
 public class ThreadUtil {
 
