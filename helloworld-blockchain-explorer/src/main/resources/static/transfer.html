@@ -9,45 +9,42 @@
         <script src="./lib/bootstrap/bootstrap.min.js"></script>
         <link rel="stylesheet" href="./lib/bootstrap/bootstrap.min.css">
         <script src="https://www.layuicdn.com/layer-v3.1.1/layer.js" charset="utf-8"></script>
-
-        <link rel="stylesheet" href="./assets/common/reset.css">
-        <link rel="stylesheet" href="./assets/css/account-management.css">
         <link rel="stylesheet" href="./assets/css/transfer.css">
+        <link rel="stylesheet" href="./assets/common/reset.css">
+        
         <script src="./assets/common/common.js"></script>
     </head>
     <body>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
-                <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="/">HelloworldBlockchain</a>
+                    <a class="navbar-brand" href="./index.html">HelloworldBlockchain</a>
                 </div>
 
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse">
+                <div class="">
                     <ul class="nav navbar-nav">
                         <li><a href="./node-management.html">节点管理</a></li>
                         <li><a href="./account-management.html">账户管理</a></li>
                         <li><a href="./transfer.html">支付</a></li>
                         <li><a href="./more-management.html">更多管理</a></li>
                     </ul>
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
+                </div>
+            </div>
         </nav>
 
         <div>
             <div class="panel panel-default">
                 <div class="panel-heading fwb">支付</div>
             </div>
-            <div class="im">
-                <div>
-                    <input type="text" class="one" placeholder="请输入转账地址" style="border: 1px solid #2aabd2; width:400px;height:33px;">
-                    <input type="number" class="money" placeholder="请输入转账金额" style="border: 1px solid #2aabd2; width:200px;height:33px;">
+            <div class="im" style="padding-left: 10px;">
+                <div style="padding-top: 10px;">
+                    <input type="text" style="width:40%" class="one one-1" placeholder="请输入转账地址" >
+                    <input type="number" style="width:30%" class="money money-1" placeholder="请输入转账金额" >
                     <button class="btn btn-success add"><i class="glyphicon glyphicon-plus"></i></button>
                     <button class="btn btn-success delete" onclick="javascript:this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)"><i class="glyphicon glyphicon-minus"></i></button>
                 </div>
             </div>
-            <div class="comit">
+            <div class="comit" style="padding-left: 10px;height: 100vh;">
                 <button type="button" class="btn btn-primary" onclick="onConfirm()">确认转账</button>
             </div>
         </div>
@@ -55,14 +52,13 @@
             const obj = {}
             let layIndex;
             $('body').delegate('.add', 'click', function(){
-                $('.comit').before(`<div class="im">
-                    <div>
-                        <input type="text" class="one" placeholder="请输入转账地址" style="border: 1px solid #2aabd2; width:400px;height:33px;">
-                        <input type="number" class="money" placeholder="请输入转账金额" style="border: 1px solid #2aabd2; width:200px;height:33px;">
+                $('.comit').before(`
+                    <div  style="padding-top: 10px;padding-left: 10px;">
+                        <input style="width:40%" type="text" class="one " placeholder="请输入转账地址">
+                        <input style="width:30%" type="number" class="money " placeholder="请输入转账金额" >
                         <button class="btn btn-success add"><i class="glyphicon glyphicon-plus"></i></button>
                         <button class="btn btn-success delete" onclick="javascript:this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)"><i class="glyphicon glyphicon-minus"></i></button>
                     </div>
-                </div>
                 `)
             });
             async function onConfirm(){
@@ -80,63 +76,76 @@
                         obj.transactionDTO.transactionOutputDtoList.push(item)
                     })
                     let receive = data.result.transactionOutpuDtoList.map(item => {
-                        return `<div class="city">
-                            <span>转账地址 : ${item.outputScriptDTO[3]}</span></span>
-                            <span>转账金额 : ${item.value}</span>
+                        return `
+                            <div class="city text-c  padd-10-2">
+                            <div style="width:70%" class="text-c border-1 padd-10">转账地址 : ${item.outputScriptDTO[3]}</div>
+                            <div  style="width:10px"></div>
+                            <div style="width:30%;" class="text-c border-1 padd-10">转账金额 : ${item.value}</div>
                         </div>`
                     });
                     let receive2 = data.result.transactionInputList.map(item => {
-                        return `<div class="city">
-                            <span>地址 : ${item.address}</span>
-                            <span>余额 : ${item.value}</span>
+                        return `
+                        <div class="w-100 text-c border-1 padd-10 mt-10">
+                        <div class="city text-c  padd-10-2">
+                            <div style="width:50%" class="text-c border-1 padd-10" class="div-2">地址 : ${item.address}</div>
+                            <div  style="width:10px"></div>
+                            <div style="width:50%;" class="text-c border-1 padd-10" class="div-2">余额 : ${item.value}</div>
                         </div>
-                        <div>交易哈希 : ${item.transactionHash} 交易输出索引号 : ${item.transactionOutputIndex}</div>
+                        <div class="text-c border-1 padd-10 div-2">交易哈希 : ${item.transactionHash} 交易输出索引号 : ${item.transactionOutputIndex}</div>
+                        </div>
                         `
                     })
 
-                    const str = `<ul class="list fwb mt-50 imc">
+                    const str = `<div class="w-100 fwb mt-50  padd-10">
                         <!-- 开头 -->
-                        <li class="dac"><span>转账详情</span></li>
+                        <div class="dac border-1 text-c padd-10">转账详情</div>
                         <!-- 内容 -->
-                        <li class="mt-25 db">
-                            <div class="zhifu">交易支付方</div>
-                            <div class="zhifu2">${receive2.join('')}</div>
-                        </li>
+                        <div class="mt-25 db">
+                            <div class=" w-100 mt-20 border-1 text-c padd-10">交易支付方</div>
+                            <div class="2">${receive2.join('')}</div>
+                        </div>
                         <!-- 内容 -->
-                        <li class="mt-50 db">
-                            <div class="zhifu">交易接收方</div>
-                            <div class="zhifu2">${receive.join('')}</div>
-                        </li>
-                        <li class="mt-50 db">
-                            <div class="zhifu">找零</div>
-                            <div class="zhifu2">
-                                <div class="city">
-                                    <span>找零地址 : ${data.result.payerChangeAddress}</span>
-                                    <span>金额 : ${data.result.payerChangeValue}</span>
+                        <div class="mt-50 db">
+                            <div class=" border-1 text-c padd-10 mt-20 w-100">交易接收方</div>
+                            <div class="w-100 text-c border-1 padd-10 mt-10">${receive.join('')}</div>
+                        </div>
+                        <div class="mt-50 db">
+                            <div class=" border-1 text-c padd-10 mt-20 w-100">找零</div>
+                                <div class="w-100 text-c padd-10-nl mt-10">
+                                    <div class="city text-c  padd-10-2">
+                                    <div style="width:50%" class="text-c border-1 padd-10">找零地址 : ${data.result.payerChangeAddress}</div>
+                                    <div  style="width:10px"></div>
+                                    <div style="width:50%" class="text-c border-1 padd-10">金额 : ${data.result.payerChangeValue}</div>
+                                </div>
+                                </div>
+                        </div>
+                        <div class="mt-50 db">
+                            <div class=""></div>
+                            <div class="2">
+                                <div class="w-100 text-c padd-10-nl mt-10">
+                                    <div class="city text-c  padd-10-2">
+                                    <div style="width:50%" class="text-c border-1 padd-10">交易手续费</div>
+                                    <div  style="width:10px"></div>
+                                    <div style="width:50%" class="text-c border-1 padd-10">金额 : ${data.result.fee}</div>
+                                    </div>
                                 </div>
                             </div>
-                        </li>
-                        <li class="mt-50 db">
-                            <div class="zhifu"></div>
-                            <div class="zhifu2">
-                                <div class="city">
-                                    <span>交易手续费</span>
-                                    <span>金额 : ${data.result.fee}</span>
+                                <div class="w-100 text-c padd-10-nt ">
+                                    <div class="city text-c  padd-10-2">
+                                    <div style="width:50%" class="text-c border-1 padd-10">交易哈希</div>
+                                    <div  style="width:10px"></div>
+                                    <div style="width:50%" class="text-c border-1 padd-10">${data.result.transactionHash}</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="zhifu"></div>
-                            <div class="zhifu2">
-                                <div class="city">
-                                    <span>交易哈希 : ${data.result.transactionHash}</span>
-                                </div>
-                            </div>
-                        </li>
-                        <button type="button" class="btn btn-success confirm" >确认转账</button>
-                    </ul>`
+                        </div>
+                        <button type="button" style="width:50%" class="btn btn-success confirm" >确认转账</button>
+                    </div>`
                     layIndex = layer.open({
                       type: 1,
                       title: false,
-                      area: ['1200px', '800px'],
+                      offset:'t',
+                      scrollbar: false,
+                      area: ['100%', '100%'],
                       closeBtn: 0,
                       shadeClose: true,
                       content: str

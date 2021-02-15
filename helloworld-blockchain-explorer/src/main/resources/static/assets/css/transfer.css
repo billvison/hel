@@ -4,3 +4,53 @@
 .hide {
   display: none !important;
 }
+.layui-layer-page{
+  border: 2px solid #ddd ;
+ }
+.dac{
+  width: 100%;
+  
+}
+.border-1{
+  border: 2px solid #ddd;
+}
+.text-c{
+  text-align: center;
+}
+.padd-10{
+  padding:10px 10px 10px 10px;
+}
+.padd-10-2{
+  padding:10px 0px 10px 0px;
+}
+.padd-10-nt{
+  padding:0px 0px 10px 0px;
+}
+.padd-10-nl{
+  padding:10px 10px 10px 0px;
+}
+.w-50{
+  width: 50%;
+}
+.mt-20{
+  margin-top: 20px;
+}
+.mt-10{
+  margin-top: 10px;
+}
+.w-70{
+  width: 70%;
+}
+.city{
+  display: flex;
+  justify-content: space-between;
+}
+div{
+  word-break: break-all;
+  word-wrap: break-word;
+  /* text-align: center; */
+  /* align-items: center; */
+}
+body{
+  height: 100vh!important;
+}
