@@ -10,8 +10,6 @@
         <link rel="stylesheet" href="./lib/bootstrap/bootstrap.min.css">
 
         <link rel="stylesheet" href="./assets/common/reset.css">
-        <link rel="stylesheet" href="./assets/css/block.css">
-        <link rel="stylesheet" href="./assets/css/transaction.css">
         <script src="./assets/common/common.js"></script>
     </head>
     <body>
@@ -38,54 +36,42 @@
                 <div class="panel-heading fwb"></div>
                 <button type="button" class="btn btn-default btn-lg Summary">摘要</button>
                 <table class="table">
-                    <thead>
+                    <tbody>
                         <tr>
-                            <th style="width:10%">块高度</th>
-                            <th style="width:40%" class="blockHeight"></th>
-                            <th style="width:40%">交易手续费</th>
-                            <th style="width:10%" class="transactionFee"></th>
+                            <td style="width:10%">块高度</td>
+                            <td style="width:40%" class="blockHeight"></td>
+                            <td style="width:40%">交易手续费</td>
+                            <td style="width:10%" class="transactionFee"></td>
                         </tr>
                         <tr>
-                            <th>区块哈希</th>
-                            <th class="blockHash"></th>
-                            <th>交易输入数量</th>
-                            <th class="transactionInputCount"></th>
+                            <td>区块哈希</td>
+                            <td class="blockHash"></td>
+                            <td>交易输入数量</td>
+                            <td class="transactionInputCount"></td>
                         </tr>
                         <tr>
-                            <th>确认数</th>
-                            <th class="confirmCount"></th>
-                            <th>交易输入金额</th>
-                            <th class="transactionInputValues"></th>
+                            <td>确认数</td>
+                            <td class="confirmCount"></td>
+                            <td>交易输入金额</td>
+                            <td class="transactionInputValues"></td>
                         </tr>
                         <tr>
-                            <th>交易类型</th>
-                            <th class="transactionType"></th>
-                            <th>交易输出数量</th>
-                            <th class="transactionOutputCount"></th>
+                            <td>交易类型</td>
+                            <td class="transactionType"></td>
+                            <td>交易输出数量</td>
+                            <td class="transactionOutputCount"></td>
                         </tr>
                         <tr>
-                            <th>时间</th>
-                            <th class="blockTime"></th>
-                            <th>交易输出金额</th>
-                            <th class="transactionOutputValues"></th>
+                            <td>时间</td>
+                            <td class="blockTime"></td>
+                            <td>交易输出金额</td>
+                            <td class="transactionOutputValues"></td>
                         </tr>
-                    </thead>
+                    </tbody>
                 </table>
             </div>
             <button type="button" class="btn btn-default btn-lg Summary">交易</button>
-            <ul class="list fwb">
-                <!-- 开头 -->
-                <li class="tou">
-                    <span class="f7"></span>
-                    <span class="f3"></span>
-                    <span class="f2"></span>
-                    <span class="f1"></span>
-                </li>
-                <li class="surface">
-                    <ul class="left"></ul>
-                    <ul class="right"> </ul>
-                </li>
-            </ul>
+            <div id="transaction-list-container"></div>
         </div>
 
         <table class="table table1 table-hover">
@@ -120,27 +106,31 @@
                 $('.transactionOutputValues').text(transactionOutputValues);
                 $('.transactionOutputCount').text(transactionOutputCount);
 
+                let item = data.result.transactionView;
+                let left = '';
+                item.transactionInputViewList.forEach(item1 => {
+                    left += `<div>付：<span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>&nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;<span>${item1.value}</span></div>`
+                })
+                let right = ''
+                item.transactionOutputViewList.forEach(item1 => {
+                    right += `<div style="display:flex">收：<span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>&nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;<span>${item1.value}</span></div>`
+                });
+                $('#transaction-list-container').append(`
+                    <div class="transaction">
+                        <!-- 开头 -->
+                        <div class="head">
+                            <div class="min-width-40"><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${item.transactionHash}">${item.transactionHash}</a></div>
+                            <div class="min-width-20 text-align-center">${item.transactionType}</div>
+                            <div class="min-width-20 text-align-center">${item.transactionFee}</div>
+                            <div class="min-width-20 text-align-center">${item.blockTime}</div>
+                        </div>
+                        <div class="body">
+                            <div style="width:auto; min-width:50%;">${left}</div>
+                            <div style="width:auto; min-width:40%;">${right}</div>
+                        </div>
+                    </div>
+                `)
 
-                $('.tou').children().eq(0).html(`<a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${transactionHash}">${transactionHash}</a>`);
-                $('.tou').children().eq(1).text(transactionType);
-                $('.tou').children().eq(2).text(transactionFee);
-                $('.tou').children().eq(3).text(blockTime);
-                let $left = $('.surface .left');
-                let $right = $('.surface .right');
-                $(transactionInputViewList).each((index, item) => {
-                    $left.append(`
-                        <li class="das">
-                            <div><span class="mr25"><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span></div>
-                        </li>
-                    `)
-                })
-                $(transactionOutputViewList).each((index, item) => {
-                    $right.append(`
-                    <li class="das">
-                        <div><span class="mr25"><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span></div>
-                    </li>
-                    `)
-                })
                 inputScriptList.forEach(item => {
                     $('.table1 tbody').append(`
                         <tr class="info">
