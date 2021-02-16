@@ -127,13 +127,13 @@
                         $("#page0").html("交易数据加载完毕。");
                     }
                     transactionViewList.forEach(item => {
-                        let res = '';
+                        let left = '';
                         item.transactionInputViewList.forEach(item1 => {
-                            res += `<div>付：<span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>&nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;<span>${item1.value}</span></div>`
+                            left += `<div>付：<span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>&nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;<span>${item1.value}</span></div>`
                         })
-                        let res2 = ''
+                        let right = ''
                         item.transactionOutputViewList.forEach(item1 => {
-                            res2 += `<div style="display:flex">收：<span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>&nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;<span>${item1.value}</span></div>`
+                            right += `<div style="display:flex">收：<span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>&nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;<span>${item1.value}</span></div>`
                         });
                         $('#container0').append(`
                             <div class="transaction">
@@ -145,8 +145,8 @@
                                     <div class="min-width-20 text-align-center">${item.blockTime}</div>
                                 </div>
                                 <div class="body">
-                                    <div style="width:auto; min-width:50%;">${res}</div>
-                                    <div style="width:auto; min-width:40%;">${res2}</div>
+                                    <div style="width:auto; min-width:50%;">${left}</div>
+                                    <div style="width:auto; min-width:40%;">${right}</div>
                                 </div>
                             </div>
                         `)
