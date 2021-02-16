@@ -6,6 +6,7 @@
 }
 .layui-layer-page{
   border: 2px solid #ddd ;
+  /* background: #ddd; */
  }
 .dac{
   width: 100%;
@@ -13,6 +14,7 @@
 }
 .border-1{
   border: 2px solid #ddd;
+  background: #ddd;
 }
 .text-c{
   text-align: center;
