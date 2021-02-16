@@ -34,34 +34,34 @@
         </nav>
         <div class="box">
             <div class="panel panel-default">
-                <div class="panel-heading fwb"></div>
-                <button type="button" class="btn btn-primary Summary mt-3">摘要</button>
+                <div class="panel-heading"></div>
+                <button type="button" class="btn btn-primary">摘要</button>
                 <table class="table">
-                    <thead>
+                    <tbody>
                         <tr>
-                            <th>地址</th>
-                            <th class="address"></th>
-                            <th>总收入</th>
-                            <th class="fr pr-100 receipt"></th>
+                            <td>地址</td>
+                            <td id="address"></td>
+                            <td>总收入</td>
+                            <td id="receipt"></td>
                         </tr>
                         <tr>
-                            <th>余额</th>
-                            <th class="balance"></th>
-                            <th>总支出</th>
-                            <th class="fr pr-100 spend"></th>
+                            <td>余额</td>
+                            <td id="balance"></td>
+                            <td>总支出</td>
+                            <td id="spend"></td>
                         </tr>
-                    </thead>
+                    </tbody>
                 </table>
             </div>
-            
         </div>
 
-        <div class="diap">
-            <button type="button" class="btn btn-primary pd-3" onclick="load(0)">交易</button>
-            <button type="button" class="btn btn-primary pd-3" onclick="load(1)">余额(未花费的交易输出)</button>
-            <button type="button" class="btn btn-primary pd-3" onclick="load(2)">收入(交易输出)</button>
-            <button type="button" class="btn btn-primary pd-3" onclick="load(3)">支出(已花费的交易输出)</button>
+        <div>
+            <button type="button" class="btn btn-primary" onclick="load(0)">交易</button>
+            <button type="button" class="btn btn-primary" onclick="load(1)">余额(未花费的交易输出)</button>
+            <button type="button" class="btn btn-primary" onclick="load(2)">收入(交易输出)</button>
+            <button type="button" class="btn btn-primary" onclick="load(3)">支出(已花费的交易输出)</button>
         </div>
+
         <div id="tab0">
             <div class="container" id="container0">
             </div>
@@ -70,20 +70,20 @@
         <div id="tab1">
             <div class="container" id="container1">
             </div>
-            <table class="table table-hover tac"></table>
-            <div class="page w-100 tx-c" id="page1"><button class="btn btn-success" onclick="load(1)">加载更多</button></div>
+            <table class="table"></table>
+            <div class="page" id="page1"><button class="btn btn-success" onclick="load(1)">加载更多</button></div>
         </div>
         <div id="tab2">
             <div class="container" id="container2">
             </div>
-            <table class="table table-hover tac"></table>
-            <div class="page w-100 tx-c" id="page2"><button class="btn btn-success" onclick="load(2)">加载更多</button></div>
+            <table class="table"></table>
+            <div class="page" id="page2"><button class="btn btn-success" onclick="load(2)">加载更多</button></div>
         </div>
         <div id="tab3">
             <div class="container" id="container3">
             </div>
-            <table class="table table-hover tac"></table>
-            <div class="page w-100 tx-c" id="page3"><button class="btn btn-success" onclick="load(3)">加载更多</button></div>
+            <table class="table"></table>
+            <div class="page" id="page3"><button class="btn btn-success" onclick="load(3)">加载更多</button></div>
         </div>
 
         <script>
@@ -99,10 +99,10 @@
                 });
                 const { address, balance, receipt, spend  } = data.result;
                 $('.panel-heading').text('地址 ' + address);
-                $('.address').text(address);
-                $('.receipt').text(receipt);
-                $('.spend').text(spend);
-                $('.balance').text(balance);
+                $('#address').text(address);
+                $('#receipt').text(receipt);
+                $('#spend').text(spend);
+                $('#balance').text(balance);
             }());
             load(0);
             async function load(index){
@@ -132,19 +132,22 @@
                         item.transactionInputViewList.forEach(item => {
                             res += `<li class="das">
                                 <div>付：
-                                    <span class="mr25">${item.address}</span>
-                                    <i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span>
+                                    <span>${item.address}</span>
+                                    <i class="glyphicon-euro"></i>&nbsp;<span>${item.value}</span>
                                 </div>
                             </li>`
                         })
                         let res2 = ''
                         item.transactionOutputViewList.forEach(item1 => {
                             res2 += `
-                                <div style="display:flex">收：<span class="mr25">${item1.address}</span><i class="glyphicon-euro"></i>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item1.value}</span></div>
+                                <div style="display:flex">收：
+                                    <span class="mr25">${item1.address}</span>
+                                    <i class="glyphicon-euro"></i>&nbsp;<span>${item1.value}</span>
+                                </div>
                             `
                         });
                         $('#container0').append(`
-                            <div class="list fwb " style="margin-top:10px">
+                            <div class="list fwb" style="margin-top:10px">
                                 <!-- 开头 -->
                                 <div class="tou-1">
                                     <div class="min-40 ">${item.transactionHash}</div>
@@ -152,7 +155,7 @@
                                     <div class="pl-10 tx-c">${item.transactionFee}</div>
                                     <div class="pl-10 tx-c">${item.blockTime}</div>
                                 </div>
-                                <div class="flex-12" >
+                                <div class="flex-12">
                                     <div style="width:auto;;min-width: 50%;" class="left bc-3 bl-1">${res}</div>
                                    <div style="width:auto;min-width: 40%;" class="right bc-3 bl-2">${res2}</div>
                                 </div>
