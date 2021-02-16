@@ -147,17 +147,17 @@
                             `
                         });
                         $('#container0').append(`
-                            <div class="list" style="margin-top:10px">
+                            <div class="transaction">
                                 <!-- 开头 -->
-                                <div class="tou-1">
-                                    <div class="min-40">${item.transactionHash}</div>
-                                    <div class="pl-10 tx-c">${item.transactionType}</div>
-                                    <div class="pl-10 tx-c">${item.transactionFee}</div>
-                                    <div class="pl-10 tx-c">${item.blockTime}</div>
+                                <div class="head">
+                                    <div class="min-width-40">${item.transactionHash}</div>
+                                    <div class="min-width-20 text-align-center">${item.transactionType}</div>
+                                    <div class="min-width-20 text-align-center">${item.transactionFee}</div>
+                                    <div class="min-width-20 text-align-center">${item.blockTime}</div>
                                 </div>
-                                <div class="flex-12">
-                                    <div style="width:auto;;min-width: 50%;">${res}</div>
-                                   <div style="width:auto;min-width: 40%;">${res2}</div>
+                                <div class="body">
+                                    <div style="width:auto; min-width:50%;">${res}</div>
+                                    <div style="width:auto; min-width:40%;">${res2}</div>
                                 </div>
                             </div>
                         `)
