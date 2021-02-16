@@ -6,15 +6,13 @@
 }
 .layui-layer-page{
   border: 2px solid #ddd ;
-  /* background: #ddd; */
- }
+}
 .dac{
   width: 100%;
-  
 }
 .border-1{
   border: 2px solid #ddd;
-  background: #ddd;
+  background: #FCFCFC;
 }
 .text-c{
   text-align: center;
@@ -50,8 +48,6 @@
 div{
   word-break: break-all;
   word-wrap: break-word;
-  /* text-align: center; */
-  /* align-items: center; */
 }
 body{
   height: 100vh!important;
