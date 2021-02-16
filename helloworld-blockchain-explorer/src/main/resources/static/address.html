@@ -12,7 +12,6 @@
         <link rel="stylesheet" href="https://www.layuicdn.com/layui-v2.5.7/css/layui.css" media="all">
 
         <link rel="stylesheet" href="./assets/common/reset.css">
-        <link rel="stylesheet" href="./assets/css/address.css">
         <script src="./assets/common/common.js"></script>
     </head>
     <body>
@@ -63,24 +62,24 @@
         </div>
 
         <div id="tab0">
-            <div class="container" id="container0">
+            <div class="width-100" id="container0">
             </div>
             <div class="page" id="page0"><button class="btn btn-success" onclick="load(0)">加载更多</button></div>
         </div>
         <div id="tab1">
-            <div class="container" id="container1">
+            <div class="width-100" id="container1">
             </div>
             <table class="table"></table>
             <div class="page" id="page1"><button class="btn btn-success" onclick="load(1)">加载更多</button></div>
         </div>
         <div id="tab2">
-            <div class="container" id="container2">
+            <div class="width-100" id="container2">
             </div>
             <table class="table"></table>
             <div class="page" id="page2"><button class="btn btn-success" onclick="load(2)">加载更多</button></div>
         </div>
         <div id="tab3">
-            <div class="container" id="container3">
+            <div class="width-100" id="container3">
             </div>
             <table class="table"></table>
             <div class="page" id="page3"><button class="btn btn-success" onclick="load(3)">加载更多</button></div>
@@ -129,11 +128,12 @@
                     }
                     transactionViewList.forEach(item => {
                         let res = '';
-                        item.transactionInputViewList.forEach(item => {
+                        item.transactionInputViewList.forEach(item1 => {
                             res += `<li class="das">
                                 <div>付：
-                                    <span>${item.address}</span>
-                                    <i class="glyphicon-euro"></i>&nbsp;<span>${item.value}</span>
+                                    <span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>
+                                    &nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;
+                                    <span>${item1.value}</span>
                                 </div>
                             </li>`
                         })
@@ -141,8 +141,9 @@
                         item.transactionOutputViewList.forEach(item1 => {
                             res2 += `
                                 <div style="display:flex">收：
-                                    <span class="mr25">${item1.address}</span>
-                                    <i class="glyphicon-euro"></i>&nbsp;<span>${item1.value}</span>
+                                    <span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>
+                                    &nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;
+                                    <span>${item1.value}</span>
                                 </div>
                             `
                         });
@@ -150,7 +151,7 @@
                             <div class="transaction">
                                 <!-- 开头 -->
                                 <div class="head">
-                                    <div class="min-width-40">${item.transactionHash}</div>
+                                    <div class="min-width-40"><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${item.transactionHash}">${item.transactionHash}</a></div>
                                     <div class="min-width-20 text-align-center">${item.transactionType}</div>
                                     <div class="min-width-20 text-align-center">${item.transactionFee}</div>
                                     <div class="min-width-20 text-align-center">${item.blockTime}</div>
