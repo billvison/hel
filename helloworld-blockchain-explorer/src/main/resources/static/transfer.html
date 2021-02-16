@@ -41,7 +41,7 @@
                     <input type="text" style="width:40%" class="one one-1" placeholder="请输入转账地址" >
                     <input type="number" style="width:30%" class="money money-1" placeholder="请输入转账金额" >
                     <button class="btn btn-success add"><i class="glyphicon glyphicon-plus"></i></button>
-                    <button class="btn btn-success delete" onclick="javascript:this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)"><i class="glyphicon glyphicon-minus"></i></button>
+                    <button class="btn btn-success delete" onclick="javascript:this.parentNode.parentNode.removeChild(this.parentNode)"><i class="glyphicon glyphicon-minus"></i></button>
                 </div>
             </div>
             <div class="comit" style="padding-left: 10px;height: 100vh;">
@@ -56,7 +56,7 @@
                         <input style="width:40%" type="text" class="one " placeholder="请输入转账地址">
                         <input style="width:30%" type="number" class="money " placeholder="请输入转账金额" >
                         <button class="btn btn-success add"><i class="glyphicon glyphicon-plus"></i></button>
-                        <button class="btn btn-success delete" onclick="javascript:this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)"><i class="glyphicon glyphicon-minus"></i></button>
+                        <button class="btn btn-success delete" onclick="javascript:this.parentNode.parentNode.removeChild(this.parentNode)"><i class="glyphicon glyphicon-minus"></i></button>
                     </div>
                 `)
             });
@@ -117,24 +117,20 @@
                         </div>
                         <div class="mt-50 db">
                             <div class=" border-1 text-c padd-10 mt-20 w-100">找零</div>
-                                <div class="w-100 text-c padd-10-nl mt-10">
                                     <div class="city text-c  padd-10-2">
                                     <div style="width:50%" class="text-c border-1 padd-10">找零地址 : ${data.result.payerChangeAddress}</div>
                                     <div  style="width:10px"></div>
                                     <div style="width:50%" class="text-c border-1 padd-10">金额 : ${data.result.payerChangeValue}</div>
                                 </div>
-                                </div>
                         </div>
                         <div class="mt-50 db">
                             <div class=""></div>
                             <div class="2">
-                                <div class="w-100 text-c padd-10-nl mt-10">
                                     <div class="city text-c  padd-10-2">
                                     <div style="width:50%" class="text-c border-1 padd-10">交易手续费</div>
                                     <div  style="width:10px"></div>
                                     <div style="width:50%" class="text-c border-1 padd-10">金额 : ${data.result.fee}</div>
                                     </div>
-                                </div>
                             </div>
                                 <div class="w-100 text-c padd-10-nt ">
                                     <div class="city text-c  padd-10-2">
@@ -144,7 +140,7 @@
                                     </div>
                                 </div>
                         </div>
-                        <button type="button" style="width:50%" class="btn btn-success" onclick="layer.close(layer.index);">关闭</button>
+                        <button type="button" style="width:50%;margin-left:25%" class="btn btn-success" onclick="layer.close(layer.index);">关闭</button>
                     </div>`
                     layIndex = layer.open({
                       closeBtn: 1,
