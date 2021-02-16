@@ -37,15 +37,20 @@
             </div><!-- /.container-fluid -->
         </nav>
 
-        <ul class="list fwb mt-50">
-            <!-- 开头 -->
-            <li>
-                <span id="balance" class="f6">总余额</span>
-                <div class="f7"><button type="button" class="btn btn-primary" onclick="increase()">增加账户</button></div>
-                <div class="f7"><button type="button" class="btn btn-primary" onclick="create()">创建新账户</button></div>
-                <div class="f3"><button type="button" class="btn btn-primary" onclick="window.open('./transfer.html')">转账</button></div>
-            </li>
-        </ul>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">☺账户管理☺&nbsp;&nbsp;
+                <span id="balance" class="f6">总余额</span>&nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" onclick="increase()">增加账户</button>&nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" onclick="create()">创建新账户</button>&nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" onclick="window.open('./transfer.html')">转账</button>
+            </div>
+            <!-- Table -->
+            <table class="table" id="table-node-list">
+                <tbody>
+                </tbody>
+            </table>
+        </div>
 
         <script>
             const obj = {}
@@ -56,22 +61,21 @@
                 $("#balance").text("总余额 "+data.result.balance);
                 let accountDtoList = data.result.accountDtoList
                 $(accountDtoList).each((index, item) => {
-                    $('.list').append(`
-                        <div class="surface mt-25 w-100">
-                            <div class="qweasdqwe w-80">
-                                <div class="one" ><span style="word-wrap:break-word;width:100%">地址：<a  title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span></div>
-                                <div class="adqwxcvqwd" style="word-wrap:break-word;width:100%">私钥： ${item.privateKey}</div>
-                           <div>余额 ${item.value}</div>
-                                </div>
-                            <button type="button" class="btn btn-danger">删除</button>
-                           
-                        </div>
+                    $('tbody').append(`
+                        <tr>
+                            <td>
+                                <span style="word-wrap:break-word;width:100%">地址：<a  title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><br/>
+                                私钥： ${item.privateKey}<br/>
+                                余额： ${item.value}
+                            </td>
+                            <td><button type="button" class="btn btn-danger">删除</button></td>
+                        </tr>
                     `)
                 })
             }())
 
-            $('body').delegate('.surface > .btn-danger', 'click', async function(){
-                let privateKey = $(this).prev().find('.one>span:first-child>a').text();
+            $('body').delegate('table .btn-danger', 'click', async function(){
+                let privateKey = $(this).parent().parent().find('a').text();
                 layer.confirm('确认删除？', {
                   btn: ['删除','取消']
                 }, function(){
@@ -101,6 +105,7 @@
                             layer.msg(data.message);
                             if(data.serviceCode == 'SUCCESS'){
                                 layer.close(index);
+                                location.reload();
                             }
                          }
                      });
