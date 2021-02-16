@@ -129,23 +129,11 @@
                     transactionViewList.forEach(item => {
                         let res = '';
                         item.transactionInputViewList.forEach(item1 => {
-                            res += `<li class="das">
-                                <div>付：
-                                    <span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>
-                                    &nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;
-                                    <span>${item1.value}</span>
-                                </div>
-                            </li>`
+                            res += `<div>付：<span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>&nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;<span>${item1.value}</span></div>`
                         })
                         let res2 = ''
                         item.transactionOutputViewList.forEach(item1 => {
-                            res2 += `
-                                <div style="display:flex">收：
-                                    <span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>
-                                    &nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;
-                                    <span>${item1.value}</span>
-                                </div>
-                            `
+                            res2 += `<div style="display:flex">收：<span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>&nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;<span>${item1.value}</span></div>`
                         });
                         $('#container0').append(`
                             <div class="transaction">
