@@ -93,7 +93,7 @@
             let tab3index = 1;
             $(async function(){
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/Blockchain/QueryAccountDetailByAddress",
+                    url : baseUrl()+"/Api/Blockchain/QueryAccountDetailByAddress",
                     data:`{"address":"${urlParameters.get("address")}"}`
                 });
                 const { address, balance, receipt, spend  } = data.result;
@@ -112,7 +112,7 @@
                 $("#tab"+index).show();
                 if(index === 0){
                     const data = await $ajax({
-                        url : "http://119.3.57.171:80/Api/Blockchain/QueryTransactionListByAddress",
+                        url : baseUrl()+"/Api/Blockchain/QueryTransactionListByAddress",
                         data:`{
                             "address":"${urlParameters.get("address")}",
                             "pageCondition":{
@@ -131,7 +131,7 @@
                     })
                 }else if(index === 1){
                     const data = await $ajax({
-                        url : "http://119.3.57.171:80/Api/Blockchain/QueryUnspendTransactionOutputListByAddress",
+                        url : baseUrl()+"/Api/Blockchain/QueryUnspendTransactionOutputListByAddress",
                         data:`{
                             "address":"${urlParameters.get("address")}",
                             "pageCondition":{
@@ -156,7 +156,7 @@
                     })
                 }else if(index === 2){
                     const data = await $ajax({
-                        url : "http://119.3.57.171:80/Api/Blockchain/QueryTransactionOutputListByAddress",
+                        url : baseUrl()+"/Api/Blockchain/QueryTransactionOutputListByAddress",
                         data:`{
                             "address":"${urlParameters.get("address")}",
                             "pageCondition":{
@@ -181,7 +181,7 @@
                     })
                 }else{
                     const data = await $ajax({
-                        url : "http://119.3.57.171:80/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
+                        url : baseUrl()+"/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
                         data:`{
                             "address":"${urlParameters.get("address")}",
                             "pageCondition":{

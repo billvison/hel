@@ -59,7 +59,7 @@
         <script type="text/javascript">
             $(async function(){
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/QueryAllNodeList"
+                    url : baseUrl()+"/Api/AdminConsole/QueryAllNodeList"
                 });
                 const { nodeList } = data.result
                 let $list = $('#table-node-list');
@@ -127,7 +127,7 @@
 
             $('body').delegate('#table-add-node-button-add', 'click', async function(){
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/AddNode",
+                    url : baseUrl()+"/Api/AdminConsole/AddNode",
                     data:`{"node":{"ip": ${$('#table-add-node-text-ip').val()},"isNodeAvailable": ${$("input[name='table-add-node-checkbox-available']:checked").val()},"errorConnectionTimes": ${$('#table-add-node-text-errorConnectionTimes').val()},"fork": ${$("input[name='table-add-node-checkbox-fork']:checked").val()}}}`
                 });
                 alert(data.message);
@@ -191,7 +191,7 @@
 
             $('body').delegate('#table-update-node-button-add', 'click', async function(){
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/UpdateNode",
+                    url : baseUrl()+"/Api/AdminConsole/UpdateNode",
                     data:`{"node":{"ip": "${$('#table-update-node-text-ip').val()}","isNodeAvailable": ${$("input[name='table-update-node-checkbox-available']:checked").val()},"errorConnectionTimes": ${$('#table-update-node-text-errorConnectionTimes').val()},"fork": ${$("input[name='table-update-node-checkbox-fork']:checked").val()}}}}}`
                 });
                 alert(data.message);
@@ -201,7 +201,7 @@
             $('body').delegate('.delete-node', 'click', async function(){
                 let ip = $(this).parent().parent().children(":first").text();
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/DeleteNode",
+                    url : baseUrl()+"/Api/AdminConsole/DeleteNode",
                     data:`{"node":{"ip": "${ip}"}}`
                 });
                 alert(data.message);

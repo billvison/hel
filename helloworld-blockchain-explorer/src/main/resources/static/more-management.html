@@ -64,13 +64,13 @@
             let minerInActiveState,synchronizerInActiveState,autoSearchNewNode;
             $(async function(){
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/Blockchain/QueryBlockchainHeight"
+                    url : baseUrl()+"/Api/Blockchain/QueryBlockchainHeight"
                 });
                 $('#blockHeight').text(data.result.blockchainHeight);
             }());
             $(async function(){
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/IsMinerActive",
+                    url : baseUrl()+"/Api/AdminConsole/IsMinerActive",
                     data:`{}`
                 });
                 minerInActiveState = data.result.minerInActiveState;
@@ -79,7 +79,7 @@
             }());
             $(async function(){
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/IsSynchronizerActive",
+                    url : baseUrl()+"/Api/AdminConsole/IsSynchronizerActive",
                     data:`{}`
                 });
                 synchronizerInActiveState = data.result.synchronizerInActiveState;
@@ -88,7 +88,7 @@
             }());
             $(async function(){
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/IsAutoSearchNode",
+                    url : baseUrl()+"/Api/AdminConsole/IsAutoSearchNode",
                     data:`{}`
                 });
                 autoSearchNewNode = data.result.autoSearchNewNode;
@@ -99,7 +99,7 @@
             $('#button_DeleteBlock').click(async function(){
                 let res = prompt('删除区块，请输出要删除区块的高度。');
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/DeleteBlock",
+                    url : baseUrl()+"/Api/AdminConsole/DeleteBlock",
                     data:`{
                         "blockHeight":"${res}"
                     }`
@@ -109,12 +109,12 @@
             $('#minerSwitch').click(async function(){
                 if(minerInActiveState){
                     await $ajax({
-                        url : "http://119.3.57.171/Api/AdminConsole/DeactiveMiner",
+                        url : baseUrl()+"/Api/AdminConsole/DeactiveMiner",
                         data:"{}"
                     });
                 }else{
                     await $ajax({
-                        url : "http://119.3.57.171/Api/AdminConsole/ActiveMiner",
+                        url : baseUrl()+"/Api/AdminConsole/ActiveMiner",
                         data:"{}"
                     });
                 }
@@ -123,12 +123,12 @@
             $('#synchronizerSwitch').click(async function(){
                 if(!synchronizerInActiveState){
                     await $ajax({
-                        url : "http://119.3.57.171/Api/AdminConsole/ActiveSynchronizer",
+                        url : baseUrl()+"/Api/AdminConsole/ActiveSynchronizer",
                         data:"{}"
                     });
                 }else{
                     await $ajax({
-                        url : "http://119.3.57.171/Api/AdminConsole/DeactiveSynchronizer",
+                        url : baseUrl()+"/Api/AdminConsole/DeactiveSynchronizer",
                         data:"{}"
                     });
                 }
@@ -136,7 +136,7 @@
             })
             $('#searchNodeStrategySwitch').click(async function(){
                 await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/SetAutoSearchNode",
+                    url : baseUrl()+"/Api/AdminConsole/SetAutoSearchNode",
                     data:`{"autoSearchNode": ${!autoSearchNewNode}}`
                 });
                 location.reload();

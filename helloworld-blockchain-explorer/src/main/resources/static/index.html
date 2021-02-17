@@ -60,7 +60,7 @@
         <script>
             $(async function(){
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/Blockchain/QueryLast10BlockDto"
+                    url : baseUrl()+"/Api/Blockchain/QueryLast10BlockDto"
                 })
                 const blockDtoList = data.result.blockDtoList;
                 $(blockDtoList).each((index, item) => {

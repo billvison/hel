@@ -55,7 +55,7 @@
             const obj = {}
             $(async function(){
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/AdminConsole/QueryAllAccountList"
+                    url : baseUrl()+"/Api/AdminConsole/QueryAllAccountList"
                 })
                 $("#balance").text("总余额 "+data.result.balance);
                 let accountDtoList = data.result.accountDtoList
@@ -80,7 +80,7 @@
                 }, function(){
                     $.ajax({
                          type: "post",
-                         url : "http://119.3.57.171/Api/AdminConsole/DeleteAccount",
+                         url : baseUrl()+"/Api/AdminConsole/DeleteAccount",
                          data:`{"address":"${privateKey}"}`,
                          dataType: "json",
                          contentType: "application/json",
@@ -96,7 +96,7 @@
                 layer.prompt({title: '增加账户，请输出私钥', formType: 2}, function(pass, index){
                     $.ajax({
                          type: "post",
-                         url : "http://119.3.57.171/Api/AdminConsole/AddAccount",
+                         url : baseUrl()+"/Api/AdminConsole/AddAccount",
                          data: `{"privateKey":"${pass}"}`,
                          dataType: "json",
                          contentType: "application/json",
@@ -113,7 +113,7 @@
 
             async function create(){
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/Blockchain/GenerateAccount",
+                    url : baseUrl()+"/Api/Blockchain/GenerateAccount",
                     data:`{}`
                 })
                 var account = data.result.account;

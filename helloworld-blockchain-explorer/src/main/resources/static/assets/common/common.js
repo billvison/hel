@@ -1,3 +1,8 @@
+function baseUrl(){
+    return "http://119.3.57.171:80";
+};
+
+
 async function $ajax(option){
     const obj = {
         type: "post",

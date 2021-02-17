@@ -46,7 +46,7 @@
 
             $(async function(){
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/Blockchain/QueryBlockDtoByBlockHash",
+                    url : baseUrl()+"/Api/Blockchain/QueryBlockDtoByBlockHash",
                     data: reqJso2
                 });
                 let {blockDto} = data.result;
@@ -102,7 +102,7 @@
 
             async function load(){
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/Blockchain/QueryTransactionListByBlockHashTransactionHeight",
+                    url : baseUrl()+"/Api/Blockchain/QueryTransactionListByBlockHashTransactionHeight",
                     data: reqJson
                 });
                 let result = data.result.transactionViewList;

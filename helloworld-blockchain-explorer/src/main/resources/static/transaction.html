@@ -90,7 +90,7 @@
             $(async function(){
                 let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
                 const data = await $ajax({
-                    url : "http://119.3.57.171/Api/Blockchain/QueryTransactionByTransactionHash",
+                    url : baseUrl()+"/Api/Blockchain/QueryTransactionByTransactionHash",
                     data:`{"transactionHash":"${urlParameters.get("transactionHash")}"}`
                 });
                 let {inputScriptList, outputScriptList, transactionHash,transactionInputViewList, transactionOutputValues, blockHeight, blockHash,transactionFee, confirmCount, transactionInputCount, transactionType, blockTime, transactionInputValues , transactionOutputCount, transactionOutputViewList} = data.result.transactionView;
