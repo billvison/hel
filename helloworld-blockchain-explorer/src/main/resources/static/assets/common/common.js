@@ -35,15 +35,15 @@ function transactionHtml(item){
         right += `<div style="display:flex">收：<span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item1.address}">${item1.address}</a></span>&nbsp;<a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item1.transactionHash}&transactionOutputIndex=${item1.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;<span>${item1.value}</span></div>`
     });
     let transactionHtml = `
-        <div class="transaction">
+        <div style="font-size: 14px; line-height: 40px; margin-top: 10px;">
             <!-- 开头 -->
-            <div class="head">
-                <div class="min-width-40"><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${item.transactionHash}">${item.transactionHash}</a></div>
-                <div class="min-width-20 text-align-center">${item.transactionType}</div>
-                <div class="min-width-20 text-align-center">${item.transactionFee}</div>
-                <div class="min-width-20 text-align-center">${item.blockTime}</div>
+            <div style="display: flex; background-color: #f5f5f5; flex-wrap: wrap; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;">
+                <div style="min-width: 40%;"><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${item.transactionHash}">${item.transactionHash}</a></div>
+                <div style="min-width: 20%; text-align: center;">${item.transactionType}</div>
+                <div style="min-width: 20%; text-align: center;">${item.transactionFee}</div>
+                <div style="min-width: 20%; text-align: center;">${item.blockTime}</div>
             </div>
-            <div class="body">
+            <div style="display: flex; flex-wrap:wrap;">
                 <div style="width:auto; min-width:50%;">${left}</div>
                 <div style="width:auto; min-width:40%;">${right}</div>
             </div>
