@@ -1,5 +1,5 @@
 function baseUrl(){
-    return "http://119.3.57.171:80";
+    return "";
 };
 
 
