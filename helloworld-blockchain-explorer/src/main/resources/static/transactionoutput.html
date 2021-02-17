@@ -31,77 +31,52 @@
         </nav>
         <div class="box">
             <div class="panel panel-default">
-                <div class="panel-heading fwb"></div>
-                <button type="button" class="btn btn-default btn-lg Summary">摘要</button>
+                <div class="panel-heading"></div>
+                <button type="button" class="btn btn-default">摘要</button>
                 <table class="table">
-                    <thead>
+                    <tbody>
                         <tr>
-                            <th style="width:10%">块高度</th>
-                            <th style="width:40%" class="blockHeight"></th>
-                            <th>交易哈希</th>
-                            <th class="transactionHash"></th>
+                            <td style="width:10%">块高度</td>
+                            <td style="width:40%" id="blockHeight"></td>
+                            <td style="width:10%">交易哈希</td>
+                            <td style="width:40%" id="transactionHash"></td>
                         </tr>
                         <tr>
-                            <th style="width:10%">区块哈希</th>
-                            <th style="width:40%" class="blockHash"></th>
-                            <th>交易输出索引</th>
-                            <th class="transactionOutputIndex"></th>
+                            <td>区块哈希</td>
+                            <td id="blockHash"></td>
+                            <td>交易输出索引</td>
+                            <td id="transactionOutputIndex"></td>
                         </tr>
                         <tr>
-                            <th>是否已花费</th>
-                            <th class="spend"></th>
-                            <th>交易输出类型</th>
-                            <th class="transactionType"></th>
+                            <td>是否已花费</td>
+                            <td id="spend"></td>
+                            <td>交易输出类型</td>
+                            <td id="transactionType"></td>
                         </tr>
-                    </thead>
+                    </tbody>
                 </table>
             </div>
-            
         </div>
 
-
-        <table class="table table1 table-hover">
+        <table class="table table-hover" id="table1">
             <tr class="success">
                 <td>输入脚本</td>
             </tr>
         </table>
 
 
-        <table class="table table2 table-hover">
-            <tr class="danger">
+        <table class="table table-hover" id="table2">
+            <tr class="success">
                 <td>输出脚本</td>
             </tr>
         </table>
         
-        <button type="button" class="btn btn-default btn-lg Summary">输入交易</button>
-        <ul class="list fwb">
-                <!-- 开头 -->
-            <li class="tou">
-                <span class="f7"></span>
-                <span class="f3"></span>
-                <span class="f2"></span>
-                <span class="f1"></span>
-            </li>
-            <li class="surface" id="surface1">
-                <ul class="left"></ul>
-                <ul class="right"> </ul>
-            </li>
-        </ul>
+        <button type="button" class="btn btn-default">输入交易</button>
+        <div id="inputTransaction"></div>
 
-        <button type="button" class="btn btn-default btn-lg Summary">输出交易</button>
-        <ul class="list fwb">
-            <!-- 开头 -->
-            <li class="tou2">
-                <span class="f7"></span>
-                <span class="f3"></span>
-                <span class="f2"></span>
-                <span class="f1"></span>
-            </li>
-            <li class="surface" id="surface2">
-                <ul class="left"></ul>
-                <ul class="right"> </ul>
-            </li>
-        </ul>
+        <button type="button" class="btn btn-default">输出交易</button>
+        <div id="outputTransaction"></div>
+
         <script>
             $(async function(){
                 let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
@@ -114,69 +89,30 @@
                         }
                     }`
                 });
+                console.log(data);
                 const { inputTransaction, transactionHash, transactionOutputIndex, blockHeight, inputScript,outputScript,outputTransaction, blockHash, spend } = data.result.transactionOutputDetailView;
                 $('.panel-heading').text('交易输出['+'交易哈希 ' + transactionHash + '    交易输出索引 ' + transactionOutputIndex+']');
-                $('.blockHeight').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHeight}</a>`)
-                $('.blockHash').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHash}</a>`)
-                console.log(data.result.transactionOutputDetailView);
-                $('.transactionHash').html(`<a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${transactionHash}">${transactionHash}</a>`)
-                $('.transactionOutputIndex').text(transactionOutputIndex)
-                $('.transactionType').text(inputTransaction.transactionType)
-                $('.spend').text(spend ? '是' : '否');
+                $('#blockHeight').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHeight}</a>`)
+                $('#blockHash').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHash}</a>`)
+                $('#transactionHash').html(`<a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${transactionHash}">${transactionHash}</a>`)
+                $('#transactionOutputIndex').text(transactionOutputIndex)
+                $('#transactionType').text(inputTransaction.transactionType)
+                $('#spend').text(spend ? '是' : '否');
 
-                $('.table1 tbody').append(`
+                $('#table1 tbody').append(`
                     <tr class="info">
                         <td>${inputScript}</td>
                     </tr>
                 `);
-                $('.table2 tbody').append(`
-                    <tr class="warning">
+                $('#table2 tbody').append(`
+                    <tr class="info">
                         <td>${outputScript}</td>
                     </tr>
                 `)
 
-                $('.tou').children().eq(0).html(`<a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${inputTransaction.transactionHash}">${inputTransaction.transactionHash}</a>`);
-                $('.tou').children().eq(1).text(inputTransaction.transactionType);
-                $('.tou').children().eq(2).text(inputTransaction.transactionFee);
-                $('.tou').children().eq(3).text(inputTransaction.blockTime);
-                let $left = $('#surface1 .left');
-                let $right = $('#surface1 .right');
-                $(inputTransaction.transactionInputViewList).each((index, item) => {
-                    $left.append(`
-                        <li class="das">
-                            <div><span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span></div>
-                        </li>
-                    `)
-                })
-                $(inputTransaction.transactionOutputViewList).each((index, item) => {
-                    $right.append(`
-                    <li class="das">
-                        <div><span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span></div>
-                    </li>
-                    `)
-                })
-
+                $('#inputTransaction').append(transactionHtml(inputTransaction));
                 if(outputTransaction != null){
-                    let $left2 = $('#surface2 .left');
-                    let $right2 = $('#surface2 .right');
-                    $('.tou2').children().eq(0).html(`<a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${outputTransaction.transactionHash}">${outputTransaction.transactionHash}</a>`);
-                    $('.tou2').children().eq(1).text(outputTransaction.transactionType);
-                    $('.tou2').children().eq(2).text(outputTransaction.transactionFee);
-                    $('.tou2').children().eq(3).text(outputTransaction.blockTime);
-                    $(outputTransaction.transactionInputViewList).each((index, item) => {
-                        $left2.append(`
-                            <li class="das">
-                                <div><span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span></div>
-                            </li>
-                        `)
-                    })
-                    $(outputTransaction.transactionOutputViewList).each((index, item) => {
-                        $right2.append(`
-                            <li class="das">
-                                <div><span><a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></span><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}"><i class="glyphicon-euro"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<span>${item.value}</span></div>
-                            </li>
-                        `)
-                    })
+                    $('#outputTransaction').append(transactionHtml(outputTransaction));
                 }
             }())
         </script>
