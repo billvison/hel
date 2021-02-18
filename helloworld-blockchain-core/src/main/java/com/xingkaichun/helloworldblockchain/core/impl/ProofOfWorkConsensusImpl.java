@@ -39,9 +39,9 @@ public class ProofOfWorkConsensusImpl extends Consensus {
 
 
     public String calculateDifficult(BlockchainDatabase blockchainDataBase, Block block) {
-
-        long targetTimespan = 1000 * 60 * 60 * 24 * 14;
-        long targetSpacing = 1000 * 60 * 10;
+        //TODO 每个区块时常
+        long targetTimespan = 1000 * 60 * 14;
+        long targetSpacing = 1000 * 60;
         long nInterval = targetTimespan / targetSpacing;
 
         String targetDifficult;

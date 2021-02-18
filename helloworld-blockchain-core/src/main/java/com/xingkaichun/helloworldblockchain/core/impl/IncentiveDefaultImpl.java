@@ -32,16 +32,15 @@ public class IncentiveDefaultImpl extends Incentive {
      * 固定奖励
      */
     private long getSubsidy(Block block) {
-        long subsidy = GlobalSetting.MinerConstant.INIT_MINE_BLOCK_INCENTIVE_COIN_AMOUNT;
-        //减半区块数量
-        long halfIntervalBlockCount = GlobalSetting.MinerConstant.MINE_BLOCK_INCENTIVE_REDUCE_BY_HALF_INTERVAL_TIMESTAMP /
-                GlobalSetting.MinerConstant.GENERATE_BLOCK_AVERAGE_TIMESTAMP;
         long height = block.getHeight();
-        while (height > halfIntervalBlockCount){
-            subsidy = subsidy/2;
-            height -= halfIntervalBlockCount;
+        //第一个区块奖励给程序员邢开春，感谢其兢兢业业一年从无到有，创建了helloworldcoin。奖励数量为总数的10%
+        if(height==1){
+        //第二个区块预留给社区的发展的基金
+            //TODO 奖励
+            return 100000000;
+        }else {
+            return 100000000;
         }
-        return subsidy;
     }
 
     /**
