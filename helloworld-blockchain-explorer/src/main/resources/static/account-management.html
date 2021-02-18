@@ -92,7 +92,7 @@
             })
 
             async function increase(){
-                layer.prompt({title: '增加账户，请输出私钥', formType: 2}, function(pass, index){
+                layer.prompt({title: '增加账户，请输入私钥', formType: 2}, function(pass, index){
                     $.ajax({
                          type: "post",
                          url : baseUrl()+"/Api/AdminConsole/AddAccount",

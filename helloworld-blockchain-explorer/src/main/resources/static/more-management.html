@@ -97,7 +97,7 @@
             }());
 
             $('#button_DeleteBlock').click(async function(){
-                let res = prompt('删除区块，请输出要删除区块的高度。');
+                let res = prompt('删除区块，请输入要删除区块的高度。');
                 const data = await $ajax({
                     url : baseUrl()+"/Api/AdminConsole/DeleteBlock",
                     data:`{
