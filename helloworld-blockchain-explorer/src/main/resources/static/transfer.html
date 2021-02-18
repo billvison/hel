@@ -72,7 +72,7 @@
                 if(data.serviceCode === 'SUCCESS'){
                     const obj = {}
                     obj.transactionDTO = data.result.transactionDTO;
-                    data.result.transactionOutpuDtoList.forEach(item => {
+                    data.result.transactionOutputDtoList.forEach(item => {
                         obj.transactionDTO.transactionOutputDtoList.push(item)
                     })
                     const data2 = await $ajax({

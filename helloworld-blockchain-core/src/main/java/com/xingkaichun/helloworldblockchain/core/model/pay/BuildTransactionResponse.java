@@ -13,7 +13,7 @@ import java.util.List;
 public class BuildTransactionResponse {
     //是否构建交易成功
     private boolean buildTransactionSuccess;
-    //构建失败的原因
+    //若失败，填写构建失败的原因
     private String message;
 
     //交易Hash
@@ -29,7 +29,7 @@ public class BuildTransactionResponse {
     //交易输入
     private List<TransactionOutput> transactionInputList;
     //交易输出（不包含找零交易输出）
-    private List<TransactionOutputDTO> transactionOutpuDtoList;
+    private List<TransactionOutputDTO> transactionOutputDtoList;
 
     //经过处理后的交易
     private TransactionDTO transactionDTO;
@@ -91,12 +91,12 @@ public class BuildTransactionResponse {
         this.transactionInputList = transactionInputList;
     }
 
-    public List<TransactionOutputDTO> getTransactionOutpuDtoList() {
-        return transactionOutpuDtoList;
+    public List<TransactionOutputDTO> getTransactionOutputDtoList() {
+        return transactionOutputDtoList;
     }
 
-    public void setTransactionOutpuDtoList(List<TransactionOutputDTO> transactionOutpuDtoList) {
-        this.transactionOutpuDtoList = transactionOutpuDtoList;
+    public void setTransactionOutputDtoList(List<TransactionOutputDTO> transactionOutputDtoList) {
+        this.transactionOutputDtoList = transactionOutputDtoList;
     }
 
     public TransactionDTO getTransactionDTO() {

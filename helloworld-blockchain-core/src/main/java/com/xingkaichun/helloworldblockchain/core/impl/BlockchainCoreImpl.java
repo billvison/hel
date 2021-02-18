@@ -287,7 +287,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
             buildTransactionResponse.setPayerChangeValue(change);
         }
         buildTransactionResponse.setTransactionInputList(inputs);
-        buildTransactionResponse.setTransactionOutpuDtoList(transactionOutputDtoList);
+        buildTransactionResponse.setTransactionOutputDtoList(transactionOutputDtoList);
         buildTransactionResponse.setTransactionDTO(transactionDTO);
         return buildTransactionResponse;
     }
