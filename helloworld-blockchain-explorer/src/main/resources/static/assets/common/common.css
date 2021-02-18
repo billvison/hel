@@ -6,5 +6,5 @@ i {
 }
 table {
   table-layout:fixed;
-  WORD-BREAK:break-all;
+  word-break:break-all;
 }

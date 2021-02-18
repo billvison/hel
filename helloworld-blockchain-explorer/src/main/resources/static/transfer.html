@@ -9,9 +9,9 @@
         <script src="./lib/bootstrap/bootstrap.min.js"></script>
         <link rel="stylesheet" href="./lib/bootstrap/bootstrap.min.css">
         <script src="https://www.layuicdn.com/layer-v3.1.1/layer.js" charset="utf-8"></script>
+
         <link rel="stylesheet" href="./assets/css/transfer.css">
         <link rel="stylesheet" href="./assets/common/common.css">
-        
         <script src="./assets/common/common.js"></script>
     </head>
     <body>
@@ -34,14 +34,14 @@
 
         <div>
             <div class="panel panel-default">
-                <div class="panel-heading fwb">支付</div>
+                <div class="panel-heading">支付</div>
             </div>
             <div class="im" style="padding-left: 10px;">
                 <div style="padding-top: 10px;">
-                    <input type="text" style="width:40%" class="one one-1" placeholder="请输入收款方地址" >
-                    <input type="number" style="width:30%" class="money money-1" placeholder="请输入付给收款方的金额" >
-                    <button class="btn btn-success add"><i class="glyphicon glyphicon-plus"></i></button>
-                    <button class="btn btn-success delete" onclick="javascript:this.parentNode.parentNode.removeChild(this.parentNode)"><i class="glyphicon glyphicon-minus"></i></button>
+                    <input type="text" style="width:40%" name="address" placeholder="请输入收款方地址">
+                    <input type="number" style="width:30%" name="money" placeholder="请输入付给收款方的金额">
+                    <button class="btn btn-primary add"><i class="glyphicon glyphicon-plus"></i></button>
+                    <button class="btn btn-primary delete" onclick="javascript:this.parentNode.remove()"><i class="glyphicon glyphicon-minus"></i></button>
                 </div>
             </div>
             <div class="comit" style="padding-left: 10px;height: 100vh;">
@@ -52,18 +52,18 @@
             let layIndex;
             $('body').delegate('.add', 'click', function(){
                 $('.comit').before(`
-                    <div  style="padding-top: 10px;padding-left: 10px;">
-                        <input style="width:40%" type="text" class="one " placeholder="请输入收款方地址">
-                        <input style="width:30%" type="number" class="money " placeholder="请输入付给收款方的金额" >
-                        <button class="btn btn-success add"><i class="glyphicon glyphicon-plus"></i></button>
-                        <button class="btn btn-success delete" onclick="javascript:this.parentNode.parentNode.removeChild(this.parentNode)"><i class="glyphicon glyphicon-minus"></i></button>
+                    <div style="padding-top: 10px;">
+                        <input type="text" style="width:40%" name="address" placeholder="请输入收款方地址">
+                        <input type="number" style="width:30%" name="money" placeholder="请输入付给收款方的金额">
+                        <button class="btn btn-primary add"><i class="glyphicon glyphicon-plus"></i></button>
+                        <button class="btn btn-primary delete" onclick="javascript:this.parentNode.remove()"><i class="glyphicon glyphicon-minus"></i></button>
                     </div>
                 `)
             });
             async function onConfirm(){
                 let recipientList = [];
                 Array.from($('.im')).forEach(item => {
-                    recipientList.push({address:$(item).find('.one').val(),value:$(item).find('.money').val()})
+                    recipientList.push({address:$(item).find('[name="address"]:first').val().trim(),value:$(item).find('[name="money"]:first').val()})
                 });
                 const data = await $ajax({
                     url : baseUrl()+"/Api/AdminConsole/BuildTransactionDto",
