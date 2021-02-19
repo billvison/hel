@@ -12,15 +12,6 @@
 
         <link rel="stylesheet" href="./assets/common/common.css">
         <script src="./assets/common/common.js"></script>
-        <style type="text/css">
-        	.btn{
-        	  line-height: 26px;
-        	  height: 26px;
-        	  padding: 0 10px;
-        	  position: relative;
-        	  top: -2px;
-        	}
-        </style>
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -44,36 +35,66 @@
             <div class="panel panel-default">
                 <div class="panel-heading">支付</div>
             </div>
-            <div class="im" style="padding-left: 10px;">
-                <div style="margin-top: 10px;height: 32px;">
-                    <input type="text" style="width:50%" name="address" placeholder="请输入收款方地址" value="1Q7pfvV6yAGx3b3pyCJ9EhVdUed5ygN9dL">
-                    <input type="number" style="width:20%" name="money" placeholder="请输入付给收款方的金额" value="1">
-                    <button class="btn btn-primary add"><i class="glyphicon glyphicon-plus"></i></button>
-                    <button class="btn btn-primary delete" onclick="javascript:this.parentNode.remove()"><i class="glyphicon glyphicon-minus"></i></button>
-                </div>
-                <div class="comit1">
-                	
+            <div id="payList">
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">收款方</div>
+                    <!-- List group -->
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div class="input-group">
+                                <span class="input-group-addon">请输入收款方地址</span>
+                                <input type="text" class="form-control" name="address">
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="input-group">
+                                <span class="input-group-addon">请输入付款的金额</span>
+                                <input type="text" class="form-control" name="money">
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <button class="btn btn-primary add"><i class="glyphicon glyphicon-plus"></i>&nbsp;增加收款方</button>
+                            <button class="btn btn-primary delete" onclick="javascript:this.parentNode.parentNode.parentNode.remove()"><i class="glyphicon glyphicon-minus"></i>&nbsp;删除该收款方</button>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div class="comit" style="padding-left: 10px;height: 100vh;margin-top: 10px;">
+            <div style="text-align: center;">
                 <button type="button" class="btn btn-primary" onclick="onConfirm()">确认转账</button>
             </div>
         </div>
         <script>
-            let layIndex;
             $('body').delegate('.add', 'click', function(){
-                $('.comit1').before(`
-                    <div style="margin-top: 10px;height: 32px;">
-                        <input type="text" style="width:50%" name="address" placeholder="请输入收款方地址">
-                        <input type="number" style="width:20%" name="money" placeholder="请输入付给收款方的金额">
-                        <button class="btn btn-primary add"><i class="glyphicon glyphicon-plus"></i></button>
-                        <button class="btn btn-primary delete" onclick="javascript:this.parentNode.remove()"><i class="glyphicon glyphicon-minus"></i></button>
+                $('#payList').append(`
+                    <div class="panel panel-default">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">收款方</div>
+                        <!-- List group -->
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <div class="input-group">
+                                    <span class="input-group-addon">请输入收款方地址</span>
+                                    <input type="text" class="form-control" name="address">
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="input-group">
+                                    <span class="input-group-addon">请输入付款的金额</span>
+                                    <input type="text" class="form-control" name="money">
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <button class="btn btn-primary add"><i class="glyphicon glyphicon-plus"></i></button>
+                                <button class="btn btn-primary delete" onclick="javascript:this.parentNode.parentNode.parentNode.remove()"><i class="glyphicon glyphicon-minus"></i></button>
+                            </li>
+                        </ul>
                     </div>
                 `)
             });
             async function onConfirm(){
                 let recipientList = [];
-                Array.from($('.im')).forEach(item => {
+                Array.from($('#payList')).forEach(item => {
                     recipientList.push({address:$(item).find('[name="address"]:first').val().trim(),value:$(item).find('[name="money"]:first').val()})
                 });
                 const data = await $ajax({
@@ -113,7 +134,7 @@
                         `
                     })
 
-                    const str = `<div class="w-100 fwb mt-50  padd-10">
+                    const str = `<div>
                         <!-- 开头 -->
                         <div class="page-header" style="margin-top:0;">
                           <h1>支付详情</h1>
@@ -140,9 +161,9 @@
                             <li class="list-group-item"></li>
                           </ul>
                         </div>
-                        <button type="button" style="width:50%;margin-left:25%" class="btn btn-success" onclick="layer.close(layer.index);">关闭</button>
+                        <button type="button" class="btn btn-success" style="margin-left:45%" onclick="layer.close(layer.index);">关闭</button>
                     </div>`
-                    layIndex = layer.open({
+                    layer.open({
                       closeBtn: 1,
                       type: 1,
                       title: false,
