@@ -187,6 +187,8 @@ public class BlockchainCoreImpl extends BlockchainCore {
         }
         //创建交易输出
         List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();
+        List<BuildTransactionResponse.InnerTransactionOutput> innerTransactionOutputList = new ArrayList<>();
+
         if(recipientList != null){
             for(Recipient recipient : recipientList){
                 TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
@@ -194,6 +196,12 @@ public class BlockchainCoreImpl extends BlockchainCore {
                 OutputScript outputScript = StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(recipient.getAddress());
                 transactionOutputDTO.setOutputScriptDTO(Model2DtoTool.outputScript2OutputScriptDTO(outputScript));
                 transactionOutputDtoList.add(transactionOutputDTO);
+
+                BuildTransactionResponse.InnerTransactionOutput innerTransactionOutput = new BuildTransactionResponse.InnerTransactionOutput();
+                innerTransactionOutput.setAddress(recipient.getAddress());
+                innerTransactionOutput.setValue(recipient.getValue());
+                innerTransactionOutput.setOutputScript(outputScript);
+                innerTransactionOutputList.add(innerTransactionOutput);
             }
         }
 
@@ -287,7 +295,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
             buildTransactionResponse.setPayerChangeValue(change);
         }
         buildTransactionResponse.setTransactionInputList(inputs);
-        buildTransactionResponse.setTransactionOutputDtoList(transactionOutputDtoList);
+        buildTransactionResponse.setTransactionOutputList(innerTransactionOutputList);
         buildTransactionResponse.setTransactionDTO(transactionDTO);
         return buildTransactionResponse;
     }

@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.model.pay;
 
+import com.xingkaichun.helloworldblockchain.core.model.script.OutputScript;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDTO;
@@ -29,7 +30,7 @@ public class BuildTransactionResponse {
     //交易输入
     private List<TransactionOutput> transactionInputList;
     //交易输出（不包含找零交易输出）
-    private List<TransactionOutputDTO> transactionOutputDtoList;
+    private List<InnerTransactionOutput> transactionOutputList;
 
     //经过处理后的交易
     private TransactionDTO transactionDTO;
@@ -91,12 +92,12 @@ public class BuildTransactionResponse {
         this.transactionInputList = transactionInputList;
     }
 
-    public List<TransactionOutputDTO> getTransactionOutputDtoList() {
-        return transactionOutputDtoList;
+    public List<InnerTransactionOutput> getTransactionOutputList() {
+        return transactionOutputList;
     }
 
-    public void setTransactionOutputDtoList(List<TransactionOutputDTO> transactionOutputDtoList) {
-        this.transactionOutputDtoList = transactionOutputDtoList;
+    public void setTransactionOutputList(List<InnerTransactionOutput> transactionOutputList) {
+        this.transactionOutputList = transactionOutputList;
     }
 
     public TransactionDTO getTransactionDTO() {
@@ -105,5 +106,45 @@ public class BuildTransactionResponse {
 
     public void setTransactionDTO(TransactionDTO transactionDTO) {
         this.transactionDTO = transactionDTO;
+    }
+
+
+
+
+
+
+
+
+    public static class InnerTransactionOutput {
+
+        private long value;
+
+        private OutputScript outputScript;
+
+        private String address;
+
+        public long getValue() {
+            return value;
+        }
+
+        public void setValue(long value) {
+            this.value = value;
+        }
+
+        public OutputScript getOutputScript() {
+            return outputScript;
+        }
+
+        public void setOutputScript(OutputScript outputScript) {
+            this.outputScript = outputScript;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
     }
 }

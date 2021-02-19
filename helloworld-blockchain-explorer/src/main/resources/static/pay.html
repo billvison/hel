@@ -105,24 +105,23 @@
                 if(data.serviceCode == 'SUCCESS'){
                     const obj = {}
                     obj.transactionDTO = data.result.transactionDTO;
-                    data.result.transactionOutputDtoList.forEach(item => {
-                        obj.transactionDTO.transactionOutputDtoList.push(item)
-                    })
                     const data2 = await $ajax({
                         url : baseUrl()+"/Api/Blockchain/SubmitTransactionToBlockchainNetwork",
                         data:JSON.stringify(obj),
                     });
                     alert(data2.message)
 
-                    let receive = data.result.transactionOutputDtoList.map((item,index) => {
+                    let receive = data.result.transactionOutputList.map((item,index) => {
                         return `
                           <div class="panel-heading">交易收款方${index+1}</div>
                           <ul class="list-group">
-                            <li class="list-group-item">转账地址 : ${item.outputScriptDTO[3]}</li>
+                            <li class="list-group-item">转账地址 : ${item.address}</li>
                             <li class="list-group-item">转账金额 : ${item.value}</li>
+                            <li class="list-group-item">输出脚本 : ${item.outputScript.join(' ')}</li>
                           </ul>
                         `
                     });
+
                     let receive2 = data.result.transactionInputList.map((item,index) => {
                         return `
                         <div class="panel-heading">交易付款方${index+1}</div>
