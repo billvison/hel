@@ -52,9 +52,8 @@ public class GlobalSetting {
      * 挖矿设置
      */
     public static class MinerConstant{
-        //TODO 挖矿时长
-        //每轮挖矿最大时长。挖矿时间太长，则新提交的交易就很延迟才能包含到区块里。
-        public static final long MINE_TIMESTAMP_PER_ROUND = 1000 * 60 * 2;
+        //这个时间间隔更新一次正在被挖矿的区块的交易。如果时间太长，可能导致新提交的交易延迟被确认。
+        public static final long MINE_TIMESTAMP_PER_ROUND = 1000 * 10;
     }
 
     /**
