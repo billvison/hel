@@ -44,11 +44,8 @@ public class GlobalSetting {
         public static final long HEIGHT = 0;
         //创世区块的哈希
         public static final String HASH = "0000000000000000000000000000000000000000000000000000000000000000";
-        /**
-         * 创世区块的挖矿难度，约为我的华为开发笔记本10分钟工作量。256bit TODO 不足填零
-         */
-        public static final String DIFFICULTY = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
-
+        //创世区块的挖矿难度
+        public static final String DIFFICULTY = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
     }
 
     /**
