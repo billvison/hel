@@ -122,15 +122,18 @@ public class BlockSearcher {
         //可能存在多个节点的数据都比本地节点的区块多，但它们节点的数据可能是相同的，不应该向每个节点都去请求数据。
         for(NodeDto node:nodes){
             if(LongUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
-                //提高主区块链核心的高度
-                promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
-                //同步主区块链核心数据到从区块链核心
-                copyMasterBlockchainCoreToSlaveBlockchainCore(blockchainCore, slaveBlockchainCore);
-                //同步远程节点的区块
-                synchronizeRemoteNodeBlock(blockchainCore,slaveBlockchainCore,nodeService,blockchainNodeClient,node);
-                //提高主区块链核心的高度
-                promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
-
+                try {
+                    //提高主区块链核心的高度
+                    promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
+                    //同步主区块链核心数据到从区块链核心
+                    copyMasterBlockchainCoreToSlaveBlockchainCore(blockchainCore, slaveBlockchainCore);
+                    //同步远程节点的区块
+                    synchronizeRemoteNodeBlock(blockchainCore,slaveBlockchainCore,nodeService,blockchainNodeClient,node);
+                    //提高主区块链核心的高度
+                    promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
+                } catch (Exception e){
+                    logger.error(String.format("同步节点[%s]区块到本地区块链系统出现异常",node.getIp()),e);
+                }
                 //同步之后，本地区块链高度已经发生改变了
                 localBlockchainHeight = blockchainCore.queryBlockchainHeight();
             }
