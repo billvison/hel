@@ -1,6 +1,6 @@
 function baseUrl(){
-    return "http://119.3.57.171";
-    //return "";
+    //return "http://119.3.57.171";
+    return "";
 };
 
 
