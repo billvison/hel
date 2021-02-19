@@ -51,7 +51,7 @@
                         <li class="list-group-item">
                             <div class="input-group">
                                 <span class="input-group-addon">请输入付款的金额</span>
-                                <input type="text" class="form-control" name="money">
+                                <input type="number" class="form-control" name="money">
                             </div>
                         </li>
                         <li class="list-group-item">
@@ -82,7 +82,7 @@
                             <li class="list-group-item">
                                 <div class="input-group">
                                     <span class="input-group-addon">请输入付款的金额</span>
-                                    <input type="text" class="form-control" name="money">
+                                    <input type="number" class="form-control" name="money">
                                 </div>
                             </li>
                             <li class="list-group-item">
@@ -116,7 +116,7 @@
 
                     let receive = data.result.transactionOutputDtoList.map((item,index) => {
                         return `
-                          <div class="panel-heading">交易接收方${index+1}</div>
+                          <div class="panel-heading">交易收款方${index+1}</div>
                           <ul class="list-group">
                             <li class="list-group-item">转账地址 : ${item.outputScriptDTO[3]}</li>
                             <li class="list-group-item">转账金额 : ${item.value}</li>
@@ -125,7 +125,7 @@
                     });
                     let receive2 = data.result.transactionInputList.map((item,index) => {
                         return `
-                        <div class="panel-heading">交易支付方${index+1}</div>
+                        <div class="panel-heading">交易付款方${index+1}</div>
                           <ul class="list-group">
                             <li class="list-group-item">地址: ${item.address}</li>
                             <li class="list-group-item">余额 : ${item.value}</li>
