@@ -71,7 +71,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         ConfigurationEntity configurationEntity = configurationDao.getConfigurationValue(IS_SYNCHRONIZER_ACTIVE);
         if(configurationEntity == null){
             //默认值
-            return false;
+            return true;
         }
         return Boolean.valueOf(configurationEntity.getConfValue());
     }
