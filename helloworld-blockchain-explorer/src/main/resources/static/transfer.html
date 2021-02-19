@@ -80,7 +80,7 @@
                     url : baseUrl()+"/Api/AdminConsole/BuildTransactionDto",
                     data:JSON.stringify({recipientList})
                 })
-                if(data.serviceCode === 'SUCCESS'){
+                if(data.serviceCode == 'SUCCESS'){
                     const obj = {}
                     obj.transactionDTO = data.result.transactionDTO;
                     data.result.transactionOutputDtoList.forEach(item => {

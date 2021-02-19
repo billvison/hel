@@ -109,7 +109,7 @@
                 $("#tab2").hide();
                 $("#tab3").hide();
                 $("#tab"+index).show();
-                if(index === 0){
+                if(index == 0){
                     const data = await $ajax({
                         url : baseUrl()+"/Api/Blockchain/QueryTransactionListByAddress",
                         data:`{
@@ -128,7 +128,7 @@
                     transactionViewList.forEach(item => {
                         $('#container0').append(transactionHtml(item))
                     })
-                }else if(index === 1){
+                }else if(index == 1){
                     const data = await $ajax({
                         url : baseUrl()+"/Api/Blockchain/QueryUnspendTransactionOutputListByAddress",
                         data:`{
@@ -153,7 +153,7 @@
                         </tr>
                         `)
                     })
-                }else if(index === 2){
+                }else if(index == 2){
                     const data = await $ajax({
                         url : baseUrl()+"/Api/Blockchain/QueryTransactionOutputListByAddress",
                         data:`{
