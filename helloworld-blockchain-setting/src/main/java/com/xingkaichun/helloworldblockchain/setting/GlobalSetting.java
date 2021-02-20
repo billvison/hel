@@ -66,8 +66,8 @@ public class GlobalSetting {
         public static final long TRANSACTION_TEXT_MAX_SIZE = 1024;
         //区块存储容量限制
         public static final long BLOCK_TEXT_MAX_SIZE = TRANSACTION_TEXT_MAX_SIZE * BLOCK_MAX_TRANSACTION_COUNT;
-        //nonce的长度  32字节
-        public static final long NONCE_TEXT_SIZE = 32;
+        //nonce字符串的长度是64 64位十六进制数
+        public static final long NONCE_TEXT_SIZE = 64;
     }
 
     /**
