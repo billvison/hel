@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>账户管理-HelloworldBlockchain</title>
+        <title>钱包-HelloworldBlockchain</title>
 
         <script src="./lib/jquery/jquery-1.12.4.min.js"></script>
         <script src="./lib/bootstrap/bootstrap.min.js"></script>
@@ -28,8 +28,8 @@
                     <ul class="nav navbar-nav">
                         <li><a href="./miner.html">挖矿</a></li>
                         <li><a href="./pay.html">支付</a></li>
+                        <li class="active"><a href="./wallet.html">钱包</a></li>
                         <li><a href="./node-management.html">节点管理</a></li>
-                        <li class="active"><a href="./account-management.html">账户管理</a></li>
                         <li><a href="./more-management.html">更多管理</a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
@@ -38,11 +38,11 @@
 
         <div class="panel panel-default">
             <!-- Default panel contents -->
-            <div class="panel-heading">☺账户管理☺&nbsp;&nbsp;
+            <div class="panel-heading">☺钱包☺&nbsp;&nbsp;
                 <span id="balance" class="f6">总余额</span>&nbsp;&nbsp;
-                <button type="button" class="btn btn-primary" onclick="increase()">增加账户</button>&nbsp;&nbsp;
-                <button type="button" class="btn btn-primary" onclick="create()">创建新账户</button>&nbsp;&nbsp;
-                <button type="button" class="btn btn-primary" onclick="window.open('./pay.html')">转账</button>
+                <button type="button" class="btn btn-primary" onclick="increase()">添加账户到钱包</button>&nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" onclick="create()">创建新账户(新账户不添加到钱包)</button>&nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" onclick="window.open('./pay.html')">支付</button>
             </div>
             <!-- Table -->
             <table class="table" id="table-node-list">
@@ -63,8 +63,8 @@
                     $('tbody').append(`
                         <tr>
                             <td style="width:80%;">
-                                地址：<a  title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a><br/>
-                                私钥：${item.privateKey}<br/>
+                                地址(账号)：<a  title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a><br/>
+                                私钥(密码)：${item.privateKey}<br/>
                                 余额：${item.value}
                             </td>
                             <td style="width:20%;"><button type="button" class="btn btn-danger">删除</button></td>
@@ -93,7 +93,7 @@
             })
 
             async function increase(){
-                layer.prompt({title: '增加账户，请输入私钥', formType: 2}, function(pass, index){
+                layer.prompt({title: '增加账户，请输入私钥(账户密码)。', formType: 2}, function(pass, index){
                     $.ajax({
                          type: "post",
                          url : baseUrl()+"/Api/AdminConsole/AddAccount",
