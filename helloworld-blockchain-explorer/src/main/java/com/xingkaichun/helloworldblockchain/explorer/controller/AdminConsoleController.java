@@ -370,7 +370,11 @@ public class AdminConsoleController {
                 }
             }
             BuildTransactionResponse buildTransactionResponse = getBlockchainCore().buildTransactionDTO(request);
-            return ServiceResult.createSuccessServiceResult("构建交易成功",buildTransactionResponse);
+            if(buildTransactionResponse.isBuildTransactionSuccess()){
+                return ServiceResult.createSuccessServiceResult("构建交易成功",buildTransactionResponse);
+            }else {
+                return ServiceResult.createFailServiceResult(buildTransactionResponse.getMessage());
+            }
         } catch (Exception e){
             String message = "构建交易失败";
             logger.error(message,e);
