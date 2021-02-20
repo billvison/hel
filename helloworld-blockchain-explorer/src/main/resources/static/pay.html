@@ -115,10 +115,10 @@
                         return `
                         <div class="panel-heading">交易付款方${index+1}</div>
                           <ul class="list-group">
-                            <li class="list-group-item">地址: ${item.address}</li>
+                            <li class="list-group-item">地址: <a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></li>
                             <li class="list-group-item">余额 : ${item.value}</li>
-                            <li class="list-group-item">交易哈希 : ${item.transactionHash}</li>
-                            <li class="list-group-item">交易输出索引号 : ${item.transactionOutputIndex}</li>
+                            <li class="list-group-item">交易哈希 : <a target="_blank" href="./transaction.html?transactionHash=${item.transactionHash}">${item.transactionHash}</a></li>
+                            <li class="list-group-item">交易输出索引号 : <a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}">${item.transactionOutputIndex}</a></li>
                           </ul>
                         `
                     })
@@ -127,7 +127,7 @@
                         return `
                           <div class="panel-heading">交易收款方${index+1}</div>
                           <ul class="list-group">
-                            <li class="list-group-item">转账地址 : ${item.address}</li>
+                            <li class="list-group-item">转账地址 : <a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></li>
                             <li class="list-group-item">转账金额 : ${item.value}</li>
                             <li class="list-group-item">输出脚本 : ${item.outputScript.join(' ')}</li>
                           </ul>
@@ -142,7 +142,7 @@
                               <div class="panel-heading">找零</div>
                               <!-- List group -->
                               <ul class="list-group">
-                                <li class="list-group-item">找零地址 : ${data.result.payerChange.address}</li>
+                                <li class="list-group-item">找零地址 : <a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${data.result.payerChange.address}">${data.result.payerChange.address}</a></li>
                                 <li class="list-group-item">找零金额 : ${data.result.payerChange.value}</li>
                                 <li class="list-group-item">输出脚本 : ${data.result.payerChange.outputScript.join(' ')}</li>
                               </ul>
@@ -171,7 +171,7 @@
                           <!-- List group -->
                           <ul class="list-group">
                             <li class="list-group-item">交易手续费 : ${data.result.fee}</li>
-                            <li class="list-group-item">交易哈希 : ${data.result.transactionHash}</li>
+                            <li class="list-group-item">交易哈希 : <a target="_blank" href="./transaction.html?transactionHash=${data.result.transactionHash}">${data.result.transactionHash}</a></li>
                           </ul>
                         </div>
                         <div class="panel panel-default">
