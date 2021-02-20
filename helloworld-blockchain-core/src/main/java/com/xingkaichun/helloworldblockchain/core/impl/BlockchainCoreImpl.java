@@ -177,6 +177,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
         return buildTransactionDTO(privateKeyList,account.getAddress(),request.getRecipientList());
     }
 
+    //TODO 交易手续费用户主动填写
     public BuildTransactionResponse buildTransactionDTO(List<String> payerPrivateKeyList,String payerChangeAddress,List<Recipient> recipientList) {
         //理应支付总金额
         long outputValues = 0;
@@ -233,8 +234,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
                     //交易输入
                     inputs.add(transactionOutput);
                     inputPrivateKeyList.add(privateKey);
-                    //大于的一部分可以用于交易手续费
-                    if(inputValues > outputValues){
+                    if(inputValues >= outputValues){
                         haveEnoughMoneyToPay = true;
                         break;
                     }
@@ -266,12 +266,18 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
         //找零
         long change = inputValues - outputValues - feeValues;
+        BuildTransactionResponse.InnerTransactionOutput payerChange = null;
         if(change > 0){
             TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
             transactionOutputDTO.setValue(change);
             OutputScript outputScript = StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(payerChangeAddress);
             transactionOutputDTO.setOutputScriptDTO(Model2DtoTool.outputScript2OutputScriptDTO(outputScript));
             transactionOutputDtoList.add(transactionOutputDTO);
+
+            payerChange = new BuildTransactionResponse.InnerTransactionOutput();
+            payerChange.setAddress(payerChangeAddress);
+            payerChange.setValue(change);
+            payerChange.setOutputScript(outputScript);
         }
 
         //签名
@@ -290,10 +296,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
         buildTransactionResponse.setMessage("构建交易成功");
         buildTransactionResponse.setTransactionHash(TransactionTool.calculateTransactionHash(transactionDTO));
         buildTransactionResponse.setFee(feeValues);
-        if(change > 0){
-            buildTransactionResponse.setPayerChangeAddress(payerChangeAddress);
-            buildTransactionResponse.setPayerChangeValue(change);
-        }
+        buildTransactionResponse.setPayerChange(payerChange);
         buildTransactionResponse.setTransactionInputList(inputs);
         buildTransactionResponse.setTransactionOutputList(innerTransactionOutputList);
         buildTransactionResponse.setTransactionDTO(transactionDTO);

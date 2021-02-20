@@ -36,8 +36,8 @@
             <div class="panel panel-default">
                 <div class="panel-heading">支付</div>
             </div>
-            <div id="payList">
-                <div class="panel panel-default">
+            <div id="payerList">
+                <div class="panel panel-default" name="payer">
                     <!-- Default panel contents -->
                     <div class="panel-heading">收款方</div>
                     <!-- List group -->
@@ -67,8 +67,8 @@
         </div>
         <script>
             $('body').delegate('.add', 'click', function(){
-                $('#payList').append(`
-                    <div class="panel panel-default">
+                $('#payerList').append(`
+                    <div class="panel panel-default" name="payer">
                         <!-- Default panel contents -->
                         <div class="panel-heading">收款方</div>
                         <!-- List group -->
@@ -86,8 +86,8 @@
                                 </div>
                             </li>
                             <li class="list-group-item">
-                                <button class="btn btn-primary add"><i class="glyphicon glyphicon-plus"></i></button>
-                                <button class="btn btn-primary delete" onclick="javascript:this.parentNode.parentNode.parentNode.remove()"><i class="glyphicon glyphicon-minus"></i></button>
+                                <button class="btn btn-primary add"><i class="glyphicon glyphicon-plus"></i>&nbsp;增加收款方</button>
+                                <button class="btn btn-primary delete" onclick="javascript:this.parentNode.parentNode.parentNode.remove()"><i class="glyphicon glyphicon-minus"></i>&nbsp;删除该收款方</button>
                             </li>
                         </ul>
                     </div>
@@ -95,7 +95,7 @@
             });
             async function onConfirm(){
                 let recipientList = [];
-                Array.from($('#payList')).forEach(item => {
+                Array.from($('[name="payer"]')).forEach(item => {
                     recipientList.push({address:$(item).find('[name="address"]:first').val().trim(),value:$(item).find('[name="money"]:first').val()})
                 });
                 const data = await $ajax({
@@ -111,18 +111,7 @@
                     });
                     alert(data2.message)
 
-                    let receive = data.result.transactionOutputList.map((item,index) => {
-                        return `
-                          <div class="panel-heading">交易收款方${index+1}</div>
-                          <ul class="list-group">
-                            <li class="list-group-item">转账地址 : ${item.address}</li>
-                            <li class="list-group-item">转账金额 : ${item.value}</li>
-                            <li class="list-group-item">输出脚本 : ${item.outputScript.join(' ')}</li>
-                          </ul>
-                        `
-                    });
-
-                    let receive2 = data.result.transactionInputList.map((item,index) => {
+                    let payerList = data.result.transactionInputList.map((item,index) => {
                         return `
                         <div class="panel-heading">交易付款方${index+1}</div>
                           <ul class="list-group">
@@ -134,31 +123,65 @@
                         `
                     })
 
+                    let payeeList = data.result.transactionOutputList.map((item,index) => {
+                        return `
+                          <div class="panel-heading">交易收款方${index+1}</div>
+                          <ul class="list-group">
+                            <li class="list-group-item">转账地址 : ${item.address}</li>
+                            <li class="list-group-item">转账金额 : ${item.value}</li>
+                            <li class="list-group-item">输出脚本 : ${item.outputScript.join(' ')}</li>
+                          </ul>
+                        `
+                    });
+
+                    let payerChangeHtml = "";
+                    if(data.result.payerChange != null){
+                        payerChangeHtml = `
+                            <div class="panel panel-default">
+                              <!-- Default panel contents -->
+                              <div class="panel-heading">找零</div>
+                              <!-- List group -->
+                              <ul class="list-group">
+                                <li class="list-group-item">找零地址 : ${data.result.payerChange.address}</li>
+                                <li class="list-group-item">找零金额 : ${data.result.payerChange.value}</li>
+                                <li class="list-group-item">输出脚本 : ${data.result.payerChange.outputScript.join(' ')}</li>
+                              </ul>
+                            </div>
+                        `;
+                    }
+
                     const str = `<div>
-                        <!-- 开头 -->
                         <div class="page-header" style="margin-top:0;">
                           <h1>支付详情</h1>
                         </div>
-                        <!-- 内容 -->
-                        
+                        <!-- 付款人 -->
                         <div class="panel panel-default">
-                        ${receive2.join('')}
+                        ${payerList.join('')}
                         </div>
-                        <!-- 内容 -->
-                        
+                        <!-- 收款人 -->
                         <div class="panel panel-default">
-                        ${receive.join('')}
+                        ${payeeList.join('')}
                         </div>
+                        <!-- 找零 -->
+                        ${payerChangeHtml}
+                        <!-- 其它 -->
                         <div class="panel panel-default">
                           <!-- Default panel contents -->
                           <div class="panel-heading">其它</div>
                           <!-- List group -->
                           <ul class="list-group">
-                            <li class="list-group-item">找零地址 : ${data.result.payerChangeAddress}</li>
-                            <li class="list-group-item">找零金额 : ${data.result.payerChangeValue}</li>
                             <li class="list-group-item">交易手续费 : ${data.result.fee}</li>
                             <li class="list-group-item">交易哈希 : ${data.result.transactionHash}</li>
-                            <li class="list-group-item"></li>
+                          </ul>
+                        </div>
+                        <div class="panel panel-default">
+                          <!-- Default panel contents -->
+                          <div class="panel-heading">支付到账确认方式</div>
+                          <!-- List group -->
+                          <ul class="list-group">
+                            <li class="list-group-item">方式一：付款方进入<a target="_blank" href="./account-management.html">钱包</a>查看钱的总额是否变化</li>
+                            <li class="list-group-item">方式二：通知收款方进入<a target="_blank" href="./account-management.html">钱包</a>查看钱的总额是否变化</li>
+                            <li class="list-group-item">方式三：查看交易<a target="_blank" href="./transaction.html?transactionHash=${data.result.transactionHash}">交易</a>是否被区块链确认</li>
                           </ul>
                         </div>
                         <button type="button" class="btn btn-success" style="margin-left:45%" onclick="layer.close(layer.index);">关闭</button>

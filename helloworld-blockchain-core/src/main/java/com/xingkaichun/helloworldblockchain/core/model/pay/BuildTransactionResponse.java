@@ -22,10 +22,9 @@ public class BuildTransactionResponse {
     //交易手续费
     private long fee;
 
-    //找零地址
-    private String payerChangeAddress;
-    //找零金额
-    private long payerChangeValue;
+    //找零
+    private InnerTransactionOutput payerChange;
+
 
     //交易输入
     private List<TransactionOutput> transactionInputList;
@@ -68,20 +67,12 @@ public class BuildTransactionResponse {
         this.fee = fee;
     }
 
-    public String getPayerChangeAddress() {
-        return payerChangeAddress;
+    public InnerTransactionOutput getPayerChange() {
+        return payerChange;
     }
 
-    public void setPayerChangeAddress(String payerChangeAddress) {
-        this.payerChangeAddress = payerChangeAddress;
-    }
-
-    public long getPayerChangeValue() {
-        return payerChangeValue;
-    }
-
-    public void setPayerChangeValue(long payerChangeValue) {
-        this.payerChangeValue = payerChangeValue;
+    public void setPayerChange(InnerTransactionOutput payerChange) {
+        this.payerChange = payerChange;
     }
 
     public List<TransactionOutput> getTransactionInputList() {
