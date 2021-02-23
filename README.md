@@ -21,6 +21,16 @@ http://119.3.57.171/
 
 
 
+### 帮助手册
+[1.如何创建数字货币账户？](https://zhuanlan.zhihu.com/p/352458209)  
+[2.有了账户，如何查看该账户余额？](https://zhuanlan.zhihu.com/p/352458209)
+[3.免费领取数字货币，以供体验测试数字货币。](https://zhuanlan.zhihu.com/p/352458209)  
+[4.用领取得币，进行交易支付操作实体体验使用数字货币。](https://zhuanlan.zhihu.com/p/352458209)  
+[5.怎么挖矿](https://zhuanlan.zhihu.com/p/352458209)
+
+
+
+
 ### 集成开发环境搭建
 #### eclipse
 HelloworldBlockchain项目没有任何复杂依赖，请搜索eclipse如何导入已存在的maven项目。
