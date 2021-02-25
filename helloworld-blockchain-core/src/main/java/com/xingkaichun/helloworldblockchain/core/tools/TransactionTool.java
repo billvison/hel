@@ -78,21 +78,66 @@ public class TransactionTool {
      */
     public static byte[] getToBeSignedData(Transaction transaction) {
         TransactionDTO transactionDTO = Model2DtoTool.transaction2TransactionDTO(transaction);
-        //签名有不同的策略，这里签名使用的数据直接就是计算交易hash的数据。
-        byte[] bytesTransaction = bytesTransaction4CalculateTransactionHash(transactionDTO);
+        return getToBeSignedData(transactionDTO);
+    }
+    public static byte[] getToBeSignedData(TransactionDTO transactionDTO) {
+        byte[] bytesTransaction = bytesTransactio4Signe(transactionDTO);
         byte[] sha256Digest = SHA256Util.doubleDigest(bytesTransaction);
         return sha256Digest;
     }
 
     /**
+     * 待签名的数据
+     */
+    public static byte[] bytesTransactio4Signe(TransactionDTO transactionDTO) {
+        List<byte[]> bytesUnspendTransactionOutputList = new ArrayList<>();
+        List<TransactionInputDTO> inputs = transactionDTO.getTransactionInputDtoList();
+        if(inputs != null){
+            for(TransactionInputDTO transactionInputDTO:inputs){
+                UnspendTransactionOutputDTO unspendTransactionOutputDto = transactionInputDTO.getUnspendTransactionOutputDTO();
+                byte[] bytesTransactionHash = HexUtil.hexStringToBytes(unspendTransactionOutputDto.getTransactionHash());
+                byte[] bytesTransactionOutputIndex = ByteUtil.longToBytes8BigEndian(unspendTransactionOutputDto.getTransactionOutputIndex());
+
+                byte[] bytesUnspendTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesTransactionHash),
+                        ByteUtil.concatLengthBytes(bytesTransactionOutputIndex));
+                bytesUnspendTransactionOutputList.add(bytesUnspendTransactionOutput);
+            }
+        }
+
+        List<byte[]> bytesTransactionOutputList = new ArrayList<>();
+        List<TransactionOutputDTO> outputs = transactionDTO.getTransactionOutputDtoList();
+        if(outputs != null){
+            for(TransactionOutputDTO transactionOutputDTO:outputs){
+                byte[] bytesOutputScript = ScriptTool.bytesScript(transactionOutputDTO.getOutputScriptDTO());
+                byte[] bytesValue = ByteUtil.longToBytes8BigEndian(transactionOutputDTO.getValue());
+                byte[] bytesTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesOutputScript),ByteUtil.concatLengthBytes(bytesValue));
+                bytesTransactionOutputList.add(bytesTransactionOutput);
+            }
+        }
+
+        byte[] data = Bytes.concat(ByteUtil.concatLengthBytes(bytesUnspendTransactionOutputList),
+                ByteUtil.concatLengthBytes(bytesTransactionOutputList));
+
+        return data;
+    }
+
+
+    /**
      * 交易签名
      */
     public static String signature(String privateKey, Transaction transaction) {
-        byte[] bytesMessage = getToBeSignedData(transaction);
+        TransactionDTO transactionDTO = Model2DtoTool.transaction2TransactionDTO(transaction);
+        return signature(privateKey,transactionDTO);
+    }
+    public static String signature(String privateKey, TransactionDTO transactionDTO) {
+        byte[] bytesMessage = getToBeSignedData(transactionDTO);
         byte[] bytesSignature = AccountUtil.signature(privateKey,bytesMessage);
         String stringSignature = HexUtil.bytesToHexString(bytesSignature);
         return stringSignature;
     }
+
+
+
 
     /**
      * 验证脚本
@@ -117,27 +162,25 @@ public class TransactionTool {
         return true;
     }
 
+
+
+
     /**
      * 计算交易哈希
      */
     public static String calculateTransactionHash(Transaction transaction){
         return calculateTransactionHash(Model2DtoTool.transaction2TransactionDTO(transaction));
     }
-
-    /**
-     * 计算交易哈希
-     */
     public static String calculateTransactionHash(TransactionDTO transactionDTO){
-        byte[] bytesTransaction = bytesTransaction4CalculateTransactionHash(transactionDTO);
+        byte[] bytesTransaction = bytesTransaction(transactionDTO);
         byte[] sha256Digest = SHA256Util.doubleDigest(bytesTransaction);
         return HexUtil.bytesToHexString(sha256Digest);
     }
 
     /**
-     * 字节型交易，要求字节数组能反过来转换为交易。
-     * TODO hash内容应该是什么
+     * 将交易转换为字节数组，要求生成的字节数组反过来能还原为原始交易。
      */
-    public static byte[] bytesTransaction4CalculateTransactionHash(TransactionDTO transactionDTO) {
+    public static byte[] bytesTransaction(TransactionDTO transactionDTO) {
         List<byte[]> bytesUnspendTransactionOutputList = new ArrayList<>();
         List<TransactionInputDTO> inputs = transactionDTO.getTransactionInputDtoList();
         if(inputs != null){
@@ -145,11 +188,11 @@ public class TransactionTool {
                 UnspendTransactionOutputDTO unspendTransactionOutputDto = transactionInputDTO.getUnspendTransactionOutputDTO();
                 byte[] bytesTransactionHash = HexUtil.hexStringToBytes(unspendTransactionOutputDto.getTransactionHash());
                 byte[] bytesTransactionOutputIndex = ByteUtil.longToBytes8BigEndian(unspendTransactionOutputDto.getTransactionOutputIndex());
-                //byte[] bytesInputScript = ScriptTool.bytesScript(transactionInputDTO.getInputScriptDTO());
+                byte[] bytesInputScript = ScriptTool.bytesScript(transactionInputDTO.getInputScriptDTO());
 
                 byte[] bytesUnspendTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesTransactionHash),
-                        ByteUtil.concatLengthBytes(bytesTransactionOutputIndex));
-                        //ByteUtil.concatLengthBytes(bytesInputScript));
+                        ByteUtil.concatLengthBytes(bytesTransactionOutputIndex),
+                        ByteUtil.concatLengthBytes(bytesInputScript));
                 bytesUnspendTransactionOutputList.add(bytesUnspendTransactionOutput);
             }
         }
@@ -170,6 +213,8 @@ public class TransactionTool {
 
         return data;
     }
+
+
 
     /**
      * 交易中的金额是否符合系统的约束
