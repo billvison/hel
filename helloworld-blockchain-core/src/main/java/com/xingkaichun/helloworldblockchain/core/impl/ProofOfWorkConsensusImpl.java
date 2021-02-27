@@ -39,10 +39,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
 
 
     public String calculateDifficult(BlockchainDatabase blockchainDataBase, Block block) {
-        //TODO 每个区块时常
-        long targetTimespan = 1000 * 60 * 14;
-        long targetSpacing = 1000 * 60;
-        long nInterval = targetTimespan / targetSpacing;
+        long intervalBlockCount = GlobalSetting.MinerConstant.INTERVAL_TIME / GlobalSetting.MinerConstant.BLOCK_TIME;
 
         String targetDifficult;
         long blockHeight = block.getHeight();
@@ -52,18 +49,21 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         }
         Block lastBlock = blockchainDataBase.queryBlockByBlockHeight(blockHeight-1);
         long lastBlockHeight = lastBlock.getHeight();
-        if (lastBlockHeight % nInterval != 0){
+        if (lastBlockHeight % intervalBlockCount != 0){
             targetDifficult = lastBlock.getDifficulty();
             return targetDifficult;
         }
-        Block Block14DayAgo = blockchainDataBase.queryBlockByBlockHeight(lastBlockHeight-nInterval+1);
-        long actualTimespan = lastBlock.getTimestamp() - Block14DayAgo.getTimestamp();
-        if (actualTimespan < targetTimespan/4)
-            actualTimespan = targetTimespan/4;
-        if (actualTimespan > targetTimespan*4)
-            actualTimespan = targetTimespan*4;
-
-        BigInteger bigIntegerTargetDifficult = new BigInteger(lastBlock.getDifficulty(),16).multiply(new BigInteger(String.valueOf(actualTimespan))).divide(new BigInteger(String.valueOf(targetTimespan)));
+        //此时，最后一个区块是上一个周期的最后一个区块。
+        Block intervalLastBlock = lastBlock;
+        Block intervalFirstBlock = blockchainDataBase.queryBlockByBlockHeight(lastBlockHeight-intervalBlockCount+1);
+        long actualTimespan = intervalLastBlock.getTimestamp() - intervalFirstBlock.getTimestamp();
+        if (actualTimespan < GlobalSetting.MinerConstant.INTERVAL_TIME /4){
+            actualTimespan = GlobalSetting.MinerConstant.INTERVAL_TIME /4;
+        }
+        if (actualTimespan > GlobalSetting.MinerConstant.INTERVAL_TIME *4){
+            actualTimespan = GlobalSetting.MinerConstant.INTERVAL_TIME *4;
+        }
+        BigInteger bigIntegerTargetDifficult = new BigInteger(intervalLastBlock.getDifficulty(),16).multiply(new BigInteger(String.valueOf(actualTimespan))).divide(new BigInteger(String.valueOf(GlobalSetting.MinerConstant.INTERVAL_TIME)));
         return bigIntegerTargetDifficult.toString(16);
     }
 }

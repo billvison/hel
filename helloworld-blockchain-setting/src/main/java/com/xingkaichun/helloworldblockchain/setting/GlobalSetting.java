@@ -54,6 +54,12 @@ public class GlobalSetting {
     public static class MinerConstant{
         //这个时间间隔更新一次正在被挖矿的区块的交易。如果时间太长，可能导致新提交的交易延迟被确认。
         public static final long MINE_TIMESTAMP_PER_ROUND = 1000 * 10;
+        //期望的每个区块挖矿耗时时间
+        public static final long BLOCK_TIME = 1000 * 60;
+        //在一个挖矿难度周期内的区块数量
+        public static final long INTERVAL_BLOCK = 14;
+        //一个挖矿难度周期内的周期耗时时间
+        public static final long INTERVAL_TIME = BLOCK_TIME * INTERVAL_BLOCK;
     }
 
     /**
