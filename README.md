@@ -31,8 +31,8 @@ http://119.3.57.171/
 
 
 ### 技术文档
-[区块大小、交易大小](https://zhuanlan.zhihu.com/p/336827577)
-
+[区块大小、交易大小](https://zhuanlan.zhihu.com/p/336827577)  
+[交易序列化](https://zhuanlan.zhihu.com/p/353323689)
 
 
 ### 集成开发环境搭建
