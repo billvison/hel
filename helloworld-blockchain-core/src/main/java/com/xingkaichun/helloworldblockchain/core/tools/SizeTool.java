@@ -38,7 +38,7 @@ public class SizeTool {
         //区块的前哈希的长度不需要校验  假设前哈希长度不正确，则在随后的业务逻辑中走不通
 
         //校验区块随机数占用存储空间
-        long nonceByteSize = calculateNonceSize(blockDTO.getNonce());
+        long nonceByteSize = stringSize(blockDTO.getNonce());
         if(!LongUtil.isEquals(nonceByteSize, GlobalSetting.BlockConstant.NONCE_TEXT_SIZE)){
             logger.debug(String.format("nonce[%s]长度不是[%s]。",blockDTO.getNonce(),GlobalSetting.BlockConstant.NONCE_TEXT_SIZE));
             return false;
@@ -146,16 +146,25 @@ public class SizeTool {
         return calculateBlockSize(Model2DtoTool.block2BlockDTO(block));
     }
     /**
-     * 计算区块的大小，因为区块的大小主要是其所包含的交易，所以计算区块的大小时省略区块时间戳、区块前哈希、区块随机数。
+     * 计算区块的大小
      */
     public static long calculateBlockSize(BlockDTO blockDTO) {
         long size = 0;
+        long timestamp = blockDTO.getTimestamp();
+        size += longSize(timestamp);
+
+        String previousBlockHash = blockDTO.getPreviousBlockHash();
+        size += stringSize(previousBlockHash);
+
+        String nonce = blockDTO.getNonce();
+        size += stringSize(nonce);
         List<TransactionDTO> transactionDtoList = blockDTO.getTransactionDtoList();
         for(TransactionDTO transactionDTO:transactionDtoList){
             size += calculateTransactionSize(transactionDTO);
         }
         return size;
     }
+
     public static long calculateTransactionSize(TransactionDTO transactionDTO) {
         long size = 0;
         List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getTransactionInputDtoList();
@@ -179,7 +188,7 @@ public class SizeTool {
         OutputScriptDTO outputScriptDTO = transactionOutputDTO.getOutputScriptDTO();
         size += calculateScriptSize(outputScriptDTO);
         long value = transactionOutputDTO.getValue();
-        size += calculateValueSize(value);
+        size += longSize(value);
         return size;
     }
     private static long calculateTransactionInputSize(List<TransactionInputDTO> inputs) {
@@ -203,9 +212,9 @@ public class SizeTool {
     private static long calculateTransactionOutputSize(UnspendTransactionOutputDTO unspendTransactionOutputDTO) {
         long size = 0;
         String transactionHash = unspendTransactionOutputDTO.getTransactionHash();
-        size += calculateTransactionHashSize(transactionHash);
+        size += stringSize(transactionHash);
         long transactionOutputIndex = unspendTransactionOutputDTO.getTransactionOutputIndex();
-        size += calculateTransactionOutputIndexSize(transactionOutputIndex);
+        size += longSize(transactionOutputIndex);
         return size;
     }
     private static long calculateScriptSize(ScriptDTO script) {
@@ -220,17 +229,12 @@ public class SizeTool {
     }
 
 
-    private static long calculateTransactionHashSize(String transactionHash) {
-        return transactionHash.length();
+    private static long stringSize(String string) {
+        return string.length();
     }
-    private static long calculateNonceSize(String nonce) {
-        return nonce.length();
-    }
-    private static long calculateValueSize(long value){
-        return String.valueOf(value).length();
-    }
-    private static long calculateTransactionOutputIndexSize(long transactionOutputIndex) {
-        return String.valueOf(transactionOutputIndex).length();
+
+    private static long longSize(long timestamp) {
+        return String.valueOf(timestamp).length();
     }
     //endregion
 }
