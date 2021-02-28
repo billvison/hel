@@ -37,11 +37,11 @@ http://119.3.57.171/
 [交易哈希](https://zhuanlan.zhihu.com/p/353574892)  
 [默克尔树](https://zhuanlan.zhihu.com/p/40142647)  
 [区块大小、交易大小](https://zhuanlan.zhihu.com/p/336827577)  
-[交易序列化](https://zhuanlan.zhihu.com/p/353323689)  
-[51%攻击](https://zhuanlan.zhihu.com/p/39984439)  
+[脚本](https://zhuanlan.zhihu.com/p/353582574)  
 [UTXO未花费交易输出](https://zhuanlan.zhihu.com/p/39969755)  
 [双哈希运算](https://zhuanlan.zhihu.com/p/353575311)  
-[杂谈--双花攻击](https://zhuanlan.zhihu.com/p/258952892)  
+[杂谈--双花攻击](https://zhuanlan.zhihu.com/p/258952892)
+[杂谈--51%攻击](https://zhuanlan.zhihu.com/p/39984439)
 
 ### 集成开发环境搭建
 #### eclipse
