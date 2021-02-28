@@ -34,13 +34,14 @@ http://119.3.57.171/
 [数据结构](https://zhuanlan.zhihu.com/p/332265582)  
 [钱包:公钥、私钥、地址](https://zhuanlan.zhihu.com/p/38196092)  
 [区块哈希](https://zhuanlan.zhihu.com/p/353570191)  
+[交易哈希](https://zhuanlan.zhihu.com/p/353574892)  
 [默克尔树](https://zhuanlan.zhihu.com/p/40142647)  
 [区块大小、交易大小](https://zhuanlan.zhihu.com/p/336827577)  
 [交易序列化](https://zhuanlan.zhihu.com/p/353323689)  
 [51%攻击](https://zhuanlan.zhihu.com/p/39984439)  
 [UTXO未花费交易输出](https://zhuanlan.zhihu.com/p/39969755)  
 [双花](https://zhuanlan.zhihu.com/p/258952892)  
-[双哈希运算](https://zhuanlan.zhihu.com/p/353575311)  
+[双哈希运算](https://zhuanlan.zhihu.com/p/353575311)
 
 ### 集成开发环境搭建
 #### eclipse
