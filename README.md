@@ -31,7 +31,8 @@ http://119.3.57.171/
 
 
 ### 技术文档
-[数据结构](https://zhuanlan.zhihu.com/p/332265582)  
+[必读--白皮书](ttps://zhuanlan.zhihu.com/p/353439857)  
+[必读--数据结构](https://zhuanlan.zhihu.com/p/332265582)  
 [钱包:公钥、私钥、地址](https://zhuanlan.zhihu.com/p/38196092)  
 [区块哈希](https://zhuanlan.zhihu.com/p/353570191)  
 [交易哈希](https://zhuanlan.zhihu.com/p/353574892)  
@@ -40,7 +41,7 @@ http://119.3.57.171/
 [脚本](https://zhuanlan.zhihu.com/p/353582574)  
 [UTXO未花费交易输出](https://zhuanlan.zhihu.com/p/39969755)  
 [双哈希运算](https://zhuanlan.zhihu.com/p/353575311)  
-[杂谈--双花攻击](https://zhuanlan.zhihu.com/p/258952892)
+[杂谈--双花攻击](https://zhuanlan.zhihu.com/p/258952892)  
 [杂谈--51%攻击](https://zhuanlan.zhihu.com/p/39984439)
 
 ### 集成开发环境搭建
