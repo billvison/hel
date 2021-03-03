@@ -31,7 +31,7 @@ http://119.3.57.171/
 
 
 ### 技术文档
-[必读--白皮书](ttps://zhuanlan.zhihu.com/p/353439857)  
+[必读--白皮书](https://zhuanlan.zhihu.com/p/353439857)  
 [必读--数据结构](https://zhuanlan.zhihu.com/p/332265582)  
 [钱包:公钥、私钥、地址](https://zhuanlan.zhihu.com/p/38196092)  
 [区块哈希](https://zhuanlan.zhihu.com/p/353570191)  
