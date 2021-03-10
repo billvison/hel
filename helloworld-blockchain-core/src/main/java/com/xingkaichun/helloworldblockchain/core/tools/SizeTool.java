@@ -16,8 +16,6 @@ import java.util.List;
 /**
  * (区块、交易)大小工具类
  *
- * 设计见https://zhuanlan.zhihu.com/p/336827577
- *
  * @author 邢开春 409060350@qq.com
  */
 public class SizeTool {

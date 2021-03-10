@@ -4,7 +4,6 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 
 /**
  * 矿工挖矿激励
- * 相关拓展：bitcoin总数为什么是2100万个？https://zhuanlan.zhihu.com/p/258953345
  *
  * @author 邢开春 409060350@qq.com
  */

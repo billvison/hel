@@ -18,7 +18,6 @@ public class Transaction implements Serializable {
      * 这里要求区块链系统不允许同一个哈希被使用两次或是两次以上(一个哈希同时被交易哈希、区块哈希使用也不行)。
      *
      * 冗余字段，这个值可以由区块链系统推算出来
-     * 相关拓展：比特币曾经出现过两个交易ID相同的情况。https://zhuanlan.zhihu.com/p/258955441
      */
     private String transactionHash;
     /**

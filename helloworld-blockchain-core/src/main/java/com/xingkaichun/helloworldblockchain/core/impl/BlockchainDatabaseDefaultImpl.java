@@ -937,7 +937,6 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     //region 双花攻击
     /**
      * 是否有双花攻击
-     * 相关拓展：双花攻击 https://zhuanlan.zhihu.com/p/258952892
      */
     private boolean isDoubleSpendAttackHappen(Transaction transaction) {
         //双花交易：交易内部存在重复的(未花费交易输出)
@@ -955,7 +954,6 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
 
     /**
      * 是否有双花攻击
-     * 相关拓展：双花攻击 https://zhuanlan.zhihu.com/p/258952892
      */
     private boolean isDoubleSpendAttackHappen(Block block) {
         //双花交易：区块内部存在重复的(未花费交易输出)
