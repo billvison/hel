@@ -31,7 +31,7 @@ http://119.3.57.171/
 
 
 ### 技术文档
-[必读--白皮书](https://zhuanlan.zhihu.com/p/353439857)  
+[必读--白皮书](https://www.zhihu.com/question/51047975/answer/1778438713)  
 [必读--数据结构](https://zhuanlan.zhihu.com/p/332265582)  
 [钱包:公钥、私钥、地址](https://zhuanlan.zhihu.com/p/38196092)  
 [哈希运算](https://zhuanlan.zhihu.com/p/354442546)  
@@ -41,7 +41,7 @@ http://119.3.57.171/
 [默克尔树](https://zhuanlan.zhihu.com/p/40142647)  
 [区块大小、交易大小](https://zhuanlan.zhihu.com/p/336827577)  
 [脚本](https://zhuanlan.zhihu.com/p/353582574)  
-[UTXO未花费交易输出](https://zhuanlan.zhihu.com/p/39969755)  
+[UTXO未花费交易输出](https://www.zhihu.com/question/59913301/answer/1779203932)  
 [杂谈--双花攻击](https://zhuanlan.zhihu.com/p/258952892)  
 [杂谈--51%攻击](https://zhuanlan.zhihu.com/p/39984439)
 
