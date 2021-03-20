@@ -1,27 +1,26 @@
 package com.xingkaichun.helloworldblockchain.explorer.dto.block;
 
-import com.xingkaichun.helloworldblockchain.core.model.Block;
-
 /**
  *
  * @author 邢开春 409060350@qq.com
  */
 public class QueryBlockDtoByBlockHeightResponse {
 
-    private Block block ;
+    private QueryBlockDtoByBlockHashResponse.BlockDto blockDto ;
 
 
 
 
     //region get set
 
-    public Block getBlock() {
-        return block;
+    public QueryBlockDtoByBlockHashResponse.BlockDto getBlockDto() {
+        return blockDto;
     }
 
-    public void setBlock(Block block) {
-        this.block = block;
+    public void setBlockDto(QueryBlockDtoByBlockHashResponse.BlockDto blockDto) {
+        this.blockDto = blockDto;
     }
+
 
     //endregion
 }

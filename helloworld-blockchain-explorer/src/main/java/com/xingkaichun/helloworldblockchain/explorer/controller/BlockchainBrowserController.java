@@ -334,8 +334,24 @@ public class BlockchainBrowserController {
             if(block == null){
                 return ServiceResult.createFailServiceResult(String.format("区块链中不存在区块高度[%d]，请检查输入高度。",request.getBlockHeight()));
             }
+            Block nextBlock = getBlockchainCore().queryBlockByBlockHeight(block.getHeight()+1);
+
+            QueryBlockDtoByBlockHashResponse.BlockDto blockDto = new QueryBlockDtoByBlockHashResponse.BlockDto();
+            blockDto.setHeight(block.getHeight());
+            blockDto.setConfirmCount(BlockTool.getTransactionCount(block));
+            blockDto.setBlockSize(SizeTool.calculateBlockSize(block)+"字符");
+            blockDto.setTransactionCount(BlockTool.getTransactionCount(block));
+            blockDto.setTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));
+            blockDto.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
+            blockDto.setDifficulty(BlockTool.formatDifficulty(block.getDifficulty()));
+            blockDto.setNonce(block.getNonce());
+            blockDto.setHash(block.getHash());
+            blockDto.setPreviousBlockHash(block.getPreviousBlockHash());
+            blockDto.setNextBlockHash(nextBlock==null?null:nextBlock.getHash());
+            blockDto.setMerkleTreeRoot(block.getMerkleTreeRoot());
+
             QueryBlockDtoByBlockHeightResponse response = new QueryBlockDtoByBlockHeightResponse();
-            response.setBlock(block);
+            response.setBlockDto(blockDto);
             return ServiceResult.createSuccessServiceResult("成功获取区块",response);
         } catch (Exception e){
             String message = "查询获取失败";
@@ -363,7 +379,7 @@ public class BlockchainBrowserController {
             blockDto.setTransactionCount(BlockTool.getTransactionCount(block));
             blockDto.setTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));
             blockDto.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
-            blockDto.setDifficulty(block.getDifficulty());
+            blockDto.setDifficulty(BlockTool.formatDifficulty(block.getDifficulty()));
             blockDto.setNonce(block.getNonce());
             blockDto.setHash(block.getHash());
             blockDto.setPreviousBlockHash(block.getPreviousBlockHash());
