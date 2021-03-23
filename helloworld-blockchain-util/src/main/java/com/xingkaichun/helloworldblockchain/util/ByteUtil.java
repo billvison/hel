@@ -31,27 +31,26 @@ public class ByteUtil {
     /**
      * (大端模式)8个字节的字节数组(8*8=64个bit)转换为long。
      */
-    public static long bytes8BigEndianToLong(byte[] valueBytes) {
-        long s = 0;
-        long s0 = valueBytes[0] & 0xff;
-        long s1 = valueBytes[1] & 0xff;
-        long s2 = valueBytes[2] & 0xff;
-        long s3 = valueBytes[3] & 0xff;
-        long s4 = valueBytes[4] & 0xff;
-        long s5 = valueBytes[5] & 0xff;
-        long s6 = valueBytes[6] & 0xff;
-        long s7 = valueBytes[7] & 0xff;
+    public static long bytes8BigEndianToLong(byte[] bytes) {
+        long n0 = bytes[0] & 0xff;
+        long n1 = bytes[1] & 0xff;
+        long n2 = bytes[2] & 0xff;
+        long n3 = bytes[3] & 0xff;
+        long n4 = bytes[4] & 0xff;
+        long n5 = bytes[5] & 0xff;
+        long n6 = bytes[6] & 0xff;
+        long n7 = bytes[7] & 0xff;
 
-        // s0不变
-        s1 <<= 8;
-        s2 <<= 16;
-        s3 <<= 24;
-        s4 <<= 8 * 4;
-        s5 <<= 8 * 5;
-        s6 <<= 8 * 6;
-        s7 <<= 8 * 7;
-        s = s0 | s1 | s2 | s3 | s4 | s5 | s6 | s7;
-        return s;
+        n6 <<= 0;
+        n6 <<= 8;
+        n5 <<= 16;
+        n4 <<= 24;
+        n3 <<= 32;
+        n2 <<= 40;
+        n1 <<= 48;
+        n0 <<= 56;
+        long n = n0 | n1 | n2 | n3 | n4 | n5 | n6 | n7;
+        return n;
     }
 
     /**
