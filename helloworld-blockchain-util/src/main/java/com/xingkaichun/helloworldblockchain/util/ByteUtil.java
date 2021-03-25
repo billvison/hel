@@ -64,10 +64,10 @@ public class ByteUtil {
      * 拼接字节数组。
      */
     public static byte[] concatLengthBytes(List<byte[]> values) {
-        byte[] concatBytes = longToBytes8BigEndian(values.size());
+        byte[] concatBytes = new byte[0];
         for(byte[] value:values){
             concatBytes = Bytes.concat(concatBytes,value);
         }
-        return concatBytes;
+        return concatLengthBytes(concatBytes);
     }
 }
