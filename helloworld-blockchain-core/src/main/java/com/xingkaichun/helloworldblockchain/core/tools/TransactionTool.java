@@ -70,20 +70,20 @@ public class TransactionTool {
     /**
      * 获取待签名数据
      */
-    public static byte[] getToBeSignedData(Transaction transaction) {
+    public static byte[] hash4SignatureHashAll(Transaction transaction) {
         TransactionDTO transactionDTO = Model2DtoTool.transaction2TransactionDTO(transaction);
-        return getToBeSignedData(transactionDTO);
+        return hash4SignatureHashAll(transactionDTO);
     }
-    public static byte[] getToBeSignedData(TransactionDTO transactionDTO) {
-        byte[] bytesTransaction = bytesTransactio4Signe(transactionDTO);
+    public static byte[] hash4SignatureHashAll(TransactionDTO transactionDTO) {
+        byte[] bytesTransaction = bytesTransactio4SignatureHashAll(transactionDTO);
         byte[] sha256Digest = SHA256Util.doubleDigest(bytesTransaction);
         return sha256Digest;
     }
 
     /**
-     * 待签名的数据
+     * 待签名的数据 方法来源于本类中的bytesTransaction方法，移除了脚本输入。请保证在移除脚本输入后，该方法可以反序列化。
      */
-    public static byte[] bytesTransactio4Signe(TransactionDTO transactionDTO) {
+    public static byte[] bytesTransactio4SignatureHashAll(TransactionDTO transactionDTO) {
         List<byte[]> bytesUnspendTransactionOutputList = new ArrayList<>();
         List<TransactionInputDTO> inputs = transactionDTO.getTransactionInputDtoList();
         if(inputs != null){
@@ -94,7 +94,7 @@ public class TransactionTool {
 
                 byte[] bytesUnspendTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesTransactionHash),
                         ByteUtil.concatLengthBytes(bytesTransactionOutputIndex));
-                bytesUnspendTransactionOutputList.add(bytesUnspendTransactionOutput);
+                bytesUnspendTransactionOutputList.add(ByteUtil.concatLengthBytes(bytesUnspendTransactionOutput));
             }
         }
 
@@ -105,7 +105,7 @@ public class TransactionTool {
                 byte[] bytesOutputScript = ScriptTool.bytesScript(transactionOutputDTO.getOutputScriptDTO());
                 byte[] bytesValue = ByteUtil.longToBytes8BigEndian(transactionOutputDTO.getValue());
                 byte[] bytesTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesOutputScript),ByteUtil.concatLengthBytes(bytesValue));
-                bytesTransactionOutputList.add(bytesTransactionOutput);
+                bytesTransactionOutputList.add(ByteUtil.concatLengthBytes(bytesTransactionOutput));
             }
         }
 
@@ -124,7 +124,7 @@ public class TransactionTool {
         return signature(privateKey,transactionDTO);
     }
     public static String signature(String privateKey, TransactionDTO transactionDTO) {
-        byte[] bytesMessage = getToBeSignedData(transactionDTO);
+        byte[] bytesMessage = hash4SignatureHashAll(transactionDTO);
         byte[] bytesSignature = AccountUtil.signature(privateKey,bytesMessage);
         String stringSignature = HexUtil.bytesToHexString(bytesSignature);
         return stringSignature;

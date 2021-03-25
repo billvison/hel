@@ -39,7 +39,7 @@ public class StackBasedVirtualMachine {
                 }
             }else if(Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),byteCommand)){
                 String publicKey = stack.pop();
-                byte[] bytesMessage = TransactionTool.getToBeSignedData(transactionEnvironment);
+                byte[] bytesMessage = TransactionTool.hash4SignatureHashAll(transactionEnvironment);
                 String signature = stack.pop();
                 byte[] bytesSignature = HexUtil.hexStringToBytes(signature);
                 boolean verifySignatureSuccess = AccountUtil.verifySignature(publicKey,bytesMessage,bytesSignature);
