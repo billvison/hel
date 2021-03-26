@@ -123,11 +123,11 @@ public class BlockSearcher {
         for(NodeDto node:nodes){
             if(LongUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
                 try {
-                    //提高主区块链核心的高度
+                    //提高主区块链核心的高度，若上次程序异常退出，可能存在主链没有成功同步从链数据的情况
                     promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
                     //同步主区块链核心数据到从区块链核心
                     copyMasterBlockchainCoreToSlaveBlockchainCore(blockchainCore, slaveBlockchainCore);
-                    //同步远程节点的区块
+                    //同步远程节点的区块到本地，未分叉同步至主链，分叉同步至从链
                     synchronizeRemoteNodeBlock(blockchainCore,slaveBlockchainCore,nodeService,blockchainNodeClient,node);
                     //提高主区块链核心的高度
                     promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
@@ -193,6 +193,7 @@ public class BlockSearcher {
         if(slaveBlockchainTailBlock == null){
             return;
         }
+        //主高度为0，直接同步从1个区块，让主链有区块存在
         if(masterBlockchainTailBlock == null){
             Block block = slaveBlockchainCore.queryBlockByBlockHeight(GlobalSetting.GenesisBlock.HEIGHT +1);
             boolean isAddBlockToBlockchainSuccess = masterBlockchainCore.addBlock(block);
@@ -201,6 +202,8 @@ public class BlockSearcher {
             }
             masterBlockchainTailBlock = masterBlockchainCore.queryTailBlock();
         }
+        //至此，主链、从链高度至少都为1
+        //判断主链是否需要同步从链
         if(LongUtil.isGreatEqualThan(masterBlockchainTailBlock.getHeight(),slaveBlockchainTailBlock.getHeight())){
             return;
         }
@@ -254,6 +257,9 @@ public class BlockSearcher {
     }
 
 
+    /**
+     * 同步远程节点的区块到本地，未分叉同步至主链，分叉同步至从链
+     */
     public void synchronizeRemoteNodeBlock(BlockchainCore masterBlockchainCore, BlockchainCore slaveBlockchainCore, NodeService nodeService, BlockchainNodeClient blockchainNodeClient, NodeDto node) {
 
         Block masterBlockchainCoreTailBlock = masterBlockchainCore.queryTailBlock();
