@@ -81,16 +81,12 @@ HelloworldBlockchain项目没有任何复杂依赖，请搜索idea如何导入�
 进入项目目录(请根据本地的实际项目目录运行命令)  
 cd C:\Users\xingkaichun\IdeaProjects\HelloworldBlockchain   
 运行项目打包命令   
-mvn -DskipTests=true clean package install  
+mvn -DskipTests=true clean package
 ```
 #### 发布项目
 ```  
 进入打包结果目录(请根据本地的实际项目目录运行命令)  
 cd C:\Users\xingkaichun\IdeaProjects\HelloworldBlockchain\helloworld-blockchain-explorer\target  
-解压  
-unzip helloworld-blockchain-explorer-*.zip  
-进入解压文件目录  
-cd helloworld-blockchain-explorer    
-运行启动脚本  
-./start.sh restart  
+运行启动命令  
+java -jar helloworld-blockchain-explorer-1.0-SNAPSHOT.jar  
 ```
