@@ -14,7 +14,7 @@ public class TransactionOutputId implements Serializable {
      */
     private String transactionHash;
     /**
-     * 交易输出在[此笔交易所有的交易输出]中的序列号
+     * 交易输出在[此笔交易所有的交易输出]中的序列号，序列号从1开始。从日常生活角度看，交易的第一笔交易输出明显比交易的第零笔交易输出符合常理。
      * 冗余
      */
     private long transactionOutputIndex;

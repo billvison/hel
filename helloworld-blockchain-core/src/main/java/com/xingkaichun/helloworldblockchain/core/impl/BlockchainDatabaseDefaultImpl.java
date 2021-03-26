@@ -541,7 +541,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                         transactionOutput.setBlockHeight(blockHeight);
                         transactionOutput.setBlockHash(blockHash);
                         transactionOutput.setTransactionHash(transaction.getTransactionHash());
-                        transactionOutput.setTransactionOutputIndex(i);
+                        transactionOutput.setTransactionOutputIndex(i+1);
                         transactionOutput.setTransactionIndexInBlock(transaction.getTransactionIndexInBlock());
                     }
                 }
