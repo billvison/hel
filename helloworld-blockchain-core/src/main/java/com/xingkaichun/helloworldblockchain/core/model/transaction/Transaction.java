@@ -34,13 +34,12 @@ public class Transaction implements Serializable {
      */
     private List<TransactionOutput> outputs;
     /**
-     * 交易在区块中的序列号
-     *
+     * 交易在区块中的序列号，序列号从1开始。
      * 冗余字段，这个值可以由区块链系统推算出来
      */
     private long transactionIndexInBlock;
     /**
-     * 交易在区块链中的序列号
+     * 交易在区块链中的序列号，序列号从1开始。
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
