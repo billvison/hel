@@ -110,6 +110,6 @@ Helloworld币源码经过编译后生成Helloworld币应用(包含Android应用�
 
 截至此时，此版本定为第二版本。修订地球原子数量错误。
 
-感谢 @小石头 指出"地球原子数目10^22个原子"的错误。
+感谢 @小石头(https://www.zhihu.com/people/xiao-shi-tou-57-85) 指出"地球原子数目10^22个原子"的错误。
 
-感谢 @漏网之蟹 与其女朋友 提供的地球原子数目为 10^50 ，见 https://www.zhihu.com/question/392586135 。
+感谢 @漏网之蟹(https://www.zhihu.com/people/lou-wang-zhi-xie) 与其女朋友 提供的地球原子数目为 10^50 ，见 https://www.zhihu.com/question/392586135 。
