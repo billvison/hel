@@ -101,15 +101,10 @@ public class Model2DtoTool {
     }
 
     public static String signature(TransactionDTO transactionDTO, String privateKey) {
-        byte[] bytesMessage = HexUtil.hexStringToBytes(signatureData(transactionDTO));
+        byte[] bytesMessage = TransactionTool.hash4SignatureHashAll(transactionDTO);
         byte[] bytesSignature = AccountUtil.signature(privateKey,bytesMessage);
         String stringSignature = HexUtil.bytesToHexString(bytesSignature);
         return stringSignature;
-    }
-
-    public static String signatureData(TransactionDTO transactionDTO) {
-        String data = TransactionTool.calculateTransactionHash(transactionDTO);
-        return data;
     }
 
     public static String encode(BlockDTO blockDTO) {
