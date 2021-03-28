@@ -796,9 +796,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                     TransactionOutput utxo = transactionInput.getUnspendTransactionOutput();
                     byte[] addressToSpendTransactionOutputListKey = BlockchainDatabaseKeyTool.buildAddressToSpendTransactionOutputListKey(utxo);
                     if(blockchainActionEnum == BlockchainActionEnum.ADD_BLOCK){
-                        writeBatch.delete(addressToSpendTransactionOutputListKey);
-                    }else{
                         writeBatch.put(addressToSpendTransactionOutputListKey, EncodeDecodeTool.encode(utxo));
+                    }else{
+                        writeBatch.delete(addressToSpendTransactionOutputListKey);
                     }
                 }
             }
