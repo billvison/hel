@@ -45,7 +45,7 @@ public class GlobalSetting {
         //创世区块的哈希
         public static final String HASH = "0000000000000000000000000000000000000000000000000000000000000000";
         //创世区块的挖矿难度
-        public static final String DIFFICULTY = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+        public static final String DIFFICULTY = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
     }
 
     /**
