@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>区块详情-HelloworldBlockchain</title>
+
+        <script src="./lib/jquery/jquery-1.12.4.min.js"></script>
+        <script src="./lib/bootstrap/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap/bootstrap.min.css">
+
+        <link rel="stylesheet" href="./assets/common/common.css">
+        <script src="./assets/common/common.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">HelloworldBlockchain</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="./search.html">搜索</a></li>
+                        <li><a href="./miner.html">挖矿</a></li>
+                        <li><a href="./pay.html">支付</a></li>
+                        <li><a href="./wallet.html">钱包</a></li>
+                        <li><a href="./node-management.html">节点管理</a></li>
+                        <li><a href="./more-management.html">更多管理</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+
+        <div class="input-group">
+            <input id="search" type="text" class="form-control" placeholder="输入区块高度、区块哈希、交易哈希、地址...">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="search()">Go!</button>
+            </span>
+        </div>
+
+        <script>
+            async function search(){
+                var searchValue = $("#search").val().trim();
+                if(searchValue == null || searchValue==""){
+                    alert("输入区块高度、区块哈希、交易哈希、地址...");
+                    return;
+                }
+
+                var reqJson = "" ;
+                var data = "" ;
+
+                if(!isNaN(searchValue)){
+                    //区块高度
+                    reqJson = `{ "blockHeight": ${searchValue}}`;
+                    data = await $ajax({
+                        url : baseUrl()+"/Api/Blockchain/QueryBlockDtoByBlockHeight",
+                        data: reqJson
+                    });
+                    if(data.result != null){
+                        alert("识别为区块高度，点击确认按钮，跳转到区块详情页。");
+                        let {blockDto} = data.result;
+                        var redirectUrl = `./block.html?hash=${blockDto.hash}`;
+                        console.log(redirectUrl);
+                        window.location.href = redirectUrl;
+                        return;
+                    }
+                }
+
+                //区块哈希
+                reqJson = `{ "blockHash": "${searchValue}"}`;
+                data = await $ajax({
+                    url : baseUrl()+"/Api/Blockchain/QueryBlockDtoByBlockHash",
+                    data: reqJson
+                });
+                if(data.result != null){
+                    alert("识别为区块哈希，点击确认按钮，跳转到区块详情页。");
+                    let {blockDto} = data.result;
+                    var redirectUrl = `./block.html?hash=${blockDto.hash}`;
+                    console.log(redirectUrl);
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
+                //交易哈希
+                reqJson = `{"transactionHash":"${searchValue}"}`
+                data = await $ajax({
+                    url : baseUrl()+"/Api/Blockchain/QueryTransactionByTransactionHash",
+                    data: reqJson
+                });
+                if(data.result != null){
+                    alert("识别为交易哈希，点击确认按钮，跳转到交易详情页。");
+                    let {blockDto} = data.result;
+                    var redirectUrl = `./transaction.html?transactionHash=${searchValue}`;
+                    console.log(redirectUrl);
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
+                //地址
+                reqJson = `{"address":"${searchValue}","pageCondition":{"from":1,"size":1}}`
+                data = await $ajax({
+                    url : baseUrl()+"/Api/Blockchain/QueryTransactionListByAddress",
+                    data: reqJson
+                });
+                if(data.result != null && data.result.transactionViewList != null){
+                    alert("识别为地址，点击确认按钮，跳转到地址详情页。");
+                    let {blockDto} = data.result;
+                    var redirectUrl = `./address.html?address=${searchValue}`;
+                    console.log(redirectUrl);
+                    window.location.href = redirectUrl;
+                    return;
+                }
+
+                alert("请检查区块高度、区块哈希、交易哈希、地址...");
+            }
+        </script>
+    </body>
+</html>

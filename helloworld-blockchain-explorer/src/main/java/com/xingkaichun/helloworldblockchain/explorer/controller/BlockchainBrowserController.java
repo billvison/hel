@@ -90,6 +90,10 @@ public class BlockchainBrowserController {
     public ServiceResult<QueryTransactionByTransactionHashResponse> queryTransactionByTransactionHash(@RequestBody QueryTransactionByTransactionHashRequest request){
         try {
             TransactionView transactionView = blockchainBrowserService.queryTransactionByTransactionHash(request.getTransactionHash());
+            if(transactionView == null){
+                return ServiceResult.createFailServiceResult("根据交易哈希未能查询到交易");
+            }
+
             QueryTransactionByTransactionHashResponse response = new QueryTransactionByTransactionHashResponse();
             response.setTransactionView(transactionView);
             return ServiceResult.createSuccessServiceResult("根据交易哈希查询交易成功",response);
@@ -172,6 +176,10 @@ public class BlockchainBrowserController {
         try {
             PageCondition pageCondition = request.getPageCondition();
             List<TransactionView> transactionViewList = blockchainBrowserService.queryTransactionListByAddress(request.getAddress(),pageCondition.getFrom(),pageCondition.getSize());
+            if(transactionViewList == null || transactionViewList.size()==0){
+                return ServiceResult.createFailServiceResult("根据地址未能查询到交易列表");
+            }
+
             QueryTransactionListByAddressResponse response = new QueryTransactionListByAddressResponse();
             response.setTransactionViewList(transactionViewList);
             return ServiceResult.createSuccessServiceResult("[查询交易输出]成功",response);
