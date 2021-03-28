@@ -5,6 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
+import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.core.tools.SizeTool;
 import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
@@ -308,8 +309,17 @@ public class BlockchainBrowserController {
         try {
             PageCondition pageCondition = request.getPageCondition();
             List<TransactionDTO> transactionDtoList = getBlockchainCore().queryMiningTransactionList(pageCondition.getFrom(),pageCondition.getSize());
+            if(transactionDtoList == null){
+                return ServiceResult.createSuccessServiceResult("未查询到未确认的交易");
+            }
+
+            List<Transaction> transactionDtoListResp = new ArrayList<>();
+            for(TransactionDTO transactionDto : transactionDtoList){
+                Transaction transaction = Dto2ModelTool.transactionDto2Transaction(getBlockchainCore().getBlockchainDataBase(),transactionDto);
+                transactionDtoListResp.add(transaction);
+            }
             QueryMiningTransactionListResponse response = new QueryMiningTransactionListResponse();
-            response.setTransactionDtoList(transactionDtoList);
+            response.setTransactionDtoList(transactionDtoListResp);
             return ServiceResult.createSuccessServiceResult("查询挖矿中的交易成功",response);
         } catch (Exception e){
             String message = "查询挖矿中的交易失败";

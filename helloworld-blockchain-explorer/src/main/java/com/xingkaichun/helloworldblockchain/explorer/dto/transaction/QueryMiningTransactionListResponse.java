@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.explorer.dto.transaction;
 
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 
 import java.util.List;
 
@@ -10,18 +10,18 @@ import java.util.List;
  */
 public class QueryMiningTransactionListResponse {
 
-    private List<TransactionDTO> transactionDtoList;
+    private List<Transaction> transactionDtoList;
 
 
 
 
     //region get set
 
-    public List<TransactionDTO> getTransactionDtoList() {
+    public List<Transaction> getTransactionDtoList() {
         return transactionDtoList;
     }
 
-    public void setTransactionDtoList(List<TransactionDTO> transactionDtoList) {
+    public void setTransactionDtoList(List<Transaction> transactionDtoList) {
         this.transactionDtoList = transactionDtoList;
     }
 
