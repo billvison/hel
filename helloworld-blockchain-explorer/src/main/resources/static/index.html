@@ -71,7 +71,7 @@
                 $(blockDtoList).each((index, item) => {
                     $('tbody').append(`
                     <tr class="loop">
-                        <td><a target="_blank" href="./block.html?hash=${item.hash}">${item.height}</a></td>
+                        <td><a target="_blank" href="./block-by-height.html?height=${item.height}">${item.height}</a></td>
                         <td>${item.blockSize}</td>
                         <td>${item.transactionCount}</td>
                         <td>${item.minerIncentiveValue}</td>

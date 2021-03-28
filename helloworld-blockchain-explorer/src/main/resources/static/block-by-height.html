@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>中转页</title>
+        <script src="./lib/jquery/jquery-1.12.4.min.js"></script>
+        <script src="./lib/bootstrap/bootstrap.min.js"></script>
+        <script src="./assets/common/common.js"></script>
+    </head>
+    <body>
+        <script>
+            let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
+            var reqJson = `{ "blockHeight": ${urlParameters.get("height")}}`;
+
+            $(async function(){
+                const data = await $ajax({
+                    url : baseUrl()+"/Api/Blockchain/QueryBlockDtoByBlockHeight",
+                    data: reqJson
+                });
+                if(data.result != null){
+                    let {blockDto} = data.result;
+                    var redirectUrl = `./block.html${location.search}&hash=${blockDto.hash}`;
+                    console.log(redirectUrl);
+                    window.location.href = redirectUrl;
+                }else {
+                    alert("请检查区块高度！点击返回首页。");
+                    window.location.href = "./index.html";
+                }
+            }())
+        </script>
+    </body>
+</html>
