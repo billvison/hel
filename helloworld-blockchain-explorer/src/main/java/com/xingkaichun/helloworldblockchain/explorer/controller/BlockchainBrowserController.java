@@ -3,6 +3,8 @@ package com.xingkaichun.helloworldblockchain.explorer.controller;
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
@@ -313,10 +315,38 @@ public class BlockchainBrowserController {
                 return ServiceResult.createSuccessServiceResult("未查询到未确认的交易");
             }
 
-            List<Transaction> transactionDtoListResp = new ArrayList<>();
+            List<QueryMiningTransactionListResponse.TransactionDto> transactionDtoListResp = new ArrayList<>();
             for(TransactionDTO transactionDto : transactionDtoList){
                 Transaction transaction = Dto2ModelTool.transactionDto2Transaction(getBlockchainCore().getBlockchainDataBase(),transactionDto);
-                transactionDtoListResp.add(transaction);
+                QueryMiningTransactionListResponse.TransactionDto transactionDtoResp = new QueryMiningTransactionListResponse.TransactionDto();
+                transactionDtoResp.setTransactionHash(transaction.getTransactionHash());
+
+                List<QueryMiningTransactionListResponse.TransactionInputDto> inputDtos = new ArrayList<>();
+                List<TransactionInput> inputs = transaction.getInputs();
+                if(inputs != null){
+                    for(TransactionInput input:inputs){
+                        QueryMiningTransactionListResponse.TransactionInputDto transactionInputDto = new QueryMiningTransactionListResponse.TransactionInputDto();
+                        transactionInputDto.setAddress(input.getUnspendTransactionOutput().getAddress());
+                        transactionInputDto.setTransactionHash(input.getUnspendTransactionOutput().getTransactionHash());
+                        transactionInputDto.setTransactionOutputIndex(input.getUnspendTransactionOutput().getTransactionOutputIndex());
+                        transactionInputDto.setValue(input.getUnspendTransactionOutput().getValue());
+                        inputDtos.add(transactionInputDto);
+                    }
+                }
+                transactionDtoResp.setInputs(inputDtos);
+
+                List<QueryMiningTransactionListResponse.TransactionOutputDto> outputDtos = new ArrayList<>();
+                List<TransactionOutput> outputs = transaction.getOutputs();
+                if(outputs != null){
+                    for(TransactionOutput output:outputs){
+                        QueryMiningTransactionListResponse.TransactionOutputDto transactionOutputDto = new QueryMiningTransactionListResponse.TransactionOutputDto();
+                        transactionOutputDto.setAddress(output.getAddress());
+                        transactionOutputDto.setValue(output.getValue());
+                        outputDtos.add(transactionOutputDto);
+                    }
+                }
+                transactionDtoResp.setOutputs(outputDtos);
+                transactionDtoListResp.add(transactionDtoResp);
             }
             QueryMiningTransactionListResponse response = new QueryMiningTransactionListResponse();
             response.setTransactionDtoList(transactionDtoListResp);
