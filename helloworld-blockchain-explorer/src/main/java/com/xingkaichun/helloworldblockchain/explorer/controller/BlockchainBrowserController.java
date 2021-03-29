@@ -194,27 +194,6 @@ public class BlockchainBrowserController {
     }
 
     /**
-     * 根据交易哈希查询挖矿中交易
-     */
-    @RequestMapping(value = BlockchainApiRoute.QUERY_MINING_TRANSACTION_BY_TRANSACTION_HASH,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryMiningTransactionByTransactionHashResponse> queryMiningTransactionByTransactionHash(@RequestBody QueryMiningTransactionByTransactionHashRequest request){
-        try {
-            TransactionDTO transactionDTO = getBlockchainCore().queryMiningTransactionDtoByTransactionHash(request.getTransactionHash());
-            if(transactionDTO == null){
-                return ServiceResult.createFailServiceResult(String.format("交易哈希[%s]不是正在被挖矿的交易。",request.getTransactionHash()));
-            }
-
-            QueryMiningTransactionByTransactionHashResponse response = new QueryMiningTransactionByTransactionHashResponse();
-            response.setTransactionDTO(transactionDTO);
-            return ServiceResult.createSuccessServiceResult("根据交易哈希查询挖矿中交易成功",response);
-        } catch (Exception e){
-            String message = "根据交易哈希查询挖矿中交易失败";
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
-
-    /**
      * 根据地址获取未花费交易输出
      */
     @RequestMapping(value = BlockchainApiRoute.QUERY_UNSPEND_TRANSACTION_OUTPUT_LIST_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
@@ -300,6 +279,57 @@ public class BlockchainBrowserController {
             String message = "查询区块链高度失败";
             logger.error(message,e);
             return ServiceResult.createSuccessServiceResult(message,null);
+        }
+    }
+
+    /**
+     * 根据交易哈希查询挖矿中交易
+     */
+    @RequestMapping(value = BlockchainApiRoute.QUERY_MINING_TRANSACTION_BY_TRANSACTION_HASH,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryMiningTransactionByTransactionHashResponse> queryMiningTransactionByTransactionHash(@RequestBody QueryMiningTransactionByTransactionHashRequest request){
+        try {
+            TransactionDTO transactionDTO = getBlockchainCore().queryMiningTransactionDtoByTransactionHash(request.getTransactionHash());
+            if(transactionDTO == null){
+                return ServiceResult.createFailServiceResult(String.format("交易哈希[%s]不是正在被挖矿的交易。",request.getTransactionHash()));
+            }
+
+            Transaction transaction = Dto2ModelTool.transactionDto2Transaction(getBlockchainCore().getBlockchainDataBase(),transactionDTO);
+            QueryMiningTransactionByTransactionHashResponse.TransactionDto transactionDtoResp = new QueryMiningTransactionByTransactionHashResponse.TransactionDto();
+            transactionDtoResp.setTransactionHash(transaction.getTransactionHash());
+
+            List<QueryMiningTransactionListResponse.TransactionInputDto> inputDtos = new ArrayList<>();
+            List<TransactionInput> inputs = transaction.getInputs();
+            if(inputs != null){
+                for(TransactionInput input:inputs){
+                    QueryMiningTransactionListResponse.TransactionInputDto transactionInputDto = new QueryMiningTransactionListResponse.TransactionInputDto();
+                    transactionInputDto.setAddress(input.getUnspendTransactionOutput().getAddress());
+                    transactionInputDto.setTransactionHash(input.getUnspendTransactionOutput().getTransactionHash());
+                    transactionInputDto.setTransactionOutputIndex(input.getUnspendTransactionOutput().getTransactionOutputIndex());
+                    transactionInputDto.setValue(input.getUnspendTransactionOutput().getValue());
+                    inputDtos.add(transactionInputDto);
+                }
+            }
+            transactionDtoResp.setInputs(inputDtos);
+
+            List<QueryMiningTransactionListResponse.TransactionOutputDto> outputDtos = new ArrayList<>();
+            List<TransactionOutput> outputs = transaction.getOutputs();
+            if(outputs != null){
+                for(TransactionOutput output:outputs){
+                    QueryMiningTransactionListResponse.TransactionOutputDto transactionOutputDto = new QueryMiningTransactionListResponse.TransactionOutputDto();
+                    transactionOutputDto.setAddress(output.getAddress());
+                    transactionOutputDto.setValue(output.getValue());
+                    outputDtos.add(transactionOutputDto);
+                }
+            }
+            transactionDtoResp.setOutputs(outputDtos);
+
+            QueryMiningTransactionByTransactionHashResponse response = new QueryMiningTransactionByTransactionHashResponse();
+            response.setTransactionDTO(transactionDtoResp);
+            return ServiceResult.createSuccessServiceResult("根据交易哈希查询挖矿中交易成功",response);
+        } catch (Exception e){
+            String message = "根据交易哈希查询挖矿中交易失败";
+            logger.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
         }
     }
 

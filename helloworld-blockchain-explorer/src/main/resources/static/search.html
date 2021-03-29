@@ -116,6 +116,20 @@
                     return;
                 }
 
+                //挖矿中的交易
+                reqJson = `{"transactionHash":"${searchValue}"}`
+                data = await $ajax({
+                    url : baseUrl()+"/Api/Blockchain/QueryMiningTransactionByTransactionHash",
+                    data: reqJson
+                });
+                if(data.result != null && data.result.transactionDTO != null){
+                    alert("识别为未确认的交易，点击确认按钮，跳转到未确认的交易详情页。");
+                    let {blockDto} = data.result;
+                    var redirectUrl = `./unconfirm-transaction.html?transactionHash=${searchValue}`;
+                    console.log(redirectUrl);
+                    window.location.href = redirectUrl;
+                    return;
+                }
                 alert("请检查区块高度、区块哈希、交易哈希、地址...");
             }
         </script>
