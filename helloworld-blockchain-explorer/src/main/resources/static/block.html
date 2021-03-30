@@ -39,7 +39,7 @@
         </div>
 
         <div align="center">
-            <button onclick="load()">加载更多</button>
+            <button id="button-load" class="btn btn-primary" onclick="load()">加载更多交易数据</button>
         </div>
 
         <script>
@@ -63,7 +63,7 @@
                         <tbody>
                             <tr>
                                 <td style="width:10%">高度</td>
-                                <td style="width:40%">${blockDto.height}</td>
+                                <td style="width:40%"><a target="_blank" href="./block-by-height.html?height=${blockDto.height}">${blockDto.height}</a></td>
                                 <td style="width:10%">挖矿难度</td>
                                 <td style="width:40%">${blockDto.difficulty}</td>
                             </tr>
@@ -111,7 +111,7 @@
                 let result = data.result.transactionViewList;
                 console.log(data);
                 if(data.serviceCode = 'SUCCESS' && (data.result.transactionViewList == null || data.result.transactionViewList.length==0)){
-                    alert("没有更多数据了!");
+                    $("#button-load").html("交易数据加载完毕。");
                     return;
                 }
                 $(result).each((index, item) => {
