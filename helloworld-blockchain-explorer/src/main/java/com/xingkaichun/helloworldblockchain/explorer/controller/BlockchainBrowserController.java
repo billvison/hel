@@ -294,14 +294,14 @@ public class BlockchainBrowserController {
             }
 
             Transaction transaction = Dto2ModelTool.transactionDto2Transaction(getBlockchainCore().getBlockchainDataBase(),transactionDTO);
-            QueryMiningTransactionByTransactionHashResponse.TransactionDto transactionDtoResp = new QueryMiningTransactionByTransactionHashResponse.TransactionDto();
+            MiningTransactionDTO transactionDtoResp = new MiningTransactionDTO();
             transactionDtoResp.setTransactionHash(transaction.getTransactionHash());
 
-            List<QueryMiningTransactionListResponse.TransactionInputDto> inputDtos = new ArrayList<>();
+            List<MiningTransactionDTO.TransactionInputDto> inputDtos = new ArrayList<>();
             List<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null){
                 for(TransactionInput input:inputs){
-                    QueryMiningTransactionListResponse.TransactionInputDto transactionInputDto = new QueryMiningTransactionListResponse.TransactionInputDto();
+                    MiningTransactionDTO.TransactionInputDto transactionInputDto = new MiningTransactionDTO.TransactionInputDto();
                     transactionInputDto.setAddress(input.getUnspendTransactionOutput().getAddress());
                     transactionInputDto.setTransactionHash(input.getUnspendTransactionOutput().getTransactionHash());
                     transactionInputDto.setTransactionOutputIndex(input.getUnspendTransactionOutput().getTransactionOutputIndex());
@@ -311,11 +311,11 @@ public class BlockchainBrowserController {
             }
             transactionDtoResp.setInputs(inputDtos);
 
-            List<QueryMiningTransactionListResponse.TransactionOutputDto> outputDtos = new ArrayList<>();
+            List<MiningTransactionDTO.TransactionOutputDto> outputDtos = new ArrayList<>();
             List<TransactionOutput> outputs = transaction.getOutputs();
             if(outputs != null){
                 for(TransactionOutput output:outputs){
-                    QueryMiningTransactionListResponse.TransactionOutputDto transactionOutputDto = new QueryMiningTransactionListResponse.TransactionOutputDto();
+                    MiningTransactionDTO.TransactionOutputDto transactionOutputDto = new MiningTransactionDTO.TransactionOutputDto();
                     transactionOutputDto.setAddress(output.getAddress());
                     transactionOutputDto.setValue(output.getValue());
                     outputDtos.add(transactionOutputDto);
@@ -345,17 +345,17 @@ public class BlockchainBrowserController {
                 return ServiceResult.createSuccessServiceResult("未查询到未确认的交易");
             }
 
-            List<QueryMiningTransactionListResponse.TransactionDto> transactionDtoListResp = new ArrayList<>();
+            List<MiningTransactionDTO> transactionDtoListResp = new ArrayList<>();
             for(TransactionDTO transactionDto : transactionDtoList){
                 Transaction transaction = Dto2ModelTool.transactionDto2Transaction(getBlockchainCore().getBlockchainDataBase(),transactionDto);
-                QueryMiningTransactionListResponse.TransactionDto transactionDtoResp = new QueryMiningTransactionListResponse.TransactionDto();
+                MiningTransactionDTO transactionDtoResp = new MiningTransactionDTO();
                 transactionDtoResp.setTransactionHash(transaction.getTransactionHash());
 
-                List<QueryMiningTransactionListResponse.TransactionInputDto> inputDtos = new ArrayList<>();
+                List<MiningTransactionDTO.TransactionInputDto> inputDtos = new ArrayList<>();
                 List<TransactionInput> inputs = transaction.getInputs();
                 if(inputs != null){
                     for(TransactionInput input:inputs){
-                        QueryMiningTransactionListResponse.TransactionInputDto transactionInputDto = new QueryMiningTransactionListResponse.TransactionInputDto();
+                        MiningTransactionDTO.TransactionInputDto transactionInputDto = new MiningTransactionDTO.TransactionInputDto();
                         transactionInputDto.setAddress(input.getUnspendTransactionOutput().getAddress());
                         transactionInputDto.setTransactionHash(input.getUnspendTransactionOutput().getTransactionHash());
                         transactionInputDto.setTransactionOutputIndex(input.getUnspendTransactionOutput().getTransactionOutputIndex());
@@ -365,11 +365,11 @@ public class BlockchainBrowserController {
                 }
                 transactionDtoResp.setInputs(inputDtos);
 
-                List<QueryMiningTransactionListResponse.TransactionOutputDto> outputDtos = new ArrayList<>();
+                List<MiningTransactionDTO.TransactionOutputDto> outputDtos = new ArrayList<>();
                 List<TransactionOutput> outputs = transaction.getOutputs();
                 if(outputs != null){
                     for(TransactionOutput output:outputs){
-                        QueryMiningTransactionListResponse.TransactionOutputDto transactionOutputDto = new QueryMiningTransactionListResponse.TransactionOutputDto();
+                        MiningTransactionDTO.TransactionOutputDto transactionOutputDto = new MiningTransactionDTO.TransactionOutputDto();
                         transactionOutputDto.setAddress(output.getAddress());
                         transactionOutputDto.setValue(output.getValue());
                         outputDtos.add(transactionOutputDto);
