@@ -4,7 +4,7 @@ package com.xingkaichun.helloworldblockchain.netcore.dto.netserver;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class NodeDto extends BaseNodeDto {
+public class NodeDTO extends BaseNodeDTO {
 
     private Long blockchainHeight;
     private Boolean isNodeAvailable;

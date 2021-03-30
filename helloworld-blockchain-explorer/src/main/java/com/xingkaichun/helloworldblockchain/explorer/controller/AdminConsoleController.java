@@ -16,7 +16,7 @@ import com.xingkaichun.helloworldblockchain.explorer.vo.node.*;
 import com.xingkaichun.helloworldblockchain.explorer.vo.synchronizer.*;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,7 +151,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.ADD_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<AddNodeResponse> addNode(@RequestBody AddNodeRequest request){
         try {
-            NodeDto node = request.getNode();
+            NodeDTO node = request.getNode();
             if(StringUtil.isNullOrEmpty(node.getIp())){
                 return ServiceResult.createFailServiceResult("节点IP不能为空");
             }
@@ -210,7 +210,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.QUERY_ALL_NODE_LIST,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryAllNodeListResponse> queryAllNodeList(@RequestBody QueryAllNodeListRequest request){
         try {
-            List<NodeDto> nodeList = netBlockchainCore.getNodeService().queryAllNodeList();
+            List<NodeDTO> nodeList = netBlockchainCore.getNodeService().queryAllNodeList();
             QueryAllNodeListResponse response = new QueryAllNodeListResponse();
             response.setNodeList(nodeList);
             return ServiceResult.createSuccessServiceResult("查询节点成功",response);

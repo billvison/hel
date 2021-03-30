@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
 import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeClient;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
@@ -51,8 +51,8 @@ public class NodeBroadcaster {
      * 广播自己
      */
     private void broadcastMyself() {
-        List<NodeDto> nodes = nodeService.queryAllNodeList();
-        for(NodeDto node:nodes){
+        List<NodeDTO> nodes = nodeService.queryAllNodeList();
+        for(NodeDTO node:nodes){
             blockchainNodeClient.pingNode(node);
         }
     }

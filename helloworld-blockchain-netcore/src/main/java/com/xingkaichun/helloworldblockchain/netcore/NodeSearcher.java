@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeClient;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
@@ -79,8 +79,8 @@ public class NodeSearcher {
      */
     private void searchNodes() {
         //这里可以利用多线程进行性能优化，因为本项目是helloworld项目，因此只采用单线程轮询每一个节点查询新的网络节点，不做进一步优化拓展。
-        List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
-        for(NodeDto node:nodes){
+        List<NodeDTO> nodes = nodeService.queryAllNoForkNodeList();
+        for(NodeDTO node:nodes){
             if(!configurationService.isAutoSearchNode()){
                 return;
             }
@@ -109,11 +109,11 @@ public class NodeSearcher {
     /**
      * 将远程节点知道的节点，一一进行验证这些节点的合法性，如果正常，则将这些节点加入自己的区块链网络。
      */
-    private void addAvailableNodeToDatabase(List<NodeDto> nodeList){
+    private void addAvailableNodeToDatabase(List<NodeDTO> nodeList){
         if(nodeList == null){
             return;
         }
-        for(NodeDto node : nodeList){
+        for(NodeDTO node : nodeList){
             addAvailableNodeToDatabase(node);
         }
     }
@@ -121,11 +121,11 @@ public class NodeSearcher {
     /**
      * 若一个新的(之前没有加入过本地数据库)、可用的(网络连接是好的)的节点加入本地数据库
      */
-    private void addAvailableNodeToDatabase(NodeDto node) {
+    private void addAvailableNodeToDatabase(NodeDTO node) {
         if(configurationService.isAutoSearchNode()){
             return;
         }
-        NodeDto localNode = nodeService.queryNode(node);
+        NodeDTO localNode = nodeService.queryNode(node);
         if(localNode == null){
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClient.pingNode(node);
             if(ServiceResult.isSuccess(pingResponseServiceResult)){
@@ -147,9 +147,9 @@ public class NodeSearcher {
      */
     private void addSeedNode() {
         for(String nodeIp: GlobalSetting.SEED_NODE_LIST){
-            NodeDto node = new NodeDto();
+            NodeDTO node = new NodeDTO();
             node.setIp(nodeIp);
-            NodeDto nodeDto = nodeService.queryNode(node);
+            NodeDTO nodeDto = nodeService.queryNode(node);
             if(nodeDto == null){
                 if(configurationService.isAutoSearchNode()){
                     nodeService.addNode(node);

@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.explorer.vo.node;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
 
 import java.util.List;
 
@@ -10,18 +10,18 @@ import java.util.List;
  */
 public class QueryAllNodeListResponse {
 
-    private List<NodeDto> nodeList;
+    private List<NodeDTO> nodeList;
 
 
 
 
     //region get set
 
-    public List<NodeDto> getNodeList() {
+    public List<NodeDTO> getNodeList() {
         return nodeList;
     }
 
-    public void setNodeList(List<NodeDto> nodeList) {
+    public void setNodeList(List<NodeDTO> nodeList) {
         this.nodeList = nodeList;
     }
 

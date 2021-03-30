@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.explorer.vo.node;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.BaseNodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.BaseNodeDTO;
 
 /**
  *
@@ -8,17 +8,17 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.BaseNodeDto;
  */
 public class DeleteNodeRequest {
 
-    private BaseNodeDto node;
+    private BaseNodeDTO node;
 
 
 
 
     //region get set
-    public BaseNodeDto getNode() {
+    public BaseNodeDTO getNode() {
         return node;
     }
 
-    public void setNode(BaseNodeDto node) {
+    public void setNode(BaseNodeDTO node) {
         this.node = node;
     }
     //endregion

@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.PingResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.QueryBlockDtoByBlockHeightResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.QueryBlockHashByBlockHeightResponse;
@@ -90,8 +90,8 @@ public class BlockSearcher {
      * 在区块链网络中搜寻新的区块
      */
     private void searchBlocks() {
-        List<NodeDto> nodes = nodeService.queryAllNoForkNodeList();
-        for(NodeDto node:nodes){
+        List<NodeDTO> nodes = nodeService.queryAllNoForkNodeList();
+        for(NodeDTO node:nodes){
             ServiceResult<PingResponse> pingResponseServiceResult = blockchainNodeClient.pingNode(node);
             boolean isPingSuccess = ServiceResult.isSuccess(pingResponseServiceResult);
             node.setIsNodeAvailable(isPingSuccess);
@@ -113,14 +113,14 @@ public class BlockSearcher {
      * 搜索新的区块，并同步这些区块到本地区块链系统
      */
     private void synchronizeBlocks() {
-        List<NodeDto> nodes = nodeService.queryAllNoForkAliveNodeList();
+        List<NodeDTO> nodes = nodeService.queryAllNoForkAliveNodeList();
         if(nodes == null || nodes.size()==0){
             return;
         }
 
         long localBlockchainHeight = blockchainCore.queryBlockchainHeight();
         //可能存在多个节点的数据都比本地节点的区块多，但它们节点的数据可能是相同的，不应该向每个节点都去请求数据。
-        for(NodeDto node:nodes){
+        for(NodeDTO node:nodes){
             if(LongUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
                 try {
                     //提高主区块链核心的高度，若上次程序异常退出，可能存在主链没有成功同步从链数据的情况
@@ -260,7 +260,7 @@ public class BlockSearcher {
     /**
      * 同步远程节点的区块到本地，未分叉同步至主链，分叉同步至从链
      */
-    public void synchronizeRemoteNodeBlock(BlockchainCore masterBlockchainCore, BlockchainCore slaveBlockchainCore, NodeService nodeService, BlockchainNodeClient blockchainNodeClient, NodeDto node) {
+    public void synchronizeRemoteNodeBlock(BlockchainCore masterBlockchainCore, BlockchainCore slaveBlockchainCore, NodeService nodeService, BlockchainNodeClient blockchainNodeClient, NodeDTO node) {
 
         Block masterBlockchainCoreTailBlock = masterBlockchainCore.queryTailBlock();
         long masterBlockchainCoreTailBlockHeight = masterBlockchainCore.queryBlockchainHeight();

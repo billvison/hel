@@ -4,14 +4,14 @@ package com.xingkaichun.helloworldblockchain.netcore.dto.netserver;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class BaseNodeDto {
+public class BaseNodeDTO {
 
     private String ip;
 
-    public BaseNodeDto() {
+    public BaseNodeDTO() {
     }
 
-    public BaseNodeDto(String ip) {
+    public BaseNodeDTO(String ip) {
         this.ip = ip;
     }
 

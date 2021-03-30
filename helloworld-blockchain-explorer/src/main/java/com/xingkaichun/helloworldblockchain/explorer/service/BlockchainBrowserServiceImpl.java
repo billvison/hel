@@ -8,7 +8,7 @@ import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.*;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.SubmitTransactionToNodeResponse;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.util.DateUtil;
@@ -141,11 +141,11 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         //将交易提交到本地区块链
         getBlockchainCore().submitTransaction(transactionDTO);
         //提交交易到网络
-        List<NodeDto> nodes = netBlockchainCore.getNodeService().queryAllNoForkAliveNodeList();
+        List<NodeDTO> nodes = netBlockchainCore.getNodeService().queryAllNoForkAliveNodeList();
         List<SubmitTransactionToBlockchainNetworkResponse.Node> successSubmitNode = new ArrayList<>();
         List<SubmitTransactionToBlockchainNetworkResponse.Node> failSubmitNode = new ArrayList<>();
         if(nodes != null){
-            for(NodeDto node:nodes){
+            for(NodeDTO node:nodes){
                 ServiceResult<SubmitTransactionToNodeResponse> submitSuccess = netBlockchainCore.getBlockchainNodeClient().submitTransaction(node,transactionDTO);
                 if(ServiceResult.isSuccess(submitSuccess)){
                     successSubmitNode.add(new SubmitTransactionToBlockchainNetworkResponse.Node(node.getIp()));

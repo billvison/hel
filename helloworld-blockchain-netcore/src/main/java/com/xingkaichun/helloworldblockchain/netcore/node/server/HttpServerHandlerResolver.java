@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.Model2DtoTool;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request.*;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.*;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
@@ -42,11 +42,11 @@ public class HttpServerHandlerResolver {
      */
     public ServiceResult<PingResponse> ping(ChannelHandlerContext ctx, PingRequest request){
         try {
-            List<NodeDto> nodeList = nodeService.queryAllNoForkNodeList();
+            List<NodeDTO> nodeList = nodeService.queryAllNoForkNodeList();
             long blockchainHeight = blockchainCore.queryBlockchainHeight();
 
             //将ping的来路作为区块链节点
-            NodeDto node = new NodeDto();
+            NodeDTO node = new NodeDTO();
             InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
             String ip = insocket.getAddress().getHostAddress();
             node.setIp(ip);
@@ -74,7 +74,7 @@ public class HttpServerHandlerResolver {
      */
     public ServiceResult<AddOrUpdateNodeResponse> addOrUpdateNode(ChannelHandlerContext ctx,AddOrUpdateNodeRequest request){
         try {
-            NodeDto node = new NodeDto();
+            NodeDTO node = new NodeDTO();
             InetSocketAddress inetSocketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
             String ip = inetSocketAddress.getAddress().getHostAddress();
             node.setIp(ip);

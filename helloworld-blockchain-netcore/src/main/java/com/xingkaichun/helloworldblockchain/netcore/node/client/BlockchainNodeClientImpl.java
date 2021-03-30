@@ -3,8 +3,8 @@ package com.xingkaichun.helloworldblockchain.netcore.node.client;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.BaseNodeDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.BaseNodeDTO;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeServerApiRoute;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request.*;
 import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.response.*;
@@ -32,7 +32,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
     }
 
     @Override
-    public ServiceResult<SubmitTransactionToNodeResponse> submitTransaction(BaseNodeDto node, TransactionDTO transactionDTO) {
+    public ServiceResult<SubmitTransactionToNodeResponse> submitTransaction(BaseNodeDTO node, TransactionDTO transactionDTO) {
         try {
             String url = String.format("http://%s:%d%s",node.getIp(), GlobalSetting.DEFAULT_PORT, NodeServerApiRoute.SUBMIT_TRANSACTION_TO_NODE);
             SubmitTransactionToNodeRequest request = new SubmitTransactionToNodeRequest();
@@ -54,7 +54,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
         }
     }
 
-    public ServiceResult<PingResponse> pingNode(BaseNodeDto node) {
+    public ServiceResult<PingResponse> pingNode(BaseNodeDTO node) {
         try {
             String url = String.format("http://%s:%d%s",node.getIp(),GlobalSetting.DEFAULT_PORT, NodeServerApiRoute.PING);
             PingRequest pingRequest = new PingRequest();
@@ -75,7 +75,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
         }
     }
 
-    public ServiceResult<AddOrUpdateNodeResponse> unicastLocalBlockchainHeight(BaseNodeDto node, long localBlockchainHeight) {
+    public ServiceResult<AddOrUpdateNodeResponse> unicastLocalBlockchainHeight(BaseNodeDTO node, long localBlockchainHeight) {
         try {
             String url = String.format("http://%s:%d%s",node.getIp(), GlobalSetting.DEFAULT_PORT, NodeServerApiRoute.ADD_OR_UPDATE_NODE);
             AddOrUpdateNodeRequest request = new AddOrUpdateNodeRequest();
@@ -98,7 +98,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
     }
 
     @Override
-    public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(NodeDto node, Long blockHeight) {
+    public ServiceResult<QueryBlockHashByBlockHeightResponse> queryBlockHashByBlockHeight(NodeDTO node, Long blockHeight) {
         try {
             String url = String.format("http://%s:%d%s",node.getIp(),GlobalSetting.DEFAULT_PORT, NodeServerApiRoute.QUERY_BLOCK_HASH_BY_BLOCK_HEIGHT);
             QueryBlockHashByBlockHeightRequest request = new QueryBlockHashByBlockHeightRequest();
@@ -121,7 +121,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
     }
 
     @Override
-    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(NodeDto node, Long blockHeight) {
+    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(NodeDTO node, Long blockHeight) {
         try {
             String url = String.format("http://%s:%d%s",node.getIp(),GlobalSetting.DEFAULT_PORT, NodeServerApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT);
             QueryBlockDtoByBlockHeightRequest request = new QueryBlockDtoByBlockHeightRequest();

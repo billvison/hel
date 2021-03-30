@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.BaseNodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.BaseNodeDTO;
 
 import java.util.List;
 
@@ -14,42 +14,42 @@ public interface NodeService {
     /**
      * 查询node
      */
-    NodeDto queryNode(BaseNodeDto node);
+    NodeDTO queryNode(BaseNodeDTO node);
     /**
      * 获取所有节点
      */
-    List<NodeDto> queryAllNodeList();
+    List<NodeDTO> queryAllNodeList();
     /**
      * 获取所有未分叉节点
      */
-    List<NodeDto> queryAllNoForkNodeList();
+    List<NodeDTO> queryAllNoForkNodeList();
     /**
      * 获取所有未分叉、活着的节点
      */
-    List<NodeDto> queryAllNoForkAliveNodeList();
+    List<NodeDTO> queryAllNoForkAliveNodeList();
 
     /**
      * 节点网络连接错误处理
      */
-    void nodeConnectionErrorHandle(BaseNodeDto node);
+    void nodeConnectionErrorHandle(BaseNodeDTO node);
 
     /**
      * 设置节点为分叉节点
      */
-    void setNodeFork(BaseNodeDto node);
+    void setNodeFork(BaseNodeDTO node);
 
     /**
      * 删除节点
      */
-    void deleteNode(BaseNodeDto node);
+    void deleteNode(BaseNodeDTO node);
 
     /**
      * 新增节点
      */
-    void addNode(NodeDto node);
+    void addNode(NodeDTO node);
 
     /**
      * 更新节点
      */
-    void updateNode(NodeDto node);
+    void updateNode(NodeDTO node);
 }

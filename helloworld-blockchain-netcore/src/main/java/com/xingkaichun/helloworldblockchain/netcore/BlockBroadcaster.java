@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
 import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeClient;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
@@ -56,14 +56,14 @@ public class BlockBroadcaster {
      * 发现自己的区块链高度比全网节点都要高，则广播自己的区块链高度
      */
     private void broadcastBlockChainHeight() {
-        List<NodeDto> nodes = nodeService.queryAllNoForkAliveNodeList();
+        List<NodeDTO> nodes = nodeService.queryAllNoForkAliveNodeList();
         if(nodes == null || nodes.size()==0){
             return;
         }
 
         long blockchainHeight = blockchainCore.queryBlockchainHeight();
         //按照节点的高度进行排序
-        nodes.sort((NodeDto node1, NodeDto node2) -> {
+        nodes.sort((NodeDTO node1, NodeDTO node2) -> {
             if (LongUtil.isGreatThan(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
                 return -1;
             } else if (LongUtil.isEquals(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
@@ -82,7 +82,7 @@ public class BlockBroadcaster {
          */
         //广播节点的数量
         int broadcastNodeCount = 0;
-        for(NodeDto node:nodes){
+        for(NodeDTO node:nodes){
             if(LongUtil.isLessEqualThan(blockchainHeight,node.getBlockchainHeight())){
                 continue;
             }

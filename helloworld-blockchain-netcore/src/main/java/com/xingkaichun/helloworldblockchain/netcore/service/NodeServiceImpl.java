@@ -1,8 +1,8 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.BaseNodeDto;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.BaseNodeDTO;
+import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 
@@ -22,28 +22,28 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public List<NodeDto> queryAllNoForkNodeList(){
+    public List<NodeDTO> queryAllNoForkNodeList(){
         List<NodeEntity> nodeEntityList = nodeDao.queryAllNoForkNodeList();
-        List<NodeDto> nodeList = classCast(nodeEntityList);
+        List<NodeDTO> nodeList = classCast(nodeEntityList);
         return nodeList;
     }
 
     @Override
-    public List<NodeDto> queryAllNoForkAliveNodeList(){
+    public List<NodeDTO> queryAllNoForkAliveNodeList(){
         List<NodeEntity> nodeEntityList = nodeDao.queryAllNoForkAliveNodeList();
-        List<NodeDto> nodeList = classCast(nodeEntityList);
+        List<NodeDTO> nodeList = classCast(nodeEntityList);
         return nodeList;
     }
 
     @Override
-    public void nodeConnectionErrorHandle(BaseNodeDto baseNodeDto){
-        NodeEntity nodeEntity = nodeDao.queryNode(baseNodeDto.getIp());
+    public void nodeConnectionErrorHandle(BaseNodeDTO baseNodeDTO){
+        NodeEntity nodeEntity = nodeDao.queryNode(baseNodeDTO.getIp());
         if(nodeEntity == null){
             return;
         }
         int errorConnectionTimes = nodeEntity.getErrorConnectionTimes()+1;
         if(errorConnectionTimes >= GlobalSetting.NodeConstant.NODE_ERROR_CONNECTION_TIMES_DELETE_THRESHOLD){
-            nodeDao.deleteNode(baseNodeDto.getIp());
+            nodeDao.deleteNode(baseNodeDTO.getIp());
         } else {
             nodeEntity.setErrorConnectionTimes(errorConnectionTimes);
             nodeEntity.setIsNodeAvailable(false);
@@ -52,11 +52,11 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public void setNodeFork(BaseNodeDto baseNodeDto){
-        NodeEntity nodeEntity = nodeDao.queryNode(baseNodeDto.getIp());
+    public void setNodeFork(BaseNodeDTO baseNodeDTO){
+        NodeEntity nodeEntity = nodeDao.queryNode(baseNodeDTO.getIp());
         if(nodeEntity == null){
             nodeEntity = new NodeEntity();
-            nodeEntity.setIp(baseNodeDto.getIp());
+            nodeEntity.setIp(baseNodeDTO.getIp());
             nodeEntity.setFork(true);
             fillNodeDefaultValue(nodeEntity);
             nodeDao.addNode(nodeEntity);
@@ -67,33 +67,33 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public void deleteNode(BaseNodeDto baseNodeDto){
-        nodeDao.deleteNode(baseNodeDto.getIp());
+    public void deleteNode(BaseNodeDTO baseNodeDTO){
+        nodeDao.deleteNode(baseNodeDTO.getIp());
     }
 
     @Override
-    public List<NodeDto> queryAllNodeList(){
+    public List<NodeDTO> queryAllNodeList(){
         List<NodeEntity> nodeEntityList = nodeDao.queryAllNodeList();
-        List<NodeDto> nodeList = classCast(nodeEntityList);
+        List<NodeDTO> nodeList = classCast(nodeEntityList);
         return nodeList;
     }
 
     @Override
-    public void addNode(NodeDto node){
+    public void addNode(NodeDTO node){
         NodeEntity nodeEntity = classCast(node);
         fillNodeDefaultValue(nodeEntity);
         nodeDao.addNode(nodeEntity);
     }
 
     @Override
-    public void updateNode(NodeDto node){
+    public void updateNode(NodeDTO node){
         NodeEntity nodeEntit = classCast(node);
         nodeDao.updateNode(nodeEntit);
     }
 
     @Override
-    public NodeDto queryNode(BaseNodeDto baseNodeDto){
-        NodeEntity nodeEntity = nodeDao.queryNode(baseNodeDto.getIp());
+    public NodeDTO queryNode(BaseNodeDTO baseNodeDTO){
+        NodeEntity nodeEntity = nodeDao.queryNode(baseNodeDTO.getIp());
         if(nodeEntity == null){
             return null;
         }
@@ -101,19 +101,19 @@ public class NodeServiceImpl implements NodeService {
     }
 
 
-    private List<NodeDto> classCast(List<NodeEntity> nodeEntityList) {
+    private List<NodeDTO> classCast(List<NodeEntity> nodeEntityList) {
         if(nodeEntityList == null){
             return null;
         }
-        List<NodeDto> nodeList = new ArrayList<>();
+        List<NodeDTO> nodeList = new ArrayList<>();
         for(NodeEntity nodeEntity:nodeEntityList){
             nodeList.add(classCast(nodeEntity));
         }
         return nodeList;
     }
 
-    private NodeDto classCast(NodeEntity nodeEntity) {
-        NodeDto node = new NodeDto();
+    private NodeDTO classCast(NodeEntity nodeEntity) {
+        NodeDTO node = new NodeDTO();
         node.setIp(nodeEntity.getIp());
         node.setIsNodeAvailable(nodeEntity.getIsNodeAvailable());
         node.setErrorConnectionTimes(nodeEntity.getErrorConnectionTimes());
@@ -122,7 +122,7 @@ public class NodeServiceImpl implements NodeService {
         return node;
     }
 
-    private NodeEntity classCast(NodeDto node) {
+    private NodeEntity classCast(NodeDTO node) {
         NodeEntity nodeEntity = new NodeEntity();
         nodeEntity.setIp(node.getIp());
         nodeEntity.setIsNodeAvailable(node.getIsNodeAvailable());
