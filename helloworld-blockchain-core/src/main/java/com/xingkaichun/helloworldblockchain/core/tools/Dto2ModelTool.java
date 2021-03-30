@@ -22,7 +22,7 @@ public class Dto2ModelTool {
 
     public static Block blockDto2Block(BlockchainDatabase blockchainDataBase, BlockDTO blockDTO) {
         //求上一个区块的hash
-        String previousBlockHash = blockDTO.getPreviousBlockHash();
+        String previousBlockHash = blockDTO.getPreviousHash();
         Block previousBlock = blockchainDataBase.queryBlockByBlockHash(previousBlockHash);
 
         Block block = new Block();
@@ -60,7 +60,7 @@ public class Dto2ModelTool {
 
     public static Transaction transactionDto2Transaction(BlockchainDatabase blockchainDataBase, TransactionDTO transactionDTO) {
         List<TransactionInput> inputs = new ArrayList<>();
-        List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getTransactionInputDtoList();
+        List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getInputs();
         if(transactionInputDtoList != null){
             for (TransactionInputDTO transactionInputDTO:transactionInputDtoList){
                 UnspendTransactionOutputDTO unspendTransactionOutputDto = transactionInputDTO.getUnspendTransactionOutputDTO();
@@ -79,7 +79,7 @@ public class Dto2ModelTool {
         }
 
         List<TransactionOutput> outputs = new ArrayList<>();
-        List<TransactionOutputDTO> dtoOutputs = transactionDTO.getTransactionOutputDtoList();
+        List<TransactionOutputDTO> dtoOutputs = transactionDTO.getOutputs();
         if(dtoOutputs != null){
             for(TransactionOutputDTO transactionOutputDTO:dtoOutputs){
                 TransactionOutput transactionOutput = transactionOutputDto2TransactionOutput(transactionOutputDTO);
@@ -107,7 +107,7 @@ public class Dto2ModelTool {
     }
 
     private static TransactionType obtainTransactionDTO(TransactionDTO transactionDTO) {
-        if(transactionDTO.getTransactionInputDtoList() == null || transactionDTO.getTransactionInputDtoList().size()==0){
+        if(transactionDTO.getInputs() == null || transactionDTO.getInputs().size()==0){
             return TransactionType.COINBASE;
         }
         return TransactionType.NORMAL;

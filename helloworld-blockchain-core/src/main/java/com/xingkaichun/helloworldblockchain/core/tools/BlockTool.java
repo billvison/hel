@@ -41,7 +41,7 @@ public class BlockTool {
      */
     public static String calculateBlockHash(BlockDTO blockDto) {
         byte[] bytesTimestamp = ByteUtil.longToBytes8BigEndian(blockDto.getTimestamp());
-        byte[] bytesPreviousBlockHash = HexUtil.hexStringToBytes(blockDto.getPreviousBlockHash());
+        byte[] bytesPreviousBlockHash = HexUtil.hexStringToBytes(blockDto.getPreviousHash());
         byte[] bytesMerkleTreeRoot = HexUtil.hexStringToBytes(calculateBlockMerkleTreeRoot(blockDto));
         byte[] bytesNonce = HexUtil.hexStringToBytes(blockDto.getNonce());
 

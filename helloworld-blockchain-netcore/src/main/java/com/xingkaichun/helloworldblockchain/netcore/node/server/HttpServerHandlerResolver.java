@@ -126,11 +126,11 @@ public class HttpServerHandlerResolver {
      */
     public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(QueryBlockDtoByBlockHeightRequest request){
         try {
-            Block block = blockchainCore.queryBlockByBlockHeight(request.getBlockHeight());
-            BlockDTO blockDTO = Model2DtoTool.block2BlockDTO(block);
+            Block blockByBlockHeight = blockchainCore.queryBlockByBlockHeight(request.getBlockHeight());
+            BlockDTO block = Model2DtoTool.block2BlockDTO(blockByBlockHeight);
 
             QueryBlockDtoByBlockHeightResponse response = new QueryBlockDtoByBlockHeightResponse();
-            response.setBlockDTO(blockDTO);
+            response.setBlock(block);
             return ServiceResult.createSuccessServiceResult("query block by block height success",response);
         } catch (Exception e){
             String message = "query block by block height failed";

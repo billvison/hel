@@ -316,7 +316,7 @@ public class BlockSearcher {
                 if(!ServiceResult.isSuccess(blockDtoServiceResult)){
                     return;
                 }
-                BlockDTO blockDTO = blockDtoServiceResult.getResult().getBlockDTO();
+                BlockDTO blockDTO = blockDtoServiceResult.getResult().getBlock();
                 if(blockDTO == null){
                     return;
                 }
@@ -340,7 +340,7 @@ public class BlockSearcher {
                 if(!ServiceResult.isSuccess(blockDtoServiceResult)){
                     return;
                 }
-                BlockDTO blockDTO = blockDtoServiceResult.getResult().getBlockDTO();
+                BlockDTO blockDTO = blockDtoServiceResult.getResult().getBlock();
                 if(blockDTO == null){
                     return;
                 }

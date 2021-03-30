@@ -39,7 +39,7 @@ public class Model2DtoTool {
 
         BlockDTO blockDTO = new BlockDTO();
         blockDTO.setTimestamp(block.getTimestamp());
-        blockDTO.setPreviousBlockHash(block.getPreviousBlockHash());
+        blockDTO.setPreviousHash(block.getPreviousBlockHash());
         blockDTO.setTransactions(transactionDtoList);
         blockDTO.setNonce(block.getNonce());
         return blockDTO;
@@ -69,8 +69,8 @@ public class Model2DtoTool {
         }
 
         TransactionDTO transactionDTO = new TransactionDTO();
-        transactionDTO.setTransactionInputDtoList(inputs);
-        transactionDTO.setTransactionOutputDtoList(outputs);
+        transactionDTO.setInputs(inputs);
+        transactionDTO.setOutputs(outputs);
         return transactionDTO;
     }
 

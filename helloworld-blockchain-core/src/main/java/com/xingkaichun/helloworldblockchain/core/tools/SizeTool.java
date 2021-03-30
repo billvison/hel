@@ -68,7 +68,7 @@ public class SizeTool {
     }
     public static boolean isTransactionStorageCapacityLegal(TransactionDTO transactionDTO) {
         //校验交易输入
-        List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getTransactionInputDtoList();
+        List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getInputs();
         if(transactionInputDtoList != null){
             for(TransactionInputDTO transactionInputDTO:transactionInputDtoList){
                 //交易的未花费输出所占存储容量不需要校验  假设不正确，则在随后的业务逻辑中走不通
@@ -83,7 +83,7 @@ public class SizeTool {
         }
 
         //校验交易输出
-        List<TransactionOutputDTO> transactionOutputDtoList = transactionDTO.getTransactionOutputDtoList();
+        List<TransactionOutputDTO> transactionOutputDtoList = transactionDTO.getOutputs();
         if(transactionOutputDtoList != null){
             for(TransactionOutputDTO transactionOutputDTO:transactionOutputDtoList){
                 //交易金额所占存储容量不需要校验  假设不正确，则在随后的业务逻辑中走不通
@@ -150,7 +150,7 @@ public class SizeTool {
         long timestamp = blockDTO.getTimestamp();
         size += longSize(timestamp);
 
-        String previousBlockHash = blockDTO.getPreviousBlockHash();
+        String previousBlockHash = blockDTO.getPreviousHash();
         size += stringSize(previousBlockHash);
 
         String nonce = blockDTO.getNonce();
@@ -164,9 +164,9 @@ public class SizeTool {
 
     public static long calculateTransactionSize(TransactionDTO transactionDTO) {
         long size = 0;
-        List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getTransactionInputDtoList();
+        List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getInputs();
         size += calculateTransactionInputSize(transactionInputDtoList);
-        List<TransactionOutputDTO> transactionOutputDtoList = transactionDTO.getTransactionOutputDtoList();
+        List<TransactionOutputDTO> transactionOutputDtoList = transactionDTO.getOutputs();
         size += calculateTransactionOutputSize(transactionOutputDtoList);
         return size;
     }

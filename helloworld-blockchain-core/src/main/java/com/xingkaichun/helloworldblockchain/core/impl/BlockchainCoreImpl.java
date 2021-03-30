@@ -261,8 +261,8 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
         //构建交易
         TransactionDTO transactionDTO = new TransactionDTO();
-        transactionDTO.setTransactionInputDtoList(transactionInputDtoList);
-        transactionDTO.setTransactionOutputDtoList(transactionOutputDtoList);
+        transactionDTO.setInputs(transactionInputDtoList);
+        transactionDTO.setOutputs(transactionOutputDtoList);
 
         //找零
         long change = inputValues - outputValues - feeValues;

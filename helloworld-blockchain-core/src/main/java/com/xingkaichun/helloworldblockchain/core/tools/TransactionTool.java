@@ -85,7 +85,7 @@ public class TransactionTool {
      */
     public static byte[] bytesTransactio4SignatureHashAll(TransactionDTO transactionDTO) {
         List<byte[]> bytesUnspendTransactionOutputList = new ArrayList<>();
-        List<TransactionInputDTO> inputs = transactionDTO.getTransactionInputDtoList();
+        List<TransactionInputDTO> inputs = transactionDTO.getInputs();
         if(inputs != null){
             for(TransactionInputDTO transactionInputDTO:inputs){
                 UnspendTransactionOutputDTO unspendTransactionOutputDto = transactionInputDTO.getUnspendTransactionOutputDTO();
@@ -99,7 +99,7 @@ public class TransactionTool {
         }
 
         List<byte[]> bytesTransactionOutputList = new ArrayList<>();
-        List<TransactionOutputDTO> outputs = transactionDTO.getTransactionOutputDtoList();
+        List<TransactionOutputDTO> outputs = transactionDTO.getOutputs();
         if(outputs != null){
             for(TransactionOutputDTO transactionOutputDTO:outputs){
                 byte[] bytesOutputScript = ScriptTool.bytesScript(transactionOutputDTO.getOutputScriptDTO());
@@ -180,7 +180,7 @@ public class TransactionTool {
      */
     public static byte[] bytesTransaction(TransactionDTO transactionDTO) {
         List<byte[]> bytesUnspendTransactionOutputList = new ArrayList<>();
-        List<TransactionInputDTO> inputs = transactionDTO.getTransactionInputDtoList();
+        List<TransactionInputDTO> inputs = transactionDTO.getInputs();
         if(inputs != null){
             for(TransactionInputDTO transactionInputDTO:inputs){
                 UnspendTransactionOutputDTO unspendTransactionOutputDto = transactionInputDTO.getUnspendTransactionOutputDTO();
@@ -196,7 +196,7 @@ public class TransactionTool {
         }
 
         List<byte[]> bytesTransactionOutputList = new ArrayList<>();
-        List<TransactionOutputDTO> outputs = transactionDTO.getTransactionOutputDtoList();
+        List<TransactionOutputDTO> outputs = transactionDTO.getOutputs();
         if(outputs != null){
             for(TransactionOutputDTO transactionOutputDTO:outputs){
                 byte[] bytesOutputScript = ScriptTool.bytesScript(transactionOutputDTO.getOutputScriptDTO());
@@ -222,14 +222,14 @@ public class TransactionTool {
         byte[] bytesTransactionInputDtoList = Arrays.copyOfRange(bytesTransaction,start, start+(int) bytesTransactionInputDtoListLength);
         start += bytesTransactionInputDtoListLength;
         List<TransactionInputDTO> transactionInputDtoList = transactionInputDTOList(bytesTransactionInputDtoList);
-        transactionDTO.setTransactionInputDtoList(transactionInputDtoList);
+        transactionDTO.setInputs(transactionInputDtoList);
 
         long bytesTransactionOutputListLength = ByteUtil.bytes8BigEndianToLong(Arrays.copyOfRange(bytesTransaction,start,start+8));
         start += 8;
         byte[] bytesTransactionOutputList = Arrays.copyOfRange(bytesTransaction,start, start+(int) bytesTransactionOutputListLength);
         start += bytesTransactionOutputListLength;
         List<TransactionOutputDTO> transactionOutputDtoList = transactionOutputDTOList(bytesTransactionOutputList);
-        transactionDTO.setTransactionOutputDtoList(transactionOutputDtoList);
+        transactionDTO.setOutputs(transactionOutputDtoList);
         return transactionDTO;
     }
     private static List<TransactionOutputDTO> transactionOutputDTOList(byte[] bytesTransactionOutputList) {

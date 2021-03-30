@@ -8,20 +8,21 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
  */
 public class QueryBlockDtoByBlockHeightResponse {
 
-    private BlockDTO blockDTO ;
+    private BlockDTO block ;
 
 
 
 
     //region get set
 
-    public BlockDTO getBlockDTO() {
-        return blockDTO;
+    public BlockDTO getBlock() {
+        return block;
     }
 
-    public void setBlockDTO(BlockDTO blockDTO) {
-        this.blockDTO = blockDTO;
+    public void setBlock(BlockDTO block) {
+        this.block = block;
     }
+
 
     //endregion
 }

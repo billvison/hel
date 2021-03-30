@@ -18,7 +18,7 @@ public class BlockDTO implements Serializable {
     //区块产生的时间戳
     private long timestamp;
     //上一个区块的哈希
-    private String previousBlockHash;
+    private String previousHash;
     //区块里的交易
     private List<TransactionDTO> transactions;
     //随机数
@@ -53,13 +53,12 @@ public class BlockDTO implements Serializable {
         this.nonce = nonce;
     }
 
-    public String getPreviousBlockHash() {
-        return previousBlockHash;
+    public String getPreviousHash() {
+        return previousHash;
     }
 
-    public void setPreviousBlockHash(String previousBlockHash) {
-        this.previousBlockHash = previousBlockHash;
+    public void setPreviousHash(String previousHash) {
+        this.previousHash = previousHash;
     }
-
     //endregion
 }
