@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * @author xingkaichun@ceair.com
  */
-public class MiningTransactionDTO {
+public class MiningTransactionView {
     private String transactionHash;
     private List<TransactionInputDto> inputs;
     private List<TransactionOutputDto> outputs;

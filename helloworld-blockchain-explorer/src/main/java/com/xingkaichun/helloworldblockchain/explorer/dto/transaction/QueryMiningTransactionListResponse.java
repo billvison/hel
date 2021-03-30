@@ -8,14 +8,14 @@ import java.util.List;
  */
 public class QueryMiningTransactionListResponse {
 
-    private List<MiningTransactionDTO> transactionDtoList;
+    private List<MiningTransactionView> transactionDtoList;
 
 
     //region get set
-    public List<MiningTransactionDTO> getTransactionDtoList() {
+    public List<MiningTransactionView> getTransactionDtoList() {
         return transactionDtoList;
     }
-    public void setTransactionDtoList(List<MiningTransactionDTO> transactionDtoList) {
+    public void setTransactionDtoList(List<MiningTransactionView> transactionDtoList) {
         this.transactionDtoList = transactionDtoList;
     }
     //endregion
