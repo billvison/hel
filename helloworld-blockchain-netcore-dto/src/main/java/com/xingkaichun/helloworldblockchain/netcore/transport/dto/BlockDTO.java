@@ -20,7 +20,7 @@ public class BlockDTO implements Serializable {
     //上一个区块的哈希
     private String previousBlockHash;
     //区块里的交易
-    private List<TransactionDTO> transactionDtoList;
+    private List<TransactionDTO> transactions;
     //随机数
     private String nonce;
 
@@ -37,12 +37,12 @@ public class BlockDTO implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public List<TransactionDTO> getTransactionDtoList() {
-        return transactionDtoList;
+    public List<TransactionDTO> getTransactions() {
+        return transactions;
     }
 
-    public void setTransactionDtoList(List<TransactionDTO> transactionDtoList) {
-        this.transactionDtoList = transactionDtoList;
+    public void setTransactions(List<TransactionDTO> transactions) {
+        this.transactions = transactions;
     }
 
     public String getNonce() {

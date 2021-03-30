@@ -42,7 +42,7 @@ public class SizeTool {
         }
 
         //校验每一笔交易占用的存储空间
-        List<TransactionDTO> transactionDtoList = blockDTO.getTransactionDtoList();
+        List<TransactionDTO> transactionDtoList = blockDTO.getTransactions();
         if(transactionDtoList != null){
             for(TransactionDTO transactionDTO:transactionDtoList){
                 if(!isTransactionStorageCapacityLegal(transactionDTO)){
@@ -155,7 +155,7 @@ public class SizeTool {
 
         String nonce = blockDTO.getNonce();
         size += stringSize(nonce);
-        List<TransactionDTO> transactionDtoList = blockDTO.getTransactionDtoList();
+        List<TransactionDTO> transactionDtoList = blockDTO.getTransactions();
         for(TransactionDTO transactionDTO:transactionDtoList){
             size += calculateTransactionSize(transactionDTO);
         }

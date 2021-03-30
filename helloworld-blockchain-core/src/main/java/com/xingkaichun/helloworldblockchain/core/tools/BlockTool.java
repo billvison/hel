@@ -60,7 +60,7 @@ public class BlockTool {
      * 计算区块的默克尔树根值
      */
     public static String calculateBlockMerkleTreeRoot(BlockDTO blockDto) {
-        List<TransactionDTO> transactions = blockDto.getTransactionDtoList();
+        List<TransactionDTO> transactions = blockDto.getTransactions();
         List<byte[]> bytesTransactionHashList = new ArrayList<>();
         if(transactions != null){
             for(TransactionDTO transactionDto : transactions) {
