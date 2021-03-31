@@ -184,7 +184,7 @@ public class TransactionTool {
             for(TransactionInputDTO transactionInputDTO:inputs){
                 byte[] bytesTransactionHash = HexUtil.hexStringToBytes(transactionInputDTO.getTransactionHash());
                 byte[] bytesTransactionOutputIndex = ByteUtil.longToBytes8BigEndian(transactionInputDTO.getTransactionOutputIndex());
-                byte[] bytesInputScript = ScriptTool.bytesScript(transactionInputDTO.getInputScriptDTO());
+                byte[] bytesInputScript = ScriptTool.bytesScript(transactionInputDTO.getInputScript());
 
                 byte[] bytesUnspendTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesTransactionHash),
                         ByteUtil.concatLengthBytes(bytesTransactionOutputIndex),
@@ -306,7 +306,7 @@ public class TransactionTool {
 
 
         TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
-        transactionInputDTO.setInputScriptDTO(inputScriptDTO);
+        transactionInputDTO.setInputScript(inputScriptDTO);
         UnspendTransactionOutputDTO unspendTransactionOutputDTO = new UnspendTransactionOutputDTO();
         unspendTransactionOutputDTO.setTransactionHash(HexUtil.bytesToHexString(bytesTransactionHash));
         unspendTransactionOutputDTO.setTransactionOutputIndex(ByteUtil.bytes8BigEndianToLong(bytesTransactionOutputIndex));

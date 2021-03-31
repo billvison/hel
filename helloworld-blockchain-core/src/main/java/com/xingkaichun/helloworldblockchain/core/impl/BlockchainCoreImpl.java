@@ -288,7 +288,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
             TransactionInputDTO transactionInputDTO = transactionInputDtoList.get(i);
             String signature = Model2DtoTool.signature(transactionDTO,privateKey);
             InputScript inputScript = StackBasedVirtualMachine.createPayToPublicKeyHashInputScript(signature, publicKey);
-            transactionInputDTO.setInputScriptDTO(Model2DtoTool.inputScript2InputScriptDTO(inputScript));
+            transactionInputDTO.setInputScript(Model2DtoTool.inputScript2InputScriptDTO(inputScript));
         }
 
 

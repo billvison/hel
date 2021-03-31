@@ -74,7 +74,7 @@ public class SizeTool {
                 //交易的未花费输出所占存储容量不需要校验  假设不正确，则在随后的业务逻辑中走不通
 
                 //校验脚本存储容量
-                InputScriptDTO inputScriptDTO = transactionInputDTO.getInputScriptDTO();
+                InputScriptDTO inputScriptDTO = transactionInputDTO.getInputScript();
                 //校验脚本操作码操作数的容量
                 if(!isScriptStorageCapacityLegal(inputScriptDTO)){
                     return false;
@@ -204,7 +204,7 @@ public class SizeTool {
         size += stringSize(transactionHash);
         long transactionOutputIndex = input.getTransactionOutputIndex();
         size += longSize(transactionOutputIndex);
-        InputScriptDTO inputScriptDTO = input.getInputScriptDTO();
+        InputScriptDTO inputScriptDTO = input.getInputScript();
         size += calculateScriptSize(inputScriptDTO);
         return size;
     }

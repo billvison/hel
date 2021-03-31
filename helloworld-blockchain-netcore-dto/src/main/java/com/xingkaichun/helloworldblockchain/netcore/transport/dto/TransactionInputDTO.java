@@ -15,7 +15,7 @@ public class TransactionInputDTO implements Serializable {
     //交易输出的索引
     private long transactionOutputIndex;
     //[输入脚本]
-    private InputScriptDTO inputScriptDTO;
+    private InputScriptDTO inputScript;
 
 
 
@@ -37,13 +37,13 @@ public class TransactionInputDTO implements Serializable {
         this.transactionOutputIndex = transactionOutputIndex;
     }
 
-    public InputScriptDTO getInputScriptDTO() {
-        return inputScriptDTO;
+    public InputScriptDTO getInputScript() {
+        return inputScript;
     }
 
-    public void setInputScriptDTO(InputScriptDTO inputScriptDTO) {
-        this.inputScriptDTO = inputScriptDTO;
+    public void setInputScript(InputScriptDTO inputScript) {
+        this.inputScript = inputScript;
     }
 
-    //endregion
+//endregion
 }

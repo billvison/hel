@@ -93,7 +93,7 @@ public class TransactionToolTest {
         InputScriptDTO inputScriptDTO = new InputScriptDTO();
         inputScriptDTO.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA1024.getCode()));
         inputScriptDTO.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
-        transactionInputDTO.setInputScriptDTO(inputScriptDTO);
+        transactionInputDTO.setInputScript(inputScriptDTO);
         UnspendTransactionOutputDTO unspendTransactionOutputDTO = new UnspendTransactionOutputDTO();
         unspendTransactionOutputDTO.setTransactionHash("53b780303a801edbf75fe3463799547daf88ae152c06d16769218cec78b5d48e");
         unspendTransactionOutputDTO.setTransactionOutputIndex(0);
@@ -126,7 +126,7 @@ public class TransactionToolTest {
         InputScriptDTO inputScriptDTO2 = new InputScriptDTO();
         inputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA1024.getCode()));
         inputScriptDTO2.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
-        transactionInputDTO2.setInputScriptDTO(inputScriptDTO2);
+        transactionInputDTO2.setInputScript(inputScriptDTO2);
         UnspendTransactionOutputDTO unspendTransactionOutputDTO2 = new UnspendTransactionOutputDTO();
         unspendTransactionOutputDTO2.setTransactionHash("53b780303a801edbf75fe3463799547daf88ae152c06d16769218cec78b5d48e");
         unspendTransactionOutputDTO2.setTransactionOutputIndex(0);

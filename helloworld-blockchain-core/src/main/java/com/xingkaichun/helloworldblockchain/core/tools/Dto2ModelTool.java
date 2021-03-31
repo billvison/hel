@@ -72,7 +72,7 @@ public class Dto2ModelTool {
                 }
                 TransactionInput transactionInput = new TransactionInput();
                 transactionInput.setUnspendTransactionOutput(TransactionTool.transactionOutput2UnspendTransactionOutput(unspendTransactionOutput));
-                transactionInput.setInputScript(inputScriptDto2InputScript(transactionInputDTO.getInputScriptDTO()));
+                transactionInput.setInputScript(inputScriptDto2InputScript(transactionInputDTO.getInputScript()));
                 inputs.add(transactionInput);
             }
         }
