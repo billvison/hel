@@ -28,7 +28,8 @@ public class TransactionToolTest {
         UnspendTransactionOutputDTO unspendTransactionOutputDTO = new UnspendTransactionOutputDTO();
         unspendTransactionOutputDTO.setTransactionHash("53b780303a801edbf75fe3463799547daf88ae152c06d16769218cec78b5d48e");
         unspendTransactionOutputDTO.setTransactionOutputIndex(0);
-        transactionInputDTO.setUnspendTransactionOutputDTO(unspendTransactionOutputDTO);
+        transactionInputDTO.setTransactionHash(unspendTransactionOutputDTO.getTransactionHash());
+        transactionInputDTO.setTransactionOutputIndex(unspendTransactionOutputDTO.getTransactionOutputIndex());
         transactionInputDtoList.add(transactionInputDTO);
         transactionDTO.setInputs(transactionInputDtoList);
 
@@ -44,7 +45,7 @@ public class TransactionToolTest {
         outputScriptDTO.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
         outputScriptDTO.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()));
         outputScriptDTO.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));
-        transactionOutputDTO.setOutputScriptDTO(outputScriptDTO);
+        transactionOutputDTO.setOutputScript(outputScriptDTO);
         transactionOutputDTO.setValue(10);
         transactionOutputDtoList.add(transactionOutputDTO);
         transactionDTO.setOutputs(transactionOutputDtoList);
@@ -56,7 +57,8 @@ public class TransactionToolTest {
         UnspendTransactionOutputDTO unspendTransactionOutputDTO2 = new UnspendTransactionOutputDTO();
         unspendTransactionOutputDTO2.setTransactionHash("53b780303a801edbf75fe3463799547daf88ae152c06d16769218cec78b5d48e");
         unspendTransactionOutputDTO2.setTransactionOutputIndex(0);
-        transactionInputDTO2.setUnspendTransactionOutputDTO(unspendTransactionOutputDTO2);
+        transactionInputDTO2.setTransactionHash(unspendTransactionOutputDTO2.getTransactionHash());
+        transactionInputDTO2.setTransactionOutputIndex(unspendTransactionOutputDTO2.getTransactionOutputIndex());
         transactionInputDtoList.add(transactionInputDTO2);
 
         transactionDTO2 = transactionDTO(TransactionTool.bytesTransactio4SignatureHashAll(transactionDTO));
@@ -70,7 +72,7 @@ public class TransactionToolTest {
         outputScriptDTO2.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
         outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()));
         outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));
-        transactionOutputDTO2.setOutputScriptDTO(outputScriptDTO2);
+        transactionOutputDTO2.setOutputScript(outputScriptDTO2);
         transactionOutputDTO2.setValue(20);
         transactionOutputDtoList.add(transactionOutputDTO2);
 
@@ -95,7 +97,8 @@ public class TransactionToolTest {
         UnspendTransactionOutputDTO unspendTransactionOutputDTO = new UnspendTransactionOutputDTO();
         unspendTransactionOutputDTO.setTransactionHash("53b780303a801edbf75fe3463799547daf88ae152c06d16769218cec78b5d48e");
         unspendTransactionOutputDTO.setTransactionOutputIndex(0);
-        transactionInputDTO.setUnspendTransactionOutputDTO(unspendTransactionOutputDTO);
+        transactionInputDTO.setTransactionHash(unspendTransactionOutputDTO.getTransactionHash());
+        transactionInputDTO.setTransactionOutputIndex(unspendTransactionOutputDTO.getTransactionOutputIndex());
         transactionInputDtoList.add(transactionInputDTO);
         transactionDTO.setInputs(transactionInputDtoList);
 
@@ -111,7 +114,7 @@ public class TransactionToolTest {
         outputScriptDTO.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
         outputScriptDTO.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()));
         outputScriptDTO.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));
-        transactionOutputDTO.setOutputScriptDTO(outputScriptDTO);
+        transactionOutputDTO.setOutputScript(outputScriptDTO);
         transactionOutputDTO.setValue(10);
         transactionOutputDtoList.add(transactionOutputDTO);
         transactionDTO.setOutputs(transactionOutputDtoList);
@@ -127,7 +130,8 @@ public class TransactionToolTest {
         UnspendTransactionOutputDTO unspendTransactionOutputDTO2 = new UnspendTransactionOutputDTO();
         unspendTransactionOutputDTO2.setTransactionHash("53b780303a801edbf75fe3463799547daf88ae152c06d16769218cec78b5d48e");
         unspendTransactionOutputDTO2.setTransactionOutputIndex(0);
-        transactionInputDTO2.setUnspendTransactionOutputDTO(unspendTransactionOutputDTO2);
+        transactionInputDTO2.setTransactionHash(unspendTransactionOutputDTO2.getTransactionHash());
+        transactionInputDTO2.setTransactionOutputIndex(unspendTransactionOutputDTO2.getTransactionOutputIndex());
         transactionInputDtoList.add(transactionInputDTO2);
 
         transactionDTO2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO));
@@ -141,7 +145,7 @@ public class TransactionToolTest {
         outputScriptDTO2.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
         outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()));
         outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));
-        transactionOutputDTO2.setOutputScriptDTO(outputScriptDTO2);
+        transactionOutputDTO2.setOutputScript(outputScriptDTO2);
         transactionOutputDTO2.setValue(20);
         transactionOutputDtoList.add(transactionOutputDTO2);
 
@@ -212,7 +216,7 @@ public class TransactionToolTest {
         start += bytesValueLength;
 
         TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-        transactionOutputDTO.setOutputScriptDTO(outputScriptDTO);
+        transactionOutputDTO.setOutputScript(outputScriptDTO);
         transactionOutputDTO.setValue(ByteUtil.bytes8BigEndianToLong(bytesValue));
         return transactionOutputDTO;
     }
@@ -252,7 +256,8 @@ public class TransactionToolTest {
         UnspendTransactionOutputDTO unspendTransactionOutputDTO = new UnspendTransactionOutputDTO();
         unspendTransactionOutputDTO.setTransactionHash(HexUtil.bytesToHexString(bytesTransactionHash));
         unspendTransactionOutputDTO.setTransactionOutputIndex(ByteUtil.bytes8BigEndianToLong(bytesTransactionOutputIndex));
-        transactionInputDTO.setUnspendTransactionOutputDTO(unspendTransactionOutputDTO);
+        transactionInputDTO.setTransactionHash(unspendTransactionOutputDTO.getTransactionHash());
+        transactionInputDTO.setTransactionOutputIndex(unspendTransactionOutputDTO.getTransactionOutputIndex());
         return transactionInputDTO;
     }
 }

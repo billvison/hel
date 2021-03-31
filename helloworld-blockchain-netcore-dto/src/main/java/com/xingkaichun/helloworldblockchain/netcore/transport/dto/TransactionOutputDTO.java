@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class TransactionOutputDTO implements Serializable {
 
     //[输出脚本]
-    private OutputScriptDTO outputScriptDTO;
+    private OutputScriptDTO outputScript;
 
     //交易输出的金额
     private long value;
@@ -31,13 +31,12 @@ public class TransactionOutputDTO implements Serializable {
         this.value = value;
     }
 
-    public OutputScriptDTO getOutputScriptDTO() {
-        return outputScriptDTO;
+    public OutputScriptDTO getOutputScript() {
+        return outputScript;
     }
 
-    public void setOutputScriptDTO(OutputScriptDTO outputScriptDTO) {
-        this.outputScriptDTO = outputScriptDTO;
+    public void setOutputScript(OutputScriptDTO outputScript) {
+        this.outputScript = outputScript;
     }
-
-    //endregion
+//endregion
 }

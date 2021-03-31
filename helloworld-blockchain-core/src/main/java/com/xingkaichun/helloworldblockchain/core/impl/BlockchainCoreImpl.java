@@ -195,7 +195,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
                 TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
                 transactionOutputDTO.setValue(recipient.getValue());
                 OutputScript outputScript = StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(recipient.getAddress());
-                transactionOutputDTO.setOutputScriptDTO(Model2DtoTool.outputScript2OutputScriptDTO(outputScript));
+                transactionOutputDTO.setOutputScript(Model2DtoTool.outputScript2OutputScriptDTO(outputScript));
                 transactionOutputDtoList.add(transactionOutputDTO);
 
                 BuildTransactionResponse.InnerTransactionOutput innerTransactionOutput = new BuildTransactionResponse.InnerTransactionOutput();
@@ -255,7 +255,8 @@ public class BlockchainCoreImpl extends BlockchainCore {
         for(TransactionOutput input:inputs){
             UnspendTransactionOutputDTO unspendTransactionOutputDto = Model2DtoTool.transactionOutput2UnspendTransactionOutputDto(input);
             TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
-            transactionInputDTO.setUnspendTransactionOutputDTO(unspendTransactionOutputDto);
+            transactionInputDTO.setTransactionHash(unspendTransactionOutputDto.getTransactionHash());
+            transactionInputDTO.setTransactionOutputIndex(unspendTransactionOutputDto.getTransactionOutputIndex());
             transactionInputDtoList.add(transactionInputDTO);
         }
 
@@ -271,7 +272,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
             TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
             transactionOutputDTO.setValue(change);
             OutputScript outputScript = StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(payerChangeAddress);
-            transactionOutputDTO.setOutputScriptDTO(Model2DtoTool.outputScript2OutputScriptDTO(outputScript));
+            transactionOutputDTO.setOutputScript(Model2DtoTool.outputScript2OutputScriptDTO(outputScript));
             transactionOutputDtoList.add(transactionOutputDTO);
 
             payerChange = new BuildTransactionResponse.InnerTransactionOutput();

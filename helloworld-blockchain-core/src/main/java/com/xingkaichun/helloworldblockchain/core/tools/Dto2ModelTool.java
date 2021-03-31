@@ -63,10 +63,9 @@ public class Dto2ModelTool {
         List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getInputs();
         if(transactionInputDtoList != null){
             for (TransactionInputDTO transactionInputDTO:transactionInputDtoList){
-                UnspendTransactionOutputDTO unspendTransactionOutputDto = transactionInputDTO.getUnspendTransactionOutputDTO();
                 TransactionOutputId transactionOutputId = new TransactionOutputId();
-                transactionOutputId.setTransactionHash(unspendTransactionOutputDto.getTransactionHash());
-                transactionOutputId.setTransactionOutputIndex(unspendTransactionOutputDto.getTransactionOutputIndex());
+                transactionOutputId.setTransactionHash(transactionInputDTO.getTransactionHash());
+                transactionOutputId.setTransactionOutputIndex(transactionInputDTO.getTransactionOutputIndex());
                 TransactionOutput unspendTransactionOutput = blockchainDataBase.queryUnspendTransactionOutputByTransactionOutputId(transactionOutputId);
                 if(unspendTransactionOutput == null){
                     throw new ClassCastException("UnspendTransactionOutput不应该是null。");
@@ -98,11 +97,11 @@ public class Dto2ModelTool {
 
     public static TransactionOutput transactionOutputDto2TransactionOutput(TransactionOutputDTO transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
-        String publicKeyHash = StackBasedVirtualMachine.getPublicKeyHashByPayToPublicKeyHashOutputScript(transactionOutputDTO.getOutputScriptDTO());
+        String publicKeyHash = StackBasedVirtualMachine.getPublicKeyHashByPayToPublicKeyHashOutputScript(transactionOutputDTO.getOutputScript());
         String address = AccountUtil.addressFromPublicKeyHash(publicKeyHash);
         transactionOutput.setAddress(address);
         transactionOutput.setValue(transactionOutputDTO.getValue());
-        transactionOutput.setOutputScript(outputScriptDto2OutputScript(transactionOutputDTO.getOutputScriptDTO()));
+        transactionOutput.setOutputScript(outputScriptDto2OutputScript(transactionOutputDTO.getOutputScript()));
         return transactionOutput;
     }
 

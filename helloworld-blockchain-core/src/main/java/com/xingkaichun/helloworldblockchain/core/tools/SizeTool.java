@@ -89,7 +89,7 @@ public class SizeTool {
                 //交易金额所占存储容量不需要校验  假设不正确，则在随后的业务逻辑中走不通
 
                 //校验脚本存储容量
-                OutputScriptDTO outputScriptDTO = transactionOutputDTO.getOutputScriptDTO();
+                OutputScriptDTO outputScriptDTO = transactionOutputDTO.getOutputScript();
                 //校验脚本操作码操作数的容量
                 if(!isScriptStorageCapacityLegal(outputScriptDTO)){
                     return false;
@@ -182,7 +182,7 @@ public class SizeTool {
     }
     private static long calculateTransactionOutputSize(TransactionOutputDTO transactionOutputDTO) {
         long size = 0;
-        OutputScriptDTO outputScriptDTO = transactionOutputDTO.getOutputScriptDTO();
+        OutputScriptDTO outputScriptDTO = transactionOutputDTO.getOutputScript();
         size += calculateScriptSize(outputScriptDTO);
         long value = transactionOutputDTO.getValue();
         size += longSize(value);
@@ -200,18 +200,12 @@ public class SizeTool {
     }
     private static long calculateTransactionInputSize(TransactionInputDTO input) {
         long size = 0;
-        UnspendTransactionOutputDTO unspendTransactionOutputDTO = input.getUnspendTransactionOutputDTO();
-        size += calculateTransactionOutputSize(unspendTransactionOutputDTO);
+        String transactionHash = input.getTransactionHash();
+        size += stringSize(transactionHash);
+        long transactionOutputIndex = input.getTransactionOutputIndex();
+        size += longSize(transactionOutputIndex);
         InputScriptDTO inputScriptDTO = input.getInputScriptDTO();
         size += calculateScriptSize(inputScriptDTO);
-        return size;
-    }
-    private static long calculateTransactionOutputSize(UnspendTransactionOutputDTO unspendTransactionOutputDTO) {
-        long size = 0;
-        String transactionHash = unspendTransactionOutputDTO.getTransactionHash();
-        size += stringSize(transactionHash);
-        long transactionOutputIndex = unspendTransactionOutputDTO.getTransactionOutputIndex();
-        size += longSize(transactionOutputIndex);
         return size;
     }
     private static long calculateScriptSize(ScriptDTO script) {

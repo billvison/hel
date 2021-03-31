@@ -10,8 +10,10 @@ import java.io.Serializable;
  */
 public class TransactionInputDTO implements Serializable {
 
-    //未花费输出
-    private UnspendTransactionOutputDTO unspendTransactionOutputDTO;
+    //交易哈希
+    private String transactionHash;
+    //交易输出的索引
+    private long transactionOutputIndex;
     //[输入脚本]
     private InputScriptDTO inputScriptDTO;
 
@@ -19,13 +21,20 @@ public class TransactionInputDTO implements Serializable {
 
 
     //region get set
-
-    public UnspendTransactionOutputDTO getUnspendTransactionOutputDTO() {
-        return unspendTransactionOutputDTO;
+    public String getTransactionHash() {
+        return transactionHash;
     }
 
-    public void setUnspendTransactionOutputDTO(UnspendTransactionOutputDTO unspendTransactionOutputDTO) {
-        this.unspendTransactionOutputDTO = unspendTransactionOutputDTO;
+    public void setTransactionHash(String transactionHash) {
+        this.transactionHash = transactionHash;
+    }
+
+    public long getTransactionOutputIndex() {
+        return transactionOutputIndex;
+    }
+
+    public void setTransactionOutputIndex(long transactionOutputIndex) {
+        this.transactionOutputIndex = transactionOutputIndex;
     }
 
     public InputScriptDTO getInputScriptDTO() {

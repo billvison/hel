@@ -88,9 +88,8 @@ public class TransactionTool {
         List<TransactionInputDTO> inputs = transactionDTO.getInputs();
         if(inputs != null){
             for(TransactionInputDTO transactionInputDTO:inputs){
-                UnspendTransactionOutputDTO unspendTransactionOutputDto = transactionInputDTO.getUnspendTransactionOutputDTO();
-                byte[] bytesTransactionHash = HexUtil.hexStringToBytes(unspendTransactionOutputDto.getTransactionHash());
-                byte[] bytesTransactionOutputIndex = ByteUtil.longToBytes8BigEndian(unspendTransactionOutputDto.getTransactionOutputIndex());
+                byte[] bytesTransactionHash = HexUtil.hexStringToBytes(transactionInputDTO.getTransactionHash());
+                byte[] bytesTransactionOutputIndex = ByteUtil.longToBytes8BigEndian(transactionInputDTO.getTransactionOutputIndex());
 
                 byte[] bytesUnspendTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesTransactionHash),
                         ByteUtil.concatLengthBytes(bytesTransactionOutputIndex));
@@ -102,7 +101,7 @@ public class TransactionTool {
         List<TransactionOutputDTO> outputs = transactionDTO.getOutputs();
         if(outputs != null){
             for(TransactionOutputDTO transactionOutputDTO:outputs){
-                byte[] bytesOutputScript = ScriptTool.bytesScript(transactionOutputDTO.getOutputScriptDTO());
+                byte[] bytesOutputScript = ScriptTool.bytesScript(transactionOutputDTO.getOutputScript());
                 byte[] bytesValue = ByteUtil.longToBytes8BigEndian(transactionOutputDTO.getValue());
                 byte[] bytesTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesOutputScript),ByteUtil.concatLengthBytes(bytesValue));
                 bytesTransactionOutputList.add(ByteUtil.concatLengthBytes(bytesTransactionOutput));
@@ -183,9 +182,8 @@ public class TransactionTool {
         List<TransactionInputDTO> inputs = transactionDTO.getInputs();
         if(inputs != null){
             for(TransactionInputDTO transactionInputDTO:inputs){
-                UnspendTransactionOutputDTO unspendTransactionOutputDto = transactionInputDTO.getUnspendTransactionOutputDTO();
-                byte[] bytesTransactionHash = HexUtil.hexStringToBytes(unspendTransactionOutputDto.getTransactionHash());
-                byte[] bytesTransactionOutputIndex = ByteUtil.longToBytes8BigEndian(unspendTransactionOutputDto.getTransactionOutputIndex());
+                byte[] bytesTransactionHash = HexUtil.hexStringToBytes(transactionInputDTO.getTransactionHash());
+                byte[] bytesTransactionOutputIndex = ByteUtil.longToBytes8BigEndian(transactionInputDTO.getTransactionOutputIndex());
                 byte[] bytesInputScript = ScriptTool.bytesScript(transactionInputDTO.getInputScriptDTO());
 
                 byte[] bytesUnspendTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesTransactionHash),
@@ -199,7 +197,7 @@ public class TransactionTool {
         List<TransactionOutputDTO> outputs = transactionDTO.getOutputs();
         if(outputs != null){
             for(TransactionOutputDTO transactionOutputDTO:outputs){
-                byte[] bytesOutputScript = ScriptTool.bytesScript(transactionOutputDTO.getOutputScriptDTO());
+                byte[] bytesOutputScript = ScriptTool.bytesScript(transactionOutputDTO.getOutputScript());
                 byte[] bytesValue = ByteUtil.longToBytes8BigEndian(transactionOutputDTO.getValue());
                 byte[] bytesTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesOutputScript),ByteUtil.concatLengthBytes(bytesValue));
                 bytesTransactionOutputList.add(ByteUtil.concatLengthBytes(bytesTransactionOutput));
@@ -265,7 +263,7 @@ public class TransactionTool {
         start += bytesValueLength;
 
         TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-        transactionOutputDTO.setOutputScriptDTO(outputScriptDTO);
+        transactionOutputDTO.setOutputScript(outputScriptDTO);
         transactionOutputDTO.setValue(ByteUtil.bytes8BigEndianToLong(bytesValue));
         return transactionOutputDTO;
     }
@@ -312,7 +310,8 @@ public class TransactionTool {
         UnspendTransactionOutputDTO unspendTransactionOutputDTO = new UnspendTransactionOutputDTO();
         unspendTransactionOutputDTO.setTransactionHash(HexUtil.bytesToHexString(bytesTransactionHash));
         unspendTransactionOutputDTO.setTransactionOutputIndex(ByteUtil.bytes8BigEndianToLong(bytesTransactionOutputIndex));
-        transactionInputDTO.setUnspendTransactionOutputDTO(unspendTransactionOutputDTO);
+        transactionInputDTO.setTransactionHash(unspendTransactionOutputDTO.getTransactionHash());
+        transactionInputDTO.setTransactionOutputIndex(unspendTransactionOutputDTO.getTransactionOutputIndex());
         return transactionInputDTO;
     }
     //endregion
