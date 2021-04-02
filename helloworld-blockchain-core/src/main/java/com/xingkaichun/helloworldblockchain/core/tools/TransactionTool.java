@@ -10,7 +10,7 @@ import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
-import com.xingkaichun.helloworldblockchain.util.ByteUtil;
+import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

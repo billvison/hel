@@ -1,8 +1,7 @@
-package com.xingkaichun.helloworldblockchain.util;
+package com.xingkaichun.helloworldblockchain.crypto;
 
 import com.google.common.primitives.Bytes;
 
-import java.nio.ByteBuffer;
 import java.util.List;
 
 /**

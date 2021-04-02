@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.util;
+package com.xingkaichun.helloworldblockchain.crypto;
 
 import com.google.common.primitives.Longs;
 import org.junit.Assert;

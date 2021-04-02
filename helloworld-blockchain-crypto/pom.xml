@@ -29,6 +29,10 @@
             <groupId>org.bitcoinj</groupId>
             <artifactId>bitcoinj-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.script.OperationCodeEnum;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.InputScriptDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.OutputScriptDTO;
-import com.xingkaichun.helloworldblockchain.util.ByteUtil;
+import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;

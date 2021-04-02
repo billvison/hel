@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.model.script.OperationCodeEnum;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
-import com.xingkaichun.helloworldblockchain.util.ByteUtil;
+import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
