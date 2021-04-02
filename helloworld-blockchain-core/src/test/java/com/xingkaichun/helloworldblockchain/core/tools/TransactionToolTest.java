@@ -168,14 +168,14 @@ public class TransactionToolTest {
     private static TransactionDTO transactionDTO(byte[] bytesTransaction) {
         TransactionDTO transactionDTO = new TransactionDTO();
         int start = 0;
-        long bytesTransactionInputDtoListLength = ByteUtil.bytes8BigEndianToLong(Arrays.copyOfRange(bytesTransaction,start,start+8));
+        long bytesTransactionInputDtoListLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransaction,start,start+8));
         start += 8;
         byte[] bytesTransactionInputDtoList = Arrays.copyOfRange(bytesTransaction,start, start+(int) bytesTransactionInputDtoListLength);
         start += bytesTransactionInputDtoListLength;
         List<TransactionInputDTO> transactionInputDtoList = transactionInputDTOList(bytesTransactionInputDtoList);
         transactionDTO.setInputs(transactionInputDtoList);
 
-        long bytesTransactionOutputListLength = ByteUtil.bytes8BigEndianToLong(Arrays.copyOfRange(bytesTransaction,start,start+8));
+        long bytesTransactionOutputListLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransaction,start,start+8));
         start += 8;
         byte[] bytesTransactionOutputList = Arrays.copyOfRange(bytesTransaction,start, start+(int) bytesTransactionOutputListLength);
         start += bytesTransactionOutputListLength;
@@ -190,7 +190,7 @@ public class TransactionToolTest {
         int start = 0;
         List<TransactionOutputDTO> transactionOutputDTOList = new ArrayList<>();
         while (start < bytesTransactionOutputList.length){
-            long bytesTransactionOutputDTOLength = ByteUtil.bytes8BigEndianToLong(Arrays.copyOfRange(bytesTransactionOutputList,start,start+8));
+            long bytesTransactionOutputDTOLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionOutputList,start,start+8));
             start += 8;
             byte[] bytesTransactionOutput = Arrays.copyOfRange(bytesTransactionOutputList,start, start+(int) bytesTransactionOutputDTOLength);
             start += bytesTransactionOutputDTOLength;
@@ -204,20 +204,20 @@ public class TransactionToolTest {
     }
     private static TransactionOutputDTO transactionOutputDTO(byte[] bytesTransactionOutput) {
         int start = 0;
-        long bytesOutputScriptLength = ByteUtil.bytes8BigEndianToLong(Arrays.copyOfRange(bytesTransactionOutput,start,start+8));
+        long bytesOutputScriptLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionOutput,start,start+8));
         start += 8;
         byte[] bytesOutputScript = Arrays.copyOfRange(bytesTransactionOutput,start, start+(int) bytesOutputScriptLength);
         start += bytesOutputScriptLength;
         OutputScriptDTO outputScriptDTO = ScriptTool.outputScriptDTO(bytesOutputScript);
 
-        long bytesValueLength = ByteUtil.bytes8BigEndianToLong(Arrays.copyOfRange(bytesTransactionOutput,start,start+8));
+        long bytesValueLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionOutput,start,start+8));
         start += 8;
         byte[] bytesValue = Arrays.copyOfRange(bytesTransactionOutput,start, start+(int) bytesValueLength);
         start += bytesValueLength;
 
         TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
         transactionOutputDTO.setOutputScript(outputScriptDTO);
-        transactionOutputDTO.setValue(ByteUtil.bytes8BigEndianToLong(bytesValue));
+        transactionOutputDTO.setValue(ByteUtil.bytes64ToLong64WithBigEndian(bytesValue));
         return transactionOutputDTO;
     }
     private static List<TransactionInputDTO> transactionInputDTOList(byte[] bytesTransactionInputDtoList) {
@@ -227,7 +227,7 @@ public class TransactionToolTest {
         int start = 0;
         List<TransactionInputDTO> transactionInputDTOList = new ArrayList<>();
         while (start < bytesTransactionInputDtoList.length){
-            long bytesTransactionInputDTOLength = ByteUtil.bytes8BigEndianToLong(Arrays.copyOfRange(bytesTransactionInputDtoList,start,start+8));
+            long bytesTransactionInputDTOLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionInputDtoList,start,start+8));
             start += 8;
             byte[] bytesTransactionInput = Arrays.copyOfRange(bytesTransactionInputDtoList,start, start+(int) bytesTransactionInputDTOLength);
             start += bytesTransactionInputDTOLength;
@@ -241,12 +241,12 @@ public class TransactionToolTest {
     }
     private static TransactionInputDTO transactionInputDTO(byte[] bytesTransactionInputDTO) {
         int start = 0;
-        long bytesTransactionHashLength = ByteUtil.bytes8BigEndianToLong(Arrays.copyOfRange(bytesTransactionInputDTO,start,start+8));
+        long bytesTransactionHashLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionInputDTO,start,start+8));
         start += 8;
         byte[] bytesTransactionHash = Arrays.copyOfRange(bytesTransactionInputDTO,start, start+(int) bytesTransactionHashLength);
         start += bytesTransactionHashLength;
 
-        long bytesTransactionOutputIndexLength = ByteUtil.bytes8BigEndianToLong(Arrays.copyOfRange(bytesTransactionInputDTO,start,start+8));
+        long bytesTransactionOutputIndexLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionInputDTO,start,start+8));
         start += 8;
         byte[] bytesTransactionOutputIndex = Arrays.copyOfRange(bytesTransactionInputDTO,start, start+(int) bytesTransactionOutputIndexLength);
         start += bytesTransactionOutputIndexLength;
@@ -255,7 +255,7 @@ public class TransactionToolTest {
         TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
         UnspendTransactionOutputDTO unspendTransactionOutputDTO = new UnspendTransactionOutputDTO();
         unspendTransactionOutputDTO.setTransactionHash(HexUtil.bytesToHexString(bytesTransactionHash));
-        unspendTransactionOutputDTO.setTransactionOutputIndex(ByteUtil.bytes8BigEndianToLong(bytesTransactionOutputIndex));
+        unspendTransactionOutputDTO.setTransactionOutputIndex(ByteUtil.bytes64ToLong64WithBigEndian(bytesTransactionOutputIndex));
         transactionInputDTO.setTransactionHash(unspendTransactionOutputDTO.getTransactionHash());
         transactionInputDTO.setTransactionOutputIndex(unspendTransactionOutputDTO.getTransactionOutputIndex());
         return transactionInputDTO;
