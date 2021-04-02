@@ -307,11 +307,8 @@ public class TransactionTool {
 
         TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
         transactionInputDTO.setInputScript(inputScriptDTO);
-        UnspendTransactionOutputDTO unspendTransactionOutputDTO = new UnspendTransactionOutputDTO();
-        unspendTransactionOutputDTO.setTransactionHash(HexUtil.bytesToHexString(bytesTransactionHash));
-        unspendTransactionOutputDTO.setTransactionOutputIndex(ByteUtil.bytes64ToLong64WithBigEndian(bytesTransactionOutputIndex));
-        transactionInputDTO.setTransactionHash(unspendTransactionOutputDTO.getTransactionHash());
-        transactionInputDTO.setTransactionOutputIndex(unspendTransactionOutputDTO.getTransactionOutputIndex());
+        transactionInputDTO.setTransactionHash(HexUtil.bytesToHexString(bytesTransactionHash));
+        transactionInputDTO.setTransactionOutputIndex(ByteUtil.bytes64ToLong64WithBigEndian(bytesTransactionOutputIndex));
         return transactionInputDTO;
     }
     //endregion

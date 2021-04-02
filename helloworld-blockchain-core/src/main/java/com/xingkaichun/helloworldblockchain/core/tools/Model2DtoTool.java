@@ -50,11 +50,9 @@ public class Model2DtoTool {
         List<TransactionInput> transactionInputList = transaction.getInputs();
         if(transactionInputList!=null){
             for (TransactionInput transactionInput:transactionInputList){
-                UnspendTransactionOutputDTO unspendTransactionOutputDto = transactionOutput2UnspendTransactionOutputDto(transactionInput.getUnspendTransactionOutput());
-
                 TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
-                transactionInputDTO.setTransactionHash(unspendTransactionOutputDto.getTransactionHash());
-                transactionInputDTO.setTransactionOutputIndex(unspendTransactionOutputDto.getTransactionOutputIndex());
+                transactionInputDTO.setTransactionHash(transactionInput.getUnspendTransactionOutput().getTransactionHash());
+                transactionInputDTO.setTransactionOutputIndex(transactionInput.getUnspendTransactionOutput().getTransactionOutputIndex());
                 transactionInputDTO.setInputScript(inputScript2InputScriptDTO(transactionInput.getInputScript()));
                 inputs.add(transactionInputDTO);
             }
@@ -92,13 +90,6 @@ public class Model2DtoTool {
         transactionOutputDTO.setValue(transactionOutput.getValue());
         transactionOutputDTO.setOutputScript(outputScript2OutputScriptDTO(transactionOutput.getOutputScript()));
         return transactionOutputDTO;
-    }
-
-    public static UnspendTransactionOutputDTO transactionOutput2UnspendTransactionOutputDto(TransactionOutput transactionOutput) {
-        UnspendTransactionOutputDTO unspendTransactionOutputDto = new UnspendTransactionOutputDTO();
-        unspendTransactionOutputDto.setTransactionHash(transactionOutput.getTransactionHash());
-        unspendTransactionOutputDto.setTransactionOutputIndex(transactionOutput.getTransactionOutputIndex());
-        return unspendTransactionOutputDto;
     }
 
     public static String signature(TransactionDTO transactionDTO, String privateKey) {

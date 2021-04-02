@@ -16,7 +16,6 @@ import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.UnspendTransactionOutputDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -253,10 +252,9 @@ public class BlockchainCoreImpl extends BlockchainCore {
         //构建交易输入
         List<TransactionInputDTO> transactionInputDtoList = new ArrayList<>();
         for(TransactionOutput input:inputs){
-            UnspendTransactionOutputDTO unspendTransactionOutputDto = Model2DtoTool.transactionOutput2UnspendTransactionOutputDto(input);
             TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
-            transactionInputDTO.setTransactionHash(unspendTransactionOutputDto.getTransactionHash());
-            transactionInputDTO.setTransactionOutputIndex(unspendTransactionOutputDto.getTransactionOutputIndex());
+            transactionInputDTO.setTransactionHash(input.getTransactionHash());
+            transactionInputDTO.setTransactionOutputIndex(input.getTransactionOutputIndex());
             transactionInputDtoList.add(transactionInputDTO);
         }
 
