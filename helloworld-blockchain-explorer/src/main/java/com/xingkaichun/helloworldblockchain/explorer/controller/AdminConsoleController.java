@@ -11,12 +11,13 @@ import com.xingkaichun.helloworldblockchain.explorer.vo.AdminConsoleApiRoute;
 import com.xingkaichun.helloworldblockchain.explorer.vo.account.*;
 import com.xingkaichun.helloworldblockchain.explorer.vo.block.DeleteBlockRequest;
 import com.xingkaichun.helloworldblockchain.explorer.vo.block.DeleteBlockResponse;
+import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.ServiceResult;
 import com.xingkaichun.helloworldblockchain.explorer.vo.miner.*;
 import com.xingkaichun.helloworldblockchain.explorer.vo.node.*;
 import com.xingkaichun.helloworldblockchain.explorer.vo.synchronizer.*;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
-import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
+import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.NodeDTO;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,11 +152,11 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.ADD_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<AddNodeResponse> addNode(@RequestBody AddNodeRequest request){
         try {
-            NodeDTO node = request.getNode();
+            NodeEntity node = request.getNode();
             if(StringUtil.isNullOrEmpty(node.getIp())){
                 return ServiceResult.createFailServiceResult("节点IP不能为空");
             }
-            if(netBlockchainCore.getNodeService().queryNode(node) != null){
+            if(netBlockchainCore.getNodeService().queryNode(new NodeDTO(node.getIp())) != null){
                 return ServiceResult.createFailServiceResult("节点已经存在，不需要重复添加");
             }
             netBlockchainCore.getNodeService().addNode(node);
@@ -176,9 +177,6 @@ public class AdminConsoleController {
         try {
             if(request.getNode() == null){
                 return ServiceResult.createFailServiceResult("请填写节点信息");
-            }
-            if(netBlockchainCore.getNodeService().queryNode(request.getNode()) == null){
-                return ServiceResult.createFailServiceResult("节点不存在，无法更新");
             }
             netBlockchainCore.getNodeService().updateNode(request.getNode());
             UpdateNodeResponse response = new UpdateNodeResponse();
@@ -210,7 +208,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.QUERY_ALL_NODE_LIST,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryAllNodeListResponse> queryAllNodeList(@RequestBody QueryAllNodeListRequest request){
         try {
-            List<NodeDTO> nodeList = netBlockchainCore.getNodeService().queryAllNodeList();
+            List<NodeEntity> nodeList = netBlockchainCore.getNodeService().queryAllNodeList();
             QueryAllNodeListResponse response = new QueryAllNodeListResponse();
             response.setNodeList(nodeList);
             return ServiceResult.createSuccessServiceResult("查询节点成功",response);

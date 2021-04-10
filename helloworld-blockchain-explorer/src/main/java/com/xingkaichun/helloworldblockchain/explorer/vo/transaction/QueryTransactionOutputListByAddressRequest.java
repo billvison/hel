@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.explorer.vo.transaction;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.common.PageCondition;
+import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.PageCondition;
 
 /**
  *

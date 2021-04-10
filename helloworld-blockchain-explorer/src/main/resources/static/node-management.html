@@ -47,9 +47,6 @@
                 <tr>
                     <th style="width:30%;">ip</th>
                     <th style="width:10%;">高度</th>
-                    <th style="width:10%;">连接失败次数</th>
-                    <th style="width:10%;">可用</th>
-                    <th style="width:10%;">分叉</th>
                     <th style="width:30%;">管理</th>
                 </tr>
                 </thead>
@@ -71,9 +68,6 @@
                     <tr>
                         <td>${item.ip}</td>
                         <td>${item.blockchainHeight}</td>
-                        <td>${item.errorConnectionTimes}</td>
-                        <td>${item.isNodeAvailable ? '是' : '否'}</td>
-                        <td>${item.fork ? '是' : '否'}</td>
                         <td>
                             <button type="submit" ip="${item.ip}" class="btn btn-default update-node">修改</button>
                             <button type="submit" class="btn btn-danger delete-node" name="">删除</button>
@@ -90,24 +84,6 @@
                         <tr>
                             <th style="width:25%">ip：</th>
                             <th style="width:75%"><input type="text" placeholder="请输入ip" id="table-add-node-text-ip"></th>
-                        </tr>
-                        <tr>
-                            <th>是否可用：</th>
-                            <th>
-                                <input type="radio" name="table-add-node-checkbox-available" value="true" checked/><span>可用</span>
-                                <input type="radio" name="table-add-node-checkbox-available" value="false"/><span>不可用</span>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>错误次数：</th>
-                            <th><input type="text" placeholder="请输入连接失败次数" value="0" id="table-add-node-text-errorConnectionTimes"></th>
-                        </tr>
-                        <tr>
-                            <th>分叉：</th>
-                            <th>
-                                <input type="radio" name="table-add-node-checkbox-fork" value="true"/><span>分叉</span>
-                                <input type="radio" name="table-add-node-checkbox-fork" value="false" checked/><span>未分叉</span>
-                            </th>
                         </tr>
                         <tr>
                             <th></th>
@@ -131,7 +107,7 @@
             $('body').delegate('#table-add-node-button-add', 'click', async function(){
                 const data = await $ajax({
                     url : baseUrl()+"/Api/AdminConsole/AddNode",
-                    data:`{"node":{"ip": ${$('#table-add-node-text-ip').val()},"isNodeAvailable": ${$("input[name='table-add-node-checkbox-available']:checked").val()},"errorConnectionTimes": ${$('#table-add-node-text-errorConnectionTimes').val()},"fork": ${$("input[name='table-add-node-checkbox-fork']:checked").val()}}}`
+                    data:`{"node":{"ip": "${$('#table-add-node-text-ip').val()}"}}`
                 });
                 alert(data.message);
                 if(data.serviceCode == "SUCCESS"){
@@ -148,22 +124,9 @@
                             <th style="width:75%"><input type="text" placeholder="请输入ip" id="table-update-node-text-ip" readonly="readonly"></th>
                         </tr>
                         <tr>
-                            <th>是否可用：</td>
+                            <th>高度：</th>
                             <th>
-                                <input type="radio" name="table-update-node-checkbox-available" value="true" checked/><span>可用</span>
-                                <input type="radio" name="table-update-node-checkbox-available" value="false"/><span>不可用</span>
-                            </td>
-                        </tr>
-                        </tr>
-                        <tr>
-                            <th>错误次数：</th>
-                            <th><input type="text" placeholder="请输入连接失败次数" value="0" id="table-update-node-text-errorConnectionTimes"></th>
-                        </tr>
-                        <tr>
-                            <th>分叉：</th>
-                            <th>
-                                <input type="radio" name="table-update-node-checkbox-fork" value="true"/><span>分叉</span>
-                                <input type="radio" name="table-update-node-checkbox-fork" value="false" checked/><span>未分叉</span>
+                                <input type="text" placeholder="请节点区块高度" id="table-update-node-text-blockchainHeight">
                             </th>
                         </tr>
                         <tr>
@@ -185,17 +148,13 @@
                 });
 
                 $('#table-update-node-text-ip').val($(this).parent().parent().children().eq(0).text());
-                $('#table-update-node-text-errorConnectionTimes').val($(this).parent().parent().children().eq(2).text());
-                var isavailable = $(this).parent().parent().children().eq(3).text()=="是"?true:false;
-                var isfork = $(this).parent().parent().children().eq(4).text()=="是"?true:false;
-                $("[name='table-update-node-checkbox-available'][value='"+isavailable+"']").attr("checked", "checked");
-                $("[name='table-update-node-checkbox-fork'][value='"+isfork+"']").attr("checked", "checked");
+                $('#table-update-node-text-blockchainHeight').val($(this).parent().parent().children().eq(1).text());
             });
 
             $('body').delegate('#table-update-node-button-add', 'click', async function(){
                 const data = await $ajax({
                     url : baseUrl()+"/Api/AdminConsole/UpdateNode",
-                    data:`{"node":{"ip": "${$('#table-update-node-text-ip').val()}","isNodeAvailable": ${$("input[name='table-update-node-checkbox-available']:checked").val()},"errorConnectionTimes": ${$('#table-update-node-text-errorConnectionTimes').val()},"fork": ${$("input[name='table-update-node-checkbox-fork']:checked").val()}}}}}`
+                    data:`{"node":{"ip": "${$('#table-update-node-text-ip').val()}","blockchainHeight": "${$('#table-update-node-text-blockchainHeight').val()}"}}`
                 });
                 alert(data.message);
                 location.reload();

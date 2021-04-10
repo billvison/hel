@@ -1,6 +1,8 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
+import org.bitcoinj.core.Base58;
+import org.bitcoinj.core.ECKey;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.DERSequenceGenerator;
@@ -16,9 +18,10 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.crypto.signers.HMacDSAKCalculator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Collections;
@@ -30,9 +33,15 @@ import java.util.Collections;
  */
 public class AccountUtil {
 
-    private static final ECDomainParameters ecParams;
-    private static final SecureRandom secureRandom;
-    private static final boolean compressed = false;
+    private static final Logger logger = LoggerFactory.getLogger(AccountUtil.class);
+
+    private static final ECDomainParameters CURVE;
+    private static final SecureRandom SECURE_RANDOM;
+    private static final boolean COMPRESSED = false;
+    public static final BigInteger HALF_CURVE_ORDER;
+
+
+    private static final byte VERSION = 0x00;
 
     static {
         JavaCryptographyExtensionProviderUtil.addBouncyCastleProvider();
@@ -40,8 +49,19 @@ public class AccountUtil {
 
     static {
         X9ECParameters params = SECNamedCurves.getByName("secp256k1");
-        ecParams = new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH());
-        secureRandom = new SecureRandom();
+        CURVE = new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH());
+        SECURE_RANDOM = new SecureRandom();
+
+        HALF_CURVE_ORDER = CURVE.getN().shiftRight(1);
+    }
+
+    /**
+     * Returns true if the S component is "low", that means it is below {@link ECKey#HALF_CURVE_ORDER}. See <a
+     * href="https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki#Low_S_values_in_signatures">BIP62</a>.
+     * 参考：bitcoinj-core-0.15.10.jar org.bitcoinj.core.ECKey.isCanonical()
+     */
+    public static boolean isCanonical(BigInteger s) {
+        return s.compareTo(HALF_CURVE_ORDER) <= 0;
     }
 
     /**
@@ -50,19 +70,20 @@ public class AccountUtil {
     public static Account randomAccount() {
         try {
             ECKeyPairGenerator generator = new ECKeyPairGenerator();
-            ECKeyGenerationParameters keygenParams = new ECKeyGenerationParameters(ecParams, secureRandom);
+            ECKeyGenerationParameters keygenParams = new ECKeyGenerationParameters(CURVE, SECURE_RANDOM);
             generator.init(keygenParams);
             AsymmetricCipherKeyPair keypair = generator.generateKeyPair();
             ECPrivateKeyParameters ecPrivateKeyParameters = (ECPrivateKeyParameters) keypair.getPrivate();
             ECPublicKeyParameters pubParams = (ECPublicKeyParameters) keypair.getPublic();
             BigInteger bigIntegerPrivateKey = ecPrivateKeyParameters.getD();
-            byte[] pub = pubParams.getQ().getEncoded(compressed);
+            byte[] pub = pubParams.getQ().getEncoded(COMPRESSED);
             String privateKey = encodePrivateKey(bigIntegerPrivateKey);
             String publicKey = encodePublicKey(pub);
             String address = addressFromPublicKey(publicKey);
             Account account = new Account(privateKey,publicKey,address);
             return account;
         } catch (Exception e) {
+            logger.debug("生成账户失败。",e);
             throw new RuntimeException(e);
         }
     }
@@ -82,6 +103,7 @@ public class AccountUtil {
             Account account = new Account(privateKey,publicKey,address);
             return account;
         } catch (Exception e) {
+            logger.debug("从私钥恢复账户失败。",e);
             throw new RuntimeException(e);
         }
     }
@@ -94,6 +116,7 @@ public class AccountUtil {
             byte[] bytePublicKey = HexUtil.hexStringToBytes(publicKey);
             return base58AddressFromPublicKey(bytePublicKey);
         } catch (Exception e) {
+            logger.debug("公钥生成地址失败。",e);
             throw new RuntimeException(e);
         }
     }
@@ -106,6 +129,7 @@ public class AccountUtil {
             byte[] bytesPublicKeyHash = HexUtil.hexStringToBytes(publicKeyHash);
             return base58AddressFromPublicKeyHash(bytesPublicKeyHash);
         } catch (Exception e) {
+            logger.debug("公钥哈希生成地址失败。",e);
             throw new RuntimeException(e);
         }
     }
@@ -119,6 +143,7 @@ public class AccountUtil {
             byte[] publicKeyHash = publicKeyHashFromPublicKey(bytesPublicKey);
             return HexUtil.bytesToHexString(publicKeyHash);
         } catch (Exception e) {
+            logger.debug("公钥生成公钥哈希失败。",e);
             throw new RuntimeException(e);
         }
     }
@@ -141,6 +166,7 @@ public class AccountUtil {
             System.arraycopy(bytesAddress, 1, bytePublicKeyHash, 0, 20);
             return HexUtil.bytesToHexString(bytePublicKeyHash);
         } catch (Exception e) {
+            logger.debug("地址生成公钥哈希失败。",e);
             throw new RuntimeException(e);
         }
     }
@@ -154,6 +180,7 @@ public class AccountUtil {
             byte[] bytesSignature = signature(bigIntegerPrivateKey,message);
             return bytesSignature;
         } catch (Exception e) {
+            logger.debug("签名出错。");
             throw new RuntimeException(e);
         }
     }
@@ -166,7 +193,8 @@ public class AccountUtil {
             byte[] bytePublicKey = publicKeyFrom(publicKey);
             return verifySignature(bytePublicKey,message,signature);
         }catch(Exception e) {
-            throw new RuntimeException(e);
+            logger.debug("验证签名出错。");
+            return false;
         }
     }
 
@@ -176,7 +204,7 @@ public class AccountUtil {
      * 由原始私钥推导出原始公钥
      */
     private static byte[] publicKeyFromPrivateKey(BigInteger bigIntegerPrivateKey) {
-        byte[] bytePublicKey = ecParams.getG().multiply(bigIntegerPrivateKey).getEncoded(compressed);
+        byte[] bytePublicKey = CURVE.getG().multiply(bigIntegerPrivateKey).getEncoded(COMPRESSED);
         return bytePublicKey;
     }
     /**
@@ -213,18 +241,23 @@ public class AccountUtil {
      * 签名
      */
     private static byte[] signature(BigInteger bigIntegerPrivateKey, byte[] message) {
-        ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
-        ECPrivateKeyParameters ecPrivateKeyParameters = new ECPrivateKeyParameters(bigIntegerPrivateKey, ecParams);
-        signer.init(true, ecPrivateKeyParameters);
-        BigInteger[] sigs = signer.generateSignature(message);
         try {
+            ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
+            ECPrivateKeyParameters ecPrivateKeyParameters = new ECPrivateKeyParameters(bigIntegerPrivateKey, CURVE);
+            signer.init(true, ecPrivateKeyParameters);
+            BigInteger[] sigs = signer.generateSignature(message);
+            BigInteger s = sigs[1];
+            if (!isCanonical(s)) {
+                s = CURVE.getN().subtract(s);
+            }
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             DERSequenceGenerator seq = new DERSequenceGenerator(bos);
             seq.addObject(new ASN1Integer(sigs[0]));
-            seq.addObject(new ASN1Integer(sigs[1]));
+            seq.addObject(new ASN1Integer(s));
             seq.close();
             return bos.toByteArray();
-        } catch (IOException e) {
+        } catch (Exception e) {
+            logger.debug("签名出错。");
             throw new RuntimeException(e);
         }
     }
@@ -233,18 +266,22 @@ public class AccountUtil {
      * 验证签名
      */
     private static boolean verifySignature(byte[] pub, byte[] message, byte[] signature) {
-        ECDSASigner signer = new ECDSASigner();
-        ECPublicKeyParameters ecPublicKeyParameters = new ECPublicKeyParameters(ecParams.getCurve().decodePoint(pub), ecParams);
-        signer.init(false, ecPublicKeyParameters);
         try {
+            ECDSASigner signer = new ECDSASigner();
+            ECPublicKeyParameters ecPublicKeyParameters = new ECPublicKeyParameters(CURVE.getCurve().decodePoint(pub), CURVE);
+            signer.init(false, ecPublicKeyParameters);
             ASN1InputStream decoder = new ASN1InputStream(signature);
             DLSequence seq = (DLSequence) decoder.readObject();
             ASN1Integer r = (ASN1Integer) seq.getObjectAt(0);
             ASN1Integer s = (ASN1Integer) seq.getObjectAt(1);
+            if (!isCanonical(s.getValue())) {
+                return false;
+            }
             decoder.close();
             return signer.verifySignature(message, r.getValue(), s.getValue());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            logger.debug("验证签名，出错。");
+            return false;
         }
     }
 
@@ -264,7 +301,7 @@ public class AccountUtil {
         byte[] byteAddress = new byte[1 + 20 + 4];
 
         //将地址的版本号0x00存储进地址数组
-        byteAddress[0] = 0x00;
+        byteAddress[0] = VERSION;
         System.arraycopy(publicKeySha256DigestRipeMD160Digest, 0, byteAddress, 1, 20);
 
         //计算公钥Hash
@@ -291,5 +328,21 @@ public class AccountUtil {
             privateKey = (String.join("", Collections.nCopies(length-privateKey.length(), "0")))+privateKey;
         }
         return privateKey;
+    }
+
+    /**
+     * 是否是合法的地址
+     */
+    public static boolean isBase58Address(String address) {
+        try {
+            byte[] bytesAddress = Base58.decode(address);
+            byte[] bytePublicKeyHash = new byte[20];
+            System.arraycopy(bytesAddress, 1, bytePublicKeyHash, 0, 20);
+            String base58Address = addressFromPublicKeyHash(HexUtil.bytesToHexString(bytePublicKeyHash));
+            return base58Address.equals(address);
+        }catch (Exception e){
+            logger.debug(String.format("地址[%s]不是base58格式的地址。",address));
+            return false;
+        }
     }
 }

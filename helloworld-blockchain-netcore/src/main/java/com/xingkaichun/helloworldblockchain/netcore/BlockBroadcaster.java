@@ -1,9 +1,14 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
-import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeClient;
+import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.core.tools.Model2DtoTool;
+import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
+import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.NodeDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PingRequest;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
 import com.xingkaichun.helloworldblockchain.util.ThreadUtil;
@@ -29,13 +34,11 @@ public class BlockBroadcaster {
 
     private NodeService nodeService;
     private BlockchainCore blockchainCore;
-    private BlockchainNodeClient blockchainNodeClient;
 
-    public BlockBroadcaster(NodeService nodeService, BlockchainCore blockchainCore, BlockchainNodeClient blockchainNodeClient) {
+    public BlockBroadcaster(NodeService nodeService, BlockchainCore blockchainCore) {
 
         this.nodeService = nodeService;
         this.blockchainCore = blockchainCore;
-        this.blockchainNodeClient = blockchainNodeClient;
     }
 
     public void start() {
@@ -49,6 +52,54 @@ public class BlockBroadcaster {
                 ThreadUtil.sleep(GlobalSetting.NodeConstant.CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL);
             }
         }).start();
+
+        new Thread(()->{
+            while (true){
+                try {
+                    broadcastBlock();
+                } catch (Exception e) {
+                    logger.error("在区块链网络中广播自己的区块出现异常",e);
+                }
+                ThreadUtil.sleep(GlobalSetting.NodeConstant.CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL);
+            }
+        }).start();
+    }
+
+    private void broadcastBlock() {
+        List<NodeEntity> nodes = nodeService.queryAllNodeList();
+        if(nodes == null || nodes.size()==0){
+            return;
+        }
+
+        long blockchainHeight = blockchainCore.queryBlockchainHeight();
+        Block block = blockchainCore.queryTailBlock();
+        BlockDTO blockDTO = Model2DtoTool.block2BlockDTO(block);
+
+        //按照节点的高度进行排序
+        nodes.sort((NodeEntity node1, NodeEntity node2) -> {
+            if (LongUtil.isGreatThan(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
+                return -1;
+            } else if (LongUtil.isEquals(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
+                return 0;
+            } else {
+                return 1;
+            }
+        });
+        //广播节点的数量
+        int broadcastNodeCount = 0;
+        for(NodeEntity node:nodes){
+            if(LongUtil.isLessEqualThan(blockchainHeight,node.getBlockchainHeight())){
+                continue;
+            }
+            PingRequest request = new PingRequest();
+            request.setBlockchainHeight(blockchainHeight);
+            new BlockchainNodeClientImpl(new NodeDTO(node.getIp())).psotBlock(blockDTO);
+            ++broadcastNodeCount;
+            if(broadcastNodeCount > 50){
+                return;
+            }
+            ThreadUtil.sleep(1000*10);
+        }
     }
 
 
@@ -56,14 +107,14 @@ public class BlockBroadcaster {
      * 发现自己的区块链高度比全网节点都要高，则广播自己的区块链高度
      */
     private void broadcastBlockChainHeight() {
-        List<NodeDTO> nodes = nodeService.queryAllNoForkAliveNodeList();
+        List<NodeEntity> nodes = nodeService.queryAllNodeList();
         if(nodes == null || nodes.size()==0){
             return;
         }
 
         long blockchainHeight = blockchainCore.queryBlockchainHeight();
         //按照节点的高度进行排序
-        nodes.sort((NodeDTO node1, NodeDTO node2) -> {
+        nodes.sort((NodeEntity node1, NodeEntity node2) -> {
             if (LongUtil.isGreatThan(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
                 return -1;
             } else if (LongUtil.isEquals(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
@@ -82,13 +133,15 @@ public class BlockBroadcaster {
          */
         //广播节点的数量
         int broadcastNodeCount = 0;
-        for(NodeDTO node:nodes){
+        for(NodeEntity node:nodes){
             if(LongUtil.isLessEqualThan(blockchainHeight,node.getBlockchainHeight())){
                 continue;
             }
-            blockchainNodeClient.unicastLocalBlockchainHeight(node,blockchainHeight);
+            PingRequest request = new PingRequest();
+            request.setBlockchainHeight(blockchainHeight);
+            new BlockchainNodeClientImpl(new NodeDTO(node.getIp())).pingNode(request);
             ++broadcastNodeCount;
-            if(broadcastNodeCount > 10){
+            if(broadcastNodeCount > 50){
                 return;
             }
             ThreadUtil.sleep(1000*10);

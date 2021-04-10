@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.node.server;
+package com.xingkaichun.helloworldblockchain.netcore.server;
 
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import io.netty.bootstrap.ServerBootstrap;

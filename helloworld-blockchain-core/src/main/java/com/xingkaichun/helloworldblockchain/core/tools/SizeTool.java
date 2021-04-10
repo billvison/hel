@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
+import com.xingkaichun.helloworldblockchain.core.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.script.OperationCodeEnum;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
@@ -76,7 +77,7 @@ public class SizeTool {
                 //校验脚本存储容量
                 InputScriptDTO inputScriptDTO = transactionInputDTO.getInputScript();
                 //校验脚本操作码操作数的容量
-                if(!isScriptStorageCapacityLegal(inputScriptDTO)){
+                if(!isInputScriptStorageCapacityLegal(inputScriptDTO)){
                     return false;
                 }
             }
@@ -91,7 +92,7 @@ public class SizeTool {
                 //校验脚本存储容量
                 OutputScriptDTO outputScriptDTO = transactionOutputDTO.getOutputScript();
                 //校验脚本操作码操作数的容量
-                if(!isScriptStorageCapacityLegal(outputScriptDTO)){
+                if(!isOutputScriptCapacityLegal(outputScriptDTO)){
                     return false;
                 }
 
@@ -106,6 +107,31 @@ public class SizeTool {
         }
         return true;
     }
+
+    /**
+     * 校验脚本操作码、操作数的存储容量
+     * 校验脚本的存储容量
+     */
+    private static boolean isInputScriptStorageCapacityLegal(InputScriptDTO inputScriptDTO) {
+        //先宽泛的校验脚本
+        if(!isScriptStorageCapacityLegal(inputScriptDTO)){
+            return false;
+        }
+        return StackBasedVirtualMachine.isPayToPublicKeyHashInputScript(inputScriptDTO);
+    }
+
+    /**
+     * 校验脚本操作码、操作数的存储容量
+     * 校验脚本的存储容量
+     */
+    public static boolean isOutputScriptCapacityLegal(OutputScriptDTO outputScriptDTO) {
+        //先宽泛的校验脚本
+        if(!isScriptStorageCapacityLegal(outputScriptDTO)){
+            return false;
+        }
+        return StackBasedVirtualMachine.isPayToPublicKeyHashOutputScript(outputScriptDTO);
+    }
+
     /**
      * 校验脚本操作码、操作数的存储容量
      * 校验脚本的存储容量
@@ -119,9 +145,9 @@ public class SizeTool {
                     Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
                     Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
                 continue;
-            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA1024.getCode(),bytesOperationCode)){
+            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
                 String operationData = scriptDTO.get(++i);
-                if(operationData.length() > OperationCodeEnum.OP_PUSHDATA1024.getSize()){
+                if(operationData.length() > OperationCodeEnum.OP_PUSHDATA.getSize()){
                     return false;
                 }
             }else {

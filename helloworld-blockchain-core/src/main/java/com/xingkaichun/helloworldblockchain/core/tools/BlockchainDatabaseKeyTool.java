@@ -40,6 +40,8 @@ public class BlockchainDatabaseKeyTool {
     private static final String ADDRESS_TO_SPEND_TRANSACTION_OUTPUT_LIST_KEY_PREFIX_FLAG = "N";
     //地址标识：存储地址到交易哈希列表的映射
     private static final String ADDRESS_TO_TRANSACTION_HASH_LIST_KEY_PREFIX_FLAG = "O";
+    //地址标识
+    private static final String ADDRESS_PREFIX_FLAG = "P";
 
     //钱包地址截止标记
     private static final String ADDRESS_END_FLAG = "#" ;
@@ -55,6 +57,10 @@ public class BlockchainDatabaseKeyTool {
     }
     public static byte[] buildHashKey(String hash) {
         String stringKey = HASH_PREFIX_FLAG + hash + END_FLAG;
+        return LevelDBUtil.stringToBytes(stringKey);
+    }
+    public static byte[] buildAddressKey(String address) {
+        String stringKey = ADDRESS_PREFIX_FLAG + address + END_FLAG;
         return LevelDBUtil.stringToBytes(stringKey);
     }
     public static byte[] buildBlockHeightToBlockKey(long blockHeight) {

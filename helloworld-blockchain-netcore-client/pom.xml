@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>helloworld-blockchain-parent</artifactId>
+        <groupId>com.xingkaichun.helloworldblockchain</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.xingkaichun.helloworldblockchain</groupId>
+    <artifactId>helloworld-blockchain-netcore-client</artifactId>
+
+    <name>helloworld-blockchain-netcore-client</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.xingkaichun.helloworldblockchain</groupId>
+            <artifactId>helloworld-blockchain-netcore-dto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xingkaichun.helloworldblockchain</groupId>
+            <artifactId>helloworld-blockchain-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xingkaichun.helloworldblockchain</groupId>
+            <artifactId>helloworld-blockchain-setting</artifactId>
+        </dependency>
+    </dependencies>
+</project>

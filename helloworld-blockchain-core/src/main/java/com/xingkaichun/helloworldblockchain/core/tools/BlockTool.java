@@ -80,21 +80,44 @@ public class BlockTool {
         //在不同的交易中，新生产的哈希(区块的哈希、交易的哈希、交易输出哈希)不应该被使用两次或是两次以上
         Set<String> hashSet = new HashSet<>();
         if(hashSet.contains(blockHash)){
-            return false;
+            return true;
         }else {
             hashSet.add(blockHash);
         }
         for(Transaction transaction : blockTransactions){
             String transactionHash = transaction.getTransactionHash();
             if(hashSet.contains(transactionHash)){
-                return false;
+                return true;
             }else {
                 hashSet.add(transactionHash);
             }
         }
-        return true;
+        return false;
     }
-
+    /**
+     * 区块新产生的地址是否存在重复
+     */
+    public static boolean isExistDuplicateNewAddress(Block block) {
+        Set<String> addressSet = new HashSet<>();
+        List<Transaction> blockTransactions = block.getTransactions();
+        if(blockTransactions != null){
+            for(Transaction transaction : blockTransactions){
+                List<TransactionOutput> outputs = transaction.getOutputs();
+                if(outputs != null){
+                    for (TransactionOutput output:outputs){
+                        String address = output.getAddress();
+                        if(addressSet.contains(address)){
+                            logger.debug(String.format("区块数据异常，地址[%s]重复。",address));
+                            return true;
+                        }else {
+                            addressSet.add(address);
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
     /**
      * 是否存在重复的交易输入
      */

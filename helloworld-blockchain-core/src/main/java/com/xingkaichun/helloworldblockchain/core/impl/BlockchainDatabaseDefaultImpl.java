@@ -149,7 +149,12 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             return false;
         }
         //新产生的哈希是否合法
-        if(!isNewHashLegal(block)){
+        if(isNewHashIllegal(block)){
+            logger.debug("区块数据异常，区块中新产生的哈希异常。");
+            return false;
+        }
+        //新产生的地址是否合法
+        if(isAddressIllegal(block)){
             logger.debug("区块数据异常，区块中新产生的哈希异常。");
             return false;
         }
@@ -198,6 +203,10 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             return false;
         }
 
+        //交易地址是否合法
+        if(TransactionTool.isTransactionAddressIllegal(transaction)){
+            return false;
+        }
 
         //业务校验
         //校验交易金额
@@ -211,11 +220,15 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             return false;
         }
         //新产生的哈希是否合法
-        if(!isNewHashLegal(transaction)){
+        if(isNewHashIllegal(transaction)){
             logger.debug("区块数据异常，区块中新产生的哈希异常。");
             return false;
         }
-
+        //新产生的地址是否合法
+        if(isNewAddressIllegal(transaction)){
+            logger.debug("区块数据异常，区块中新产生的哈希异常。");
+            return false;
+        }
 
         //根据交易类型，做进一步的校验
         if(transaction.getTransactionType() == TransactionType.COINBASE){
@@ -508,6 +521,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         storeTransactionOutputIdToToTransactionHash(writeBatch,block,blockchainActionEnum);
         storeTransactionOutputIdToTransactionOutput(writeBatch,block,blockchainActionEnum);
         storeHash(writeBatch,block,blockchainActionEnum);
+        storeAddress(writeBatch,block,blockchainActionEnum);
         storeAddressToUnspendTransactionOutputList(writeBatch,block,blockchainActionEnum);
         storeAddressToTransactionOutputList(writeBatch,block,blockchainActionEnum);
         storeAddressToSpendTransactionOutputList(writeBatch,block,blockchainActionEnum);
@@ -726,6 +740,28 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             }
         }
     }
+
+    /**
+     * 存储已使用的地址
+     */
+    private void storeAddress(WriteBatch writeBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+        List<Transaction> transactionList = block.getTransactions();
+        if(transactionList != null){
+            for(Transaction transaction:transactionList){
+                List<TransactionOutput> outputs = transaction.getOutputs();
+                if(outputs != null){
+                    for(TransactionOutput output:outputs){
+                        byte[] addressKey = BlockchainDatabaseKeyTool.buildAddressKey(output.getAddress());
+                        if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
+                            writeBatch.put(addressKey, addressKey);
+                        } else {
+                            writeBatch.delete(addressKey);
+                        }
+                    }
+                }
+            }
+        }
+    }
     /**
      * 存储地址到未花费交易输出列表
      */
@@ -877,9 +913,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         String transactionHash = transaction.getTransactionHash();
         if(isHashUsed(transactionHash)){
             logger.debug("交易数据异常，交易Hash已经被使用了。");
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
     /**
      * 区块中新产生的哈希是否已经被区块链系统使用了？
@@ -889,47 +925,87 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         String blockHash = block.getHash();
         if(isHashUsed(blockHash)){
             logger.debug("区块数据异常，区块Hash已经被使用了。");
-            return false;
+            return true;
         }
         //校验每一笔交易新产生的Hash是否正确
         List<Transaction> blockTransactions = block.getTransactions();
         if(blockTransactions != null){
             for(Transaction transaction:blockTransactions){
-                if(!isNewHashUsed(transaction)){
-                    return false;
+                if(isNewHashUsed(transaction)){
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }
     /**
      * 区块中新产生的哈希是否合法
      */
-    private boolean isNewHashLegal(Transaction transaction) {
+    private boolean isNewHashIllegal(Transaction transaction) {
         //校验哈希作为主键的正确性
         //新产生的Hash不能被使用过
-        if(!isNewHashUsed(transaction)){
+        if(isNewHashUsed(transaction)){
             logger.debug("校验数据异常，校验中占用的部分主键已经被使用了。");
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
     /**
      * 区块中新产生的哈希是否合法
      */
-    private boolean isNewHashLegal(Block block) {
+    private boolean isNewHashIllegal(Block block) {
         //校验哈希作为主键的正确性
         //新产生的哈希不能有重复
-        if(!BlockTool.isExistDuplicateNewHash(block)){
+        if(BlockTool.isExistDuplicateNewHash(block)){
             logger.debug("区块数据异常，区块中新产生的哈希有重复。");
-            return false;
+            return true;
         }
         //新产生的哈希不能被区块链使用过了
-        if(!isHashUsed(block)){
+        if(isHashUsed(block)){
             logger.debug("区块数据异常，区块中新产生的哈希已经早被区块链使用了。");
-            return false;
+            return true;
         }
-        return true;
+        return false;
+    }
+    private boolean isAddressIllegal(Block block) {
+        //校验地址作为主键的正确性
+        //新产生的地址不能有重复
+        if(BlockTool.isExistDuplicateNewAddress(block)){
+            logger.debug("区块数据异常，区块中新产生的地址有重复。");
+            return true;
+        }
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
+                if(isNewAddressIllegal(transaction)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    /**
+     * 区块中新产生的哈希是否合法
+     */
+    private boolean isNewAddressIllegal(Transaction transaction) {
+        if(TransactionTool.isExistDuplicateNewAddress(transaction)){
+            return true;
+        }
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        if(outputs != null){
+            for (TransactionOutput output:outputs){
+                String address = output.getAddress();
+                if(isAddressUsed(address)){
+                    logger.debug(String.format("区块数据异常，地址[%s]重复。",address));
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    private boolean isAddressUsed(String address) {
+        byte[] bytesAddress = LevelDBUtil.get(blockchainDB, BlockchainDatabaseKeyTool.buildAddressKey(address));
+        return bytesAddress != null;
     }
     //endregion
 

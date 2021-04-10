@@ -3,6 +3,8 @@ package com.xingkaichun.helloworldblockchain.core;
 import com.xingkaichun.helloworldblockchain.core.model.script.*;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.InputScriptDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.OutputScriptDTO;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
@@ -46,8 +48,8 @@ public class StackBasedVirtualMachine {
                 if(!verifySignatureSuccess){
                     throw new RuntimeException("脚本执行失败");
                 }
-                stack.push(String.valueOf(Boolean.TRUE));
-            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA1024.getCode(),byteCommand)){
+                stack.push(HexUtil.bytesToHexString(BooleanEnum.TRUE.getCode()));
+            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),byteCommand)){
                 stack.push(script.get(++i));
             }else {
                 throw new RuntimeException("不能识别的指令");
@@ -65,9 +67,9 @@ public class StackBasedVirtualMachine {
 
     public static InputScript createPayToPublicKeyHashInputScript(String sign, String publicKey) {
         InputScript script = new InputScript();
-        script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA1024.getCode()));
+        script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
         script.add(sign);
-        script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA1024.getCode()));
+        script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
         script.add(publicKey);
         return script;
     }
@@ -76,14 +78,49 @@ public class StackBasedVirtualMachine {
         OutputScript script = new OutputScript();
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()));
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()));
-        script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA1024.getCode()));
+        script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
         String publicKeyHash = AccountUtil.publicKeyHashFromAddress(address);
         script.add(publicKeyHash);
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()));
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));
         return script;
     }
-    //TODO 校验脚本类型 与 长度
+
+    public static boolean isPayToPublicKeyHashOutputScript(OutputScriptDTO outputScriptDTO) {
+        try {
+            if(
+                    outputScriptDTO.size() == 6
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()).equals(outputScriptDTO.get(0))
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()).equals(outputScriptDTO.get(1))
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(outputScriptDTO.get(2))
+                    && 40 == outputScriptDTO.get(3).length()
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()).equals(outputScriptDTO.get(4))
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()).equals(outputScriptDTO.get(5))
+            ){
+                return true;
+            }
+            return false;
+        }catch (Exception e){
+            return false;
+        }
+    }
+    public static boolean isPayToPublicKeyHashInputScript(InputScriptDTO inputScriptDTO) {
+        try {
+            if(
+                    inputScriptDTO.size() == 4
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(inputScriptDTO.get(0))
+                    && (136 <= inputScriptDTO.get(1).length() && 144 >= inputScriptDTO.get(1).length())
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(inputScriptDTO.get(2))
+                    && 130 == inputScriptDTO.get(3).length()
+            ){
+                return true;
+            }
+            return false;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
     public static String getPublicKeyHashByPayToPublicKeyHashOutputScript(List<String> outputScript) {
         return outputScript.get(3);
     }

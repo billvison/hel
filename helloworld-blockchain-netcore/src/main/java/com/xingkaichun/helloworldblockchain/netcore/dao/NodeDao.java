@@ -16,13 +16,9 @@ public interface NodeDao {
      */
     NodeEntity queryNode(String ip);
     /**
-     * 获取所有未分叉节点
+     * 查询所有节点
      */
-    List<NodeEntity> queryAllNoForkNodeList();
-    /**
-     * 获取所有活着的、未分叉节点
-     */
-    List<NodeEntity> queryAllNoForkAliveNodeList();
+    List<NodeEntity> queryAllNodeList();
     /**
      * 添加节点
      */
@@ -35,8 +31,4 @@ public interface NodeDao {
      * 删除节点
      */
     void deleteNode(String ip);
-    /**
-     * 查询所有节点
-     */
-    List<NodeEntity> queryAllNodeList();
 }

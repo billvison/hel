@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.explorer.vo.node;
 
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
+import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 
 /**
  *
@@ -8,17 +8,17 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeDTO;
  */
 public class AddNodeRequest {
 
-    private NodeDTO node;
+    private NodeEntity node;
 
 
 
 
     //region get set
-    public NodeDTO getNode() {
+    public NodeEntity getNode() {
         return node;
     }
 
-    public void setNode(NodeDTO node) {
+    public void setNode(NodeEntity node) {
         this.node = node;
     }
     //endregion

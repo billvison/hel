@@ -58,14 +58,14 @@ public class AccountUtilTest {
     @Test
     public void verifySignatureTest()
     {
-        byte[] zeroValueByte32Length = new byte[32];
+        byte[] zeroValueWith32Byte = new byte[32];
         Account account = AccountUtil.accountFromPrivateKey("180cb41c7c600be951b5d3d0a7334acc7506173875834f7a6c4c786a28fcbb19");
-        byte[] signatureByAccount = signatureProxy(privateKeyFromProxy(account.getPrivateKey()),zeroValueByte32Length);
-        boolean verifySignatureByAccount = verifySignatureProxy(publicKeyFromProxy(account.getPublicKey()),zeroValueByte32Length,signatureByAccount);
+        byte[] signatureByAccount = signatureProxy(privateKeyFromProxy(account.getPrivateKey()),zeroValueWith32Byte);
+        boolean verifySignatureByAccount = verifySignatureProxy(publicKeyFromProxy(account.getPublicKey()),zeroValueWith32Byte,signatureByAccount);
         assertTrue(verifySignatureByAccount);
 
-        byte[] signatureByFixValue = HEX.decode("3046022100dffbc26774fc841bbe1c1362fd643609c6e42dcb274763476d87af2c0597e89e022100c59e3c13b96b316cae9fa0ab0260612c7a133a6fe2b3445b6bf80b3123bf274d");
-        boolean verifySignatureByFixValue = verifySignatureProxy(publicKeyFromProxy(account.getPublicKey()),zeroValueByte32Length,signatureByFixValue);
+        byte[] signatureByFixValue = HEX.decode("3045022100cfd454a1215fdea463201a7a32c146c1cec54b60b12d47e118a2add41366cec602203e7875d23cc80f958e45298bb8369d4422acfbc1c317353eebe02c89206b3e73");
+        boolean verifySignatureByFixValue = verifySignatureProxy(publicKeyFromProxy(account.getPublicKey()),zeroValueWith32Byte,signatureByFixValue);
         assertTrue(verifySignatureByFixValue);
     }
 
@@ -98,7 +98,8 @@ public class AccountUtilTest {
         //校验bitcoinj签名是否正确
         assertTrue(verifySignatureProxy(publicKeyFromProxy(account.getPublicKey()),randomByte,signByBitcoinj));
 
-        //assertArrayEquals(signByAccount,signByBitcoinj);
+        //校验同一私钥，签名是否与bitcoinj签名
+        assertArrayEquals(signByAccount,signByBitcoinj);
     }
 
     @Test
@@ -106,17 +107,17 @@ public class AccountUtilTest {
     {
         assertAccount(ACCOUNT_1);
 
-        for (int i=0;i<1000;i++){
+        for (int i=0;i<10000;i++){
             Account account = AccountUtil.randomAccount();
             assertAccount(account);
         }
 
-        for (int i=0;i<1000;i++){
+        for (int i=0;i<10000;i++){
             Account account = AccountUtil.accountFromPrivateKey(randomPrivateKey());
             assertAccount(account);
         }
 
-        for(int i=0;i<1000;i++){
+        for(int i=0;i<10000;i++){
             randomAssertSignature();
         }
     }
@@ -139,13 +140,11 @@ public class AccountUtilTest {
 
     private static String randomPrivateKey() {
         StringBuilder result = new StringBuilder();
-        int length = new Random().nextInt(63)+2;
-        for(int i=0;i<length;i++) {
+        for(int i=0; i<64; i++) {
             result.append(Integer.toHexString(new Random().nextInt(16)));
         }
         return result.toString();
     }
-
 
 
 

@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.netcore.node.server;
+package com.xingkaichun.helloworldblockchain.netcore.server;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;

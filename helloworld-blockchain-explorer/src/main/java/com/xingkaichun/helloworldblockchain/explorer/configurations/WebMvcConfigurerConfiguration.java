@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.explorer.configurations;
 
 import com.google.gson.Gson;
-import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.ServiceResult;
 import com.xingkaichun.helloworldblockchain.explorer.interceptor.IpInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

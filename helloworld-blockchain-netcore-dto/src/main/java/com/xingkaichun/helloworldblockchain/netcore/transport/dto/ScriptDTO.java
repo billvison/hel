@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * 脚本
- * 属性含义参考 com.xingkaichun.helloworldblockchain.core.model.script.Script
+ * 属性含义参考 com.xingkaichun.helloworldblockchain.core.bo.script.Script
  *
  * @author 邢开春 409060350@qq.com
  */

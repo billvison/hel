@@ -120,13 +120,6 @@ public abstract class BlockchainCore {
      */
     public abstract BuildTransactionResponse buildTransactionDTO(BuildTransactionRequest request) ;
     /**
-     * 构建交易。使用提供的账户。
-     * @param payerPrivateKeyList 付款方私钥列表
-     * @param payerChangeAddress 付款方接收找零地址
-     * @param recipientList 接受方
-     */
-    public abstract BuildTransactionResponse buildTransactionDTO(List<String> payerPrivateKeyList, String payerChangeAddress, List<Recipient> recipientList) ;
-    /**
      * 提交交易到区块链
      */
     public abstract void submitTransaction(TransactionDTO transactionDTO) ;

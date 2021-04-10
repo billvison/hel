@@ -1,8 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
-import com.xingkaichun.helloworldblockchain.netcore.node.client.BlockchainNodeClient;
-import com.xingkaichun.helloworldblockchain.netcore.node.server.BlockchainNodeHttpServer;
+import com.xingkaichun.helloworldblockchain.netcore.server.BlockchainNodeHttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 
@@ -33,12 +32,12 @@ public class NetBlockchainCore {
 
     private ConfigurationService configurationService;
     private NodeService nodeService;
-    private BlockchainNodeClient blockchainNodeClient;
+
     public NetBlockchainCore(BlockchainCore blockchainCore
             , BlockchainNodeHttpServer blockchainNodeHttpServer, ConfigurationService configurationService
             , NodeSearcher nodeSearcher, NodeBroadcaster nodeBroadcaster
             , BlockSearcher blockSearcher , BlockBroadcaster blockBroadcaster
-            , NodeService nodeService, BlockchainNodeClient blockchainNodeClient) {
+            , NodeService nodeService) {
 
         this.blockchainCore = blockchainCore;
         this.blockchainNodeHttpServer = blockchainNodeHttpServer;
@@ -49,7 +48,6 @@ public class NetBlockchainCore {
         this.blockBroadcaster = blockBroadcaster;
 
         this.nodeService = nodeService;
-        this.blockchainNodeClient = blockchainNodeClient;
         restoreConfiguration();
     }
 
@@ -111,10 +109,6 @@ public class NetBlockchainCore {
 
     public NodeService getNodeService() {
         return nodeService;
-    }
-
-    public BlockchainNodeClient getBlockchainNodeClient() {
-        return blockchainNodeClient;
     }
     //end
 }

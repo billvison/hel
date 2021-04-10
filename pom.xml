@@ -16,6 +16,7 @@
     <module>helloworld-blockchain-netcore-dto</module>
     <module>helloworld-blockchain-setting</module>
     <module>helloworld-blockchain-util</module>
+    <module>helloworld-blockchain-netcore-client</module>
   </modules>
 
   <name>helloworld-blockchain-parent</name>
@@ -34,8 +35,8 @@
     <bcprov.version>1.59</bcprov.version>
     <netty-all.version>4.1.49.Final</netty-all.version>
     <sqldroid.version>1.0.3</sqldroid.version>
-    <bitcoinj.version>0.15.8</bitcoinj.version>
-    <guava.version>28.0-jre</guava.version>
+    <bitcoinj.version>0.15.10</bitcoinj.version>
+    <guava.version>30.0-jre</guava.version>
     <mybatis.spring.version>2.0.1</mybatis.spring.version>
   </properties>
 
@@ -70,7 +71,27 @@
       </dependency>
       <dependency>
         <groupId>com.xingkaichun.helloworldblockchain</groupId>
+        <artifactId>helloworld-blockchain-netcore-entity</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.xingkaichun.helloworldblockchain</groupId>
+        <artifactId>helloworld-blockchain-netcore-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.xingkaichun.helloworldblockchain</groupId>
         <artifactId>helloworld-blockchain-netcore-dto</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.xingkaichun.helloworldblockchain</groupId>
+        <artifactId>helloworld-blockchain-netcore-service</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.xingkaichun.helloworldblockchain</groupId>
+        <artifactId>helloworld-blockchain-netcore-dao</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

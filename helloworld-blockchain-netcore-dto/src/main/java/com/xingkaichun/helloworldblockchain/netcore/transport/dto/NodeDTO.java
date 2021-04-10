@@ -1,22 +1,18 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.netserver;
+package com.xingkaichun.helloworldblockchain.netcore.transport.dto;
 
 /**
  *
  * @author 邢开春 409060350@qq.com
  */
-public class BaseNodeDTO {
+public class NodeDTO {
 
     private String ip;
 
-    public BaseNodeDTO() {
+    public NodeDTO() {
     }
-
-    public BaseNodeDTO(String ip) {
+    public NodeDTO(String ip) {
         this.ip = ip;
     }
-
-
-
 
     //region get set
 

@@ -23,8 +23,8 @@ import com.xingkaichun.helloworldblockchain.explorer.vo.node.QueryBlockchainHeig
 import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.*;
 import com.xingkaichun.helloworldblockchain.explorer.service.BlockchainBrowserService;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
-import com.xingkaichun.helloworldblockchain.netcore.dto.common.PageCondition;
-import com.xingkaichun.helloworldblockchain.netcore.dto.common.ServiceResult;
+import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.PageCondition;
+import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.ServiceResult;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.util.DateUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;

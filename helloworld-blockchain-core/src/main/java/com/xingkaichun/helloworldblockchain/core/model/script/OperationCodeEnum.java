@@ -7,7 +7,14 @@ package com.xingkaichun.helloworldblockchain.core.model.script;
  * @author 邢开春 409060350@qq.com
  */
 public enum OperationCodeEnum {
-
+    /**
+     * 操作前，假设栈元素为(A B C D E)(栈顶<---栈底)
+     * 若栈内少于0个元素，抛出异常。
+     * 将脚本中的下一个数据A2放入栈，若A2长度大于1024个十六进制字符，抛出异常。
+     * 操作后，栈元素为(A2 A B C D E)(栈顶<---栈底)
+     * 操作码全称是OPERATION_CODE_PUSH_DATA
+     */
+    OP_PUSHDATA(new byte[]{(byte)0x00}, "OP_PUSHDATA",1024),
     /**
      * 操作前，假设栈元素为(A B C D E)(栈顶<---栈底)
      * 若栈内少于1个元素，抛出异常。
@@ -16,7 +23,7 @@ public enum OperationCodeEnum {
      * 操作后，栈元素为(A2 A B C D E)(栈顶<---栈底)
      * 操作码全称是OPERATION_CODE_DUPLICATE
      */
-    OP_DUP(new byte[]{(byte)0x00}, "OP_DUP",0),
+    OP_DUP(new byte[]{(byte)0x01}, "OP_DUP",0),
     /**
      * 操作前，假设栈元素为(A B C D E)(栈顶<---栈底)
      * 若栈内少于1个元素，抛出异常。
@@ -26,7 +33,7 @@ public enum OperationCodeEnum {
      * 操作后，栈元素为(A2 B C D E)(栈顶<---栈底)
      * 操作码全称是OPERATION_CODE_HASH160
      */
-    OP_HASH160(new byte[]{(byte)0x01}, "OP_HASH160",0),
+    OP_HASH160(new byte[]{(byte)0x02}, "OP_HASH160",0),
     /**
      * 操作前，假设栈元素为(A B C D E)(栈顶<---栈底)
      * 若栈内少于2个元素，抛出异常。
@@ -35,7 +42,7 @@ public enum OperationCodeEnum {
      * 操作后，栈元素为(C D E)(栈顶<---栈底)
      * 操作码全称是OPERATION_CODE_EQUAL_VERIFY
      */
-    OP_EQUALVERIFY(new byte[]{(byte)0x02}, "OP_EQUALVERIFY",0),
+    OP_EQUALVERIFY(new byte[]{(byte)0x03}, "OP_EQUALVERIFY",0),
     /**
      * 操作前，假设栈元素为(A B C D E)(栈顶<---栈底)
      * 若栈内少于2个元素，抛出异常。
@@ -44,15 +51,8 @@ public enum OperationCodeEnum {
      * 操作后，栈元素为(true C D E)(栈顶<---栈底)
      * 操作码全称是OPERATION_CODE_CHECK_SIGNATURE
      */
-    OP_CHECKSIG(new byte[]{(byte)0x03},"OP_CHECKSIG",0),
-    /**
-     * 操作前，假设栈元素为(A B C D E)(栈顶<---栈底)
-     * 若栈内少于0个元素，抛出异常。
-     * 将脚本中的下一个数据A2放入栈，若A2长度大于1024字符，抛出异常。
-     * 操作后，栈元素为(A2 A B C D E)(栈顶<---栈底)
-     * 操作码全称是OPERATION_CODE_PUSH_DATA
-     */
-    OP_PUSHDATA1024(new byte[]{(byte)0x04}, "OP_PUSHDATA1024",1024);
+    OP_CHECKSIG(new byte[]{(byte)0x04},"OP_CHECKSIG",0);
+
 
 
 

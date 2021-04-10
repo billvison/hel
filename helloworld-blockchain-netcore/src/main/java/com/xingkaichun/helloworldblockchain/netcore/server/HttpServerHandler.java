@@ -1,8 +1,10 @@
-package com.xingkaichun.helloworldblockchain.netcore.node.server;
+package com.xingkaichun.helloworldblockchain.netcore.server;
 
 import com.google.gson.Gson;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.NodeServerApiRoute;
-import com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request.*;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.API;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PingRequest;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -10,6 +12,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -33,29 +38,51 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
 		String sendMsg;
 		String uri = msg.uri();
+		String requestApi = parseRequestApi(uri);
+		Map<String,String> requestParameter = parseRequestParameter(uri);
 
 		//因为任何节点都可以访问这里的接口，请不要在这里写任何能泄露用户私钥的代码。
-		if("/".equals(uri)){
+		if("/".equals(requestApi)){
 			sendMsg = "HelloworldBlockchain";
-		}else if(NodeServerApiRoute.PING.equals(uri)){
-			PingRequest request = new Gson().fromJson(body,PingRequest.class);
-			sendMsg = toString(httpServerHandlerResolver.ping(ctx,request));
-		}else if(NodeServerApiRoute.ADD_OR_UPDATE_NODE.equals(uri)){
-			AddOrUpdateNodeRequest request = new Gson().fromJson(body,AddOrUpdateNodeRequest.class);
-			sendMsg = toString(httpServerHandlerResolver.addOrUpdateNode(ctx,request));
-		}else if(NodeServerApiRoute.QUERY_BLOCK_HASH_BY_BLOCK_HEIGHT.equals(uri)){
-			QueryBlockHashByBlockHeightRequest request = new Gson().fromJson(body, QueryBlockHashByBlockHeightRequest.class);
-			sendMsg = toString(httpServerHandlerResolver.queryBlockHashByBlockHeight(request));
-		}else if(NodeServerApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT.equals(uri)){
-			QueryBlockDtoByBlockHeightRequest request = new Gson().fromJson(body, QueryBlockDtoByBlockHeightRequest.class);
-			sendMsg = toString(httpServerHandlerResolver.queryBlockDtoByBlockHeight(request));
-		}else if(NodeServerApiRoute.SUBMIT_TRANSACTION_TO_NODE.equals(uri)){
-			SubmitTransactionToNodeRequest request = new Gson().fromJson(body, SubmitTransactionToNodeRequest.class);
-			sendMsg = toString(httpServerHandlerResolver.submitTransactionToNodeRequest(request));
+		}else if(API.PING.equals(requestApi)){
+			PingRequest request = new Gson().fromJson(body, PingRequest.class);
+			sendMsg = httpServerHandlerResolver.ping(ctx,request);
+		}else if(API.GET_BLOCK.equals(requestApi)){
+			sendMsg = httpServerHandlerResolver.getBlock(Long.parseLong(requestParameter.get("height")));
+		}else if(API.POST_TRANSACTION.equals(requestApi)){
+			TransactionDTO transactionDTO = new Gson().fromJson(body, TransactionDTO.class);
+			sendMsg = httpServerHandlerResolver.postTransaction(transactionDTO);
+		}else if(API.POST_BLOCK.equals(requestApi)){
+			BlockDTO blockDTO = new Gson().fromJson(body, BlockDTO.class);
+			sendMsg = httpServerHandlerResolver.postBlock(blockDTO);
 		}else {
 			sendMsg = "404 NOT FOUND";
 		}
 		writeResponse(ctx, sendMsg);
+	}
+
+	private Map<String, String> parseRequestParameter(String uri) {
+		Map<String,String> requestParameterMap = new HashMap<>();
+		if(uri.contains("?")){
+			int index = uri.indexOf("?");
+			String[] parameterKeyValues = uri.substring(index+1).split("&");
+			if(parameterKeyValues != null){
+				for (String parameterKeyValue:parameterKeyValues) {
+					String parameterKey = parameterKeyValue.split("=")[0];
+					String parameterValue = parameterKeyValue.split("=")[1];
+					requestParameterMap.put(parameterKey,parameterValue);
+				}
+			}
+		}
+		return requestParameterMap;
+	}
+
+	private String parseRequestApi(String uri) {
+		if(uri.contains("?")){
+			return uri.split("\\?")[0];
+		}else {
+			return uri;
+		}
 	}
 
 	private void readRequest(FullHttpRequest msg) {
@@ -79,11 +106,4 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 		res.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
 		ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
 	}
-
-
-
-	private String toString(Object ping) {
-		return new Gson().toJson(ping);
-	}
-
 }

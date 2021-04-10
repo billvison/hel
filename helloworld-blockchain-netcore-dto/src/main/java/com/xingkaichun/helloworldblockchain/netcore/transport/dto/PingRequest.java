@@ -1,13 +1,12 @@
-package com.xingkaichun.helloworldblockchain.netcore.dto.netserver.request;
+package com.xingkaichun.helloworldblockchain.netcore.transport.dto;
 
 /**
  *
  * @author 邢开春 409060350@qq.com
  */
-public class AddOrUpdateNodeRequest {
+public class PingRequest {
 
     private Long blockchainHeight;
-
 
 
 
@@ -21,5 +20,6 @@ public class AddOrUpdateNodeRequest {
         this.blockchainHeight = blockchainHeight;
     }
 
-//endregion
+
+    //endregion
 }

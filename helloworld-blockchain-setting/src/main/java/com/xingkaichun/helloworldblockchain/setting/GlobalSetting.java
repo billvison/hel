@@ -92,8 +92,6 @@ public class GlobalSetting {
         public static final long FORK_BLOCK_SIZE = 100;
         //在区块链网络中自动搜寻新的节点的间隔时间
         public static final long SEARCH_NEW_NODE_TIME_INTERVAL = 1000 * 60 * 2;
-        //本地节点发现某一个节点错误次数过多，则删除该节点。这个阈值配置。
-        public static final long NODE_ERROR_CONNECTION_TIMES_DELETE_THRESHOLD = 10;
         //在区块链网络中自动搜寻新的区块的间隔时间。
         public static final long SEARCH_NEW_BLOCKS_TIME_INTERVAL = 1000 * 60;
         //检查自己的区块链高度在区块链网络中是否是最大的高度的时间间隔。
