@@ -17,23 +17,14 @@ public class BlockchainApiRoute {
 
     //根据交易哈希查询交易
     public static final String QUERY_TRANSACTION_BY_TRANSACTION_HASH = "/Api/Blockchain/QueryTransactionByTransactionHash";
-    //根据交易高度查询交易
-    public static final String QUERY_TRANSACTION_LIST_BY_TRANSACTION_HEIGHT = "/Api/Blockchain/QueryTransactionListByTransactionHeight";
     //根据区块哈希与交易高度查询交易列表
     public static final String QUERY_TRANSACTION_LIST_BY_BLOCK_HASH_TRANSACTION_HEIGHT = "/Api/Blockchain/QueryTransactionListByBlockHashTransactionHeight";
-    //根据地址查询交易列表
-    public static final String QUERY_TRANSACTION_LIST_BY_ADDRESS = "/Api/Blockchain/QueryTransactionListByAddress";
     //根据地址查询账户详情
     public static final String QUERY_ACCOUNT_DETAIL_BY_ADDRESS = "/Api/Blockchain/QueryAccountDetailByAddress";
 
 
     //根据地址获取交易输出
     public static final String QUERY_TRANSACTION_OUTPUT_LIST_BY_ADDRESS = "/Api/Blockchain/QueryTransactionOutputListByAddress";
-    //根据地址获取未花费交易输出
-    public static final String QUERY_UNSPEND_TRANSACTION_OUTPUT_LIST_BY_ADDRESS = "/Api/Blockchain/QueryUnspendTransactionOutputListByAddress";
-    //根据地址获取已花费交易输出
-    public static final String QUERY_SPEND_TRANSACTION_OUTPUT_LIST_BY_ADDRESS = "/Api/Blockchain/QuerySpendTransactionOutputListByAddress";
-
 
     //根据交易输出ID获取交易输出
     public static final String QUERY_TRANSACTION_OUTPUT_BY_TRANSACTION_OUTPUT_ID = "/Api/Blockchain/QueryTransactionOutputByTransactionOutputId";

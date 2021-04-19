@@ -5,7 +5,7 @@ public class QueryAccountDetailByAddressResponse {
     private String address;
     private String balance;
     private String receipt;
-    private String spend;
+    private String spent;
 
     public String getAddress() {
         return address;
@@ -31,11 +31,11 @@ public class QueryAccountDetailByAddressResponse {
         this.receipt = receipt;
     }
 
-    public String getSpend() {
-        return spend;
+    public String getSpent() {
+        return spent;
     }
 
-    public void setSpend(String spend) {
-        this.spend = spend;
+    public void setSpent(String spent) {
+        this.spent = spent;
     }
 }

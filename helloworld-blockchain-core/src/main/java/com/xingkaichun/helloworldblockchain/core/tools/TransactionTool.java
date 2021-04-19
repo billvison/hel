@@ -4,14 +4,10 @@ import com.google.common.primitives.Bytes;
 import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.model.script.BooleanEnum;
-import com.xingkaichun.helloworldblockchain.core.model.script.OperationCodeEnum;
 import com.xingkaichun.helloworldblockchain.core.model.script.Script;
 import com.xingkaichun.helloworldblockchain.core.model.script.ScriptExecuteResult;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.*;
-import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
-import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
-import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
-import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
+import com.xingkaichun.helloworldblockchain.crypto.*;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +36,7 @@ public class TransactionTool {
         long total = 0;
         if(inputs != null){
             for(TransactionInput input : inputs) {
-                total += input.getUnspendTransactionOutput().getValue();
+                total += input.getUnspentTransactionOutput().getValue();
             }
         }
         return total;
@@ -67,6 +63,28 @@ public class TransactionTool {
         return total;
     }
 
+
+    /**
+     * 交易手续费（只计算普通交易的手续费，coinbase交易抛出异常）
+     */
+    public static long getFee(Transaction transaction) {
+        if(TransactionType.NORMAL == transaction.getTransactionType()){
+            long fee = getInputsValue(transaction) - getOutputsValue(transaction);
+            return fee;
+        }else {
+            throw new RuntimeException("只能计算普通交易类型的手续费");
+        }
+    }
+    /**
+     * 交易费率（只计算普通交易的手续费，coinbase交易抛出异常）
+     */
+    public static long getFeeRate(Transaction transaction) {
+        if(TransactionType.NORMAL == transaction.getTransactionType()){
+            return TransactionTool.getFee(transaction)/SizeTool.calculateTransactionSize(transaction);
+        }else {
+            throw new RuntimeException("只能计算普通交易类型的手续费");
+        }
+    }
 
 
     /**
@@ -107,7 +125,7 @@ public class TransactionTool {
             List<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null && inputs.size()!=0){
                 for(TransactionInput transactionInput:inputs){
-                    Script payToClassicAddressScript = StackBasedVirtualMachine.createPayToClassicAddressScript(transactionInput.getInputScript(),transactionInput.getUnspendTransactionOutput().getOutputScript());
+                    Script payToClassicAddressScript = StackBasedVirtualMachine.createPayToClassicAddressScript(transactionInput.getInputScript(),transactionInput.getUnspentTransactionOutput().getOutputScript());
                     StackBasedVirtualMachine stackBasedVirtualMachine = new StackBasedVirtualMachine();
                     ScriptExecuteResult scriptExecuteResult = stackBasedVirtualMachine.executeScript(transaction,payToClassicAddressScript);
                     boolean executeSuccess = scriptExecuteResult.size()==1 && Arrays.equals(BooleanEnum.TRUE.getCode(),HexUtil.hexStringToBytes(scriptExecuteResult.pop()));
@@ -146,20 +164,20 @@ public class TransactionTool {
      * 序列化。将交易转换为字节数组，要求生成的字节数组反过来能还原为原始交易。
      */
     public static byte[] bytesTransaction(TransactionDTO transactionDTO,boolean omitInputScript) {
-        List<byte[]> bytesUnspendTransactionOutputList = new ArrayList<>();
+        List<byte[]> bytesUnspentTransactionOutputList = new ArrayList<>();
         List<TransactionInputDTO> inputs = transactionDTO.getInputs();
         if(inputs != null){
             for(TransactionInputDTO transactionInputDTO:inputs){
                 byte[] bytesTransactionHash = HexUtil.hexStringToBytes(transactionInputDTO.getTransactionHash());
-                byte[] bytesTransactionOutputIndex = ByteUtil.long64ToBytes64WithBigEndian(transactionInputDTO.getTransactionOutputIndex());
+                byte[] bytesTransactionOutputIndex = NumberUtil.long64ToBytes64WithBigEndian(transactionInputDTO.getTransactionOutputIndex());
 
-                byte[] bytesUnspendTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesTransactionHash),
+                byte[] bytesUnspentTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesTransactionHash),
                         ByteUtil.concatLengthBytes(bytesTransactionOutputIndex));
                 if(!omitInputScript){
                     byte[] bytesInputScript = ScriptTool.bytesScript(transactionInputDTO.getInputScript());
-                    bytesUnspendTransactionOutput = Bytes.concat(bytesUnspendTransactionOutput,ByteUtil.concatLengthBytes(bytesInputScript));
+                    bytesUnspentTransactionOutput = Bytes.concat(bytesUnspentTransactionOutput,ByteUtil.concatLengthBytes(bytesInputScript));
                 }
-                bytesUnspendTransactionOutputList.add(ByteUtil.concatLengthBytes(bytesUnspendTransactionOutput));
+                bytesUnspentTransactionOutputList.add(ByteUtil.concatLengthBytes(bytesUnspentTransactionOutput));
             }
         }
 
@@ -168,13 +186,13 @@ public class TransactionTool {
         if(outputs != null){
             for(TransactionOutputDTO transactionOutputDTO:outputs){
                 byte[] bytesOutputScript = ScriptTool.bytesScript(transactionOutputDTO.getOutputScript());
-                byte[] bytesValue = ByteUtil.long64ToBytes64WithBigEndian(transactionOutputDTO.getValue());
+                byte[] bytesValue = NumberUtil.long64ToBytes64WithBigEndian(transactionOutputDTO.getValue());
                 byte[] bytesTransactionOutput = Bytes.concat(ByteUtil.concatLengthBytes(bytesOutputScript),ByteUtil.concatLengthBytes(bytesValue));
                 bytesTransactionOutputList.add(ByteUtil.concatLengthBytes(bytesTransactionOutput));
             }
         }
 
-        byte[] data = Bytes.concat(ByteUtil.concatLengthBytes(bytesUnspendTransactionOutputList),
+        byte[] data = Bytes.concat(ByteUtil.concatLengthBytes(bytesUnspentTransactionOutputList),
                 ByteUtil.concatLengthBytes(bytesTransactionOutputList));
         return data;
     }
@@ -184,14 +202,14 @@ public class TransactionTool {
     public static TransactionDTO transactionDTO(byte[] bytesTransaction,boolean omitInputScript) {
         TransactionDTO transactionDTO = new TransactionDTO();
         int start = 0;
-        long bytesTransactionInputDtoListLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransaction,start,start+8));
+        long bytesTransactionInputDtoListLength = NumberUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransaction,start,start+8));
         start += 8;
         byte[] bytesTransactionInputDtoList = Arrays.copyOfRange(bytesTransaction,start, start+(int) bytesTransactionInputDtoListLength);
         start += bytesTransactionInputDtoListLength;
         List<TransactionInputDTO> transactionInputDtoList = transactionInputDTOList(bytesTransactionInputDtoList,omitInputScript);
         transactionDTO.setInputs(transactionInputDtoList);
 
-        long bytesTransactionOutputListLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransaction,start,start+8));
+        long bytesTransactionOutputListLength = NumberUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransaction,start,start+8));
         start += 8;
         byte[] bytesTransactionOutputList = Arrays.copyOfRange(bytesTransaction,start, start+(int) bytesTransactionOutputListLength);
         start += bytesTransactionOutputListLength;
@@ -206,7 +224,7 @@ public class TransactionTool {
         int start = 0;
         List<TransactionOutputDTO> transactionOutputDTOList = new ArrayList<>();
         while (start < bytesTransactionOutputList.length){
-            long bytesTransactionOutputDTOLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionOutputList,start,start+8));
+            long bytesTransactionOutputDTOLength = NumberUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionOutputList,start,start+8));
             start += 8;
             byte[] bytesTransactionOutput = Arrays.copyOfRange(bytesTransactionOutputList,start, start+(int) bytesTransactionOutputDTOLength);
             start += bytesTransactionOutputDTOLength;
@@ -220,20 +238,20 @@ public class TransactionTool {
     }
     private static TransactionOutputDTO transactionOutputDTO(byte[] bytesTransactionOutput) {
         int start = 0;
-        long bytesOutputScriptLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionOutput,start,start+8));
+        long bytesOutputScriptLength = NumberUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionOutput,start,start+8));
         start += 8;
         byte[] bytesOutputScript = Arrays.copyOfRange(bytesTransactionOutput,start, start+(int) bytesOutputScriptLength);
         start += bytesOutputScriptLength;
         OutputScriptDTO outputScriptDTO = ScriptTool.outputScriptDTO(bytesOutputScript);
 
-        long bytesValueLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionOutput,start,start+8));
+        long bytesValueLength = NumberUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionOutput,start,start+8));
         start += 8;
         byte[] bytesValue = Arrays.copyOfRange(bytesTransactionOutput,start, start+(int) bytesValueLength);
         start += bytesValueLength;
 
         TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
         transactionOutputDTO.setOutputScript(outputScriptDTO);
-        transactionOutputDTO.setValue(ByteUtil.bytes64ToLong64WithBigEndian(bytesValue));
+        transactionOutputDTO.setValue(NumberUtil.bytes64ToLong64WithBigEndian(bytesValue));
         return transactionOutputDTO;
     }
     private static List<TransactionInputDTO> transactionInputDTOList(byte[] bytesTransactionInputDtoList, boolean omitInputScript) {
@@ -243,7 +261,7 @@ public class TransactionTool {
         int start = 0;
         List<TransactionInputDTO> transactionInputDTOList = new ArrayList<>();
         while (start < bytesTransactionInputDtoList.length){
-            long bytesTransactionInputDTOLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionInputDtoList,start,start+8));
+            long bytesTransactionInputDTOLength = NumberUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionInputDtoList,start,start+8));
             start += 8;
             byte[] bytesTransactionInput = Arrays.copyOfRange(bytesTransactionInputDtoList,start, start+(int) bytesTransactionInputDTOLength);
             start += bytesTransactionInputDTOLength;
@@ -257,19 +275,19 @@ public class TransactionTool {
     }
     private static TransactionInputDTO transactionInputDTO(byte[] bytesTransactionInputDTO, boolean omitInputScript) {
         int start = 0;
-        long bytesTransactionHashLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionInputDTO,start,start+8));
+        long bytesTransactionHashLength = NumberUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionInputDTO,start,start+8));
         start += 8;
         byte[] bytesTransactionHash = Arrays.copyOfRange(bytesTransactionInputDTO,start, start+(int) bytesTransactionHashLength);
         start += bytesTransactionHashLength;
 
-        long bytesTransactionOutputIndexLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionInputDTO,start,start+8));
+        long bytesTransactionOutputIndexLength = NumberUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionInputDTO,start,start+8));
         start += 8;
         byte[] bytesTransactionOutputIndex = Arrays.copyOfRange(bytesTransactionInputDTO,start, start+(int) bytesTransactionOutputIndexLength);
         start += bytesTransactionOutputIndexLength;
 
         TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
         if(!omitInputScript){
-            long bytesOutputScriptLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionInputDTO,start,start+8));
+            long bytesOutputScriptLength = NumberUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesTransactionInputDTO,start,start+8));
             start += 8;
             byte[] bytesOutputScript = Arrays.copyOfRange(bytesTransactionInputDTO,start, start+(int) bytesOutputScriptLength);
             start += bytesOutputScriptLength;
@@ -277,7 +295,7 @@ public class TransactionTool {
             transactionInputDTO.setInputScript(inputScriptDTO);
         }
         transactionInputDTO.setTransactionHash(HexUtil.bytesToHexString(bytesTransactionHash));
-        transactionInputDTO.setTransactionOutputIndex(ByteUtil.bytes64ToLong64WithBigEndian(bytesTransactionOutputIndex));
+        transactionInputDTO.setTransactionOutputIndex(NumberUtil.bytes64ToLong64WithBigEndian(bytesTransactionOutputIndex));
         return transactionInputDTO;
     }
     //endregion
@@ -369,8 +387,8 @@ public class TransactionTool {
         }
         Set<String> transactionOutputIdSet = new HashSet<>();
         for(TransactionInput transactionInput : inputs) {
-            TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
-            String transactionOutputId = unspendTransactionOutput.getTransactionOutputId();
+            TransactionOutput unspentTransactionOutput = transactionInput.getUnspentTransactionOutput();
+            String transactionOutputId = unspentTransactionOutput.getTransactionOutputId();
             if(transactionOutputIdSet.contains(transactionOutputId)){
                 return true;
             }
@@ -410,11 +428,11 @@ public class TransactionTool {
         return true;
     }
 
-    public static UnspendTransactionOutput transactionOutput2UnspendTransactionOutput(TransactionOutput transactionOutput) {
-        //UnspendTransactionOutput是TransactionOutput子类，且没有其它的属性才可以这样转换。
+    public static UnspentTransactionOutput transactionOutput2UnspentTransactionOutput(TransactionOutput transactionOutput) {
+        //UnspentTransactionOutput是TransactionOutput子类，且没有其它的属性才可以这样转换。
         String json = new Gson().toJson(transactionOutput);
-        UnspendTransactionOutput unspendTransactionOutput = new Gson().fromJson(json,UnspendTransactionOutput.class);
-        return unspendTransactionOutput;
+        UnspentTransactionOutput unspentTransactionOutput = new Gson().fromJson(json,UnspentTransactionOutput.class);
+        return unspentTransactionOutput;
     }
 
     public static long getTransactionInputCount(Transaction transaction) {

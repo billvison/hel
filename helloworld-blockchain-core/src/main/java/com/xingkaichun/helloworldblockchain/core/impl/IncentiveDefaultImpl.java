@@ -5,7 +5,6 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,14 +21,14 @@ public class IncentiveDefaultImpl extends Incentive {
 
     @Override
     public long reward(Block block) {
-        long fees = getFees(block);
-        long subsidyCoin = getSubsidy(block);
-        long total = subsidyCoin + fees;
+        long fee = getFee(block);
+        long subsidy = getSubsidy(block);
+        long total = subsidy + fee;
         return total;
     }
 
     /**
-     * 固定奖励
+     * 系统给予的挖矿津贴：这是一个预知奖励金额的奖励
      */
     private long getSubsidy(Block block) {
         long height = block.getHeight();
@@ -46,7 +45,7 @@ public class IncentiveDefaultImpl extends Incentive {
     /**
      * 交易手续费
      */
-    private long getFees(Block block) {
+    private long getFee(Block block) {
         long fees = 0;
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){

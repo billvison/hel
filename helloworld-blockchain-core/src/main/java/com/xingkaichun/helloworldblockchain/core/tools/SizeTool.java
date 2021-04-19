@@ -101,8 +101,8 @@ public class SizeTool {
 
         //校验整笔交易所占存储空间
         long transactionByteSize = calculateTransactionSize(transactionDTO);
-        if(calculateTransactionSize(transactionDTO) > GlobalSetting.BlockConstant.TRANSACTION_TEXT_MAX_SIZE){
-            logger.debug(String.format("交易数据大小[%s]超过存储容量限制[%s]。",transactionByteSize,GlobalSetting.BlockConstant.TRANSACTION_TEXT_MAX_SIZE));
+        if(calculateTransactionSize(transactionDTO) > GlobalSetting.TransactionConstant.TRANSACTION_TEXT_MAX_SIZE){
+            logger.debug(String.format("交易数据大小[%s]超过存储容量限制[%s]。",transactionByteSize,GlobalSetting.TransactionConstant.TRANSACTION_TEXT_MAX_SIZE));
             return false;
         }
         return true;
@@ -188,6 +188,9 @@ public class SizeTool {
         return size;
     }
 
+    public static long calculateTransactionSize(Transaction transaction) {
+        return calculateTransactionSize(Model2DtoTool.transaction2TransactionDTO(transaction));
+    }
     public static long calculateTransactionSize(TransactionDTO transactionDTO) {
         long size = 0;
         List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getInputs();

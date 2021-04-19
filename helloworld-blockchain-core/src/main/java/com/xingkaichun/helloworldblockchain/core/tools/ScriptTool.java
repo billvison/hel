@@ -2,10 +2,11 @@ package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.google.common.primitives.Bytes;
 import com.xingkaichun.helloworldblockchain.core.model.script.OperationCodeEnum;
+import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
+import com.xingkaichun.helloworldblockchain.crypto.NumberUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.InputScriptDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.OutputScriptDTO;
-import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,7 +77,7 @@ public class ScriptTool {
         int start = 0;
         List<String> script = new ArrayList<>();
         while (start<bytesScript.length){
-            long bytesOperationCodeLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesScript,start,start+8));
+            long bytesOperationCodeLength = NumberUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesScript,start,start+8));
             start += 8;
             byte[] bytesOperationCode = Arrays.copyOfRange(bytesScript,start, start+(int) bytesOperationCodeLength);
             start += bytesOperationCodeLength;
@@ -90,7 +91,7 @@ public class ScriptTool {
                 String stringOperationCode = HexUtil.bytesToHexString(bytesOperationCode);
                 script.add(stringOperationCode);
 
-                long bytesOperationDataLength = ByteUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesScript,start,start+8));
+                long bytesOperationDataLength = NumberUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesScript,start,start+8));
                 start += 8;
                 byte[] bytesOperationData = Arrays.copyOfRange(bytesScript,start, start+(int) bytesOperationDataLength);
                 start += bytesOperationDataLength;

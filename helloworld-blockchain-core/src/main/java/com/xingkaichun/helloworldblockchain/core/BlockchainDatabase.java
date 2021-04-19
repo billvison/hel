@@ -5,8 +5,6 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
 
-import java.util.List;
-
 
 /**
  * 区块链数据库：该类用于区块链数据的持久化。
@@ -64,7 +62,7 @@ public abstract class BlockchainDatabase {
 
 
 
-    //region 普通查询
+    //region 区块链查询
     /**
      * 查询区块链的长度
      */
@@ -72,16 +70,11 @@ public abstract class BlockchainDatabase {
     /**
      * 查询区块链中总的交易数量
      */
-    public abstract long queryTransactionCount() ;
+    public abstract long queryBlockchainTransactionHeight() ;
     /**
-     * 根据区块哈希查找区块高度
-     * 如果区块哈希不存在，将返回一个比GlobalSetting.GenesisBlock.HEIGHT小的数。
+     * 查询区块链中总的交易数量
      */
-    public abstract long queryBlockHeightByBlockHash(String blockHash) ;
-    /**
-     * 根据已花费的交易输出ID查询花费去向所在的交易的哈希
-     */
-    public abstract String queryToTransactionHashByTransactionOutputId(TransactionOutputId transactionOutputId) ;
+    public abstract long queryBlockchainTransactionOutputHeight() ;
     //endregion
 
 
@@ -105,46 +98,59 @@ public abstract class BlockchainDatabase {
 
     //region 交易查询
     /**
-     * 在区块链中根据交易哈希查找交易
-     */
-    public abstract Transaction queryTransactionByTransactionHash(String transactionHash) ;
-    /**
      * 根据交易高度查询交易。交易高度从1开始。
      */
     public abstract Transaction queryTransactionByTransactionHeight(long transactionHeight) ;
     /**
-     * 根据交易高度查询交易。交易高度从1开始。
+     * 在区块链中根据交易哈希查找交易
      */
-    public abstract List<Transaction> queryTransactionListByTransactionHeight(long from,long size) ;
+    public abstract Transaction queryTransactionByTransactionHash(String transactionHash) ;
     /**
-     * 根据地址查询交易列表。from从0开始。
+     * 来源交易
      */
-    public abstract List<Transaction> queryTransactionListByAddress(String address,long from,long size) ;
+    public abstract Transaction querySourceTransactionByTransactionOutputId(TransactionOutputId transactionOutputId) ;
+    /**
+     * 去向交易
+     */
+    public abstract Transaction queryDestinationTransactionByTransactionOutputId(TransactionOutputId transactionOutputId) ;
     //endregion
 
 
 
     //region 交易输出查询
     /**
-     * 在区块链中根据 交易输出哈希 查找交易输出
+     * 根据 交易输出高度 查找 交易输出
+     */
+    public abstract TransactionOutput queryTransactionOutputByTransactionOutputHeight(long transactionOutputHeight) ;
+    /**
+     * 根据 交易输出ID 查找 交易输出
      */
     public abstract TransactionOutput queryTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId) ;
     /**
-     * 在区块链中根据 交易输出哈希 查找未花费交易输出
+     * 根据 交易输出ID 查找 未花费交易输出
      */
-    public abstract TransactionOutput queryUnspendTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId) ;
+    public abstract TransactionOutput queryUnspentTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId) ;
     /**
-     * 根据地址查询交易输出。from从0开始。
+     * 根据 交易输出ID 查找 已花费交易输出
      */
-    public abstract List<TransactionOutput> queryTransactionOutputListByAddress(String address,long from,long size) ;
+    public abstract TransactionOutput querySpentTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId) ;
+    //endregion
+
+
+
+    //region 地址查询
     /**
-     * 根据地址查询未花费交易输出。from从0开始。
+     * 根据 地址 查询 交易输出
      */
-    public abstract List<TransactionOutput> queryUnspendTransactionOutputListByAddress(String address,long from,long size) ;
+    public abstract TransactionOutput queryTransactionOutputByAddress(String address) ;
     /**
-     * 根据地址查询已花费交易输出。from从0开始。
+     * 根据 地址 查询 未花费交易输出
      */
-    public abstract List<TransactionOutput> querySpendTransactionOutputListByAddress(String address, long from, long size);
+    public abstract TransactionOutput queryUnspentTransactionOutputByAddress(String address) ;
+    /**
+     * 根据 地址 查询 已花费交易输出
+     */
+    public abstract TransactionOutput querySpentTransactionOutputByAddress(String address);
     //endregion
 
 

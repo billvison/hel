@@ -59,8 +59,14 @@ public class NetBlockchainCore {
         configurationService.restoreMinerConfiguration();
     }
 
-
-
+    /**
+     * 删除区块高度大于等于@blockHeight@的区块
+     */
+    public void deleteBlocks(long blockHeight) {
+        blockchainCore.deleteBlocks(blockHeight);
+        //TODO blockSearcher本身结构问题，导致必须调用该对象对的删除区块方法。考虑删除该方法。
+        blockSearcher.deleteBlocks(blockHeight);
+    }
 
     public void start() {
         //启动本地的单机区块链

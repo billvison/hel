@@ -102,9 +102,9 @@
                 }
 
                 //地址
-                reqJson = `{"address":"${searchValue}","pageCondition":{"from":1,"size":1}}`
+                reqJson = `{"address":"${searchValue}"}`
                 data = await $ajax({
-                    url : baseUrl()+"/Api/Blockchain/QueryTransactionListByAddress",
+                    url : baseUrl()+"/Api/Blockchain/QueryTransactionOutputListByAddress",
                     data: reqJson
                 });
                 if(data.result != null && data.result.transactionViewList != null){

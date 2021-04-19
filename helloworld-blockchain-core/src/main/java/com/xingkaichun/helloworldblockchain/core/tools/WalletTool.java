@@ -20,60 +20,28 @@ import java.util.Map;
 public class WalletTool {
 
     public static long obtainBalance(BlockchainCore blockchainCore, String address) {
-        //交易输出总金额
-        long totalValue = 0;
-        long from = 0;
-        long size = 100;
-        while(true){
-            List<TransactionOutput> utxoList = blockchainCore.getBlockchainDataBase().queryUnspendTransactionOutputListByAddress(address,from,size);
-            if(utxoList == null || utxoList.size()==0){
-                break;
-            }
-            for(TransactionOutput transactionOutput:utxoList){
-                totalValue += transactionOutput.getValue();
-            }
-            from += size;
+        TransactionOutput utxo = blockchainCore.getBlockchainDataBase().queryUnspentTransactionOutputByAddress(address);
+        if(utxo != null){
+            return utxo.getValue();
         }
-        return totalValue;
+        return 0L;
     }
 
-    public static long obtainSpend(BlockchainCore blockchainCore, String address) {
-        //交易输出总金额
-        long totalValue = 0;
-        long from = 0;
-        long size = 100;
-        while(true){
-            List<TransactionOutput> stxoList = blockchainCore.getBlockchainDataBase().querySpendTransactionOutputListByAddress(address,from,size);
-            if(stxoList == null || stxoList.size()==0){
-                break;
-            }
-            for(TransactionOutput transactionOutput:stxoList){
-                totalValue += transactionOutput.getValue();
-            }
-            from += size;
+    public static long obtainSpent(BlockchainCore blockchainCore, String address) {
+        TransactionOutput utxo = blockchainCore.getBlockchainDataBase().querySpentTransactionOutputByAddress(address);
+        if(utxo != null){
+            return utxo.getValue();
         }
-        return totalValue;
+        return 0L;
     }
 
     public static long obtainReceipt(BlockchainCore blockchainCore, String address) {
         //交易输出总金额
-        long totalValue = 0;
-        long from = 0;
-        long size = 100;
-        while(true){
-            List<TransactionOutput> txoList = blockchainCore.getBlockchainDataBase().queryTransactionOutputListByAddress(address,from,size);
-            if(txoList == null || txoList.size()==0){
-                break;
-            }
-            for(TransactionOutput transactionOutput:txoList){
-                totalValue += transactionOutput.getValue();
-            }
-            from += size;
-        }
-        return totalValue;
+        TransactionOutput txo = blockchainCore.getBlockchainDataBase().queryTransactionOutputByAddress(address);
+        return txo==null?0:txo.getValue();
     }
 
-    public static BuildTransactionResponse buildTransactionDTO(LinkedHashMap<String,List<TransactionOutput>> privateKeyUtxoMap, List<Recipient> recipientList, String payerChangeAddress, long fee) {
+    public static BuildTransactionResponse buildTransactionDTO(LinkedHashMap<String,TransactionOutput> privateKeyUtxoMap, List<Recipient> recipientList, String payerChangeAddress, long fee) {
         //付款总金额
         long outputValues = 0;
         if(recipientList != null){
@@ -112,24 +80,22 @@ public class WalletTool {
         //交易输入总金额
         long inputValues = 0;
         boolean haveEnoughMoneyToPay = false;
-        for(Map.Entry<String,List<TransactionOutput>> entry: privateKeyUtxoMap.entrySet()){
+        for(Map.Entry<String,TransactionOutput> entry: privateKeyUtxoMap.entrySet()){
             if(haveEnoughMoneyToPay){
                 break;
             }
             String privateKey = entry.getKey();
-            List<TransactionOutput> utxoList = entry.getValue();
-            if(utxoList == null || utxoList.isEmpty()){
+            TransactionOutput utxo = entry.getValue();
+            if(utxo == null){
                 break;
             }
-            for(TransactionOutput transactionOutput:utxoList){
-                inputValues += transactionOutput.getValue();
-                //交易输入
-                inputs.add(transactionOutput);
-                inputPrivateKeyList.add(privateKey);
-                if(inputValues >= outputValues){
-                    haveEnoughMoneyToPay = true;
-                    break;
-                }
+            inputValues += utxo.getValue();
+            //交易输入
+            inputs.add(utxo);
+            inputPrivateKeyList.add(privateKey);
+            if(inputValues >= outputValues){
+                haveEnoughMoneyToPay = true;
+                break;
             }
         }
 

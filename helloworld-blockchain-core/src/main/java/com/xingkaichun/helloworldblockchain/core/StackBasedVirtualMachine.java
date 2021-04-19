@@ -88,34 +88,24 @@ public class StackBasedVirtualMachine {
 
     public static boolean isPayToPublicKeyHashOutputScript(OutputScriptDTO outputScriptDTO) {
         try {
-            if(
-                    outputScriptDTO.size() == 6
+            return  outputScriptDTO.size() == 6
                     && HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()).equals(outputScriptDTO.get(0))
                     && HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()).equals(outputScriptDTO.get(1))
                     && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(outputScriptDTO.get(2))
                     && 40 == outputScriptDTO.get(3).length()
                     && HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()).equals(outputScriptDTO.get(4))
-                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()).equals(outputScriptDTO.get(5))
-            ){
-                return true;
-            }
-            return false;
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()).equals(outputScriptDTO.get(5));
         }catch (Exception e){
             return false;
         }
     }
     public static boolean isPayToPublicKeyHashInputScript(InputScriptDTO inputScriptDTO) {
         try {
-            if(
-                    inputScriptDTO.size() == 4
+            return  inputScriptDTO.size() == 4
                     && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(inputScriptDTO.get(0))
                     && (136 <= inputScriptDTO.get(1).length() && 144 >= inputScriptDTO.get(1).length())
                     && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(inputScriptDTO.get(2))
-                    && 130 == inputScriptDTO.get(3).length()
-            ){
-                return true;
-            }
-            return false;
+                    && 130 == inputScriptDTO.get(3).length();
         }catch (Exception e){
             return false;
         }

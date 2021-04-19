@@ -3,8 +3,6 @@ package com.xingkaichun.helloworldblockchain.core.tools;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
 import com.xingkaichun.helloworldblockchain.util.OperateSystemUtil;
 
-import java.io.File;
-
 /**
  * 资源路径工具类
  *
@@ -21,9 +19,10 @@ public class ResourcePathTool {
             dataRootPath = "C:\\HelloworldBlockchainData\\";
         }else if(OperateSystemUtil.isLinuxOperateSystem()){
             dataRootPath = "/opt/HelloworldBlockchainData/";
+        }else if(OperateSystemUtil.isAndroidOperateSystem()){
+            dataRootPath = "/opt/HelloworldBlockchainData/";
         }else {
-            String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-            dataRootPath = new File(path,"HelloworldBlockchainData").getAbsolutePath();
+            throw new RuntimeException("该系统无默认数据存放的根目录。");
         }
         FileUtil.mkdir(dataRootPath);
         return dataRootPath;

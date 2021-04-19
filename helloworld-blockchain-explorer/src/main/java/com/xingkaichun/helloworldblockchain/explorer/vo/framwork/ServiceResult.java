@@ -26,7 +26,7 @@ public class ServiceResult<T> {
         return new ServiceResult(ServiceCode.FAIL,message,null);
     }
     public static boolean isSuccess(ServiceResult serviceResult){
-        return serviceResult!=null && serviceResult.getServiceCode() != null && serviceResult.getServiceCode() == ServiceCode.SUCCESS;
+        return serviceResult!=null && serviceResult.getServiceCode() == ServiceCode.SUCCESS;
     }
 
 

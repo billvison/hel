@@ -22,24 +22,12 @@ public interface BlockchainBrowserService {
     /**
      * 根据地址获取交易输出
      */
-    List<TransactionOutputDetailView> queryTransactionOutputListByAddress(String address, long from, long size);
-    /**
-     * 根据地址获取未花费交易输出
-     */
-    List<TransactionOutputDetailView> queryUnspendTransactionOutputListByAddress(String address, long from, long size);
-    /**
-     * 根据地址获取已花费交易输出
-     */
-    List<TransactionOutputDetailView> querySpendTransactionOutputListByAddress(String address, long from, long size);
+    TransactionOutputDetailView queryTransactionOutputByAddress(String address);
 
     /**
      * 根据交易哈希查询交易
      */
     TransactionView queryTransactionByTransactionHash(String transactionHash);
-    /**
-     * 根据地址查询交易列表
-     */
-    List<TransactionView> queryTransactionListByAddress(String address, long from, long size);
     /**
      * 根据区块哈希与交易高度查询交易列表
      */

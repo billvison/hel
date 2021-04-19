@@ -52,16 +52,3 @@ function transactionHtml(item){
     `;
     return transactionHtml;
 };
-
-function transactionOutputHtml(item){
-    let transactionOutputHtml = `
-                <div style="font-size: 14px; line-height: 40px; margin-top: 10px;">
-                    <div style="display: flex; background-color: #f5f5f5; flex-wrap: wrap; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;">
-                        <div style="min-width: 40%;"><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${item.transactionHash}">${item.transactionHash}</a></div>
-                        <div style="min-width: 40%; text-align: center;"><a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}"><i class="glyphicon-euro"></i></a></div>
-                        <div style="min-width: 20%; text-align: center;">${item.value}</div>
-                    </div>
-                </div>
-    `
-    return transactionOutputHtml;
-};

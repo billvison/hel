@@ -342,4 +342,9 @@ public class BlockSearcher {
             }
         }
     }
+
+    public void deleteBlocks(long blockHeight) {
+        blockchainCore.deleteBlocks(blockHeight);
+        slaveBlockchainCore.deleteBlocks(blockHeight);
+    }
 }

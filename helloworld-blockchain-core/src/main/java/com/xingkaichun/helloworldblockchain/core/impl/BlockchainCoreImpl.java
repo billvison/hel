@@ -14,7 +14,6 @@ import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,15 +57,6 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
 
     @Override
-    public String queryBlockHashByBlockHeight(long blockHeight) {
-        Block block = blockchainDataBase.queryBlockByBlockHeight(blockHeight);
-        if(block == null){
-            return null;
-        }
-        return block.getHash();
-    }
-
-    @Override
     public long queryBlockchainHeight() {
         return blockchainDataBase.queryBlockchainHeight();
     }
@@ -85,38 +75,14 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
     @Override
     public Transaction queryTransactionByTransactionHeight(long transactionHeight) {
-        Transaction  transaction = blockchainDataBase.queryTransactionByTransactionHeight(transactionHeight);
+        Transaction transaction = blockchainDataBase.queryTransactionByTransactionHeight(transactionHeight);
         return transaction;
     }
 
     @Override
-    public List<Transaction> queryTransactionListByTransactionHeight(long from,long size) {
-        List<Transaction>  transactionList = blockchainDataBase.queryTransactionListByTransactionHeight(from,size);
-        return transactionList;
-    }
-
-    @Override
-    public List<Transaction> queryTransactionListByAddress(String address,long from,long size) {
-        List<Transaction>  transactionList = blockchainDataBase.queryTransactionListByAddress(address,from,size);
-        return transactionList;
-    }
-
-    @Override
-    public List<TransactionOutput> queryTransactionOutputListByAddress(String address,long from,long size) {
-        List<TransactionOutput> txo =  blockchainDataBase.queryTransactionOutputListByAddress(address,from,size);
+    public TransactionOutput queryTransactionOutputByAddress(String address) {
+        TransactionOutput txo =  blockchainDataBase.queryTransactionOutputByAddress(address);
         return txo;
-    }
-
-    @Override
-    public List<TransactionOutput> queryUnspendTransactionOutputListByAddress(String address, long from, long size) {
-        List<TransactionOutput> utxo =  blockchainDataBase.queryUnspendTransactionOutputListByAddress(address,from,size);
-        return utxo;
-    }
-
-    @Override
-    public List<TransactionOutput> querySpendTransactionOutputListByAddress(String address, long from, long size) {
-        List<TransactionOutput> stxo =  blockchainDataBase.querySpendTransactionOutputListByAddress(address,from,size);
-        return stxo;
     }
 
 
@@ -215,34 +181,21 @@ public class BlockchainCoreImpl extends BlockchainCore {
         return response;
     }
     public BuildTransactionResponse buildTransactionDTO(List<String> payerPrivateKeyList, List<Recipient> recipientList, String payerChangeAddress, long fee) {
-        LinkedHashMap<String,List<TransactionOutput>> privateKeyUtxoMap = new LinkedHashMap<>();
+        LinkedHashMap<String,TransactionOutput> privateKeyUtxoMap = new LinkedHashMap<>();
         BuildTransactionResponse response = new BuildTransactionResponse();
         response.setMessage("请输入足够的金额");
         response.setBuildTransactionSuccess(false);
 
         for(String privateKey : payerPrivateKeyList){
+            String address = AccountUtil.accountFromPrivateKey(privateKey).getAddress();
+            TransactionOutput utxo = blockchainDataBase.queryUnspentTransactionOutputByAddress(address);
+            if(utxo == null){
+                continue;
+            }
+            privateKeyUtxoMap.put(privateKey,utxo);
+            response = WalletTool.buildTransactionDTO(privateKeyUtxoMap,recipientList,payerChangeAddress,fee);
             if(response.isBuildTransactionSuccess()){
                 break;
-            }
-            String address = AccountUtil.accountFromPrivateKey(privateKey).getAddress();
-            long from = 0;
-            long size = 100;
-            while (true){
-                List<TransactionOutput> utxoList = blockchainDataBase.queryUnspendTransactionOutputListByAddress(address,from,size);
-                if(utxoList == null || utxoList.isEmpty()){
-                    break;
-                }
-                List<TransactionOutput> payUtxoList = privateKeyUtxoMap.get(privateKey);
-                if(payUtxoList == null){
-                    privateKeyUtxoMap.put(privateKey,new ArrayList<>());
-                }
-                privateKeyUtxoMap.get(privateKey).addAll(utxoList);
-                from += size;
-
-                response = WalletTool.buildTransactionDTO(privateKeyUtxoMap,recipientList,payerChangeAddress,fee);
-                if(response.isBuildTransactionSuccess()){
-                    break;
-                }
             }
         }
         return response;

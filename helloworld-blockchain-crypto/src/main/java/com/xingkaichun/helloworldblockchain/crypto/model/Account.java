@@ -18,12 +18,15 @@ public class Account implements Serializable {
     private String privateKey;
     //公钥
     private String publicKey;
+    //公钥
+    private String publicKeyHash;
     //地址
     private String address;
 
-    public Account(String privateKey, String publicKey, String address) {
+    public Account(String privateKey, String publicKey, String publicKeyHash, String address) {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
+        this.publicKeyHash = publicKeyHash;
         this.address = address;
     }
 
@@ -43,5 +46,8 @@ public class Account implements Serializable {
         return address;
     }
 
-    //endregion
+    public String getPublicKeyHash() {
+        return publicKeyHash;
+    }
+//endregion
 }

@@ -51,8 +51,8 @@ public class Model2DtoTool {
         if(transactionInputList!=null){
             for (TransactionInput transactionInput:transactionInputList){
                 TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
-                transactionInputDTO.setTransactionHash(transactionInput.getUnspendTransactionOutput().getTransactionHash());
-                transactionInputDTO.setTransactionOutputIndex(transactionInput.getUnspendTransactionOutput().getTransactionOutputIndex());
+                transactionInputDTO.setTransactionHash(transactionInput.getUnspentTransactionOutput().getTransactionHash());
+                transactionInputDTO.setTransactionOutputIndex(transactionInput.getUnspentTransactionOutput().getTransactionOutputIndex());
                 transactionInputDTO.setInputScript(inputScript2InputScriptDTO(transactionInput.getInputScript()));
                 inputs.add(transactionInputDTO);
             }

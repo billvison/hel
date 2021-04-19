@@ -66,12 +66,12 @@ public class Dto2ModelTool {
                 TransactionOutputId transactionOutputId = new TransactionOutputId();
                 transactionOutputId.setTransactionHash(transactionInputDTO.getTransactionHash());
                 transactionOutputId.setTransactionOutputIndex(transactionInputDTO.getTransactionOutputIndex());
-                TransactionOutput unspendTransactionOutput = blockchainDataBase.queryUnspendTransactionOutputByTransactionOutputId(transactionOutputId);
-                if(unspendTransactionOutput == null){
-                    throw new ClassCastException("UnspendTransactionOutput不应该是null。");
+                TransactionOutput unspentTransactionOutput = blockchainDataBase.queryUnspentTransactionOutputByTransactionOutputId(transactionOutputId);
+                if(unspentTransactionOutput == null){
+                    throw new ClassCastException("UnspentTransactionOutput不应该是null。");
                 }
                 TransactionInput transactionInput = new TransactionInput();
-                transactionInput.setUnspendTransactionOutput(TransactionTool.transactionOutput2UnspendTransactionOutput(unspendTransactionOutput));
+                transactionInput.setUnspentTransactionOutput(TransactionTool.transactionOutput2UnspentTransactionOutput(unspentTransactionOutput));
                 transactionInput.setInputScript(inputScriptDto2InputScript(transactionInputDTO.getInputScript()));
                 inputs.add(transactionInput);
             }

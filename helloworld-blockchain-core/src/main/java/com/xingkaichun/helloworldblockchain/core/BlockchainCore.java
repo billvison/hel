@@ -3,7 +3,6 @@ package com.xingkaichun.helloworldblockchain.core;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionRequest;
 import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionResponse;
-import com.xingkaichun.helloworldblockchain.core.model.pay.Recipient;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
@@ -60,10 +59,6 @@ public abstract class BlockchainCore {
      */
     public abstract long queryBlockchainHeight() ;
     /**
-     * 根据区块高度获取区块Hash
-     */
-    public abstract String queryBlockHashByBlockHeight(long blockHeight) ;
-    /**
      * 根据区块高度查询区块
      */
     public abstract Block queryBlockByBlockHeight(long blockHeight);
@@ -88,29 +83,11 @@ public abstract class BlockchainCore {
      * @param transactionHeight 交易高度。注意：区块高度从1开始。
      */
     public abstract Transaction queryTransactionByTransactionHeight(long transactionHeight) ;
-    /**
-     * 根据交易高度获取交易
-     * @param from 从区块高度为from的区块开始获取交易。注意：区块高度从1开始。
-     * @param size 获取交易的数量。
-     */
-    public abstract List<Transaction> queryTransactionListByTransactionHeight(long from,long size) ;
-    /**
-     * 根据地址查询(有该地址参与的)交易列表。from从0开始。
-     */
-    public abstract List<Transaction> queryTransactionListByAddress(String address,long from,long size) ;
 
     /**
-     * 根据地址获取[交易输出列表(包含未花费交易输出和已花费交易输出)]。from从0开始。
+     * 根据地址获取[交易输出列表(包含未花费交易输出和已花费交易输出)]。
      */
-    public abstract List<TransactionOutput> queryTransactionOutputListByAddress(String address,long from,long size) ;
-    /**
-     * 根据地址获取[未花费交易输出列表]。from从0开始。
-     */
-    public abstract List<TransactionOutput> queryUnspendTransactionOutputListByAddress(String address,long from,long size) ;
-    /**
-     * 根据地址获取[已花费交易输出列表]。from从0开始。
-     */
-    public abstract List<TransactionOutput> querySpendTransactionOutputListByAddress(String address,long from,long size) ;
+    public abstract TransactionOutput queryTransactionOutputByAddress(String address) ;
 
 
 

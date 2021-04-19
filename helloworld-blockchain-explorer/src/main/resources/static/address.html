@@ -3,12 +3,11 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>地址详情-HelloworldBlockchain</title>
+        <title>交易输出详情-HelloworldBlockchain</title>
 
         <script src="./lib/jquery/jquery-1.12.4.min.js"></script>
         <script src="./lib/bootstrap/bootstrap.min.js"></script>
         <link rel="stylesheet" href="./lib/bootstrap/bootstrap.min.css">
-        <script src="https://www.layuicdn.com/layer-v3.1.1/layer.js" charset="utf-8"></script>
 
         <link rel="stylesheet" href="./assets/common/common.css">
         <script src="./assets/common/common.js"></script>
@@ -17,7 +16,7 @@
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="./index.html">HelloworldBlockchain</a>
+                    <a class="navbar-brand" href="/">HelloworldBlockchain</a>
                 </div>
 
                 <div>
@@ -30,163 +29,95 @@
                         <li><a href="./node-management.html">节点管理</a></li>
                         <li><a href="./more-management.html">更多管理</a></li>
                     </ul>
-                </div>
-            </div>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
         </nav>
-        <div class="box">
-            <div class="panel panel-default">
-                <div class="panel-heading"></div>
-                <button type="button" class="btn btn-primary">摘要</button>
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td>地址</td>
-                            <td id="address"></td>
-                            <td>总收入</td>
-                            <td id="receipt"></td>
-                        </tr>
-                        <tr>
-                            <td>余额</td>
-                            <td id="balance"></td>
-                            <td>总支出</td>
-                            <td id="spend"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading"></div>
+            <div id="zhaiyao"></div>
         </div>
 
-        <div>
-            <button type="button" class="btn btn-primary" onclick="load(0)">交易</button>
-            <button type="button" class="btn btn-primary" onclick="load(1)">余额(未花费的交易输出)</button>
-            <button type="button" class="btn btn-primary" onclick="load(2)">收入(交易输出)</button>
-            <button type="button" class="btn btn-primary" onclick="load(3)">支出(已花费的交易输出)</button>
-        </div>
+        <br/><br/>
+        <div id="from"></div>
+        <br/><br/>
+        <div id="to"></div>
 
-        <div id="tab0">
-            <div style="width: 100%;" id="container0">
-            </div>
-            <div style="margin-top: 10px; " class="page" id="page0"><button class="btn btn-primary" onclick="load(0)">加载更多</button></div>
-        </div>
-        <div id="tab1">
-            <div style="width: 100%;" id="container1">
-            </div>
-            <div style="margin-top: 10px; " class="page" id="page1"><button class="btn btn-primary" onclick="load(1)">加载更多</button></div>
-        </div>
-        <div id="tab2">
-            <div style="width: 100%;" id="container2">
-            </div>
-            <div style="margin-top: 10px; " class="page" id="page2"><button class="btn btn-primary" onclick="load(2)">加载更多</button></div>
-        </div>
-        <div id="tab3">
-            <div style="width: 100%;" id="container3">
-            </div>
-            <div style="margin-top: 10px; " class="page" id="page3"><button class="btn btn-primary" onclick="load(3)">加载更多</button></div>
-        </div>
 
         <script>
-            let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
-            let tab0index = 1;
-            let tab1index = 1;
-            let tab2index = 1;
-            let tab3index = 1;
             $(async function(){
+                let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/Blockchain/QueryAccountDetailByAddress",
-                    data:`{"address":"${urlParameters.get("address")}"}`
+                    url : baseUrl()+"/Api/Blockchain/QueryTransactionOutputListByAddress",
+                    data:`{
+                        "address":"${urlParameters.get("address")}"
+                    }`
                 });
-                const { address, balance, receipt, spend  } = data.result;
-                $('.panel-heading').text('地址 ' + address);
-                $('#address').text(address);
-                $('#receipt').text(receipt);
-                $('#spend').text(spend);
-                $('#balance').text(balance);
-            }());
-            load(0);
-            async function load(index){
-                $("#tab0").hide();
-                $("#tab1").hide();
-                $("#tab2").hide();
-                $("#tab3").hide();
-                $("#tab"+index).show();
-                if(index == 0){
-                    const data = await $ajax({
-                        url : baseUrl()+"/Api/Blockchain/QueryTransactionListByAddress",
-                        data:`{
-                            "address":"${urlParameters.get("address")}",
-                            "pageCondition":{
-                                "from": ${tab0index},
-                                "size": 1
-                            }
-                        }`
-                    });
-                    tab0index = tab0index + 1;
-                    const transactionViewList = data.result.transactionViewList;
-                    if(transactionViewList == null || transactionViewList.length == 0){
-                        $("#page0 button").html("交易数据加载完毕。");
-                    }
-                    transactionViewList.forEach(item => {
-                        $('#container0').append(transactionHtml(item))
-                    })
-                }else if(index == 1){
-                    const data = await $ajax({
-                        url : baseUrl()+"/Api/Blockchain/QueryUnspendTransactionOutputListByAddress",
-                        data:`{
-                            "address":"${urlParameters.get("address")}",
-                            "pageCondition":{
-                                "from": ${tab1index},
-                                "size": 1
-                            }
-                        }`
-                    });
-                    tab1index = tab1index + 1;
-                    let {transactionOutputDetailViewList} = data.result;
-                    if(transactionOutputDetailViewList == null || transactionOutputDetailViewList.length == 0){
-                        $("#page1 button").html("余额数据加载完毕。");
-                    }
-                    transactionOutputDetailViewList.forEach(item => {
-                        $('#container1').append(transactionOutputHtml(item))
-                    })
-                }else if(index == 2){
-                    const data = await $ajax({
-                        url : baseUrl()+"/Api/Blockchain/QueryTransactionOutputListByAddress",
-                        data:`{
-                            "address":"${urlParameters.get("address")}",
-                            "pageCondition":{
-                                "from": ${tab2index},
-                                "size": 1
-                            }
-                        }`
-                    });
-                    tab2index = tab2index + 1;
-                    let {transactionOutputDetailViewList} = data.result;
-                    if(transactionOutputDetailViewList == null || transactionOutputDetailViewList.length == 0){
-                        $("#page2 button").html("收入数据加载完毕。");
-                    }
-                    transactionOutputDetailViewList.forEach(item => {
-                        $('#container2').append(transactionOutputHtml(item))
-                    })
-                }else{
-                    const data = await $ajax({
-                        url : baseUrl()+"/Api/Blockchain/QuerySpendTransactionOutputListByAddress",
-                        data:`{
-                            "address":"${urlParameters.get("address")}",
-                            "pageCondition":{
-                                "from": ${tab3index},
-                                "size": 1
-                            }
-                        }`
-                    });
-                    tab3index = tab3index + 1;
-                    let {transactionOutputDetailViewList} = data.result;
-                    if(transactionOutputDetailViewList == null || transactionOutputDetailViewList.length == 0){
-                        $("#page3 button").html("支出数据加载完毕。");
-                    }
-                    transactionOutputDetailViewList.forEach(item => {
-                        $('#container3').append(transactionOutputHtml(item))
-                    })
+                console.log(data);
+                var transactionOutputDetailView = data.result.transactionOutputDetailView;
+                $('.panel-heading').text(`地址${urlParameters.get("address")}`);
+
+                $('#zhaiyao').html(`
+                    <button type="button" class="btn btn-default">摘要</button>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td style="width:10%">是否已花费</td>
+                            <td style="width:40%" id="isspent">${transactionOutputDetailView.spent ? '是' : '否'}</td>
+                            <td style="width:10%">金额</td>
+                            <td style="width:40%">${transactionOutputDetailView.value}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                `);
+
+                $('#from').html(`
+                    <button type="button" class="btn btn-default">来源</button>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td style="width:10%">块高度</td>
+                            <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutputDetailView.fromBlockHash}">${transactionOutputDetailView.fromBlockHeight}</a></td>
+                            <td style="width:10%">区块哈希</td>
+                            <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutputDetailView.fromBlockHash}">${transactionOutputDetailView.fromBlockHash}</a></td>
+                        </tr>
+                        <tr>
+                            <td>输出索引</td>
+                            <td>${transactionOutputDetailView.fromTransactionOutputIndex}</td>
+                            <td>交易哈希</td>
+                            <td><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${transactionOutputDetailView.fromTransactionHash}">${transactionOutputDetailView.fromTransactionHash}</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-default">来源交易</button>
+                    <div>${transactionHtml(transactionOutputDetailView.inputTransaction)}</div>
+                `);
+
+                if(transactionOutputDetailView.outputTransaction != null){
+                    $('#to').html(`
+                        <button type="button" class="btn btn-default">去向</button>
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <td style="width:10%">块高度</td>
+                                <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutputDetailView.toBlockHash}">${transactionOutputDetailView.toBlockHeight}</a></td>
+                                <td style="width:10%">区块哈希</td>
+                                <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutputDetailView.toBlockHash}">${transactionOutputDetailView.toBlockHash}</a></td>
+                            </tr>
+                            <tr>
+                                <td>输入索引</td>
+                                <td>${transactionOutputDetailView.toTransactionInputIndex}</td>
+                                <td>交易哈希</td>
+                                <td><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${transactionOutputDetailView.toTransactionHash}">${transactionOutputDetailView.toTransactionHash}</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-default">去向交易</button>
+                        <div>${transactionHtml(transactionOutputDetailView.outputTransaction)}</div>
+                    `);
                 }
-            }
+            }())
         </script>
     </body>
 </html>

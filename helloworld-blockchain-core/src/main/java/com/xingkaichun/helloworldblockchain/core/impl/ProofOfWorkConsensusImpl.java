@@ -38,7 +38,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
 
 
     public String calculateDifficult(BlockchainDatabase blockchainDataBase, Block block) {
-        long intervalBlockCount = GlobalSetting.MinerConstant.INTERVAL_TIME / GlobalSetting.MinerConstant.BLOCK_TIME;
+        long intervalBlockCount = GlobalSetting.IncentiveConstant.INTERVAL_TIME / GlobalSetting.IncentiveConstant.BLOCK_TIME;
 
         String targetDifficult;
         long blockHeight = block.getHeight();
@@ -56,13 +56,13 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         Block intervalLastBlock = lastBlock;
         Block intervalFirstBlock = blockchainDataBase.queryBlockByBlockHeight(lastBlockHeight-intervalBlockCount+1);
         long actualTimespan = intervalLastBlock.getTimestamp() - intervalFirstBlock.getTimestamp();
-        if (actualTimespan < GlobalSetting.MinerConstant.INTERVAL_TIME /4){
-            actualTimespan = GlobalSetting.MinerConstant.INTERVAL_TIME /4;
+        if (actualTimespan < GlobalSetting.IncentiveConstant.INTERVAL_TIME /4){
+            actualTimespan = GlobalSetting.IncentiveConstant.INTERVAL_TIME /4;
         }
-        if (actualTimespan > GlobalSetting.MinerConstant.INTERVAL_TIME *4){
-            actualTimespan = GlobalSetting.MinerConstant.INTERVAL_TIME *4;
+        if (actualTimespan > GlobalSetting.IncentiveConstant.INTERVAL_TIME *4){
+            actualTimespan = GlobalSetting.IncentiveConstant.INTERVAL_TIME *4;
         }
-        BigInteger bigIntegerTargetDifficult = new BigInteger(intervalLastBlock.getDifficulty(),16).multiply(new BigInteger(String.valueOf(actualTimespan))).divide(new BigInteger(String.valueOf(GlobalSetting.MinerConstant.INTERVAL_TIME)));
+        BigInteger bigIntegerTargetDifficult = new BigInteger(intervalLastBlock.getDifficulty(),16).multiply(new BigInteger(String.valueOf(actualTimespan))).divide(new BigInteger(String.valueOf(GlobalSetting.IncentiveConstant.INTERVAL_TIME)));
         return bigIntegerTargetDifficult.toString(16);
     }
 }

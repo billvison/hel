@@ -51,7 +51,6 @@ public class AccountUtil {
         X9ECParameters params = SECNamedCurves.getByName("secp256k1");
         CURVE = new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH());
         SECURE_RANDOM = new SecureRandom();
-
         HALF_CURVE_ORDER = CURVE.getN().shiftRight(1);
     }
 
@@ -79,8 +78,9 @@ public class AccountUtil {
             byte[] pub = pubParams.getQ().getEncoded(COMPRESSED);
             String privateKey = encodePrivateKey(bigIntegerPrivateKey);
             String publicKey = encodePublicKey(pub);
+            String publicKeyHash = publicKeyHashFromPublicKey(publicKey);
             String address = addressFromPublicKey(publicKey);
-            Account account = new Account(privateKey,publicKey,address);
+            Account account = new Account(privateKey,publicKey,publicKeyHash,address);
             return account;
         } catch (Exception e) {
             logger.debug("生成账户失败。",e);
@@ -99,8 +99,9 @@ public class AccountUtil {
             byte[] ecPublicKey = publicKeyFromPrivateKey(bigIntegerPrivateKey);
 
             String publicKey = encodePublicKey(ecPublicKey);
+            String publicKeyHash = publicKeyHashFromPublicKey(publicKey);
             String address = addressFromPublicKey(publicKey);
-            Account account = new Account(privateKey,publicKey,address);
+            Account account = new Account(privateKey,publicKey,publicKeyHash,address);
             return account;
         } catch (Exception e) {
             logger.debug("从私钥恢复账户失败。",e);

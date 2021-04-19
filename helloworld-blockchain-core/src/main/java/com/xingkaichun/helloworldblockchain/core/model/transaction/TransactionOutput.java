@@ -42,12 +42,21 @@ public class TransactionOutput extends TransactionOutputId implements Serializab
      */
     private String blockHash;
     /**
+     * [[产生交易输出的]交易在]区块链中的高度
+     * 冗余
+     */
+    private long transactionHeight;
+    /**
      * [[产生交易输出的]交易在]区块中的交易序列号
      * 冗余
      * 在这个交易区块中的的排序号
      */
-    private long transactionIndexInBlock;
-
+    private long transactionIndex;
+    /**
+     * [交易输出]在区块链中的高度，从1开始
+     * 冗余
+     */
+    private long transactionOutputHeight;
 
 
 
@@ -93,13 +102,28 @@ public class TransactionOutput extends TransactionOutputId implements Serializab
         this.blockHash = blockHash;
     }
 
-    public long getTransactionIndexInBlock() {
-        return transactionIndexInBlock;
+    public long getTransactionIndex() {
+        return transactionIndex;
     }
 
-    public void setTransactionIndexInBlock(long transactionIndexInBlock) {
-        this.transactionIndexInBlock = transactionIndexInBlock;
+    public void setTransactionIndex(long transactionIndex) {
+        this.transactionIndex = transactionIndex;
     }
 
+    public long getTransactionOutputHeight() {
+        return transactionOutputHeight;
+    }
+
+    public void setTransactionOutputHeight(long transactionOutputHeight) {
+        this.transactionOutputHeight = transactionOutputHeight;
+    }
+
+    public long getTransactionHeight() {
+        return transactionHeight;
+    }
+
+    public void setTransactionHeight(long transactionHeight) {
+        this.transactionHeight = transactionHeight;
+    }
     //endregion
 }

@@ -34,9 +34,10 @@ public class WalletImpl extends Wallet {
     private void initDatabase() {
         String createTable1Sql1 = "CREATE TABLE IF NOT EXISTS wallet " +
                 "(" +
-                "privateKey CHAR(100) PRIMARY KEY NOT NULL," +
-                "publicKey CHAR(100)," +
-                "address CHAR(100)" +
+                "privateKey CHAR(1000) PRIMARY KEY NOT NULL," +
+                "publicKey CHAR(1000)," +
+                "publicKeyHash CHAR(1000)," +
+                "address CHAR(1000)" +
                 ")";
         JdbcUtil.executeSql(connection(),createTable1Sql1);
     }
@@ -53,8 +54,9 @@ public class WalletImpl extends Wallet {
             while (resultSet.next()){
                 String privateKey = resultSet.getString("privateKey");
                 String publicKey = resultSet.getString("publicKey");
+                String publicKeyHash = resultSet.getString("publicKeyHash");
                 String address = resultSet.getString("address");
-                accountList.add(new Account(privateKey,publicKey,address));
+                accountList.add(new Account(privateKey,publicKey,publicKeyHash,address));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -76,8 +78,9 @@ public class WalletImpl extends Wallet {
             while (resultSet.next()){
                 String privateKey = resultSet.getString("privateKey");
                 String publicKey = resultSet.getString("publicKey");
+                String publicKeyHash = resultSet.getString("publicKeyHash");
                 String addressTemp = resultSet.getString("address");
-                return new Account(privateKey,publicKey,addressTemp);
+                return new Account(privateKey,publicKey,publicKeyHash,addressTemp);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -99,14 +102,15 @@ public class WalletImpl extends Wallet {
         if(queryAccountByAddress(account.getAddress()) != null){
             return;
         }
-        String sql = "INSERT INTO wallet (privateKey,publicKey,address) " +
-                "VALUES (?,?,?);";
+        String sql = "INSERT INTO wallet (privateKey,publicKey,publicKeyHash,address) " +
+                "VALUES (?,?,?,?);";
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection().prepareStatement(sql);
             preparedStatement.setString(1,account.getPrivateKey());
             preparedStatement.setString(2,account.getPublicKey());
-            preparedStatement.setString(3, account.getAddress());
+            preparedStatement.setString(3, account.getPublicKeyHash());
+            preparedStatement.setString(4, account.getAddress());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);

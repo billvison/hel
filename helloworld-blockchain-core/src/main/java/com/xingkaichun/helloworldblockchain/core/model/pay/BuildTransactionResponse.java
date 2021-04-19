@@ -3,7 +3,6 @@ package com.xingkaichun.helloworldblockchain.core.model.pay;
 import com.xingkaichun.helloworldblockchain.core.model.script.OutputScript;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDTO;
 
 import java.util.List;
 

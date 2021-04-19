@@ -8,11 +8,11 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.MerkleTreeUtil;
+import com.xingkaichun.helloworldblockchain.crypto.NumberUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ public class BlockTool {
      * 计算区块的Hash值
      */
     public static String calculateBlockHash(BlockDTO blockDto) {
-        byte[] bytesTimestamp = ByteUtil.long64ToBytes64WithBigEndian(blockDto.getTimestamp());
+        byte[] bytesTimestamp = NumberUtil.long64ToBytes64WithBigEndian(blockDto.getTimestamp());
         byte[] bytesPreviousBlockHash = HexUtil.hexStringToBytes(blockDto.getPreviousHash());
         byte[] bytesMerkleTreeRoot = HexUtil.hexStringToBytes(calculateBlockMerkleTreeRoot(blockDto));
         byte[] bytesNonce = HexUtil.hexStringToBytes(blockDto.getNonce());
@@ -127,8 +127,8 @@ public class BlockTool {
             List<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null){
                 for(TransactionInput transactionInput : inputs) {
-                    TransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
-                    String transactionOutputId = unspendTransactionOutput.getTransactionOutputId();
+                    TransactionOutput unspentTransactionOutput = transactionInput.getUnspentTransactionOutput();
+                    String transactionOutputId = unspentTransactionOutput.getTransactionOutputId();
                     if(transactionOutputIdSet.contains(transactionOutputId)){
                         return true;
                     }else {
@@ -250,5 +250,16 @@ public class BlockTool {
             difficulty = (String.join("", Collections.nCopies(length-difficulty.length(), "0")))+difficulty;
         }
         return difficulty;
+    }
+
+    public static long getTransactionOutputCount(Block block) {
+        long transactionOutputCount = 0;
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
+                transactionOutputCount += TransactionTool.getTransactionOutputCount(transaction);
+            }
+        }
+        return transactionOutputCount;
     }
 }

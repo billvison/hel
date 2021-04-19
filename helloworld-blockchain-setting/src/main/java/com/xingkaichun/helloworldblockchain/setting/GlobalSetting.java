@@ -16,6 +16,59 @@ public class GlobalSetting {
     //区块链网络中的种子节点
     public static final List<String> SEED_NODE_LIST = Arrays.asList("139.9.125.122","119.3.57.171");
 
+    /**
+     * 创世区块
+     */
+    public static class GenesisBlock{
+        //创世区块的高度
+        public static final long HEIGHT = 0;
+        //创世区块的哈希
+        public static final String HASH = "0000000000000000000000000000000000000000000000000000000000000000";
+        //创世区块的挖矿难度
+        public static final String DIFFICULTY = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+    }
+
+    /**
+     * 挖矿设置
+     */
+    public static class IncentiveConstant{
+        //期望的每个区块挖矿耗时时间
+        public static final long BLOCK_TIME = 1000 * 60;
+        //在一个挖矿难度周期内的区块数量
+        public static final long INTERVAL_BLOCK = 14;
+        //一个挖矿难度周期内的周期耗时时间
+        public static final long INTERVAL_TIME = BLOCK_TIME * INTERVAL_BLOCK;
+    }
+
+    /**
+     * 区块设置
+     */
+    public static class BlockConstant {
+        //区块最多含有的交易数量
+        public static final long BLOCK_MAX_TRANSACTION_COUNT = 1024;
+        //区块存储容量限制
+        public static final long BLOCK_TEXT_MAX_SIZE = TransactionConstant.TRANSACTION_TEXT_MAX_SIZE * BLOCK_MAX_TRANSACTION_COUNT;
+        //nonce字符串的长度是64 64位十六进制数
+        public static final long NONCE_TEXT_SIZE = 64;
+    }
+
+    /**
+     * 交易设置
+     */
+    public static class TransactionConstant {
+        //交易文本字符串最大长度值
+        public static final long TRANSACTION_TEXT_MAX_SIZE = 1024;
+    }
+
+    /**
+     * 脚本设置
+     */
+    public static class ScriptConstant{
+        //脚本最大存储容量
+        public static final long SCRIPT_TEXT_MAX_SIZE = 1024;
+    }
+
+
 
     /**
      * 系统版本，这里的版本是一个区块高度
@@ -36,17 +89,7 @@ public class GlobalSetting {
         }
     }
 
-    /**
-     * 创世区块
-     */
-    public static class GenesisBlock{
-        //创世区块的高度
-        public static final long HEIGHT = 0;
-        //创世区块的哈希
-        public static final String HASH = "0000000000000000000000000000000000000000000000000000000000000000";
-        //创世区块的挖矿难度
-        public static final String DIFFICULTY = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-    }
+
 
     /**
      * 挖矿设置
@@ -54,34 +97,6 @@ public class GlobalSetting {
     public static class MinerConstant{
         //这个时间间隔更新一次正在被挖矿的区块的交易。如果时间太长，可能导致新提交的交易延迟被确认。
         public static final long MINE_TIMESTAMP_PER_ROUND = 1000 * 10;
-        //期望的每个区块挖矿耗时时间
-        public static final long BLOCK_TIME = 1000 * 60;
-        //在一个挖矿难度周期内的区块数量
-        public static final long INTERVAL_BLOCK = 14;
-        //一个挖矿难度周期内的周期耗时时间
-        public static final long INTERVAL_TIME = BLOCK_TIME * INTERVAL_BLOCK;
-    }
-
-    /**
-     * 区块设置
-     */
-    public static class BlockConstant {
-        //区块最多含有的交易数量
-        public static final long BLOCK_MAX_TRANSACTION_COUNT = 1024;
-        //交易文本字符串最大长度值
-        public static final long TRANSACTION_TEXT_MAX_SIZE = 1024;
-        //区块存储容量限制
-        public static final long BLOCK_TEXT_MAX_SIZE = TRANSACTION_TEXT_MAX_SIZE * BLOCK_MAX_TRANSACTION_COUNT;
-        //nonce字符串的长度是64 64位十六进制数
-        public static final long NONCE_TEXT_SIZE = 64;
-    }
-
-    /**
-     * 脚本设置
-     */
-    public static class ScriptConstant{
-        //脚本最大存储容量
-        public static final long SCRIPT_TEXT_MAX_SIZE = 1024;
     }
 
     /**

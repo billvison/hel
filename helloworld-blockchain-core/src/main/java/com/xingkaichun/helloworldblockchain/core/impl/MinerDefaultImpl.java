@@ -1,23 +1,20 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
-import com.xingkaichun.helloworldblockchain.core.BlockchainDatabase;
-import com.xingkaichun.helloworldblockchain.core.Miner;
-import com.xingkaichun.helloworldblockchain.core.MinerTransactionDtoDatabase;
-import com.xingkaichun.helloworldblockchain.core.Wallet;
+import com.xingkaichun.helloworldblockchain.core.*;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
+import com.xingkaichun.helloworldblockchain.core.tools.SizeTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
-import com.xingkaichun.helloworldblockchain.util.ThreadUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.ThreadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,13 +100,17 @@ public class MinerDefaultImpl extends Miner {
      * 获取挖矿中的区块对象
      */
     private Block obtainMiningBlock(Account minerAccount) {
+        //获取一部分未确认交易，最优的方式是获取所有未确认的交易进行处理，但是数据处理起来会很复杂，因为项目是helloworld的，所以简单的拿一部分数据即可。
         List<TransactionDTO> forMineBlockTransactionDtoList = minerTransactionDtoDataBase.selectTransactionDtoList(1,10000);
-        List<Transaction> forMineBlockTransactionList = new ArrayList<>();
+
+        List<Transaction> transactionList = new ArrayList<>();
+        List<Transaction> backupTransactionList = new ArrayList<>();
+
         if(forMineBlockTransactionDtoList != null){
             for(TransactionDTO transactionDTO:forMineBlockTransactionDtoList){
                 try {
                     Transaction transaction = Dto2ModelTool.transactionDto2Transaction(blockchainDataBase,transactionDTO);
-                    forMineBlockTransactionList.add(transaction);
+                    transactionList.add(transaction);
                 } catch (Exception e) {
                     String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
                     logger.info("类型转换异常,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash,e);
@@ -117,61 +118,123 @@ public class MinerDefaultImpl extends Miner {
                 }
             }
         }
-        deleteExceptionTransaction_PointOfBlockView(forMineBlockTransactionList);
-        Block nextMineBlock = buildNextMineBlock(forMineBlockTransactionList,minerAccount);
-        return nextMineBlock;
-    }
 
-    /**
-     * 打包处理过程: 将异常的交易丢弃掉【站在区块的角度校验交易】
-     */
-    private void deleteExceptionTransaction_PointOfBlockView(List<Transaction> packingTransactionList) {
-        if(packingTransactionList==null || packingTransactionList.size()==0){
-            return;
+        backupTransactionList.clear();
+        backupTransactionList.addAll(transactionList);
+        transactionList.clear();
+
+        for(Transaction transaction : backupTransactionList){
+            boolean transactionCanAddToNextBlock = blockchainDataBase.isTransactionCanAddToNextBlock(null,transaction);
+            if(transactionCanAddToNextBlock){
+                transactionList.add(transaction);
+            }else {
+                String transactionHash = TransactionTool.calculateTransactionHash(transaction);
+                logger.info("交易不能被挖矿,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash);
+                minerTransactionDtoDataBase.deleteByTransactionHash(transactionHash);
+            }
         }
-        deleteExceptionTransaction_PointOfTransactionView(packingTransactionList);
 
-        Set<String> idSet = new HashSet<>();
-        Iterator<Transaction> iterator = packingTransactionList.iterator();
-        while (iterator.hasNext()){
-            Transaction transaction = iterator.next();
+        backupTransactionList.clear();
+        backupTransactionList.addAll(transactionList);
+        transactionList.clear();
+
+
+        //防止双花
+        Set<String> transactionOutputIdSet = new HashSet<>();
+        for(Transaction transaction : backupTransactionList){
             List<TransactionInput> inputs = transaction.getInputs();
-            boolean isError = false;
-            //校验双花：同一张钱不能被两次交易同时使用【同一个UTXO不允许出现在不同的交易中】
-            for(TransactionInput input:inputs){
-                String unspendTransactionOutputId = input.getUnspendTransactionOutput().getTransactionOutputId();
-                if(idSet.contains(unspendTransactionOutputId)){
-                    isError = true;
-                    break;
-                }else {
-                    idSet.add(unspendTransactionOutputId);
+            if(inputs != null){
+                boolean canAdd = true;
+                for(TransactionInput transactionInput : inputs) {
+                    TransactionOutput unspentTransactionOutput = transactionInput.getUnspentTransactionOutput();
+                    String transactionOutputId = unspentTransactionOutput.getTransactionOutputId();
+                    if(transactionOutputIdSet.contains(transactionOutputId)){
+                        canAdd = false;
+                        String transactionHash = TransactionTool.calculateTransactionHash(transaction);
+                        logger.info("交易不能被挖矿,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash);
+                        minerTransactionDtoDataBase.deleteByTransactionHash(transactionHash);
+                        break;
+                    }else {
+                        transactionOutputIdSet.add(transactionOutputId);
+                    }
+                }
+                if(canAdd){
+                    transactionList.add(transaction);
                 }
             }
-            if(isError){
-                iterator.remove();
-                minerTransactionDtoDataBase.deleteByTransactionHash(transaction.getTransactionHash());
-                logger.debug("交易校验失败：交易的输入中同一个UTXO被多次使用。不合法的交易。");
-            }
         }
-    }
 
-    /**
-     * 打包处理过程: 将异常的交易丢弃掉【站在单笔交易的角度校验交易】
-     */
-    private void deleteExceptionTransaction_PointOfTransactionView(List<Transaction> transactionList) {
-        if(transactionList==null || transactionList.size()==0){
-            return;
-        }
-        Iterator<Transaction> iterator = transactionList.iterator();
-        while (iterator.hasNext()){
-            Transaction transaction = iterator.next();
-            boolean transactionCanAddToNextBlock = blockchainDataBase.isTransactionCanAddToNextBlock(null,transaction);
-            if(!transactionCanAddToNextBlock){
-                iterator.remove();
-                minerTransactionDtoDataBase.deleteByTransactionHash(transaction.getTransactionHash());
-                logger.debug("交易校验失败：丢弃交易。交易哈希"+transaction.getTransactionHash());
+
+
+        backupTransactionList.clear();
+        backupTransactionList.addAll(transactionList);
+        transactionList.clear();
+
+
+        //防止一个地址被用多次
+        Set<String> addressSet = new HashSet<>();
+        for(Transaction transaction : backupTransactionList){
+            List<TransactionOutput> outputs = transaction.getOutputs();
+            if(outputs != null){
+                boolean canAdd = true;
+                for (TransactionOutput output:outputs){
+                    String address = output.getAddress();
+                    if(addressSet.contains(address)){
+                        canAdd = false;
+                        String transactionHash = TransactionTool.calculateTransactionHash(transaction);
+                        logger.info("交易不能被挖矿,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash);
+                        minerTransactionDtoDataBase.deleteByTransactionHash(transactionHash);
+                        break;
+                    }else {
+                        addressSet.add(address);
+                    }
+                }
+                if(canAdd){
+                    transactionList.add(transaction);
+                }
             }
         }
+
+
+        //按照费率(每字符的手续费)从大到小排序交易
+        transactionList.sort((transaction1, transaction2) -> {
+            long transaction1FeeRate = TransactionTool.getFeeRate(transaction1);
+            long transaction2FeeRate = TransactionTool.getFeeRate(transaction2);
+            long diffFeeRate = transaction1FeeRate - transaction2FeeRate;
+            if(diffFeeRate>0){
+                return -1;
+            }else if(diffFeeRate==0){
+                return 0;
+            }else {
+                return 1;
+            }
+        });
+
+
+        backupTransactionList.clear();
+        backupTransactionList.addAll(transactionList);
+        transactionList.clear();
+
+        //到此时，剩余交易都是经过验证的了，且按照交易费率从大到小排列了。
+        //尽可能多的获取交易
+        long size = 0;
+        for(int i=0; i<backupTransactionList.size(); i++){
+            //序号从0开始，加一。
+            //留给挖矿交易一个位置，减一。
+            if(i+1 > GlobalSetting.BlockConstant.BLOCK_MAX_TRANSACTION_COUNT-1){
+                break;
+            }
+            Transaction transaction = backupTransactionList.get(i);
+            size += SizeTool.calculateTransactionSize(transaction);
+            if(size > GlobalSetting.BlockConstant.BLOCK_TEXT_MAX_SIZE){
+                break;
+            }
+            transactionList.add(transaction);
+        }
+
+
+        Block nextMineBlock = buildNextMineBlock(transactionList,minerAccount);
+        return nextMineBlock;
     }
 
     /**

@@ -37,98 +37,76 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         }
 
         TransactionOutputDetailView transactionOutputDetailView = new TransactionOutputDetailView();
-        transactionOutputDetailView.setBlockHeight(transactionOutput.getBlockHeight());
-        transactionOutputDetailView.setBlockHash(transactionOutput.getBlockHash());
-        transactionOutputDetailView.setTransactionHash(transactionOutput.getTransactionHash());
+        transactionOutputDetailView.setFromBlockHeight(transactionOutput.getBlockHeight());
+        transactionOutputDetailView.setFromBlockHash(transactionOutput.getBlockHash());
+        transactionOutputDetailView.setFromTransactionHash(transactionOutput.getTransactionHash());
         transactionOutputDetailView.setValue(transactionOutput.getValue());
-        transactionOutputDetailView.setOutputScript(ScriptTool.toString(transactionOutput.getOutputScript()));
-        transactionOutputDetailView.setTransactionOutputIndex(transactionOutput.getTransactionOutputIndex());
+        transactionOutputDetailView.setFromOutputScript(ScriptTool.toString(transactionOutput.getOutputScript()));
+        transactionOutputDetailView.setFromTransactionOutputIndex(transactionOutput.getTransactionOutputIndex());
         transactionOutputId.setTransactionHash(transactionOutput.getTransactionHash());
         transactionOutputId.setTransactionOutputIndex(transactionOutput.getTransactionOutputIndex());
 
         //是否是未花费输出
-        TransactionOutput transactionOutputTemp = getBlockchainCore().getBlockchainDataBase().queryUnspendTransactionOutputByTransactionOutputId(transactionOutputId);
-        transactionOutputDetailView.setSpend(transactionOutputTemp==null);
+        TransactionOutput transactionOutputTemp = getBlockchainCore().getBlockchainDataBase().queryUnspentTransactionOutputByTransactionOutputId(transactionOutputId);
+        transactionOutputDetailView.setSpent(transactionOutputTemp==null);
 
         //来源
         TransactionView inputTransactionView = queryTransactionByTransactionHash(transactionOutputId.getTransactionHash());
+        transactionOutputDetailView.setInputTransaction(inputTransactionView);
+        transactionOutputDetailView.setTransactionType(inputTransactionView.getTransactionType());
+
 
         //去向
         TransactionView outputTransactionView = null;
-        if(transactionOutputTemp==null){
-            String transactionHash = getBlockchainCore().getBlockchainDataBase().queryToTransactionHashByTransactionOutputId(transactionOutputId);
-            outputTransactionView = queryTransactionByTransactionHash(transactionHash);
+        if(transactionOutputTemp == null){
+            Transaction destinationTransaction = getBlockchainCore().getBlockchainDataBase().queryDestinationTransactionByTransactionOutputId(transactionOutputId);
+            outputTransactionView = queryTransactionByTransactionHash(destinationTransaction.getTransactionHash());
 
-            Transaction outputTransaction = getBlockchainCore().getBlockchainDataBase().queryTransactionByTransactionHash(transactionHash);
+            Transaction outputTransaction = getBlockchainCore().getBlockchainDataBase().queryTransactionByTransactionHash(destinationTransaction.getTransactionHash());
             List<TransactionInput> inputs = outputTransaction.getInputs();
             if(inputs != null){
-                for(TransactionInput transactionInput:inputs){
-                    UnspendTransactionOutput unspendTransactionOutput = transactionInput.getUnspendTransactionOutput();
-                    if(transactionOutput.getTransactionHash().equals(unspendTransactionOutput.getTransactionHash()) &&
-                            transactionOutput.getTransactionOutputIndex()==unspendTransactionOutput.getTransactionOutputIndex()){
-                        transactionOutputDetailView.setInputScript(ScriptTool.toString(transactionInput.getInputScript()));
+                for(int i=0;i<inputs.size();i++){
+                    TransactionInput transactionInput = inputs.get(i);
+                    UnspentTransactionOutput unspentTransactionOutput = transactionInput.getUnspentTransactionOutput();
+                    if(transactionOutput.getTransactionHash().equals(unspentTransactionOutput.getTransactionHash()) &&
+                            transactionOutput.getTransactionOutputIndex()==unspentTransactionOutput.getTransactionOutputIndex()){
+                        transactionOutputDetailView.setToTransactionInputIndex(outputTransactionView.getTransactionInputCount());
+                        transactionOutputDetailView.setToInputScript(ScriptTool.toString(transactionInput.getInputScript()));
                         break;
                     }
                 }
             }
+            transactionOutputDetailView.setToBlockHeight(outputTransactionView.getBlockHeight());
+            transactionOutputDetailView.setToBlockHash(outputTransactionView.getBlockHash());
+            transactionOutputDetailView.setToTransactionHash(outputTransactionView.getTransactionHash());
+            transactionOutputDetailView.setOutputTransaction(outputTransactionView);
         }
-        transactionOutputDetailView.setInputTransaction(inputTransactionView);
-        transactionOutputDetailView.setOutputTransaction(outputTransactionView);
         return transactionOutputDetailView;
     }
 
     @Override
-    public List<TransactionOutputDetailView> queryTransactionOutputListByAddress(String address, long from, long size) {
-        List<TransactionOutput> utxoList = getBlockchainCore().queryTransactionOutputListByAddress(address,from,size);
-        if(utxoList == null){
+    public TransactionOutputDetailView queryTransactionOutputByAddress(String address) {
+        TransactionOutput transactionOutput = getBlockchainCore().queryTransactionOutputByAddress(address);
+        if(transactionOutput == null){
             return null;
         }
-        List<TransactionOutputDetailView> transactionOutputDetailViewList = new ArrayList<>();
-        for(TransactionOutput transactionOutput:utxoList){
-            TransactionOutputDetailView transactionOutputDetailView = queryTransactionOutputByTransactionOutputId(transactionOutput);
-            transactionOutputDetailViewList.add(transactionOutputDetailView);
-        }
-        return transactionOutputDetailViewList;
-    }
-
-    @Override
-    public List<TransactionOutputDetailView> queryUnspendTransactionOutputListByAddress(String address, long from, long size) {
-        List<TransactionOutput> utxoList = getBlockchainCore().queryUnspendTransactionOutputListByAddress(address,from,size);
-        if(utxoList == null){
-            return null;
-        }
-        List<TransactionOutputDetailView> transactionOutputDetailViewList = new ArrayList<>();
-        for(TransactionOutput transactionOutput:utxoList){
-            TransactionOutputDetailView transactionOutputDetailView = queryTransactionOutputByTransactionOutputId(transactionOutput);
-            transactionOutputDetailViewList.add(transactionOutputDetailView);
-        }
-        return transactionOutputDetailViewList;
-    }
-
-    @Override
-    public List<TransactionView> queryTransactionListByAddress(String address, long from, long size) {
-        List<Transaction> transactionList = getBlockchainCore().queryTransactionListByAddress(address,from,size);
-        if(transactionList == null){
-            return null;
-        }
-        List<TransactionView> transactionViewList = new ArrayList<>();
-        for(Transaction transaction:transactionList){
-            TransactionView transactionView = queryTransactionByTransactionHash(transaction.getTransactionHash());
-            transactionViewList.add(transactionView);
-        }
-        return transactionViewList;
+        TransactionOutputDetailView transactionOutputDetailView = queryTransactionOutputByTransactionOutputId(transactionOutput);
+        return transactionOutputDetailView;
     }
 
     @Override
     public List<TransactionView> queryTransactionListByBlockHashTransactionHeight(String blockHash, long from, long size) {
         Block block = getBlockchainCore().queryBlockByBlockHash(blockHash);
-        long fromUpdate = block.getStartTransactionIndexInBlockchain() + from -1 ;
-        if(from+size-1 > block.getTransactions().size()){
-            size = block.getTransactions().size() - from + 1;
-        }
-        List<Transaction> transactionList = getBlockchainCore().queryTransactionListByTransactionHeight(fromUpdate,size);
         List<TransactionView> transactionViewList = new ArrayList<>();
-        for(Transaction transaction:transactionList){
+        for(long i=from;i<from+size;i++){
+            if(from < 0){
+                break;
+            }
+            if(i > block.getTransactionCount()){
+                break;
+            }
+            long transactionHeight = block.getPreviousTransactionHeight() + i;
+            Transaction transaction = getBlockchainCore().queryTransactionByTransactionHeight(transactionHeight);
             TransactionView transactionView = queryTransactionByTransactionHash(transaction.getTransactionHash());
             transactionViewList.add(transactionView);
         }
@@ -192,11 +170,11 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         if(inputs != null){
             for(TransactionInput transactionInput:inputs){
                 TransactionInputView transactionInputView = new TransactionInputView();
-                transactionInputView.setAddress(transactionInput.getUnspendTransactionOutput().getAddress());
-                transactionInputView.setValue(transactionInput.getUnspendTransactionOutput().getValue());
+                transactionInputView.setAddress(transactionInput.getUnspentTransactionOutput().getAddress());
+                transactionInputView.setValue(transactionInput.getUnspentTransactionOutput().getValue());
                 transactionInputView.setInputScript(ScriptTool.toString(transactionInput.getInputScript()));
-                transactionInputView.setTransactionHash(transactionInput.getUnspendTransactionOutput().getTransactionHash());
-                transactionInputView.setTransactionOutputIndex(transactionInput.getUnspendTransactionOutput().getTransactionOutputIndex());
+                transactionInputView.setTransactionHash(transactionInput.getUnspentTransactionOutput().getTransactionHash());
+                transactionInputView.setTransactionOutputIndex(transactionInput.getUnspentTransactionOutput().getTransactionOutputIndex());
                 transactionInputViewList.add(transactionInputView);
             }
         }
@@ -229,20 +207,6 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         }
         transactionView.setOutputScriptList(outputScriptList);
         return transactionView;
-    }
-
-    @Override
-    public List<TransactionOutputDetailView> querySpendTransactionOutputListByAddress(String address, long from, long size) {
-        List<TransactionOutput> stxoList = getBlockchainCore().querySpendTransactionOutputListByAddress(address,from,size);
-        if(stxoList == null){
-            return null;
-        }
-        List<TransactionOutputDetailView> transactionOutputDetailViewList = new ArrayList<>();
-        for(TransactionOutput transactionOutput:stxoList){
-            TransactionOutputDetailView transactionOutputDetailView = queryTransactionOutputByTransactionOutputId(transactionOutput);
-            transactionOutputDetailViewList.add(transactionOutputDetailView);
-        }
-        return transactionOutputDetailViewList;
     }
 
     private BlockchainCore getBlockchainCore(){
