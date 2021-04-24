@@ -9,9 +9,6 @@ import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.NodeDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PingRequest;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PingResponse;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
@@ -23,8 +20,7 @@ import java.util.List;
 
 /**
  * 区块搜索者
- * 1.主动搜索是否存在新的区块
- * 2.如果发现区块链网络中有可以进行同步的区块，则尝试同步区块放入本地区块链。
+ * 如果发现区块链网络中有可以进行同步的区块，则尝试同步区块放入本地区块链。
  *
  * @author 邢开春 409060350@qq.com
  */
@@ -48,20 +44,6 @@ public class BlockSearcher {
 
     public void start() {
         /*
-         * 搜索其它节点的区块高度
-         */
-        new Thread(()->{
-            while (true){
-                try {
-                    searchBlocks();
-                } catch (Exception e) {
-                    logger.error("搜索其它节点的区块高度出现异常",e);
-                }
-                ThreadUtil.sleep(GlobalSetting.NodeConstant.BLOCK_SEARCH_TIME_INTERVAL);
-            }
-        }).start();
-
-        /*
          * 同步区块
          */
         new Thread(()->{
@@ -77,33 +59,6 @@ public class BlockSearcher {
             }
         }).start();
     }
-
-
-
-
-    /**
-     * 在区块链网络中搜寻新的区块
-     */
-    private void searchBlocks() {
-        List<NodeEntity> nodes = nodeService.queryAllNodeList();
-        for(NodeEntity node:nodes){
-            PingRequest request = new PingRequest();
-            request.setBlockchainHeight(blockchainCore.queryBlockchainHeight());
-
-            NodeDTO nodeDTO = new NodeDTO();
-            nodeDTO.setIp(node.getIp());
-            PingResponse pingResponse = new BlockchainNodeClientImpl(nodeDTO).pingNode(request);
-            if(pingResponse == null){
-                nodeService.deleteNode(new NodeDTO(node.getIp()));
-            }else {
-                node.setBlockchainHeight(pingResponse.getBlockchainHeight());
-                nodeService.updateNode(node);
-            }
-        }
-    }
-
-
-
 
     /**
      * 搜索新的区块，并同步这些区块到本地区块链系统
@@ -266,7 +221,7 @@ public class BlockSearcher {
         if(LongUtil.isEquals(masterBlockchainCoreTailBlockHeight,GlobalSetting.GenesisBlock.HEIGHT)){
             fork = false;
         } else {
-            BlockDTO blockDTO = new BlockchainNodeClientImpl(new NodeDTO(node.getIp())).getBlock(masterBlockchainCoreTailBlockHeight);
+            BlockDTO blockDTO = new BlockchainNodeClientImpl(node.getIp()).getBlock(masterBlockchainCoreTailBlockHeight);
             if(blockDTO == null){
                 return;
             }
@@ -285,7 +240,7 @@ public class BlockSearcher {
             //分叉的高度
             long forkBlockHeight = masterBlockchainCoreTailBlockHeight;
             while (true) {
-                BlockDTO blockDTO = new BlockchainNodeClientImpl(new NodeDTO(node.getIp())).getBlock(forkBlockHeight);
+                BlockDTO blockDTO = new BlockchainNodeClientImpl(node.getIp()).getBlock(forkBlockHeight);
                 if(blockDTO == null){
                     return;
                 }
@@ -297,7 +252,7 @@ public class BlockSearcher {
                 //分叉长度过大，不可同步。这里，认为这已经形成了硬分叉(两条完全不同的区块链)。
                 if (LongUtil.isGreatThan(masterBlockchainCoreTailBlockHeight, forkBlockHeight + GlobalSetting.NodeConstant.FORK_BLOCK_SIZE)) {
                     //硬分叉了，删除该节点
-                    nodeService.deleteNode(new NodeDTO(node.getIp()));
+                    nodeService.deleteNode(node.getIp());
                     return;
                 }
                 if (LongUtil.isLessEqualThan(forkBlockHeight, GlobalSetting.GenesisBlock.HEIGHT+1)) {
@@ -309,7 +264,7 @@ public class BlockSearcher {
             //从分叉高度开始同步
             slaveBlockchainCore.deleteBlocks(forkBlockHeight);
             while (true){
-                BlockDTO blockDTO = new BlockchainNodeClientImpl(new NodeDTO(node.getIp())).getBlock(forkBlockHeight);
+                BlockDTO blockDTO = new BlockchainNodeClientImpl(node.getIp()).getBlock(forkBlockHeight);
                 if(blockDTO == null){
                     return;
                 }
@@ -329,7 +284,7 @@ public class BlockSearcher {
             //未分叉
             while (true){
                 long nextBlockHeight = masterBlockchainCore.queryBlockchainHeight()+1;
-                BlockDTO blockDTO = new BlockchainNodeClientImpl(new NodeDTO(node.getIp())).getBlock(nextBlockHeight);
+                BlockDTO blockDTO = new BlockchainNodeClientImpl(node.getIp()).getBlock(nextBlockHeight);
                 if(blockDTO == null){
                     return;
                 }

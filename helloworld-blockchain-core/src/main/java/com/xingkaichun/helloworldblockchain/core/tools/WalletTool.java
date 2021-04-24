@@ -1,7 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
-import com.xingkaichun.helloworldblockchain.core.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionResponse;
 import com.xingkaichun.helloworldblockchain.core.model.pay.Recipient;
 import com.xingkaichun.helloworldblockchain.core.model.script.InputScript;
@@ -61,7 +60,7 @@ public class WalletTool {
             for(Recipient recipient : recipientList){
                 TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
                 transactionOutputDTO.setValue(recipient.getValue());
-                OutputScript outputScript = StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(recipient.getAddress());
+                OutputScript outputScript = ScriptTool.createPayToPublicKeyHashOutputScript(recipient.getAddress());
                 transactionOutputDTO.setOutputScript(Model2DtoTool.outputScript2OutputScriptDTO(outputScript));
                 transactionOutputDtoList.add(transactionOutputDTO);
 
@@ -126,7 +125,7 @@ public class WalletTool {
         if(change > 0){
             TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
             transactionOutputDTO.setValue(change);
-            OutputScript outputScript = StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(payerChangeAddress);
+            OutputScript outputScript = ScriptTool.createPayToPublicKeyHashOutputScript(payerChangeAddress);
             transactionOutputDTO.setOutputScript(Model2DtoTool.outputScript2OutputScriptDTO(outputScript));
             transactionOutputDtoList.add(transactionOutputDTO);
 
@@ -141,8 +140,8 @@ public class WalletTool {
             String privateKey = inputPrivateKeyList.get(i);
             String publicKey = AccountUtil.accountFromPrivateKey(privateKey).getPublicKey();
             TransactionInputDTO transactionInputDTO = transactionInputDtoList.get(i);
-            String signature = Model2DtoTool.signature(transactionDTO,privateKey);
-            InputScript inputScript = StackBasedVirtualMachine.createPayToPublicKeyHashInputScript(signature, publicKey);
+            String signature = TransactionTool.signature(privateKey,transactionDTO);
+            InputScript inputScript = ScriptTool.createPayToPublicKeyHashInputScript(signature, publicKey);
             transactionInputDTO.setInputScript(Model2DtoTool.inputScript2InputScriptDTO(inputScript));
         }
 

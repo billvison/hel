@@ -1,14 +1,11 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
-import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.script.InputScript;
 import com.xingkaichun.helloworldblockchain.core.model.script.OutputScript;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
-import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 
 import java.util.ArrayList;
@@ -20,9 +17,6 @@ import java.util.List;
  * @author 邢开春 409060350@qq.com
  */
 public class Model2DtoTool {
-
-    private static Gson gson = new Gson();
-
 
     public static BlockDTO block2BlockDTO(Block block) {
         if(block == null){
@@ -90,20 +84,5 @@ public class Model2DtoTool {
         transactionOutputDTO.setValue(transactionOutput.getValue());
         transactionOutputDTO.setOutputScript(outputScript2OutputScriptDTO(transactionOutput.getOutputScript()));
         return transactionOutputDTO;
-    }
-
-    public static String signature(TransactionDTO transactionDTO, String privateKey) {
-        byte[] bytesMessage = TransactionTool.hash4SignatureHashAll(transactionDTO);
-        byte[] bytesSignature = AccountUtil.signature(privateKey,bytesMessage);
-        String stringSignature = HexUtil.bytesToHexString(bytesSignature);
-        return stringSignature;
-    }
-
-    public static String encode(BlockDTO blockDTO) {
-        return gson.toJson(blockDTO);
-    }
-
-    public static BlockDTO decodeToBlockDTO(String stringBlockDTO) {
-        return gson.fromJson(stringBlockDTO,BlockDTO.class);
     }
 }

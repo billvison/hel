@@ -2,22 +2,16 @@ package com.xingkaichun.helloworldblockchain.explorer.controller;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
-import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.core.tools.SizeTool;
-import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
+import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.explorer.service.BlockchainBrowserService;
 import com.xingkaichun.helloworldblockchain.explorer.vo.BlockchainApiRoute;
 import com.xingkaichun.helloworldblockchain.explorer.vo.account.GenerateAccountRequest;
 import com.xingkaichun.helloworldblockchain.explorer.vo.account.GenerateAccountResponse;
-import com.xingkaichun.helloworldblockchain.explorer.vo.account.QueryAccountDetailByAddressRequest;
-import com.xingkaichun.helloworldblockchain.explorer.vo.account.QueryAccountDetailByAddressResponse;
 import com.xingkaichun.helloworldblockchain.explorer.vo.block.*;
 import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.PageCondition;
 import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.ServiceResult;
@@ -26,6 +20,7 @@ import com.xingkaichun.helloworldblockchain.explorer.vo.node.QueryBlockchainHeig
 import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.*;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.DateUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import org.slf4j.Logger;
@@ -55,7 +50,7 @@ public class BlockchainBrowserController {
     private BlockchainBrowserService blockchainBrowserService;
 
    /**
-     * 生成账户(公钥、私钥、地址)
+     * 生成账户(私钥、公钥、公钥哈希、地址)
      */
     @RequestMapping(value = BlockchainApiRoute.GENERATE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<GenerateAccountResponse> generateAccount(@RequestBody GenerateAccountRequest request){
@@ -129,34 +124,13 @@ public class BlockchainBrowserController {
     }
 
     /**
-     * 根据地址查询账户详情
-     */
-    @RequestMapping(value = BlockchainApiRoute.QUERY_ACCOUNT_DETAIL_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryAccountDetailByAddressResponse> queryAccountDetailByAddress(@RequestBody QueryAccountDetailByAddressRequest request){
-        try {
-            String address = request.getAddress();
-
-            QueryAccountDetailByAddressResponse response = new QueryAccountDetailByAddressResponse();
-            response.setAddress(address);
-            response.setBalance(String.valueOf(WalletTool.obtainBalance(getBlockchainCore(),address)));
-            response.setReceipt(String.valueOf(WalletTool.obtainReceipt(getBlockchainCore(),address)));
-            response.setSpent(String.valueOf(WalletTool.obtainSpent(getBlockchainCore(),address)));
-            return ServiceResult.createSuccessServiceResult("[查询交易输出]成功",response);
-        } catch (Exception e){
-            String message = "[根据地址查询账户详情]失败";
-            logger.error(message,e);
-            return ServiceResult.createFailServiceResult(message);
-        }
-    }
-
-    /**
      * 根据地址获取交易输出
      */
-    @RequestMapping(value = BlockchainApiRoute.QUERY_TRANSACTION_OUTPUT_LIST_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryTransactionOutputListByAddressResponse> queryTransactionOutputListByAddress(@RequestBody QueryTransactionOutputListByAddressRequest request){
+    @RequestMapping(value = BlockchainApiRoute.QUERY_TRANSACTION_OUTPUT_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryTransactionOutputByAddressResponse> queryTransactionOutputListByAddress(@RequestBody QueryTransactionOutputByAddressRequest request){
         try {
             TransactionOutputDetailView transactionOutputDetailView = blockchainBrowserService.queryTransactionOutputByAddress(request.getAddress());
-            QueryTransactionOutputListByAddressResponse response = new QueryTransactionOutputListByAddressResponse();
+            QueryTransactionOutputByAddressResponse response = new QueryTransactionOutputByAddressResponse();
             response.setTransactionOutputDetailView(transactionOutputDetailView);
             return ServiceResult.createSuccessServiceResult("[查询交易输出]成功",response);
         } catch (Exception e){
@@ -207,43 +181,12 @@ public class BlockchainBrowserController {
     @RequestMapping(value = BlockchainApiRoute.QUERY_MINING_TRANSACTION_BY_TRANSACTION_HASH,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryMiningTransactionByTransactionHashResponse> queryMiningTransactionByTransactionHash(@RequestBody QueryMiningTransactionByTransactionHashRequest request){
         try {
-            TransactionDTO transactionDTO = getBlockchainCore().queryMiningTransactionDtoByTransactionHash(request.getTransactionHash());
-            if(transactionDTO == null){
+            MiningTransactionView miningTransactionView = blockchainBrowserService.queryMiningTransactionByTransactionHash(request.getTransactionHash());
+            if(miningTransactionView == null){
                 return ServiceResult.createFailServiceResult(String.format("交易哈希[%s]不是正在被挖矿的交易。",request.getTransactionHash()));
             }
-
-            Transaction transaction = Dto2ModelTool.transactionDto2Transaction(getBlockchainCore().getBlockchainDataBase(),transactionDTO);
-            MiningTransactionView transactionDtoResp = new MiningTransactionView();
-            transactionDtoResp.setTransactionHash(transaction.getTransactionHash());
-
-            List<MiningTransactionView.TransactionInputDto> inputDtos = new ArrayList<>();
-            List<TransactionInput> inputs = transaction.getInputs();
-            if(inputs != null){
-                for(TransactionInput input:inputs){
-                    MiningTransactionView.TransactionInputDto transactionInputDto = new MiningTransactionView.TransactionInputDto();
-                    transactionInputDto.setAddress(input.getUnspentTransactionOutput().getAddress());
-                    transactionInputDto.setTransactionHash(input.getUnspentTransactionOutput().getTransactionHash());
-                    transactionInputDto.setTransactionOutputIndex(input.getUnspentTransactionOutput().getTransactionOutputIndex());
-                    transactionInputDto.setValue(input.getUnspentTransactionOutput().getValue());
-                    inputDtos.add(transactionInputDto);
-                }
-            }
-            transactionDtoResp.setInputs(inputDtos);
-
-            List<MiningTransactionView.TransactionOutputDto> outputDtos = new ArrayList<>();
-            List<TransactionOutput> outputs = transaction.getOutputs();
-            if(outputs != null){
-                for(TransactionOutput output:outputs){
-                    MiningTransactionView.TransactionOutputDto transactionOutputDto = new MiningTransactionView.TransactionOutputDto();
-                    transactionOutputDto.setAddress(output.getAddress());
-                    transactionOutputDto.setValue(output.getValue());
-                    outputDtos.add(transactionOutputDto);
-                }
-            }
-            transactionDtoResp.setOutputs(outputDtos);
-
             QueryMiningTransactionByTransactionHashResponse response = new QueryMiningTransactionByTransactionHashResponse();
-            response.setTransactionDTO(transactionDtoResp);
+            response.setTransactionDTO(miningTransactionView);
             return ServiceResult.createSuccessServiceResult("根据交易哈希查询挖矿中交易成功",response);
         } catch (Exception e){
             String message = "根据交易哈希查询挖矿中交易失败";
@@ -266,36 +209,8 @@ public class BlockchainBrowserController {
 
             List<MiningTransactionView> transactionDtoListResp = new ArrayList<>();
             for(TransactionDTO transactionDto : transactionDtoList){
-                Transaction transaction = Dto2ModelTool.transactionDto2Transaction(getBlockchainCore().getBlockchainDataBase(),transactionDto);
-                MiningTransactionView transactionDtoResp = new MiningTransactionView();
-                transactionDtoResp.setTransactionHash(transaction.getTransactionHash());
-
-                List<MiningTransactionView.TransactionInputDto> inputDtos = new ArrayList<>();
-                List<TransactionInput> inputs = transaction.getInputs();
-                if(inputs != null){
-                    for(TransactionInput input:inputs){
-                        MiningTransactionView.TransactionInputDto transactionInputDto = new MiningTransactionView.TransactionInputDto();
-                        transactionInputDto.setAddress(input.getUnspentTransactionOutput().getAddress());
-                        transactionInputDto.setTransactionHash(input.getUnspentTransactionOutput().getTransactionHash());
-                        transactionInputDto.setTransactionOutputIndex(input.getUnspentTransactionOutput().getTransactionOutputIndex());
-                        transactionInputDto.setValue(input.getUnspentTransactionOutput().getValue());
-                        inputDtos.add(transactionInputDto);
-                    }
-                }
-                transactionDtoResp.setInputs(inputDtos);
-
-                List<MiningTransactionView.TransactionOutputDto> outputDtos = new ArrayList<>();
-                List<TransactionOutput> outputs = transaction.getOutputs();
-                if(outputs != null){
-                    for(TransactionOutput output:outputs){
-                        MiningTransactionView.TransactionOutputDto transactionOutputDto = new MiningTransactionView.TransactionOutputDto();
-                        transactionOutputDto.setAddress(output.getAddress());
-                        transactionOutputDto.setValue(output.getValue());
-                        outputDtos.add(transactionOutputDto);
-                    }
-                }
-                transactionDtoResp.setOutputs(outputDtos);
-                transactionDtoListResp.add(transactionDtoResp);
+                MiningTransactionView miningTransactionView = blockchainBrowserService.queryMiningTransactionByTransactionHash(TransactionTool.calculateTransactionHash(transactionDto));
+                transactionDtoListResp.add(miningTransactionView);
             }
             QueryMiningTransactionListResponse response = new QueryMiningTransactionListResponse();
             response.setTransactionDtoList(transactionDtoListResp);
@@ -310,31 +225,15 @@ public class BlockchainBrowserController {
     /**
      * 根据区块高度查询区块
      */
-    @RequestMapping(value = BlockchainApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryBlockDtoByBlockHeightResponse> queryBlockDtoByBlockHeight(@RequestBody QueryBlockDtoByBlockHeightRequest request){
+    @RequestMapping(value = BlockchainApiRoute.QUERY_BLOCK_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryBlockByBlockHeightResponse> queryBlockDtoByBlockHeight(@RequestBody QueryBlockByBlockHeightRequest request){
         try {
-            Block block = getBlockchainCore().queryBlockByBlockHeight(request.getBlockHeight());
-            if(block == null){
+            BlockView blockView = blockchainBrowserService.queryBlockViewByBlockHeight(request.getBlockHeight());
+            if(blockView == null){
                 return ServiceResult.createFailServiceResult(String.format("区块链中不存在区块高度[%d]，请检查输入高度。",request.getBlockHeight()));
             }
-            Block nextBlock = getBlockchainCore().queryBlockByBlockHeight(block.getHeight()+1);
-
-            QueryBlockDtoByBlockHashResponse.BlockDto blockDto = new QueryBlockDtoByBlockHashResponse.BlockDto();
-            blockDto.setHeight(block.getHeight());
-            blockDto.setConfirmCount(BlockTool.getTransactionCount(block));
-            blockDto.setBlockSize(SizeTool.calculateBlockSize(block)+"字符");
-            blockDto.setTransactionCount(BlockTool.getTransactionCount(block));
-            blockDto.setTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));
-            blockDto.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
-            blockDto.setDifficulty(BlockTool.formatDifficulty(block.getDifficulty()));
-            blockDto.setNonce(block.getNonce());
-            blockDto.setHash(block.getHash());
-            blockDto.setPreviousBlockHash(block.getPreviousBlockHash());
-            blockDto.setNextBlockHash(nextBlock==null?null:nextBlock.getHash());
-            blockDto.setMerkleTreeRoot(block.getMerkleTreeRoot());
-
-            QueryBlockDtoByBlockHeightResponse response = new QueryBlockDtoByBlockHeightResponse();
-            response.setBlockDto(blockDto);
+            QueryBlockByBlockHeightResponse response = new QueryBlockByBlockHeightResponse();
+            response.setBlockView(blockView);
             return ServiceResult.createSuccessServiceResult("成功获取区块",response);
         } catch (Exception e){
             String message = "查询获取失败";
@@ -346,32 +245,16 @@ public class BlockchainBrowserController {
     /**
      * 根据区块哈希查询区块
      */
-    @RequestMapping(value = BlockchainApiRoute.QUERY_BLOCKDTO_BY_BLOCK_HASH,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryBlockDtoByBlockHashResponse> queryBlockDtoByBlockHash(@RequestBody QueryBlockDtoByBlockHashRequest request){
+    @RequestMapping(value = BlockchainApiRoute.QUERY_BLOCK_BY_BLOCK_HASH,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryBlockByBlockHashResponse> queryBlockDtoByBlockHash(@RequestBody QueryBlockByBlockHashRequest request){
         try {
             Block block = getBlockchainCore().queryBlockByBlockHash(request.getBlockHash());
-            Block tailBlock = getBlockchainCore().queryTailBlock();
             if(block == null){
                 return ServiceResult.createFailServiceResult(String.format("区块链中不存在区块哈希[%s]，请检查输入哈希。",request.getBlockHash()));
             }
-            Block nextBlock = getBlockchainCore().queryBlockByBlockHeight(block.getHeight()+1);
-
-            QueryBlockDtoByBlockHashResponse.BlockDto blockDto = new QueryBlockDtoByBlockHashResponse.BlockDto();
-            blockDto.setHeight(block.getHeight());
-            blockDto.setConfirmCount(tailBlock.getHeight()-block.getHeight()+1);
-            blockDto.setBlockSize(SizeTool.calculateBlockSize(block)+"字符");
-            blockDto.setTransactionCount(BlockTool.getTransactionCount(block));
-            blockDto.setTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));
-            blockDto.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
-            blockDto.setDifficulty(BlockTool.formatDifficulty(block.getDifficulty()));
-            blockDto.setNonce(block.getNonce());
-            blockDto.setHash(block.getHash());
-            blockDto.setPreviousBlockHash(block.getPreviousBlockHash());
-            blockDto.setNextBlockHash(nextBlock==null?null:nextBlock.getHash());
-            blockDto.setMerkleTreeRoot(block.getMerkleTreeRoot());
-
-            QueryBlockDtoByBlockHashResponse response = new QueryBlockDtoByBlockHashResponse();
-            response.setBlockDto(blockDto);
+            BlockView blockView = blockchainBrowserService.queryBlockViewByBlockHeight(block.getHeight());
+            QueryBlockByBlockHashResponse response = new QueryBlockByBlockHashResponse();
+            response.setBlockView(blockView);
             return ServiceResult.createSuccessServiceResult("[根据区块哈希查询区块]成功",response);
         } catch (Exception e){
             String message = "[根据区块哈希查询区块]失败";
@@ -383,22 +266,26 @@ public class BlockchainBrowserController {
     /**
      * 查询最近的10个区块
      */
-    @RequestMapping(value = BlockchainApiRoute.QUERY_LAST10_BLOCKDTO,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryLast10BlockDtoResponse> queryLast10BlockDto(@RequestBody QueryLast10BlockDtoRequest request){
+    @RequestMapping(value = BlockchainApiRoute.QUERY_TOP10_BLOCK,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryTop10BlockResponse> queryLast10BlockDto(@RequestBody QueryTop10BlockRequest request){
         try {
             List<Block> blockList = new ArrayList<>();
-            long blockchainHeight = getBlockchainCore().queryBlockchainHeight();
-            long minBlockHeight = blockchainHeight-9>0?blockchainHeight-9:1;
-            while (blockchainHeight >= minBlockHeight){
-                Block block = getBlockchainCore().queryBlockByBlockHeight(blockchainHeight);
+            long blockHeight = getBlockchainCore().queryBlockchainHeight();
+            while (true){
+                if(blockHeight <= GlobalSetting.GenesisBlock.HEIGHT){
+                    break;
+                }
+                Block block = getBlockchainCore().queryBlockByBlockHeight(blockHeight);
                 blockList.add(block);
-                blockchainHeight--;
+                if(blockList.size() >= 10){
+                    break;
+                }
+                blockHeight--;
             }
 
-            QueryLast10BlockDtoResponse response = new QueryLast10BlockDtoResponse();
-            List<QueryLast10BlockDtoResponse.BlockDto> blockDtoList = new ArrayList<>();
+            List<QueryTop10BlockResponse.BlockView> blockDtoList = new ArrayList<>();
             for(Block block : blockList){
-                QueryLast10BlockDtoResponse.BlockDto blockDto = new QueryLast10BlockDtoResponse.BlockDto();
+                QueryTop10BlockResponse.BlockView blockDto = new QueryTop10BlockResponse.BlockView();
                 blockDto.setHeight(block.getHeight());
                 blockDto.setBlockSize(SizeTool.calculateBlockSize(block)+"字符");
                 blockDto.setTransactionCount(BlockTool.getTransactionCount(block));
@@ -407,7 +294,9 @@ public class BlockchainBrowserController {
                 blockDto.setHash(block.getHash());
                 blockDtoList.add(blockDto);
             }
-            response.setBlockDtoList(blockDtoList);
+
+            QueryTop10BlockResponse response = new QueryTop10BlockResponse();
+            response.setBlockViewList(blockDtoList);
             return ServiceResult.createSuccessServiceResult("[查询最近的10个区块]成功",response);
         } catch (Exception e){
             String message = "[查询最近的10个区块]失败";
@@ -415,6 +304,7 @@ public class BlockchainBrowserController {
             return ServiceResult.createFailServiceResult(message);
         }
     }
+
     private BlockchainCore getBlockchainCore(){
         return netBlockchainCore.getBlockchainCore();
     }

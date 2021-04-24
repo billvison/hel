@@ -11,11 +11,6 @@ import java.sql.Statement;
 /**
  * Jdbc工具
  *
- * 能同时适用于android、window、linux平台
- *
- * android平台用SQLDroid
- * https://github.com/SQLDroid/SQLDroid
- *
  * @author 邢开春 409060350@qq.com
  */
 public class JdbcUtil {
@@ -26,13 +21,8 @@ public class JdbcUtil {
 
     static {
         try {
-            if(OperateSystemUtil.isAndroidOperateSystem()){
-                Class.forName("org.sqldroid.SQLDroidDriver");
-                jdbcConnectionFormat = "jdbc:sqldroid:%s";
-            }else {
-                Class.forName("org.sqlite.JDBC");
-                jdbcConnectionFormat = "jdbc:sqlite:%s";
-            }
+            Class.forName("org.sqlite.JDBC");
+            jdbcConnectionFormat = "jdbc:sqlite:%s";
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

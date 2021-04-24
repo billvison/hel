@@ -1,10 +1,9 @@
 package com.xingkaichun.helloworldblockchain.netcore.server;
 
-import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.API;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PingRequest;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -45,16 +44,23 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 		if("/".equals(requestApi)){
 			sendMsg = "HelloworldBlockchain";
 		}else if(API.PING.equals(requestApi)){
-			PingRequest request = new Gson().fromJson(body, PingRequest.class);
-			sendMsg = httpServerHandlerResolver.ping(ctx,request);
+			sendMsg = httpServerHandlerResolver.ping(ctx);
+		}else if(API.GET_NODES.equals(requestApi)){
+			sendMsg = httpServerHandlerResolver.getNodes();
 		}else if(API.GET_BLOCK.equals(requestApi)){
 			sendMsg = httpServerHandlerResolver.getBlock(Long.parseLong(requestParameter.get("height")));
+		}else if(API.GET_TRANSACTION.equals(requestApi)){
+			sendMsg = httpServerHandlerResolver.getTransaction(Long.parseLong(requestParameter.get("height")));
 		}else if(API.POST_TRANSACTION.equals(requestApi)){
-			TransactionDTO transactionDTO = new Gson().fromJson(body, TransactionDTO.class);
+			TransactionDTO transactionDTO = JsonUtil.fromJson(body, TransactionDTO.class);
 			sendMsg = httpServerHandlerResolver.postTransaction(transactionDTO);
 		}else if(API.POST_BLOCK.equals(requestApi)){
-			BlockDTO blockDTO = new Gson().fromJson(body, BlockDTO.class);
+			BlockDTO blockDTO = JsonUtil.fromJson(body, BlockDTO.class);
 			sendMsg = httpServerHandlerResolver.postBlock(blockDTO);
+		}else if(API.POST_BLOCKCHAIN_HEIGHT.equals(requestApi)){
+			sendMsg = httpServerHandlerResolver.postBlockchainHeight(ctx,Long.parseLong(requestParameter.get("height")));
+		}else if(API.GET_BLOCKCHAIN_HEIGHT.equals(requestApi)){
+			sendMsg = httpServerHandlerResolver.getBlockchainHeight();
 		}else {
 			sendMsg = "404 NOT FOUND";
 		}

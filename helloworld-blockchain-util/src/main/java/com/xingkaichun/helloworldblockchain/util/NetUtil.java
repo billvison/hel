@@ -1,6 +1,5 @@
 package com.xingkaichun.helloworldblockchain.util;
 
-import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,8 +16,6 @@ import java.nio.charset.StandardCharsets;
 public class NetUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(NetUtil.class);
-
-    private static Gson gson = new Gson();
 
     public static String jsonGetRequest(String requestUrl, Object requestBody) throws IOException {
         OutputStreamWriter out = null;
@@ -38,7 +35,7 @@ public class NetUtil {
             connection.setConnectTimeout(3000);
             connection.connect();
             out = new OutputStreamWriter(connection.getOutputStream(),StandardCharsets.UTF_8);
-            out.append(gson.toJson(requestBody));
+            out.append(JsonUtil.toJson(requestBody));
             out.flush();
             out.close();
 

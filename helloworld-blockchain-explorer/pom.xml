@@ -16,21 +16,29 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.xingkaichun.helloworldblockchain</groupId>
-            <artifactId>helloworld-blockchain-netcore</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
 
+
+        <dependency>
+            <groupId>com.xingkaichun.helloworldblockchain</groupId>
+            <artifactId>helloworld-blockchain-netcore</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <!--项目里使用gson，因此移除jsckson以支持gson。-->
+                <exclusion>
+                    <artifactId>jackson-databind</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
+        <!--TODO 日志有待整理-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>

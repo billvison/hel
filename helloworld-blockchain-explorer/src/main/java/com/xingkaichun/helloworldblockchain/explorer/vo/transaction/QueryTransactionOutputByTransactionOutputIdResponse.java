@@ -2,14 +2,14 @@ package com.xingkaichun.helloworldblockchain.explorer.vo.transaction;
 
 public class QueryTransactionOutputByTransactionOutputIdResponse {
 
-    private TransactionOutputDetailView TransactionOutputDetailView;
+    private TransactionOutputDetailView transactionOutputDetailView;
 
 
     public TransactionOutputDetailView getTransactionOutputDetailView() {
-        return TransactionOutputDetailView;
+        return transactionOutputDetailView;
     }
 
     public void setTransactionOutputDetailView(TransactionOutputDetailView transactionOutputDetailView) {
-        TransactionOutputDetailView = transactionOutputDetailView;
+        this.transactionOutputDetailView = transactionOutputDetailView;
     }
 }

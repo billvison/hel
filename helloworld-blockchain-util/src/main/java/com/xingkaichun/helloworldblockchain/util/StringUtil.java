@@ -1,5 +1,7 @@
 package com.xingkaichun.helloworldblockchain.util;
 
+import com.google.common.base.Strings;
+
 /**
  * String工具类
  *
@@ -7,17 +9,17 @@ package com.xingkaichun.helloworldblockchain.util;
  */
 public class StringUtil {
 
-    public static boolean isEquals(String str1,String str2){
-        if(str1 == str2){
+    public static boolean isEquals(String string,String anotherString){
+        if(string == anotherString){
             return true;
         }
-        if(str1 == null || str2 == null){
+        if(string == null || anotherString == null){
             return false;
         }
-        return str1.equals(str2);
+        return string.equals(anotherString);
     }
 
-    public static boolean isNullOrEmpty(String str) {
-        return str == null || "".equals(str);
+    public static boolean isNullOrEmpty(String string) {
+        return Strings.isNullOrEmpty(string);
     }
 }

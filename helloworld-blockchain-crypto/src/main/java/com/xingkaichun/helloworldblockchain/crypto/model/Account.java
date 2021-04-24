@@ -6,9 +6,11 @@ import java.io.Serializable;
 /**
  * 字符串格式的数字货币的账户
  *
- * 通常情况下，数字货币的账户由一个非对称秘钥对（私钥、公钥）、一个地址构成。
- * 非对称秘钥由私钥、公钥构成。私钥可以推导出公钥。公钥不能逆推出私钥。
- * 公钥可以推导出数字货币的地址。地址不能逆推出公钥。
+ * 数字货币的账户(账户在区块链领域被称为钱包)由账号(账户在区块链领域被称为地址)、密码(账户在区块链领域被称为私钥)组成。
+ *
+ * 私钥可以推导出公钥。公钥不能逆推出私钥。
+ * 公钥可以推导出公钥哈希。公钥哈希不能逆推出公钥。
+ * 公钥哈希可以推导出地址。地址可以逆推出公钥哈希。
  *
  * @author 邢开春 409060350@qq.com
  */
@@ -18,7 +20,7 @@ public class Account implements Serializable {
     private String privateKey;
     //公钥
     private String publicKey;
-    //公钥
+    //公钥哈希
     private String publicKeyHash;
     //地址
     private String address;

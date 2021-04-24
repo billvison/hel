@@ -49,53 +49,53 @@
 
             $(async function(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/Blockchain/QueryBlockDtoByBlockHash",
+                    url : baseUrl()+"/Api/Blockchain/QueryBlockByBlockHash",
                     data: reqJso2
                 });
-                let {blockDto} = data.result;
+                let {blockView} = data.result;
                 $('#box').append(`
                 <div class="panel panel-default">
                     <!-- Default panel contents -->
-                    <div class="panel-heading">区块哈希&nbsp;${blockDto.hash}</div>
+                    <div class="panel-heading">区块哈希&nbsp;${blockView.hash}</div>
                     <button type="button" class="btn btn-default">摘要</button>
                     <!-- Table -->
                     <table class="table">
                         <tbody>
                             <tr>
                                 <td style="width:10%">高度</td>
-                                <td style="width:40%"><a target="_blank" href="./block-by-height.html?height=${blockDto.height}">${blockDto.height}</a></td>
+                                <td style="width:40%"><a target="_blank" href="./block-by-height.html?height=${blockView.height}">${blockView.height}</a></td>
                                 <td style="width:10%">挖矿难度</td>
-                                <td style="width:40%">${blockDto.difficulty}</td>
+                                <td style="width:40%">${blockView.difficulty}</td>
                             </tr>
                             <tr>
                                 <td>确认数</td>
-                                <td>${blockDto.confirmCount}</td>
+                                <td>${blockView.confirmCount}</td>
                                 <td>随机数</td>
-                                <td>${blockDto.nonce}</td>
+                                <td>${blockView.nonce}</td>
                             </tr>
                             <tr>
                                 <td>区块大小</td>
-                                <td>${blockDto.blockSize}</td>
+                                <td>${blockView.blockSize}</td>
                                 <td>区块哈希</td>
-                                <td>${blockDto.hash}</td>
+                                <td>${blockView.hash}</td>
                             </tr>
                             <tr>
                                 <td>交易数量</td>
-                                <td>${blockDto.transactionCount}</td>
+                                <td>${blockView.transactionCount}</td>
                                 <td>上一个区块哈希</td>
-                                <td><a href='./block.html?hash=${blockDto.previousBlockHash}'>${blockDto.previousBlockHash}</a></td>
+                                <td><a href='./block.html?hash=${blockView.previousBlockHash}'>${blockView.previousBlockHash}</a></td>
                             </tr>
                             <tr>
                                 <td>时间</td>
-                                <td>${blockDto.time}</td>
+                                <td>${blockView.time}</td>
                                 <td>下一个区块哈希</td>
-                                <td><a href='./block.html?hash=${blockDto.nextBlockHash}'>${blockDto.nextBlockHash || ''}</a></td>
+                                <td><a href='./block.html?hash=${blockView.nextBlockHash}'>${blockView.nextBlockHash || ''}</a></td>
                             </tr>
                             <tr>
                                 <td>矿工奖励</td>
-                                <td>${blockDto.minerIncentiveValue}</td>
+                                <td>${blockView.minerIncentiveValue}</td>
                                 <td>默克尔树根</td>
-                                <td>${blockDto.merkleTreeRoot}</td>
+                                <td>${blockView.merkleTreeRoot}</td>
                             </tr>
                         </tbody>
                     </table>

@@ -1,10 +1,10 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
-import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.model.script.OperationCodeEnum;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.InputScriptDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.OutputScriptDTO;
+import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,7 +19,7 @@ public class ScriptToolTest {
         inputScriptDTO.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
 
         InputScriptDTO resumeInputScriptDTO =  ScriptTool.inputScriptDTO(ScriptTool.bytesScript(inputScriptDTO));
-        Assert.assertEquals(new Gson().toJson(inputScriptDTO),new Gson().toJson(resumeInputScriptDTO));
+        Assert.assertEquals(JsonUtil.toJson(inputScriptDTO),JsonUtil.toJson(resumeInputScriptDTO));
 
 
 
@@ -32,6 +32,6 @@ public class ScriptToolTest {
         outputScriptDTO.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));
 
         OutputScriptDTO resumeOutputScriptDTO =  ScriptTool.outputScriptDTO(ScriptTool.bytesScript(outputScriptDTO));
-        Assert.assertEquals(new Gson().toJson(outputScriptDTO),new Gson().toJson(resumeOutputScriptDTO));
+        Assert.assertEquals(JsonUtil.toJson(outputScriptDTO),JsonUtil.toJson(resumeOutputScriptDTO));
     }
 }

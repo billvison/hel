@@ -14,11 +14,11 @@ public class NumberUtilTest {
         for(int i=0;i<10000;i++){
             Random random = new Random();
             long number = random.nextLong();
-            long resumeNumber = NumberUtil.bytes64ToLong64WithBigEndian(NumberUtil.long64ToBytes64WithBigEndian(number));
+            long resumeNumber = NumberUtil.bytes64ToLong64ByBigEndian(NumberUtil.long64ToBytes64ByBigEndian(number));
             //校验互转
             Assert.assertEquals(number,resumeNumber);
             //校验long转8字节大端数组
-            Assert.assertArrayEquals(long64ToBytes64WithBigEndian(number),NumberUtil.long64ToBytes64WithBigEndian(number));
+            Assert.assertArrayEquals(long64ToBytes64WithBigEndian(number),NumberUtil.long64ToBytes64ByBigEndian(number));
         }
 
     }
@@ -30,11 +30,11 @@ public class NumberUtilTest {
         byte[] byte8 = new byte[8];
         for(int i=0;i<10000;i++){
             random.nextBytes(byte8);
-            byte[] resumeByte8 = NumberUtil.long64ToBytes64WithBigEndian(NumberUtil.bytes64ToLong64WithBigEndian(byte8));
+            byte[] resumeByte8 = NumberUtil.long64ToBytes64ByBigEndian(NumberUtil.bytes64ToLong64ByBigEndian(byte8));
             //校验互转
             Assert.assertArrayEquals(byte8,resumeByte8);
             //校验8字节大端数组转long
-            Assert.assertEquals(bytes64ToLong64WithBigEndian(byte8),NumberUtil.bytes64ToLong64WithBigEndian(resumeByte8));
+            Assert.assertEquals(bytes64ToLong64WithBigEndian(byte8),NumberUtil.bytes64ToLong64ByBigEndian(resumeByte8));
         }
     }
 

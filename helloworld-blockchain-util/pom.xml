@@ -21,6 +21,7 @@
             <scope>test</scope>
         </dependency>
 
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
@@ -34,11 +35,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.sqldroid</groupId>
-            <artifactId>sqldroid</artifactId>
         </dependency>
 
         <dependency>

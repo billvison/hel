@@ -1,10 +1,8 @@
 package com.xingkaichun.helloworldblockchain.explorer.service;
 
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
-import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.SubmitTransactionToBlockchainNetworkRequest;
-import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.SubmitTransactionToBlockchainNetworkResponse;
-import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.TransactionOutputDetailView;
-import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.TransactionView;
+import com.xingkaichun.helloworldblockchain.explorer.vo.block.BlockView;
+import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.*;
 
 import java.util.List;
 
@@ -37,4 +35,14 @@ public interface BlockchainBrowserService {
      * 提交交易到区块链网络
      */
     SubmitTransactionToBlockchainNetworkResponse submitTransactionToBlockchainNetwork(SubmitTransactionToBlockchainNetworkRequest request);
+
+    /**
+     * 根据区块哈希查找区块
+     */
+    BlockView queryBlockViewByBlockHeight(Long blockHeight);
+
+    /**
+     * 根据区块哈希查找未确认的交易
+     */
+    MiningTransactionView queryMiningTransactionByTransactionHash(String transactionHash);
 }

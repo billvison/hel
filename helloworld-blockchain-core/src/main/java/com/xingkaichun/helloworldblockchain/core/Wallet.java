@@ -11,9 +11,11 @@ import java.util.List;
  */
 public abstract class Wallet {
 
-    public abstract List<Account> queryAllAccount();
+    public abstract List<Account> getAllAccount();
 
     public abstract Account createAccount();
+
+    public abstract Account createAndAddAccount();
 
     public abstract void addAccount(Account account);
 

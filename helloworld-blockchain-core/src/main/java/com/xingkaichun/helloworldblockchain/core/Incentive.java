@@ -10,8 +10,7 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 public abstract class Incentive {
 
     /**
-     * 奖励给矿工的挖矿激励数额。
-     * 这里只给出挖矿的激励数额。至于这个激励怎么分配，应当由矿工进行决定。
+     * 奖励给矿工的挖矿激励金额。
      */
-    public abstract long reward(Block block) ;
+    public abstract long incentiveAmount(Block block) ;
 }

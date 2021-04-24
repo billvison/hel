@@ -43,7 +43,7 @@ public class WalletImpl extends Wallet {
     }
 
     @Override
-    public List<Account> queryAllAccount() {
+    public List<Account> getAllAccount() {
         String sql = "SELECT * FROM wallet";
         List<Account> accountList = new ArrayList<>();
         PreparedStatement preparedStatement = null;
@@ -94,6 +94,13 @@ public class WalletImpl extends Wallet {
     @Override
     public Account createAccount() {
         Account account = AccountUtil.randomAccount();
+        return account;
+    }
+
+    @Override
+    public Account createAndAddAccount() {
+        Account account = createAccount();
+        addAccount(account);
         return account;
     }
 

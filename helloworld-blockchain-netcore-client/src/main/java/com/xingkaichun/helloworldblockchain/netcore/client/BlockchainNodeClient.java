@@ -1,8 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.client;
 
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PingRequest;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PingResponse;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 
 /**
@@ -15,20 +13,40 @@ public interface BlockchainNodeClient {
     /**
      * 提交交易至节点
      */
-    String submitTransaction(TransactionDTO transactionDTO) ;
+    String postTransaction(TransactionDTO transactionDTO);
 
     /**
      * Ping指定节点
      */
-    PingResponse pingNode(PingRequest request) ;
+    String pingNode();
 
     /**
      * 根据区块高度，获取对应的区块
      */
-    BlockDTO getBlock(long blockHeight) ;
+    BlockDTO getBlock(long blockHeight);
+
+    /**
+     * 获取区块列表
+     */
+    String[] getNodes();
 
     /**
      * 提交区块至节点
      */
-    String psotBlock(BlockDTO blockDTO);
+    String postBlock(BlockDTO blockDTO);
+
+    /**
+     * 提交区块链高度至节点
+     */
+    String postBlockchainHeight(long blockchainHeight);
+
+    /**
+     * 获取区块链高度
+     */
+    Long getBlockchainHeight();
+
+    /**
+     * 根据交易高度，获取对应的交易
+     */
+    TransactionDTO getTransaction(long transactionHeight);
 }

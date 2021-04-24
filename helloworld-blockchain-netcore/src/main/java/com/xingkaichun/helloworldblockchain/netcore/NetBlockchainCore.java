@@ -25,29 +25,40 @@ public class NetBlockchainCore {
 
     private BlockchainCore blockchainCore;
     private BlockchainNodeHttpServer blockchainNodeHttpServer;
-    private NodeSearcher nodeSearcher;
-    private NodeBroadcaster nodeBroadcaster;
-    private BlockSearcher blockSearcher;
-    private BlockBroadcaster blockBroadcaster;
-
     private ConfigurationService configurationService;
     private NodeService nodeService;
 
-    public NetBlockchainCore(BlockchainCore blockchainCore
-            , BlockchainNodeHttpServer blockchainNodeHttpServer, ConfigurationService configurationService
-            , NodeSearcher nodeSearcher, NodeBroadcaster nodeBroadcaster
-            , BlockSearcher blockSearcher , BlockBroadcaster blockBroadcaster
-            , NodeService nodeService) {
+    private SeedNodeInitializer seedNodeInitializer;
+    private NodeBroadcaster nodeBroadcaster;
+    private NodeSearcher nodeSearcher;
 
+    private BlockchainHeightBroadcaster blockchainHeightBroadcaster;
+    private BlockchainHeightSearcher blockchainHeightSearcher;
+
+    private BlockBroadcaster blockBroadcaster;
+    private BlockSearcher blockSearcher;
+
+
+    public NetBlockchainCore(BlockchainCore blockchainCore, BlockchainNodeHttpServer blockchainNodeHttpServer
+            , ConfigurationService configurationService, NodeService nodeService
+            , SeedNodeInitializer seedNodeInitializer, NodeBroadcaster nodeBroadcaster, NodeSearcher nodeSearcher
+            , BlockchainHeightBroadcaster blockchainHeightBroadcaster, BlockchainHeightSearcher blockchainHeightSearcher
+            , BlockBroadcaster blockBroadcaster, BlockSearcher blockSearcher
+        ) {
         this.blockchainCore = blockchainCore;
         this.blockchainNodeHttpServer = blockchainNodeHttpServer;
         this.configurationService = configurationService;
-        this.nodeSearcher = nodeSearcher;
-        this.nodeBroadcaster = nodeBroadcaster;
-        this.blockSearcher = blockSearcher;
-        this.blockBroadcaster = blockBroadcaster;
-
         this.nodeService = nodeService;
+
+        this.seedNodeInitializer = seedNodeInitializer;
+        this.nodeBroadcaster = nodeBroadcaster;
+        this.nodeSearcher = nodeSearcher;
+
+        this.blockchainHeightBroadcaster = blockchainHeightBroadcaster;
+        this.blockchainHeightSearcher = blockchainHeightSearcher;
+
+        this.blockBroadcaster = blockBroadcaster;
+        this.blockSearcher = blockSearcher;
         restoreConfiguration();
     }
 
@@ -74,14 +85,22 @@ public class NetBlockchainCore {
         //启动区块链节点服务器
         blockchainNodeHttpServer.start();
 
-        //启动节点搜寻器
-        nodeSearcher.start();
+        //种子节点初始化器
+        seedNodeInitializer.start();
         //启动节点广播器
         nodeBroadcaster.start();
-        //启动区块搜寻器
-        blockSearcher.start();
+        //启动节点搜寻器
+        nodeSearcher.start();
+
+        //启动区块高度广播者
+        blockchainHeightBroadcaster.start();
+        //启动区块链高度搜索器
+        blockchainHeightSearcher.start();
+
         //启动区块广播者
         blockBroadcaster.start();
+        //启动区块搜寻器
+        blockSearcher.start();
     }
 
     //region get set
@@ -115,6 +134,18 @@ public class NetBlockchainCore {
 
     public NodeService getNodeService() {
         return nodeService;
+    }
+
+    public SeedNodeInitializer getSeedNodeInitializer() {
+        return seedNodeInitializer;
+    }
+
+    public BlockchainHeightBroadcaster getBlockchainHeightBroadcaster() {
+        return blockchainHeightBroadcaster;
+    }
+
+    public BlockchainHeightSearcher getBlockchainHeightSearcher() {
+        return blockchainHeightSearcher;
     }
     //end
 }

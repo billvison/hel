@@ -12,20 +12,30 @@ import java.util.List;
 public class ByteUtil {
 
     /**
-     * 拼接字节数组。计算[传入字节数组]的长度，然后将长度转为4个字节的字节数组(大端)，然后将长度字节数组拼接在[传入字节数组]前，然后返回。
+     * 拼接数组。
      */
-    public static byte[] concatLengthBytes(byte[] value) {
-        return Bytes.concat(NumberUtil.long64ToBytes64WithBigEndian(value.length),value);
+    public static byte[] concat(byte[]... arrays) {
+        return Bytes.concat(arrays);
     }
 
     /**
-     * 拼接字节数组。
+     * 拼接长度。
+     * 计算[传入字节数组]的长度，然后将长度转为4个字节的字节数组(大端)，然后将长度字节数组拼接在[传入字节数组]前，然后返回。
      */
-    public static byte[] concatLengthBytes(List<byte[]> values) {
+    public static byte[] concatLength(byte[] value) {
+        return concat(NumberUtil.long64ToBytes64ByBigEndian(value.length),value);
+    }
+
+    /**
+     * 拼接长度。
+     * 将[传入字节数组]列表拼接生成新的字节数组，然后计算[新的字节数组]的长度，
+     * 然后将长度转为4个字节的字节数组(大端)，然后将长度字节数组拼接在[新的字节数组]前，然后返回。
+     */
+    public static byte[] flatAndConcatLength(List<byte[]> values) {
         byte[] concatBytes = new byte[0];
         for(byte[] value:values){
-            concatBytes = Bytes.concat(concatBytes,value);
+            concatBytes = concat(concatBytes,value);
         }
-        return concatLengthBytes(concatBytes);
+        return concatLength(concatBytes);
     }
 }

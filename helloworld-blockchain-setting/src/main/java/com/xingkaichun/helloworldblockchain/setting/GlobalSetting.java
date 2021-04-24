@@ -44,8 +44,8 @@ public class GlobalSetting {
      * 区块设置
      */
     public static class BlockConstant {
-        //区块最多含有的交易数量
-        public static final long BLOCK_MAX_TRANSACTION_COUNT = 1024;
+        //区块最多含有的交易数量(1秒1个)
+        public static final long BLOCK_MAX_TRANSACTION_COUNT = IncentiveConstant.BLOCK_TIME / 1000;
         //区块存储容量限制
         public static final long BLOCK_TEXT_MAX_SIZE = TransactionConstant.TRANSACTION_TEXT_MAX_SIZE * BLOCK_MAX_TRANSACTION_COUNT;
         //nonce字符串的长度是64 64位十六进制数
@@ -107,15 +107,15 @@ public class GlobalSetting {
         public static final long FORK_BLOCK_SIZE = 100;
         //在区块链网络中自动搜寻新的节点的间隔时间
         public static final long SEARCH_NEW_NODE_TIME_INTERVAL = 1000 * 60 * 2;
+        //在区块链网络中节点的区块链高度
+        public static final long SEARCH_BLOCKCHAIN_HEIGHT_TIME_INTERVAL = 1000 * 60 * 2;
         //在区块链网络中自动搜寻新的区块的间隔时间。
-        public static final long SEARCH_NEW_BLOCKS_TIME_INTERVAL = 1000 * 60;
+        public static final long SEARCH_NEW_BLOCKS_TIME_INTERVAL = 1000 * 10;
         //检查自己的区块链高度在区块链网络中是否是最大的高度的时间间隔。
         public static final long CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL = 1000 * 60;
         //定时将种子节点加入本地区块链网络的时间间隔。
         public static final long ADD_SEED_NODE_TIME_INTERVAL = 1000 * 60 * 60;
         //广播自己节点的时间间隔。
         public static final long NODE_BROADCAST_TIME_INTERVAL = 1000 * 60* 60 * 24;
-        //搜寻区块的时间间隔。
-        public static final long BLOCK_SEARCH_TIME_INTERVAL = 1000 * 60 * 2;
     }
 }

@@ -3,13 +3,12 @@ package com.xingkaichun.helloworldblockchain.explorer.service;
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.*;
-import com.xingkaichun.helloworldblockchain.core.tools.ScriptTool;
-import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
+import com.xingkaichun.helloworldblockchain.core.tools.*;
+import com.xingkaichun.helloworldblockchain.explorer.vo.block.BlockView;
 import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.*;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.NodeDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,8 +64,7 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
             Transaction outputTransaction = getBlockchainCore().getBlockchainDataBase().queryTransactionByTransactionHash(destinationTransaction.getTransactionHash());
             List<TransactionInput> inputs = outputTransaction.getInputs();
             if(inputs != null){
-                for(int i=0;i<inputs.size();i++){
-                    TransactionInput transactionInput = inputs.get(i);
+                for(TransactionInput transactionInput : inputs){
                     UnspentTransactionOutput unspentTransactionOutput = transactionInput.getUnspentTransactionOutput();
                     if(transactionOutput.getTransactionHash().equals(unspentTransactionOutput.getTransactionHash()) &&
                             transactionOutput.getTransactionOutputIndex()==unspentTransactionOutput.getTransactionOutputIndex()){
@@ -124,8 +122,8 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         List<SubmitTransactionToBlockchainNetworkResponse.Node> failSubmitNode = new ArrayList<>();
         if(nodes != null){
             for(NodeEntity node:nodes){
-                String submitSuccess = new BlockchainNodeClientImpl(new NodeDTO(node.getIp())).submitTransaction(transactionDTO);
-                if(submitSuccess != null && !submitSuccess.isEmpty()){
+                String postTransactionSuccess = new BlockchainNodeClientImpl(node.getIp()).postTransaction(transactionDTO);
+                if(postTransactionSuccess != null && !postTransactionSuccess.isEmpty()){
                     successSubmitNode.add(new SubmitTransactionToBlockchainNetworkResponse.Node(node.getIp()));
                 } else {
                     failSubmitNode.add(new SubmitTransactionToBlockchainNetworkResponse.Node(node.getIp()));
@@ -138,6 +136,69 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         response.setSuccessSubmitNode(successSubmitNode);
         response.setFailSubmitNode(failSubmitNode);
         return response;
+    }
+
+    @Override
+    public BlockView queryBlockViewByBlockHeight(Long blockHeight) {
+        Block block = getBlockchainCore().queryBlockByBlockHeight(blockHeight);
+        if(block == null){
+            return null;
+        }
+        Block nextBlock = getBlockchainCore().queryBlockByBlockHeight(block.getHeight()+1);
+
+        BlockView blockDto = new BlockView();
+        blockDto.setHeight(block.getHeight());
+        blockDto.setConfirmCount(BlockTool.getTransactionCount(block));
+        blockDto.setBlockSize(SizeTool.calculateBlockSize(block)+"字符");
+        blockDto.setTransactionCount(BlockTool.getTransactionCount(block));
+        blockDto.setTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));
+        blockDto.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
+        blockDto.setDifficulty(BlockTool.formatDifficulty(block.getDifficulty()));
+        blockDto.setNonce(block.getNonce());
+        blockDto.setHash(block.getHash());
+        blockDto.setPreviousBlockHash(block.getPreviousBlockHash());
+        blockDto.setNextBlockHash(nextBlock==null?null:nextBlock.getHash());
+        blockDto.setMerkleTreeRoot(block.getMerkleTreeRoot());
+        return blockDto;
+    }
+
+    @Override
+    public MiningTransactionView queryMiningTransactionByTransactionHash(String transactionHash) {
+        TransactionDTO transactionDTO = getBlockchainCore().queryMiningTransactionDtoByTransactionHash(transactionHash);
+        if(transactionDTO == null){
+            return null;
+        }
+
+        Transaction transaction = Dto2ModelTool.transactionDto2Transaction(getBlockchainCore().getBlockchainDataBase(),transactionDTO);
+        MiningTransactionView transactionDtoResp = new MiningTransactionView();
+        transactionDtoResp.setTransactionHash(transaction.getTransactionHash());
+
+        List<MiningTransactionView.TransactionInputDto> inputDtos = new ArrayList<>();
+        List<TransactionInput> inputs = transaction.getInputs();
+        if(inputs != null){
+            for(TransactionInput input:inputs){
+                MiningTransactionView.TransactionInputDto transactionInputDto = new MiningTransactionView.TransactionInputDto();
+                transactionInputDto.setAddress(input.getUnspentTransactionOutput().getAddress());
+                transactionInputDto.setTransactionHash(input.getUnspentTransactionOutput().getTransactionHash());
+                transactionInputDto.setTransactionOutputIndex(input.getUnspentTransactionOutput().getTransactionOutputIndex());
+                transactionInputDto.setValue(input.getUnspentTransactionOutput().getValue());
+                inputDtos.add(transactionInputDto);
+            }
+        }
+        transactionDtoResp.setInputs(inputDtos);
+
+        List<MiningTransactionView.TransactionOutputDto> outputDtos = new ArrayList<>();
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        if(outputs != null){
+            for(TransactionOutput output:outputs){
+                MiningTransactionView.TransactionOutputDto transactionOutputDto = new MiningTransactionView.TransactionOutputDto();
+                transactionOutputDto.setAddress(output.getAddress());
+                transactionOutputDto.setValue(output.getValue());
+                outputDtos.add(transactionOutputDto);
+            }
+        }
+        transactionDtoResp.setOutputs(outputDtos);
+        return transactionDtoResp;
     }
 
 

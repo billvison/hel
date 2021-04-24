@@ -1,8 +1,8 @@
 package com.xingkaichun.helloworldblockchain.explorer.configurations;
 
-import com.google.gson.Gson;
-import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.ServiceResult;
 import com.xingkaichun.helloworldblockchain.explorer.interceptor.IpInterceptor;
+import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.ServiceResult;
+import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +28,6 @@ public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {
 	private final Logger logger = LoggerFactory.getLogger(WebMvcConfigurerConfiguration.class);
 
 	@Autowired
-	private Gson gson;
-
-	@Autowired
 	private IpInterceptor ipInterceptor;
 
 
@@ -54,7 +51,7 @@ public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {
 			httpServletResponse.setStatus(500);
 			httpServletResponse.setCharacterEncoding("UTF-8");
 			ServiceResult serviceResult = ServiceResult.createFailServiceResult(exception.getMessage());
-			String jsonServiceResult = gson.toJson(serviceResult);
+			String jsonServiceResult = JsonUtil.toJson(serviceResult);
 			httpServletResponse.getWriter().write(jsonServiceResult);
 		} catch (Exception e) {
 			logger.error("将统一异常写入到HttpServletResponse出现错误。",e);

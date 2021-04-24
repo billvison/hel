@@ -1,7 +1,10 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
-import com.google.common.primitives.Bytes;
+import com.xingkaichun.helloworldblockchain.core.model.script.InputScript;
 import com.xingkaichun.helloworldblockchain.core.model.script.OperationCodeEnum;
+import com.xingkaichun.helloworldblockchain.core.model.script.OutputScript;
+import com.xingkaichun.helloworldblockchain.core.model.script.Script;
+import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.NumberUtil;
@@ -32,11 +35,11 @@ public class ScriptTool {
                     Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
                     Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
                     Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
-                bytesScript = Bytes.concat(bytesScript, ByteUtil.concatLengthBytes(bytesOperationCode));
+                bytesScript = ByteUtil.concat(bytesScript, ByteUtil.concatLength(bytesOperationCode));
             }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
                 String operationData = script.get(++i);
                 byte[] bytesOperationData = HexUtil.hexStringToBytes(operationData);
-                bytesScript = Bytes.concat(bytesScript, ByteUtil.concatLengthBytes(bytesOperationCode), ByteUtil.concatLengthBytes(bytesOperationData));
+                bytesScript = ByteUtil.concat(bytesScript, ByteUtil.concatLength(bytesOperationCode), ByteUtil.concatLength(bytesOperationData));
             }else {
                 throw new RuntimeException("不能识别的指令");
             }
@@ -77,7 +80,7 @@ public class ScriptTool {
         int start = 0;
         List<String> script = new ArrayList<>();
         while (start<bytesScript.length){
-            long bytesOperationCodeLength = NumberUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesScript,start,start+8));
+            long bytesOperationCodeLength = NumberUtil.bytes64ToLong64ByBigEndian(Arrays.copyOfRange(bytesScript,start,start+8));
             start += 8;
             byte[] bytesOperationCode = Arrays.copyOfRange(bytesScript,start, start+(int) bytesOperationCodeLength);
             start += bytesOperationCodeLength;
@@ -91,7 +94,7 @@ public class ScriptTool {
                 String stringOperationCode = HexUtil.bytesToHexString(bytesOperationCode);
                 script.add(stringOperationCode);
 
-                long bytesOperationDataLength = NumberUtil.bytes64ToLong64WithBigEndian(Arrays.copyOfRange(bytesScript,start,start+8));
+                long bytesOperationDataLength = NumberUtil.bytes64ToLong64ByBigEndian(Arrays.copyOfRange(bytesScript,start,start+8));
                 start += 8;
                 byte[] bytesOperationData = Arrays.copyOfRange(bytesScript,start, start+(int) bytesOperationDataLength);
                 start += bytesOperationDataLength;
@@ -133,5 +136,81 @@ public class ScriptTool {
             }
         }
         return stringScript;
+    }
+
+    /**
+     * 构建完整脚本
+     */
+    public static Script createScript(InputScript inputScript, OutputScript outputScript) {
+        Script script = new Script();
+        script.addAll(inputScript);
+        script.addAll(outputScript);
+        return script;
+    }
+
+    /**
+     * 创建P2PKH输入脚本
+     */
+    public static InputScript createPayToPublicKeyHashInputScript(String sign, String publicKey) {
+        InputScript script = new InputScript();
+        script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
+        script.add(sign);
+        script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
+        script.add(publicKey);
+        return script;
+    }
+
+    /**
+     * 创建P2PKH输出脚本
+     */
+    public static OutputScript createPayToPublicKeyHashOutputScript(String address) {
+        OutputScript script = new OutputScript();
+        script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()));
+        script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()));
+        script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
+        String publicKeyHash = AccountUtil.publicKeyHashFromAddress(address);
+        script.add(publicKeyHash);
+        script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()));
+        script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));
+        return script;
+    }
+
+    /**
+     * 是否是P2PKH输入脚本
+     */
+    public static boolean isPayToPublicKeyHashInputScript(InputScriptDTO inputScriptDTO) {
+        try {
+            return  inputScriptDTO.size() == 4
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(inputScriptDTO.get(0))
+                    && (136 <= inputScriptDTO.get(1).length() && 144 >= inputScriptDTO.get(1).length())
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(inputScriptDTO.get(2))
+                    && 130 == inputScriptDTO.get(3).length();
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    /**
+     * 是否是P2PKH输出脚本
+     */
+    public static boolean isPayToPublicKeyHashOutputScript(OutputScriptDTO outputScriptDTO) {
+        try {
+            return  outputScriptDTO.size() == 6
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()).equals(outputScriptDTO.get(0))
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()).equals(outputScriptDTO.get(1))
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(outputScriptDTO.get(2))
+                    && 40 == outputScriptDTO.get(3).length()
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()).equals(outputScriptDTO.get(4))
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()).equals(outputScriptDTO.get(5));
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    /**
+     * 获取P2PKH脚本中的公钥哈希
+     */
+    public static String getPublicKeyHashByPayToPublicKeyHashOutputScript(List<String> outputScript) {
+        return outputScript.get(3);
     }
 }

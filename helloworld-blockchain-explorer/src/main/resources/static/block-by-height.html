@@ -15,12 +15,12 @@
 
             $(async function(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/Blockchain/QueryBlockDtoByBlockHeight",
+                    url : baseUrl()+"/Api/Blockchain/QueryBlockByBlockHeight",
                     data: reqJson
                 });
                 if(data.result != null){
-                    let {blockDto} = data.result;
-                    var redirectUrl = `./block.html${location.search}&hash=${blockDto.hash}`;
+                    let {blockView} = data.result;
+                    var redirectUrl = `./block.html${location.search}&hash=${blockView.hash}`;
                     console.log(redirectUrl);
                     window.location.href = redirectUrl;
                 }else {

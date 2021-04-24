@@ -1,6 +1,5 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
-import com.xingkaichun.helloworldblockchain.core.StackBasedVirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.script.OperationCodeEnum;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
@@ -117,7 +116,7 @@ public class SizeTool {
         if(!isScriptStorageCapacityLegal(inputScriptDTO)){
             return false;
         }
-        return StackBasedVirtualMachine.isPayToPublicKeyHashInputScript(inputScriptDTO);
+        return ScriptTool.isPayToPublicKeyHashInputScript(inputScriptDTO);
     }
 
     /**
@@ -129,7 +128,7 @@ public class SizeTool {
         if(!isScriptStorageCapacityLegal(outputScriptDTO)){
             return false;
         }
-        return StackBasedVirtualMachine.isPayToPublicKeyHashOutputScript(outputScriptDTO);
+        return ScriptTool.isPayToPublicKeyHashOutputScript(outputScriptDTO);
     }
 
     /**

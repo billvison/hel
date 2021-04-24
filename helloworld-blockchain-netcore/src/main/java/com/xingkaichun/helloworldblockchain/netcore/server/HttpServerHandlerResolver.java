@@ -1,15 +1,18 @@
 package com.xingkaichun.helloworldblockchain.netcore.server;
 
-import com.google.gson.Gson;
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Model2DtoTool;
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.API;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,44 +43,18 @@ public class HttpServerHandlerResolver {
     /**
      * Ping节点
      */
-    public String ping(ChannelHandlerContext ctx, PingRequest request){
+    public String ping(ChannelHandlerContext ctx){
         try {
-            List<NodeEntity> nodeList = nodeService.queryAllNodeList();
-            long blockchainHeight = blockchainCore.queryBlockchainHeight();
-
             //将ping的来路作为区块链节点
-            NodeEntity node = new NodeEntity();
-            InetSocketAddress inetSocketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
-            String ip = inetSocketAddress.getAddress().getHostAddress();
-            node.setIp(ip);
-            if(request != null){
-                if(request.getBlockchainHeight() != null){
-                    node.setBlockchainHeight(request.getBlockchainHeight());
-                }
+            if(configurationService.isAutoSearchNode()){
+                NodeEntity node = new NodeEntity();
+                InetSocketAddress inetSocketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
+                String ip = inetSocketAddress.getAddress().getHostAddress();
+                node.setIp(ip);
+                nodeService.addNode(node);
+                logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,GlobalSetting.DEFAULT_PORT));
             }
-
-            if(nodeService.queryNode(new NodeDTO(node.getIp())) == null){
-                if(configurationService.isAutoSearchNode()){
-                    nodeService.addNode(node);
-                    logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,GlobalSetting.DEFAULT_PORT));
-                }
-            }else {
-                nodeService.updateNode(node);
-            }
-
-            List<NodeDTO> nodeDtoList = new ArrayList<>();
-            if(nodeList != null){
-                for(NodeEntity n:nodeList){
-                    NodeDTO b = new NodeDTO();
-                    b.setIp(n.getIp());
-                    nodeDtoList.add(b);
-                }
-            }
-
-            PingResponse response = new PingResponse();
-            response.setNodes(nodeDtoList);
-            response.setBlockchainHeight(blockchainHeight);
-            return new Gson().toJson(response);
+            return API.Response.OK;
         } catch (Exception e){
             String message = "ping node info failed";
             logger.error(message,e);
@@ -93,7 +70,7 @@ public class HttpServerHandlerResolver {
         try {
             Block blockByBlockHeight = blockchainCore.queryBlockByBlockHeight(height);
             BlockDTO block = Model2DtoTool.block2BlockDTO(blockByBlockHeight);
-            return new Gson().toJson(block);
+            return JsonUtil.toJson(block);
         } catch (Exception e){
             String message = "query block by block height failed";
             logger.error(message,e);
@@ -122,6 +99,51 @@ public class HttpServerHandlerResolver {
             return API.Response.OK;
         } catch (Exception e){
             String message = "commit block failed";
+            logger.error(message,e);
+            return API.Response.ERROR;
+        }
+    }
+
+    public String getNodes() {
+        List<NodeEntity> nodeList = nodeService.queryAllNodeList();
+        if(nodeList == null){
+            nodeList = new ArrayList<>();
+        }
+        String[] nodes = new String[nodeList.size()];
+        for (int i=0;i<nodeList.size();i++){
+            NodeEntity nodeEntity = nodeList.get(i);
+            nodes[i] = nodeEntity.getIp();
+        }
+        return JsonUtil.toJson(nodes);
+    }
+
+    public String postBlockchainHeight(ChannelHandlerContext ctx, long height) {
+        try {
+            NodeEntity node = new NodeEntity();
+            InetSocketAddress inetSocketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
+            String ip = inetSocketAddress.getAddress().getHostAddress();
+            node.setIp(ip);
+            node.setBlockchainHeight(height);
+            nodeService.updateNode(node);
+            return API.Response.OK;
+        } catch (Exception e){
+            String message = "post block height failed";
+            logger.error(message,e);
+            return API.Response.ERROR;
+        }
+    }
+
+    public String getBlockchainHeight() {
+        return Long.toString(blockchainCore.queryBlockchainHeight());
+    }
+
+    public String getTransaction(long height) {
+        try {
+            Transaction transactionByTransactionHeight = blockchainCore.queryTransactionByTransactionHeight(height);
+            TransactionDTO transaction = Model2DtoTool.transaction2TransactionDTO(transactionByTransactionHeight);
+            return JsonUtil.toJson(transaction);
+        } catch (Exception e){
+            String message = "query transaction by transaction height failed";
             logger.error(message,e);
             return API.Response.ERROR;
         }

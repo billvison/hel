@@ -6,29 +6,25 @@ import java.util.List;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class QueryLast10BlockDtoResponse {
+public class QueryTop10BlockResponse {
 
-    private List<BlockDto> blockDtoList ;
-
+    private List<BlockView> blockViewList ;
 
 
 
     //region get set
-
-    public List<BlockDto> getBlockDtoList() {
-        return blockDtoList;
+    public List<BlockView> getBlockViewList() {
+        return blockViewList;
     }
 
-    public void setBlockDtoList(List<BlockDto> blockDtoList) {
-        this.blockDtoList = blockDtoList;
+    public void setBlockViewList(List<BlockView> blockViewList) {
+        this.blockViewList = blockViewList;
     }
-
-
     //endregion
 
 
 
-    public static class BlockDto {
+    public static class BlockView {
 
         private long height;
         private String blockSize;

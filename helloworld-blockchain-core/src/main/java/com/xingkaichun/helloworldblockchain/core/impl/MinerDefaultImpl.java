@@ -6,10 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
-import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
-import com.xingkaichun.helloworldblockchain.core.tools.SizeTool;
-import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
+import com.xingkaichun.helloworldblockchain.core.tools.*;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
@@ -35,8 +32,8 @@ public class MinerDefaultImpl extends Miner {
     //挖矿开关:默认打开挖矿的开关
     private boolean mineOption = true;
 
-    public MinerDefaultImpl(Wallet wallet, BlockchainDatabase blockchainDataBase, MinerTransactionDtoDatabase minerTransactionDtoDataBase) {
-        super(wallet,blockchainDataBase,minerTransactionDtoDataBase);
+    public MinerDefaultImpl(Wallet wallet, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase) {
+        super(wallet,blockchainDataBase, unconfirmedTransactionDataBase);
     }
     //endregion
 
@@ -101,7 +98,7 @@ public class MinerDefaultImpl extends Miner {
      */
     private Block obtainMiningBlock(Account minerAccount) {
         //获取一部分未确认交易，最优的方式是获取所有未确认的交易进行处理，但是数据处理起来会很复杂，因为项目是helloworld的，所以简单的拿一部分数据即可。
-        List<TransactionDTO> forMineBlockTransactionDtoList = minerTransactionDtoDataBase.selectTransactionDtoList(1,10000);
+        List<TransactionDTO> forMineBlockTransactionDtoList = unconfirmedTransactionDataBase.selectTransactionDtoList(1,10000);
 
         List<Transaction> transactionList = new ArrayList<>();
         List<Transaction> backupTransactionList = new ArrayList<>();
@@ -114,7 +111,7 @@ public class MinerDefaultImpl extends Miner {
                 } catch (Exception e) {
                     String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
                     logger.info("类型转换异常,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash,e);
-                    minerTransactionDtoDataBase.deleteByTransactionHash(transactionHash);
+                    unconfirmedTransactionDataBase.deleteByTransactionHash(transactionHash);
                 }
             }
         }
@@ -130,7 +127,7 @@ public class MinerDefaultImpl extends Miner {
             }else {
                 String transactionHash = TransactionTool.calculateTransactionHash(transaction);
                 logger.info("交易不能被挖矿,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash);
-                minerTransactionDtoDataBase.deleteByTransactionHash(transactionHash);
+                unconfirmedTransactionDataBase.deleteByTransactionHash(transactionHash);
             }
         }
 
@@ -152,7 +149,7 @@ public class MinerDefaultImpl extends Miner {
                         canAdd = false;
                         String transactionHash = TransactionTool.calculateTransactionHash(transaction);
                         logger.info("交易不能被挖矿,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash);
-                        minerTransactionDtoDataBase.deleteByTransactionHash(transactionHash);
+                        unconfirmedTransactionDataBase.deleteByTransactionHash(transactionHash);
                         break;
                     }else {
                         transactionOutputIdSet.add(transactionOutputId);
@@ -183,7 +180,7 @@ public class MinerDefaultImpl extends Miner {
                         canAdd = false;
                         String transactionHash = TransactionTool.calculateTransactionHash(transaction);
                         logger.info("交易不能被挖矿,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash);
-                        minerTransactionDtoDataBase.deleteByTransactionHash(transactionHash);
+                        unconfirmedTransactionDataBase.deleteByTransactionHash(transactionHash);
                         break;
                     }else {
                         addressSet.add(address);
@@ -249,8 +246,8 @@ public class MinerDefaultImpl extends Miner {
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
         TransactionOutput output = new TransactionOutput();
         output.setAddress(address);
-        output.setValue(blockchainDataBase.getIncentive().reward(block));
-        output.setOutputScript(StackBasedVirtualMachine.createPayToPublicKeyHashOutputScript(address));
+        output.setValue(blockchainDataBase.getIncentive().incentiveAmount(block));
+        output.setOutputScript(ScriptTool.createPayToPublicKeyHashOutputScript(address));
         outputs.add(output);
 
         transaction.setOutputs(outputs);

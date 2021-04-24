@@ -154,7 +154,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
     }
 
     public BuildTransactionResponse buildTransactionDTO(BuildTransactionRequest request) {
-        List<Account> allAccountList = wallet.queryAllAccount();
+        List<Account> allAccountList = wallet.getAllAccount();
         if(allAccountList == null || allAccountList.isEmpty()){
             BuildTransactionResponse response = new BuildTransactionResponse();
             response.setBuildTransactionSuccess(false);
@@ -203,18 +203,18 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
     @Override
     public void submitTransaction(TransactionDTO transactionDTO) {
-        miner.getMinerTransactionDtoDataBase().insertTransactionDTO(transactionDTO);
+        miner.getUnconfirmedTransactionDataBase().insertTransactionDTO(transactionDTO);
     }
 
     @Override
     public List<TransactionDTO> queryMiningTransactionList(long from,long size) {
-        List<TransactionDTO> transactionDtoList = miner.getMinerTransactionDtoDataBase().selectTransactionDtoList(from,size);
+        List<TransactionDTO> transactionDtoList = miner.getUnconfirmedTransactionDataBase().selectTransactionDtoList(from,size);
         return transactionDtoList;
     }
 
     @Override
     public TransactionDTO queryMiningTransactionDtoByTransactionHash(String transactionHash) {
-        TransactionDTO transactionDTO = miner.getMinerTransactionDtoDataBase().selectTransactionDtoByTransactionHash(transactionHash);
+        TransactionDTO transactionDTO = miner.getUnconfirmedTransactionDataBase().selectTransactionDtoByTransactionHash(transactionHash);
         return transactionDTO;
     }
 }

@@ -67,10 +67,10 @@
         <script>
             $(async function(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/Blockchain/QueryLast10BlockDto"
+                    url : baseUrl()+"/Api/Blockchain/QueryTop10Block"
                 })
-                const blockDtoList = data.result.blockDtoList;
-                $(blockDtoList).each((index, item) => {
+                const blockViewList = data.result.blockViewList;
+                $(blockViewList).each((index, item) => {
                     $('tbody').append(`
                     <tr class="loop">
                         <td><a target="_blank" href="./block-by-height.html?height=${item.height}">${item.height}</a></td>

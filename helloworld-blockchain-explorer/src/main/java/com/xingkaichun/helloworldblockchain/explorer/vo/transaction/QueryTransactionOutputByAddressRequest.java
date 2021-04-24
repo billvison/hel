@@ -4,7 +4,7 @@ package com.xingkaichun.helloworldblockchain.explorer.vo.transaction;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class QueryTransactionOutputListByAddressRequest {
+public class QueryTransactionOutputByAddressRequest {
 
     private String address;
 

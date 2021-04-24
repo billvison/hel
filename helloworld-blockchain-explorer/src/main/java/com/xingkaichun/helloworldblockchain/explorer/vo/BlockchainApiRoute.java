@@ -19,12 +19,10 @@ public class BlockchainApiRoute {
     public static final String QUERY_TRANSACTION_BY_TRANSACTION_HASH = "/Api/Blockchain/QueryTransactionByTransactionHash";
     //根据区块哈希与交易高度查询交易列表
     public static final String QUERY_TRANSACTION_LIST_BY_BLOCK_HASH_TRANSACTION_HEIGHT = "/Api/Blockchain/QueryTransactionListByBlockHashTransactionHeight";
-    //根据地址查询账户详情
-    public static final String QUERY_ACCOUNT_DETAIL_BY_ADDRESS = "/Api/Blockchain/QueryAccountDetailByAddress";
 
 
     //根据地址获取交易输出
-    public static final String QUERY_TRANSACTION_OUTPUT_LIST_BY_ADDRESS = "/Api/Blockchain/QueryTransactionOutputListByAddress";
+    public static final String QUERY_TRANSACTION_OUTPUT_BY_ADDRESS = "/Api/Blockchain/QueryTransactionOutputByAddress";
 
     //根据交易输出ID获取交易输出
     public static final String QUERY_TRANSACTION_OUTPUT_BY_TRANSACTION_OUTPUT_ID = "/Api/Blockchain/QueryTransactionOutputByTransactionOutputId";
@@ -37,9 +35,9 @@ public class BlockchainApiRoute {
 
 
     //根据区块高度查询区块
-    public static final String QUERY_BLOCKDTO_BY_BLOCK_HEIGHT = "/Api/Blockchain/QueryBlockDtoByBlockHeight";
+    public static final String QUERY_BLOCK_BY_BLOCK_HEIGHT = "/Api/Blockchain/QueryBlockByBlockHeight";
     //根据区块哈希查询区块
-    public static final String QUERY_BLOCKDTO_BY_BLOCK_HASH = "/Api/Blockchain/QueryBlockDtoByBlockHash";
+    public static final String QUERY_BLOCK_BY_BLOCK_HASH = "/Api/Blockchain/QueryBlockByBlockHash";
     //查询最近的10个区块
-    public static final String QUERY_LAST10_BLOCKDTO = "/Api/Blockchain/QueryLast10BlockDto";
+    public static final String QUERY_TOP10_BLOCK = "/Api/Blockchain/QueryTop10Block";
 }

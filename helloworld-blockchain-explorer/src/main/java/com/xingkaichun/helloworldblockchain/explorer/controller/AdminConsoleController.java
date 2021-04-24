@@ -17,7 +17,6 @@ import com.xingkaichun.helloworldblockchain.explorer.vo.node.*;
 import com.xingkaichun.helloworldblockchain.explorer.vo.synchronizer.*;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.NodeDTO;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,7 +155,7 @@ public class AdminConsoleController {
             if(StringUtil.isNullOrEmpty(node.getIp())){
                 return ServiceResult.createFailServiceResult("节点IP不能为空");
             }
-            if(netBlockchainCore.getNodeService().queryNode(new NodeDTO(node.getIp())) != null){
+            if(netBlockchainCore.getNodeService().queryNode(node.getIp()) != null){
                 return ServiceResult.createFailServiceResult("节点已经存在，不需要重复添加");
             }
             netBlockchainCore.getNodeService().addNode(node);
@@ -193,7 +192,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.DELETE_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeleteNodeResponse> deleteNode(@RequestBody DeleteNodeRequest request){
         try {
-            netBlockchainCore.getNodeService().deleteNode(request.getNode());
+            netBlockchainCore.getNodeService().deleteNode(request.getNode().getIp());
             DeleteNodeResponse response = new DeleteNodeResponse();
             return ServiceResult.createSuccessServiceResult("删除节点成功",response);
         } catch (Exception e){
@@ -302,7 +301,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.QUERY_ALL_ACCOUNT_LIST,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryAllAccountListResponse> queryAllAccountList(@RequestBody QueryAllAccountListRequest request){
         try {
-            List<Account> allAccount = getBlockchainCore().getWallet().queryAllAccount();
+            List<Account> allAccount = getBlockchainCore().getWallet().getAllAccount();
 
             List<QueryAllAccountListResponse.AccountDto> accountDtoList = new ArrayList<>();
             if(allAccount != null){

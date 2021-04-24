@@ -4,7 +4,7 @@ package com.xingkaichun.helloworldblockchain.explorer.vo.block;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class QueryBlockDtoByBlockHashRequest {
+public class QueryBlockByBlockHashRequest {
 
     private String blockHash;
 

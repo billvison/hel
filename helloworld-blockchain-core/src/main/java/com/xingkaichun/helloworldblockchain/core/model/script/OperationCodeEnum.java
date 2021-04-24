@@ -13,6 +13,7 @@ public enum OperationCodeEnum {
      * 将脚本中的下一个数据A2放入栈，若A2长度大于1024个十六进制字符，抛出异常。
      * 操作后，栈元素为(A2 A B C D E)(栈顶<---栈底)
      * 操作码全称是OPERATION_CODE_PUSH_DATA
+     * //TODO size移除
      */
     OP_PUSHDATA(new byte[]{(byte)0x00}, "OP_PUSHDATA",1024),
     /**
@@ -67,7 +68,7 @@ public enum OperationCodeEnum {
     private byte[] code;
     //操作的名字
     private String name;
-    //如果操作码后跟着操作数，size代表操作数的位数限制
+    //如果操作码后跟着操作数，size代表操作数的字符个数限制
     private long size;
 
     public byte[] getCode() {

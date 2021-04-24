@@ -58,13 +58,13 @@
                     //区块高度
                     reqJson = `{ "blockHeight": ${searchValue}}`;
                     data = await $ajax({
-                        url : baseUrl()+"/Api/Blockchain/QueryBlockDtoByBlockHeight",
+                        url : baseUrl()+"/Api/Blockchain/QueryBlockByBlockHeight",
                         data: reqJson
                     });
                     if(data.result != null){
                         alert("识别为区块高度，点击确认按钮，跳转到区块详情页。");
-                        let {blockDto} = data.result;
-                        var redirectUrl = `./block.html?hash=${blockDto.hash}`;
+                        let {blockView} = data.result;
+                        var redirectUrl = `./block.html?hash=${blockView.hash}`;
                         console.log(redirectUrl);
                         window.location.href = redirectUrl;
                         return;
@@ -74,13 +74,12 @@
                 //区块哈希
                 reqJson = `{ "blockHash": "${searchValue}"}`;
                 data = await $ajax({
-                    url : baseUrl()+"/Api/Blockchain/QueryBlockDtoByBlockHash",
+                    url : baseUrl()+"/Api/Blockchain/QueryBlockByBlockHash",
                     data: reqJson
                 });
                 if(data.result != null){
                     alert("识别为区块哈希，点击确认按钮，跳转到区块详情页。");
-                    let {blockDto} = data.result;
-                    var redirectUrl = `./block.html?hash=${blockDto.hash}`;
+                    var redirectUrl = `./block.html?hash=${searchValue}`;
                     console.log(redirectUrl);
                     window.location.href = redirectUrl;
                     return;
@@ -94,7 +93,6 @@
                 });
                 if(data.result != null){
                     alert("识别为交易哈希，点击确认按钮，跳转到交易详情页。");
-                    let {blockDto} = data.result;
                     var redirectUrl = `./transaction.html?transactionHash=${searchValue}`;
                     console.log(redirectUrl);
                     window.location.href = redirectUrl;
@@ -104,12 +102,11 @@
                 //地址
                 reqJson = `{"address":"${searchValue}"}`
                 data = await $ajax({
-                    url : baseUrl()+"/Api/Blockchain/QueryTransactionOutputListByAddress",
+                    url : baseUrl()+"/Api/Blockchain/QueryTransactionOutputByAddress",
                     data: reqJson
                 });
-                if(data.result != null && data.result.transactionViewList != null){
+                if(data.result != null && data.result.transactionOutputDetailView != null){
                     alert("识别为地址，点击确认按钮，跳转到地址详情页。");
-                    let {blockDto} = data.result;
                     var redirectUrl = `./address.html?address=${searchValue}`;
                     console.log(redirectUrl);
                     window.location.href = redirectUrl;
@@ -124,7 +121,6 @@
                 });
                 if(data.result != null && data.result.transactionDTO != null){
                     alert("识别为未确认的交易，点击确认按钮，跳转到未确认的交易详情页。");
-                    let {blockDto} = data.result;
                     var redirectUrl = `./unconfirm-transaction.html?transactionHash=${searchValue}`;
                     console.log(redirectUrl);
                     window.location.href = redirectUrl;

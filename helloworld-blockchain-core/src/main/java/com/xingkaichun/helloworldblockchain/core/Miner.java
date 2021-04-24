@@ -12,12 +12,12 @@ public abstract class Miner {
     //矿工挖矿所在的区块链
     protected BlockchainDatabase blockchainDataBase;
     //矿工交易数据库：矿工从交易数据库里获取挖矿的原材料(交易数据)
-    protected MinerTransactionDtoDatabase minerTransactionDtoDataBase;
+    protected UnconfirmedTransactionDatabase unconfirmedTransactionDataBase;
 
-    public Miner(Wallet wallet, BlockchainDatabase blockchainDataBase, MinerTransactionDtoDatabase minerTransactionDtoDataBase) {
+    public Miner(Wallet wallet, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase) {
         this.wallet = wallet;
         this.blockchainDataBase = blockchainDataBase;
-        this.minerTransactionDtoDataBase = minerTransactionDtoDataBase;
+        this.unconfirmedTransactionDataBase = unconfirmedTransactionDataBase;
     }
 
 
@@ -54,16 +54,12 @@ public abstract class Miner {
         return wallet;
     }
 
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
-    }
-
     public BlockchainDatabase getBlockchainDataBase() {
         return blockchainDataBase;
     }
 
-    public MinerTransactionDtoDatabase getMinerTransactionDtoDataBase() {
-        return minerTransactionDtoDataBase;
+    public UnconfirmedTransactionDatabase getUnconfirmedTransactionDataBase() {
+        return unconfirmedTransactionDataBase;
     }
     //endregion
 }

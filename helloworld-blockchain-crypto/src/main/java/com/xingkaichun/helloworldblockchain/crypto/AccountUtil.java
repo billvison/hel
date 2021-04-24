@@ -38,7 +38,7 @@ public class AccountUtil {
     private static final ECDomainParameters CURVE;
     private static final SecureRandom SECURE_RANDOM;
     private static final boolean COMPRESSED = false;
-    public static final BigInteger HALF_CURVE_ORDER;
+    private static final BigInteger HALF_CURVE_ORDER;
 
 
     private static final byte VERSION = 0x00;
@@ -59,7 +59,7 @@ public class AccountUtil {
      * href="https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki#Low_S_values_in_signatures">BIP62</a>.
      * 参考：bitcoinj-core-0.15.10.jar org.bitcoinj.core.ECKey.isCanonical()
      */
-    public static boolean isCanonical(BigInteger s) {
+    private static boolean isCanonical(BigInteger s) {
         return s.compareTo(HALF_CURVE_ORDER) <= 0;
     }
 
@@ -175,11 +175,12 @@ public class AccountUtil {
     /**
      * 签名
      */
-    public static byte[] signature(String privateKey, byte[] message) {
+    public static String signature(String privateKey, String message) {
         try {
             BigInteger bigIntegerPrivateKey = privateKeyFrom(privateKey);
-            byte[] bytesSignature = signature(bigIntegerPrivateKey,message);
-            return bytesSignature;
+            byte[] bytesMessage = HexUtil.hexStringToBytes(message);
+            byte[] bytesSignature = signature(bigIntegerPrivateKey,bytesMessage);
+            return HexUtil.bytesToHexString(bytesSignature);
         } catch (Exception e) {
             logger.debug("签名出错。");
             throw new RuntimeException(e);
@@ -189,10 +190,12 @@ public class AccountUtil {
     /**
      * 验证签名
      */
-    public static boolean verifySignature(String publicKey, byte[] message, byte[] signature) {
+    public static boolean verifySignature(String publicKey, String message, String signature) {
         try {
-            byte[] bytePublicKey = publicKeyFrom(publicKey);
-            return verifySignature(bytePublicKey,message,signature);
+            byte[] bytesPublicKey = publicKeyFrom(publicKey);
+            byte[] bytesMessage = HexUtil.hexStringToBytes(message);
+            byte[] bytesSignature = HexUtil.hexStringToBytes(signature);
+            return verifySignature(bytesPublicKey,bytesMessage,bytesSignature);
         }catch(Exception e) {
             logger.debug("验证签名出错。");
             return false;
@@ -334,7 +337,7 @@ public class AccountUtil {
     /**
      * 是否是合法的地址
      */
-    public static boolean isBase58Address(String address) {
+    public static boolean isPayToPublicKeyHashAddress(String address) {
         try {
             byte[] bytesAddress = Base58.decode(address);
             byte[] bytePublicKeyHash = new byte[20];

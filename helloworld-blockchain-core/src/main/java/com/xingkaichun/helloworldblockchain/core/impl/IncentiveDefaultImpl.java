@@ -20,7 +20,7 @@ public class IncentiveDefaultImpl extends Incentive {
     private static final Logger logger = LoggerFactory.getLogger(IncentiveDefaultImpl.class);
 
     @Override
-    public long reward(Block block) {
+    public long incentiveAmount(Block block) {
         long fee = getFee(block);
         long subsidy = getSubsidy(block);
         long total = subsidy + fee;

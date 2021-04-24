@@ -28,9 +28,9 @@ public class BlockchainCoreFactory {
         Consensus consensus = new ProofOfWorkConsensusImpl();
         BlockchainDatabase blockchainDataBase = new BlockchainDatabaseDefaultImpl(blockchainDataPath,incentive,consensus);
 
-        MinerTransactionDtoDatabase minerTransactionDtoDataBase = new MinerTransactionDtoDtoDatabaseDefaultImpl(blockchainDataPath);
+        UnconfirmedTransactionDatabase unconfirmedTransactionDataBase = new UnconfirmedTransactionDatabaseDefaultImpl(blockchainDataPath);
         Wallet wallet = new WalletImpl(blockchainDataPath);
-        Miner miner = new MinerDefaultImpl(wallet,blockchainDataBase,minerTransactionDtoDataBase);
+        Miner miner = new MinerDefaultImpl(wallet,blockchainDataBase, unconfirmedTransactionDataBase);
         BlockchainCore blockchainCore = new BlockchainCoreImpl(blockchainDataBase,wallet,miner);
         return blockchainCore;
     }

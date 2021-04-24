@@ -1,15 +1,11 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
-import com.google.common.primitives.Bytes;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
-import com.xingkaichun.helloworldblockchain.crypto.MerkleTreeUtil;
-import com.xingkaichun.helloworldblockchain.crypto.NumberUtil;
-import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
+import com.xingkaichun.helloworldblockchain.crypto.*;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
@@ -40,12 +36,12 @@ public class BlockTool {
      * 计算区块的Hash值
      */
     public static String calculateBlockHash(BlockDTO blockDto) {
-        byte[] bytesTimestamp = NumberUtil.long64ToBytes64WithBigEndian(blockDto.getTimestamp());
+        byte[] bytesTimestamp = NumberUtil.long64ToBytes64ByBigEndian(blockDto.getTimestamp());
         byte[] bytesPreviousBlockHash = HexUtil.hexStringToBytes(blockDto.getPreviousHash());
         byte[] bytesMerkleTreeRoot = HexUtil.hexStringToBytes(calculateBlockMerkleTreeRoot(blockDto));
         byte[] bytesNonce = HexUtil.hexStringToBytes(blockDto.getNonce());
 
-        byte[] bytesInput = Bytes.concat(bytesTimestamp,bytesPreviousBlockHash,bytesMerkleTreeRoot,bytesNonce);
+        byte[] bytesInput = ByteUtil.concat(bytesTimestamp,bytesPreviousBlockHash,bytesMerkleTreeRoot,bytesNonce);
         byte[] sha256DoubleDigest = SHA256Util.doubleDigest(bytesInput);
         return HexUtil.bytesToHexString(sha256DoubleDigest);
     }

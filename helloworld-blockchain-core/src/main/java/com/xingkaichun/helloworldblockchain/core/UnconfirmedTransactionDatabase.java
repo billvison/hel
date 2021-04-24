@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author 邢开春 409060350@qq.com
  */
-public abstract class MinerTransactionDtoDatabase {
+public abstract class UnconfirmedTransactionDatabase {
 
     /**
      * 新增交易

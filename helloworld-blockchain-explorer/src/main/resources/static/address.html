@@ -49,7 +49,7 @@
             $(async function(){
                 let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/Blockchain/QueryTransactionOutputListByAddress",
+                    url : baseUrl()+"/Api/Blockchain/QueryTransactionOutputByAddress",
                     data:`{
                         "address":"${urlParameters.get("address")}"
                     }`

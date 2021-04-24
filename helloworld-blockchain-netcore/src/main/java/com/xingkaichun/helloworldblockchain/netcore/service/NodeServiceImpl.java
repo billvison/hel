@@ -2,7 +2,6 @@ package com.xingkaichun.helloworldblockchain.netcore.service;
 
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.NodeDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 
 import java.util.List;
@@ -20,8 +19,8 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public void deleteNode(NodeDTO nodeDTO){
-        nodeDao.deleteNode(nodeDTO.getIp());
+    public void deleteNode(String ip){
+        nodeDao.deleteNode(ip);
     }
 
     @Override
@@ -31,8 +30,10 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public void addNode(NodeEntity node){
-        fillNodeDefaultValue(node);
-        nodeDao.addNode(node);
+        if(queryNode(node.getIp())== null){
+            fillNodeDefaultValue(node);
+            nodeDao.addNode(node);
+        }
     }
 
     @Override
@@ -41,8 +42,8 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public NodeEntity queryNode(NodeDTO nodeDTO){
-        return nodeDao.queryNode(nodeDTO.getIp());
+    public NodeEntity queryNode(String ip){
+        return nodeDao.queryNode(ip);
     }
 
     private void fillNodeDefaultValue(NodeEntity nodeEntity) {
