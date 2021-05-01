@@ -2,22 +2,21 @@ package com.xingkaichun.helloworldblockchain.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * 时间工具类
  *
  * @author 邢开春 409060350@qq.com
  */
-public class DateUtil {
+public class TimeUtil {
 
-    /**
-     * 时间戳转换为(24小时制的)中国时间
-     */
-    public static String timestamp2ChinaTime(long timestamp) {
+    public static String timestamp2FormatDate(long timestamp) {
         Date date = new Date(timestamp);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
         return simpleDateFormat.format(date);
+    }
+
+    public static long currentTimeMillis(){
+        return System.currentTimeMillis();
     }
 }

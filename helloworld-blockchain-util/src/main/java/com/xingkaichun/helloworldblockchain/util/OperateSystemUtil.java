@@ -7,20 +7,7 @@ package com.xingkaichun.helloworldblockchain.util;
  */
 public class OperateSystemUtil {
 
-    public static boolean isAndroidOperateSystem(){
-        try {
-            Class.forName("android.app.Application");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
-
     public static boolean isWindowsOperateSystem(){
-        return System.getProperty("os.name").toLowerCase().contains("windows");
-    }
-
-    public static boolean isLinuxOperateSystem(){
-        return System.getProperty("os.name").toLowerCase().contains("linux");
+        return System.getProperty("os.name").toLowerCase().contains("win");
     }
 }

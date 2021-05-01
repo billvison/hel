@@ -59,14 +59,14 @@ public class NetUtil {
                     out.close();
                 }
             } catch (IOException e) {
-                logger.error("IO关闭异常",e);
+                logger.error("close io failed.",e);
             }
             try {
                 if (br != null) {
                     br.close();
                 }
             } catch (IOException e) {
-                logger.error("IO关闭异常",e);
+                logger.error("close io failed.",e);
             }
         }
     }

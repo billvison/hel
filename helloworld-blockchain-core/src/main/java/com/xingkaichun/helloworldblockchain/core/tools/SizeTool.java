@@ -145,10 +145,8 @@ public class SizeTool {
                     Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
                 continue;
             }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
-                String operationData = scriptDTO.get(++i);
-                if(operationData.length() > OperationCodeEnum.OP_PUSHDATA.getSize()){
-                    return false;
-                }
+                //跳过数据
+                ++i;
             }else {
                 return false;
             }

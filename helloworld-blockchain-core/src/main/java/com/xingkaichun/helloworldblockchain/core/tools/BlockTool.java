@@ -11,6 +11,7 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
+import com.xingkaichun.helloworldblockchain.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,15 +58,14 @@ public class BlockTool {
      */
     public static String calculateBlockMerkleTreeRoot(BlockDTO blockDto) {
         List<TransactionDTO> transactions = blockDto.getTransactions();
-        List<byte[]> bytesTransactionHashList = new ArrayList<>();
+        List<String> transactionHashList = new ArrayList<>();
         if(transactions != null){
             for(TransactionDTO transactionDto : transactions) {
                 String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
-                byte[] bytesTransactionHash = HexUtil.hexStringToBytes(transactionHash);
-                bytesTransactionHashList.add(bytesTransactionHash);
+                transactionHashList.add(transactionHash);
             }
         }
-        return HexUtil.bytesToHexString(MerkleTreeUtil.calculateMerkleTreeRoot(bytesTransactionHashList));
+        return MerkleTreeUtil.calculateMerkleTreeRootReturnHexadecimal(transactionHashList);
     }
     /**
      * 区块新产生的哈希是否存在重复
@@ -142,7 +142,7 @@ public class BlockTool {
      * 区块时间戳一定要比前一个区块的时间戳大。
      */
     public static boolean isBlockTimestampLegal(Block previousBlock, Block currentBlock) {
-        if(currentBlock.getTimestamp() > System.currentTimeMillis()){
+        if(currentBlock.getTimestamp() > TimeUtil.currentTimeMillis()){
             return false;
         }
         if(previousBlock == null){
@@ -172,34 +172,6 @@ public class BlockTool {
         } else {
             return LongUtil.isEquals((previousBlock.getHeight()+1),currentBlock.getHeight());
         }
-    }
-
-    /**
-     * 校验激励
-     */
-    public static boolean isIncentiveRight(long targetMinerReward,Block block) {
-        //挖矿激励交易有且只有一笔，挖矿激励交易只能是区块的第一笔交易
-        List<Transaction> transactions = block.getTransactions();
-        if(transactions == null || transactions.size()==0){
-            logger.debug("区块数据异常，没有检测到挖矿奖励交易。");
-            return false;
-        }
-        for(int i=0; i<transactions.size(); i++){
-            Transaction transaction = transactions.get(i);
-            if(i == 0){
-                    boolean incentiveRight = TransactionTool.isIncentiveRight(targetMinerReward,transaction);
-                    if(!incentiveRight){
-                        logger.debug("区块数据异常，挖矿激励交易异常。");
-                        return false;
-                    }
-            }else {
-                if(transaction.getTransactionType() == TransactionType.COINBASE){
-                    logger.debug("区块数据异常，挖矿激励交易只能是区块的第一笔交易。");
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     /**
@@ -257,5 +229,26 @@ public class BlockTool {
             }
         }
         return transactionOutputCount;
+    }
+
+    /**
+     * 区块总交易手续费
+     */
+    public static long getBlockFee(Block block) {
+        long fees = 0;
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
+                if(transaction.getTransactionType() == TransactionType.COINBASE){
+                    continue;
+                }else if(transaction.getTransactionType() == TransactionType.NORMAL){
+                    long fee = TransactionTool.getTransactionFee(transaction);
+                    fees += fee;
+                }else{
+                    throw new RuntimeException("不能识别的交易类型");
+                }
+            }
+        }
+        return fees;
     }
 }

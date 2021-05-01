@@ -17,14 +17,10 @@ public class ResourcePathTool {
         String dataRootPath = null;
         if(OperateSystemUtil.isWindowsOperateSystem()){
             dataRootPath = "C:\\HelloworldBlockchainData\\";
-        }else if(OperateSystemUtil.isLinuxOperateSystem()){
-            dataRootPath = "/opt/HelloworldBlockchainData/";
-        }else if(OperateSystemUtil.isAndroidOperateSystem()){
-            dataRootPath = "/opt/HelloworldBlockchainData/";
         }else {
-            throw new RuntimeException("该系统无默认数据存放的根目录。");
+            dataRootPath = "/opt/HelloworldBlockchainData/";
         }
-        FileUtil.mkdir(dataRootPath);
+        FileUtil.mkdirs(dataRootPath);
         return dataRootPath;
     }
 }

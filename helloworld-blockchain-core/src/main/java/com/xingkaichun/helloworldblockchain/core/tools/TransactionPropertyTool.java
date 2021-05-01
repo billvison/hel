@@ -1,12 +1,10 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * Transaction工具类
@@ -25,9 +23,12 @@ public class TransactionPropertyTool {
         if(!isTransactionHashRight(transaction)){
             return false;
         }
-        List<TransactionOutput> outputs = transaction.getOutputs();
-        if(outputs == null || outputs.size()==0){
-            return true;
+        if(TransactionType.COINBASE == transaction.getTransactionType()){
+            //写入的激励金额，在区块层面进行校验。
+        }else if(TransactionType.NORMAL == transaction.getTransactionType()){
+            //nothing
+        }else {
+            throw new RuntimeException("不支持的交易类型");
         }
         return true;
     }

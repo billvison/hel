@@ -25,10 +25,6 @@ public class LevelDBUtil {
         writeOptions.snapshot(true);
     }
 
-    public static void put(DB db, String key, byte[] bytesValue) {
-        put(db,stringToBytes(key),bytesValue);
-    }
-
     public static void put(DB db, byte[] bytesKey, byte[] bytesValue) {
         db.put(bytesKey,bytesValue);
     }
@@ -37,16 +33,8 @@ public class LevelDBUtil {
         db.write(writeBatch);
     }
 
-    public static byte[] get(DB db, String key) {
-        return get(db,stringToBytes(key));
-    }
-
     public static byte[] get(DB db, byte[] bytesKey) {
         return db.get(bytesKey);
-    }
-
-    public static void delete(DB db,String key) {
-        delete(db,stringToBytes(key));
     }
 
     public static void delete(DB db,byte[] bytesKey) {
@@ -59,7 +47,7 @@ public class LevelDBUtil {
             Options options = new Options();
             return factory.open(dbFile, options);
         } catch (IOException e) {
-            logger.error(String.format("创建或加载LevelDB数据库失败。LevelDB数据库文件地址是%s",dbFile.getAbsolutePath()),e);
+            logger.error(String.format("create or load LevelDB database failed. LevelDB database file path is %s.",dbFile.getAbsolutePath()),e);
             throw new RuntimeException(e);
         }
     }
@@ -68,7 +56,7 @@ public class LevelDBUtil {
         try {
             dB.close();
         } catch (Exception e) {
-            logger.error("LevelDB数据库关闭异常",e);
+            logger.error("LevelDB database close failed.",e);
         }
     }
 

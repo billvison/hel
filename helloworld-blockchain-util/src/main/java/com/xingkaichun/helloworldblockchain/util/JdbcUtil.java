@@ -17,22 +17,18 @@ public class JdbcUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(JdbcUtil.class);
 
-    private static String jdbcConnectionFormat;
+    private static String JDBC_CONNECTION_FORMAT = "jdbc:sqlite:%s";
 
     static {
         try {
             Class.forName("org.sqlite.JDBC");
-            jdbcConnectionFormat = "jdbc:sqlite:%s";
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * 获取JDBC ConnectionUrl
-     */
-    public static String getJdbcConnectionUrl(String databasePath){
-        return String.format(jdbcConnectionFormat,databasePath);
+    public static String getConnectionUrl(String databasePath){
+        return String.format(JDBC_CONNECTION_FORMAT,databasePath);
     }
 
     public static void closeStatement(Statement stmt) {
@@ -40,7 +36,7 @@ public class JdbcUtil {
             try {
                 stmt.close();
             } catch (SQLException e) {
-                logger.debug("Statement关闭异常。",e);
+                logger.debug("close statement failed.",e);
             }
         }
     }
@@ -50,7 +46,7 @@ public class JdbcUtil {
             try {
                 resultSet.close();
             } catch (SQLException e) {
-                logger.debug("ResultSet关闭异常。",e);
+                logger.debug("close resultSet failed.",e);
             }
         }
     }
@@ -64,7 +60,7 @@ public class JdbcUtil {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            JdbcUtil.closeStatement(stmt);
+            closeStatement(stmt);
         }
     }
 }

@@ -148,10 +148,10 @@ public class WalletImpl extends Wallet {
                 return connection;
             }
             File walletDatabaseDirect = new File(blockchainDataPath,WALLET_DATABASE_DIRECT_NAME);
-            FileUtil.mkdir(walletDatabaseDirect);
+            FileUtil.mkdirs(walletDatabaseDirect);
             File walletDatabasePath = new File(walletDatabaseDirect,WALLET_DATABASE_FILE_NAME);
-            String jdbcConnectionUrl = JdbcUtil.getJdbcConnectionUrl(walletDatabasePath.getAbsolutePath());
-            connection = DriverManager.getConnection(jdbcConnectionUrl);
+            String connectionUrl = JdbcUtil.getConnectionUrl(walletDatabasePath.getAbsolutePath());
+            connection = DriverManager.getConnection(connectionUrl);
             return connection;
         } catch (SQLException e) {
             throw new RuntimeException(e);

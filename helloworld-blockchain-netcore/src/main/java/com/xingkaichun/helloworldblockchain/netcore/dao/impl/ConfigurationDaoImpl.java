@@ -101,10 +101,10 @@ public class ConfigurationDaoImpl implements ConfigurationDao {
                 return connection;
             }
             File nodeSynchronizeDatabaseDirect = new File(blockchainDataPath,NODE_SYNCHRONIZE_DATABASE_DIRECT_NAME);
-            FileUtil.mkdir(nodeSynchronizeDatabaseDirect);
+            FileUtil.mkdirs(nodeSynchronizeDatabaseDirect);
             File nodeSynchronizeDatabasePath = new File(nodeSynchronizeDatabaseDirect,NODE_SYNCHRONIZE_DATABASE_File_Name);
-            String jdbcConnectionUrl = JdbcUtil.getJdbcConnectionUrl(nodeSynchronizeDatabasePath.getAbsolutePath());
-            connection = DriverManager.getConnection(jdbcConnectionUrl);
+            String connectionUrl = JdbcUtil.getConnectionUrl(nodeSynchronizeDatabasePath.getAbsolutePath());
+            connection = DriverManager.getConnection(connectionUrl);
             return connection;
         } catch (SQLException e) {
             throw new RuntimeException(e);

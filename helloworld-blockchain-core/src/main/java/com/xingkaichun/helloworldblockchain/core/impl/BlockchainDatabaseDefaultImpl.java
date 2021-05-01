@@ -171,7 +171,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
 
         //从交易角度校验每一笔交易
         for(Transaction transaction : block.getTransactions()){
-            boolean transactionCanAddToNextBlock = isTransactionCanAddToNextBlock(block,transaction);
+            boolean transactionCanAddToNextBlock = isTransactionCanAddToNextBlock(transaction);
             if(!transactionCanAddToNextBlock){
                 logger.debug("区块数据异常，交易异常。");
                 return false;
@@ -181,7 +181,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     }
 
     @Override
-    public boolean isTransactionCanAddToNextBlock(Block block, Transaction transaction) {
+    public boolean isTransactionCanAddToNextBlock(Transaction transaction) {
         //校验交易的结构
         if(!StructureTool.isTransactionStructureLegal(transaction)){
             logger.debug("交易数据异常，请校验交易的结构。");
@@ -227,16 +227,14 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
 
         //根据交易类型，做进一步的校验
         if(transaction.getTransactionType() == TransactionType.COINBASE){
-            //校验激励
-            if(!isIncentiveRight(block,transaction)){
-                logger.debug("区块数据异常，激励异常。");
-                return false;
-            }
+            //校验激励，在区块层面进行校验
             return true;
         } else if(transaction.getTransactionType() == TransactionType.NORMAL){
-            //交易输入必须要大于交易输出
-            if(!TransactionTool.isTransactionInputsGreatEqualThanOutputsRight(transaction)) {
-                logger.debug("交易校验失败：交易输入必须要大于交易输出。");
+            //交易输入必须要大于等于交易输出
+            long inputsValue = TransactionTool.getInputsValue(transaction);
+            long outputsValue = TransactionTool.getOutputsValue(transaction);
+            if(inputsValue < outputsValue) {
+                logger.debug("交易校验失败：交易的输入必须大于等于交易的输出。不合法的交易。");
                 return false;
             }
             //脚本
@@ -1029,22 +1027,13 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     //endregion
 
     /**
-     * 激励交易正确吗？
-     */
-    private boolean isIncentiveRight(Block block, Transaction transaction) {
-        //激励校验
-        if(!TransactionTool.isIncentiveRight(incentive.incentiveAmount(block),transaction)){
-            logger.debug("区块数据异常，激励异常。");
-            return false;
-        }
-        return true;
-    }
-    /**
      * 区块激励正确吗？
      */
     private boolean isIncentiveRight(Block block) {
-        if(!BlockTool.isIncentiveRight(incentive.incentiveAmount(block),block)){
-            logger.debug("区块数据异常，激励异常。");
+        long writeIncentiveValue = BlockTool.getMinerIncentiveValue(block);
+        long targetIncentiveValue = incentive.incentiveAmount(block);
+        if(writeIncentiveValue != targetIncentiveValue){
+            logger.debug("区块数据异常，挖矿奖励数据异常。");
             return false;
         }
         return true;

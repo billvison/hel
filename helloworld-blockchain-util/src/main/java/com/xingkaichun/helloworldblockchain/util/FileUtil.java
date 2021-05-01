@@ -9,17 +9,17 @@ import java.io.File;
  */
 public class FileUtil {
 
-    public static void mkdir(String path) {
-        mkdir(new File(path));
+    public static void mkdirs(String path) {
+        mkdirs(new File(path));
     }
 
-    public static void mkdir(File file) {
+    public static void mkdirs(File file) {
         if(file.exists()){
             return;
         }
         boolean mkdirs = file.mkdirs();
         if(!mkdirs){
-            throw new RuntimeException("创建目录失败。");
+            throw new RuntimeException("create directory failed。");
         }
     }
 }

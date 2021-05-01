@@ -1,9 +1,5 @@
 package com.xingkaichun.helloworldblockchain.setting;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * 全局设置
  *
@@ -14,7 +10,7 @@ public class GlobalSetting {
     //区块链网络默认的节点端口
     public static final int DEFAULT_PORT = 8888;
     //区块链网络中的种子节点
-    public static final List<String> SEED_NODE_LIST = Arrays.asList("139.9.125.122","119.3.57.171");
+    public static final String[] SEED_NODE_LIST = new String[]{"139.9.125.122","119.3.57.171"};
 
     /**
      * 创世区块
@@ -78,14 +74,13 @@ public class GlobalSetting {
         /**
          * 版本列表
          */
-        public static final List<Long> BLOCK_CHAIN_VERSION_LIST =
-                Collections.unmodifiableList(Arrays.asList(10000L));
+        public static final Long[] BLOCK_CHAIN_VERSION_LIST = new Long[]{10000L};
 
         /**
          * 检查系统版本是否支持。
          */
         public static boolean isVersionLegal(long blockHeight){
-            return blockHeight <= BLOCK_CHAIN_VERSION_LIST.get(BLOCK_CHAIN_VERSION_LIST.size() - 1);
+            return blockHeight <= BLOCK_CHAIN_VERSION_LIST[BLOCK_CHAIN_VERSION_LIST.length-1];
         }
     }
 

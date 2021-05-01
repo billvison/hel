@@ -21,7 +21,7 @@ import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.*;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.util.DateUtil;
+import com.xingkaichun.helloworldblockchain.util.TimeUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -290,7 +290,7 @@ public class BlockchainBrowserController {
                 blockDto.setBlockSize(SizeTool.calculateBlockSize(block)+"字符");
                 blockDto.setTransactionCount(BlockTool.getTransactionCount(block));
                 blockDto.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
-                blockDto.setTime(DateUtil.timestamp2ChinaTime(block.getTimestamp()));
+                blockDto.setTime(TimeUtil.timestamp2FormatDate(block.getTimestamp()));
                 blockDto.setHash(block.getHash());
                 blockDtoList.add(blockDto);
             }

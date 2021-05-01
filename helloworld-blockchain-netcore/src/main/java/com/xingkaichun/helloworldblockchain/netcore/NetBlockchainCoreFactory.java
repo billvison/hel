@@ -38,7 +38,7 @@ public class NetBlockchainCoreFactory {
         if(dataRootPath == null){
             throw new NullPointerException("参数路径不能为空。");
         }
-        FileUtil.mkdir(dataRootPath);
+        FileUtil.mkdirs(dataRootPath);
 
         BlockchainCore blockchainCore = BlockchainCoreFactory.createBlockchainCore(dataRootPath);
         BlockchainCore slaveBlockchainCore = BlockchainCoreFactory.createBlockchainCore(dataRootPath+"/slave");

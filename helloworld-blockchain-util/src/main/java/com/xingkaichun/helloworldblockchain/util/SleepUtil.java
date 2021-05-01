@@ -4,18 +4,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * 休眠工具类
  *
  * @author 邢开春 409060350@qq.com
  */
-public class ThreadUtil {
+public class SleepUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(ThreadUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(SleepUtil.class);
 
     public static void sleep(long millis){
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            logger.error("线程休眠异常",e);
+            logger.error("sleep failed.",e);
         }
     }
 }

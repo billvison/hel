@@ -8,7 +8,7 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.API;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.NodeDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
-import com.xingkaichun.helloworldblockchain.util.ThreadUtil;
+import com.xingkaichun.helloworldblockchain.util.SleepUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class NodeSearcher {
                 } catch (Exception e) {
                     logger.error("在区块链网络中搜索新的节点出现异常",e);
                 }
-                ThreadUtil.sleep(GlobalSetting.NodeConstant.SEARCH_NEW_NODE_TIME_INTERVAL);
+                SleepUtil.sleep(GlobalSetting.NodeConstant.SEARCH_NEW_NODE_TIME_INTERVAL);
             }
         }).start();
     }

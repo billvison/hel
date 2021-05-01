@@ -9,7 +9,7 @@ import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
-import com.xingkaichun.helloworldblockchain.util.ThreadUtil;
+import com.xingkaichun.helloworldblockchain.util.SleepUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ public class BlockBroadcaster {
                 } catch (Exception e) {
                     logger.error("在区块链网络中广播自己的区块出现异常",e);
                 }
-                ThreadUtil.sleep(GlobalSetting.NodeConstant.CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL);
+                SleepUtil.sleep(GlobalSetting.NodeConstant.CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL);
             }
         }).start();
     }
@@ -78,7 +78,7 @@ public class BlockBroadcaster {
             if(broadcastNodeCount > 50){
                 return;
             }
-            ThreadUtil.sleep(1000*10);
+            SleepUtil.sleep(1000*10);
         }
     }
 
