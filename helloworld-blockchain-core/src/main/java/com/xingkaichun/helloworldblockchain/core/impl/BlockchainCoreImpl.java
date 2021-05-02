@@ -14,13 +14,10 @@ import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * 默认实现
@@ -28,8 +25,6 @@ import java.util.List;
  * @author 邢开春 409060350@qq.com
  */
 public class BlockchainCoreImpl extends BlockchainCore {
-
-    private static final Logger logger = LoggerFactory.getLogger(BlockchainCoreImpl.class);
 
     public BlockchainCoreImpl(BlockchainDatabase blockchainDataBase, Wallet wallet, Miner miner) {
         super(blockchainDataBase,wallet,miner);
@@ -43,7 +38,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
                     try {
                         miner.start();
                     } catch (Exception e) {
-                        logger.error("矿工在运行中发生异常并退出，请检查修复异常！",e);
+                        LogUtil.error("矿工在运行中发生异常并退出，请检查修复异常！",e);
                     }
                 }
         ).start();
@@ -181,7 +176,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
         return response;
     }
     public BuildTransactionResponse buildTransactionDTO(List<String> payerPrivateKeyList, List<Recipient> recipientList, String payerChangeAddress, long fee) {
-        LinkedHashMap<String,TransactionOutput> privateKeyUtxoMap = new LinkedHashMap<>();
+        Map<String,TransactionOutput> privateKeyUtxoMap = new HashMap<>();
         BuildTransactionResponse response = new BuildTransactionResponse();
         response.setMessage("请输入足够的金额");
         response.setBuildTransactionSuccess(false);

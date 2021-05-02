@@ -3,8 +3,7 @@ package com.xingkaichun.helloworldblockchain.explorer.configurations;
 import com.xingkaichun.helloworldblockchain.explorer.interceptor.IpInterceptor;
 import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.ServiceResult;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -25,8 +24,6 @@ import java.util.List;
 @Configuration
 public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {
 
-	private final Logger logger = LoggerFactory.getLogger(WebMvcConfigurerConfiguration.class);
-
 	@Autowired
 	private IpInterceptor ipInterceptor;
 
@@ -40,7 +37,7 @@ public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {
 	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
 		exceptionResolvers.add((httpServletRequest, httpServletResponse, handler, ex) -> {
 			responseResult(httpServletResponse,ex);
-			logger.error("统一异常拦截。",ex);
+			LogUtil.error("统一异常拦截。",ex);
 			return new ModelAndView();
 		});
 	}
@@ -54,7 +51,7 @@ public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {
 			String jsonServiceResult = JsonUtil.toJson(serviceResult);
 			httpServletResponse.getWriter().write(jsonServiceResult);
 		} catch (Exception e) {
-			logger.error("将统一异常写入到HttpServletResponse出现错误。",e);
+			LogUtil.error("将统一异常写入到HttpServletResponse出现错误。",e);
 		}
 	}
 

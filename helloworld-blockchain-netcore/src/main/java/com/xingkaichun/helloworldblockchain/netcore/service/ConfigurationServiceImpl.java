@@ -1,106 +1,60 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
-import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
-import com.xingkaichun.helloworldblockchain.netcore.dao.ConfigurationDao;
-import com.xingkaichun.helloworldblockchain.netcore.entity.ConfigurationEntity;
+import com.xingkaichun.helloworldblockchain.core.ConfigurationDatabase;
+import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 
 /**
  *
  * @author 邢开春 409060350@qq.com
  */
 public class ConfigurationServiceImpl implements ConfigurationService {
-    //矿工是否处于激活状态？
-    private static final String IS_MINER_ACTIVE = "IS_MINER_ACTIVE";
-    //同步者是否处于激活状态？
-    private static final String IS_SYNCHRONIZER_ACTIVE = "IS_SYNCHRONIZER_ACTIVE";
-    //是否自动搜寻区块链网络节点？
-    private static final String IS_AUTO_SEARCH_NODE = "IS_AUTO_SEARCH_NODE";
 
-    private BlockchainCore blockchainCore;
-    private ConfigurationDao configurationDao;
+    //同步器'同步器是否是激活状态'状态存入到数据库时的主键
+    private static final String SYNCHRONIZER_OPTION_KEY = "IS_SYNCHRONIZER_ACTIVE";
+    //同步器'同步器是否是激活状态'开关的默认状态
+    private static final boolean SYNCHRONIZER_OPTION_DEFAULT_VALUE = false;
 
-    public ConfigurationServiceImpl(BlockchainCore blockchainCore,ConfigurationDao configurationDao) {
-        this.blockchainCore = blockchainCore;
-        this.configurationDao = configurationDao;
-    }
+    //节点搜索器'是否自动搜索节点'状态存入到数据库时的主键
+    private static final String AUTO_SEARCH_NODE_OPTION_KEY = "IS_AUTO_SEARCH_NODE";
+    //节点搜索器'是否自动搜索节点'开关的默认状态
+    private static final boolean SAUTO_SEARCH_NODE_OPTION_DEFAULT_VALUE = false;
 
-    private void setConfiguration(ConfigurationEntity configurationEntity) {
-        ConfigurationEntity configurationEntityInDb = configurationDao.getConfigurationValue(configurationEntity.getConfKey());
-        if(configurationEntityInDb == null){
-            configurationDao.addConfiguration(configurationEntity);
-        }else {
-            configurationDao.updateConfiguration(configurationEntity);
-        }
-    }
+    private ConfigurationDatabase configurationDatabase;
 
-    @Override
-    public void restoreMinerConfiguration() {
-        if(isMinerActive()){
-            blockchainCore.getMiner().active();
-        }else {
-            blockchainCore.getMiner().deactive();
-        }
-    }
-
-    @Override
-    public boolean isMinerActive() {
-        ConfigurationEntity configurationEntity = configurationDao.getConfigurationValue(IS_MINER_ACTIVE);
-        if(configurationEntity == null){
-            //默认值
-            return false;
-        }
-        return Boolean.valueOf(configurationEntity.getConfValue());
-    }
-
-    @Override
-    public void activeMiner() {
-        blockchainCore.getMiner().active();
-        ConfigurationEntity configurationEntity = new ConfigurationEntity(IS_MINER_ACTIVE,String.valueOf(true));
-        setConfiguration(configurationEntity);
-    }
-
-    @Override
-    public void deactiveMiner() {
-        blockchainCore.getMiner().deactive();
-        ConfigurationEntity configurationEntity = new ConfigurationEntity(IS_MINER_ACTIVE,String.valueOf(false));
-        setConfiguration(configurationEntity);
+    public ConfigurationServiceImpl(ConfigurationDatabase configurationDatabase) {
+        this.configurationDatabase = configurationDatabase;
     }
 
     @Override
     public boolean isSynchronizerActive() {
-        ConfigurationEntity configurationEntity = configurationDao.getConfigurationValue(IS_SYNCHRONIZER_ACTIVE);
-        if(configurationEntity == null){
-            //默认值
-            return true;
+        byte[] bytesConfigurationValue = configurationDatabase.getConfigurationValue(ByteUtil.encode(SYNCHRONIZER_OPTION_KEY));
+        if(bytesConfigurationValue == null){
+            return SYNCHRONIZER_OPTION_DEFAULT_VALUE;
         }
-        return Boolean.valueOf(configurationEntity.getConfValue());
+        return Boolean.valueOf(ByteUtil.decodeToUtf8String(bytesConfigurationValue));
     }
 
     @Override
     public void activeSynchronizer() {
-        ConfigurationEntity configurationEntity = new ConfigurationEntity(IS_SYNCHRONIZER_ACTIVE,String.valueOf(true));
-        setConfiguration(configurationEntity);
+        configurationDatabase.addOrUpdateConfiguration(ByteUtil.encode(SYNCHRONIZER_OPTION_KEY),ByteUtil.encode(String.valueOf(Boolean.TRUE)));
     }
 
     @Override
     public void deactiveSynchronizer() {
-        ConfigurationEntity configurationEntity = new ConfigurationEntity(IS_SYNCHRONIZER_ACTIVE,String.valueOf(false));
-        setConfiguration(configurationEntity);
+        configurationDatabase.addOrUpdateConfiguration(ByteUtil.encode(SYNCHRONIZER_OPTION_KEY),ByteUtil.encode(String.valueOf(Boolean.FALSE)));
     }
 
     @Override
     public boolean isAutoSearchNode() {
-        ConfigurationEntity configurationEntity = configurationDao.getConfigurationValue(IS_AUTO_SEARCH_NODE);
-        if(configurationEntity == null){
-            //默认值
-            return true;
+        byte[] bytesConfigurationValue = configurationDatabase.getConfigurationValue(ByteUtil.encode(AUTO_SEARCH_NODE_OPTION_KEY));
+        if(bytesConfigurationValue == null){
+            return SAUTO_SEARCH_NODE_OPTION_DEFAULT_VALUE;
         }
-        return Boolean.valueOf(configurationEntity.getConfValue());
+        return Boolean.valueOf(ByteUtil.decodeToUtf8String(bytesConfigurationValue));
     }
 
     @Override
     public void setAutoSearchNode(boolean autoSearchNode) {
-        ConfigurationEntity configurationDto = new ConfigurationEntity(IS_AUTO_SEARCH_NODE,String.valueOf(autoSearchNode));
-        setConfiguration(configurationDto);
+        configurationDatabase.addOrUpdateConfiguration(ByteUtil.encode(AUTO_SEARCH_NODE_OPTION_KEY),ByteUtil.encode(String.valueOf(Boolean.valueOf(autoSearchNode))));
     }
 }

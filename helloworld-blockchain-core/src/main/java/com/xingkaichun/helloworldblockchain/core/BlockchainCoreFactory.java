@@ -30,7 +30,8 @@ public class BlockchainCoreFactory {
 
         UnconfirmedTransactionDatabase unconfirmedTransactionDataBase = new UnconfirmedTransactionDatabaseDefaultImpl(blockchainDataPath);
         Wallet wallet = new WalletImpl(blockchainDataPath);
-        Miner miner = new MinerDefaultImpl(wallet,blockchainDataBase, unconfirmedTransactionDataBase);
+        ConfigurationDatabase configurationDatabase = new ConfigurationDatabaseDefaultImpl(blockchainDataPath);
+        Miner miner = new MinerDefaultImpl(configurationDatabase,wallet,blockchainDataBase,unconfirmedTransactionDataBase);
         BlockchainCore blockchainCore = new BlockchainCoreImpl(blockchainDataBase,wallet,miner);
         return blockchainCore;
     }

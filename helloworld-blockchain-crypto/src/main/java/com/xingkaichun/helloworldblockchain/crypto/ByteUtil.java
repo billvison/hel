@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.crypto;
 
 import com.google.common.primitives.Bytes;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -10,6 +11,24 @@ import java.util.List;
  * @author 邢开春 409060350@qq.com
  */
 public class ByteUtil {
+
+    public static byte[] encode(String strValue) {
+        return strValue.getBytes(StandardCharsets.UTF_8);
+    }
+
+    public static String decodeToUtf8String(byte[] bytesValue) {
+        return new String(bytesValue, StandardCharsets.UTF_8);
+    }
+
+    public static byte[] encode(long longValue) {
+        return encode(String.valueOf(longValue));
+    }
+
+    public static long decodeToLong(byte[] bytesValue) {
+        return Long.parseLong(decodeToUtf8String(bytesValue));
+    }
+
+
 
     /**
      * 拼接数组。

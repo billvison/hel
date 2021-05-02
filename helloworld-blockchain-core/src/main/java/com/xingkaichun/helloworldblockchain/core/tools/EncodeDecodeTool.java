@@ -4,8 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 
 import java.io.*;
 
@@ -16,8 +15,6 @@ import java.io.*;
  */
 public class EncodeDecodeTool {
 
-    private static final Logger logger = LoggerFactory.getLogger(EncodeDecodeTool.class);
-
     public static byte[] encode(Transaction transaction) {
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -26,7 +23,7 @@ public class EncodeDecodeTool {
             byte[] bytesTransaction = byteArrayOutputStream.toByteArray();
             return bytesTransaction;
         } catch (IOException e) {
-            logger.error("序列化/反序列化失败",e);
+            LogUtil.error("序列化/反序列化失败",e);
             throw new RuntimeException(e);
         }
     }
@@ -37,7 +34,7 @@ public class EncodeDecodeTool {
             Transaction transaction = (Transaction) objectInputStream.readObject();
             return transaction;
         } catch (IOException | ClassNotFoundException e) {
-            logger.error("序列化/反序列化失败",e);
+            LogUtil.error("序列化/反序列化失败",e);
             throw new RuntimeException(e);
         }
     }
@@ -51,7 +48,7 @@ public class EncodeDecodeTool {
             byte[] bytesTransactionOutput = byteArrayOutputStream.toByteArray();
             return bytesTransactionOutput;
         } catch (IOException e) {
-            logger.error("序列化/反序列化失败",e);
+            LogUtil.error("序列化/反序列化失败",e);
             throw new RuntimeException(e);
         }
     }
@@ -62,7 +59,7 @@ public class EncodeDecodeTool {
             TransactionOutput transactionOutput = (TransactionOutput) objectInputStream.readObject();
             return transactionOutput;
         } catch (IOException | ClassNotFoundException e) {
-            logger.error("序列化/反序列化失败",e);
+            LogUtil.error("序列化/反序列化失败",e);
             throw new RuntimeException(e);
         }
 
@@ -77,7 +74,7 @@ public class EncodeDecodeTool {
             byte[] bytesBlock = byteArrayOutputStream.toByteArray();
             return bytesBlock;
         } catch (IOException e) {
-            logger.error("序列化/反序列化失败",e);
+            LogUtil.error("序列化/反序列化失败",e);
             throw new RuntimeException(e);
         }
     }
@@ -88,7 +85,7 @@ public class EncodeDecodeTool {
             Block block = (Block) objectInputStream.readObject();
             return block;
         } catch (IOException | ClassNotFoundException e) {
-            logger.error("序列化/反序列化失败",e);
+            LogUtil.error("序列化/反序列化失败",e);
             throw new RuntimeException(e);
         }
     }
@@ -103,7 +100,7 @@ public class EncodeDecodeTool {
             byte[] bytesTransactionDTO = byteArrayOutputStream.toByteArray();
             return bytesTransactionDTO;
         } catch (IOException e) {
-            logger.error("序列化/反序列化失败",e);
+            LogUtil.error("序列化/反序列化失败",e);
             throw new RuntimeException(e);
         }
     }
@@ -114,7 +111,7 @@ public class EncodeDecodeTool {
             TransactionDTO transactionDTO = (TransactionDTO) objectInputStream.readObject();
             return transactionDTO;
         } catch (IOException | ClassNotFoundException e) {
-            logger.error("序列化/反序列化失败",e);
+            LogUtil.error("序列化/反序列化失败",e);
             throw new RuntimeException(e);
         }
     }

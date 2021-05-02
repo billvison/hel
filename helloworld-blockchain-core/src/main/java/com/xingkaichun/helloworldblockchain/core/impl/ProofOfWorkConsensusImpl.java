@@ -6,8 +6,6 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 
@@ -17,8 +15,6 @@ import java.math.BigInteger;
  * @author 邢开春 409060350@qq.com
  */
 public class ProofOfWorkConsensusImpl extends Consensus {
-
-    private static final Logger logger = LoggerFactory.getLogger(ProofOfWorkConsensusImpl.class);
 
     @Override
     public boolean isReachConsensus(BlockchainDatabase blockchainDataBase, Block block) {

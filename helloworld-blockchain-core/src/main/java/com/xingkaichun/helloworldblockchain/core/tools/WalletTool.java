@@ -12,7 +12,6 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInp
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDTO;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +39,7 @@ public class WalletTool {
         return txo==null?0:txo.getValue();
     }
 
-    public static BuildTransactionResponse buildTransactionDTO(LinkedHashMap<String,TransactionOutput> privateKeyUtxoMap, List<Recipient> recipientList, String payerChangeAddress, long fee) {
+    public static BuildTransactionResponse buildTransactionDTO(Map<String,TransactionOutput> privateKeyUtxoMap, List<Recipient> recipientList, String payerChangeAddress, long fee) {
         //付款总金额
         long outputValues = 0;
         if(recipientList != null){

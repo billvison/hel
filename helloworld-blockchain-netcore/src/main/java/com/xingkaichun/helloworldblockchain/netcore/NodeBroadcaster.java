@@ -5,9 +5,8 @@ import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientI
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -21,8 +20,6 @@ import java.util.List;
  * @author 邢开春 409060350@qq.com
  */
 public class NodeBroadcaster {
-
-    private static final Logger logger = LoggerFactory.getLogger(NodeBroadcaster.class);
 
     private NodeService nodeService;
     private BlockchainCore blockchainCore;
@@ -40,7 +37,7 @@ public class NodeBroadcaster {
                 try {
                     broadcastNode();
                 } catch (Exception e) {
-                    logger.error("在区块链网络中广播自己出现异常",e);
+                    LogUtil.error("在区块链网络中广播自己出现异常",e);
                 }
                 SleepUtil.sleep(GlobalSetting.NodeConstant.NODE_BROADCAST_TIME_INTERVAL);
             }

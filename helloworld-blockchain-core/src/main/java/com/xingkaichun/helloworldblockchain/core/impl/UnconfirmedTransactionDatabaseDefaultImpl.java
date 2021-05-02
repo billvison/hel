@@ -3,14 +3,11 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.UnconfirmedTransactionDatabase;
 import com.xingkaichun.helloworldblockchain.core.tools.EncodeDecodeTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
+import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.util.LevelDBUtil;
-import org.iq80.leveldb.DB;
-import org.iq80.leveldb.DBIterator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.xingkaichun.helloworldblockchain.util.FileUtil;
+import com.xingkaichun.helloworldblockchain.util.KvDBUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,59 +18,42 @@ import java.util.List;
  */
 public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransactionDatabase {
 
-    private static final Logger logger = LoggerFactory.getLogger(UnconfirmedTransactionDatabaseDefaultImpl.class);
+    private static final String UNCONFIRMED_TRANSACTION_DATABASE_NAME = "UnconfirmedTransactionDatabase";
+    private String unconfirmedTransactionDatabasePath = null;
 
-    private static final String MinerTransaction_DataBase_DirectName = "UnconfirmedTransactionDatabase";
-    private DB transactionPoolDB;
-
-    public UnconfirmedTransactionDatabaseDefaultImpl(String blockchainDataPath) {
-
-        this.transactionPoolDB = LevelDBUtil.createDB(new File(blockchainDataPath,MinerTransaction_DataBase_DirectName));
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> LevelDBUtil.closeDB(transactionPoolDB)));
+    public UnconfirmedTransactionDatabaseDefaultImpl(String rootPath) {
+        this.unconfirmedTransactionDatabasePath = FileUtil.newPath(rootPath, UNCONFIRMED_TRANSACTION_DATABASE_NAME);
     }
 
     public void insertTransactionDTO(TransactionDTO transactionDTO) {
         //交易已经持久化进交易池数据库 丢弃交易
         synchronized (UnconfirmedTransactionDatabaseDefaultImpl.class){
             String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
-            LevelDBUtil.put(transactionPoolDB,getKey(transactionHash), EncodeDecodeTool.encode(transactionDTO));
+            KvDBUtil.put(unconfirmedTransactionDatabasePath, getKey(transactionHash), EncodeDecodeTool.encode(transactionDTO));
         }
     }
 
     @Override
     public List<TransactionDTO> selectTransactionDtoList(long from, long size) {
-        synchronized (UnconfirmedTransactionDatabaseDefaultImpl.class){
-            List<TransactionDTO> transactionDtoList = new ArrayList<>();
-            int cunrrentFrom = 0;
-            int cunrrentSize = 0;
-            for (DBIterator iterator = this.transactionPoolDB.iterator(); iterator.hasNext(); iterator.next()) {
-                byte[] byteValue = iterator.peekNext().getValue();
-                if(byteValue == null || byteValue.length==0){
-                    continue;
-                }
-                cunrrentFrom++;
-                if(cunrrentFrom>=from && cunrrentSize<size){
-                    TransactionDTO transactionDTO = EncodeDecodeTool.decodeToTransactionDTO(byteValue);
-                    transactionDtoList.add(transactionDTO);
-                    cunrrentSize++;
-                }
-                if(cunrrentSize>=size){
-                    break;
-                }
+        List<TransactionDTO> transactionDtoList = new ArrayList<>();
+        List<byte[]> bytesTransactionDTOList = KvDBUtil.get(unconfirmedTransactionDatabasePath,from,size);
+        if(bytesTransactionDTOList != null){
+            for(byte[] bytesTransactionDTO:bytesTransactionDTOList){
+                TransactionDTO transactionDTO = EncodeDecodeTool.decodeToTransactionDTO(bytesTransactionDTO);
+                transactionDtoList.add(transactionDTO);
             }
-            return transactionDtoList;
         }
+        return transactionDtoList;
     }
 
     @Override
     public void deleteByTransactionHash(String transactionHash) {
-        LevelDBUtil.delete(transactionPoolDB, getKey(transactionHash));
+        KvDBUtil.delete(unconfirmedTransactionDatabasePath, getKey(transactionHash));
     }
 
     @Override
     public TransactionDTO selectTransactionDtoByTransactionHash(String transactionHash) {
-        byte[] byteTransactionDTO = LevelDBUtil.get(transactionPoolDB,getKey(transactionHash));
+        byte[] byteTransactionDTO = KvDBUtil.get(unconfirmedTransactionDatabasePath, getKey(transactionHash));
         if(byteTransactionDTO == null){
             return null;
         }
@@ -81,6 +61,6 @@ public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransa
     }
 
     private byte[] getKey(String transactionHash){
-        return LevelDBUtil.stringToBytes(transactionHash);
+        return ByteUtil.encode(transactionHash);
     }
 }

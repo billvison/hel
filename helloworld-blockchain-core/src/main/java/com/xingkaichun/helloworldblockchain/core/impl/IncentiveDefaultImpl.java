@@ -3,8 +3,6 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 默认实现
@@ -12,8 +10,6 @@ import org.slf4j.LoggerFactory;
  * @author 邢开春 409060350@qq.com
  */
 public class IncentiveDefaultImpl extends Incentive {
-
-    private static final Logger logger = LoggerFactory.getLogger(IncentiveDefaultImpl.class);
 
     @Override
     public long incentiveAmount(Block block) {

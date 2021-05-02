@@ -2,10 +2,10 @@ package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.core.BlockchainCoreFactory;
+import com.xingkaichun.helloworldblockchain.core.ConfigurationDatabase;
+import com.xingkaichun.helloworldblockchain.core.impl.ConfigurationDatabaseDefaultImpl;
 import com.xingkaichun.helloworldblockchain.core.tools.ResourcePathTool;
-import com.xingkaichun.helloworldblockchain.netcore.dao.ConfigurationDao;
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
-import com.xingkaichun.helloworldblockchain.netcore.dao.impl.ConfigurationDaoImpl;
 import com.xingkaichun.helloworldblockchain.netcore.dao.impl.NodeDaoImpl;
 import com.xingkaichun.helloworldblockchain.netcore.server.BlockchainNodeHttpServer;
 import com.xingkaichun.helloworldblockchain.netcore.server.HttpServerHandlerResolver;
@@ -32,21 +32,22 @@ public class NetBlockchainCoreFactory {
     /**
      * 创建NetBlockchainCore实例
      *
-     * @param dataRootPath 区块链数据存放位置
+     * @param netBlockchainCoreDataRootPath 区块链数据存放位置
      */
-    public static NetBlockchainCore createNetBlockchainCore(String dataRootPath){
-        if(dataRootPath == null){
+    public static NetBlockchainCore createNetBlockchainCore(String netBlockchainCoreDataRootPath){
+        if(netBlockchainCoreDataRootPath == null){
             throw new NullPointerException("参数路径不能为空。");
         }
-        FileUtil.mkdirs(dataRootPath);
+        FileUtil.mkdirs(netBlockchainCoreDataRootPath);
+        String blockchainCoreDataRootPath = FileUtil.newPath(netBlockchainCoreDataRootPath,"BlockchainCore");
+        BlockchainCore blockchainCore = BlockchainCoreFactory.createBlockchainCore(blockchainCoreDataRootPath);
+        String slaveBlockchainCoreDataRootPath = FileUtil.newPath(netBlockchainCoreDataRootPath,"SlaveBlockchainCore");
+        BlockchainCore slaveBlockchainCore = BlockchainCoreFactory.createBlockchainCore(slaveBlockchainCoreDataRootPath);
 
-        BlockchainCore blockchainCore = BlockchainCoreFactory.createBlockchainCore(dataRootPath);
-        BlockchainCore slaveBlockchainCore = BlockchainCoreFactory.createBlockchainCore(dataRootPath+"/slave");
+        ConfigurationDatabase configurationDatabase = new ConfigurationDatabaseDefaultImpl(netBlockchainCoreDataRootPath);
+        ConfigurationService configurationService = new ConfigurationServiceImpl(configurationDatabase);
 
-        ConfigurationDao configurationDao = new ConfigurationDaoImpl(dataRootPath);
-        ConfigurationService configurationService = new ConfigurationServiceImpl(blockchainCore,configurationDao);
-
-        NodeDao nodeDao = new NodeDaoImpl(dataRootPath);
+        NodeDao nodeDao = new NodeDaoImpl(netBlockchainCoreDataRootPath);
         NodeService nodeService = new NodeServiceImpl(nodeDao);
 
         HttpServerHandlerResolver httpServerHandlerResolver = new HttpServerHandlerResolver(blockchainCore,nodeService,configurationService);

@@ -7,10 +7,9 @@ import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.API;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.NodeDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.util.StringUtil;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
 import java.util.List;
 
@@ -22,8 +21,6 @@ import java.util.List;
  * @author 邢开春 409060350@qq.com
  */
 public class NodeSearcher {
-
-    private static final Logger logger = LoggerFactory.getLogger(NodeSearcher.class);
 
     private ConfigurationService configurationService;
     private NodeService nodeService;
@@ -46,7 +43,7 @@ public class NodeSearcher {
                         searchNodes();
                     }
                 } catch (Exception e) {
-                    logger.error("在区块链网络中搜索新的节点出现异常",e);
+                    LogUtil.error("在区块链网络中搜索新的节点出现异常",e);
                 }
                 SleepUtil.sleep(GlobalSetting.NodeConstant.SEARCH_NEW_NODE_TIME_INTERVAL);
             }
@@ -87,13 +84,13 @@ public class NodeSearcher {
             String pingResponse = new BlockchainNodeClientImpl(node.getIp()).pingNode();
             if(!StringUtil.isEquals(API.Response.OK,pingResponse)){
                 nodeService.deleteNode(node.getIp());
-                logger.debug(String.format("删除节点[%s]，原因是无法联通。",node.getIp()));
+                LogUtil.debug(String.format("删除节点[%s]，原因是无法联通。",node.getIp()));
                 return;
             }
             NodeEntity nodeBO = new NodeEntity();
             nodeBO.setIp(node.getIp());
             nodeService.addNode(nodeBO);
-            logger.debug(String.format("自动发现节点[%s]，节点已加入节点数据库。",node.getIp()));
+            LogUtil.debug(String.format("自动发现节点[%s]，节点已加入节点数据库。",node.getIp()));
         }
     }
 }

@@ -6,9 +6,8 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,8 +18,6 @@ import java.util.List;
  * @author 邢开春 409060350@qq.com
  */
 public class SizeTool {
-
-    private static final Logger logger = LoggerFactory.getLogger(SizeTool.class);
 
     //region 校验存储容量
     /**
@@ -37,7 +34,7 @@ public class SizeTool {
         //校验区块随机数占用存储空间
         long nonceByteSize = stringSize(blockDTO.getNonce());
         if(!LongUtil.isEquals(nonceByteSize, GlobalSetting.BlockConstant.NONCE_TEXT_SIZE)){
-            logger.debug(String.format("nonce[%s]长度不是[%s]。",blockDTO.getNonce(),GlobalSetting.BlockConstant.NONCE_TEXT_SIZE));
+            LogUtil.debug(String.format("nonce[%s]长度不是[%s]。",blockDTO.getNonce(),GlobalSetting.BlockConstant.NONCE_TEXT_SIZE));
             return false;
         }
 
@@ -46,7 +43,7 @@ public class SizeTool {
         if(transactionDtoList != null){
             for(TransactionDTO transactionDTO:transactionDtoList){
                 if(!isTransactionStorageCapacityLegal(transactionDTO)){
-                    logger.debug("交易数据异常，交易的容量非法。");
+                    LogUtil.debug("交易数据异常，交易的容量非法。");
                     return false;
                 }
             }
@@ -55,7 +52,7 @@ public class SizeTool {
         //校验区块占用的存储空间
         long blockByteSize = calculateBlockSize(blockDTO);
         if(blockByteSize > GlobalSetting.BlockConstant.BLOCK_TEXT_MAX_SIZE){
-            logger.debug(String.format("区块数据大小[%s]超过限制[%s]。",blockByteSize,GlobalSetting.BlockConstant.BLOCK_TEXT_MAX_SIZE));
+            LogUtil.debug(String.format("区块数据大小[%s]超过限制[%s]。",blockByteSize,GlobalSetting.BlockConstant.BLOCK_TEXT_MAX_SIZE));
             return false;
         }
         return true;
@@ -101,7 +98,7 @@ public class SizeTool {
         //校验整笔交易所占存储空间
         long transactionByteSize = calculateTransactionSize(transactionDTO);
         if(calculateTransactionSize(transactionDTO) > GlobalSetting.TransactionConstant.TRANSACTION_TEXT_MAX_SIZE){
-            logger.debug(String.format("交易数据大小[%s]超过存储容量限制[%s]。",transactionByteSize,GlobalSetting.TransactionConstant.TRANSACTION_TEXT_MAX_SIZE));
+            LogUtil.debug(String.format("交易数据大小[%s]超过存储容量限制[%s]。",transactionByteSize,GlobalSetting.TransactionConstant.TRANSACTION_TEXT_MAX_SIZE));
             return false;
         }
         return true;
@@ -152,7 +149,7 @@ public class SizeTool {
             }
         }
         if(calculateScriptSize(scriptDTO) > GlobalSetting.ScriptConstant.SCRIPT_TEXT_MAX_SIZE){
-            logger.debug("交易校验失败：交易输出脚本所占存储空间超出限制。");
+            LogUtil.debug("交易校验失败：交易输出脚本所占存储空间超出限制。");
             return false;
         }
         return true;

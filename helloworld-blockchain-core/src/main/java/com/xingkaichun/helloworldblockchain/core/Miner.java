@@ -7,6 +7,8 @@ package com.xingkaichun.helloworldblockchain.core;
  */
 public abstract class Miner {
 
+    //配置数据库
+    protected ConfigurationDatabase configurationDatabase;
     //矿工钱包
     protected Wallet wallet;
     //矿工挖矿所在的区块链
@@ -14,7 +16,8 @@ public abstract class Miner {
     //矿工交易数据库：矿工从交易数据库里获取挖矿的原材料(交易数据)
     protected UnconfirmedTransactionDatabase unconfirmedTransactionDataBase;
 
-    public Miner(Wallet wallet, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase) {
+    public Miner(ConfigurationDatabase configurationDatabase, Wallet wallet, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase) {
+        this.configurationDatabase = configurationDatabase;
         this.wallet = wallet;
         this.blockchainDataBase = blockchainDataBase;
         this.unconfirmedTransactionDataBase = unconfirmedTransactionDataBase;
@@ -61,5 +64,10 @@ public abstract class Miner {
     public UnconfirmedTransactionDatabase getUnconfirmedTransactionDataBase() {
         return unconfirmedTransactionDataBase;
     }
+
+    public ConfigurationDatabase getConfigurationDatabase() {
+        return configurationDatabase;
+    }
+
     //endregion
 }

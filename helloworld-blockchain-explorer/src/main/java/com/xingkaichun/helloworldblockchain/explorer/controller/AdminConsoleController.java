@@ -17,9 +17,8 @@ import com.xingkaichun.helloworldblockchain.explorer.vo.node.*;
 import com.xingkaichun.helloworldblockchain.explorer.vo.synchronizer.*;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,8 +37,6 @@ import java.util.List;
 @RestController
 public class AdminConsoleController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AdminConsoleController.class);
-
     @Autowired
     private NetBlockchainCore netBlockchainCore;
 
@@ -49,13 +46,13 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.IS_MINER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsMinerActiveResponse> isMineActive(@RequestBody IsMinerActiveRequest request){
         try {
-            boolean isMineActive = netBlockchainCore.getConfigurationService().isMinerActive();
+            boolean isMineActive = getBlockchainCore().getMiner().isActive();
             IsMinerActiveResponse response = new IsMinerActiveResponse();
             response.setMinerInActiveState(isMineActive);
             return ServiceResult.createSuccessServiceResult("查询矿工是否处于激活状态成功",response);
         } catch (Exception e){
             String message = "查询矿工是否处于激活状态失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -65,13 +62,13 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.ACTIVE_MINER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<ActiveMinerResponse> activeMiner(@RequestBody ActiveMinerRequest request){
         try {
-            netBlockchainCore.getConfigurationService().activeMiner();
+            getBlockchainCore().getMiner().active();
             ActiveMinerResponse response = new ActiveMinerResponse();
             response.setActiveMinerSuccess(true);
             return ServiceResult.createSuccessServiceResult("激活矿工成功",response);
         } catch (Exception e){
             String message = "激活矿工失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -81,13 +78,13 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApiRoute.DEACTIVE_MINER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeactiveMinerResponse> deactiveMiner(@RequestBody DeactiveMinerRequest request){
         try {
-            netBlockchainCore.getConfigurationService().deactiveMiner();
+            getBlockchainCore().getMiner().deactive();
             DeactiveMinerResponse response = new DeactiveMinerResponse();
             response.setDeactiveMinerSuccess(true);
             return ServiceResult.createSuccessServiceResult("停用矿工成功",response);
         } catch (Exception e){
             String message = "停用矿工失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -106,7 +103,7 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("查询同步器是否激活成功",response);
         } catch (Exception e){
             String message = "查询同步器是否激活失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -122,7 +119,7 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("激活同步器成功",response);
         } catch (Exception e){
             String message = "激活同步器失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -138,7 +135,7 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("停用同步器成功",response);
         } catch (Exception e){
             String message = "停用同步器失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -164,7 +161,7 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("新增节点成功",response);
         } catch (Exception e){
             String message = "新增节点失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -182,7 +179,7 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("更新节点信息成功",response);
         } catch (Exception e){
             String message = "更新节点信息失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -197,7 +194,7 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("删除节点成功",response);
         } catch (Exception e){
             String message = "删除节点失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -213,7 +210,7 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("查询节点成功",response);
         } catch (Exception e){
             String message = "查询节点失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -232,7 +229,7 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("查询是否允许自动搜索区块链节点成功",response);
         } catch (Exception e){
             String message = "查询是否允许自动搜索区块链节点失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -247,7 +244,7 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("设置是否允许自动搜索区块链节点成功",response);
         } catch (Exception e){
             String message = "设置是否允许自动搜索区块链节点失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -271,7 +268,7 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("新增账户成功",response);
         } catch (Exception e){
             String message = "新增账户失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -291,7 +288,7 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("删除账号成功",response);
         } catch (Exception e){
             String message = "删除账号失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -323,7 +320,7 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("[查询所有账户]成功",response);
         } catch (Exception e){
             String message = "[查询所有账户]失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -344,7 +341,7 @@ public class AdminConsoleController {
             return ServiceResult.createSuccessServiceResult("删除区块成功",response);
         } catch (Exception e){
             String message = "删除区块失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
@@ -374,7 +371,7 @@ public class AdminConsoleController {
             }
         } catch (Exception e){
             String message = "构建交易失败";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }

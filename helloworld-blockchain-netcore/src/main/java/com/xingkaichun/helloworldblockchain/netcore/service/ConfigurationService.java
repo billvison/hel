@@ -8,11 +8,6 @@ package com.xingkaichun.helloworldblockchain.netcore.service;
  */
 public interface ConfigurationService {
 
-    void restoreMinerConfiguration();
-    boolean isMinerActive();
-    void activeMiner() ;
-    void deactiveMiner() ;
-
     boolean isSynchronizerActive();
     void activeSynchronizer() ;
     void deactiveSynchronizer() ;

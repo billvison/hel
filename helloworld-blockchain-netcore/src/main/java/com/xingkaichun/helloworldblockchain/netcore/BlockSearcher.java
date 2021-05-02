@@ -10,11 +10,10 @@ import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
-import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
 import java.util.List;
 
@@ -25,8 +24,6 @@ import java.util.List;
  * @author 邢开春 409060350@qq.com
  */
 public class BlockSearcher {
-
-    private static final Logger logger = LoggerFactory.getLogger(BlockSearcher.class);
 
     private ConfigurationService configurationService;
     private NodeService nodeService;
@@ -53,7 +50,7 @@ public class BlockSearcher {
                         synchronizeBlocks();
                     }
                 } catch (Exception e) {
-                    logger.error("在区块链网络中同步其它节点的区块出现异常",e);
+                    LogUtil.error("在区块链网络中同步其它节点的区块出现异常",e);
                 }
                 SleepUtil.sleep(GlobalSetting.NodeConstant.SEARCH_NEW_BLOCKS_TIME_INTERVAL);
             }
@@ -83,7 +80,7 @@ public class BlockSearcher {
                     //提高主区块链核心的高度
                     promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
                 } catch (Exception e){
-                    logger.error(String.format("同步节点[%s]区块到本地区块链系统出现异常",node.getIp()),e);
+                    LogUtil.error(String.format("同步节点[%s]区块到本地区块链系统出现异常",node.getIp()),e);
                 }
                 //同步之后，本地区块链高度已经发生改变了
                 localBlockchainHeight = blockchainCore.queryBlockchainHeight();

@@ -5,17 +5,14 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.NetUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author 邢开春 409060350@qq.com
  */
 public class BlockchainNodeClientImpl implements BlockchainNodeClient {
-
-    private static final Logger logger = LoggerFactory.getLogger(BlockchainNodeClientImpl.class);
 
     private String ip;
 
@@ -30,7 +27,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             String html = NetUtil.jsonGetRequest(url,transactionDTO);
             return html;
         } catch (Exception e) {
-            logger.debug(String.format("提交交易[%s]至节点[%s:%d]出现异常", JsonUtil.toJson(transactionDTO),ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(String.format("提交交易[%s]至节点[%s:%d]出现异常", JsonUtil.toJson(transactionDTO),ip,GlobalSetting.DEFAULT_PORT),e);
             return null;
         }
     }
@@ -41,7 +38,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             String html = NetUtil.jsonGetRequest(url,null);
             return html;
         } catch (Exception e) {
-            logger.debug(String.format("Ping节点[%s:%d]出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(String.format("Ping节点[%s:%d]出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
             return null;
         }
     }
@@ -54,7 +51,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             BlockDTO block = JsonUtil.fromJson(html,BlockDTO.class);
             return block;
         } catch (Exception e) {
-            logger.debug(String.format("在节点[%s:%d]查询区块出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(String.format("在节点[%s:%d]查询区块出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
             return null;
         }
     }
@@ -67,7 +64,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             String[] nodes = JsonUtil.fromJson(html,String[].class);
             return nodes;
         } catch (Exception e) {
-            logger.debug(String.format("在节点[%s:%d]查询节点列表出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(String.format("在节点[%s:%d]查询节点列表出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
             return null;
         }
     }
@@ -79,7 +76,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             String psotBlockResponse = NetUtil.jsonGetRequest(url,blockDTO);
             return psotBlockResponse;
         } catch (Exception e) {
-            logger.debug(String.format("向节点[%s:%d]提交区块出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(String.format("向节点[%s:%d]提交区块出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
             return null;
         }
     }
@@ -91,7 +88,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             String html = NetUtil.jsonGetRequest(url,null);
             return html;
         } catch (Exception e) {
-            logger.debug(String.format("向节点[%s:%d]提交区块链高度出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(String.format("向节点[%s:%d]提交区块链高度出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
             return null;
         }
     }
@@ -106,7 +103,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             }
             return Long.parseLong(html);
         } catch (Exception e) {
-            logger.debug(String.format("向节点[%s:%d]获取区块链高度出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(String.format("向节点[%s:%d]获取区块链高度出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
             return null;
         }
     }
@@ -119,7 +116,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             TransactionDTO transaction = JsonUtil.fromJson(html,TransactionDTO.class);
             return transaction;
         } catch (Exception e) {
-            logger.debug(String.format("在节点[%s:%d]查询交易出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(String.format("在节点[%s:%d]查询交易出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
             return null;
         }
     }

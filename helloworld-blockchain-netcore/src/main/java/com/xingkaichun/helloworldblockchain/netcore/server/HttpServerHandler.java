@@ -31,40 +31,38 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) {
-		this.readRequest(msg);
 
-		String body = msg.content().toString(CharsetUtil.UTF_8);
-
-		String sendMsg;
-		String uri = msg.uri();
-		String requestApi = parseRequestApi(uri);
-		Map<String,String> requestParameter = parseRequestParameter(uri);
+		String responseMessage;
+		String requestUri = msg.uri();
+		String requestApi = parseRequestApi(requestUri);
+		Map<String,String> requestParameter = parseRequestParameter(requestUri);
+		String requestBody = msg.content().toString(CharsetUtil.UTF_8);
 
 		//因为任何节点都可以访问这里的接口，请不要在这里写任何能泄露用户私钥的代码。
 		if("/".equals(requestApi)){
-			sendMsg = "HelloworldBlockchain";
+			responseMessage = "HelloworldBlockchain";
 		}else if(API.PING.equals(requestApi)){
-			sendMsg = httpServerHandlerResolver.ping(ctx);
+			responseMessage = httpServerHandlerResolver.ping(ctx);
 		}else if(API.GET_NODES.equals(requestApi)){
-			sendMsg = httpServerHandlerResolver.getNodes();
+			responseMessage = httpServerHandlerResolver.getNodes();
 		}else if(API.GET_BLOCK.equals(requestApi)){
-			sendMsg = httpServerHandlerResolver.getBlock(Long.parseLong(requestParameter.get("height")));
+			responseMessage = httpServerHandlerResolver.getBlock(Long.parseLong(requestParameter.get("height")));
 		}else if(API.GET_TRANSACTION.equals(requestApi)){
-			sendMsg = httpServerHandlerResolver.getTransaction(Long.parseLong(requestParameter.get("height")));
+			responseMessage = httpServerHandlerResolver.getTransaction(Long.parseLong(requestParameter.get("height")));
 		}else if(API.POST_TRANSACTION.equals(requestApi)){
-			TransactionDTO transactionDTO = JsonUtil.fromJson(body, TransactionDTO.class);
-			sendMsg = httpServerHandlerResolver.postTransaction(transactionDTO);
+			TransactionDTO transactionDTO = JsonUtil.fromJson(requestBody, TransactionDTO.class);
+			responseMessage = httpServerHandlerResolver.postTransaction(transactionDTO);
 		}else if(API.POST_BLOCK.equals(requestApi)){
-			BlockDTO blockDTO = JsonUtil.fromJson(body, BlockDTO.class);
-			sendMsg = httpServerHandlerResolver.postBlock(blockDTO);
+			BlockDTO blockDTO = JsonUtil.fromJson(requestBody, BlockDTO.class);
+			responseMessage = httpServerHandlerResolver.postBlock(blockDTO);
 		}else if(API.POST_BLOCKCHAIN_HEIGHT.equals(requestApi)){
-			sendMsg = httpServerHandlerResolver.postBlockchainHeight(ctx,Long.parseLong(requestParameter.get("height")));
+			responseMessage = httpServerHandlerResolver.postBlockchainHeight(ctx,Long.parseLong(requestParameter.get("height")));
 		}else if(API.GET_BLOCKCHAIN_HEIGHT.equals(requestApi)){
-			sendMsg = httpServerHandlerResolver.getBlockchainHeight();
+			responseMessage = httpServerHandlerResolver.getBlockchainHeight();
 		}else {
-			sendMsg = "404 NOT FOUND";
+			responseMessage = "404 NOT FOUND";
 		}
-		writeResponse(ctx, sendMsg);
+		writeResponse(ctx, responseMessage);
 	}
 
 	private Map<String, String> parseRequestParameter(String uri) {
@@ -89,19 +87,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 		}else {
 			return uri;
 		}
-	}
-
-	private void readRequest(FullHttpRequest msg) {
-		System.out.println("======请求行======");
-		System.out.println(msg.method() + " " + msg.uri() + " " + msg.protocolVersion());
-
-		System.out.println("======请求头======");
-		for (String name : msg.headers().names()) {
-			System.out.println(name + ": " + msg.headers().get(name));
-		}
-
-		System.out.println("======消息体======");
-		System.out.println(msg.content().toString(CharsetUtil.UTF_8));
 	}
 
 	private void writeResponse(ChannelHandlerContext ctx, String msg) {

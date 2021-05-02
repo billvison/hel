@@ -46,11 +46,21 @@ http://119.3.57.171/
 
 
 
+### 代码规范
+[代码规范](https://github.com/xingkaichun/HelloworldBlockchain/blob/master/code-specification.md)
+
+
+
+### 设计
+[设计](https://github.com/xingkaichun/HelloworldBlockchain/blob/master/helloworldcoin-design.md)
+
+
+
 ### 集成开发环境搭建
 #### eclipse
-HelloworldBlockchain项目没有任何复杂依赖，将项目导入eclipse，找到类文件com.xingkaichun.helloworldblockchain.explorer.HelloWorldBlockchainExplorerApplication，右键运行，正常情况下则会启动成功。接下来，打开浏览器，访问项目的前端地址 http://localhost/ ，快乐的调试玩耍吧。  
+HelloworldBlockchain项目没有任何复杂依赖，将项目导入eclipse，找到类文件com.xingkaichun.helloworldblockchain.explorer.HelloWorldBlockchainExplorerApplication，右键运行，正常情况下则会启动成功。接下来，打开浏览器，访问项目的前端地址 http://localhost/ ，快乐的调试玩耍吧。
 #### intellij idea
-HelloworldBlockchain项目没有任何复杂依赖，将项目导入idea，找到类文件com.xingkaichun.helloworldblockchain.explorer.HelloWorldBlockchainExplorerApplication，右键运行，正常情况下则会启动成功。接下来，打开浏览器，访问项目的前端地址 http://localhost/ ，快乐的调试玩耍吧。  
+HelloworldBlockchain项目没有任何复杂依赖，将项目导入idea，找到类文件com.xingkaichun.helloworldblockchain.explorer.HelloWorldBlockchainExplorerApplication，右键运行，正常情况下则会启动成功。接下来，打开浏览器，访问项目的前端地址 http://localhost/ ，快乐的调试玩耍吧。
 
 
 

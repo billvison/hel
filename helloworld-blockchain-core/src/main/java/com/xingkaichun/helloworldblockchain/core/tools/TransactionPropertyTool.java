@@ -3,8 +3,6 @@ package com.xingkaichun.helloworldblockchain.core.tools;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Transaction工具类
@@ -12,8 +10,6 @@ import org.slf4j.LoggerFactory;
  * @author 邢开春 409060350@qq.com
  */
 public class TransactionPropertyTool {
-
-    private static final Logger logger = LoggerFactory.getLogger(TransactionPropertyTool.class);
 
 
     /**

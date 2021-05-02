@@ -5,9 +5,8 @@ import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -18,8 +17,6 @@ import java.util.List;
  * @author 邢开春 409060350@qq.com
  */
 public class BlockchainHeightSearcher {
-
-    private static final Logger logger = LoggerFactory.getLogger(BlockchainHeightSearcher.class);
 
     private ConfigurationService configurationService;
     private NodeService nodeService;
@@ -36,7 +33,7 @@ public class BlockchainHeightSearcher {
                 try {
                     searchBlockchainHeight();
                 } catch (Exception e) {
-                    logger.error("在区块链网络中搜索节点的高度异常",e);
+                    LogUtil.error("在区块链网络中搜索节点的高度异常",e);
                 }
                 SleepUtil.sleep(GlobalSetting.NodeConstant.SEARCH_BLOCKCHAIN_HEIGHT_TIME_INTERVAL);
             }

@@ -20,7 +20,6 @@ import java.util.List;
 public class Dto2ModelTool {
 
     public static Block blockDto2Block(BlockchainDatabase blockchainDataBase, BlockDTO blockDTO) {
-        //求上一个区块的hash
         String previousBlockHash = blockDTO.getPreviousHash();
         Block previousBlock = blockchainDataBase.queryBlockByBlockHash(previousBlockHash);
 
@@ -39,9 +38,14 @@ public class Dto2ModelTool {
         block.setMerkleTreeRoot(merkleTreeRoot);
 
         block.setHash(BlockTool.calculateBlockHash(block));
-        //简单校验hash的难度 构造能满足共识的hash很难
+
+        /**
+         * 预先校验区块工作量共识。伪造工作量共识是一件十分耗费资源的事情，因此预先校验工作量共识可以抵消绝大部分的攻击。
+         * 也可以选择跳过此处预检，后续代码有完整的校验检测。
+         * 此处预检，只是想预先抵消绝大部分的攻击。
+         */
         if(!blockchainDataBase.getConsensus().isReachConsensus(blockchainDataBase,block)){
-            throw new RuntimeException();
+            throw new RuntimeException("区块预检失败。");
         }
         return block;
     }
@@ -67,7 +71,7 @@ public class Dto2ModelTool {
                 transactionOutputId.setTransactionOutputIndex(transactionInputDTO.getTransactionOutputIndex());
                 TransactionOutput unspentTransactionOutput = blockchainDataBase.queryUnspentTransactionOutputByTransactionOutputId(transactionOutputId);
                 if(unspentTransactionOutput == null){
-                    throw new ClassCastException("UnspentTransactionOutput不应该是null。");
+                    throw new RuntimeException("非法交易。交易输入并不是一笔未花费交易输出。");
                 }
                 TransactionInput transactionInput = new TransactionInput();
                 transactionInput.setUnspentTransactionOutput(TransactionTool.transactionOutput2UnspentTransactionOutput(unspentTransactionOutput));

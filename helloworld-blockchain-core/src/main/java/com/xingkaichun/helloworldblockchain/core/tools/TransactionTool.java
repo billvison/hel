@@ -9,8 +9,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.*;
 import com.xingkaichun.helloworldblockchain.crypto.*;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 
 import java.util.*;
 
@@ -20,8 +19,6 @@ import java.util.*;
  * @author 邢开春 409060350@qq.com
  */
 public class TransactionTool {
-
-    private static final Logger logger = LoggerFactory.getLogger(TransactionTool.class);
 
     /**
      * 交易输入总额
@@ -134,7 +131,7 @@ public class TransactionTool {
                 }
             }
         }catch (Exception e){
-            logger.debug("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。",e);
+            LogUtil.error("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。",e);
             return false;
         }
         return true;
@@ -307,7 +304,7 @@ public class TransactionTool {
         if(outputs != null){
             for(TransactionOutput output:outputs){
                 if(!isTransactionAmountLegal(output.getValue())){
-                    logger.debug("交易金额不合法");
+                    LogUtil.debug("交易金额不合法");
                     return false;
                 }
             }
@@ -323,7 +320,7 @@ public class TransactionTool {
         if(outputs != null){
             for(TransactionOutput output:outputs){
                 if(!AccountUtil.isPayToPublicKeyHashAddress(output.getAddress())){
-                    logger.debug("交易地址不合法");
+                    LogUtil.debug("交易地址不合法");
                     return true;
                 }
             }
@@ -338,7 +335,7 @@ public class TransactionTool {
         try {
             //交易金额不能小于等于0
             if(transactionAmount <= 0){
-                logger.debug("交易金额不合法：交易金额不能小于等于0");
+                LogUtil.debug("交易金额不合法：交易金额不能小于等于0");
                 return false;
             }
             //交易金额最小值不需要校验，假设值不正确，业务逻辑通过不了。
@@ -346,7 +343,7 @@ public class TransactionTool {
             //交易金额最大值不需要校验，假设值不正确，业务逻辑通过不了
             return true;
         } catch (Exception e) {
-            logger.debug("校验金额方法出现异常，请检查。",e);
+            LogUtil.error("校验金额方法出现异常，请检查。",e);
             return false;
         }
     }
@@ -380,7 +377,7 @@ public class TransactionTool {
             for (TransactionOutput output:outputs){
                 String address = output.getAddress();
                 if(addressSet.contains(address)){
-                    logger.debug(String.format("区块数据异常，地址[%s]重复。",address));
+                    LogUtil.debug(String.format("区块数据异常，地址[%s]重复。",address));
                     return true;
                 }else {
                     addressSet.add(address);

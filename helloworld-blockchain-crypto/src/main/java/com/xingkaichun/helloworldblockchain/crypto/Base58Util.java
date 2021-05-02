@@ -17,7 +17,7 @@ public class Base58Util {
     }
 
     /**
-     * Base58编码
+     * Base58解码
      */
     public static byte[] decode(String input) {
         return Base58.decode(input);

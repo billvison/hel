@@ -9,6 +9,10 @@ import java.io.File;
  */
 public class FileUtil {
 
+    public static String newPath(String parent, String child) {
+        return new File(parent,child).getAbsolutePath();
+    }
+
     public static void mkdirs(String path) {
         mkdirs(new File(path));
     }

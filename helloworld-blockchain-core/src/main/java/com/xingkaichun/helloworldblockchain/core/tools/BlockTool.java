@@ -9,11 +9,10 @@ import com.xingkaichun.helloworldblockchain.crypto.*;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.util.TimeUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -23,8 +22,6 @@ import java.util.*;
  * @author 邢开春 409060350@qq.com
  */
 public class BlockTool {
-
-    private static final Logger logger = LoggerFactory.getLogger(BlockTool.class);
 
     /**
      * 计算区块的Hash值
@@ -103,7 +100,7 @@ public class BlockTool {
                     for (TransactionOutput output:outputs){
                         String address = output.getAddress();
                         if(addressSet.contains(address)){
-                            logger.debug(String.format("区块数据异常，地址[%s]重复。",address));
+                            LogUtil.debug(String.format("区块数据异常，地址[%s]重复。",address));
                             return true;
                         }else {
                             addressSet.add(address);

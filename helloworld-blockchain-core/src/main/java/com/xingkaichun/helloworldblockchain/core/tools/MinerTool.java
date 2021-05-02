@@ -10,9 +10,8 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionTy
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.TimeUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,8 +24,6 @@ import java.util.Set;
  * @author 邢开春 409060350@qq.com
  */
 public class MinerTool {
-
-    private static final Logger logger = LoggerFactory.getLogger(MinerTool.class);
 
     /**
      * 构建挖矿中的区块对象，该区块的nonce为空。
@@ -45,7 +42,7 @@ public class MinerTool {
                     transactionList.add(transaction);
                 } catch (Exception e) {
                     String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
-                    logger.info("类型转换异常,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash,e);
+                    LogUtil.error("类型转换异常,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash,e);
                     unconfirmedTransactionDataBase.deleteByTransactionHash(transactionHash);
                 }
             }
@@ -61,7 +58,7 @@ public class MinerTool {
                 transactionList.add(transaction);
             }else {
                 String transactionHash = TransactionTool.calculateTransactionHash(transaction);
-                logger.info("交易不能被挖矿,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash);
+                LogUtil.debug("交易不能被挖矿,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash);
                 unconfirmedTransactionDataBase.deleteByTransactionHash(transactionHash);
             }
         }
@@ -83,7 +80,7 @@ public class MinerTool {
                     if(transactionOutputIdSet.contains(transactionOutputId)){
                         canAdd = false;
                         String transactionHash = TransactionTool.calculateTransactionHash(transaction);
-                        logger.info("交易不能被挖矿,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash);
+                        LogUtil.debug("交易不能被挖矿,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash);
                         unconfirmedTransactionDataBase.deleteByTransactionHash(transactionHash);
                         break;
                     }else {
@@ -114,7 +111,7 @@ public class MinerTool {
                     if(addressSet.contains(address)){
                         canAdd = false;
                         String transactionHash = TransactionTool.calculateTransactionHash(transaction);
-                        logger.info("交易不能被挖矿,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash);
+                        LogUtil.debug("交易不能被挖矿,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash);
                         unconfirmedTransactionDataBase.deleteByTransactionHash(transactionHash);
                         break;
                     }else {
@@ -179,9 +176,10 @@ public class MinerTool {
         nonNonceBlock.setTransactions(packingTransactionList);
 
         //创建挖矿奖励交易
-        Transaction mineAwardTransaction =  buildMineIncentiveTransaction(blockchainDataBase,minerAccount,nonNonceBlock);
+        //激励
+        long incentiveValue = blockchainDataBase.getIncentive().incentiveAmount(nonNonceBlock);
+        Transaction mineAwardTransaction =  buildIncentiveTransaction(minerAccount.getAddress(),incentiveValue);
         packingTransactionList.add(0,mineAwardTransaction);
-
 
         String merkleTreeRoot = BlockTool.calculateBlockMerkleTreeRoot(nonNonceBlock);
         nonNonceBlock.setMerkleTreeRoot(merkleTreeRoot);
@@ -191,16 +189,14 @@ public class MinerTool {
     /**
      * 构建区块的挖矿奖励交易。
      */
-    public static Transaction buildMineIncentiveTransaction(BlockchainDatabase blockchainDataBase, Account minerAccount, Block block) {
-        String address = minerAccount.getAddress();
-
+    public static Transaction buildIncentiveTransaction(String address,long incentiveValue) {
         Transaction transaction = new Transaction();
         transaction.setTransactionType(TransactionType.COINBASE);
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
         TransactionOutput output = new TransactionOutput();
         output.setAddress(address);
-        output.setValue(blockchainDataBase.getIncentive().incentiveAmount(block));
+        output.setValue(incentiveValue);
         output.setOutputScript(ScriptTool.createPayToPublicKeyHashOutputScript(address));
         outputs.add(output);
 

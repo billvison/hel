@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
-import com.xingkaichun.helloworldblockchain.util.LevelDBUtil;
+import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 
 /**
  * 区块链数据库主键工具类
@@ -65,75 +65,75 @@ public class BlockchainDatabaseKeyTool {
     //拼装数据库Key的值
     public static byte[] buildBlockchainHeightKey() {
         String stringKey = BLOCKCHAIN_HEIGHT_KEY + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildHashKey(String hash) {
         String stringKey = HASH_PREFIX_FLAG + hash + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildAddressKey(String address) {
         String stringKey = ADDRESS_PREFIX_FLAG + address + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildBlockHeightToBlockKey(long blockHeight) {
         String stringKey = BLOCK_HEIGHT_TO_BLOCK_PREFIX_FLAG + blockHeight + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildBlockHashToBlockHeightKey(String blockHash) {
         String stringKey = BLOCK_HASH_TO_BLOCK_HEIGHT_PREFIX_FLAG + blockHash + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildTransactionHashToTransactionHeightKey(String transactionHash) {
         String stringKey = TRANSACTION_HASH_TO_TRANSACTION_HEIGHT_PREFIX_FLAG + transactionHash + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildTransactionOutputHeightToTransactionOutputKey(long transactionOutputHeight) {
         String stringKey = TRANSACTION_OUTPUT_HEIGHT_TO_TRANSACTION_OUTPUT_PREFIX_FLAG + transactionOutputHeight + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildTransactionOutputIdToTransactionOutputHeightKey(TransactionOutputId transactionOutputId) {
         String stringKey = TRANSACTION_OUTPUT_ID_TO_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId.getTransactionOutputId() + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildTransactionOutputIdToUnspentTransactionOutputHeightKey(TransactionOutputId transactionOutputId) {
         String stringKey = TRANSACTION_OUTPUT_ID_TO_UNSPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId.getTransactionOutputId() + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildTransactionOutputIdToSourceTransactionHeightKey(TransactionOutputId transactionOutputId) {
         String stringKey = TRANSACTION_OUTPUT_ID_TO_SOURCE_TRANSACTION_HEIGHT_PREFIX_FLAG + transactionOutputId.getTransactionOutputId() + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildTransactionOutputIdToDestinationTransactionHeightKey(TransactionOutputId transactionOutputId) {
         String stringKey = TRANSACTION_OUTPUT_ID_TO_DESTINATION_TRANSACTION_HEIGHT_PREFIX_FLAG + transactionOutputId.getTransactionOutputId() + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildAddressToTransactionOutputHeightKey(String address) {
         String stringKey = ADDRESS_TO_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + address + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildAddressToUnspentTransactionOutputHeightKey(String address) {
         String stringKey = ADDRESS_TO_UNSPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + address + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildAddressToSpentTransactionOutputHeightKey(String address) {
         String stringKey = ADDRESS_TO_SPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + address + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildBlockchainTransactionHeightKey() {
         String stringKey = BLOCKCHAIN_TRANSACTION_HEIGHT_KEY + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildBlockchainTransactionOutputHeightKey() {
         String stringKey = BLOCKCHAIN_TRANSACTION_OUTPUT_HEIGHT_KEY + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
     public static byte[] buildTransactionHeightToTransactionKey(long transactionHeight) {
         String stringKey = TRANSACTION_HEIGHT_TO_TRANSACTION_PREFIX_FLAG + transactionHeight + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
 
     public static byte[] buildTransactionOutputIdToSpentTransactionOutputHeightKey(TransactionOutputId transactionOutputId) {
         String stringKey = TRANSACTION_OUTPUT_ID_TO_SPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId.getTransactionOutputId() + END_FLAG;
-        return LevelDBUtil.stringToBytes(stringKey);
+        return ByteUtil.encode(stringKey);
     }
 }

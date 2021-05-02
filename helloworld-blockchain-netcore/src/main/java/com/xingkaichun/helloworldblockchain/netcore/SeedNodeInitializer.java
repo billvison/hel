@@ -4,9 +4,8 @@ import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -15,8 +14,6 @@ import org.slf4j.LoggerFactory;
  * @author 邢开春 409060350@qq.com
  */
 public class SeedNodeInitializer {
-
-    private static final Logger logger = LoggerFactory.getLogger(SeedNodeInitializer.class);
 
     private ConfigurationService configurationService;
     private NodeService nodeService;
@@ -40,7 +37,7 @@ public class SeedNodeInitializer {
                         addSeedNode();
                     }
                 } catch (Exception e) {
-                    logger.error("定时将种子节点加入区块链网络出现异常",e);
+                    LogUtil.error("定时将种子节点加入区块链网络出现异常",e);
                 }
                 SleepUtil.sleep(GlobalSetting.NodeConstant.ADD_SEED_NODE_TIME_INTERVAL);
             }

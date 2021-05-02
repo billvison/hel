@@ -59,15 +59,6 @@ public class NetBlockchainCore {
 
         this.blockBroadcaster = blockBroadcaster;
         this.blockSearcher = blockSearcher;
-        restoreConfiguration();
-    }
-
-    /**
-     * 恢复配置
-     */
-    private void restoreConfiguration() {
-        //恢复矿工配置
-        configurationService.restoreMinerConfiguration();
     }
 
     /**

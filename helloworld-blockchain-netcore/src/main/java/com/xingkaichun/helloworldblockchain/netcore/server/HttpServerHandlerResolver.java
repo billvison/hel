@@ -13,9 +13,8 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import io.netty.channel.ChannelHandlerContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -27,8 +26,6 @@ import java.util.List;
  * @author 邢开春 409060350@qq.com
  */
 public class HttpServerHandlerResolver {
-
-    private static final Logger logger = LoggerFactory.getLogger(HttpServerHandlerResolver.class);
 
     private BlockchainCore blockchainCore;
     private NodeService nodeService;
@@ -52,12 +49,12 @@ public class HttpServerHandlerResolver {
                 String ip = inetSocketAddress.getAddress().getHostAddress();
                 node.setIp(ip);
                 nodeService.addNode(node);
-                logger.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,GlobalSetting.DEFAULT_PORT));
+                LogUtil.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,GlobalSetting.DEFAULT_PORT));
             }
             return API.Response.OK;
         } catch (Exception e){
             String message = "ping node info failed";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return API.Response.ERROR;
         }
     }
@@ -73,7 +70,7 @@ public class HttpServerHandlerResolver {
             return JsonUtil.toJson(block);
         } catch (Exception e){
             String message = "query block by block height failed";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return API.Response.ERROR;
         }
     }
@@ -86,8 +83,8 @@ public class HttpServerHandlerResolver {
             blockchainCore.submitTransaction(transactionDTO);
             return API.Response.OK;
         } catch (Exception e){
-            String message = "commit transaction failed";
-            logger.error(message,e);
+            String message = "post transaction failed";
+            LogUtil.error(message,e);
             return API.Response.ERROR;
         }
     }
@@ -98,8 +95,8 @@ public class HttpServerHandlerResolver {
             blockchainCore.addBlock(block);
             return API.Response.OK;
         } catch (Exception e){
-            String message = "commit block failed";
-            logger.error(message,e);
+            String message = "post block failed";
+            LogUtil.error(message,e);
             return API.Response.ERROR;
         }
     }
@@ -128,7 +125,7 @@ public class HttpServerHandlerResolver {
             return API.Response.OK;
         } catch (Exception e){
             String message = "post block height failed";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return API.Response.ERROR;
         }
     }
@@ -144,7 +141,7 @@ public class HttpServerHandlerResolver {
             return JsonUtil.toJson(transaction);
         } catch (Exception e){
             String message = "query transaction by transaction height failed";
-            logger.error(message,e);
+            LogUtil.error(message,e);
             return API.Response.ERROR;
         }
     }
