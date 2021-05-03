@@ -43,6 +43,7 @@
             <div class="panel-heading">☺钱包☺&nbsp;&nbsp;
                 <span id="balance" class="f6">总余额</span>&nbsp;&nbsp;
                 <button type="button" class="btn btn-primary" onclick="increase()">添加账户到钱包</button>&nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" onclick="createAndSave()">创建新账户(新账户添加到钱包)</button>&nbsp;&nbsp;
                 <button type="button" class="btn btn-primary" onclick="create()">创建新账户(新账户不添加到钱包)</button>&nbsp;&nbsp;
                 <button type="button" class="btn btn-primary" onclick="window.open('./pay.html')">支付</button>
             </div>
@@ -123,6 +124,18 @@
                                  '<div><span>账号(区块链领域学名:地址)</span>&nbsp;&nbsp;'+account.address+'</div>' +
                                  '<div><span>密码(区块链领域学名:私钥)</span>&nbsp;&nbsp;'+account.privateKey+'</div>' ;
                 layer.alert(content);
+            }
+
+            async function createAndSave(){
+                const data = await $ajax({
+                    url : baseUrl()+"/Api/Blockchain/GenerateAndSaveAccount",
+                    data:`{}`
+                })
+                var account = data.result.account;
+                var content = '<h2 class="red">提示: 请在您信任的站点生成账户！你创建的数字货币账号与密码已经保存本网站了！</h2>' +
+                                 '<div><span>账号(区块链领域学名:地址)</span>&nbsp;&nbsp;'+account.address+'</div>' +
+                                 '<div><span>密码(区块链领域学名:私钥)</span>&nbsp;&nbsp;'+account.privateKey+'</div>' ;
+                layer.alert(content,function(){location.reload();});
             }
         </script>
     </body>

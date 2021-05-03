@@ -12,6 +12,8 @@ import com.xingkaichun.helloworldblockchain.explorer.service.BlockchainBrowserSe
 import com.xingkaichun.helloworldblockchain.explorer.vo.BlockchainApiRoute;
 import com.xingkaichun.helloworldblockchain.explorer.vo.account.GenerateAccountRequest;
 import com.xingkaichun.helloworldblockchain.explorer.vo.account.GenerateAccountResponse;
+import com.xingkaichun.helloworldblockchain.explorer.vo.account.GenerateAndSaveAccountRequest;
+import com.xingkaichun.helloworldblockchain.explorer.vo.account.GenerateAndSaveAccountResponse;
 import com.xingkaichun.helloworldblockchain.explorer.vo.block.*;
 import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.PageCondition;
 import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.ServiceResult;
@@ -58,6 +60,23 @@ public class BlockchainBrowserController {
             return ServiceResult.createSuccessServiceResult("生成账户成功",response);
         } catch (Exception e){
             String message = "生成账户失败";
+            LogUtil.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 生成账户(私钥、公钥、公钥哈希、地址)并保存
+     */
+    @RequestMapping(value = BlockchainApiRoute.GENERATE_AND_SAVE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<GenerateAndSaveAccountResponse> generateAndSaveAccount(@RequestBody GenerateAndSaveAccountRequest request){
+        try {
+            Account account = getBlockchainCore().getWallet().createAndAddAccount();
+            GenerateAndSaveAccountResponse response = new GenerateAndSaveAccountResponse();
+            response.setAccount(account);
+            return ServiceResult.createSuccessServiceResult("[生成账户并保存]成功",response);
+        } catch (Exception e){
+            String message = "[生成账户并保存]失败";
             LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }

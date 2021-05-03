@@ -10,6 +10,8 @@ public class BlockchainApiRoute {
     public static final String QUERY_BLOCKCHAIN_HEIGHT = "/Api/Blockchain/QueryBlockchainHeight";
     //生成账户(公钥、私钥、地址)
     public static final String GENERATE_ACCOUNT = "/Api/Blockchain/GenerateAccount";
+    //生成账户(公钥、私钥、地址)并保存
+    public static final String GENERATE_AND_SAVE_ACCOUNT = "/Api/Blockchain/GenerateAndSaveAccount";
 
     //提交交易到区块链网络
     public static final String SUBMIT_TRANSACTION_TO_BLOCKCHIAINNEWWORK = "/Api/Blockchain/SubmitTransactionToBlockchainNetwork";
