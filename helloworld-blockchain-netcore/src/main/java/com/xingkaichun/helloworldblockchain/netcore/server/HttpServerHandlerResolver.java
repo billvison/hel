@@ -8,15 +8,10 @@ import com.xingkaichun.helloworldblockchain.core.tools.Model2DtoTool;
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.API;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
-import io.netty.channel.ChannelHandlerContext;
 
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,110 +34,132 @@ public class HttpServerHandlerResolver {
 
     /**
      * Ping节点
+     * @return
      */
-    public String ping(ChannelHandlerContext ctx){
+    public PingResponse ping(String requestIp, PingRequest request){
         try {
             //将ping的来路作为区块链节点
             if(configurationService.isAutoSearchNode()){
                 NodeEntity node = new NodeEntity();
-                InetSocketAddress inetSocketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
-                String ip = inetSocketAddress.getAddress().getHostAddress();
-                node.setIp(ip);
+                node.setIp(requestIp);
                 nodeService.addNode(node);
-                LogUtil.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",ip,GlobalSetting.DEFAULT_PORT));
+                LogUtil.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",requestIp,GlobalSetting.DEFAULT_PORT));
             }
-            return API.Response.OK;
+            PingResponse response = new PingResponse();
+            return response;
         } catch (Exception e){
-            String message = "ping node info failed";
+            String message = "ping node failed";
             LogUtil.error(message,e);
-            return API.Response.ERROR;
+            return null;
         }
     }
-
 
     /**
      * 根据区块高度查询区块
      */
-    public String getBlock(long height){
+    public GetBlockResponse getBlock(GetBlockRequest request){
         try {
-            Block blockByBlockHeight = blockchainCore.queryBlockByBlockHeight(height);
+            Block blockByBlockHeight = blockchainCore.queryBlockByBlockHeight(request.getHeight());
             BlockDTO block = Model2DtoTool.block2BlockDTO(blockByBlockHeight);
-            return JsonUtil.toJson(block);
+            GetBlockResponse response = new GetBlockResponse();
+            response.setBlock(block);
+            return response;
         } catch (Exception e){
-            String message = "query block by block height failed";
+            String message = "get block failed";
             LogUtil.error(message,e);
-            return API.Response.ERROR;
+            return null;
         }
     }
 
     /**
      * 接收其它节点提交的交易
      */
-    public String postTransaction(TransactionDTO transactionDTO){
+    public PostTransactionResponse postTransaction(PostTransactionRequest request){
         try {
-            blockchainCore.submitTransaction(transactionDTO);
-            return API.Response.OK;
+            blockchainCore.submitTransaction(request.getTransaction());
+            PostTransactionResponse response = new PostTransactionResponse();
+            return response;
         } catch (Exception e){
             String message = "post transaction failed";
             LogUtil.error(message,e);
-            return API.Response.ERROR;
+            return null;
         }
     }
 
-    public String postBlock(BlockDTO blockDTO) {
+    public PostBlockResponse postBlock(PostBlockRequest request) {
         try {
-            Block block = Dto2ModelTool.blockDto2Block(blockchainCore.getBlockchainDataBase(),blockDTO);
+            Block block = Dto2ModelTool.blockDto2Block(blockchainCore.getBlockchainDataBase(),request.getBlock());
             blockchainCore.addBlock(block);
-            return API.Response.OK;
+            PostBlockResponse response = new PostBlockResponse();
+            return response;
         } catch (Exception e){
             String message = "post block failed";
             LogUtil.error(message,e);
-            return API.Response.ERROR;
+            return null;
         }
     }
 
-    public String getNodes() {
-        List<NodeEntity> nodeList = nodeService.queryAllNodeList();
-        if(nodeList == null){
-            nodeList = new ArrayList<>();
+    public GetNodesResponse getNodes(GetNodesRequest request) {
+        try {
+            List<NodeEntity> nodeList = nodeService.queryAllNodeList();
+            if(nodeList == null){
+                nodeList = new ArrayList<>();
+            }
+            String[] nodes = new String[nodeList.size()];
+            for (int i=0;i<nodeList.size();i++){
+                NodeEntity nodeEntity = nodeList.get(i);
+                nodes[i] = nodeEntity.getIp();
+            }
+            GetNodesResponse response = new GetNodesResponse();
+            response.setNodes(nodes);
+            return response;
+        }catch (Exception e){
+            String message = "get nodes failed";
+            LogUtil.error(message,e);
+            return null;
         }
-        String[] nodes = new String[nodeList.size()];
-        for (int i=0;i<nodeList.size();i++){
-            NodeEntity nodeEntity = nodeList.get(i);
-            nodes[i] = nodeEntity.getIp();
-        }
-        return JsonUtil.toJson(nodes);
     }
 
-    public String postBlockchainHeight(ChannelHandlerContext ctx, long height) {
+    public PostBlockchianHeightResponse postBlockchainHeight(String requestIp, PostBlockchianHeightRequest request) {
         try {
             NodeEntity node = new NodeEntity();
-            InetSocketAddress inetSocketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
-            String ip = inetSocketAddress.getAddress().getHostAddress();
-            node.setIp(ip);
-            node.setBlockchainHeight(height);
+            node.setIp(requestIp);
+            node.setBlockchainHeight(request.getHeight());
             nodeService.updateNode(node);
-            return API.Response.OK;
+
+            PostBlockchianHeightResponse response = new PostBlockchianHeightResponse();
+            return response;
         } catch (Exception e){
-            String message = "post block height failed";
+            String message = "post blockchain height failed";
             LogUtil.error(message,e);
-            return API.Response.ERROR;
+            return null;
         }
     }
 
-    public String getBlockchainHeight() {
-        return Long.toString(blockchainCore.queryBlockchainHeight());
+    public GetBlockchianHeightResponse getBlockchainHeight(GetBlockchianHeightRequest request) {
+        try {
+            long blockchainHeight = blockchainCore.queryBlockchainHeight();
+            GetBlockchianHeightResponse response = new GetBlockchianHeightResponse();
+            response.setBlockchainHeight(blockchainHeight);
+            return response;
+        } catch (Exception e){
+            String message = "get blockchain height failed";
+            LogUtil.error(message,e);
+            return null;
+        }
     }
 
-    public String getTransaction(long height) {
+    public GetTransactionResponse getTransaction(GetTransactionRequest request) {
         try {
-            Transaction transactionByTransactionHeight = blockchainCore.queryTransactionByTransactionHeight(height);
-            TransactionDTO transaction = Model2DtoTool.transaction2TransactionDTO(transactionByTransactionHeight);
-            return JsonUtil.toJson(transaction);
+            Transaction transactionByTransactionHeight = blockchainCore.queryTransactionByTransactionHeight(request.getHeight());
+            TransactionDTO transactionDTO = Model2DtoTool.transaction2TransactionDTO(transactionByTransactionHeight);
+            GetTransactionResponse response = new GetTransactionResponse();
+            response.setTransaction(transactionDTO);
+            return response;
         } catch (Exception e){
-            String message = "query transaction by transaction height failed";
+            String message = "get transaction failed";
             LogUtil.error(message,e);
-            return API.Response.ERROR;
+            return null;
         }
     }
 }

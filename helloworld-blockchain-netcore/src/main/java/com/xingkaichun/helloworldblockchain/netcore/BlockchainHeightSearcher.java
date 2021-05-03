@@ -4,6 +4,8 @@ import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientI
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockchianHeightRequest;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockchianHeightResponse;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
@@ -43,9 +45,10 @@ public class BlockchainHeightSearcher {
     private void searchBlockchainHeight() {
         List<NodeEntity> nodes = nodeService.queryAllNodeList();
         for(NodeEntity node:nodes){
-            Long blockchainHeight = new BlockchainNodeClientImpl(node.getIp()).getBlockchainHeight();
-            if(blockchainHeight != null){
-                node.setBlockchainHeight(blockchainHeight);
+            GetBlockchianHeightRequest getBlockchianHeightRequest = new GetBlockchianHeightRequest();
+            GetBlockchianHeightResponse getBlockchianHeightResponse = new BlockchainNodeClientImpl(node.getIp()).getBlockchainHeight(getBlockchianHeightRequest);
+            if(getBlockchianHeightResponse != null){
+                node.setBlockchainHeight(getBlockchianHeightResponse.getBlockchainHeight());
                 nodeService.updateNode(node);
             }
         }

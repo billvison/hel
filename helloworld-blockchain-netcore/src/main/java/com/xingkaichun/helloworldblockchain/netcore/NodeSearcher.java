@@ -4,12 +4,10 @@ import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientI
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.API;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.NodeDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
-import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
 import java.util.List;
 
@@ -45,7 +43,7 @@ public class NodeSearcher {
                 } catch (Exception e) {
                     LogUtil.error("在区块链网络中搜索新的节点出现异常",e);
                 }
-                SleepUtil.sleep(GlobalSetting.NodeConstant.SEARCH_NEW_NODE_TIME_INTERVAL);
+                SleepUtil.sleep(GlobalSetting.NodeConstant.SEARCH_NODE_TIME_INTERVAL);
             }
         }).start();
     }
@@ -60,12 +58,14 @@ public class NodeSearcher {
             if(!configurationService.isAutoSearchNode()){
                 return;
             }
-            String[] nodesResp = new BlockchainNodeClientImpl(node.getIp()).getNodes();
-            if(nodesResp == null){
+            GetNodesResponse getNodesResponse = new BlockchainNodeClientImpl(node.getIp()).getNodes(new GetNodesRequest());
+            if(getNodesResponse == null){
+                nodeService.deleteNode(node.getIp());
+                LogUtil.debug("删除节点"+node.getIp()+",原因：联不通");
                 break;
             }else {
                 //将远程节点知道的节点，一一进行验证这些节点的合法性，如果正常，则将这些节点加入自己的区块链网络。
-                for(String nodeIp : nodesResp){
+                for(String nodeIp : getNodesResponse.getNodes()){
                     addAvailableNodeToDatabase(new NodeDTO(nodeIp));
                 }
             }
@@ -81,8 +81,8 @@ public class NodeSearcher {
         }
         NodeEntity localNode = nodeService.queryNode(node.getIp());
         if(localNode == null){
-            String pingResponse = new BlockchainNodeClientImpl(node.getIp()).pingNode();
-            if(!StringUtil.isEquals(API.Response.OK,pingResponse)){
+            PingResponse pingResponse = new BlockchainNodeClientImpl(node.getIp()).pingNode(new PingRequest());
+            if(pingResponse == null){
                 nodeService.deleteNode(node.getIp());
                 LogUtil.debug(String.format("删除节点[%s]，原因是无法联通。",node.getIp()));
                 return;

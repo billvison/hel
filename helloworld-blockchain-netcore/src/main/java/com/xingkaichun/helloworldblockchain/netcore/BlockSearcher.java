@@ -9,6 +9,8 @@ import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockRequest;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockResponse;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
@@ -52,7 +54,7 @@ public class BlockSearcher {
                 } catch (Exception e) {
                     LogUtil.error("在区块链网络中同步其它节点的区块出现异常",e);
                 }
-                SleepUtil.sleep(GlobalSetting.NodeConstant.SEARCH_NEW_BLOCKS_TIME_INTERVAL);
+                SleepUtil.sleep(GlobalSetting.NodeConstant.SEARCH_BLOCKS_TIME_INTERVAL);
             }
         }).start();
     }
@@ -218,7 +220,13 @@ public class BlockSearcher {
         if(LongUtil.isEquals(masterBlockchainCoreTailBlockHeight,GlobalSetting.GenesisBlock.HEIGHT)){
             fork = false;
         } else {
-            BlockDTO blockDTO = new BlockchainNodeClientImpl(node.getIp()).getBlock(masterBlockchainCoreTailBlockHeight);
+            GetBlockRequest getBlockRequest = new GetBlockRequest();
+            getBlockRequest.setHeight(masterBlockchainCoreTailBlockHeight);
+            GetBlockResponse getBlockResponse = new BlockchainNodeClientImpl(node.getIp()).getBlock(getBlockRequest);
+            if(getBlockResponse == null){
+                return;
+            }
+            BlockDTO blockDTO = getBlockResponse.getBlock();
             if(blockDTO == null){
                 return;
             }
@@ -237,7 +245,13 @@ public class BlockSearcher {
             //分叉的高度
             long forkBlockHeight = masterBlockchainCoreTailBlockHeight;
             while (true) {
-                BlockDTO blockDTO = new BlockchainNodeClientImpl(node.getIp()).getBlock(forkBlockHeight);
+                GetBlockRequest getBlockRequest = new GetBlockRequest();
+                getBlockRequest.setHeight(forkBlockHeight);
+                GetBlockResponse getBlockResponse = new BlockchainNodeClientImpl(node.getIp()).getBlock(getBlockRequest);
+                if(getBlockResponse == null){
+                    return;
+                }
+                BlockDTO blockDTO = getBlockResponse.getBlock();
                 if(blockDTO == null){
                     return;
                 }
@@ -261,7 +275,13 @@ public class BlockSearcher {
             //从分叉高度开始同步
             slaveBlockchainCore.deleteBlocks(forkBlockHeight);
             while (true){
-                BlockDTO blockDTO = new BlockchainNodeClientImpl(node.getIp()).getBlock(forkBlockHeight);
+                GetBlockRequest getBlockRequest = new GetBlockRequest();
+                getBlockRequest.setHeight(forkBlockHeight);
+                GetBlockResponse getBlockResponse = new BlockchainNodeClientImpl(node.getIp()).getBlock(getBlockRequest);
+                if(getBlockResponse == null){
+                    return;
+                }
+                BlockDTO blockDTO = getBlockResponse.getBlock();
                 if(blockDTO == null){
                     return;
                 }
@@ -281,11 +301,16 @@ public class BlockSearcher {
             //未分叉
             while (true){
                 long nextBlockHeight = masterBlockchainCore.queryBlockchainHeight()+1;
-                BlockDTO blockDTO = new BlockchainNodeClientImpl(node.getIp()).getBlock(nextBlockHeight);
+                GetBlockRequest getBlockRequest = new GetBlockRequest();
+                getBlockRequest.setHeight(nextBlockHeight);
+                GetBlockResponse getBlockResponse = new BlockchainNodeClientImpl(node.getIp()).getBlock(getBlockRequest);
+                if(getBlockResponse == null){
+                    return;
+                }
+                BlockDTO blockDTO = getBlockResponse.getBlock();
                 if(blockDTO == null){
                     return;
                 }
-
                 Block block = Dto2ModelTool.blockDto2Block(masterBlockchainCore.getBlockchainDataBase(),blockDTO);
                 boolean isAddBlockSuccess = masterBlockchainCore.addBlock(block);
                 if(!isAddBlockSuccess){

@@ -4,10 +4,12 @@ import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostBlockchianHeightRequest;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
+import sun.util.resources.cldr.ps.CurrencyNames_ps;
 
 import java.util.List;
 
@@ -41,7 +43,7 @@ public class BlockchainHeightBroadcaster {
                 } catch (Exception e) {
                     LogUtil.error("在区块链网络中广播自己的区块高度出现异常",e);
                 }
-                SleepUtil.sleep(GlobalSetting.NodeConstant.CHECK_LOCAL_BLOCKCHAIN_HEIGHT_IS_HIGH_TIME_INTERVAL);
+                SleepUtil.sleep(GlobalSetting.NodeConstant.BLOCKCHAIN_HEIGHT_BROADCASTER_TIME_INTERVAL);
             }
         }).start();
     }
@@ -80,7 +82,9 @@ public class BlockchainHeightBroadcaster {
             if(LongUtil.isLessEqualThan(blockchainHeight,node.getBlockchainHeight())){
                 continue;
             }
-            new BlockchainNodeClientImpl(node.getIp()).postBlockchainHeight(blockchainHeight);
+            PostBlockchianHeightRequest postBlockchianHeightRequest = new PostBlockchianHeightRequest();
+            postBlockchianHeightRequest.setHeight(blockchainHeight);
+            new BlockchainNodeClientImpl(node.getIp()).postBlockchainHeight(postBlockchianHeightRequest);
             ++broadcastNodeCount;
             if(broadcastNodeCount > 50){
                 return;

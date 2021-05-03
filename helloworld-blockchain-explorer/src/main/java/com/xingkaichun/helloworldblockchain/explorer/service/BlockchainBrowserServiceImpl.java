@@ -9,6 +9,8 @@ import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.*;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostTransactionRequest;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostTransactionResponse;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,8 +124,10 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         List<SubmitTransactionToBlockchainNetworkResponse.Node> failSubmitNode = new ArrayList<>();
         if(nodes != null){
             for(NodeEntity node:nodes){
-                String postTransactionSuccess = new BlockchainNodeClientImpl(node.getIp()).postTransaction(transactionDTO);
-                if(postTransactionSuccess != null && !postTransactionSuccess.isEmpty()){
+                PostTransactionRequest postTransactionRequest = new PostTransactionRequest();
+                postTransactionRequest.setTransaction(transactionDTO);
+                PostTransactionResponse postTransactionResponse = new BlockchainNodeClientImpl(node.getIp()).postTransaction(postTransactionRequest);
+                if(postTransactionResponse != null){
                     successSubmitNode.add(new SubmitTransactionToBlockchainNetworkResponse.Node(node.getIp()));
                 } else {
                     failSubmitNode.add(new SubmitTransactionToBlockchainNetworkResponse.Node(node.getIp()));

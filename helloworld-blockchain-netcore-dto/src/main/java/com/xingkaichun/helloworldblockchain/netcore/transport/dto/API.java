@@ -22,12 +22,4 @@ public class API {
     public static final String GET_TRANSACTION = "/get_transaction";
     public static final String POST_TRANSACTION = "/post_transaction";
 
-
-    /**
-     * 请求返回结果常量
-     */
-    public static class Response{
-        public static final String OK = "ok";
-        public static final String ERROR = "";
-    }
 }

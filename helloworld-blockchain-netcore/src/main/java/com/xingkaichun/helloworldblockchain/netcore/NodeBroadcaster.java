@@ -4,6 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PingRequest;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
@@ -50,7 +51,7 @@ public class NodeBroadcaster {
     private void broadcastNode() {
         List<NodeEntity> nodes = nodeService.queryAllNodeList();
         for(NodeEntity node:nodes){
-            new BlockchainNodeClientImpl(node.getIp()).pingNode();
+            new BlockchainNodeClientImpl(node.getIp()).pingNode(new PingRequest());
         }
     }
 }
