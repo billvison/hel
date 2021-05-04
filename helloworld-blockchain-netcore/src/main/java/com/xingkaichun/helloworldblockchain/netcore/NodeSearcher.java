@@ -1,11 +1,10 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
-import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
-import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
+import com.xingkaichun.helloworldblockchain.netcore.model.Node;
+import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
 
@@ -20,12 +19,12 @@ import java.util.List;
  */
 public class NodeSearcher {
 
-    private ConfigurationService configurationService;
+    private NetcoreConfiguration netcoreConfiguration;
     private NodeService nodeService;
 
-    public NodeSearcher(ConfigurationService configurationService, NodeService nodeService) {
+    public NodeSearcher(NetcoreConfiguration netcoreConfiguration, NodeService nodeService) {
 
-        this.configurationService = configurationService;
+        this.netcoreConfiguration = netcoreConfiguration;
         this.nodeService = nodeService;
     }
 
@@ -37,13 +36,13 @@ public class NodeSearcher {
         new Thread(()->{
             while (true){
                 try {
-                    if(configurationService.isAutoSearchNode()){
+                    if(netcoreConfiguration.isAutoSearchNode()){
                         searchNodes();
                     }
                 } catch (Exception e) {
                     LogUtil.error("在区块链网络中搜索新的节点出现异常",e);
                 }
-                SleepUtil.sleep(GlobalSetting.NodeConstant.SEARCH_NODE_TIME_INTERVAL);
+                SleepUtil.sleep(netcoreConfiguration.getSearchNodeTimeInterval());
             }
         }).start();
     }
@@ -53,9 +52,9 @@ public class NodeSearcher {
      */
     private void searchNodes() {
         //这里可以利用多线程进行性能优化，因为本项目是helloworld项目，因此只采用单线程轮询每一个节点查询新的网络节点，不做进一步优化拓展。
-        List<NodeEntity> nodes = nodeService.queryAllNodeList();
-        for(NodeEntity node:nodes){
-            if(!configurationService.isAutoSearchNode()){
+        List<Node> nodes = nodeService.queryAllNodeList();
+        for(Node node:nodes){
+            if(!netcoreConfiguration.isAutoSearchNode()){
                 return;
             }
             GetNodesResponse getNodesResponse = new BlockchainNodeClientImpl(node.getIp()).getNodes(new GetNodesRequest());
@@ -76,10 +75,10 @@ public class NodeSearcher {
      * 若一个新的(之前没有加入过本地数据库)、可用的(网络连接是好的)的节点加入本地数据库
      */
     private void addAvailableNodeToDatabase(NodeDTO node) {
-        if(!configurationService.isAutoSearchNode()){
+        if(!netcoreConfiguration.isAutoSearchNode()){
             return;
         }
-        NodeEntity localNode = nodeService.queryNode(node.getIp());
+        Node localNode = nodeService.queryNode(node.getIp());
         if(localNode == null){
             PingResponse pingResponse = new BlockchainNodeClientImpl(node.getIp()).pingNode(new PingRequest());
             if(pingResponse == null){
@@ -87,9 +86,9 @@ public class NodeSearcher {
                 LogUtil.debug(String.format("删除节点[%s]，原因是无法联通。",node.getIp()));
                 return;
             }
-            NodeEntity nodeBO = new NodeEntity();
-            nodeBO.setIp(node.getIp());
-            nodeService.addNode(nodeBO);
+            Node nodeModel = new Node();
+            nodeModel.setIp(node.getIp());
+            nodeService.addNode(nodeModel);
             LogUtil.debug(String.format("自动发现节点[%s]，节点已加入节点数据库。",node.getIp()));
         }
     }

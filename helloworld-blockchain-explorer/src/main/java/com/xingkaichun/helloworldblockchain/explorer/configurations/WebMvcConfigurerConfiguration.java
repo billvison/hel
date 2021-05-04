@@ -17,7 +17,6 @@ import java.util.List;
 
 
 /**
- * WebMvcConfigurer
  *
  * @author 邢开春 409060350@qq.com
  */
@@ -55,9 +54,6 @@ public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {
 		}
 	}
 
-	/**
-	 * 支持跨域
-	 */
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")

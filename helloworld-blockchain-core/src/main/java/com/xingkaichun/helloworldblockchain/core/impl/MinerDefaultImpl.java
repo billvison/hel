@@ -6,7 +6,6 @@ import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.MinerTool;
 import com.xingkaichun.helloworldblockchain.crypto.RandomUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
 import com.xingkaichun.helloworldblockchain.util.TimeUtil;
@@ -19,8 +18,8 @@ import com.xingkaichun.helloworldblockchain.util.TimeUtil;
 public class MinerDefaultImpl extends Miner {
 
     //region 属性与构造函数
-    public MinerDefaultImpl(ConfigurationDatabase configurationDatabase, Wallet wallet, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase) {
-        super(configurationDatabase, wallet, blockchainDataBase, unconfirmedTransactionDataBase);
+    public MinerDefaultImpl(CoreConfiguration coreConfiguration, Wallet wallet, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase) {
+        super(coreConfiguration, wallet, blockchainDataBase, unconfirmedTransactionDataBase);
     }
     //endregion
 
@@ -29,18 +28,18 @@ public class MinerDefaultImpl extends Miner {
     public void start() {
         while(true){
             SleepUtil.sleep(10);
-            if(!configurationDatabase.isMinerActive()){
+            if(!isActive()){
                 continue;
             }
             Account minerAccount = wallet.createAccount();
             Block block = MinerTool.buildMiningBlock(blockchainDataBase,unconfirmedTransactionDataBase,minerAccount);
             long startTimestamp = TimeUtil.currentTimeMillis();
             while(true){
-                if(!configurationDatabase.isMinerActive()){
+                if(!isActive()){
                     break;
                 }
                 //在挖矿的期间，可能收集到新的交易。每隔一定的时间，重新组装挖矿中的block，组装新的挖矿中的block的时候，可以考虑将新收集到交易放进挖矿中的block。
-                if(TimeUtil.currentTimeMillis()-startTimestamp > GlobalSetting.MinerConstant.MINE_TIMESTAMP_PER_ROUND){
+                if(TimeUtil.currentTimeMillis()-startTimestamp > coreConfiguration.getMineTimestampPerRound()){
                     break;
                 }
                 //随机一个nonce
@@ -54,7 +53,7 @@ public class MinerDefaultImpl extends Miner {
                     //将矿放入区块链
                     boolean isAddBlockToBlockchainSuccess = blockchainDataBase.addBlock(block);
                     if(!isAddBlockToBlockchainSuccess){
-                        LogUtil.debug("挖矿成功，但是放入区块链失败。");
+                        LogUtil.debug("挖矿成功，但是区块放入区块链失败。");
                     }
                     break;
                 }
@@ -64,17 +63,17 @@ public class MinerDefaultImpl extends Miner {
 
     @Override
     public void deactive() {
-        configurationDatabase.deactiveMiner();
+        coreConfiguration.deactiveMiner();
     }
 
     @Override
     public void active() {
-        configurationDatabase.activeMiner();
+        coreConfiguration.activeMiner();
     }
 
     @Override
     public boolean isActive() {
-        return configurationDatabase.isMinerActive();
+        return coreConfiguration.isMinerActive();
     }
 
 }

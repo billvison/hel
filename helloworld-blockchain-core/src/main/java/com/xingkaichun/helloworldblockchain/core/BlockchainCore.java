@@ -14,13 +14,17 @@ import java.util.List;
  * 单机版区块链核心系统，由以下几部分组成：
  * 区块链数据库：用于持久化本地区块链的数据
  * @see com.xingkaichun.helloworldblockchain.core.BlockchainDatabase
- * 矿工：可以收集交易，挖矿，将新挖取的矿放进区块链数据库
+ * 矿工：挖矿，将新挖取的矿放进区块链数据库
  * @see com.xingkaichun.helloworldblockchain.core.Miner
+ * 钱包：管理拥有的账户（增加账户、删除账户、查询账户、获取账户等）
+ * @see com.xingkaichun.helloworldblockchain.core.Wallet
  *
  * @author 邢开春 409060350@qq.com
  */
 public abstract class BlockchainCore {
 
+    //配置
+    protected CoreConfiguration coreConfiguration;
     //区块链数据库
     protected BlockchainDatabase blockchainDataBase ;
     //矿工
@@ -28,7 +32,8 @@ public abstract class BlockchainCore {
     //钱包
     protected Wallet wallet ;
 
-    public BlockchainCore(BlockchainDatabase blockchainDataBase, Wallet wallet, Miner miner) {
+    public BlockchainCore(CoreConfiguration coreConfiguration, BlockchainDatabase blockchainDataBase, Wallet wallet, Miner miner) {
+        this.coreConfiguration = coreConfiguration;
         this.blockchainDataBase = blockchainDataBase;
         this.wallet = wallet;
         this.miner = miner;
@@ -127,5 +132,8 @@ public abstract class BlockchainCore {
         return wallet;
     }
 
-    //endregion
+    public CoreConfiguration getCoreConfiguration() {
+        return coreConfiguration;
+    }
+//endregion
 }

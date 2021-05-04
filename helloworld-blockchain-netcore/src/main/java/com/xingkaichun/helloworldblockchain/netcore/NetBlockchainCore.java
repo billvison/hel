@@ -2,21 +2,27 @@ package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.server.BlockchainNodeHttpServer;
-import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
+import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 
 /**
  * 网络版区块链核心，代表一个完整的网络版区块链核心系统。
  * 网络版区块链核心系统，由以下几部分组成：
- * 1.单机版[没有网络交互版本]区块链核心
+ * 单机版[没有网络交互版本]区块链核心
  * @see com.xingkaichun.helloworldblockchain.core.BlockchainCore
- * 2.节点搜寻器
+ * 种子节点初始化器
+ * @see com.xingkaichun.helloworldblockchain.netcore.SeedNodeInitializer
+ * 节点搜寻器
  * @see com.xingkaichun.helloworldblockchain.netcore.NodeSearcher
- * 3.节点广播者
+ * 节点广播者
  * @see com.xingkaichun.helloworldblockchain.netcore.NodeBroadcaster
- * 4.区块搜寻器
+ * 区块链高度搜索器
+ * @see com.xingkaichun.helloworldblockchain.netcore.BlockchainHeightSearcher
+ * 区块链高度广播者
+ * @see com.xingkaichun.helloworldblockchain.netcore.BlockchainHeightBroadcaster
+ * 区块搜寻器
  * @see com.xingkaichun.helloworldblockchain.netcore.BlockSearcher
- * 5.区块广播者
+ * 区块广播者
  * @see com.xingkaichun.helloworldblockchain.netcore.BlockBroadcaster
  *
  * @author 邢开春 409060350@qq.com
@@ -25,37 +31,38 @@ public class NetBlockchainCore {
 
     private BlockchainCore blockchainCore;
     private BlockchainNodeHttpServer blockchainNodeHttpServer;
-    private ConfigurationService configurationService;
+    private NetcoreConfiguration netcoreConfiguration;
     private NodeService nodeService;
 
     private SeedNodeInitializer seedNodeInitializer;
-    private NodeBroadcaster nodeBroadcaster;
     private NodeSearcher nodeSearcher;
+    private NodeBroadcaster nodeBroadcaster;
 
-    private BlockchainHeightBroadcaster blockchainHeightBroadcaster;
     private BlockchainHeightSearcher blockchainHeightSearcher;
+    private BlockchainHeightBroadcaster blockchainHeightBroadcaster;
 
-    private BlockBroadcaster blockBroadcaster;
     private BlockSearcher blockSearcher;
+    private BlockBroadcaster blockBroadcaster;
 
 
-    public NetBlockchainCore(BlockchainCore blockchainCore, BlockchainNodeHttpServer blockchainNodeHttpServer
-            , ConfigurationService configurationService, NodeService nodeService
-            , SeedNodeInitializer seedNodeInitializer, NodeBroadcaster nodeBroadcaster, NodeSearcher nodeSearcher
-            , BlockchainHeightBroadcaster blockchainHeightBroadcaster, BlockchainHeightSearcher blockchainHeightSearcher
-            , BlockBroadcaster blockBroadcaster, BlockSearcher blockSearcher
+    public NetBlockchainCore(NetcoreConfiguration netcoreConfiguration, BlockchainCore blockchainCore, BlockchainNodeHttpServer blockchainNodeHttpServer
+            , NodeService nodeService
+            , SeedNodeInitializer seedNodeInitializer, NodeSearcher nodeSearcher, NodeBroadcaster nodeBroadcaster
+            , BlockchainHeightSearcher blockchainHeightSearcher, BlockchainHeightBroadcaster blockchainHeightBroadcaster
+            , BlockSearcher blockSearcher, BlockBroadcaster blockBroadcaster
         ) {
+        this.netcoreConfiguration = netcoreConfiguration;
+
         this.blockchainCore = blockchainCore;
         this.blockchainNodeHttpServer = blockchainNodeHttpServer;
-        this.configurationService = configurationService;
         this.nodeService = nodeService;
 
         this.seedNodeInitializer = seedNodeInitializer;
         this.nodeBroadcaster = nodeBroadcaster;
         this.nodeSearcher = nodeSearcher;
 
-        this.blockchainHeightBroadcaster = blockchainHeightBroadcaster;
         this.blockchainHeightSearcher = blockchainHeightSearcher;
+        this.blockchainHeightBroadcaster = blockchainHeightBroadcaster;
 
         this.blockBroadcaster = blockBroadcaster;
         this.blockSearcher = blockSearcher;
@@ -115,8 +122,8 @@ public class NetBlockchainCore {
         return blockBroadcaster;
     }
 
-    public ConfigurationService getConfigurationService() {
-        return configurationService;
+    public NetcoreConfiguration getNetcoreConfiguration() {
+        return netcoreConfiguration;
     }
 
     public NodeBroadcaster getNodeBroadcaster() {

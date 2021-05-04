@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
-import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
-import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
+import com.xingkaichun.helloworldblockchain.netcore.model.Node;
+import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
@@ -15,12 +15,12 @@ import com.xingkaichun.helloworldblockchain.util.SleepUtil;
  */
 public class SeedNodeInitializer {
 
-    private ConfigurationService configurationService;
+    private NetcoreConfiguration netcoreConfiguration;
     private NodeService nodeService;
 
-    public SeedNodeInitializer(ConfigurationService configurationService, NodeService nodeService) {
+    public SeedNodeInitializer(NetcoreConfiguration netcoreConfiguration, NodeService nodeService) {
 
-        this.configurationService = configurationService;
+        this.netcoreConfiguration = netcoreConfiguration;
         this.nodeService = nodeService;
     }
 
@@ -33,13 +33,13 @@ public class SeedNodeInitializer {
         new Thread(()->{
             while (true){
                 try {
-                    if(configurationService.isAutoSearchNode()){
+                    if(netcoreConfiguration.isAutoSearchNode()){
                         addSeedNode();
                     }
                 } catch (Exception e) {
                     LogUtil.error("定时将种子节点加入区块链网络出现异常",e);
                 }
-                SleepUtil.sleep(GlobalSetting.NodeConstant.ADD_SEED_NODE_TIME_INTERVAL);
+                SleepUtil.sleep(netcoreConfiguration.getAddSeedNodeTimeInterval());
             }
         }).start();
     }
@@ -49,11 +49,11 @@ public class SeedNodeInitializer {
      */
     private void addSeedNode() {
         for(String nodeIp: GlobalSetting.SEED_NODE_LIST){
-            NodeEntity node = new NodeEntity();
-            node.setIp(nodeIp);
-            NodeEntity nodeBO = nodeService.queryNode(node.getIp());
-            if(nodeBO == null){
-                if(configurationService.isAutoSearchNode()){
+            Node node = nodeService.queryNode(nodeIp);
+            if(node == null){
+                if(netcoreConfiguration.isAutoSearchNode()){
+                    node = new Node();
+                    node.setIp(nodeIp);
                     nodeService.addNode(node);
                 }
             }

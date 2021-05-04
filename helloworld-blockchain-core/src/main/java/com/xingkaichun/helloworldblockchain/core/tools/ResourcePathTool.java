@@ -14,7 +14,7 @@ public class ResourcePathTool {
      * 获取区块链数据存放目录
      */
     public static String getDataRootPath() {
-        String dataRootPath = null;
+        String dataRootPath;
         if(OperateSystemUtil.isWindowsOperateSystem()){
             dataRootPath = "C:\\HelloworldBlockchainData\\";
         }else {

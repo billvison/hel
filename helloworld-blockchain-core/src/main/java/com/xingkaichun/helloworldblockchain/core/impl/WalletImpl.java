@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
+import com.xingkaichun.helloworldblockchain.core.CoreConfiguration;
 import com.xingkaichun.helloworldblockchain.core.Wallet;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
@@ -17,10 +18,10 @@ import java.util.List;
 public class WalletImpl extends Wallet {
 
     private static final String WALLET_DATABASE_NAME = "WalletDatabase";
-    private String walletDatabasePath = null;
+    private String walletDatabasePath;
 
-    public WalletImpl(String blockchainDataPath) {
-        this.walletDatabasePath = FileUtil.newPath(blockchainDataPath, WALLET_DATABASE_NAME);
+    public WalletImpl(CoreConfiguration coreConfiguration) {
+        this.walletDatabasePath = FileUtil.newPath(coreConfiguration.getCorePath(), WALLET_DATABASE_NAME);
     }
 
     @Override

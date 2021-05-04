@@ -33,8 +33,8 @@ public class SizeTool {
 
         //校验区块随机数占用存储空间
         long nonceByteSize = stringSize(blockDTO.getNonce());
-        if(!LongUtil.isEquals(nonceByteSize, GlobalSetting.BlockConstant.NONCE_TEXT_SIZE)){
-            LogUtil.debug(String.format("nonce[%s]长度不是[%s]。",blockDTO.getNonce(),GlobalSetting.BlockConstant.NONCE_TEXT_SIZE));
+        if(!LongUtil.isEquals(nonceByteSize, GlobalSetting.BlockConstant.NONCE_SIZE)){
+            LogUtil.debug(String.format("nonce[%s]长度不是[%s]。",blockDTO.getNonce(),GlobalSetting.BlockConstant.NONCE_SIZE));
             return false;
         }
 
@@ -51,8 +51,8 @@ public class SizeTool {
 
         //校验区块占用的存储空间
         long blockByteSize = calculateBlockSize(blockDTO);
-        if(blockByteSize > GlobalSetting.BlockConstant.BLOCK_TEXT_MAX_SIZE){
-            LogUtil.debug(String.format("区块数据大小[%s]超过限制[%s]。",blockByteSize,GlobalSetting.BlockConstant.BLOCK_TEXT_MAX_SIZE));
+        if(blockByteSize > GlobalSetting.BlockConstant.BLOCK_MAX_SIZE){
+            LogUtil.debug(String.format("区块数据大小[%s]超过限制[%s]。",blockByteSize,GlobalSetting.BlockConstant.BLOCK_MAX_SIZE));
             return false;
         }
         return true;
@@ -97,8 +97,8 @@ public class SizeTool {
 
         //校验整笔交易所占存储空间
         long transactionByteSize = calculateTransactionSize(transactionDTO);
-        if(calculateTransactionSize(transactionDTO) > GlobalSetting.TransactionConstant.TRANSACTION_TEXT_MAX_SIZE){
-            LogUtil.debug(String.format("交易数据大小[%s]超过存储容量限制[%s]。",transactionByteSize,GlobalSetting.TransactionConstant.TRANSACTION_TEXT_MAX_SIZE));
+        if(calculateTransactionSize(transactionDTO) > GlobalSetting.TransactionConstant.TRANSACTION_MAX_SIZE){
+            LogUtil.debug(String.format("交易数据大小[%s]超过存储容量限制[%s]。",transactionByteSize,GlobalSetting.TransactionConstant.TRANSACTION_MAX_SIZE));
             return false;
         }
         return true;
@@ -148,7 +148,7 @@ public class SizeTool {
                 return false;
             }
         }
-        if(calculateScriptSize(scriptDTO) > GlobalSetting.ScriptConstant.SCRIPT_TEXT_MAX_SIZE){
+        if(calculateScriptSize(scriptDTO) > GlobalSetting.ScriptConstant.SCRIPT_MAX_SIZE){
             LogUtil.debug("交易校验失败：交易输出脚本所占存储空间超出限制。");
             return false;
         }

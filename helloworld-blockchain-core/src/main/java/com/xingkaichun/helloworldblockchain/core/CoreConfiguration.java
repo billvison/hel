@@ -5,13 +5,11 @@ package com.xingkaichun.helloworldblockchain.core;
  *
  * @author 邢开春 409060350@qq.com
  */
-public abstract class ConfigurationDatabase {
+public abstract class CoreConfiguration {
 
-    public abstract byte[] getConfigurationValue(byte[] configurationKey) ;
-
-    public abstract void addOrUpdateConfiguration(byte[] configurationKey,byte[] configurationValue) ;
-
+    public abstract String getCorePath();
     public abstract boolean isMinerActive();
     public abstract void activeMiner() ;
     public abstract void deactiveMiner() ;
+    public abstract long getMineTimestampPerRound();
 }

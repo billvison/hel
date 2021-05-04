@@ -22,7 +22,8 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
     public PostTransactionResponse postTransaction(PostTransactionRequest request) {
         try {
             String requestUrl = getUrl(API.POST_TRANSACTION);
-            String responseHtml = NetUtil.jsonGetRequest(requestUrl,request);
+            String requestBody = JsonUtil.toJson(request);
+            String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml,PostTransactionResponse.class);
         } catch (Exception e) {
             LogUtil.error(String.format("提交交易[%s]至节点[%s:%d]出现异常", JsonUtil.toJson(request),ip,GlobalSetting.DEFAULT_PORT),e);
@@ -34,7 +35,8 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
     public PingResponse pingNode(PingRequest request) {
         try {
             String requestUrl = getUrl(API.PING);
-            String responseHtml = NetUtil.jsonGetRequest(requestUrl,request);
+            String requestBody = JsonUtil.toJson(request);
+            String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml,PingResponse.class);
         } catch (Exception e) {
             LogUtil.error(String.format("Ping节点[%s:%d]出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
@@ -46,7 +48,8 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
     public GetBlockResponse getBlock(GetBlockRequest request) {
         try {
             String requestUrl = getUrl(API.GET_BLOCK);
-            String responseHtml = NetUtil.jsonGetRequest(requestUrl,request);
+            String requestBody = JsonUtil.toJson(request);
+            String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml,GetBlockResponse.class);
         } catch (Exception e) {
             LogUtil.error(String.format("在节点[%s:%d]查询区块出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
@@ -58,7 +61,8 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
     public GetNodesResponse getNodes(GetNodesRequest request) {
         try {
             String requestUrl = getUrl(API.GET_NODES);
-            String responseHtml = NetUtil.jsonGetRequest(requestUrl,request);
+            String requestBody = JsonUtil.toJson(request);
+            String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml,GetNodesResponse.class);
         } catch (Exception e) {
             LogUtil.error(String.format("在节点[%s:%d]查询节点列表出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
@@ -70,7 +74,8 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
     public PostBlockResponse postBlock(PostBlockRequest request) {
         try {
             String requestUrl = getUrl(API.POST_BLOCK);
-            String responseHtml = NetUtil.jsonGetRequest(requestUrl,request);
+            String requestBody = JsonUtil.toJson(request);
+            String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml,PostBlockResponse.class);
         } catch (Exception e) {
             LogUtil.error(String.format("向节点[%s:%d]提交区块出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
@@ -82,7 +87,8 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
     public PostBlockchianHeightResponse postBlockchainHeight(PostBlockchianHeightRequest request) {
         try {
             String requestUrl = getUrl(API.POST_BLOCKCHAIN_HEIGHT);
-            String responseHtml = NetUtil.jsonGetRequest(requestUrl,request);
+            String requestBody = JsonUtil.toJson(request);
+            String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml,PostBlockchianHeightResponse.class);
         } catch (Exception e) {
             LogUtil.error(String.format("向节点[%s:%d]提交区块链高度出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
@@ -91,10 +97,11 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
     }
 
     @Override
-    public GetBlockchianHeightResponse getBlockchainHeight(GetBlockchianHeightRequest getBlockchianHeightRequest) {
+    public GetBlockchianHeightResponse getBlockchainHeight(GetBlockchianHeightRequest request) {
         try {
             String requestUrl = getUrl(API.GET_BLOCKCHAIN_HEIGHT);
-            String responseHtml = NetUtil.jsonGetRequest(requestUrl,getBlockchianHeightRequest);
+            String requestBody = JsonUtil.toJson(request);
+            String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml,GetBlockchianHeightResponse.class);
         } catch (Exception e) {
             LogUtil.error(String.format("向节点[%s:%d]获取区块链高度出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
@@ -106,7 +113,8 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
     public GetTransactionResponse getTransaction(GetTransactionRequest request) {
         try {
             String requestUrl = getUrl(API.GET_TRANSACTION);
-            String responseHtml = NetUtil.jsonGetRequest(requestUrl,request);
+            String requestBody = JsonUtil.toJson(request);
+            String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml,GetTransactionResponse.class);
         } catch (Exception e) {
             LogUtil.error(String.format("在节点[%s:%d]查询交易出现异常",ip,GlobalSetting.DEFAULT_PORT),e);

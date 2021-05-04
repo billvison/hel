@@ -3,8 +3,9 @@ package com.xingkaichun.helloworldblockchain.netcore.client;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 
 /**
- * 区块链节点客户端service
+ * 区块链节点客户端
  * 向其它节点请求、提交数据
+ *
  * @author 邢开春 409060350@qq.com
  */
 public interface BlockchainNodeClient {
@@ -15,17 +16,17 @@ public interface BlockchainNodeClient {
     PostTransactionResponse postTransaction(PostTransactionRequest request);
 
     /**
-     * Ping指定节点
+     * Ping节点
      */
     PingResponse pingNode(PingRequest request);
 
     /**
-     * 根据区块高度，获取对应的区块
+     * 根据区块高度，获取区块
      */
     GetBlockResponse getBlock(GetBlockRequest request);
 
     /**
-     * 获取区块列表
+     * 获取节点列表
      */
     GetNodesResponse getNodes(GetNodesRequest request);
 
@@ -45,7 +46,7 @@ public interface BlockchainNodeClient {
     GetBlockchianHeightResponse getBlockchainHeight(GetBlockchianHeightRequest request);
 
     /**
-     * 根据交易高度，获取对应的交易
+     * 根据交易高度，获取交易
      */
     GetTransactionResponse getTransaction(GetTransactionRequest getTransactionRequest);
 }

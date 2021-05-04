@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * IP拦截器：只允许指定的IP访问服务器
+ * IP拦截器：只允许指定的IP访问
  *
  * @author 邢开春 409060350@qq.com
  */

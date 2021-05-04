@@ -14,31 +14,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * LevelDB工具类
+ * KV数据库工具类
  *
  * @author 邢开春 409060350@qq.com
  */
 public class KvDBUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(KvDBUtil.class);
-
-    private static WriteOptions writeOptions = new WriteOptions();
     private static Map<String,DB> dbMap = new HashMap<>();
-
-    static {
-        writeOptions.sync(true);
-        writeOptions.snapshot(true);
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            for (DB db:dbMap.values()){
-                try {
-                    db.close();
-                } catch (Exception e) {
-                    logger.error("LevelDB database close failed.",e);
-                }
-            }
-        }));
-    }
 
     private static DB getDB(String dbPath) {
         synchronized (KvDBUtil.class){
@@ -104,9 +87,9 @@ public class KvDBUtil {
         WriteBatch writeBatch = new WriteBatchImpl();
         if(kvWriteBatch != null){
             for (KvWrite kvWrite : kvWriteBatch.getKvWriteList()){
-                if(kvWrite.kvWriteActionEnum == KvWriteActionEnum.ADD){
+                if(kvWrite.getKvWriteActionEnum() == KvWriteActionEnum.ADD){
                     writeBatch.put(kvWrite.key, kvWrite.value);
-                }else if(kvWrite.kvWriteActionEnum == KvWriteActionEnum.DELETE){
+                }else if(kvWrite.getKvWriteActionEnum() == KvWriteActionEnum.DELETE){
                     writeBatch.delete(kvWrite.key);
                 }else {
                     throw new RuntimeException();

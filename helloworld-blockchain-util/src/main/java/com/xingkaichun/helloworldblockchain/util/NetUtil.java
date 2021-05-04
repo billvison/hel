@@ -17,7 +17,7 @@ public class NetUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(NetUtil.class);
 
-    public static String jsonGetRequest(String requestUrl, Object requestBody) throws IOException {
+    public static String get(String requestUrl, String requestBody) throws IOException {
         OutputStreamWriter out = null;
         BufferedReader br = null;
         try {
@@ -35,7 +35,7 @@ public class NetUtil {
             connection.setConnectTimeout(3000);
             connection.connect();
             out = new OutputStreamWriter(connection.getOutputStream(),StandardCharsets.UTF_8);
-            out.append(JsonUtil.toJson(requestBody));
+            out.append(requestBody);
             out.flush();
             out.close();
 

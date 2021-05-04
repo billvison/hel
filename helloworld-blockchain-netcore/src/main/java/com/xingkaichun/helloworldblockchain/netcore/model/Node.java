@@ -1,12 +1,12 @@
-package com.xingkaichun.helloworldblockchain.netcore.entity;
+package com.xingkaichun.helloworldblockchain.netcore.model;
 
 /**
  *
  * @author 邢开春 409060350@qq.com
  */
-public class NodeEntity{
+public class Node {
     private String ip;
-    private long blockchainHeight;
+    private Long blockchainHeight;
 
 
 
@@ -20,11 +20,11 @@ public class NodeEntity{
         this.ip = ip;
     }
 
-    public long getBlockchainHeight() {
+    public Long getBlockchainHeight() {
         return blockchainHeight;
     }
 
-    public void setBlockchainHeight(long blockchainHeight) {
+    public void setBlockchainHeight(Long blockchainHeight) {
         this.blockchainHeight = blockchainHeight;
     }
 

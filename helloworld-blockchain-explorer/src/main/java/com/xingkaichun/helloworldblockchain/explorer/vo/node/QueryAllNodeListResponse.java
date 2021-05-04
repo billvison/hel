@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.explorer.vo.node;
 
-import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
+import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 
 import java.util.List;
 
@@ -10,18 +10,18 @@ import java.util.List;
  */
 public class QueryAllNodeListResponse {
 
-    private List<NodeEntity> nodeList;
+    private List<Node> nodeList;
 
 
 
 
     //region get set
 
-    public List<NodeEntity> getNodeList() {
+    public List<Node> getNodeList() {
         return nodeList;
     }
 
-    public void setNodeList(List<NodeEntity> nodeList) {
+    public void setNodeList(List<Node> nodeList) {
         this.nodeList = nodeList;
     }
 

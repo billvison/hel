@@ -1,9 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
-import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
-import com.xingkaichun.helloworldblockchain.core.BlockchainDatabase;
-import com.xingkaichun.helloworldblockchain.core.Miner;
-import com.xingkaichun.helloworldblockchain.core.Wallet;
+import com.xingkaichun.helloworldblockchain.core.*;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionRequest;
 import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionResponse;
@@ -15,9 +12,11 @@ import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
-import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 默认实现
@@ -26,8 +25,8 @@ import java.util.*;
  */
 public class BlockchainCoreImpl extends BlockchainCore {
 
-    public BlockchainCoreImpl(BlockchainDatabase blockchainDataBase, Wallet wallet, Miner miner) {
-        super(blockchainDataBase,wallet,miner);
+    public BlockchainCoreImpl(CoreConfiguration coreConfiguration, BlockchainDatabase blockchainDataBase, Wallet wallet, Miner miner) {
+        super(coreConfiguration,blockchainDataBase,wallet,miner);
     }
 
     @Override
@@ -121,33 +120,6 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
 
 
-    public BuildTransactionResponse buildTransactionDTO2(BuildTransactionRequest request) {
-        List<String> payerPrivateKeyList = request.getPayerPrivateKeyList();
-        if(payerPrivateKeyList == null || payerPrivateKeyList.size()==0){
-            BuildTransactionResponse response = new BuildTransactionResponse();
-            response.setBuildTransactionSuccess(false);
-            response.setMessage("请输入交易输入");
-            return response;
-        }
-        List<Recipient> recipientList = request.getRecipientList();
-        String payerChangeAddress = request.getPayerChangeAddress();
-        if(StringUtil.isNullOrEmpty(payerChangeAddress)){
-            BuildTransactionResponse response = new BuildTransactionResponse();
-            response.setBuildTransactionSuccess(false);
-            response.setMessage("请输入找零地址");
-            return response;
-        }
-        long fee = request.getFee();
-        if(fee < 0){
-            BuildTransactionResponse response = new BuildTransactionResponse();
-            response.setBuildTransactionSuccess(false);
-            response.setMessage("交易手续费太少");
-            return response;
-        }
-        BuildTransactionResponse response = buildTransactionDTO(payerPrivateKeyList,recipientList,payerChangeAddress,fee);
-        return response;
-    }
-
     public BuildTransactionResponse buildTransactionDTO(BuildTransactionRequest request) {
         List<Account> allAccountList = wallet.getAllAccount();
         if(allAccountList == null || allAccountList.isEmpty()){
@@ -198,18 +170,18 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
     @Override
     public void submitTransaction(TransactionDTO transactionDTO) {
-        miner.getUnconfirmedTransactionDataBase().insertTransactionDTO(transactionDTO);
+        miner.getUnconfirmedTransactionDataBase().insertTransaction(transactionDTO);
     }
 
     @Override
     public List<TransactionDTO> queryMiningTransactionList(long from,long size) {
-        List<TransactionDTO> transactionDtoList = miner.getUnconfirmedTransactionDataBase().selectTransactionDtoList(from,size);
+        List<TransactionDTO> transactionDtoList = miner.getUnconfirmedTransactionDataBase().selectTransactionList(from,size);
         return transactionDtoList;
     }
 
     @Override
     public TransactionDTO queryMiningTransactionDtoByTransactionHash(String transactionHash) {
-        TransactionDTO transactionDTO = miner.getUnconfirmedTransactionDataBase().selectTransactionDtoByTransactionHash(transactionHash);
+        TransactionDTO transactionDTO = miner.getUnconfirmedTransactionDataBase().selectTransactionByTransactionHash(transactionHash);
         return transactionDTO;
     }
 }

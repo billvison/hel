@@ -28,12 +28,12 @@ public class GlobalSetting {
      * 挖矿设置
      */
     public static class IncentiveConstant{
-        //期望的每个区块挖矿耗时时间
+        //挖出一个区块的期望耗时时间
         public static final long BLOCK_TIME = 1000 * 60;
-        //在一个挖矿难度周期内的区块数量
-        public static final long INTERVAL_BLOCK = 14;
-        //一个挖矿难度周期内的周期耗时时间
-        public static final long INTERVAL_TIME = BLOCK_TIME * INTERVAL_BLOCK;
+        //一个挖矿难度周期内的区块数量
+        public static final long INTERVAL_BLOCK_COUNT = 14;
+        //一个挖矿难度周期内的期望周期耗时时间
+        public static final long INTERVAL_TIME = BLOCK_TIME * INTERVAL_BLOCK_COUNT;
     }
 
     /**
@@ -43,9 +43,9 @@ public class GlobalSetting {
         //区块最多含有的交易数量(1秒1个)
         public static final long BLOCK_MAX_TRANSACTION_COUNT = IncentiveConstant.BLOCK_TIME / 1000;
         //区块存储容量限制
-        public static final long BLOCK_TEXT_MAX_SIZE = TransactionConstant.TRANSACTION_TEXT_MAX_SIZE * BLOCK_MAX_TRANSACTION_COUNT;
+        public static final long BLOCK_MAX_SIZE = TransactionConstant.TRANSACTION_MAX_SIZE * BLOCK_MAX_TRANSACTION_COUNT;
         //nonce字符串的长度是64 64位十六进制数
-        public static final long NONCE_TEXT_SIZE = 64;
+        public static final long NONCE_SIZE = 64;
     }
 
     /**
@@ -53,7 +53,7 @@ public class GlobalSetting {
      */
     public static class TransactionConstant {
         //交易文本字符串最大长度值
-        public static final long TRANSACTION_TEXT_MAX_SIZE = 1024;
+        public static final long TRANSACTION_MAX_SIZE = 1024;
     }
 
     /**
@@ -61,7 +61,7 @@ public class GlobalSetting {
      */
     public static class ScriptConstant{
         //脚本最大存储容量
-        public static final long SCRIPT_TEXT_MAX_SIZE = 1024;
+        public static final long SCRIPT_MAX_SIZE = 1024;
     }
 
 
@@ -87,32 +87,10 @@ public class GlobalSetting {
 
 
     /**
-     * 挖矿设置
+     * 分叉设置
      */
-    public static class MinerConstant{
-        //这个时间间隔更新一次正在被挖矿的区块的交易。如果时间太长，可能导致新提交的交易延迟被确认。
-        public static final long MINE_TIMESTAMP_PER_ROUND = 1000 * 10;
-    }
-
-    /**
-     * 节点设置
-     */
-    public static class NodeConstant{
+    public static class ForkConstant{
         //两个区块链有分叉时，区块差异数量大于这个值，则真的分叉了。
-        public static final long FORK_BLOCK_SIZE = 100;
-        //在区块链网络中自动搜寻新的节点的间隔时间
-        public static final long SEARCH_NODE_TIME_INTERVAL = 1000 * 60 * 2;
-        //在区块链网络中自动搜索节点的区块链高度
-        public static final long SEARCH_BLOCKCHAIN_HEIGHT_TIME_INTERVAL = 1000 * 60 * 2;
-        //在区块链网络中自动搜寻新的区块的间隔时间。
-        public static final long SEARCH_BLOCKS_TIME_INTERVAL = 1000 * 60 * 2;
-        //区块高度广播时间间隔
-        public static final long BLOCKCHAIN_HEIGHT_BROADCASTER_TIME_INTERVAL = 1000 * 20;
-        //区块广播时间间隔。
-        public static final long BLOCK_BROADCASTER_TIME_INTERVAL = 1000 * 20;
-        //定时将种子节点加入本地区块链网络的时间间隔。
-        public static final long ADD_SEED_NODE_TIME_INTERVAL = 1000 * 60 * 2;
-        //广播自己节点的时间间隔。
-        public static final long NODE_BROADCAST_TIME_INTERVAL = 1000 * 60 * 2;
+        public static final long FORK_BLOCK_COUNT = 100;
     }
 }

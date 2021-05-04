@@ -1,23 +1,23 @@
 package com.xingkaichun.helloworldblockchain.core;
 
 /**
- * 矿工:挖矿、分配挖矿奖励、将挖取的区块放入区块链
+ * 矿工:挖矿、将挖取的区块放入区块链
  *
  * @author 邢开春 409060350@qq.com
  */
 public abstract class Miner {
 
     //配置数据库
-    protected ConfigurationDatabase configurationDatabase;
-    //矿工钱包
+    protected CoreConfiguration coreConfiguration;
+    //矿工钱包：矿工的挖矿奖励会放到钱包里。
     protected Wallet wallet;
     //矿工挖矿所在的区块链
     protected BlockchainDatabase blockchainDataBase;
-    //矿工交易数据库：矿工从交易数据库里获取挖矿的原材料(交易数据)
+    //未确认交易数据库：矿工从未确认交易数据库里获取挖矿的原材料(交易数据)
     protected UnconfirmedTransactionDatabase unconfirmedTransactionDataBase;
 
-    public Miner(ConfigurationDatabase configurationDatabase, Wallet wallet, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase) {
-        this.configurationDatabase = configurationDatabase;
+    public Miner(CoreConfiguration coreConfiguration, Wallet wallet, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase) {
+        this.coreConfiguration = coreConfiguration;
         this.wallet = wallet;
         this.blockchainDataBase = blockchainDataBase;
         this.unconfirmedTransactionDataBase = unconfirmedTransactionDataBase;
@@ -28,7 +28,7 @@ public abstract class Miner {
     /**
      * 启用矿工。
      * 矿工有两种状态：活动状态与非活动状态。
-     * 若矿工处于活动作态，开始挖矿。
+     * 若矿工处于活动作态，矿工会进行挖矿劳作。
      * 若矿工处于非活动状态，矿工不会进行任何工作。
      */
     public abstract void start() ;
@@ -65,8 +65,8 @@ public abstract class Miner {
         return unconfirmedTransactionDataBase;
     }
 
-    public ConfigurationDatabase getConfigurationDatabase() {
-        return configurationDatabase;
+    public CoreConfiguration getCoreConfiguration() {
+        return coreConfiguration;
     }
 
     //endregion

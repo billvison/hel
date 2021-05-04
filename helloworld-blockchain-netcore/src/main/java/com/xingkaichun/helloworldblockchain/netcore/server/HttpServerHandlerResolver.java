@@ -5,8 +5,8 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Model2DtoTool;
-import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
-import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
+import com.xingkaichun.helloworldblockchain.netcore.model.Node;
+import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
@@ -24,23 +24,22 @@ public class HttpServerHandlerResolver {
 
     private BlockchainCore blockchainCore;
     private NodeService nodeService;
-    private ConfigurationService configurationService;
+    private NetcoreConfiguration netcoreConfiguration;
 
-    public HttpServerHandlerResolver(BlockchainCore blockchainCore, NodeService nodeService, ConfigurationService configurationService) {
+    public HttpServerHandlerResolver(BlockchainCore blockchainCore, NodeService nodeService, NetcoreConfiguration netcoreConfiguration) {
         this.blockchainCore = blockchainCore;
         this.nodeService = nodeService;
-        this.configurationService = configurationService;
+        this.netcoreConfiguration = netcoreConfiguration;
     }
 
     /**
      * Ping节点
-     * @return
      */
     public PingResponse ping(String requestIp, PingRequest request){
         try {
             //将ping的来路作为区块链节点
-            if(configurationService.isAutoSearchNode()){
-                NodeEntity node = new NodeEntity();
+            if(netcoreConfiguration.isAutoSearchNode()){
+                Node node = new Node();
                 node.setIp(requestIp);
                 nodeService.addNode(node);
                 LogUtil.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",requestIp,GlobalSetting.DEFAULT_PORT));
@@ -101,13 +100,13 @@ public class HttpServerHandlerResolver {
 
     public GetNodesResponse getNodes(GetNodesRequest request) {
         try {
-            List<NodeEntity> nodeList = nodeService.queryAllNodeList();
+            List<Node> nodeList = nodeService.queryAllNodeList();
             if(nodeList == null){
                 nodeList = new ArrayList<>();
             }
             String[] nodes = new String[nodeList.size()];
             for (int i=0;i<nodeList.size();i++){
-                NodeEntity nodeEntity = nodeList.get(i);
+                Node nodeEntity = nodeList.get(i);
                 nodes[i] = nodeEntity.getIp();
             }
             GetNodesResponse response = new GetNodesResponse();
@@ -122,7 +121,7 @@ public class HttpServerHandlerResolver {
 
     public PostBlockchianHeightResponse postBlockchainHeight(String requestIp, PostBlockchianHeightRequest request) {
         try {
-            NodeEntity node = new NodeEntity();
+            Node node = new Node();
             node.setIp(requestIp);
             node.setBlockchainHeight(request.getHeight());
             nodeService.updateNode(node);

@@ -14,16 +14,13 @@ public class FileUtil {
     }
 
     public static void mkdirs(String path) {
-        mkdirs(new File(path));
-    }
-
-    public static void mkdirs(File file) {
+        File file = new File(path);
         if(file.exists()){
             return;
         }
         boolean mkdirs = file.mkdirs();
         if(!mkdirs){
-            throw new RuntimeException("create directory failed。");
+            throw new RuntimeException("create directory failed.");
         }
     }
 }

@@ -5,8 +5,8 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
-import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
-import com.xingkaichun.helloworldblockchain.netcore.service.ConfigurationService;
+import com.xingkaichun.helloworldblockchain.netcore.model.Node;
+import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockRequest;
@@ -27,15 +27,15 @@ import java.util.List;
  */
 public class BlockSearcher {
 
-    private ConfigurationService configurationService;
+    private NetcoreConfiguration netcoreConfiguration;
     private NodeService nodeService;
     private BlockchainCore blockchainCore;
     private BlockchainCore slaveBlockchainCore;
 
 
-    public BlockSearcher(ConfigurationService configurationService, NodeService nodeService
+    public BlockSearcher(NetcoreConfiguration netcoreConfiguration, NodeService nodeService
             , BlockchainCore blockchainCore, BlockchainCore slaveBlockchainCore) {
-        this.configurationService = configurationService;
+        this.netcoreConfiguration = netcoreConfiguration;
         this.nodeService = nodeService;
         this.blockchainCore = blockchainCore;
         this.slaveBlockchainCore = slaveBlockchainCore;
@@ -48,13 +48,13 @@ public class BlockSearcher {
         new Thread(()->{
             while (true){
                 try {
-                    if(configurationService.isSynchronizerActive()){
+                    if(netcoreConfiguration.isSynchronizerActive()){
                         synchronizeBlocks();
                     }
                 } catch (Exception e) {
                     LogUtil.error("在区块链网络中同步其它节点的区块出现异常",e);
                 }
-                SleepUtil.sleep(GlobalSetting.NodeConstant.SEARCH_BLOCKS_TIME_INTERVAL);
+                SleepUtil.sleep(netcoreConfiguration.getSearchBlockTimeInterval());
             }
         }).start();
     }
@@ -63,14 +63,14 @@ public class BlockSearcher {
      * 搜索新的区块，并同步这些区块到本地区块链系统
      */
     private void synchronizeBlocks() {
-        List<NodeEntity> nodes = nodeService.queryAllNodeList();
+        List<Node> nodes = nodeService.queryAllNodeList();
         if(nodes == null || nodes.size()==0){
             return;
         }
 
         long localBlockchainHeight = blockchainCore.queryBlockchainHeight();
         //可能存在多个节点的数据都比本地节点的区块多，但它们节点的数据可能是相同的，不应该向每个节点都去请求数据。
-        for(NodeEntity node:nodes){
+        for(Node node:nodes){
             if(LongUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
                 try {
                     //提高主区块链核心的高度，若上次程序异常退出，可能存在主链没有成功同步从链数据的情况
@@ -169,7 +169,7 @@ public class BlockSearcher {
             if(BlockTool.isBlockEquals(masterBlock,slaveBlock)){
                 break;
             }
-            if(LongUtil.isGreatEqualThan(masterBlockchainTailBlock.getHeight()-blockHeight+1,GlobalSetting.NodeConstant.FORK_BLOCK_SIZE)){
+            if(LongUtil.isGreatEqualThan(masterBlockchainTailBlock.getHeight()-blockHeight+1,GlobalSetting.ForkConstant.FORK_BLOCK_COUNT)){
                 //硬分叉，终止。
                 return;
             }
@@ -210,7 +210,7 @@ public class BlockSearcher {
     /**
      * 同步远程节点的区块到本地，未分叉同步至主链，分叉同步至从链
      */
-    public void synchronizeRemoteNodeBlock(BlockchainCore masterBlockchainCore, BlockchainCore slaveBlockchainCore, NodeService nodeService, NodeEntity node) {
+    public void synchronizeRemoteNodeBlock(BlockchainCore masterBlockchainCore, BlockchainCore slaveBlockchainCore, NodeService nodeService, Node node) {
 
         Block masterBlockchainCoreTailBlock = masterBlockchainCore.queryTailBlock();
         long masterBlockchainCoreTailBlockHeight = masterBlockchainCore.queryBlockchainHeight();
@@ -261,7 +261,7 @@ public class BlockSearcher {
                     break;
                 }
                 //分叉长度过大，不可同步。这里，认为这已经形成了硬分叉(两条完全不同的区块链)。
-                if (LongUtil.isGreatThan(masterBlockchainCoreTailBlockHeight, forkBlockHeight + GlobalSetting.NodeConstant.FORK_BLOCK_SIZE)) {
+                if (LongUtil.isGreatThan(masterBlockchainCoreTailBlockHeight, forkBlockHeight + GlobalSetting.ForkConstant.FORK_BLOCK_COUNT)) {
                     //硬分叉了，删除该节点
                     nodeService.deleteNode(node.getIp());
                     return;
@@ -293,7 +293,7 @@ public class BlockSearcher {
                 forkBlockHeight++;
 
                 //若是有分叉时，一次同步的最后一个区块至少要比本地区块链的高度大于N个
-                if(LongUtil.isGreatEqualThan(forkBlockHeight,masterBlockchainCoreTailBlockHeight + GlobalSetting.NodeConstant.FORK_BLOCK_SIZE)){
+                if(LongUtil.isGreatEqualThan(forkBlockHeight,masterBlockchainCoreTailBlockHeight + GlobalSetting.ForkConstant.FORK_BLOCK_COUNT)){
                     return;
                 }
             }

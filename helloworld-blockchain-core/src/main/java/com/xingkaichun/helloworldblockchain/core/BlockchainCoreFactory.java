@@ -20,19 +20,19 @@ public class BlockchainCoreFactory {
     /**
      * 创建BlockchainCore实例
      *
-     * @param blockchainDataPath 区块链数据存放位置
+     * @param corePath BlockchainCore数据存放位置
      */
-    public static BlockchainCore createBlockchainCore(String blockchainDataPath) {
+    public static BlockchainCore createBlockchainCore(String corePath) {
 
+        CoreConfiguration coreConfiguration = new CoreConfigurationDefaultImpl(corePath);
         Incentive incentive = new IncentiveDefaultImpl();
         Consensus consensus = new ProofOfWorkConsensusImpl();
-        BlockchainDatabase blockchainDataBase = new BlockchainDatabaseDefaultImpl(blockchainDataPath,incentive,consensus);
+        BlockchainDatabase blockchainDataBase = new BlockchainDatabaseDefaultImpl(coreConfiguration,incentive,consensus);
 
-        UnconfirmedTransactionDatabase unconfirmedTransactionDataBase = new UnconfirmedTransactionDatabaseDefaultImpl(blockchainDataPath);
-        Wallet wallet = new WalletImpl(blockchainDataPath);
-        ConfigurationDatabase configurationDatabase = new ConfigurationDatabaseDefaultImpl(blockchainDataPath);
-        Miner miner = new MinerDefaultImpl(configurationDatabase,wallet,blockchainDataBase,unconfirmedTransactionDataBase);
-        BlockchainCore blockchainCore = new BlockchainCoreImpl(blockchainDataBase,wallet,miner);
+        UnconfirmedTransactionDatabase unconfirmedTransactionDataBase = new UnconfirmedTransactionDatabaseDefaultImpl(coreConfiguration);
+        Wallet wallet = new WalletImpl(coreConfiguration);
+        Miner miner = new MinerDefaultImpl(coreConfiguration,wallet,blockchainDataBase,unconfirmedTransactionDataBase);
+        BlockchainCore blockchainCore = new BlockchainCoreImpl(coreConfiguration,blockchainDataBase,wallet,miner);
         return blockchainCore;
     }
 }

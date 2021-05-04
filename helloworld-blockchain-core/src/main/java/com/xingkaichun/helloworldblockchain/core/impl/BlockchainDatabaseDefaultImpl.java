@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainDatabase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
+import com.xingkaichun.helloworldblockchain.core.CoreConfiguration;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.enums.BlockchainActionEnum;
@@ -30,7 +31,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
 
     //region 变量与构造函数
     private static final String BLOCKCHAIN_DATABASE_NAME = "BlockchainDatabase";
-    private String blockchianDatabasePath = null;
+    private String blockchianDatabasePath;
 
     /**
      * 锁:保证对区块链增区块、删区块的操作是同步的。
@@ -38,9 +39,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      */
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
-    public BlockchainDatabaseDefaultImpl(String rootPath, Incentive incentive, Consensus consensus) {
+    public BlockchainDatabaseDefaultImpl(CoreConfiguration coreConfiguration, Incentive incentive, Consensus consensus) {
         super(consensus,incentive);
-        blockchianDatabasePath = FileUtil.newPath(rootPath, BLOCKCHAIN_DATABASE_NAME);
+        blockchianDatabasePath = FileUtil.newPath(coreConfiguration.getCorePath(), BLOCKCHAIN_DATABASE_NAME);
     }
     //endregion
 

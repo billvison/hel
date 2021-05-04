@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
+import com.xingkaichun.helloworldblockchain.core.CoreConfiguration;
 import com.xingkaichun.helloworldblockchain.core.UnconfirmedTransactionDatabase;
 import com.xingkaichun.helloworldblockchain.core.tools.EncodeDecodeTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
@@ -19,13 +20,13 @@ import java.util.List;
 public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransactionDatabase {
 
     private static final String UNCONFIRMED_TRANSACTION_DATABASE_NAME = "UnconfirmedTransactionDatabase";
-    private String unconfirmedTransactionDatabasePath = null;
+    private String unconfirmedTransactionDatabasePath;
 
-    public UnconfirmedTransactionDatabaseDefaultImpl(String rootPath) {
-        this.unconfirmedTransactionDatabasePath = FileUtil.newPath(rootPath, UNCONFIRMED_TRANSACTION_DATABASE_NAME);
+    public UnconfirmedTransactionDatabaseDefaultImpl(CoreConfiguration coreConfiguration) {
+        this.unconfirmedTransactionDatabasePath = FileUtil.newPath(coreConfiguration.getCorePath(), UNCONFIRMED_TRANSACTION_DATABASE_NAME);
     }
 
-    public void insertTransactionDTO(TransactionDTO transactionDTO) {
+    public void insertTransaction(TransactionDTO transactionDTO) {
         //交易已经持久化进交易池数据库 丢弃交易
         synchronized (UnconfirmedTransactionDatabaseDefaultImpl.class){
             String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
@@ -34,7 +35,7 @@ public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransa
     }
 
     @Override
-    public List<TransactionDTO> selectTransactionDtoList(long from, long size) {
+    public List<TransactionDTO> selectTransactionList(long from, long size) {
         List<TransactionDTO> transactionDtoList = new ArrayList<>();
         List<byte[]> bytesTransactionDTOList = KvDBUtil.get(unconfirmedTransactionDatabasePath,from,size);
         if(bytesTransactionDTOList != null){
@@ -52,7 +53,7 @@ public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransa
     }
 
     @Override
-    public TransactionDTO selectTransactionDtoByTransactionHash(String transactionHash) {
+    public TransactionDTO selectTransactionByTransactionHash(String transactionHash) {
         byte[] byteTransactionDTO = KvDBUtil.get(unconfirmedTransactionDatabasePath, getKey(transactionHash));
         if(byteTransactionDTO == null){
             return null;

@@ -40,7 +40,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
      */
     public String calculateDifficult(BlockchainDatabase blockchainDataBase, Block block) {
         // 一个难度周期区块数量
-        long intervalBlockCount = GlobalSetting.IncentiveConstant.INTERVAL_BLOCK;
+        long intervalBlockCount = GlobalSetting.IncentiveConstant.INTERVAL_BLOCK_COUNT;
 
         String targetDifficult;
         // 新区块高度

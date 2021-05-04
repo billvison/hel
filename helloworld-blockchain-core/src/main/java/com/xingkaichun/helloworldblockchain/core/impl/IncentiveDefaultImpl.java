@@ -23,7 +23,7 @@ public class IncentiveDefaultImpl extends Incentive {
     }
 
     /**
-     * 系统给予的挖矿津贴
+     * 系统给予的挖矿津贴，矿工只要挖到矿了，矿工就可以领取这一部分奖励。
      */
     private long getSubsidy(Block block) {
         return 100000000;

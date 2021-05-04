@@ -5,7 +5,8 @@ import com.xingkaichun.helloworldblockchain.core.model.script.ScriptExecuteResul
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 
 /**
- * 基于栈的虚拟机
+ * 虚拟机
+ * 用于执行数字货币脚本。
  *
  * @author 邢开春 409060350@qq.com
  */

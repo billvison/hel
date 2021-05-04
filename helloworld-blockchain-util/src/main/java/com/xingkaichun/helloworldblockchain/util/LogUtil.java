@@ -12,11 +12,11 @@ public class LogUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(LogUtil.class);
 
-    public static void error(String msg, Exception e) {
-        logger.error(msg,e);
+    public static void error(String message, Exception exception) {
+        logger.error(message,exception);
     }
 
-    public static void debug(String msg) {
-        logger.debug(msg);
+    public static void debug(String message) {
+        logger.debug(message);
     }
 }

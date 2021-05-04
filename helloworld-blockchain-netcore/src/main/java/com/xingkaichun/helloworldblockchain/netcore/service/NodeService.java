@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
-import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
+import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 
 import java.util.List;
 
@@ -13,11 +13,11 @@ public interface NodeService {
     /**
      * 查询node
      */
-    NodeEntity queryNode(String ip);
+    Node queryNode(String ip);
     /**
      * 获取所有节点
      */
-    List<NodeEntity> queryAllNodeList();
+    List<Node> queryAllNodeList();
 
     /**
      * 删除节点
@@ -27,10 +27,10 @@ public interface NodeService {
     /**
      * 新增节点
      */
-    void addNode(NodeEntity node);
+    void addNode(Node node);
 
     /**
      * 更新节点
      */
-    void updateNode(NodeEntity node);
+    void updateNode(Node node);
 }

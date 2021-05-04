@@ -55,14 +55,15 @@ public class BlockTool {
      */
     public static String calculateBlockMerkleTreeRoot(BlockDTO blockDto) {
         List<TransactionDTO> transactions = blockDto.getTransactions();
-        List<String> transactionHashList = new ArrayList<>();
+        List<byte[]> bytesTransactionHashList = new ArrayList<>();
         if(transactions != null){
             for(TransactionDTO transactionDto : transactions) {
                 String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
-                transactionHashList.add(transactionHash);
+                byte[] bytesTransactionHash = HexUtil.hexStringToBytes(transactionHash);
+                bytesTransactionHashList.add(bytesTransactionHash);
             }
         }
-        return MerkleTreeUtil.calculateMerkleTreeRootReturnHexadecimal(transactionHashList);
+        return HexUtil.bytesToHexString(MerkleTreeUtil.calculateMerkleTreeRoot(bytesTransactionHashList));
     }
     /**
      * 区块新产生的哈希是否存在重复

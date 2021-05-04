@@ -20,9 +20,6 @@ import java.util.Arrays;
  */
 public class StackBasedVirtualMachine extends VirtualMachine {
 
-    /**
-     * 执行脚本
-     */
     public ScriptExecuteResult executeScript(Transaction transactionEnvironment, Script script) throws RuntimeException {
         ScriptExecuteResult stack = new ScriptExecuteResult();
 

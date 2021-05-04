@@ -8,7 +8,7 @@ import com.xingkaichun.helloworldblockchain.explorer.vo.block.BlockView;
 import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.*;
 import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
-import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
+import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostTransactionRequest;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostTransactionResponse;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
@@ -58,7 +58,7 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
 
 
         //去向
-        TransactionView outputTransactionView = null;
+        TransactionView outputTransactionView;
         if(transactionOutputTemp == null){
             Transaction destinationTransaction = getBlockchainCore().getBlockchainDataBase().queryDestinationTransactionByTransactionOutputId(transactionOutputId);
             outputTransactionView = queryTransactionByTransactionHash(destinationTransaction.getTransactionHash());
@@ -119,11 +119,11 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         //将交易提交到本地区块链
         getBlockchainCore().submitTransaction(transactionDTO);
         //提交交易到网络
-        List<NodeEntity> nodes = netBlockchainCore.getNodeService().queryAllNodeList();
+        List<Node> nodes = netBlockchainCore.getNodeService().queryAllNodeList();
         List<SubmitTransactionToBlockchainNetworkResponse.Node> successSubmitNode = new ArrayList<>();
         List<SubmitTransactionToBlockchainNetworkResponse.Node> failSubmitNode = new ArrayList<>();
         if(nodes != null){
-            for(NodeEntity node:nodes){
+            for(Node node:nodes){
                 PostTransactionRequest postTransactionRequest = new PostTransactionRequest();
                 postTransactionRequest.setTransaction(transactionDTO);
                 PostTransactionResponse postTransactionResponse = new BlockchainNodeClientImpl(node.getIp()).postTransaction(postTransactionRequest);

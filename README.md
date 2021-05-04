@@ -7,7 +7,7 @@ HelloworldBlockchain开发调试简单，下载源码，导入idea(eclipse)，�
 
 
 ### 关于我(邢开春)
-作者微信号xing_kai_chun
+微信号xing_kai_chun
 
 
 
