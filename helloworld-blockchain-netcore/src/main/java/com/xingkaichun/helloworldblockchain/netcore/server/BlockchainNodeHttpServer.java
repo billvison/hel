@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.netcore.server;
 
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
+import com.xingkaichun.helloworldblockchain.util.SystemUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -43,7 +44,7 @@ public class BlockchainNodeHttpServer {
 						LogUtil.debug("HttpServer已启动，端口：" + GlobalSetting.DEFAULT_PORT);
 						f.channel().closeFuture().sync();
 					} catch (InterruptedException e) {
-						LogUtil.error("BlockchainNodeHttpServer运行出现异常",e);
+						SystemUtil.errorExit("节点服务器运行出现异常。",e);
 					} finally {
 						// 优雅的关闭
 						workerGroup.shutdownGracefully();

@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.model.script.OutputScript;
 import java.io.Serializable;
 
 /**
- * 交易输出
+ * 交易输出：交易的收款方叫作交易输出。
  *
  * @author 邢开春 409060350@qq.com
  */
@@ -18,10 +18,15 @@ public class TransactionOutput extends TransactionOutputId implements Serializab
     private long value;
     /**
      * [输出脚本]
-     * 交易输出不应该是任何用户都可以使用的，(只有证明了拥有交易输出所有权)的用户才可以使用这个交易输出。
-     * 如何证明用户拥有这个交易输出？
+     * [交易输出]不应该是任何用户都可以使用的，(只有证明了拥有[交易输出]所有权)的用户才可以使用这个[交易输出]。
+     * 如何证明用户拥有这个[交易输出]？
      * [输出脚本]相当于一把锁，[输入脚本]相当于一把钥匙，
      * 自然当钥匙可以打开锁时，就可以证明能拿出钥匙[输入脚本]的用户拥有锁[输出脚本]。
+     * [输出脚本]并不是真的锁，[输入脚本]也不是真的钥匙，回归本质，它们是一串代码
+     * ，所谓代码(输入脚本)解锁代码(输出脚本)的含义是，[输入脚本]与[输出脚本]组合成一个[输入输出脚本]
+     * ，执行输入输出脚本，执行的结果符合预期，即代码层面的解锁。
+     * 谁来执行[输入输出脚本]
+     * @see com.xingkaichun.helloworldblockchain.core.VirtualMachine
      */
     private OutputScript outputScript;
 
@@ -53,7 +58,7 @@ public class TransactionOutput extends TransactionOutputId implements Serializab
      */
     private long transactionIndex;
     /**
-     * [交易输出]在区块链中的高度，从1开始
+     * [交易输出]在区块链中的高度，这是一个全局高度，区块链系统中的第一笔[交易输出]高度为1，其后交易输出高度依次递增1。
      * 冗余
      */
     private long transactionOutputHeight;

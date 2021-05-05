@@ -1,5 +1,9 @@
 package com.xingkaichun.helloworldblockchain.explorer.vo.transaction;
 
+/**
+ *
+ * @author 邢开春 409060350@qq.com
+ */
 public class TransactionOutputView {
     private String address;
     private long value;

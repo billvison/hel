@@ -6,9 +6,7 @@ import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostBlockchianHeightRequest;
-import com.xingkaichun.helloworldblockchain.util.LogUtil;
-import com.xingkaichun.helloworldblockchain.util.LongUtil;
-import com.xingkaichun.helloworldblockchain.util.SleepUtil;
+import com.xingkaichun.helloworldblockchain.util.*;
 
 import java.util.List;
 
@@ -40,10 +38,10 @@ public class BlockchainHeightBroadcaster {
             while (true){
                 try {
                     broadcastBlockchainHeight();
+                    SleepUtil.sleep(netcoreConfiguration.getBlockchainHeightBroadcastTimeInterval());
                 } catch (Exception e) {
-                    LogUtil.error("在区块链网络中广播自己的区块高度出现异常",e);
+                    SystemUtil.errorExit("在区块链网络中广播区块高度异常",e);
                 }
-                SleepUtil.sleep(netcoreConfiguration.getBlockchainHeightBroadcastTimeInterval());
             }
         }).start();
     }
@@ -79,17 +77,21 @@ public class BlockchainHeightBroadcaster {
         //广播节点的数量
         int broadcastNodeCount = 0;
         for(Node node:nodes){
-            if(LongUtil.isLessEqualThan(blockchainHeight,node.getBlockchainHeight())){
-                continue;
+            try {
+                if(LongUtil.isLessEqualThan(blockchainHeight,node.getBlockchainHeight())){
+                    continue;
+                }
+                PostBlockchianHeightRequest postBlockchianHeightRequest = new PostBlockchianHeightRequest();
+                postBlockchianHeightRequest.setHeight(blockchainHeight);
+                new BlockchainNodeClientImpl(node.getIp()).postBlockchainHeight(postBlockchianHeightRequest);
+                ++broadcastNodeCount;
+                if(broadcastNodeCount > 50){
+                    return;
+                }
+                SleepUtil.sleep(1000*10);
+            }catch (Exception e){
+                SystemUtil.errorExit(StringUtil.format("广播区块高度到节点[%s]异常",node.getIp()),e);
             }
-            PostBlockchianHeightRequest postBlockchianHeightRequest = new PostBlockchianHeightRequest();
-            postBlockchianHeightRequest.setHeight(blockchainHeight);
-            new BlockchainNodeClientImpl(node.getIp()).postBlockchainHeight(postBlockchianHeightRequest);
-            ++broadcastNodeCount;
-            if(broadcastNodeCount > 50){
-                return;
-            }
-            SleepUtil.sleep(1000*10);
         }
     }
 }

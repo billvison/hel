@@ -2,7 +2,10 @@ package com.xingkaichun.helloworldblockchain.netcore.service;
 
 
 /**
- * 配置
+ * Core配置: NetBlockchainCore的配置。
+ * 该类对NetBlockchainCore模块的配置进行统一管理。
+ * 在这里可以持久化配置信息。
+ * 理论上，NetBlockchainCore模块的任何地方需要配置参数，都可以从该类获取。
  *
  * @author 邢开春 409060350@qq.com
  */

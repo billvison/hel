@@ -110,9 +110,9 @@ public class Dto2ModelTool {
 
     private static TransactionType obtainTransactionDTO(TransactionDTO transactionDTO) {
         if(transactionDTO.getInputs() == null || transactionDTO.getInputs().size()==0){
-            return TransactionType.COINBASE;
+            return TransactionType.GENESIS;
         }
-        return TransactionType.NORMAL;
+        return TransactionType.STANDARD;
     }
 
     private static OutputScript outputScriptDto2OutputScript(OutputScriptDTO outputScriptDTO) {

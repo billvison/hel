@@ -23,8 +23,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 区块链
- *
  * 注意这是一个线程不安全的实现。在并发的情况下，不保证功能的正确性。
+ *
  * @author 邢开春 409060350@qq.com
  */
 public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
@@ -219,10 +219,10 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         }
 
         //根据交易类型，做进一步的校验
-        if(transaction.getTransactionType() == TransactionType.COINBASE){
+        if(transaction.getTransactionType() == TransactionType.GENESIS){
             //校验激励，在区块层面进行校验
             return true;
-        } else if(transaction.getTransactionType() == TransactionType.NORMAL){
+        } else if(transaction.getTransactionType() == TransactionType.STANDARD){
             //交易输入必须要大于等于交易输出
             long inputsValue = TransactionTool.getInputsValue(transaction);
             long outputsValue = TransactionTool.getOutputsValue(transaction);

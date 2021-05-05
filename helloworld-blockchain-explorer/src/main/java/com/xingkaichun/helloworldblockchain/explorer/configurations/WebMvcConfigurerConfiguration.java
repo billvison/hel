@@ -34,9 +34,9 @@ public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {
 
 	@Override
 	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-		exceptionResolvers.add((httpServletRequest, httpServletResponse, handler, ex) -> {
-			responseResult(httpServletResponse,ex);
-			LogUtil.error("统一异常拦截。",ex);
+		exceptionResolvers.add((httpServletRequest, httpServletResponse, handler, exception) -> {
+			responseResult(httpServletResponse,exception);
+			LogUtil.error("统一异常拦截。",exception);
 			return new ModelAndView();
 		});
 	}

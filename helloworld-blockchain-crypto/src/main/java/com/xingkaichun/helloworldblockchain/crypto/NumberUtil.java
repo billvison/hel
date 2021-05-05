@@ -10,16 +10,16 @@ import com.google.common.primitives.Longs;
 public class NumberUtil {
 
     /**
-     * long转换为(大端模式)8个字节的字节数组(8*8=64个bit)。
+     * (8个的字节)long转换为(大端模式)8个字节的字节数组。
      */
-    public static byte[] long64ToBytes64ByBigEndian(long number) {
+    public static byte[] long8ToByte8(long number) {
         return Longs.toByteArray(number);
     }
 
     /**
-     * (大端模式)8个字节的字节数组(8*8=64个bit)转换为long。
+     * (大端模式)8个字节的字节数组转换为(8个的字节)long。
      */
-    public static long bytes64ToLong64ByBigEndian(byte[] bytes) {
+    public static long byte8ToLong8(byte[] bytes) {
         return Longs.fromByteArray(bytes);
     }
 

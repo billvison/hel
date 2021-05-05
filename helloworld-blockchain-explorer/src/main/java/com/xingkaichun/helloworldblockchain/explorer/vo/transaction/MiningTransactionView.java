@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.explorer.vo.transaction;
 import java.util.List;
 
 /**
+ *
  * @author xingkaichun@ceair.com
  */
 public class MiningTransactionView {

@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 
 /**
  * 区块链节点客户端
- * 向其它节点请求、提交数据
+ * 向目标节点请求、提交数据
  *
  * @author 邢开春 409060350@qq.com
  */

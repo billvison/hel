@@ -11,6 +11,7 @@ import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.util.TimeUtil;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class MinerTool {
                     transactionList.add(transaction);
                 } catch (Exception e) {
                     String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
-                    LogUtil.error("类型转换异常,将从挖矿交易数据库中删除该交易。交易哈希"+transactionHash,e);
+                    LogUtil.error(StringUtil.format("类型转换异常,将从挖矿交易数据库中删除该交易。交易哈希[%s]。",transactionHash),e);
                     unconfirmedTransactionDataBase.deleteByTransactionHash(transactionHash);
                 }
             }
@@ -191,7 +192,7 @@ public class MinerTool {
      */
     public static Transaction buildIncentiveTransaction(String address,long incentiveValue) {
         Transaction transaction = new Transaction();
-        transaction.setTransactionType(TransactionType.COINBASE);
+        transaction.setTransactionType(TransactionType.GENESIS);
 
         ArrayList<TransactionOutput> outputs = new ArrayList<>();
         TransactionOutput output = new TransactionOutput();

@@ -1,10 +1,11 @@
 package com.xingkaichun.helloworldblockchain.explorer.vo;
 
 /**
+ * 区块链浏览器接口常量
  *
  * @author 邢开春 409060350@qq.com
  */
-public class BlockchainApiRoute {
+public class BlockchainExplorerApi {
 
     //查询区块链高度
     public static final String QUERY_BLOCKCHAIN_HEIGHT = "/Api/Blockchain/QueryBlockchainHeight";

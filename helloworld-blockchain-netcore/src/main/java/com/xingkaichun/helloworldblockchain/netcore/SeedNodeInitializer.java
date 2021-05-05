@@ -6,6 +6,8 @@ import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
+import com.xingkaichun.helloworldblockchain.util.SystemUtil;
 
 
 /**
@@ -36,10 +38,10 @@ public class SeedNodeInitializer {
                     if(netcoreConfiguration.isAutoSearchNode()){
                         addSeedNode();
                     }
+                    SleepUtil.sleep(netcoreConfiguration.getAddSeedNodeTimeInterval());
                 } catch (Exception e) {
-                    LogUtil.error("定时将种子节点加入区块链网络出现异常",e);
+                    SystemUtil.errorExit("定时将种子节点加入区块链网络出现异常",e);
                 }
-                SleepUtil.sleep(netcoreConfiguration.getAddSeedNodeTimeInterval());
             }
         }).start();
     }
@@ -55,6 +57,7 @@ public class SeedNodeInitializer {
                     node = new Node();
                     node.setIp(nodeIp);
                     nodeService.addNode(node);
+                    LogUtil.debug(StringUtil.format("种子节点[%s]加入了区块链网络。",node.getIp()));
                 }
             }
         }

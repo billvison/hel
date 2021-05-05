@@ -135,5 +135,5 @@ public abstract class BlockchainCore {
     public CoreConfiguration getCoreConfiguration() {
         return coreConfiguration;
     }
-//endregion
+    //endregion
 }

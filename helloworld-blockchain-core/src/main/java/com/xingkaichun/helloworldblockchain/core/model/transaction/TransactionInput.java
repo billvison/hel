@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.script.InputScript;
 import java.io.Serializable;
 
 /**
- * 交易输入
+ * 交易输入：交易的付款方叫作交易输入。
  *
  * @author 邢开春 409060350@qq.com
  */
@@ -20,6 +20,9 @@ public class TransactionInput implements Serializable {
      * [输入脚本]
      * [输入脚本]用于解锁交易输出的[输出脚本]。解锁成功，则证明了(持有[输入脚本]的)用户拥有([输出脚本]所在的)交易输出的所有权，
      * 拥有交易输出所有权的用户才被允许使用这个交易输出。
+     *
+     * 请结合[输出脚本]理解[输入脚本]
+     * @see com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput
      *
      * 这里特别注意
      * 若交易广播到区块链网络，任何用户都有可能获取交易，并从交易中获取输入脚本。

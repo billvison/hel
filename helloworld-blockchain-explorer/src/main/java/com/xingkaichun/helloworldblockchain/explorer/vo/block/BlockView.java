@@ -2,6 +2,10 @@ package com.xingkaichun.helloworldblockchain.explorer.vo.block;
 
 import java.util.List;
 
+/**
+ *
+ * @author 邢开春 409060350@qq.com
+ */
 public class BlockView {
 
     private long height;

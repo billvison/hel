@@ -11,7 +11,7 @@ import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.util.LogUtil;
+import com.xingkaichun.helloworldblockchain.util.SystemUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
                     try {
                         miner.start();
                     } catch (Exception e) {
-                        LogUtil.error("矿工在运行中发生异常并退出，请检查修复异常！",e);
+                        SystemUtil.errorExit("矿工在运行中发生异常，请检查修复异常！",e);
                     }
                 }
         ).start();

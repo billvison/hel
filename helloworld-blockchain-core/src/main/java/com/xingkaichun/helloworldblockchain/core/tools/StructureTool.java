@@ -24,7 +24,7 @@ public class StructureTool {
     public static boolean isBlockStructureLegal(Block block) {
         List<Transaction> transactions = block.getTransactions();
         if(transactions == null || transactions.size()==0){
-            LogUtil.debug("区块数据异常：区块中的交易数量为0。区块必须有一笔CoinBase的交易。");
+            LogUtil.debug("区块数据异常：区块中的交易数量为0。区块必须有一笔创世的交易。");
             return false;
         }
         //校验区块中交易的数量
@@ -36,13 +36,13 @@ public class StructureTool {
         for(int i=0; i<transactions.size(); i++){
             Transaction transaction = transactions.get(i);
             if(i == 0){
-                if(transaction.getTransactionType() != TransactionType.COINBASE){
-                    LogUtil.debug("区块数据异常：区块第一笔交易必须是CoinBase。");
+                if(transaction.getTransactionType() != TransactionType.GENESIS){
+                    LogUtil.debug("区块数据异常：区块第一笔交易必须是创世交易。");
                     return false;
                 }
             }else {
-                if(transaction.getTransactionType() != TransactionType.NORMAL){
-                    LogUtil.debug("区块数据异常：区块非第一笔交易必须是普通交易。");
+                if(transaction.getTransactionType() != TransactionType.STANDARD){
+                    LogUtil.debug("区块数据异常：区块非第一笔交易必须是标准交易。");
                     return false;
                 }
             }
@@ -60,23 +60,22 @@ public class StructureTool {
      * 校验交易的结构
      */
     public static boolean isTransactionStructureLegal(Transaction transaction) {
-        TransactionType transactionType = transaction.getTransactionType();
-        if(TransactionType.COINBASE == transactionType){
+        if(transaction.getTransactionType() == TransactionType.GENESIS){
             List<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null && inputs.size()!=0){
-                LogUtil.debug("交易数据异常：CoinBase交易不能有交易输入。");
+                LogUtil.debug("交易数据异常：创世交易不能有交易输入。");
                 return false;
             }
             List<TransactionOutput> outputs = transaction.getOutputs();
             if(outputs == null || outputs.size()!=1){
-                LogUtil.debug("交易数据异常：CoinBase交易有且只能有一笔交易输出。");
+                LogUtil.debug("交易数据异常：创世交易有且只能有一笔交易输出。");
                 return false;
             }
             return true;
-        }else if(TransactionType.NORMAL == transactionType){
+        }else if(transaction.getTransactionType() == TransactionType.STANDARD){
             List<TransactionInput> inputs = transaction.getInputs();
             if(inputs == null || inputs.size()<1){
-                LogUtil.debug("交易数据异常：普通交易的交易输入数量至少是1。");
+                LogUtil.debug("交易数据异常：标准交易的交易输入数量至少是1。");
                 return false;
             }
             return true;

@@ -23,7 +23,8 @@ public class Block implements Serializable {
      */
     private long timestamp;
     /**
-     * 区块高度
+     * 区块高度，创世区块的高度是0，标准区块的高度从1开始，依次递增加1。
+     *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
     private long height;
@@ -82,6 +83,7 @@ public class Block implements Serializable {
      * 挖矿难度
      * 这里保存的是一个十六进制数据。
      * 如果区块哈希十六进制表示小于这个值，则认为挖矿成功
+     *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
     private String difficulty;

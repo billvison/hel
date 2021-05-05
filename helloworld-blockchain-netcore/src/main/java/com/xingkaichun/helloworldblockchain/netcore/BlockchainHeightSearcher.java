@@ -8,6 +8,8 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockchianH
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockchianHeightResponse;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
+import com.xingkaichun.helloworldblockchain.util.SystemUtil;
 
 import java.util.List;
 
@@ -33,10 +35,10 @@ public class BlockchainHeightSearcher {
             while (true){
                 try {
                     searchBlockchainHeight();
+                    SleepUtil.sleep(netcoreConfiguration.getSearchBlockchainHeightTimeInterval());
                 } catch (Exception e) {
-                    LogUtil.error("在区块链网络中搜索节点的高度异常",e);
+                    SystemUtil.errorExit("在区块链网络中搜索节点的高度异常",e);
                 }
-                SleepUtil.sleep(netcoreConfiguration.getSearchBlockchainHeightTimeInterval());
             }
         }).start();
     }
@@ -44,11 +46,15 @@ public class BlockchainHeightSearcher {
     private void searchBlockchainHeight() {
         List<Node> nodes = nodeService.queryAllNodeList();
         for(Node node:nodes){
-            GetBlockchianHeightRequest getBlockchianHeightRequest = new GetBlockchianHeightRequest();
-            GetBlockchianHeightResponse getBlockchianHeightResponse = new BlockchainNodeClientImpl(node.getIp()).getBlockchainHeight(getBlockchianHeightRequest);
-            if(getBlockchianHeightResponse != null){
-                node.setBlockchainHeight(getBlockchianHeightResponse.getBlockchainHeight());
-                nodeService.updateNode(node);
+            try {
+                GetBlockchianHeightRequest getBlockchianHeightRequest = new GetBlockchianHeightRequest();
+                GetBlockchianHeightResponse getBlockchianHeightResponse = new BlockchainNodeClientImpl(node.getIp()).getBlockchainHeight(getBlockchianHeightRequest);
+                if(getBlockchianHeightResponse != null){
+                    node.setBlockchainHeight(getBlockchianHeightResponse.getBlockchainHeight());
+                    nodeService.updateNode(node);
+                }
+            }catch (Exception e){
+                LogUtil.error(StringUtil.format("搜索节点[%s]的高度异常。",node.getIp()),e);
             }
         }
     }

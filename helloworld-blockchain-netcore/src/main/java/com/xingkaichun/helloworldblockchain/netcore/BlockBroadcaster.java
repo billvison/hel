@@ -9,9 +9,8 @@ import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostBlockRequest;
-import com.xingkaichun.helloworldblockchain.util.LogUtil;
-import com.xingkaichun.helloworldblockchain.util.LongUtil;
-import com.xingkaichun.helloworldblockchain.util.SleepUtil;
+import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.util.*;
 
 import java.util.List;
 
@@ -37,11 +36,10 @@ public class BlockBroadcaster {
             while (true){
                 try {
                     broadcastBlock();
+                    SleepUtil.sleep(netcoreConfiguration.getBlockBroadcastTimeInterval());
                 } catch (Exception e) {
-                    LogUtil.error("在区块链网络中广播自己的区块出现异常",e);
+                    SystemUtil.errorExit("在区块链网络中广播自己的区块出现异常",e);
                 }
-                SleepUtil.sleep(netcoreConfiguration.getBlockBroadcastTimeInterval());
-
             }
         }).start();
     }
@@ -53,6 +51,9 @@ public class BlockBroadcaster {
         }
 
         long blockchainHeight = blockchainCore.queryBlockchainHeight();
+        if(LongUtil.isLessEqualThan(blockchainHeight, GlobalSetting.GenesisBlock.HEIGHT)){
+            return;
+        }
         Block block = blockchainCore.queryTailBlock();
         BlockDTO blockDTO = Model2DtoTool.block2BlockDTO(block);
 
@@ -70,17 +71,21 @@ public class BlockBroadcaster {
         //广播节点的数量
         int broadcastNodeCount = 0;
         for(Node node:nodes){
-            if(LongUtil.isLessEqualThan(blockchainHeight,node.getBlockchainHeight())){
-                continue;
+            try {
+                if(LongUtil.isLessEqualThan(blockchainHeight,node.getBlockchainHeight())){
+                    continue;
+                }
+                PostBlockRequest postBlockRequest = new PostBlockRequest();
+                postBlockRequest.setBlock(blockDTO);
+                new BlockchainNodeClientImpl(node.getIp()).postBlock(postBlockRequest);
+                ++broadcastNodeCount;
+                if(broadcastNodeCount > 50){
+                    return;
+                }
+                SleepUtil.sleep(1000*2);
+            }catch (Exception e){
+                LogUtil.error(StringUtil.format("广播区块到节点[%s]异常",node.getIp()),e);
             }
-            PostBlockRequest postBlockRequest = new PostBlockRequest();
-            postBlockRequest.setBlock(blockDTO);
-            new BlockchainNodeClientImpl(node.getIp()).postBlock(postBlockRequest);
-            ++broadcastNodeCount;
-            if(broadcastNodeCount > 50){
-                return;
-            }
-            SleepUtil.sleep(1000*2);
         }
     }
 

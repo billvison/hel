@@ -80,7 +80,7 @@ public class ScriptTool {
         int start = 0;
         List<String> script = new ArrayList<>();
         while (start<bytesScript.length){
-            long bytesOperationCodeLength = NumberUtil.bytes64ToLong64ByBigEndian(Arrays.copyOfRange(bytesScript,start,start+8));
+            long bytesOperationCodeLength = NumberUtil.byte8ToLong8(Arrays.copyOfRange(bytesScript,start,start+8));
             start += 8;
             byte[] bytesOperationCode = Arrays.copyOfRange(bytesScript,start, start+(int) bytesOperationCodeLength);
             start += bytesOperationCodeLength;
@@ -94,7 +94,7 @@ public class ScriptTool {
                 String stringOperationCode = HexUtil.bytesToHexString(bytesOperationCode);
                 script.add(stringOperationCode);
 
-                long bytesOperationDataLength = NumberUtil.bytes64ToLong64ByBigEndian(Arrays.copyOfRange(bytesScript,start,start+8));
+                long bytesOperationDataLength = NumberUtil.byte8ToLong8(Arrays.copyOfRange(bytesScript,start,start+8));
                 start += 8;
                 byte[] bytesOperationData = Arrays.copyOfRange(bytesScript,start, start+(int) bytesOperationDataLength);
                 start += bytesOperationDataLength;

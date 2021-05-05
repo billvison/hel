@@ -42,8 +42,11 @@ public class GlobalSetting {
     public static class BlockConstant {
         //区块最多含有的交易数量(1秒1个)
         public static final long BLOCK_MAX_TRANSACTION_COUNT = IncentiveConstant.BLOCK_TIME / 1000;
-        //区块存储容量限制
-        public static final long BLOCK_MAX_SIZE = TransactionConstant.TRANSACTION_MAX_SIZE * BLOCK_MAX_TRANSACTION_COUNT;
+        /**
+         * 区块存储容量限制
+         * 因为同时限制了交易数量与交易大小，所以若交易数量*交易大小 < 区块大小，区块大小则可以跳过校验。
+         */
+        public static final long BLOCK_MAX_SIZE = 1024*1024;
         //nonce字符串的长度是64 64位十六进制数
         public static final long NONCE_SIZE = 64;
     }

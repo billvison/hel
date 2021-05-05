@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.explorer.vo.account;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 
 /**
+ *
  * @author 邢开春 409060350@qq.com
  */
 public class AddAccountResponse {

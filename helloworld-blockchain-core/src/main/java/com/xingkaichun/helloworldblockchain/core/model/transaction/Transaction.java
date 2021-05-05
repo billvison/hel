@@ -5,7 +5,9 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 交易
+ * 交易：付款方与收款方之间的转账活动，叫作交易。
+ * 创世交易，付款方必须是0人，收款方必须是1人。
+ * 标准交易，付款方最少是1人，允许是多人，收款方最少是1人，允许是多人。
  *
  * @author 邢开春 409060350@qq.com
  */
@@ -22,30 +24,33 @@ public class Transaction implements Serializable {
     private String transactionHash;
     /**
      * 交易类型
+     *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
     private TransactionType transactionType;
     /**
-     * 交易输入
+     * 交易输入：交易的付款方
      */
     private List<TransactionInput> inputs;
     /**
-     * 交易输出
+     * 交易输出：交易的收款方
      */
     private List<TransactionOutput> outputs;
     /**
-     * 交易在区块中的序列号，序列号从1开始。
+     * 交易在区块中的序列号，每个区块的第一笔交易的序列号都是从1开始计算，其后交易的序列号依次递增1。
+     *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
     private long transactionIndex;
     /**
-     * 交易在区块链中的高度，从1开始。
+     * 交易在区块链中的高度，这是一个全局高度，区块链系统中的第一笔交易，交易高度为1，其后交易的高度依次递增1。
      *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
     private long transactionHeight;
     /**
-     * 交易所在区块的区块高度
+     * 交易所在区块的区块高度。
+     *
      * 冗余字段，这个值可以由区块链系统推算出来
      */
     private long blockHeight;

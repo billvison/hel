@@ -7,7 +7,7 @@ import com.xingkaichun.helloworldblockchain.core.model.pay.Recipient;
 import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
-import com.xingkaichun.helloworldblockchain.explorer.vo.AdminConsoleApiRoute;
+import com.xingkaichun.helloworldblockchain.explorer.vo.AdminConsoleApi;
 import com.xingkaichun.helloworldblockchain.explorer.vo.account.*;
 import com.xingkaichun.helloworldblockchain.explorer.vo.block.DeleteBlockRequest;
 import com.xingkaichun.helloworldblockchain.explorer.vo.block.DeleteBlockResponse;
@@ -43,7 +43,7 @@ public class AdminConsoleController {
     /**
      * 矿工是否激活
      */
-    @RequestMapping(value = AdminConsoleApiRoute.IS_MINER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.IS_MINER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsMinerActiveResponse> isMineActive(@RequestBody IsMinerActiveRequest request){
         try {
             boolean isMineActive = getBlockchainCore().getMiner().isActive();
@@ -59,7 +59,7 @@ public class AdminConsoleController {
     /**
      * 激活矿工
      */
-    @RequestMapping(value = AdminConsoleApiRoute.ACTIVE_MINER,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.ACTIVE_MINER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<ActiveMinerResponse> activeMiner(@RequestBody ActiveMinerRequest request){
         try {
             getBlockchainCore().getMiner().active();
@@ -75,7 +75,7 @@ public class AdminConsoleController {
     /**
      * 停用矿工
      */
-    @RequestMapping(value = AdminConsoleApiRoute.DEACTIVE_MINER,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.DEACTIVE_MINER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeactiveMinerResponse> deactiveMiner(@RequestBody DeactiveMinerRequest request){
         try {
             getBlockchainCore().getMiner().deactive();
@@ -94,7 +94,7 @@ public class AdminConsoleController {
     /**
      * 同步器是否激活
      */
-    @RequestMapping(value = AdminConsoleApiRoute.IS_SYNCHRONIZER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.IS_SYNCHRONIZER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsSynchronizerActiveResponse> isSynchronizerActive(@RequestBody IsSynchronizerActiveRequest request){
         try {
             boolean isSynchronizerActive = netBlockchainCore.getNetcoreConfiguration().isSynchronizerActive();
@@ -110,7 +110,7 @@ public class AdminConsoleController {
     /**
      * 激活同步器
      */
-    @RequestMapping(value = AdminConsoleApiRoute.ACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.ACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<ActiveSynchronizerResponse> activeSynchronizer(@RequestBody ActiveSynchronizerRequest request){
         try {
             netBlockchainCore.getNetcoreConfiguration().activeSynchronizer();
@@ -126,7 +126,7 @@ public class AdminConsoleController {
     /**
      * 停用同步器
      */
-    @RequestMapping(value = AdminConsoleApiRoute.DEACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.DEACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeactiveSynchronizerResponse> deactiveSynchronizer(@RequestBody DeactiveSynchronizerRequest request){
         try {
             netBlockchainCore.getNetcoreConfiguration().deactiveSynchronizer();
@@ -145,7 +145,7 @@ public class AdminConsoleController {
     /**
      * 新增节点
      */
-    @RequestMapping(value = AdminConsoleApiRoute.ADD_NODE,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.ADD_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<AddNodeResponse> addNode(@RequestBody AddNodeRequest request){
         try {
             Node node = request.getNode();
@@ -168,7 +168,7 @@ public class AdminConsoleController {
     /**
      * 更新节点信息
      */
-    @RequestMapping(value = AdminConsoleApiRoute.UPDATE_NODE,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.UPDATE_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<UpdateNodeResponse> updateNode(@RequestBody UpdateNodeRequest request){
         try {
             if(request.getNode() == null){
@@ -186,7 +186,7 @@ public class AdminConsoleController {
     /**
      * 删除节点
      */
-    @RequestMapping(value = AdminConsoleApiRoute.DELETE_NODE,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.DELETE_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeleteNodeResponse> deleteNode(@RequestBody DeleteNodeRequest request){
         try {
             netBlockchainCore.getNodeService().deleteNode(request.getNode().getIp());
@@ -201,7 +201,7 @@ public class AdminConsoleController {
     /**
      * 查询所有节点
      */
-    @RequestMapping(value = AdminConsoleApiRoute.QUERY_ALL_NODE_LIST,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.QUERY_ALL_NODE_LIST,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryAllNodeListResponse> queryAllNodeList(@RequestBody QueryAllNodeListRequest request){
         try {
             List<Node> nodeList = netBlockchainCore.getNodeService().queryAllNodeList();
@@ -220,7 +220,7 @@ public class AdminConsoleController {
     /**
      * 是否开启了自动寻找区块链节点的功能
      */
-    @RequestMapping(value = AdminConsoleApiRoute.IS_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.IS_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsAutoSearchNodeResponse> isAutoSearchNewNode(@RequestBody IsAutoSearchNodeRequest request){
         try {
             boolean isAutoSearchNode = netBlockchainCore.getNetcoreConfiguration().isAutoSearchNode();
@@ -236,7 +236,7 @@ public class AdminConsoleController {
     /**
      * 设置是否允许自动寻找区块链节点
      */
-    @RequestMapping(value = AdminConsoleApiRoute.SET_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.SET_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<SetAutoSearchNodeResponse> setAutoSearchNode(@RequestBody SetAutoSearchNodeRequest request){
         try {
             netBlockchainCore.getNetcoreConfiguration().setAutoSearchNode(request.isAutoSearchNode());
@@ -254,7 +254,7 @@ public class AdminConsoleController {
     /**
      * 新增账户
      */
-    @RequestMapping(value = AdminConsoleApiRoute.ADD_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.ADD_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<AddAccountResponse> addAccount(@RequestBody AddAccountRequest request){
         try {
             String privateKey = request.getPrivateKey();
@@ -275,7 +275,7 @@ public class AdminConsoleController {
     /**
      * 删除账户
      */
-    @RequestMapping(value = AdminConsoleApiRoute.DELETE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.DELETE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeleteAccountResponse> deleteAccount(@RequestBody DeleteAccountRequest request){
         try {
             String address = request.getAddress();
@@ -295,7 +295,7 @@ public class AdminConsoleController {
     /**
      * 查询所有的账户
      */
-    @RequestMapping(value = AdminConsoleApiRoute.QUERY_ALL_ACCOUNT_LIST,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.QUERY_ALL_ACCOUNT_LIST,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryAllAccountListResponse> queryAllAccountList(@RequestBody QueryAllAccountListRequest request){
         try {
             List<Account> allAccount = getBlockchainCore().getWallet().getAllAccount();
@@ -330,7 +330,7 @@ public class AdminConsoleController {
     /**
      * 删除区块
      */
-    @RequestMapping(value = AdminConsoleApiRoute.DELETE_BLOCK,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.DELETE_BLOCK,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeleteBlockResponse> deleteBlock(@RequestBody DeleteBlockRequest request){
         try {
             if(request.getBlockHeight() == null){
@@ -351,7 +351,7 @@ public class AdminConsoleController {
     /**
      * 构建交易
      */
-    @RequestMapping(value = AdminConsoleApiRoute.BUILD_TRANSACTION,method={RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = AdminConsoleApi.BUILD_TRANSACTION,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<BuildTransactionResponse> buildTransaction(@RequestBody BuildTransactionRequest request){
         try {
             List<Recipient> recipientList = request.getRecipientList();

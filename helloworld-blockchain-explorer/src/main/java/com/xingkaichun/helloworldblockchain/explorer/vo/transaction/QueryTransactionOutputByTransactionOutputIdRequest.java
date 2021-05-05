@@ -2,9 +2,13 @@ package com.xingkaichun.helloworldblockchain.explorer.vo.transaction;
 
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
 
+/**
+ *
+ * @author 邢开春 409060350@qq.com
+ */
 public class QueryTransactionOutputByTransactionOutputIdRequest {
 
-    TransactionOutputId transactionOutputId;
+    private TransactionOutputId transactionOutputId;
 
 
     public TransactionOutputId getTransactionOutputId() {

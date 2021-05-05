@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * Bytes工具类
+ * 字节工具类
  *
  * @author 邢开春 409060350@qq.com
  */
@@ -42,7 +42,7 @@ public class ByteUtil {
      * 计算[传入字节数组]的长度，然后将长度转为4个字节的字节数组(大端)，然后将长度字节数组拼接在[传入字节数组]前，然后返回。
      */
     public static byte[] concatLength(byte[] value) {
-        return concat(NumberUtil.long64ToBytes64ByBigEndian(value.length),value);
+        return concat(NumberUtil.long8ToByte8(value.length),value);
     }
 
     /**

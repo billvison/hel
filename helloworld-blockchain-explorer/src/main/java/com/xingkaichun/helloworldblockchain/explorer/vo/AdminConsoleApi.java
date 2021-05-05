@@ -1,10 +1,12 @@
 package com.xingkaichun.helloworldblockchain.explorer.vo;
 
 /**
- * 管理区块链路由
+ * 管理控制台接口常量
+ *
  * @author 邢开春 409060350@qq.com
  */
-public class AdminConsoleApiRoute {
+public class AdminConsoleApi {
+
     //矿工是否激活
     public static final String IS_MINER_ACTIVE = "/Api/AdminConsole/IsMinerActive";
     //激活矿工

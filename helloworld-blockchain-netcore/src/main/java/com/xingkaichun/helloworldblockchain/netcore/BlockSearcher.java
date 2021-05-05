@@ -12,10 +12,7 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockRequest;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockResponse;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
-import com.xingkaichun.helloworldblockchain.util.LogUtil;
-import com.xingkaichun.helloworldblockchain.util.LongUtil;
-import com.xingkaichun.helloworldblockchain.util.SleepUtil;
-import com.xingkaichun.helloworldblockchain.util.StringUtil;
+import com.xingkaichun.helloworldblockchain.util.*;
 
 import java.util.List;
 
@@ -51,10 +48,10 @@ public class BlockSearcher {
                     if(netcoreConfiguration.isSynchronizerActive()){
                         synchronizeBlocks();
                     }
+                    SleepUtil.sleep(netcoreConfiguration.getSearchBlockTimeInterval());
                 } catch (Exception e) {
-                    LogUtil.error("在区块链网络中同步其它节点的区块出现异常",e);
+                    SystemUtil.errorExit("在区块链网络中同步节点的区块出现异常",e);
                 }
-                SleepUtil.sleep(netcoreConfiguration.getSearchBlockTimeInterval());
             }
         }).start();
     }
@@ -71,21 +68,25 @@ public class BlockSearcher {
         long localBlockchainHeight = blockchainCore.queryBlockchainHeight();
         //可能存在多个节点的数据都比本地节点的区块多，但它们节点的数据可能是相同的，不应该向每个节点都去请求数据。
         for(Node node:nodes){
-            if(LongUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
-                try {
-                    //提高主区块链核心的高度，若上次程序异常退出，可能存在主链没有成功同步从链数据的情况
-                    promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
-                    //同步主区块链核心数据到从区块链核心
-                    copyMasterBlockchainCoreToSlaveBlockchainCore(blockchainCore, slaveBlockchainCore);
-                    //同步远程节点的区块到本地，未分叉同步至主链，分叉同步至从链
-                    synchronizeRemoteNodeBlock(blockchainCore,slaveBlockchainCore,nodeService,node);
-                    //提高主区块链核心的高度
-                    promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
-                } catch (Exception e){
-                    LogUtil.error(String.format("同步节点[%s]区块到本地区块链系统出现异常",node.getIp()),e);
+            try {
+                if(LongUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
+                    try {
+                        //提高主区块链核心的高度，若上次程序异常退出，可能存在主链没有成功同步从链数据的情况
+                        promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
+                        //同步主区块链核心数据到从区块链核心
+                        copyMasterBlockchainCoreToSlaveBlockchainCore(blockchainCore, slaveBlockchainCore);
+                        //同步远程节点的区块到本地，未分叉同步至主链，分叉同步至从链
+                        synchronizeRemoteNodeBlock(blockchainCore,slaveBlockchainCore,nodeService,node);
+                        //提高主区块链核心的高度
+                        promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
+                    } catch (Exception e){
+                        LogUtil.error(String.format("同步节点[%s]区块到本地区块链系统出现异常",node.getIp()),e);
+                    }
+                    //同步之后，本地区块链高度已经发生改变了
+                    localBlockchainHeight = blockchainCore.queryBlockchainHeight();
                 }
-                //同步之后，本地区块链高度已经发生改变了
-                localBlockchainHeight = blockchainCore.queryBlockchainHeight();
+            }catch (Exception e){
+                LogUtil.error(StringUtil.format("同步节点[%s]的区块出现异常。",node.getIp()),e);
             }
         }
     }

@@ -4,6 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.*;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.MinerTool;
+import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.RandomUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
@@ -43,7 +44,7 @@ public class MinerDefaultImpl extends Miner {
                     break;
                 }
                 //随机一个nonce
-                block.setNonce(RandomUtil.random32BytesReturnHexadecimal());
+                block.setNonce(HexUtil.bytesToHexString(RandomUtil.random32Bytes()));
                 block.setHash(BlockTool.calculateBlockHash(block));
                 //挖矿成功
                 if(blockchainDataBase.getConsensus().isReachConsensus(blockchainDataBase,block)){

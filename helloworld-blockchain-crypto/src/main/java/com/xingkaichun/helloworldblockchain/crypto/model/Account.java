@@ -51,5 +51,5 @@ public class Account implements Serializable {
     public String getPublicKeyHash() {
         return publicKeyHash;
     }
-//endregion
+    //endregion
 }

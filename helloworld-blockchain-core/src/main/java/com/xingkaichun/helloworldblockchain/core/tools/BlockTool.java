@@ -34,7 +34,7 @@ public class BlockTool {
      * 计算区块的Hash值
      */
     public static String calculateBlockHash(BlockDTO blockDto) {
-        byte[] bytesTimestamp = NumberUtil.long64ToBytes64ByBigEndian(blockDto.getTimestamp());
+        byte[] bytesTimestamp = NumberUtil.long8ToByte8(blockDto.getTimestamp());
         byte[] bytesPreviousBlockHash = HexUtil.hexStringToBytes(blockDto.getPreviousHash());
         byte[] bytesMerkleTreeRoot = HexUtil.hexStringToBytes(calculateBlockMerkleTreeRoot(blockDto));
         byte[] bytesNonce = HexUtil.hexStringToBytes(blockDto.getNonce());
@@ -237,9 +237,9 @@ public class BlockTool {
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
-                if(transaction.getTransactionType() == TransactionType.COINBASE){
+                if(transaction.getTransactionType() == TransactionType.GENESIS){
                     continue;
-                }else if(transaction.getTransactionType() == TransactionType.NORMAL){
+                }else if(transaction.getTransactionType() == TransactionType.STANDARD){
                     long fee = TransactionTool.getTransactionFee(transaction);
                     fees += fee;
                 }else{

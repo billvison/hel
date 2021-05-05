@@ -1,6 +1,5 @@
 package com.xingkaichun.helloworldblockchain.util;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -10,13 +9,18 @@ import org.slf4j.LoggerFactory;
  */
 public class LogUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(LogUtil.class);
-
     public static void error(String message, Exception exception) {
-        logger.error(message,exception);
+        StackTraceElement stackTraceElement = getStackTraceElement();
+        LoggerFactory.getLogger(stackTraceElement.getClassName()).error("["+stackTraceElement.getLineNumber()+"] - "+message,exception);
     }
 
     public static void debug(String message) {
-        logger.debug(message);
+        StackTraceElement stackTraceElement = getStackTraceElement();
+        LoggerFactory.getLogger(stackTraceElement.getClassName()).debug("["+stackTraceElement.getLineNumber()+"] - "+message);
+    }
+
+    private static StackTraceElement getStackTraceElement(){
+        StackTraceElement[] classArray= new Exception().getStackTrace() ;
+        return classArray[2];
     }
 }

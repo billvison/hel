@@ -7,7 +7,7 @@ package com.xingkaichun.helloworldblockchain.core;
  */
 public abstract class Miner {
 
-    //配置数据库
+    //配置
     protected CoreConfiguration coreConfiguration;
     //矿工钱包：矿工的挖矿奖励会放到钱包里。
     protected Wallet wallet;

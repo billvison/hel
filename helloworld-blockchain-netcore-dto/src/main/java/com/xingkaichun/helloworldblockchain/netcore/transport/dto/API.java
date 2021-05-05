@@ -1,14 +1,12 @@
 package com.xingkaichun.helloworldblockchain.netcore.transport.dto;
 
 /**
+ * 节点接口常量
  *
  * @author 邢开春 409060350@qq.com
  */
 public class API {
 
-    /**
-     * 接口常量
-     */
     public static final String PING = "/ping";
 
     public static final String GET_NODES = "/get_nodes";

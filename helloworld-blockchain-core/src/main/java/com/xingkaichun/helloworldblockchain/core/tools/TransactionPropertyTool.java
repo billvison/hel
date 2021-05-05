@@ -19,9 +19,9 @@ public class TransactionPropertyTool {
         if(!isTransactionHashRight(transaction)){
             return false;
         }
-        if(TransactionType.COINBASE == transaction.getTransactionType()){
+        if(transaction.getTransactionType() == TransactionType.GENESIS){
             //写入的激励金额，在区块层面进行校验。
-        }else if(TransactionType.NORMAL == transaction.getTransactionType()){
+        }else if(transaction.getTransactionType() == TransactionType.STANDARD){
             //nothing
         }else {
             throw new RuntimeException("不支持的交易类型");
