@@ -184,7 +184,7 @@ public class ScriptTool {
                     && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(inputScriptDTO.get(0))
                     && (136 <= inputScriptDTO.get(1).length() && 144 >= inputScriptDTO.get(1).length())
                     && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(inputScriptDTO.get(2))
-                    && 130 == inputScriptDTO.get(3).length();
+                    && 66 == inputScriptDTO.get(3).length();
         }catch (Exception e){
             return false;
         }

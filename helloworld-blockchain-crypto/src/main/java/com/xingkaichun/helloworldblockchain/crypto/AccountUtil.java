@@ -37,7 +37,7 @@ public class AccountUtil {
 
     private static final ECDomainParameters CURVE;
     private static final SecureRandom SECURE_RANDOM;
-    private static final boolean COMPRESSED = false;
+    private static final boolean COMPRESSED = true;
     private static final BigInteger HALF_CURVE_ORDER;
 
 

@@ -20,9 +20,9 @@ public class AccountUtilTest {
     private static final Random RANDOM = new Random();
 
     private static final Account ACCOUNT_1 = new Account("d5c654eeff2cf1c6af16d721f31854ef447dfc61a6344bf1ba7108ec77d29b80"
-            ,"044a99261b7a4b4bad2cac46defa41936b5807bf35dc5d7645d4976431666c741f3be030868718a20f875c69e9f1b781502429584f2c754c0aa8432719df1ed65e"
-            ,"1cf104696d0b39bc85ec40015249040aacaa2c2d"
-            ,"13e2eYT45FbRMBuyg7CHjZuEkjfMCD7xGg"
+            ,"024a99261b7a4b4bad2cac46defa41936b5807bf35dc5d7645d4976431666c741f"
+            ,"6f858467e5648287a419e05d6f1c317d871c0bc1"
+            ,"1BAfxES4BAQdnKVTJSfAjcKRxh3CsYMN4Y"
     );
 
     @Test
@@ -72,7 +72,7 @@ public class AccountUtilTest {
 
     private void randomAssertSignature() throws Exception{
         Account account = AccountUtil.randomAccount();
-        ECKey bitcoinjECKey = ECKey.fromPrivate(privateKeyFromProxy(account.getPrivateKey()),false);
+        ECKey bitcoinjECKey = ECKey.fromPrivate(privateKeyFromProxy(account.getPrivateKey()),true);
 
         //随机生成32位数组字节
         byte[] randomByte = new byte[32];
@@ -90,7 +90,7 @@ public class AccountUtilTest {
 
 
         byte[] signByBitcoinj = bitcoinjECKey.sign(randomSha256Hash).encodeToDER();
-        ECKey bitcoinjECKey2 = ECKey.fromPrivate(privateKeyFromProxy(account.getPrivateKey()),false);
+        ECKey bitcoinjECKey2 = ECKey.fromPrivate(privateKeyFromProxy(account.getPrivateKey()),true);
         byte[] signByBitcoinj2 = bitcoinjECKey2.sign(randomSha256Hash).encodeToDER();
         //校验同一私钥，两次bitcoinj签名是否一致
         assertArrayEquals(signByBitcoinj,signByBitcoinj2);
@@ -131,7 +131,7 @@ public class AccountUtilTest {
         assertEquals(account.getAddress(),accountFromPrivateKey.getAddress());
 
         //用bitcoinj解析账户，并对比私钥、公钥、地址
-        ECKey bitcoinjECKey = ECKey.fromPrivate(privateKeyFromProxy(account.getPrivateKey()),false);
+        ECKey bitcoinjECKey = ECKey.fromPrivate(privateKeyFromProxy(account.getPrivateKey()),true);
         assertEquals(account.getPrivateKey(),bitcoinjECKey.getPrivateKeyAsHex());
         assertEquals(account.getPublicKey(),bitcoinjECKey.getPublicKeyAsHex());
         Address bitcoinjAddress = Address.fromKey(NetworkParameters.fromID(NetworkParameters.ID_MAINNET),bitcoinjECKey, Script.ScriptType.P2PKH);
