@@ -6,6 +6,11 @@ import com.xingkaichun.helloworldblockchain.util.FileUtil;
 import com.xingkaichun.helloworldblockchain.util.KvDBUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
+/**
+ * 默认实现
+ *
+ * @author 邢开春 409060350@qq.com
+ */
 public class CoreConfigurationDefaultImpl extends CoreConfiguration {
 
     private String corePath;
