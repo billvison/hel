@@ -118,7 +118,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             return false;
         }
         //校验区块的存储容量
-        if(!SizeTool.isBlockStorageCapacityLegal(block)){
+        if(!SizeTool.isBlockSizeLegal(block)){
             LogUtil.debug("区块数据异常，请校验区块的大小。");
             return false;
         }
@@ -181,7 +181,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             return false;
         }
         //校验交易的存储容量
-        if(!SizeTool.isTransactionStorageCapacityLegal(transaction)){
+        if(!SizeTool.isTransactionSizeLegal(transaction)){
             LogUtil.debug("交易数据异常，请校验交易的大小。");
             return false;
         }
@@ -1024,7 +1024,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      */
     private boolean isIncentiveRight(Block block) {
         long writeIncentiveValue = BlockTool.getMinerIncentiveValue(block);
-        long targetIncentiveValue = incentive.incentiveAmount(block);
+        long targetIncentiveValue = incentive.incentiveAmount(this,block);
         if(writeIncentiveValue != targetIncentiveValue){
             LogUtil.debug("区块数据异常，挖矿奖励数据异常。");
             return false;

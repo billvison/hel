@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.*;
 import com.xingkaichun.helloworldblockchain.core.tools.*;
 import com.xingkaichun.helloworldblockchain.explorer.vo.block.BlockView;
 import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.*;
-import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
+import com.xingkaichun.helloworldblockchain.netcore.BlockchainNetCore;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostTransactionRequest;
@@ -27,7 +27,7 @@ import java.util.List;
 public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
 
     @Autowired
-    private NetBlockchainCore netBlockchainCore;
+    private BlockchainNetCore blockchainNetCore;
 
     @Override
     public TransactionOutputDetailView queryTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId) {
@@ -119,7 +119,7 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
         //将交易提交到本地区块链
         getBlockchainCore().submitTransaction(transactionDTO);
         //提交交易到网络
-        List<Node> nodes = netBlockchainCore.getNodeService().queryAllNodeList();
+        List<Node> nodes = blockchainNetCore.getNodeService().queryAllNodeList();
         List<SubmitTransactionToBlockchainNetworkResponse.Node> successSubmitNode = new ArrayList<>();
         List<SubmitTransactionToBlockchainNetworkResponse.Node> failSubmitNode = new ArrayList<>();
         if(nodes != null){
@@ -275,6 +275,6 @@ public class BlockchainBrowserServiceImpl implements BlockchainBrowserService {
     }
 
     private BlockchainCore getBlockchainCore(){
-        return netBlockchainCore.getBlockchainCore();
+        return blockchainNetCore.getBlockchainCore();
     }
 }

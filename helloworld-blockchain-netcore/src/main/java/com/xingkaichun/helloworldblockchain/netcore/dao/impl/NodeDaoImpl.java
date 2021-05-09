@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.netcore.dao.impl;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
 import com.xingkaichun.helloworldblockchain.netcore.entity.NodeEntity;
-import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration;
+import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import com.xingkaichun.helloworldblockchain.util.KvDBUtil;
@@ -21,8 +21,8 @@ public class NodeDaoImpl implements NodeDao {
     private static final String NODE_DATABASE_NAME = "NodeDatabase";
     private String nodeDatabasePath ;
 
-    public NodeDaoImpl(NetcoreConfiguration netcoreConfiguration) {
-        this.nodeDatabasePath = FileUtil.newPath(netcoreConfiguration.getNetcorePath(), NODE_DATABASE_NAME);
+    public NodeDaoImpl(NetCoreConfiguration netCoreConfiguration) {
+        this.nodeDatabasePath = FileUtil.newPath(netCoreConfiguration.getNetCorePath(), NODE_DATABASE_NAME);
     }
 
     @Override

@@ -2,12 +2,24 @@ package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.server.BlockchainNodeHttpServer;
-import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration;
+import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 
 /**
- * 网络版区块链核心，代表一个完整的网络版区块链核心系统。
- * 网络版区块链核心系统，由以下几部分组成：
+ * 区块链网络版核心，代表一个完整的区块链网络版核心系统，它就是所谓的节点。
+ * 区块链网络版核心底层依赖单机版区块链核心BlockchainCore，在单机版区块链系统的基础上
+ * ，新增了网络功能：自动的在整个区块链网络中寻找/发布：节点、区块、交易。
+ *
+ * 在启动时，它通过[种子节点初始化器]，将种子节点加入到自己已知的节点列表，
+ * 通过[节点搜寻器]搜索区块链网络中的节点，
+ * 通过[节点广播者]将自己的存在告诉其它节点，
+ * 通过[区块链高度搜索器]搜索已知节点的高度，
+ * 通过[区块搜寻器]查找最新的区块，
+ * 通过[区块链高度广播者]将自己的高度告诉其它节点，
+ * 通过[区块广播者]广播自己最新的区块，
+ * 每个[区块链网络版核心]都会做出上述操作，从而相互之间互联起来，共同协作，构成了区块链网络。
+ *
+ * 区块链网络版核心系统，由以下几部分组成：
  * 单机版[没有网络交互版本]区块链核心
  * @see com.xingkaichun.helloworldblockchain.core.BlockchainCore
  * 种子节点初始化器
@@ -27,11 +39,11 @@ import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class NetBlockchainCore {
+public class BlockchainNetCore {
 
     private BlockchainCore blockchainCore;
     private BlockchainNodeHttpServer blockchainNodeHttpServer;
-    private NetcoreConfiguration netcoreConfiguration;
+    private NetCoreConfiguration netCoreConfiguration;
     private NodeService nodeService;
 
     private SeedNodeInitializer seedNodeInitializer;
@@ -45,13 +57,13 @@ public class NetBlockchainCore {
     private BlockBroadcaster blockBroadcaster;
 
 
-    public NetBlockchainCore(NetcoreConfiguration netcoreConfiguration, BlockchainCore blockchainCore, BlockchainNodeHttpServer blockchainNodeHttpServer
+    public BlockchainNetCore(NetCoreConfiguration netCoreConfiguration, BlockchainCore blockchainCore, BlockchainNodeHttpServer blockchainNodeHttpServer
             , NodeService nodeService
             , SeedNodeInitializer seedNodeInitializer, NodeSearcher nodeSearcher, NodeBroadcaster nodeBroadcaster
             , BlockchainHeightSearcher blockchainHeightSearcher, BlockchainHeightBroadcaster blockchainHeightBroadcaster
             , BlockSearcher blockSearcher, BlockBroadcaster blockBroadcaster
         ) {
-        this.netcoreConfiguration = netcoreConfiguration;
+        this.netCoreConfiguration = netCoreConfiguration;
 
         this.blockchainCore = blockchainCore;
         this.blockchainNodeHttpServer = blockchainNodeHttpServer;
@@ -122,8 +134,8 @@ public class NetBlockchainCore {
         return blockBroadcaster;
     }
 
-    public NetcoreConfiguration getNetcoreConfiguration() {
-        return netcoreConfiguration;
+    public NetCoreConfiguration getNetCoreConfiguration() {
+        return netCoreConfiguration;
     }
 
     public NodeBroadcaster getNodeBroadcaster() {

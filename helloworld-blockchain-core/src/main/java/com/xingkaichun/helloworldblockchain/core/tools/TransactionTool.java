@@ -300,8 +300,20 @@ public class TransactionTool {
      * 交易中的金额是否符合系统的约束
      */
     public static boolean isTransactionAmountLegal(Transaction transaction) {
+        List<TransactionInput> inputs = transaction.getInputs();
+        if(inputs != null){
+            //校验交易输入的金额
+            for(TransactionInput input:inputs){
+                if(!isTransactionAmountLegal(input.getUnspentTransactionOutput().getValue())){
+                    LogUtil.debug("交易金额不合法");
+                    return false;
+                }
+            }
+        }
+
         List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs != null){
+            //校验交易输出的金额
             for(TransactionOutput output:outputs){
                 if(!isTransactionAmountLegal(output.getValue())){
                     LogUtil.debug("交易金额不合法");

@@ -10,7 +10,13 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO
 import java.util.List;
 
 /**
- * 单机版[没有网络交互版本]区块链核心，代表一个完整的单机版区块链核心系统。
+ * 单机版[没有网络交互版本]区块链核心，代表一个完整的单机版区块链核心系统，它在底层维护着一条区块链的完整数据。
+ * 设计之初，为了精简，它被设计为不含有网络模块。
+ * 除了不含有网络模块外，它包含了一个区块链系统应有的所有功能，包含
+ * 1.区块链账户生成 2.转账 3.提交交易至区块链
+ * 4.挖矿 5.新增区块到区块链 6.数据校验：区块验证、交易验证
+ * 7.链上区块回滚 8.链上区块查询、交易查询、账户资金查询...... 等等。
+ *
  * 单机版区块链核心系统，由以下几部分组成：
  * 区块链数据库：用于持久化本地区块链的数据
  * @see com.xingkaichun.helloworldblockchain.core.BlockchainDatabase

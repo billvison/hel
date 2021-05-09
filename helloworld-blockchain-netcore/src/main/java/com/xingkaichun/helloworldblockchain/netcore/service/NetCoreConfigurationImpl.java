@@ -9,12 +9,12 @@ import com.xingkaichun.helloworldblockchain.util.StringUtil;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class NetcoreConfigurationImpl implements NetcoreConfiguration {
+public class NetCoreConfigurationImpl implements NetCoreConfiguration {
 
     private String netcorePath;
 
-    private static final String NETCORE_CONFIGURATION_DATABASE_NAME = "NetcoreConfigurationDatabase";
-    private String netcoreConfigurationDatabasePath;
+    private static final String NETCORE_CONFIGURATION_DATABASE_NAME = "NetCoreConfigurationDatabase";
+    private String netCoreConfigurationDatabasePath;
 
 
     //同步器'同步器是否是激活状态'状态存入到数据库时的主键
@@ -43,19 +43,19 @@ public class NetcoreConfigurationImpl implements NetcoreConfiguration {
     private static final long NODE_BROADCAST_TIME_INTERVAL = 1000 * 60 * 2;
 
 
-    public NetcoreConfigurationImpl(String netcorePath) {
+    public NetCoreConfigurationImpl(String netcorePath) {
         if(StringUtil.isNullOrEmpty(netcorePath)){
             throw new NullPointerException("netcore Path不能为空。");
         }
         FileUtil.mkdirs(netcorePath);
 
         this.netcorePath = netcorePath;
-        this.netcoreConfigurationDatabasePath = FileUtil.newPath(netcorePath, NETCORE_CONFIGURATION_DATABASE_NAME);
+        this.netCoreConfigurationDatabasePath = FileUtil.newPath(netcorePath, NETCORE_CONFIGURATION_DATABASE_NAME);
     }
 
 
     @Override
-    public String getNetcorePath() {
+    public String getNetCorePath() {
         return netcorePath;
     }
 
@@ -129,11 +129,11 @@ public class NetcoreConfigurationImpl implements NetcoreConfiguration {
 
 
     private byte[] getConfigurationValue(byte[] configurationKey) {
-        byte[] bytesConfigurationValue = KvDBUtil.get(netcoreConfigurationDatabasePath, configurationKey);
+        byte[] bytesConfigurationValue = KvDBUtil.get(netCoreConfigurationDatabasePath, configurationKey);
         return bytesConfigurationValue;
     }
 
     private void addOrUpdateConfiguration(byte[] configurationKey, byte[] configurationValue) {
-        KvDBUtil.put(netcoreConfigurationDatabasePath, configurationKey, configurationValue);
+        KvDBUtil.put(netCoreConfigurationDatabasePath, configurationKey, configurationValue);
     }
 }

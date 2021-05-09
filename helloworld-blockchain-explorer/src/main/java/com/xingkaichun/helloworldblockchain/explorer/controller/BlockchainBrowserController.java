@@ -20,7 +20,7 @@ import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.ServiceResult;
 import com.xingkaichun.helloworldblockchain.explorer.vo.node.QueryBlockchainHeightRequest;
 import com.xingkaichun.helloworldblockchain.explorer.vo.node.QueryBlockchainHeightResponse;
 import com.xingkaichun.helloworldblockchain.explorer.vo.transaction.*;
-import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
+import com.xingkaichun.helloworldblockchain.netcore.BlockchainNetCore;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
@@ -44,7 +44,7 @@ import java.util.List;
 public class BlockchainBrowserController {
 
     @Autowired
-    private NetBlockchainCore netBlockchainCore;
+    private BlockchainNetCore blockchainNetCore;
     @Autowired
     private BlockchainBrowserService blockchainBrowserService;
 
@@ -322,6 +322,6 @@ public class BlockchainBrowserController {
     }
 
     private BlockchainCore getBlockchainCore(){
-        return netBlockchainCore.getBlockchainCore();
+        return blockchainNetCore.getBlockchainCore();
     }
 }

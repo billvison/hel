@@ -13,7 +13,7 @@ public abstract class Miner {
     protected Wallet wallet;
     //矿工挖矿所在的区块链
     protected BlockchainDatabase blockchainDataBase;
-    //未确认交易数据库：矿工从未确认交易数据库里获取挖矿的原材料(交易数据)
+    //未确认交易数据库：矿工从未确认交易数据库里获取挖矿的原材料(未确认交易数据)
     protected UnconfirmedTransactionDatabase unconfirmedTransactionDataBase;
 
     public Miner(CoreConfiguration coreConfiguration, Wallet wallet, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase) {

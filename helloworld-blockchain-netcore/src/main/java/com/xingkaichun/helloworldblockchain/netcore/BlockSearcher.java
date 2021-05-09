@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
-import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration;
+import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockRequest;
@@ -18,21 +18,21 @@ import java.util.List;
 
 /**
  * 区块搜索者
- * 如果发现区块链网络中有可以进行同步的区块，则尝试同步区块放入本地区块链。
+ * 如果发现区块链网络中有可以进行同步区块的节点，则尝试同步区块放入本地区块链。
  *
  * @author 邢开春 409060350@qq.com
  */
 public class BlockSearcher {
 
-    private NetcoreConfiguration netcoreConfiguration;
+    private NetCoreConfiguration netCoreConfiguration;
     private NodeService nodeService;
     private BlockchainCore blockchainCore;
     private BlockchainCore slaveBlockchainCore;
 
 
-    public BlockSearcher(NetcoreConfiguration netcoreConfiguration, NodeService nodeService
+    public BlockSearcher(NetCoreConfiguration netCoreConfiguration, NodeService nodeService
             , BlockchainCore blockchainCore, BlockchainCore slaveBlockchainCore) {
-        this.netcoreConfiguration = netcoreConfiguration;
+        this.netCoreConfiguration = netCoreConfiguration;
         this.nodeService = nodeService;
         this.blockchainCore = blockchainCore;
         this.slaveBlockchainCore = slaveBlockchainCore;
@@ -45,10 +45,10 @@ public class BlockSearcher {
         new Thread(()->{
             while (true){
                 try {
-                    if(netcoreConfiguration.isSynchronizerActive()){
+                    if(netCoreConfiguration.isSynchronizerActive()){
                         synchronizeBlocks();
                     }
-                    SleepUtil.sleep(netcoreConfiguration.getSearchBlockTimeInterval());
+                    SleepUtil.sleep(netCoreConfiguration.getSearchBlockTimeInterval());
                 } catch (Exception e) {
                     SystemUtil.errorExit("在区块链网络中同步节点的区块出现异常",e);
                 }
@@ -66,9 +66,9 @@ public class BlockSearcher {
         }
 
         long localBlockchainHeight = blockchainCore.queryBlockchainHeight();
-        //可能存在多个节点的数据都比本地节点的区块多，但它们节点的数据可能是相同的，不应该向每个节点都去请求数据。
         for(Node node:nodes){
             try {
+                //本地区块链高度小于远程节点区块链高度，此时需要将远程节点的区块同步到本地区块链。
                 if(LongUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
                     try {
                         //提高主区块链核心的高度，若上次程序异常退出，可能存在主链没有成功同步从链数据的情况

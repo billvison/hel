@@ -13,5 +13,5 @@ public abstract class Incentive {
     /**
      * 奖励给矿工的挖矿激励金额。
      */
-    public abstract long incentiveAmount(Block block) ;
+    public abstract long incentiveAmount(BlockchainDatabase blockchainDataBase, Block block) ;
 }

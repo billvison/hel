@@ -13,7 +13,9 @@ import com.xingkaichun.helloworldblockchain.util.StringUtil;
  */
 public class CoreConfigurationDefaultImpl extends CoreConfiguration {
 
+    //BlockchainCore数据存放路径
     private String corePath;
+    //配置数据库名字
     private static final String CONFIGURATION_DATABASE_NAME = "ConfigurationDatabase";
 
     //矿工'矿工是否是激活状态'状态存入到数据库时的主键
@@ -60,7 +62,7 @@ public class CoreConfigurationDefaultImpl extends CoreConfiguration {
     }
 
     @Override
-    public long getMineTimestampPerRound() {
+    public long getMinerMineIntervalTimestamp() {
         return MINE_TIMESTAMP_PER_ROUND;
     }
 

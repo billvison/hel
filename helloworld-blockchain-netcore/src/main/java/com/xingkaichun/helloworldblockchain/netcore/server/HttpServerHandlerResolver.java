@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Model2DtoTool;
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
-import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration;
+import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
@@ -24,12 +24,12 @@ public class HttpServerHandlerResolver {
 
     private BlockchainCore blockchainCore;
     private NodeService nodeService;
-    private NetcoreConfiguration netcoreConfiguration;
+    private NetCoreConfiguration netCoreConfiguration;
 
-    public HttpServerHandlerResolver(BlockchainCore blockchainCore, NodeService nodeService, NetcoreConfiguration netcoreConfiguration) {
+    public HttpServerHandlerResolver(BlockchainCore blockchainCore, NodeService nodeService, NetCoreConfiguration netCoreConfiguration) {
         this.blockchainCore = blockchainCore;
         this.nodeService = nodeService;
-        this.netcoreConfiguration = netcoreConfiguration;
+        this.netCoreConfiguration = netCoreConfiguration;
     }
 
     /**
@@ -38,7 +38,7 @@ public class HttpServerHandlerResolver {
     public PingResponse ping(String requestIp, PingRequest request){
         try {
             //将ping的来路作为区块链节点
-            if(netcoreConfiguration.isAutoSearchNode()){
+            if(netCoreConfiguration.isAutoSearchNode()){
                 Node node = new Node();
                 node.setIp(requestIp);
                 nodeService.addNode(node);

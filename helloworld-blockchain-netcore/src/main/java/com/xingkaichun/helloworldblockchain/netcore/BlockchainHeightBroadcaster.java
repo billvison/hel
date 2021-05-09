@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.netcore;
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
-import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration;
+import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostBlockchianHeightRequest;
 import com.xingkaichun.helloworldblockchain.util.*;
@@ -23,12 +23,12 @@ import java.util.List;
  */
 public class BlockchainHeightBroadcaster {
 
-    NetcoreConfiguration netcoreConfiguration;
+    NetCoreConfiguration netCoreConfiguration;
     private NodeService nodeService;
     private BlockchainCore blockchainCore;
 
-    public BlockchainHeightBroadcaster(NetcoreConfiguration netcoreConfiguration, NodeService nodeService, BlockchainCore blockchainCore) {
-        this.netcoreConfiguration = netcoreConfiguration;
+    public BlockchainHeightBroadcaster(NetCoreConfiguration netCoreConfiguration, NodeService nodeService, BlockchainCore blockchainCore) {
+        this.netCoreConfiguration = netCoreConfiguration;
         this.nodeService = nodeService;
         this.blockchainCore = blockchainCore;
     }
@@ -38,7 +38,7 @@ public class BlockchainHeightBroadcaster {
             while (true){
                 try {
                     broadcastBlockchainHeight();
-                    SleepUtil.sleep(netcoreConfiguration.getBlockchainHeightBroadcastTimeInterval());
+                    SleepUtil.sleep(netCoreConfiguration.getBlockchainHeightBroadcastTimeInterval());
                 } catch (Exception e) {
                     SystemUtil.errorExit("在区块链网络中广播区块高度异常",e);
                 }

@@ -1,5 +1,6 @@
 package com.xingkaichun.helloworldblockchain.util;
 /**
+ * 系统工具类
  *
  * @author 邢开春 xingkaichun@qq.com
  */

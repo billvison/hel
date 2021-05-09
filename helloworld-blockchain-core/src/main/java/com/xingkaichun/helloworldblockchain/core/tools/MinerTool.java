@@ -178,7 +178,7 @@ public class MinerTool {
 
         //创建挖矿奖励交易
         //激励
-        long incentiveValue = blockchainDataBase.getIncentive().incentiveAmount(nonNonceBlock);
+        long incentiveValue = blockchainDataBase.getIncentive().incentiveAmount(blockchainDataBase,nonNonceBlock);
         Transaction mineAwardTransaction =  buildIncentiveTransaction(minerAccount.getAddress(),incentiveValue);
         packingTransactionList.add(0,mineAwardTransaction);
 

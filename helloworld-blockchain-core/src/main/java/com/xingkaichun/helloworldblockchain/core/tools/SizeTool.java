@@ -8,6 +8,7 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,61 +20,65 @@ import java.util.List;
  */
 public class SizeTool {
 
-    //region 校验存储容量
+    //region 校验大小
     /**
-     * 校验区块的存储容量是否合法：用来限制区块所占存储空间的大小。
+     * 校验区块大小是否合法。用来限制区块的大小。
+     * 注意：校验区块的大小是否合法，不仅要校验区块的大小
+     * ，还要校验区块内部各个属性(时间戳、前哈希、随机数、交易)的大小是否合法。
      */
-    public static boolean isBlockStorageCapacityLegal(Block block) {
-        return isBlockStorageCapacityLegal(Model2DtoTool.block2BlockDTO(block));
+    public static boolean isBlockSizeLegal(Block block) {
+        return isBlockSizeLegal(Model2DtoTool.block2BlockDTO(block));
     }
-    public static boolean isBlockStorageCapacityLegal(BlockDTO blockDTO) {
+    public static boolean isBlockSizeLegal(BlockDTO blockDTO) {
         //区块的时间戳的长度不需要校验  假设时间戳长度不正确，则在随后的业务逻辑中走不通
 
         //区块的前哈希的长度不需要校验  假设前哈希长度不正确，则在随后的业务逻辑中走不通
 
-        //校验区块随机数占用存储空间
-        long nonceByteSize = stringSize(blockDTO.getNonce());
-        if(!LongUtil.isEquals(nonceByteSize, GlobalSetting.BlockConstant.NONCE_SIZE)){
-            LogUtil.debug(String.format("nonce[%s]长度不是[%s]。",blockDTO.getNonce(),GlobalSetting.BlockConstant.NONCE_SIZE));
+        //校验区块随机数大小
+        long nonceSize = stringSize(blockDTO.getNonce());
+        if(!LongUtil.isEquals(nonceSize, GlobalSetting.BlockConstant.NONCE_SIZE)){
+            LogUtil.debug(StringUtil.format("nonce[%s]长度不是[%s]。",blockDTO.getNonce(),GlobalSetting.BlockConstant.NONCE_SIZE));
             return false;
         }
 
-        //校验每一笔交易占用的存储空间
+        //校验每一笔交易大小是否合法
         List<TransactionDTO> transactionDtoList = blockDTO.getTransactions();
         if(transactionDtoList != null){
             for(TransactionDTO transactionDTO:transactionDtoList){
-                if(!isTransactionStorageCapacityLegal(transactionDTO)){
-                    LogUtil.debug("交易数据异常，交易的容量非法。");
+                if(!isTransactionSizeLegal(transactionDTO)){
+                    LogUtil.debug("交易数据异常，交易大小非法。");
                     return false;
                 }
             }
         }
 
         //校验区块占用的存储空间
-        long blockByteSize = calculateBlockSize(blockDTO);
-        if(blockByteSize > GlobalSetting.BlockConstant.BLOCK_MAX_SIZE){
-            LogUtil.debug(String.format("区块数据大小[%s]超过限制[%s]。",blockByteSize,GlobalSetting.BlockConstant.BLOCK_MAX_SIZE));
+        long blockSize = calculateBlockSize(blockDTO);
+        if(blockSize > GlobalSetting.BlockConstant.BLOCK_MAX_SIZE){
+            LogUtil.debug(String.format("区块数据大小[%s]超过限制[%s]。",blockSize,GlobalSetting.BlockConstant.BLOCK_MAX_SIZE));
             return false;
         }
         return true;
     }
     /**
-     * 校验交易的存储容量是否合法：用来限制交易的所占存储空间的大小。
+     * 校验交易的大小是否合法：用来限制交易的大小。
+     * 注意：校验交易的大小是否合法，不仅要校验交易的大小
+     * ，还要校验交易内部各个属性(交易输入、交易输出)的大小是否合法。
      */
-    public static boolean isTransactionStorageCapacityLegal(Transaction transaction) {
-        return isTransactionStorageCapacityLegal(Model2DtoTool.transaction2TransactionDTO(transaction));
+    public static boolean isTransactionSizeLegal(Transaction transaction) {
+        return isTransactionSizeLegal(Model2DtoTool.transaction2TransactionDTO(transaction));
     }
-    public static boolean isTransactionStorageCapacityLegal(TransactionDTO transactionDTO) {
+    public static boolean isTransactionSizeLegal(TransactionDTO transactionDTO) {
         //校验交易输入
         List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getInputs();
         if(transactionInputDtoList != null){
             for(TransactionInputDTO transactionInputDTO:transactionInputDtoList){
-                //交易的未花费输出所占存储容量不需要校验  假设不正确，则在随后的业务逻辑中走不通
+                //交易的未花费输出大小不需要校验  假设不正确，则在随后的业务逻辑中走不通
 
-                //校验脚本存储容量
+                //校验脚本大小
                 InputScriptDTO inputScriptDTO = transactionInputDTO.getInputScript();
-                //校验脚本操作码操作数的容量
-                if(!isInputScriptStorageCapacityLegal(inputScriptDTO)){
+                //校验输入脚本的大小
+                if(!isInputScriptSizeLegal(inputScriptDTO)){
                     return false;
                 }
             }
@@ -83,56 +88,55 @@ public class SizeTool {
         List<TransactionOutputDTO> transactionOutputDtoList = transactionDTO.getOutputs();
         if(transactionOutputDtoList != null){
             for(TransactionOutputDTO transactionOutputDTO:transactionOutputDtoList){
-                //交易金额所占存储容量不需要校验  假设不正确，则在随后的业务逻辑中走不通
+                //交易输出金额大小不需要校验  假设不正确，则在随后的业务逻辑中走不通
 
-                //校验脚本存储容量
+                //校验脚本大小
                 OutputScriptDTO outputScriptDTO = transactionOutputDTO.getOutputScript();
-                //校验脚本操作码操作数的容量
-                if(!isOutputScriptCapacityLegal(outputScriptDTO)){
+                //校验输出脚本的大小
+                if(!isOutputScriptSizeLegal(outputScriptDTO)){
                     return false;
                 }
 
             }
         }
 
-        //校验整笔交易所占存储空间
-        long transactionByteSize = calculateTransactionSize(transactionDTO);
-        if(calculateTransactionSize(transactionDTO) > GlobalSetting.TransactionConstant.TRANSACTION_MAX_SIZE){
-            LogUtil.debug(String.format("交易数据大小[%s]超过存储容量限制[%s]。",transactionByteSize,GlobalSetting.TransactionConstant.TRANSACTION_MAX_SIZE));
+        //校验整笔交易大小十分合法
+        long transactionSize = calculateTransactionSize(transactionDTO);
+        if(transactionSize > GlobalSetting.TransactionConstant.TRANSACTION_MAX_SIZE){
+            LogUtil.debug(StringUtil.format("交易[%s]字符超过大小限制值[%s]。",transactionSize,GlobalSetting.TransactionConstant.TRANSACTION_MAX_SIZE));
             return false;
         }
         return true;
     }
 
     /**
-     * 校验脚本操作码、操作数的存储容量
-     * 校验脚本的存储容量
+     * 校验交易输入的大小
      */
-    private static boolean isInputScriptStorageCapacityLegal(InputScriptDTO inputScriptDTO) {
-        //先宽泛的校验脚本
-        if(!isScriptStorageCapacityLegal(inputScriptDTO)){
+    private static boolean isInputScriptSizeLegal(InputScriptDTO inputScriptDTO) {
+        //先宽泛的校验脚本大小
+        if(!isScriptSizeLegal(inputScriptDTO)){
             return false;
         }
+        //严格校验输入脚本大小，因为当前输入脚本只有P2PKH，所以只需校验输入脚本是否是P2PKH输入脚本即可。
         return ScriptTool.isPayToPublicKeyHashInputScript(inputScriptDTO);
     }
 
     /**
-     * 校验脚本操作码、操作数的存储容量
-     * 校验脚本的存储容量
+     * 校验交易输出的大小
      */
-    public static boolean isOutputScriptCapacityLegal(OutputScriptDTO outputScriptDTO) {
-        //先宽泛的校验脚本
-        if(!isScriptStorageCapacityLegal(outputScriptDTO)){
+    public static boolean isOutputScriptSizeLegal(OutputScriptDTO outputScriptDTO) {
+        //先宽泛的校验脚本大小
+        if(!isScriptSizeLegal(outputScriptDTO)){
             return false;
         }
+        //严格校验输入脚本大小，因为当前输出脚本只有P2PKH，所以只需校验输出脚本是否是P2PKH输出脚本即可。
         return ScriptTool.isPayToPublicKeyHashOutputScript(outputScriptDTO);
     }
 
     /**
-     * 校验脚本操作码、操作数的存储容量
-     * 校验脚本的存储容量
+     * 校验脚本的大小
      */
-    public static boolean isScriptStorageCapacityLegal(ScriptDTO scriptDTO) {
+    public static boolean isScriptSizeLegal(ScriptDTO scriptDTO) {
         for(int i=0;i<scriptDTO.size();i++){
             String operationCode = scriptDTO.get(i);
             byte[] bytesOperationCode = HexUtil.hexStringToBytes(operationCode);
@@ -142,14 +146,14 @@ public class SizeTool {
                     Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
                 continue;
             }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
-                //跳过数据
+                //跳过操作数
                 ++i;
             }else {
                 return false;
             }
         }
         if(calculateScriptSize(scriptDTO) > GlobalSetting.ScriptConstant.SCRIPT_MAX_SIZE){
-            LogUtil.debug("交易校验失败：交易输出脚本所占存储空间超出限制。");
+            LogUtil.debug("交易校验失败：交易输出脚本大小超出限制。");
             return false;
         }
         return true;
@@ -162,9 +166,6 @@ public class SizeTool {
     public static long calculateBlockSize(Block block) {
         return calculateBlockSize(Model2DtoTool.block2BlockDTO(block));
     }
-    /**
-     * 计算区块的大小
-     */
     public static long calculateBlockSize(BlockDTO blockDTO) {
         long size = 0;
         long timestamp = blockDTO.getTimestamp();
@@ -181,7 +182,6 @@ public class SizeTool {
         }
         return size;
     }
-
     public static long calculateTransactionSize(Transaction transaction) {
         return calculateTransactionSize(Model2DtoTool.transaction2TransactionDTO(transaction));
     }
@@ -237,7 +237,7 @@ public class SizeTool {
             return size;
         }
         for(String scriptCode:script){
-            size += scriptCode.length();
+            size += stringSize(scriptCode);
         }
         return size;
     }

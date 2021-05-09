@@ -15,7 +15,7 @@ import com.xingkaichun.helloworldblockchain.explorer.vo.framwork.ServiceResult;
 import com.xingkaichun.helloworldblockchain.explorer.vo.miner.*;
 import com.xingkaichun.helloworldblockchain.explorer.vo.node.*;
 import com.xingkaichun.helloworldblockchain.explorer.vo.synchronizer.*;
-import com.xingkaichun.helloworldblockchain.netcore.NetBlockchainCore;
+import com.xingkaichun.helloworldblockchain.netcore.BlockchainNetCore;
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
@@ -30,7 +30,7 @@ import java.util.List;
 
 /**
  * 管理员控制台的控制器：用于控制本地区块链节点，如激活矿工、停用矿工、同步其它节点数据等。
- * 这里的操作都需要一定得权限才可以操作，不适合对所有人开放。
+ * 这里的操作都应该需要权限才可以操作，不适合对所有人开放。
  *
  * @author 邢开春 409060350@qq.com
  */
@@ -38,7 +38,7 @@ import java.util.List;
 public class AdminConsoleController {
 
     @Autowired
-    private NetBlockchainCore netBlockchainCore;
+    private BlockchainNetCore blockchainNetCore;
 
     /**
      * 矿工是否激活
@@ -97,7 +97,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApi.IS_SYNCHRONIZER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsSynchronizerActiveResponse> isSynchronizerActive(@RequestBody IsSynchronizerActiveRequest request){
         try {
-            boolean isSynchronizerActive = netBlockchainCore.getNetcoreConfiguration().isSynchronizerActive();
+            boolean isSynchronizerActive = blockchainNetCore.getNetCoreConfiguration().isSynchronizerActive();
             IsSynchronizerActiveResponse response = new IsSynchronizerActiveResponse();
             response.setSynchronizerInActiveState(isSynchronizerActive);
             return ServiceResult.createSuccessServiceResult("查询同步器是否激活成功",response);
@@ -113,7 +113,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApi.ACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<ActiveSynchronizerResponse> activeSynchronizer(@RequestBody ActiveSynchronizerRequest request){
         try {
-            netBlockchainCore.getNetcoreConfiguration().activeSynchronizer();
+            blockchainNetCore.getNetCoreConfiguration().activeSynchronizer();
             ActiveSynchronizerResponse response = new ActiveSynchronizerResponse();
             response.setActiveSynchronizerSuccess(true);
             return ServiceResult.createSuccessServiceResult("激活同步器成功",response);
@@ -129,7 +129,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApi.DEACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeactiveSynchronizerResponse> deactiveSynchronizer(@RequestBody DeactiveSynchronizerRequest request){
         try {
-            netBlockchainCore.getNetcoreConfiguration().deactiveSynchronizer();
+            blockchainNetCore.getNetCoreConfiguration().deactiveSynchronizer();
             DeactiveSynchronizerResponse response = new DeactiveSynchronizerResponse();
             response.setDeactiveSynchronizerSuccess(true);
             return ServiceResult.createSuccessServiceResult("停用同步器成功",response);
@@ -152,10 +152,10 @@ public class AdminConsoleController {
             if(StringUtil.isNullOrEmpty(node.getIp())){
                 return ServiceResult.createFailServiceResult("节点IP不能为空");
             }
-            if(netBlockchainCore.getNodeService().queryNode(node.getIp()) != null){
+            if(blockchainNetCore.getNodeService().queryNode(node.getIp()) != null){
                 return ServiceResult.createFailServiceResult("节点已经存在，不需要重复添加");
             }
-            netBlockchainCore.getNodeService().addNode(node);
+            blockchainNetCore.getNodeService().addNode(node);
             AddNodeResponse response = new AddNodeResponse();
             response.setAddNodeSuccess(true);
             return ServiceResult.createSuccessServiceResult("新增节点成功",response);
@@ -174,7 +174,7 @@ public class AdminConsoleController {
             if(request.getNode() == null){
                 return ServiceResult.createFailServiceResult("请填写节点信息");
             }
-            netBlockchainCore.getNodeService().updateNode(request.getNode());
+            blockchainNetCore.getNodeService().updateNode(request.getNode());
             UpdateNodeResponse response = new UpdateNodeResponse();
             return ServiceResult.createSuccessServiceResult("更新节点信息成功",response);
         } catch (Exception e){
@@ -189,7 +189,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApi.DELETE_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<DeleteNodeResponse> deleteNode(@RequestBody DeleteNodeRequest request){
         try {
-            netBlockchainCore.getNodeService().deleteNode(request.getNode().getIp());
+            blockchainNetCore.getNodeService().deleteNode(request.getNode().getIp());
             DeleteNodeResponse response = new DeleteNodeResponse();
             return ServiceResult.createSuccessServiceResult("删除节点成功",response);
         } catch (Exception e){
@@ -204,7 +204,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApi.QUERY_ALL_NODE_LIST,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryAllNodeListResponse> queryAllNodeList(@RequestBody QueryAllNodeListRequest request){
         try {
-            List<Node> nodeList = netBlockchainCore.getNodeService().queryAllNodeList();
+            List<Node> nodeList = blockchainNetCore.getNodeService().queryAllNodeList();
             QueryAllNodeListResponse response = new QueryAllNodeListResponse();
             response.setNodeList(nodeList);
             return ServiceResult.createSuccessServiceResult("查询节点成功",response);
@@ -223,7 +223,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApi.IS_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<IsAutoSearchNodeResponse> isAutoSearchNewNode(@RequestBody IsAutoSearchNodeRequest request){
         try {
-            boolean isAutoSearchNode = netBlockchainCore.getNetcoreConfiguration().isAutoSearchNode();
+            boolean isAutoSearchNode = blockchainNetCore.getNetCoreConfiguration().isAutoSearchNode();
             IsAutoSearchNodeResponse response = new IsAutoSearchNodeResponse();
             response.setAutoSearchNewNode(isAutoSearchNode);
             return ServiceResult.createSuccessServiceResult("查询是否允许自动搜索区块链节点成功",response);
@@ -239,7 +239,7 @@ public class AdminConsoleController {
     @RequestMapping(value = AdminConsoleApi.SET_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<SetAutoSearchNodeResponse> setAutoSearchNode(@RequestBody SetAutoSearchNodeRequest request){
         try {
-            netBlockchainCore.getNetcoreConfiguration().setAutoSearchNode(request.isAutoSearchNode());
+            blockchainNetCore.getNetCoreConfiguration().setAutoSearchNode(request.isAutoSearchNode());
             SetAutoSearchNodeResponse response = new SetAutoSearchNodeResponse();
             return ServiceResult.createSuccessServiceResult("设置是否允许自动搜索区块链节点成功",response);
         } catch (Exception e){
@@ -336,7 +336,7 @@ public class AdminConsoleController {
             if(request.getBlockHeight() == null){
                 return ServiceResult.createFailServiceResult("删除区块失败，区块高度不能空。");
             }
-            netBlockchainCore.deleteBlocks(request.getBlockHeight());
+            blockchainNetCore.deleteBlocks(request.getBlockHeight());
             DeleteBlockResponse response = new DeleteBlockResponse();
             return ServiceResult.createSuccessServiceResult("删除区块成功",response);
         } catch (Exception e){
@@ -377,6 +377,6 @@ public class AdminConsoleController {
     }
 
     private BlockchainCore getBlockchainCore(){
-        return netBlockchainCore.getBlockchainCore();
+        return blockchainNetCore.getBlockchainCore();
     }
 }

@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.Model2DtoTool;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
-import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration;
+import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostBlockRequest;
@@ -16,17 +16,21 @@ import java.util.List;
 
 /**
  * 区块广播者：主动将自己最新的区块广播至全网。
+ * 别的节点可能由于这样那样的原因，不来同步我的区块，可我的这个区块对我很重要
+ * ，例如我在全网前新挖了一个区块，可没人来同步我，我的区块不能传播至全网，我心有不甘呀，只有尝试将我的区块硬塞给别的节点了
+ * ，如果别的节点真的是由于有'这样那样的原因'没来同步我，而不是恶意不同步我
+ * ，那它接到我硬塞给它的区块，它肯定会将接收到的区块保存到自身区块链之中。
  *
  * @author 邢开春 409060350@qq.com
  */
 public class BlockBroadcaster {
 
-    private NetcoreConfiguration netcoreConfiguration;
+    private NetCoreConfiguration netCoreConfiguration;
     private BlockchainCore blockchainCore;
     private NodeService nodeService;
 
-    public BlockBroadcaster(NetcoreConfiguration netcoreConfiguration, BlockchainCore blockchainCore, NodeService nodeService) {
-        this.netcoreConfiguration = netcoreConfiguration;
+    public BlockBroadcaster(NetCoreConfiguration netCoreConfiguration, BlockchainCore blockchainCore, NodeService nodeService) {
+        this.netCoreConfiguration = netCoreConfiguration;
         this.blockchainCore = blockchainCore;
         this.nodeService = nodeService;
     }
@@ -36,7 +40,7 @@ public class BlockBroadcaster {
             while (true){
                 try {
                     broadcastBlock();
-                    SleepUtil.sleep(netcoreConfiguration.getBlockBroadcastTimeInterval());
+                    SleepUtil.sleep(netCoreConfiguration.getBlockBroadcastTimeInterval());
                 } catch (Exception e) {
                     SystemUtil.errorExit("在区块链网络中广播自己的区块出现异常",e);
                 }

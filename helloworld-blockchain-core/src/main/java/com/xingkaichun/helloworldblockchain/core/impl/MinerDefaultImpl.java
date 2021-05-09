@@ -40,7 +40,7 @@ public class MinerDefaultImpl extends Miner {
                     break;
                 }
                 //在挖矿的期间，可能收集到新的交易。每隔一定的时间，重新组装挖矿中的block，组装新的挖矿中的block的时候，可以考虑将新收集到交易放进挖矿中的block。
-                if(TimeUtil.currentTimeMillis()-startTimestamp > coreConfiguration.getMineTimestampPerRound()){
+                if(TimeUtil.currentTimeMillis()-startTimestamp > coreConfiguration.getMinerMineIntervalTimestamp()){
                     break;
                 }
                 //随机一个nonce

@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.netcore;
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
-import com.xingkaichun.helloworldblockchain.netcore.service.NetcoreConfiguration;
+import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PingRequest;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
@@ -25,12 +25,12 @@ import java.util.List;
  */
 public class NodeBroadcaster {
 
-    private NetcoreConfiguration netcoreConfiguration;
+    private NetCoreConfiguration netCoreConfiguration;
     private NodeService nodeService;
     private BlockchainCore blockchainCore;
 
-    public NodeBroadcaster(NetcoreConfiguration netcoreConfiguration, NodeService nodeService, BlockchainCore blockchainCore) {
-        this.netcoreConfiguration = netcoreConfiguration;
+    public NodeBroadcaster(NetCoreConfiguration netCoreConfiguration, NodeService nodeService, BlockchainCore blockchainCore) {
+        this.netCoreConfiguration = netCoreConfiguration;
         this.nodeService = nodeService;
         this.blockchainCore = blockchainCore;
     }
@@ -41,7 +41,7 @@ public class NodeBroadcaster {
             while (true){
                 try {
                     broadcastNode();
-                    SleepUtil.sleep(netcoreConfiguration.getNodeBroadcastTimeInterval());
+                    SleepUtil.sleep(netCoreConfiguration.getNodeBroadcastTimeInterval());
                 } catch (Exception e) {
                     SystemUtil.errorExit("在区块链网络中广播自己出现异常",e);
                 }

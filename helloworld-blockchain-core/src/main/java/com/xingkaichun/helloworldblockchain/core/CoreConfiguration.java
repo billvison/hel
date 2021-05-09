@@ -10,9 +10,28 @@ package com.xingkaichun.helloworldblockchain.core;
  */
 public abstract class CoreConfiguration {
 
+    /**
+     * BlockchainCore数据存放路径
+     */
     public abstract String getCorePath();
+    /**
+     * 矿工是否处于激活状态？
+     */
     public abstract boolean isMinerActive();
+    /**
+     * 激活矿工
+     */
     public abstract void activeMiner() ;
+    /**
+     * 停用矿工
+     */
     public abstract void deactiveMiner() ;
-    public abstract long getMineTimestampPerRound();
+    /**
+     * 矿工挖矿周期时间
+     * 每个挖矿周期的时间，一个挖矿周期并不一定能挖到矿
+     * ，一个周期过去之后，矿工会停一停，歇一歇，会重新组装矿然后再去挖。
+     * 为什么要重新组装矿？因为如果矿一直不变，在上次矿形成之后来自用户提交的未确认交易，就没有办法打包进矿了
+     * ，交易会很延迟才能得到确认。
+     */
+    public abstract long getMinerMineIntervalTimestamp();
 }
