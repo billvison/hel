@@ -17,7 +17,9 @@ public class ResourcePathTool {
         String dataRootPath;
         if(OperateSystemUtil.isWindowsOperateSystem()){
             dataRootPath = "C:\\HelloworldBlockchainData\\";
-        }else {
+        }else if(OperateSystemUtil.isMacOperateSystem()){
+            dataRootPath = "/tmp/HelloworldBlockchainData/";
+        }else{
             dataRootPath = "/opt/HelloworldBlockchainData/";
         }
         FileUtil.mkdirs(dataRootPath);
