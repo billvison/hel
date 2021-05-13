@@ -1,6 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainDatabase;
+import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.UnconfirmedTransactionDatabase;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
@@ -177,9 +178,18 @@ public class MinerTool {
         nonNonceBlock.setTransactions(packingTransactionList);
 
         //创建挖矿奖励交易
-        //激励
-        long incentiveValue = blockchainDataBase.getIncentive().incentiveAmount(blockchainDataBase,nonNonceBlock);
-        Transaction mineAwardTransaction =  buildIncentiveTransaction(minerAccount.getAddress(),incentiveValue);
+        //激励金额
+        Incentive incentive = blockchainDataBase.getIncentive();
+        long incentiveValue = incentive.incentiveAmount(blockchainDataBase,nonNonceBlock);
+        //激励发放地址
+        String incentiveAddress = incentive.incentiveAddress(blockchainDataBase,nonNonceBlock);
+        Transaction mineAwardTransaction = null;
+        //指定了激励地址
+        if(StringUtil.isNullOrEmpty(incentiveAddress)){
+            mineAwardTransaction =  buildIncentiveTransaction(minerAccount.getAddress(),incentiveValue);
+        }else {
+            mineAwardTransaction =  buildIncentiveTransaction(incentiveAddress,incentiveValue);
+        }
         packingTransactionList.add(0,mineAwardTransaction);
 
         String merkleTreeRoot = BlockTool.calculateBlockMerkleTreeRoot(nonNonceBlock);

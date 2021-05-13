@@ -93,4 +93,25 @@ public class GlobalSetting {
         //两个区块链有分叉时，区块差异数量大于这个值，则真的分叉了。
         public static final long FORK_BLOCK_COUNT = 100;
     }
+
+    /**
+     * 存储费用
+     */
+    public static class StoreFeeConstant{
+
+        /**
+         * 根据高度计算存储费用
+         */
+        public static long getStoreFee(long startBlockHeight,long endBlockHeight) {
+            long storeSpend = 0;
+            if(startBlockHeight <= 10000 * 1 && endBlockHeight <= 10000 * 1){
+                storeSpend += 100;
+            }else if(startBlockHeight <= 10000 * 2 && endBlockHeight <= 10000 * 2){
+                storeSpend += 100;
+            }else {
+                throw new RuntimeException();
+            }
+            return storeSpend;
+        }
+    }
 }

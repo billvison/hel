@@ -141,6 +141,11 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             LogUtil.debug("区块数据异常，区块中新产生的哈希异常。");
             return false;
         }
+        //校验存储费
+        if(!isBlockStoreFeeRight(block)){
+            LogUtil.debug("区块数据异常，未花费交易输出不够存储花费。");
+            return false;
+        }
         //新产生的地址是否合法
         if(isAddressIllegal(block)){
             LogUtil.debug("区块数据异常，区块中新产生的哈希异常。");
@@ -157,8 +162,8 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             return false;
         }
         //校验激励
-        if(!isIncentiveRight(block)){
-            LogUtil.debug("区块数据异常，未满足共识规则。");
+        if(!incentive.isIncentiveRight(this,block)){
+            LogUtil.debug("区块数据异常，激励校验失败。");
             return false;
         }
 
@@ -1020,21 +1025,22 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     //endregion
 
     /**
-     * 区块激励正确吗？
-     */
-    private boolean isIncentiveRight(Block block) {
-        long writeIncentiveValue = BlockTool.getMinerIncentiveValue(block);
-        long targetIncentiveValue = incentive.incentiveAmount(this,block);
-        if(writeIncentiveValue != targetIncentiveValue){
-            LogUtil.debug("区块数据异常，挖矿奖励数据异常。");
-            return false;
-        }
-        return true;
-    }
-    /**
      * 区块满足共识规则吗？
      */
     private boolean isReachConsensus(Block block) {
         return consensus.isReachConsensus(this,block);
+    }
+
+    /**
+     * 区块支付的存储费是否正确
+     */
+    private boolean isBlockStoreFeeRight(Block block) {
+        for(Transaction transaction : block.getTransactions()){
+            if(!TransactionTool.isTransactionStoreHasEnoughStoreFee(transaction,block.getHeight())){
+                LogUtil.debug("区块数据异常：交易输入没有足够的金额去支付交易输入的存储花费。");
+                return false;
+            }
+        }
+        return true;
     }
 }

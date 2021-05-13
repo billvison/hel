@@ -14,4 +14,14 @@ public abstract class Incentive {
      * 奖励给矿工的挖矿激励金额。
      */
     public abstract long incentiveAmount(BlockchainDatabase blockchainDataBase, Block block) ;
+
+    /**
+     * 奖励给矿工的挖矿激励发放地址。
+     */
+    public abstract String incentiveAddress(BlockchainDatabase blockchainDataBase, Block block) ;
+
+    /**
+     * 校验激励。
+     */
+    public abstract boolean isIncentiveRight(BlockchainDatabase blockchainDataBase, Block block) ;
 }

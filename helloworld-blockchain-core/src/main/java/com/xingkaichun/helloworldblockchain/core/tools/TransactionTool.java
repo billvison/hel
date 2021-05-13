@@ -451,4 +451,51 @@ public class TransactionTool {
             }
         });
     }
+
+    /**
+     * 未花费交易输出是否有足够的余额去支付区块链系统的存储费
+     */
+    public static boolean isTransactionStoreHasEnoughStoreFee(Transaction transaction,long blockHeight) {
+        if(transaction.getTransactionType() == TransactionType.GENESIS){
+            return true;
+        }else if(transaction.getTransactionType() == TransactionType.STANDARD){
+            List<TransactionInput> inputs = transaction.getInputs();
+            //未花费交易输出 是否有足够的余额去支付 存储费
+            if(inputs != null){
+                for(TransactionInput input:inputs){
+                    if(!UnspentTransactionOutputTool.isUnspentTransactionOutputHasEnoughStoreFee(input.getUnspentTransactionOutput(),blockHeight)){
+                        LogUtil.debug("未花费输出数据异常，未花费输出不足以支付存储费用。");
+                        return false;
+                    }
+                }
+            }
+
+            //总存储费用
+            long unspentTransactionOutputStoreSpend = transactionStoreFee(transaction,blockHeight);
+            //交易是否支付了足够的存储费
+            if(getInputsValue(transaction)-getOutputsValue(transaction) <= unspentTransactionOutputStoreSpend){
+                LogUtil.debug("交易数据异常，交易没有支付了足够的存储费。");
+                return false;
+            }
+            return true;
+        }else {
+            throw new RuntimeException("不支持的交易类型");
+        }
+    }
+
+    /**
+     * 交易的存储费用
+     * 等于所有未花费交易输出的存储费用
+     */
+    public static long transactionStoreFee(Transaction transaction,long blockHeight) {
+        List<TransactionInput> inputs = transaction.getInputs();
+        if(inputs == null){
+            return 0L;
+        }
+        long transactionStoreCost = 0L;
+        for(TransactionInput input:inputs){
+            transactionStoreCost += UnspentTransactionOutputTool.unspentTransactionOutputStoreFee(input.getUnspentTransactionOutput(),blockHeight);
+        }
+        return transactionStoreCost;
+    }
 }
