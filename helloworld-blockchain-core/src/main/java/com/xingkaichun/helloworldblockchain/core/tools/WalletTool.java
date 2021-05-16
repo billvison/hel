@@ -124,7 +124,7 @@ public class WalletTool {
         transactionDTO.setOutputs(transactionOutputDtoList);
 
         //找零
-        long change = inputValues - outputValues - fee;
+        long change = inputValues - outputValues;
         BuildTransactionResponse.InnerTransactionOutput payerChange = null;
         if(change > 0){
             TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
