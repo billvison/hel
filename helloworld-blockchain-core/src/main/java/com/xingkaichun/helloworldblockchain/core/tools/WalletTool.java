@@ -45,16 +45,16 @@ public class WalletTool {
     }
 
     public static BuildTransactionResponse buildTransactionDTO(Map<String,TransactionOutput> privateKeyUtxoMap, List<Recipient> recipientList, String payerChangeAddress, long fee) {
-        //付款总金额
-        long outputValues = 0;
+        //最少付款总金额
+        long minInputValues = 0;
         if(recipientList != null){
             //支付钱款
             for(Recipient recipient : recipientList){
-                outputValues += recipient.getValue();
+                minInputValues += recipient.getValue();
             }
         }
         //交易手续费
-        outputValues += fee;
+        minInputValues += fee;
 
         //创建交易输出
         List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();
@@ -84,9 +84,6 @@ public class WalletTool {
         long inputValues = 0;
         boolean haveEnoughMoneyToPay = false;
         for(Map.Entry<String,TransactionOutput> entry: privateKeyUtxoMap.entrySet()){
-            if(haveEnoughMoneyToPay){
-                break;
-            }
             String privateKey = entry.getKey();
             TransactionOutput utxo = entry.getValue();
             if(utxo == null){
@@ -96,7 +93,7 @@ public class WalletTool {
             //交易输入
             inputs.add(utxo);
             inputPrivateKeyList.add(privateKey);
-            if(inputValues >= outputValues){
+            if(inputValues >= minInputValues){
                 haveEnoughMoneyToPay = true;
                 break;
             }
@@ -123,8 +120,16 @@ public class WalletTool {
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
 
+        //总收款金额
+        long outputValues = 0;
+        if(recipientList != null){
+            for(Recipient recipient : recipientList){
+                outputValues += recipient.getValue();
+            }
+        }
+
         //找零
-        long change = inputValues - outputValues;
+        long change = inputValues - outputValues - fee;
         BuildTransactionResponse.InnerTransactionOutput payerChange = null;
         if(change > 0){
             TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();

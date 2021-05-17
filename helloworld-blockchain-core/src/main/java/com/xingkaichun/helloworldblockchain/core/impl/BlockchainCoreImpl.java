@@ -120,6 +120,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
 
 
+    @Override
     public BuildTransactionResponse buildTransactionDTO(BuildTransactionRequest request) {
         List<Account> allAccountList = wallet.getAllAccount();
         if(allAccountList == null || allAccountList.isEmpty()){
