@@ -157,7 +157,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             return false;
         }
         //校验共识
-        if(!isReachConsensus(block)){
+        if(!consensus.isReachConsensus(this,block)){
             LogUtil.debug("区块数据异常，未满足共识规则。");
             return false;
         }
@@ -1023,13 +1023,6 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         return false;
     }
     //endregion
-
-    /**
-     * 区块满足共识规则吗？
-     */
-    private boolean isReachConsensus(Block block) {
-        return consensus.isReachConsensus(this,block);
-    }
 
     /**
      * 区块支付的存储费是否正确

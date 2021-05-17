@@ -39,11 +39,11 @@ public class MinerDefaultImpl extends Miner {
                 if(!isActive()){
                     break;
                 }
-                //在挖矿的期间，可能收集到新的交易。每隔一定的时间，重新组装挖矿中的block，组装新的挖矿中的block的时候，可以考虑将新收集到交易放进挖矿中的block。
+                //在挖矿的期间，可能收集到新的交易。每隔一定的时间，重新组装挖矿中的区块，这样新收集到交易就可以被放进挖矿中的区块了。
                 if(TimeUtil.currentTimeMillis()-startTimestamp > coreConfiguration.getMinerMineIntervalTimestamp()){
                     break;
                 }
-                //随机一个nonce
+                //随机数
                 block.setNonce(HexUtil.bytesToHexString(RandomUtil.random32Bytes()));
                 block.setHash(BlockTool.calculateBlockHash(block));
                 //挖矿成功

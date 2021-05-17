@@ -18,9 +18,9 @@ public class CoreConfigurationDefaultImpl extends CoreConfiguration {
     //配置数据库名字
     private static final String CONFIGURATION_DATABASE_NAME = "ConfigurationDatabase";
 
-    //矿工'矿工是否是激活状态'状态存入到数据库时的主键
+    //'矿工是否是激活状态'存入到数据库时的主键
     private static final String MINE_OPTION_KEY = "IS_MINER_ACTIVE";
-    //矿工'矿工是否是激活状态'状态的默认状态
+    //'矿工是否是激活状态'的默认值
     private static final boolean MINE_OPTION_DEFAULT_VALUE = false;
 
     //这个时间间隔更新一次正在被挖矿的区块的交易。如果时间太长，可能导致新提交的交易延迟被确认。
