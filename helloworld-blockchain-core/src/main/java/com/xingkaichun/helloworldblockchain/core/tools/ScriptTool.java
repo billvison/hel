@@ -115,27 +115,27 @@ public class ScriptTool {
      * 可视、可阅读的脚本，区块链浏览器使用
      */
     public static String toString(List<String> script) {
-        String stringScript = "";
+        StringBuilder stringScript = new StringBuilder();
         for(int i=0;i<script.size();i++){
             String operationCode = script.get(i);
             byte[] bytesOperationCode = HexUtil.hexStringToBytes(operationCode);
             if(Arrays.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode)){
-                stringScript = stringScript + OperationCodeEnum.OP_DUP.getName() + " ";
+                stringScript.append(OperationCodeEnum.OP_DUP.getName()).append(" ");
             }else if(Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode)){
-                stringScript = stringScript + OperationCodeEnum.OP_HASH160.getName() + " ";
+                stringScript.append(OperationCodeEnum.OP_HASH160.getName()).append(" ");
             }else if(Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode)){
-                stringScript = stringScript + OperationCodeEnum.OP_EQUALVERIFY.getName() + " ";
+                stringScript.append(OperationCodeEnum.OP_EQUALVERIFY.getName()).append(" ");
             }else if(Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
-                stringScript = stringScript + OperationCodeEnum.OP_CHECKSIG.getName() + " ";
+                stringScript.append(OperationCodeEnum.OP_CHECKSIG.getName()).append(" ");
             }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
                 String operationData = script.get(++i);
-                stringScript = stringScript + OperationCodeEnum.OP_PUSHDATA.getName() + " ";
-                stringScript = stringScript + operationData + " ";
+                stringScript.append(OperationCodeEnum.OP_PUSHDATA.getName()).append(" ");
+                stringScript.append(operationData).append(" ");
             }else {
                 throw new RuntimeException("不能识别的指令");
             }
         }
-        return stringScript;
+        return stringScript.toString();
     }
 
     /**

@@ -153,8 +153,7 @@ public class MinerTool {
         }
 
 
-        Block nextMineBlock = buildMiningBlock(blockchainDataBase,transactionList,minerAccount);
-        return nextMineBlock;
+        return buildMiningBlock(blockchainDataBase,transactionList,minerAccount);
     }
 
     /**
@@ -183,7 +182,7 @@ public class MinerTool {
         long incentiveValue = incentive.incentiveAmount(blockchainDataBase,nonNonceBlock);
         //激励发放地址
         String incentiveAddress = incentive.incentiveAddress(blockchainDataBase,nonNonceBlock);
-        Transaction mineAwardTransaction = null;
+        Transaction mineAwardTransaction;
         //指定了激励地址
         if(StringUtil.isNullOrEmpty(incentiveAddress)){
             mineAwardTransaction =  buildIncentiveTransaction(minerAccount.getAddress(),incentiveValue);

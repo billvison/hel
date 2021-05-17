@@ -58,7 +58,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         long targetBlockHeight = targetBlock.getHeight();
         // 目标区块高度在第一周期、第二周期内
         if(targetBlockHeight <= GlobalSetting.IncentiveConstant.INTERVAL_BLOCK_COUNT * 2){
-            /**
+            /*
              * 最初，区块链有区块 0(创世区块)，假设每个挖矿周期有二个区块。
              * 现在要挖第一个周期的区块，即要挖区块1，区块2
              * 第一个周期挖矿难度需要参考前一个周期的挖矿难度，因为没有前一个周期，所以第一个周期的区块默认使用创世区块的难度值。
@@ -78,7 +78,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
 
         // 目标区块的上一个区块
         Block targetBlockPreviousBlock = blockchainDataBase.queryBlockByBlockHeight(targetBlockHeight-1);
-        /**
+        /*
          * 目标区块的上一个区块如果不是一个周期的末尾，说明一个周期尚未结束
          * ，说明目标区块和[目标区块的上一个区块]位于同一个周期，此时目标区块难度和[目标区块的上一个区块]的难度相同。
          */
@@ -95,7 +95,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         // 上个周期出块实际耗时
         long previousIntervalActualTimespan = previousIntervalLastBlock.getTimestamp() - previousPreviousIntervalLastBlock.getTimestamp();
 
-        /**
+        /*
          * 假设有一款随机数生成器，其每秒钟生成1个随机数，其随机数范围是0到9999。
          * 那么每一次生成的随机数的值  < 1      的概率是: 1/10000
          * 那么每一次生成的随机数的值  < 10     的概率是: 10/10000

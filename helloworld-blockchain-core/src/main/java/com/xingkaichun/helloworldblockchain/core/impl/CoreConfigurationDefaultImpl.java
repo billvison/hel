@@ -14,7 +14,7 @@ import com.xingkaichun.helloworldblockchain.util.StringUtil;
 public class CoreConfigurationDefaultImpl extends CoreConfiguration {
 
     //BlockchainCore数据存放路径
-    private String corePath;
+    private final String corePath;
     //配置数据库名字
     private static final String CONFIGURATION_DATABASE_NAME = "ConfigurationDatabase";
 
@@ -48,7 +48,7 @@ public class CoreConfigurationDefaultImpl extends CoreConfiguration {
         if(mineOption == null){
             return MINE_OPTION_DEFAULT_VALUE;
         }
-        return Boolean.valueOf(ByteUtil.decodeToUtf8String(mineOption));
+        return Boolean.parseBoolean(ByteUtil.decodeToUtf8String(mineOption));
     }
 
     @Override
@@ -72,8 +72,7 @@ public class CoreConfigurationDefaultImpl extends CoreConfiguration {
         return FileUtil.newPath(corePath, CONFIGURATION_DATABASE_NAME);
     }
     private byte[] getConfigurationValue(byte[] configurationKey) {
-        byte[] bytesConfigurationValue = KvDBUtil.get(getConfigurationDatabasePath(), configurationKey);
-        return bytesConfigurationValue;
+        return KvDBUtil.get(getConfigurationDatabasePath(), configurationKey);
     }
     private void addOrUpdateConfiguration(byte[] configurationKey, byte[] configurationValue) {
         KvDBUtil.put(getConfigurationDatabasePath(), configurationKey, configurationValue);

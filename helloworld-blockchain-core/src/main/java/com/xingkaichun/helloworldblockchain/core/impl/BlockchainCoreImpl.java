@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * 默认实现
- * 
+ *
  * @author 邢开春 409060350@qq.com
  */
 public class BlockchainCoreImpl extends BlockchainCore {
@@ -43,48 +43,26 @@ public class BlockchainCoreImpl extends BlockchainCore {
         ).start();
     }
 
-
-
-
-
-
-
-
     @Override
     public long queryBlockchainHeight() {
         return blockchainDataBase.queryBlockchainHeight();
     }
 
 
-
-
-
-
-
     @Override
     public Transaction queryTransactionByTransactionHash(String transactionHash) {
-        Transaction transaction = blockchainDataBase.queryTransactionByTransactionHash(transactionHash);
-        return transaction;
+        return blockchainDataBase.queryTransactionByTransactionHash(transactionHash);
     }
 
     @Override
     public Transaction queryTransactionByTransactionHeight(long transactionHeight) {
-        Transaction transaction = blockchainDataBase.queryTransactionByTransactionHeight(transactionHeight);
-        return transaction;
+        return blockchainDataBase.queryTransactionByTransactionHeight(transactionHeight);
     }
 
     @Override
     public TransactionOutput queryTransactionOutputByAddress(String address) {
-        TransactionOutput txo =  blockchainDataBase.queryTransactionOutputByAddress(address);
-        return txo;
+        return blockchainDataBase.queryTransactionOutputByAddress(address);
     }
-
-
-
-
-
-
-
 
 
     @Override
@@ -163,7 +141,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
             }
             privateKeyUtxoMap.put(privateKey,utxo);
             //TODO
-            response = WalletTool.buildTransactionDTO(privateKeyUtxoMap,recipientList,payerChangeAddress,fee+100*privateKeyUtxoMap.size());
+            response = WalletTool.buildTransactionDTO(privateKeyUtxoMap,recipientList,payerChangeAddress,fee+ 100L *privateKeyUtxoMap.size());
             if(response.isBuildTransactionSuccess()){
                 break;
             }
@@ -178,13 +156,11 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
     @Override
     public List<TransactionDTO> queryMiningTransactionList(long from,long size) {
-        List<TransactionDTO> transactionDtoList = miner.getUnconfirmedTransactionDataBase().selectTransactionList(from,size);
-        return transactionDtoList;
+        return miner.getUnconfirmedTransactionDataBase().selectTransactionList(from,size);
     }
 
     @Override
     public TransactionDTO queryMiningTransactionDtoByTransactionHash(String transactionHash) {
-        TransactionDTO transactionDTO = miner.getUnconfirmedTransactionDataBase().selectTransactionByTransactionHash(transactionHash);
-        return transactionDTO;
+        return miner.getUnconfirmedTransactionDataBase().selectTransactionByTransactionHash(transactionHash);
     }
 }

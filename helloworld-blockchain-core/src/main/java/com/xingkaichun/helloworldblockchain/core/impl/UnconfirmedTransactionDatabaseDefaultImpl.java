@@ -20,12 +20,13 @@ import java.util.List;
 public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransactionDatabase {
 
     private static final String UNCONFIRMED_TRANSACTION_DATABASE_NAME = "UnconfirmedTransactionDatabase";
-    private String unconfirmedTransactionDatabasePath;
+    private final String unconfirmedTransactionDatabasePath;
 
     public UnconfirmedTransactionDatabaseDefaultImpl(CoreConfiguration coreConfiguration) {
         this.unconfirmedTransactionDatabasePath = FileUtil.newPath(coreConfiguration.getCorePath(), UNCONFIRMED_TRANSACTION_DATABASE_NAME);
     }
 
+    @Override
     public void insertTransaction(TransactionDTO transactionDTO) {
         //交易已经持久化进交易池数据库 丢弃交易
         synchronized (UnconfirmedTransactionDatabaseDefaultImpl.class){

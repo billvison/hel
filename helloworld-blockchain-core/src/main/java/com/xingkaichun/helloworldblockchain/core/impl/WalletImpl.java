@@ -20,7 +20,7 @@ import java.util.List;
 public class WalletImpl extends Wallet {
 
     private static final String WALLET_DATABASE_NAME = "WalletDatabase";
-    private String walletDatabasePath;
+    private final String walletDatabasePath;
 
     public WalletImpl(CoreConfiguration coreConfiguration) {
         this.walletDatabasePath = FileUtil.newPath(coreConfiguration.getCorePath(), WALLET_DATABASE_NAME);
@@ -42,8 +42,7 @@ public class WalletImpl extends Wallet {
 
     @Override
     public Account createAccount() {
-        Account account = AccountUtil.randomAccount();
-        return account;
+        return AccountUtil.randomAccount();
     }
 
     @Override

@@ -31,13 +31,13 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
 
     //region 变量与构造函数
     private static final String BLOCKCHAIN_DATABASE_NAME = "BlockchainDatabase";
-    private String blockchianDatabasePath;
+    private final String blockchianDatabasePath;
 
     /**
      * 锁:保证对区块链增区块、删区块的操作是同步的。
      * 查询区块操作不需要加锁，原因是，只有对区块链进行区块的增删才会改变区块链的数据。
      */
-    private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     public BlockchainDatabaseDefaultImpl(CoreConfiguration coreConfiguration, Incentive incentive, Consensus consensus) {
         super(consensus,incentive);
@@ -352,14 +352,14 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         if(byteTransaction == null){
             return null;
         }
-        Transaction transaction = EncodeDecodeTool.decodeToTransaction(byteTransaction);
-        return transaction;
+        return EncodeDecodeTool.decodeToTransaction(byteTransaction);
     }
     //endregion
 
 
 
     //region 交易输出查询
+    @Override
     public TransactionOutput queryTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId) {
         byte[] bytesTransactionOutputHeight = KvDBUtil.get(blockchianDatabasePath, BlockchainDatabaseKeyTool.buildTransactionOutputIdToTransactionOutputHeightKey(transactionOutputId));
         if(bytesTransactionOutputHeight == null){

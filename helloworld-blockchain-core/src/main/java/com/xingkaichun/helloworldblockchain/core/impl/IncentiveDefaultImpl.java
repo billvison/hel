@@ -64,8 +64,7 @@ public class IncentiveDefaultImpl extends Incentive {
         //给予其他团体的激励 ，由矿工代领取。
         long otherTeamIncentiveAmount = getOtherTeamSubsidy(block);
         //总的激励
-        long total = minerSubsidy + minerFee + otherTeamIncentiveAmount;
-        return total;
+        return minerSubsidy + minerFee + otherTeamIncentiveAmount;
     }
 
     @Override
