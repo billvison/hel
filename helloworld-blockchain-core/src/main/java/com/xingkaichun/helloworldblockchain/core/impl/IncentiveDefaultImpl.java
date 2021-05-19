@@ -15,7 +15,7 @@ import com.xingkaichun.helloworldblockchain.util.StringUtil;
  * '激励分配'的目的：①维护区块链网络长久存在。②促进区块链世界的发展。③促进计算机世界的发展。④为世界带来欢乐与便利。
  * '激励分配'的原则：①重点奖励，对少数有突出贡献的人进行重奖。②共同富裕，多数人可以获得奖励。
  * '激励'奖励群体：①创始团队②矿工③开发者社区④基金会⑤建设者。分配比例为1：20：50：20：9。
- * '激励'的来源有三种：①系统最初派发的一万亿，以下用'最初币'代替②交易手续费③未花费交易输出的存储费
+ * '激励'的来源有三种：①系统最初派发的一万亿，以下用'最初币'代替②交易手续费
  * '激励'领取方式：矿工的奖励由矿工领取，其它群体，由矿工代领，每10000个区块可以领取一次，每次领取适宜数额的激励，然后在系统外分配。
  * 其它：除了矿工外，任何激励的使用需要列出详细账单，账单必须要公开，要经得起推敲与质疑。
  * 一个人允许拥有多个角色。他既可以是创始团队成员、也可以是矿工、还可以是开发者社区的一员。
@@ -31,14 +31,16 @@ import com.xingkaichun.helloworldblockchain.util.StringUtil;
  * 矿工的奖励，占总激励的20%。矿工是维护区块链网络的基石，不可不奖励。它的分配策略请看具体的代码。
  *
  * 开发者社区的奖励，占总激励的50%。开发者是探究区块链技术发展的先锋队，不可不奖励。
- * 约定：开发者社区每10000个区块，可以释放1次，一次最多释放10 0000 0000(十亿枚)个激励。大约95年释放完毕。
- * 能看到这行代码的开发者，快来贡献你的一份力量吧，区块链社区需要你，社区地址 https://github.com/xingkaichun/HelloworldBlockchain 。
+ * 约定：开发者社区每10000个区块，可以释放1次，一次最多释放10 0000 0000(10亿枚)个激励。大约95年释放完毕。
+ * 能看到这行注释的开发者，快来贡献你的一份力量吧，区块链社区需要你，社区地址 https://github.com/xingkaichun/HelloworldBlockchain 。
  * 开发者分为初级开发者、中级开发者、高级开发者、荣誉开发者四个开发者群体。
- * 初级开发者10000名，每人每次领取   6 0000，有退出机制与重入机制。暂时不满员，期待各路英雄的加入。
- * 中级开发者1000 名，每人每次领取  20 0000，有退出机制与重入机制。暂时不满员，期待各路英雄的加入。
+ * 初级开发者10000名，每人每次领取   1 0000，有退出机制与重入机制。暂时不满员，期待各路英雄的加入。
+ * 中级开发者1000 名，每人每次领取  10 0000，有退出机制与重入机制。暂时不满员，期待各路英雄的加入。
  * 高级开发者100  名，每人每次领取 100 0000，有退出机制与重入机制。暂时不满员，期待各路英雄的加入。
  * 荣誉开发者：每人只能领取一次奖励，每次1 0000 0000个，但是称号永久存在。有突出贡献的开发者，都可以领取荣誉开发者称号。所谓突出以创始团队贡献为基准。
- * 开发者动态奖池，以上分配剩余的属于动态奖池，各级开发中的部分人可能贡献更大，但是得到得奖励却很少，这里用以弥补。每人每次领取范围为50 0000 到 500 0000。
+ * 开发者动态奖池，以上分配剩余的属于动态奖池，各级开发中的部分人可能贡献更大，但是得到得奖励却很少，这里用以弥补。每人每次领取范围为1 0000 到 500 0000。
+ * 退出机制与重入机制在适当的时间由全体开发者共同决议。原则上，希望有更多的开发者获得这个奖励，不希望由部分开发者把持着这个奖励
+ * ，当然一直为该项目有持续贡献的开发者也理应一直获得这个奖励，也不应该被退出。
  *
  * 基金会的奖励，占总激励的20%。奖励暂时不启动。github 50万star在启动。
  * 基金会：与现实世界进行交互，用于投资产生盈利，所得盈利看作"最初币"进行分配即可，以支持持续发展项目。
@@ -46,10 +48,9 @@ import com.xingkaichun.helloworldblockchain.util.StringUtil;
  * 建设者的奖励，占总激励的9%。奖励暂时不启动。github 100万star在启动。
  * 建设者：对计算机世界建设有意义的人。
  * 对建设者的奖励是纯支出不要任何回馈的激励分配。
- * 开源者、底层建设者等等，奖励暂时不启动。如果启动，一定要公平公正公开在社区内得到广泛认同。
+ * 奖励对象为开源者、底层建设者等等，奖励暂时不启动。如果启动，一定要公平公正公开在社区内得到广泛认同。
  *
  * 交易手续费的分配：看作"最初币"进行分配即可。
- * 未花费交易输出的存储费的分配：看作"最初币"进行分配即可。
  *
  * @author 邢开春 409060350@qq.com
  */
@@ -60,7 +61,7 @@ public class IncentiveDefaultImpl extends Incentive {
         //给予矿工的挖矿津贴
         long minerSubsidy = getMinerSubsidy(block);
         //给予矿工的交易手续费
-        long minerFee = (long) (BlockTool.getBlockFee(block)*0.2);
+        long minerFee = BlockTool.getBlockFee(block);
         //给予其他团体的激励 ，由矿工代领取。
         long otherTeamIncentiveAmount = getOtherTeamSubsidy(block);
         //总的激励
@@ -70,23 +71,23 @@ public class IncentiveDefaultImpl extends Incentive {
     @Override
     public String incentiveAddress(BlockchainDatabase blockchainDataBase, Block block) {
         if(block.getHeight() == 1){
-            //TODO 上线时
-            return AccountUtil.randomAccount().getAddress();
+            //TODO 上线时确定
+            return null;
         }else if(block.getHeight() == 10001){
-            //TODO 上线时
-            return AccountUtil.randomAccount().getAddress();
+            //TODO 上线时确定
+            return null;
         }else if(block.getHeight() == 20001){
-            //TODO 上线时
-            return AccountUtil.randomAccount().getAddress();
+            //TODO 上线时确定
+            return null;
         }else if(block.getHeight() == 30001){
-            //TODO 上线时
-            return AccountUtil.randomAccount().getAddress();
+            //TODO 上线时确定
+            return null;
         }else if(block.getHeight() == 40001){
-            //TODO 上线时
-            return AccountUtil.randomAccount().getAddress();
+            //TODO 上线时确定
+            return null;
         }else if(block.getHeight() == 50001){
-            //TODO 上线时
-            return AccountUtil.randomAccount().getAddress();
+            //TODO 上线时确定
+            return null;
         }
         return null;
     }

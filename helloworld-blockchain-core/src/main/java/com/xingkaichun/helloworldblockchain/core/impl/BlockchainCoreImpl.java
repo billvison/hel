@@ -140,8 +140,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
                 continue;
             }
             privateKeyUtxoMap.put(privateKey,utxo);
-            //TODO
-            response = WalletTool.buildTransactionDTO(privateKeyUtxoMap,recipientList,payerChangeAddress,fee+ 100L *privateKeyUtxoMap.size());
+            response = WalletTool.buildTransactionDTO(privateKeyUtxoMap,recipientList,payerChangeAddress,fee);
             if(response.isBuildTransactionSuccess()){
                 break;
             }
