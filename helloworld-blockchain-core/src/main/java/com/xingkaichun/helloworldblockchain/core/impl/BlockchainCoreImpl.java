@@ -136,7 +136,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
         for(String privateKey : payerPrivateKeyList){
             String address = AccountUtil.accountFromPrivateKey(privateKey).getAddress();
             TransactionOutput utxo = blockchainDataBase.queryUnspentTransactionOutputByAddress(address);
-            if(utxo == null){
+            if(utxo == null || utxo.getValue() <= 0){
                 continue;
             }
             privateKeyUtxoMap.put(privateKey,utxo);
