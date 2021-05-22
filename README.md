@@ -22,7 +22,7 @@ http://119.3.57.171/
 
 
 ### 数字货币初体验
-初体验：无需下载、安装软件，直接在演示网站操作，体验创建数字货币账户，交易，挖矿等区块链功能。  
+初体验：无需下载、无需安装软件，直接在演示网站操作，体验创建数字货币账户，交易，挖矿等区块链功能。
 [1.如何拥有一个数字货币账户？](https://zhuanlan.zhihu.com/p/352458209)  
 [2.有了账户，如何查看该账户的余额？](https://zhuanlan.zhihu.com/p/352458209)  
 [3.有了账户，怎么获取数字货币？](https://zhuanlan.zhihu.com/p/352458209)  
@@ -121,3 +121,5 @@ cd C:\Users\xingkaichun\IdeaProjects\HelloworldBlockchain\helloworld-blockchain-
 运行启动命令  
 java -jar helloworld-blockchain-explorer-1.0-SNAPSHOT.jar  
 ```
+### 关注者
+[![Stargazers over time](https://starchart.cc/xingkaichun/HelloworldBlockchain.svg)](https://starchart.cc/xingkaichun/HelloworldBlockchain)
