@@ -10,13 +10,13 @@
   <version>1.0-SNAPSHOT</version>
   <modules>
     <module>helloworld-blockchain-core</module>
-    <module>helloworld-blockchain-explorer</module>
     <module>helloworld-blockchain-crypto</module>
     <module>helloworld-blockchain-netcore</module>
     <module>helloworld-blockchain-netcore-dto</module>
     <module>helloworld-blockchain-setting</module>
     <module>helloworld-blockchain-util</module>
     <module>helloworld-blockchain-netcore-client</module>
+    <module>helloworld-blockchian-application</module>
   </modules>
 
   <name>helloworld-blockchain-parent</name>
@@ -54,7 +54,7 @@
       </dependency>
       <dependency>
         <groupId>com.xingkaichun.helloworldblockchain</groupId>
-        <artifactId>helloworld-blockchain-explorer</artifactId>
+        <artifactId>helloworld-blockchain-application</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

@@ -1,0 +1,199 @@
+package com.xingkaichun.helloworldblockchain.application.controller;
+
+import com.xingkaichun.helloworldblockchain.application.service.WalletApplicationService;
+import com.xingkaichun.helloworldblockchain.application.vo.WalletApplicationApi;
+import com.xingkaichun.helloworldblockchain.application.vo.account.*;
+import com.xingkaichun.helloworldblockchain.application.vo.framwork.ServiceResult;
+import com.xingkaichun.helloworldblockchain.application.vo.transaction.SubmitTransactionToBlockchainNetworkRequest;
+import com.xingkaichun.helloworldblockchain.application.vo.transaction.SubmitTransactionToBlockchainNetworkResponse;
+import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
+import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionRequest;
+import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionResponse;
+import com.xingkaichun.helloworldblockchain.core.model.pay.Recipient;
+import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
+import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
+import com.xingkaichun.helloworldblockchain.crypto.model.Account;
+import com.xingkaichun.helloworldblockchain.netcore.BlockchainNetCore;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 钱包应用控制器：新增账户，删除账户、查询账户、构建交易等。
+ * 这里的操作都应该需要权限才可以操作，不适合对所有人开放。
+ *
+ * @author 邢开春 409060350@qq.com
+ */
+@RestController
+public class WalletApplicationController {
+
+    @Autowired
+    private BlockchainNetCore blockchainNetCore;
+    @Autowired
+    private WalletApplicationService walletApplicationService;
+
+
+    /**
+     * 生成账户(私钥、公钥、公钥哈希、地址)
+     */
+    @RequestMapping(value = WalletApplicationApi.GENERATE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<GenerateAccountResponse> generateAccount(@RequestBody GenerateAccountRequest request){
+        try {
+            Account account = AccountUtil.randomAccount();
+            GenerateAccountResponse response = new GenerateAccountResponse();
+            response.setAccount(account);
+            return ServiceResult.createSuccessServiceResult("生成账户成功",response);
+        } catch (Exception e){
+            String message = "生成账户失败";
+            LogUtil.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 生成账户(私钥、公钥、公钥哈希、地址)并保存
+     */
+    @RequestMapping(value = WalletApplicationApi.GENERATE_AND_SAVE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<GenerateAndSaveAccountResponse> generateAndSaveAccount(@RequestBody GenerateAndSaveAccountRequest request){
+        try {
+            Account account = getBlockchainCore().getWallet().createAndAddAccount();
+            GenerateAndSaveAccountResponse response = new GenerateAndSaveAccountResponse();
+            response.setAccount(account);
+            return ServiceResult.createSuccessServiceResult("[生成账户并保存]成功",response);
+        } catch (Exception e){
+            String message = "[生成账户并保存]失败";
+            LogUtil.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 新增账户
+     */
+    @RequestMapping(value = WalletApplicationApi.ADD_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<AddAccountResponse> addAccount(@RequestBody AddAccountRequest request){
+        try {
+            String privateKey = request.getPrivateKey();
+            if(StringUtil.isNullOrEmpty(privateKey)){
+                return ServiceResult.createFailServiceResult("账户私钥不能为空。");
+            }
+            Account account = AccountUtil.accountFromPrivateKey(privateKey);
+            getBlockchainCore().getWallet().addAccount(account);
+            AddAccountResponse response = new AddAccountResponse();
+            response.setAddAccountSuccess(true);
+            return ServiceResult.createSuccessServiceResult("新增账户成功",response);
+        } catch (Exception e){
+            String message = "新增账户失败";
+            LogUtil.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 删除账户
+     */
+    @RequestMapping(value = WalletApplicationApi.DELETE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<DeleteAccountResponse> deleteAccount(@RequestBody DeleteAccountRequest request){
+        try {
+            String address = request.getAddress();
+            if(StringUtil.isNullOrEmpty(address)){
+                return ServiceResult.createFailServiceResult("请填写需要删除的地址");
+            }
+            getBlockchainCore().getWallet().deleteAccountByAddress(address);
+            DeleteAccountResponse response = new DeleteAccountResponse();
+            response.setDeleteAccountSuccess(true);
+            return ServiceResult.createSuccessServiceResult("删除账号成功",response);
+        } catch (Exception e){
+            String message = "删除账号失败";
+            LogUtil.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 查询所有的账户
+     */
+    @RequestMapping(value = WalletApplicationApi.QUERY_ALL_ACCOUNT_LIST,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryAllAccountListResponse> queryAllAccountList(@RequestBody QueryAllAccountListRequest request){
+        try {
+            List<Account> allAccount = getBlockchainCore().getWallet().getAllAccount();
+
+            List<QueryAllAccountListResponse.AccountDto> accountDtoList = new ArrayList<>();
+            if(allAccount != null){
+                for(Account account:allAccount){
+                    QueryAllAccountListResponse.AccountDto accountDto = new QueryAllAccountListResponse.AccountDto();
+                    accountDto.setAddress(account.getAddress());
+                    accountDto.setPrivateKey(account.getPrivateKey());
+                    accountDto.setValue(WalletTool.obtainBalance(getBlockchainCore(),account.getAddress()));
+                    accountDtoList.add(accountDto);
+                }
+            }
+            long balance = 0;
+            for(QueryAllAccountListResponse.AccountDto accountDto:accountDtoList){
+                balance += accountDto.getValue();
+            }
+            QueryAllAccountListResponse response = new QueryAllAccountListResponse();
+            response.setAccountDtoList(accountDtoList);
+            response.setBalance(balance);
+            return ServiceResult.createSuccessServiceResult("[查询所有账户]成功",response);
+        } catch (Exception e){
+            String message = "[查询所有账户]失败";
+            LogUtil.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 构建交易
+     */
+    @RequestMapping(value = WalletApplicationApi.BUILD_TRANSACTION,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<BuildTransactionResponse> buildTransaction(@RequestBody BuildTransactionRequest request){
+        try {
+            List<Recipient> recipientList = request.getRecipientList();
+            if(recipientList == null || recipientList.isEmpty()){
+                return ServiceResult.createFailServiceResult("交易输出不能为空。");
+            }
+            for(Recipient recipient:recipientList){
+                if(StringUtil.isNullOrEmpty(recipient.getAddress())){
+                    return ServiceResult.createFailServiceResult("交易输出的地址不能为空。");
+                }
+            }
+            BuildTransactionResponse buildTransactionResponse = getBlockchainCore().buildTransactionDTO(request);
+            if(buildTransactionResponse.isBuildTransactionSuccess()){
+                return ServiceResult.createSuccessServiceResult("构建交易成功",buildTransactionResponse);
+            }else {
+                return ServiceResult.createFailServiceResult(buildTransactionResponse.getMessage());
+            }
+        } catch (Exception e){
+            String message = "构建交易失败";
+            LogUtil.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    /**
+     * 提交交易到区块链网络
+     */
+    @RequestMapping(value = WalletApplicationApi.SUBMIT_TRANSACTION_TO_BLOCKCHIAINNEWWORK,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<SubmitTransactionToBlockchainNetworkResponse> submitTransactionToBlockchainNetwork(@RequestBody SubmitTransactionToBlockchainNetworkRequest request){
+        try {
+            SubmitTransactionToBlockchainNetworkResponse response = walletApplicationService.submitTransactionToBlockchainNetwork(request);
+            return ServiceResult.createSuccessServiceResult("提交交易到区块链网络成功", response);
+        } catch (Exception e){
+            String message = "提交交易到区块链网络失败";
+            LogUtil.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
+    private BlockchainCore getBlockchainCore(){
+        return blockchainNetCore.getBlockchainCore();
+    }
+}
