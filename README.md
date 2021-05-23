@@ -78,7 +78,7 @@ HelloworldBlockchain项目没有任何复杂依赖，将项目导入idea，找�
 
 
 ## 模块架构
-![架构图](https://z3.ax1x.com/2021/05/23/gXaRRP.jpg)
+![架构图](https://z3.ax1x.com/2021/05/23/gXOKWd.jpg)
 #### helloworld-blockchain-application
 启动后，在浏览器输入地址 http://localhost/ 进入区块链系统的前台。他对外提供钱包应用、区块链浏览器应用、节点控制台应用三种应用的功能。
 * 区块链浏览器应用：对外提供了查询交易、查询区块、查询地址、查询区块链网络节点等功能。
