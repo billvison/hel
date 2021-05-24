@@ -1,9 +1,9 @@
 package com.xingkaichun.helloworldblockchain.application.service;
 
-import com.xingkaichun.helloworldblockchain.application.vo.block.BlockView;
-import com.xingkaichun.helloworldblockchain.application.vo.transaction.MiningTransactionView;
-import com.xingkaichun.helloworldblockchain.application.vo.transaction.TransactionOutputDetailView;
-import com.xingkaichun.helloworldblockchain.application.vo.transaction.TransactionView;
+import com.xingkaichun.helloworldblockchain.application.vo.block.BlockVo;
+import com.xingkaichun.helloworldblockchain.application.vo.transaction.MiningTransactionVo;
+import com.xingkaichun.helloworldblockchain.application.vo.transaction.TransactionOutputDetailVo;
+import com.xingkaichun.helloworldblockchain.application.vo.transaction.TransactionVo;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
 
 import java.util.List;
@@ -18,28 +18,28 @@ public interface BlockchainBrowserApplicationService {
     /**
      * 根据交易输出ID获取交易输出
      */
-    TransactionOutputDetailView queryTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId);
+    TransactionOutputDetailVo queryTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId);
     /**
      * 根据地址获取交易输出
      */
-    TransactionOutputDetailView queryTransactionOutputByAddress(String address);
+    TransactionOutputDetailVo queryTransactionOutputByAddress(String address);
 
     /**
      * 根据交易哈希查询交易
      */
-    TransactionView queryTransactionByTransactionHash(String transactionHash);
+    TransactionVo queryTransactionByTransactionHash(String transactionHash);
     /**
      * 根据区块哈希与交易高度查询交易列表
      */
-    List<TransactionView> queryTransactionListByBlockHashTransactionHeight(String blockHash, long from, long size);
+    List<TransactionVo> queryTransactionListByBlockHashTransactionHeight(String blockHash, long from, long size);
 
      /**
      * 根据区块哈希查找区块
      */
-    BlockView queryBlockViewByBlockHeight(Long blockHeight);
+    BlockVo queryBlockViewByBlockHeight(Long blockHeight);
 
     /**
      * 根据区块哈希查找未确认的交易
      */
-    MiningTransactionView queryMiningTransactionByTransactionHash(String transactionHash);
+    MiningTransactionVo queryMiningTransactionByTransactionHash(String transactionHash);
 }

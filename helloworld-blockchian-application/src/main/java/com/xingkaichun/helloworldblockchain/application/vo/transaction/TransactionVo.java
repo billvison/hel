@@ -6,7 +6,7 @@ import java.util.List;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class TransactionView {
+public class TransactionVo {
     private long blockHeight;
     private String blockHash;
     private long confirmCount;
@@ -20,8 +20,8 @@ public class TransactionView {
     private long transactionInputValues;
     private long transactionOutputValues;
 
-    private List<TransactionInputView> transactionInputViewList;
-    private List<TransactionOutputView> transactionOutputViewList;
+    private List<TransactionInputVo> transactionInputVoList;
+    private List<TransactionOutputVo> transactionOutputVoList;
 
     private List<String> inputScriptList;
     private List<String> outputScriptList;
@@ -107,20 +107,20 @@ public class TransactionView {
         this.transactionOutputValues = transactionOutputValues;
     }
 
-    public List<TransactionInputView> getTransactionInputViewList() {
-        return transactionInputViewList;
+    public List<TransactionInputVo> getTransactionInputVoList() {
+        return transactionInputVoList;
     }
 
-    public void setTransactionInputViewList(List<TransactionInputView> transactionInputViewList) {
-        this.transactionInputViewList = transactionInputViewList;
+    public void setTransactionInputVoList(List<TransactionInputVo> transactionInputVoList) {
+        this.transactionInputVoList = transactionInputVoList;
     }
 
-    public List<TransactionOutputView> getTransactionOutputViewList() {
-        return transactionOutputViewList;
+    public List<TransactionOutputVo> getTransactionOutputVoList() {
+        return transactionOutputVoList;
     }
 
-    public void setTransactionOutputViewList(List<TransactionOutputView> transactionOutputViewList) {
-        this.transactionOutputViewList = transactionOutputViewList;
+    public void setTransactionOutputVoList(List<TransactionOutputVo> transactionOutputVoList) {
+        this.transactionOutputVoList = transactionOutputVoList;
     }
 
     public List<String> getInputScriptList() {

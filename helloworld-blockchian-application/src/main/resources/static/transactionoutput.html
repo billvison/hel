@@ -58,7 +58,7 @@
                     }`
                 });
                 console.log(data);
-                var transactionOutputDetailView = data.result.transactionOutputDetailView;
+                var transactionOutputDetailVo = data.result.transactionOutputDetailVo;
                 $('.panel-heading').text(`交易输出[交易哈希${urlParameters.get("transactionHash")}    交易输出索引${urlParameters.get("transactionOutputIndex")}]`);
 
                 $('#zhaiyao').html(`
@@ -67,13 +67,13 @@
                         <tbody>
                         <tr>
                             <td style="width:10%">金额</td>
-                            <td style="width:40%">${transactionOutputDetailView.value}</td>
+                            <td style="width:40%">${transactionOutputDetailVo.value}</td>
                             <td>交易输出类型</td>
-                            <td>${transactionOutputDetailView.transactionType}</td>
+                            <td>${transactionOutputDetailVo.transactionType}</td>
                         </tr>
                         <tr>
                             <td style="width:10%">是否已花费</td>
-                            <td style="width:40%" id="isspent">${transactionOutputDetailView.spent ? '是' : '否'}</td>
+                            <td style="width:40%" id="isspent">${transactionOutputDetailVo.spent ? '是' : '否'}</td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -87,51 +87,51 @@
                         <tbody>
                         <tr>
                             <td style="width:10%">块高度</td>
-                            <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutputDetailView.fromBlockHash}">${transactionOutputDetailView.fromBlockHeight}</a></td>
+                            <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutputDetailVo.fromBlockHash}">${transactionOutputDetailVo.fromBlockHeight}</a></td>
                             <td style="width:10%">区块哈希</td>
-                            <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutputDetailView.fromBlockHash}">${transactionOutputDetailView.fromBlockHash}</a></td>
+                            <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutputDetailVo.fromBlockHash}">${transactionOutputDetailVo.fromBlockHash}</a></td>
                         </tr>
                         <tr>
                             <td>输出索引</td>
-                            <td>${transactionOutputDetailView.fromTransactionOutputIndex}</td>
+                            <td>${transactionOutputDetailVo.fromTransactionOutputIndex}</td>
                             <td>交易哈希</td>
-                            <td><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${transactionOutputDetailView.fromTransactionHash}">${transactionOutputDetailView.fromTransactionHash}</a></td>
+                            <td><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${transactionOutputDetailVo.fromTransactionHash}">${transactionOutputDetailVo.fromTransactionHash}</a></td>
                         </tr>
                         <tr>
                             <td>输出脚本</td>
-                            <td colspan="3">${transactionOutputDetailView.fromOutputScript}</td>
+                            <td colspan="3">${transactionOutputDetailVo.fromOutputScript}</td>
                         </tr>
                         </tbody>
                     </table>
                     <button type="button" class="btn btn-default">来源交易</button>
-                    <div>${transactionHtml(transactionOutputDetailView.inputTransaction)}</div>
+                    <div>${transactionHtml(transactionOutputDetailVo.inputTransaction)}</div>
                 `);
 
-                if(transactionOutputDetailView.outputTransaction != null){
+                if(transactionOutputDetailVo.outputTransaction != null){
                     $('#to').html(`
                         <button type="button" class="btn btn-default">去向</button>
                         <table class="table">
                             <tbody>
                             <tr>
                                 <td style="width:10%">块高度</td>
-                                <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutputDetailView.toBlockHash}">${transactionOutputDetailView.toBlockHeight}</a></td>
+                                <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutputDetailVo.toBlockHash}">${transactionOutputDetailVo.toBlockHeight}</a></td>
                                 <td style="width:10%">区块哈希</td>
-                                <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutputDetailView.toBlockHash}">${transactionOutputDetailView.toBlockHash}</a></td>
+                                <td style="width:40%"><a target="_blank" href="./block.html?hash=${transactionOutputDetailVo.toBlockHash}">${transactionOutputDetailVo.toBlockHash}</a></td>
                             </tr>
                             <tr>
                                 <td>输入索引</td>
-                                <td>${transactionOutputDetailView.toTransactionInputIndex}</td>
+                                <td>${transactionOutputDetailVo.toTransactionInputIndex}</td>
                                 <td>交易哈希</td>
-                                <td><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${transactionOutputDetailView.toTransactionHash}">${transactionOutputDetailView.toTransactionHash}</a></td>
+                                <td><a title="交易哈希，点击查看交易详情。" target="_blank" href="./transaction.html?transactionHash=${transactionOutputDetailVo.toTransactionHash}">${transactionOutputDetailVo.toTransactionHash}</a></td>
                             </tr>
                             <tr>
                                 <td>输入脚本</td>
-                                <td colspan="3">${transactionOutputDetailView.toInputScript}</td>
+                                <td colspan="3">${transactionOutputDetailVo.toInputScript}</td>
                             </tr>
                             </tbody>
                         </table>
                         <button type="button" class="btn btn-default">去向交易</button>
-                        <div>${transactionHtml(transactionOutputDetailView.outputTransaction)}</div>
+                        <div>${transactionHtml(transactionOutputDetailVo.outputTransaction)}</div>
                     `);
                 }
             }())

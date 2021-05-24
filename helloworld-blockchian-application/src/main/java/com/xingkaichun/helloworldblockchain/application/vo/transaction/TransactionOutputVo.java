@@ -4,11 +4,10 @@ package com.xingkaichun.helloworldblockchain.application.vo.transaction;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class TransactionInputView {
-
+public class TransactionOutputVo {
     private String address;
     private long value;
-    private String inputScript;
+    private String outputScript;
     private String transactionHash;
     private long transactionOutputIndex;
 
@@ -28,12 +27,12 @@ public class TransactionInputView {
         this.value = value;
     }
 
-    public String getInputScript() {
-        return inputScript;
+    public String getOutputScript() {
+        return outputScript;
     }
 
-    public void setInputScript(String inputScript) {
-        this.inputScript = inputScript;
+    public void setOutputScript(String outputScript) {
+        this.outputScript = outputScript;
     }
 
     public String getTransactionHash() {
@@ -51,5 +50,4 @@ public class TransactionInputView {
     public void setTransactionOutputIndex(long transactionOutputIndex) {
         this.transactionOutputIndex = transactionOutputIndex;
     }
-
 }

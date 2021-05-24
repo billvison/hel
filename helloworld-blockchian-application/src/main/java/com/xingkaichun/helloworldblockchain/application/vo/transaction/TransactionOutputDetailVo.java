@@ -4,7 +4,7 @@ package com.xingkaichun.helloworldblockchain.application.vo.transaction;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class TransactionOutputDetailView {
+public class TransactionOutputDetailVo {
     private long value;
     private boolean isSpent;
     private String transactionType;
@@ -23,8 +23,8 @@ public class TransactionOutputDetailView {
     private long toTransactionInputIndex;
     private String toInputScript;
 
-    private TransactionView inputTransaction;
-    private TransactionView outputTransaction;
+    private TransactionVo inputTransaction;
+    private TransactionVo outputTransaction;
 
     public boolean isSpent() {
         return isSpent;
@@ -90,19 +90,19 @@ public class TransactionOutputDetailView {
         this.toInputScript = toInputScript;
     }
 
-    public TransactionView getInputTransaction() {
+    public TransactionVo getInputTransaction() {
         return inputTransaction;
     }
 
-    public void setInputTransaction(TransactionView inputTransaction) {
+    public void setInputTransaction(TransactionVo inputTransaction) {
         this.inputTransaction = inputTransaction;
     }
 
-    public TransactionView getOutputTransaction() {
+    public TransactionVo getOutputTransaction() {
         return outputTransaction;
     }
 
-    public void setOutputTransaction(TransactionView outputTransaction) {
+    public void setOutputTransaction(TransactionVo outputTransaction) {
         this.outputTransaction = outputTransaction;
     }
 

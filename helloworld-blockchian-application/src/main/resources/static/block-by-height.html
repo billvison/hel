@@ -19,8 +19,8 @@
                     data: reqJson
                 });
                 if(data.result != null){
-                    let {blockView} = data.result;
-                    var redirectUrl = `./block.html${location.search}&hash=${blockView.hash}`;
+                    let {blockVo} = data.result;
+                    var redirectUrl = `./block.html${location.search}&hash=${blockVo.hash}`;
                     console.log(redirectUrl);
                     window.location.href = redirectUrl;
                 }else {

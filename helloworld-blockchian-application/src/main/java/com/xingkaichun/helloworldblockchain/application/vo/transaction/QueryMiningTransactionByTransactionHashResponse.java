@@ -6,15 +6,15 @@ package com.xingkaichun.helloworldblockchain.application.vo.transaction;
  */
 public class QueryMiningTransactionByTransactionHashResponse {
 
-    private MiningTransactionView transactionDTO;
+    private MiningTransactionVo transactionDTO;
 
     //region get set
 
-    public MiningTransactionView getTransactionDTO() {
+    public MiningTransactionVo getTransactionDTO() {
         return transactionDTO;
     }
 
-    public void setTransactionDTO(MiningTransactionView transactionDTO) {
+    public void setTransactionDTO(MiningTransactionVo transactionDTO) {
         this.transactionDTO = transactionDTO;
     }
 

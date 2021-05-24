@@ -6,7 +6,7 @@ import java.util.List;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class BlockView {
+public class BlockVo {
 
     private long height;
     private long confirmCount;
@@ -125,8 +125,8 @@ public class BlockView {
         private String transactionType;
         private long transactionInputValues;
         private long transactionOutputValues;
-        private List<BlockView> transactionInputDtoList;
-        private List<BlockView> transactionOutputDtoList;
+        private List<BlockVo> transactionInputDtoList;
+        private List<BlockVo> transactionOutputDtoList;
 
 
         public String getTime() {
@@ -161,19 +161,19 @@ public class BlockView {
             this.transactionType = transactionType;
         }
 
-        public List<BlockView> getTransactionInputDtoList() {
+        public List<BlockVo> getTransactionInputDtoList() {
             return transactionInputDtoList;
         }
 
-        public void setTransactionInputDtoList(List<BlockView> transactionInputDtoList) {
+        public void setTransactionInputDtoList(List<BlockVo> transactionInputDtoList) {
             this.transactionInputDtoList = transactionInputDtoList;
         }
 
-        public List<BlockView> getTransactionOutputDtoList() {
+        public List<BlockVo> getTransactionOutputDtoList() {
             return transactionOutputDtoList;
         }
 
-        public void setTransactionOutputDtoList(List<BlockView> transactionOutputDtoList) {
+        public void setTransactionOutputDtoList(List<BlockVo> transactionOutputDtoList) {
             this.transactionOutputDtoList = transactionOutputDtoList;
         }
 

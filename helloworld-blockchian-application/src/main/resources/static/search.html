@@ -63,8 +63,8 @@
                     });
                     if(data.result != null){
                         alert("识别为区块高度，点击确认按钮，跳转到区块详情页。");
-                        let {blockView} = data.result;
-                        var redirectUrl = `./block.html?hash=${blockView.hash}`;
+                        let {blockVo} = data.result;
+                        var redirectUrl = `./block.html?hash=${blockVo.hash}`;
                         console.log(redirectUrl);
                         window.location.href = redirectUrl;
                         return;
@@ -105,7 +105,7 @@
                     url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryTransactionOutputByAddress",
                     data: reqJson
                 });
-                if(data.result != null && data.result.transactionOutputDetailView != null){
+                if(data.result != null && data.result.transactionOutputDetailVo != null){
                     alert("识别为地址，点击确认按钮，跳转到地址详情页。");
                     var redirectUrl = `./address.html?address=${searchValue}`;
                     console.log(redirectUrl);

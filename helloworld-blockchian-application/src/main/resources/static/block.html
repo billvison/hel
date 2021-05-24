@@ -52,50 +52,50 @@
                     url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryBlockByBlockHash",
                     data: reqJso2
                 });
-                let {blockView} = data.result;
+                let {blockVo} = data.result;
                 $('#box').append(`
                 <div class="panel panel-default">
                     <!-- Default panel contents -->
-                    <div class="panel-heading">区块哈希&nbsp;${blockView.hash}</div>
+                    <div class="panel-heading">区块哈希&nbsp;${blockVo.hash}</div>
                     <button type="button" class="btn btn-default">摘要</button>
                     <!-- Table -->
                     <table class="table">
                         <tbody>
                             <tr>
                                 <td style="width:10%">高度</td>
-                                <td style="width:40%"><a target="_blank" href="./block-by-height.html?height=${blockView.height}">${blockView.height}</a></td>
+                                <td style="width:40%"><a target="_blank" href="./block-by-height.html?height=${blockVo.height}">${blockVo.height}</a></td>
                                 <td style="width:10%">挖矿难度</td>
-                                <td style="width:40%">${blockView.difficulty}</td>
+                                <td style="width:40%">${blockVo.difficulty}</td>
                             </tr>
                             <tr>
                                 <td>确认数</td>
-                                <td>${blockView.confirmCount}</td>
+                                <td>${blockVo.confirmCount}</td>
                                 <td>随机数</td>
-                                <td>${blockView.nonce}</td>
+                                <td>${blockVo.nonce}</td>
                             </tr>
                             <tr>
                                 <td>区块大小</td>
-                                <td>${blockView.blockSize}</td>
+                                <td>${blockVo.blockSize}</td>
                                 <td>区块哈希</td>
-                                <td>${blockView.hash}</td>
+                                <td>${blockVo.hash}</td>
                             </tr>
                             <tr>
                                 <td>交易数量</td>
-                                <td>${blockView.transactionCount}</td>
+                                <td>${blockVo.transactionCount}</td>
                                 <td>上一个区块哈希</td>
-                                <td><a href='./block.html?hash=${blockView.previousBlockHash}'>${blockView.previousBlockHash}</a></td>
+                                <td><a href='./block.html?hash=${blockVo.previousBlockHash}'>${blockVo.previousBlockHash}</a></td>
                             </tr>
                             <tr>
                                 <td>时间</td>
-                                <td>${blockView.time}</td>
+                                <td>${blockVo.time}</td>
                                 <td>下一个区块哈希</td>
-                                <td><a href='./block.html?hash=${blockView.nextBlockHash}'>${blockView.nextBlockHash || ''}</a></td>
+                                <td><a href='./block.html?hash=${blockVo.nextBlockHash}'>${blockVo.nextBlockHash || ''}</a></td>
                             </tr>
                             <tr>
                                 <td>矿工奖励</td>
-                                <td>${blockView.minerIncentiveValue}</td>
+                                <td>${blockVo.minerIncentiveValue}</td>
                                 <td>默克尔树根</td>
-                                <td>${blockView.merkleTreeRoot}</td>
+                                <td>${blockVo.merkleTreeRoot}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -109,11 +109,11 @@
                     data: reqJson
                 });
                 console.log(data);
-                if(data.serviceCode = 'SUCCESS' && (data.result == null || data.result.transactionViewList == null || data.result.transactionViewList.length==0)){
+                if(data.serviceCode = 'SUCCESS' && (data.result == null || data.result.transactionVoList == null || data.result.transactionVoList.length==0)){
                     $("#button-load").html("交易数据加载完毕。");
                     return;
                 }
-                let result = data.result.transactionViewList;
+                let result = data.result.transactionVoList;
                 $(result).each((index, item) => {
                     console.log(item);
                     $('#box').append(transactionHtml(item))

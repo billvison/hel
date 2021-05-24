@@ -8,23 +8,21 @@ import java.util.List;
  */
 public class QueryTop10BlockResponse {
 
-    private List<BlockView> blockViewList ;
-
+    private List<BlockVo> blockVos ;
 
 
     //region get set
-    public List<BlockView> getBlockViewList() {
-        return blockViewList;
+    public List<BlockVo> getBlockVos() {
+        return blockVos;
     }
-
-    public void setBlockViewList(List<BlockView> blockViewList) {
-        this.blockViewList = blockViewList;
+    public void setBlockVos(List<BlockVo> blockVos) {
+        this.blockVos = blockVos;
     }
     //endregion
 
 
 
-    public static class BlockView {
+    public static class BlockVo {
 
         private long height;
         private String blockSize;

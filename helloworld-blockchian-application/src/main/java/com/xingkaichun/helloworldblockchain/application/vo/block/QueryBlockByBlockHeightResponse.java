@@ -6,19 +6,19 @@ package com.xingkaichun.helloworldblockchain.application.vo.block;
  */
 public class QueryBlockByBlockHeightResponse {
 
-    private BlockView blockView ;
+    private BlockVo blockVo;
 
 
 
 
     //region get set
 
-    public BlockView getBlockView() {
-        return blockView;
+    public BlockVo getBlockVo() {
+        return blockVo;
     }
 
-    public void setBlockView(BlockView blockView) {
-        this.blockView = blockView;
+    public void setBlockVo(BlockVo blockVo) {
+        this.blockVo = blockVo;
     }
     //endregion
 }

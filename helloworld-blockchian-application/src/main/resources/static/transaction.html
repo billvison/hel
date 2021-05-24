@@ -96,7 +96,7 @@
                     url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryTransactionByTransactionHash",
                     data:`{"transactionHash":"${urlParameters.get("transactionHash")}"}`
                 });
-                let {inputScriptList, outputScriptList, transactionHash,transactionInputViewList, transactionOutputValues, blockHeight, blockHash,transactionFee, confirmCount, transactionInputCount, transactionType, blockTime, transactionInputValues , transactionOutputCount, transactionOutputViewList} = data.result.transactionView;
+                let {inputScriptList, outputScriptList, transactionHash,transactionInputVoList, transactionOutputValues, blockHeight, blockHash,transactionFee, confirmCount, transactionInputCount, transactionType, blockTime, transactionInputValues , transactionOutputCount, transactionOutputVoList} = data.result.transactionVo;
                 $('.panel-heading').text("交易哈希 " + transactionHash);
                 $('.blockHeight').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHeight}</a>`);
                 $('.blockHash').html(`<a target="_blank" href="./block.html?hash=${blockHash}">${blockHash}</a>`);
@@ -109,7 +109,7 @@
                 $('.transactionOutputValues').text(transactionOutputValues);
                 $('.transactionOutputCount').text(transactionOutputCount);
 
-                let item = data.result.transactionView;
+                let item = data.result.transactionVo;
                 $('#transaction-list-container').append(transactionHtml(item))
 
                 inputScriptList.forEach(item => {
