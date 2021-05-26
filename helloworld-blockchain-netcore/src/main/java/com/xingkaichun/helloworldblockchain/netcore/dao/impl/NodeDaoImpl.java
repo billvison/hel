@@ -2,7 +2,7 @@ package com.xingkaichun.helloworldblockchain.netcore.dao.impl;
 
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
-import com.xingkaichun.helloworldblockchain.netcore.po.NodePO;
+import com.xingkaichun.helloworldblockchain.netcore.po.NodePo;
 import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
@@ -26,10 +26,10 @@ public class NodeDaoImpl implements NodeDao {
     }
 
     @Override
-    public NodePO queryNode(String ip){
-        List<NodePO> nodePOList = queryAllNodeList();
-        if(nodePOList != null){
-            for(NodePO n: nodePOList){
+    public NodePo queryNode(String ip){
+        List<NodePo> nodePoList = queryAllNodeList();
+        if(nodePoList != null){
+            for(NodePo n: nodePoList){
                 if(StringUtil.isEquals(ip,n.getIp())){
                     return n;
                 }
@@ -39,12 +39,12 @@ public class NodeDaoImpl implements NodeDao {
     }
 
     @Override
-    public void addNode(NodePO node){
+    public void addNode(NodePo node){
         KvDBUtil.put(nodeDatabasePath,ByteUtil.encode(node.getIp()), ByteUtil.encode(JsonUtil.toJson(node)));
     }
 
     @Override
-    public void updateNode(NodePO node){
+    public void updateNode(NodePo node){
         KvDBUtil.put(nodeDatabasePath,ByteUtil.encode(node.getIp()),ByteUtil.encode(JsonUtil.toJson(node)));
     }
 
@@ -54,14 +54,14 @@ public class NodeDaoImpl implements NodeDao {
     }
 
     @Override
-    public List<NodePO> queryAllNodeList(){
-        List<NodePO> list = new ArrayList<>();
+    public List<NodePo> queryAllNodeList(){
+        List<NodePo> list = new ArrayList<>();
         //获取所有
         List<byte[]> bytesNodeEntityList = KvDBUtil.get(nodeDatabasePath,1,100000000);
         if(bytesNodeEntityList != null){
             for(byte[] bytesNodeEntity:bytesNodeEntityList){
-                NodePO nodePO = JsonUtil.fromJson(ByteUtil.decodeToUtf8String(bytesNodeEntity), NodePO.class);
-                list.add(nodePO);
+                NodePo nodePo = JsonUtil.fromJson(ByteUtil.decodeToUtf8String(bytesNodeEntity), NodePo.class);
+                list.add(nodePo);
             }
         }
         return list;

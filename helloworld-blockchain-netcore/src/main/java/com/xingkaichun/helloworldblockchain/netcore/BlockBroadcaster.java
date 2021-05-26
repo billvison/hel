@@ -7,7 +7,7 @@ import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientI
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostBlockRequest;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.*;
@@ -59,7 +59,7 @@ public class BlockBroadcaster {
             return;
         }
         Block block = blockchainCore.queryTailBlock();
-        BlockDTO blockDTO = Model2DtoTool.block2BlockDTO(block);
+        BlockDto blockDTO = Model2DtoTool.block2BlockDTO(block);
 
         //按照节点的高度进行排序
         nodes.sort((Node node1, Node node2) -> {

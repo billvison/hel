@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>区块详情-HelloworldBlockchain</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+
+        <link rel="stylesheet" href="./assets/common/common.css">
+        <script src="./assets/common/common.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">HelloworldBlockchain</a>
+                </div>
+
+                <div>
+                    <!-- collapse navbar-collapse -->
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">搜索</a></li>
+                        <li><a href="./miner.html">挖矿</a></li>
+                        <li><a href="./unconfirm-transactions.html">未确认交易</a></li>
+                        <li><a href="./pay.html">支付</a></li>
+                        <li><a href="./wallet.html">钱包</a></li>
+                        <li><a href="./node-management.html">节点管理</a></li>
+                        <li class="active"><a href="./more-management.html">更多管理</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">☺更多管理☺</div>
+            <!-- Table -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td style="width:30%;">当前区块高度</td>
+                        <td style="width:40%;" id="blockHeight"></td>
+                        <td style="width:30%;"><button class="btn btn-primary" type="submit" id="button_DeleteBlock">删除区块</button></td>
+                    </tr>
+                    <tr>
+                        <td>挖矿状态</td>
+                        <td id="minerStatus"></td>
+                        <td ><button class="btn btn-primary" type="submit" onclick="clickOpen()" id="minerSwitch">占位符</button></td>
+                    </tr>
+                    <tr>
+                        <td>同步区块状态</td>
+                        <td id="synchronizerStatus"></td>
+                        <td><button class="btn btn-primary" type="submit" id="synchronizerSwitch">占位符</button></td>
+                    </tr>
+                    <tr>
+                        <td>节点搜寻策略</td>
+                        <td id="searchNodeStrategy"></td>
+                        <td ><button class="btn btn-primary" type="submit" id="searchNodeStrategySwitch">占位符</button></td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+        <script>
+            let minerInActiveState,synchronizerInActiveState,autoSearchNewNode;
+            $(async function(){
+                const data = await $ajax({
+                    url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryBlockchainHeight"
+                });
+                $('#blockHeight').text(data.result.blockchainHeight);
+            }());
+            $(async function(){
+                const data = await $ajax({
+                    url : baseUrl()+"/Api/NodeConsoleApplication/IsMinerActive",
+                    data:`{}`
+                });
+                minerInActiveState = data.result.minerInActiveState;
+                $('#minerStatus').text(data.result.minerInActiveState ? '挖矿中' : '休息中');
+                $('#minerSwitch').text(data.result.minerInActiveState ? '停止挖矿' : '开启挖矿');
+            }());
+            $(async function(){
+                const data = await $ajax({
+                    url : baseUrl()+"/Api/NodeConsoleApplication/IsSynchronizerActive",
+                    data:`{}`
+                });
+                synchronizerInActiveState = data.result.synchronizerInActiveState;
+                $('#synchronizerStatus').text(data.result.synchronizerInActiveState ? '同步中' : '休息中')
+                $('#synchronizerSwitch').text(data.result.synchronizerInActiveState ? '停止同步' : '开启同步')
+            }());
+            $(async function(){
+                const data = await $ajax({
+                    url : baseUrl()+"/Api/NodeConsoleApplication/IsAutoSearchNode",
+                    data:`{}`
+                });
+                autoSearchNewNode = data.result.autoSearchNewNode;
+                $('#searchNodeStrategy').text(data.result.autoSearchNewNode ? '自动寻找' : '手动添加');
+                $('#searchNodeStrategySwitch').text(data.result.autoSearchNewNode ? '手动添加' : '自动寻找');
+            }());
+
+            $('#button_DeleteBlock').click(async function(){
+                let res = prompt('删除区块，请输入要删除区块的高度。');
+                const data = await $ajax({
+                    url : baseUrl()+"/Api/NodeConsoleApplication/DeleteBlocks",
+                    data:`{
+                        "blockHeight":"${res}"
+                    }`
+                });
+                location.reload();
+            })
+            $('#minerSwitch').click(async function(){
+                if(minerInActiveState){
+                    await $ajax({
+                        url : baseUrl()+"/Api/NodeConsoleApplication/DeactiveMiner",
+                        data:"{}"
+                    });
+                }else{
+                    await $ajax({
+                        url : baseUrl()+"/Api/NodeConsoleApplication/ActiveMiner",
+                        data:"{}"
+                    });
+                }
+                location.reload();
+            })
+            $('#synchronizerSwitch').click(async function(){
+                if(!synchronizerInActiveState){
+                    await $ajax({
+                        url : baseUrl()+"/Api/NodeConsoleApplicationle/ActiveSynchronizer",
+                        data:"{}"
+                    });
+                }else{
+                    await $ajax({
+                        url : baseUrl()+"/Api/NodeConsoleApplication/DeactiveSynchronizer",
+                        data:"{}"
+                    });
+                }
+                location.reload();
+            })
+            $('#searchNodeStrategySwitch').click(async function(){
+                await $ajax({
+                    url : baseUrl()+"/Api/NodeConsoleApplication/SetAutoSearchNode",
+                    data:`{"autoSearchNode": ${!autoSearchNewNode}}`
+                });
+                location.reload();
+            })
+        </script>
+    </body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>支付-HelloworldBlockchain</title>
+
+        <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
+        <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
+        <script src="./lib/layer-v3.0.1/layer.js" charset="utf-8"></script>
+
+        <link rel="stylesheet" href="./assets/common/common.css">
+        <script src="./assets/common/common.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./index.html">HelloworldBlockchain</a>
+                </div>
+
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="./search.html">搜索</a></li>
+                        <li><a href="./miner.html">挖矿</a></li>
+                        <li><a href="./unconfirm-transactions.html">未确认交易</a></li>
+                        <li class="active"><a href="./pay.html">支付</a></li>
+                        <li><a href="./wallet.html">钱包</a></li>
+                        <li><a href="./node-management.html">节点管理</a></li>
+                        <li><a href="./more-management.html">更多管理</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div>
+            <div class="panel panel-default">
+                <div class="panel-heading">支付</div>
+            </div>
+            <div id="payerList">
+                <div class="panel panel-default" name="payer">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">收款方</div>
+                    <!-- List group -->
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div class="input-group">
+                                <span class="input-group-addon">请输入收款方地址</span>
+                                <input type="text" class="form-control" name="address">
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="input-group">
+                                <span class="input-group-addon">请输入付款的金额</span>
+                                <input type="number" class="form-control" name="money">
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <button class="btn btn-primary add"><i class="glyphicon glyphicon-plus"></i>&nbsp;增加收款方</button>
+                            <button class="btn btn-primary delete" onclick="javascript:this.parentNode.parentNode.parentNode.remove()"><i class="glyphicon glyphicon-minus"></i>&nbsp;删除该收款方</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <button type="button" class="btn btn-primary" onclick="onConfirm()">确认转账</button>
+            </div>
+        </div>
+        <script>
+            $('body').delegate('.add', 'click', function(){
+                $('#payerList').append(`
+                    <div class="panel panel-default" name="payer">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">收款方</div>
+                        <!-- List group -->
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <div class="input-group">
+                                    <span class="input-group-addon">请输入收款方地址</span>
+                                    <input type="text" class="form-control" name="address">
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="input-group">
+                                    <span class="input-group-addon">请输入付款的金额</span>
+                                    <input type="number" class="form-control" name="money">
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <button class="btn btn-primary add"><i class="glyphicon glyphicon-plus"></i>&nbsp;增加收款方</button>
+                                <button class="btn btn-primary delete" onclick="javascript:this.parentNode.parentNode.parentNode.remove()"><i class="glyphicon glyphicon-minus"></i>&nbsp;删除该收款方</button>
+                            </li>
+                        </ul>
+                    </div>
+                `)
+            });
+            async function onConfirm(){
+                let recipientList = [];
+                Array.from($('[name="payer"]')).forEach(item => {
+                    recipientList.push({address:$(item).find('[name="address"]:first').val().trim(),value:$(item).find('[name="money"]:first').val()})
+                });
+                const data = await $ajax({
+                    url : baseUrl()+"/Api/WalletApplication/BuildTransaction",
+                    data:JSON.stringify({recipientList})
+                })
+                if(data.serviceCode == 'SUCCESS'){
+                    const obj = {}
+                    obj.transactionDTO = data.result.transactionDTO;
+                    const data2 = await $ajax({
+                        url : baseUrl()+"/Api/WalletApplication/SubmitTransactionToBlockchainNetwork",
+                        data:JSON.stringify(obj),
+                    });
+                    alert(data2.message)
+
+                    let payerList = data.result.transactionInputList.map((item,index) => {
+                        return `
+                        <div class="panel-heading">交易付款方${index+1}</div>
+                          <ul class="list-group">
+                            <li class="list-group-item">付款地址 : <a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></li>
+                            <li class="list-group-item">付款金额 : ${item.value}</li>
+                            <li class="list-group-item">付款来源交易哈希 : <a target="_blank" href="./transaction.html?transactionHash=${item.transactionHash}">${item.transactionHash}</a></li>
+                            <li class="list-group-item">付款来源交易输出索引号 : <a title="交易输出，点击查看交易输出详情。" target="_blank" href="./transactionoutput.html?transactionHash=${item.transactionHash}&transactionOutputIndex=${item.transactionOutputIndex}">${item.transactionOutputIndex}</a></li>
+                          </ul>
+                        `
+                    })
+
+                    let payeeList = data.result.transactionOutputList.map((item,index) => {
+                        return `
+                          <div class="panel-heading">交易收款方${index+1}</div>
+                          <ul class="list-group">
+                            <li class="list-group-item">收款地址 : <a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${item.address}">${item.address}</a></li>
+                            <li class="list-group-item">收款金额 : ${item.value}</li>
+                            <li class="list-group-item">输出脚本 : ${item.outputScript.join(' ')}</li>
+                          </ul>
+                        `
+                    });
+
+                    let payerChangeHtml = "";
+                    if(data.result.payerChange != null){
+                        payerChangeHtml = `
+                            <div class="panel panel-default">
+                              <!-- Default panel contents -->
+                              <div class="panel-heading">找零</div>
+                              <!-- List group -->
+                              <ul class="list-group">
+                                <li class="list-group-item">找零地址 : <a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${data.result.payerChange.address}">${data.result.payerChange.address}</a></li>
+                                <li class="list-group-item">找零金额 : ${data.result.payerChange.value}</li>
+                                <li class="list-group-item">输出脚本 : ${data.result.payerChange.outputScript.join(' ')}</li>
+                              </ul>
+                            </div>
+                        `;
+                    }
+
+                    const str = `<div>
+                        <div class="page-header" style="margin-top:0;">
+                          <h1>支付详情</h1>
+                        </div>
+                        <!-- 付款人 -->
+                        <div class="panel panel-default">
+                        ${payerList.join('')}
+                        </div>
+                        <!-- 收款人 -->
+                        <div class="panel panel-default">
+                        ${payeeList.join('')}
+                        </div>
+                        <!-- 找零 -->
+                        ${payerChangeHtml}
+                        <!-- 其它 -->
+                        <div class="panel panel-default">
+                          <!-- Default panel contents -->
+                          <div class="panel-heading">更多交易信息</div>
+                          <!-- List group -->
+                          <ul class="list-group">
+                            <li class="list-group-item">交易手续费 : ${data.result.fee}</li>
+                            <li class="list-group-item">交易哈希 : <a target="_blank" href="./transaction.html?transactionHash=${data.result.transactionHash}">${data.result.transactionHash}</a></li>
+                          </ul>
+                        </div>
+                        <div class="panel panel-default">
+                          <!-- Default panel contents -->
+                          <div class="panel-heading">支付到账确认方式</div>
+                          <!-- List group -->
+                          <ul class="list-group">
+                            <li class="list-group-item">方式一：付款方进入<a target="_blank" href="./wallet.html">钱包</a>查看钱的总额是否变化</li>
+                            <li class="list-group-item">方式二：通知收款方进入<a target="_blank" href="./wallet.html">钱包</a>查看钱的总额是否变化</li>
+                            <li class="list-group-item">方式三：查看<a target="_blank" href="./unconfirm-transaction.html?transactionHash=${data.result.transactionHash}">交易</a>是否被区块链确认。若发现交易暂未被确认，可打开链接后，复制保存链接，稍后再查看。</li>
+                          </ul>
+                        </div>
+                        <button type="button" class="btn btn-success" style="margin-left:45%" onclick="layer.close(layer.index);">关闭</button>
+                    </div>`
+                    layer.open({
+                      closeBtn: 1,
+                      type: 1,
+                      title: false,
+                      offset:'t',
+                      scrollbar: false,
+                      area: ['100%', '100%'],
+                      closeBtn: 0,
+                      shadeClose: true,
+                      content: str
+                    });
+                }else {
+                    alert(data.message);
+                }
+            }
+        </script>
+    </body>
+</html>

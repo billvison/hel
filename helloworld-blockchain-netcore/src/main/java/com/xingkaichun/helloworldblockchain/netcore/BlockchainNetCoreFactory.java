@@ -49,7 +49,7 @@ public class BlockchainNetCoreFactory {
 
         SeedNodeInitializer seedNodeInitializer = new SeedNodeInitializer(netCoreConfiguration,nodeService);
         NodeSearcher nodeSearcher = new NodeSearcher(netCoreConfiguration,nodeService);
-        NodeBroadcaster nodeBroadcaster = new NodeBroadcaster(netCoreConfiguration,nodeService, blockchainCore);
+        NodeBroadcaster nodeBroadcaster = new NodeBroadcaster(netCoreConfiguration,nodeService);
 
         BlockchainHeightSearcher blockchainHeightSearcher = new BlockchainHeightSearcher(netCoreConfiguration,nodeService);
         BlockchainHeightBroadcaster blockchainHeightBroadcaster = new BlockchainHeightBroadcaster(netCoreConfiguration,nodeService,blockchainCore);

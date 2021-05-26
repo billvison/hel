@@ -7,9 +7,9 @@ import com.xingkaichun.helloworldblockchain.core.model.script.InputScript;
 import com.xingkaichun.helloworldblockchain.core.model.script.OutputScript;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDto;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,12 +57,12 @@ public class WalletTool {
         minInputValues += fee;
 
         //创建交易输出
-        List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();
+        List<TransactionOutputDto> transactionOutputDtoList = new ArrayList<>();
         List<BuildTransactionResponse.InnerTransactionOutput> innerTransactionOutputList = new ArrayList<>();
 
         if(recipientList != null){
             for(Recipient recipient : recipientList){
-                TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
+                TransactionOutputDto transactionOutputDTO = new TransactionOutputDto();
                 transactionOutputDTO.setValue(recipient.getValue());
                 OutputScript outputScript = ScriptTool.createPayToPublicKeyHashOutputScript(recipient.getAddress());
                 transactionOutputDTO.setOutputScript(Model2DtoTool.outputScript2OutputScriptDTO(outputScript));
@@ -107,16 +107,16 @@ public class WalletTool {
         }
 
         //构建交易输入
-        List<TransactionInputDTO> transactionInputDtoList = new ArrayList<>();
+        List<TransactionInputDto> transactionInputDtoList = new ArrayList<>();
         for(TransactionOutput input:inputs){
-            TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
+            TransactionInputDto transactionInputDTO = new TransactionInputDto();
             transactionInputDTO.setTransactionHash(input.getTransactionHash());
             transactionInputDTO.setTransactionOutputIndex(input.getTransactionOutputIndex());
             transactionInputDtoList.add(transactionInputDTO);
         }
 
         //构建交易
-        TransactionDTO transactionDTO = new TransactionDTO();
+        TransactionDto transactionDTO = new TransactionDto();
         transactionDTO.setInputs(transactionInputDtoList);
         transactionDTO.setOutputs(transactionOutputDtoList);
 
@@ -132,7 +132,7 @@ public class WalletTool {
         long change = inputValues - outputValues - fee;
         BuildTransactionResponse.InnerTransactionOutput payerChange = null;
         if(change > 0){
-            TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
+            TransactionOutputDto transactionOutputDTO = new TransactionOutputDto();
             transactionOutputDTO.setValue(change);
             OutputScript outputScript = ScriptTool.createPayToPublicKeyHashOutputScript(payerChangeAddress);
             transactionOutputDTO.setOutputScript(Model2DtoTool.outputScript2OutputScriptDTO(outputScript));
@@ -148,7 +148,7 @@ public class WalletTool {
         for(int i=0;i<transactionInputDtoList.size();i++){
             String privateKey = inputPrivateKeyList.get(i);
             String publicKey = AccountUtil.accountFromPrivateKey(privateKey).getPublicKey();
-            TransactionInputDTO transactionInputDTO = transactionInputDtoList.get(i);
+            TransactionInputDto transactionInputDTO = transactionInputDtoList.get(i);
             String signature = TransactionTool.signature(privateKey,transactionDTO);
             InputScript inputScript = ScriptTool.createPayToPublicKeyHashInputScript(signature, publicKey);
             transactionInputDTO.setInputScript(Model2DtoTool.inputScript2InputScriptDTO(inputScript));

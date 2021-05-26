@@ -9,7 +9,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionIn
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
@@ -32,13 +32,13 @@ public class MinerTool {
      */
     public static Block buildMiningBlock(BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase, Account minerAccount) {
         //获取一部分未确认交易，最优的方式是获取所有未确认的交易进行处理，但是数据处理起来会很复杂，因为项目是helloworld的，所以简单的拿一部分数据即可。
-        List<TransactionDTO> forMineBlockTransactionDtoList = unconfirmedTransactionDataBase.selectTransactionList(1,10000);
+        List<TransactionDto> forMineBlockTransactionDtoList = unconfirmedTransactionDataBase.selectTransactionList(1,10000);
 
         List<Transaction> transactionList = new ArrayList<>();
         List<Transaction> backupTransactionList = new ArrayList<>();
 
         if(forMineBlockTransactionDtoList != null){
-            for(TransactionDTO transactionDTO:forMineBlockTransactionDtoList){
+            for(TransactionDto transactionDTO:forMineBlockTransactionDtoList){
                 try {
                     Transaction transaction = Dto2ModelTool.transactionDto2Transaction(blockchainDataBase,transactionDTO);
                     transactionList.add(transaction);

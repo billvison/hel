@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.tools;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
@@ -70,19 +70,19 @@ public class EncodeDecodeTool {
 
 
 
-    public static byte[] encode(TransactionDTO transactionDTO) {
+    public static byte[] encode(TransactionDto transactionDTO) {
         try {
             return StringUtil.stringToUtf8Bytes(JsonUtil.toJson(transactionDTO));
         } catch (Exception e) {
-            LogUtil.error("serialize TransactionDTO failed.",e);
+            LogUtil.error("serialize TransactionDto failed.",e);
             throw new RuntimeException(e);
         }
     }
-    public static TransactionDTO decodeToTransactionDTO(byte[] bytesTransactionDTO) {
+    public static TransactionDto decodeToTransactionDTO(byte[] bytesTransactionDTO) {
         try {
-            return JsonUtil.fromJson(StringUtil.utf8BytesToString(bytesTransactionDTO),TransactionDTO.class);
+            return JsonUtil.fromJson(StringUtil.utf8BytesToString(bytesTransactionDTO), TransactionDto.class);
         } catch (Exception e) {
-            LogUtil.error("deserialize TransactionDTO failed.",e);
+            LogUtil.error("deserialize TransactionDto failed.",e);
             throw new RuntimeException(e);
         }
     }

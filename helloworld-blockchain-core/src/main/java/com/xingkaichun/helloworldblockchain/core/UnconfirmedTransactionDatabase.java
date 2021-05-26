@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core;
 
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
 
 import java.util.List;
 
@@ -16,12 +16,12 @@ public abstract class UnconfirmedTransactionDatabase {
     /**
      * 新增交易
      */
-    public abstract void insertTransaction(TransactionDTO transactionDTO) ;
+    public abstract void insertTransaction(TransactionDto transactionDTO) ;
 
     /**
      * 批量提取交易
      */
-    public abstract List<TransactionDTO> selectTransactionList(long from, long size) ;
+    public abstract List<TransactionDto> selectTransactionList(long from, long size) ;
 
     /**
      * 删除交易
@@ -31,5 +31,5 @@ public abstract class UnconfirmedTransactionDatabase {
     /**
      * 查询交易
      */
-    public abstract TransactionDTO selectTransactionByTransactionHash(String transactionHash);
+    public abstract TransactionDto selectTransactionByTransactionHash(String transactionHash);
 }

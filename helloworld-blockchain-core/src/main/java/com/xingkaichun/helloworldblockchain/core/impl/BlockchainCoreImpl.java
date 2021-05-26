@@ -10,7 +10,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.util.SystemUtil;
 
 import java.util.ArrayList;
@@ -149,17 +149,17 @@ public class BlockchainCoreImpl extends BlockchainCore {
     }
 
     @Override
-    public void submitTransaction(TransactionDTO transactionDTO) {
+    public void submitTransaction(TransactionDto transactionDTO) {
         miner.getUnconfirmedTransactionDataBase().insertTransaction(transactionDTO);
     }
 
     @Override
-    public List<TransactionDTO> queryMiningTransactionList(long from,long size) {
+    public List<TransactionDto> queryUnconfirmedTransactionList(long from, long size) {
         return miner.getUnconfirmedTransactionDataBase().selectTransactionList(from,size);
     }
 
     @Override
-    public TransactionDTO queryMiningTransactionDtoByTransactionHash(String transactionHash) {
+    public TransactionDto queryUnconfirmedTransactionDtoByTransactionHash(String transactionHash) {
         return miner.getUnconfirmedTransactionDataBase().selectTransactionByTransactionHash(transactionHash);
     }
 }

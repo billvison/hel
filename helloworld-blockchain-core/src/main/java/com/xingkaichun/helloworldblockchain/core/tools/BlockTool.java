@@ -6,8 +6,8 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionIn
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.crypto.*;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDto;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
@@ -27,13 +27,13 @@ public class BlockTool {
      * 计算区块的Hash值
      */
     public static String calculateBlockHash(Block block) {
-        BlockDTO blockDto = Model2DtoTool.block2BlockDTO(block);
+        BlockDto blockDto = Model2DtoTool.block2BlockDTO(block);
         return calculateBlockHash(blockDto);
     }
     /**
      * 计算区块的Hash值
      */
-    public static String calculateBlockHash(BlockDTO blockDto) {
+    public static String calculateBlockHash(BlockDto blockDto) {
         byte[] bytesTimestamp = NumberUtil.long8ToByte8(blockDto.getTimestamp());
         byte[] bytesPreviousBlockHash = HexUtil.hexStringToBytes(blockDto.getPreviousHash());
         byte[] bytesMerkleTreeRoot = HexUtil.hexStringToBytes(calculateBlockMerkleTreeRoot(blockDto));
@@ -47,17 +47,17 @@ public class BlockTool {
      * 计算区块的默克尔树根值
      */
     public static String calculateBlockMerkleTreeRoot(Block block) {
-        BlockDTO blockDto = Model2DtoTool.block2BlockDTO(block);
+        BlockDto blockDto = Model2DtoTool.block2BlockDTO(block);
         return calculateBlockMerkleTreeRoot(blockDto);
     }
     /**
      * 计算区块的默克尔树根值
      */
-    public static String calculateBlockMerkleTreeRoot(BlockDTO blockDto) {
-        List<TransactionDTO> transactions = blockDto.getTransactions();
+    public static String calculateBlockMerkleTreeRoot(BlockDto blockDto) {
+        List<TransactionDto> transactions = blockDto.getTransactions();
         List<byte[]> bytesTransactionHashList = new ArrayList<>();
         if(transactions != null){
-            for(TransactionDTO transactionDto : transactions) {
+            for(TransactionDto transactionDto : transactions) {
                 String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
                 byte[] bytesTransactionHash = HexUtil.hexStringToBytes(transactionHash);
                 bytesTransactionHashList.add(bytesTransactionHash);

@@ -38,12 +38,12 @@ public interface BlockchainNodeClient {
     /**
      * 提交区块链高度至节点
      */
-    PostBlockchianHeightResponse postBlockchainHeight(PostBlockchianHeightRequest request);
+    PostBlockchainHeightResponse postBlockchainHeight(PostBlockchainHeightRequest request);
 
     /**
      * 获取区块链高度
      */
-    GetBlockchianHeightResponse getBlockchainHeight(GetBlockchianHeightRequest request);
+    GetBlockchainHeightResponse getBlockchainHeight(GetBlockchainHeightRequest request);
 
     /**
      * 根据交易高度，获取交易

@@ -8,7 +8,7 @@ import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientI
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockRequest;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockResponse;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
@@ -227,7 +227,7 @@ public class BlockSearcher {
             if(getBlockResponse == null){
                 return;
             }
-            BlockDTO blockDTO = getBlockResponse.getBlock();
+            BlockDto blockDTO = getBlockResponse.getBlock();
             if(blockDTO == null){
                 return;
             }
@@ -252,7 +252,7 @@ public class BlockSearcher {
                 if(getBlockResponse == null){
                     return;
                 }
-                BlockDTO blockDTO = getBlockResponse.getBlock();
+                BlockDto blockDTO = getBlockResponse.getBlock();
                 if(blockDTO == null){
                     return;
                 }
@@ -282,7 +282,7 @@ public class BlockSearcher {
                 if(getBlockResponse == null){
                     return;
                 }
-                BlockDTO blockDTO = getBlockResponse.getBlock();
+                BlockDto blockDTO = getBlockResponse.getBlock();
                 if(blockDTO == null){
                     return;
                 }
@@ -308,7 +308,7 @@ public class BlockSearcher {
                 if(getBlockResponse == null){
                     return;
                 }
-                BlockDTO blockDTO = getBlockResponse.getBlock();
+                BlockDto blockDTO = getBlockResponse.getBlock();
                 if(blockDTO == null){
                     return;
                 }

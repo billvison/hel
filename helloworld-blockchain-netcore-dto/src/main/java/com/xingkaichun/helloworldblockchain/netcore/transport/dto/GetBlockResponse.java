@@ -6,13 +6,13 @@ package com.xingkaichun.helloworldblockchain.netcore.transport.dto;
  */
 public class GetBlockResponse {
 
-    private BlockDTO block;
+    private BlockDto block;
 
-    public BlockDTO getBlock() {
+    public BlockDto getBlock() {
         return block;
     }
 
-    public void setBlock(BlockDTO block) {
+    public void setBlock(BlockDto block) {
         this.block = block;
     }
 }

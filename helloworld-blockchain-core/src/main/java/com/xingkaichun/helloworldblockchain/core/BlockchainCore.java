@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionReque
 import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionResponse;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
 
 import java.util.List;
 
@@ -110,15 +110,15 @@ public abstract class BlockchainCore {
     /**
      * 提交交易到区块链
      */
-    public abstract void submitTransaction(TransactionDTO transactionDTO) ;
+    public abstract void submitTransaction(TransactionDto transactionDTO) ;
     /**
-     * 查询挖矿中的交易
+     * 查询未确认的交易
      */
-    public abstract List<TransactionDTO> queryMiningTransactionList(long from,long size) ;
+    public abstract List<TransactionDto> queryUnconfirmedTransactionList(long from, long size) ;
     /**
-     * 根据交易哈希查询挖矿中的交易
+     * 根据交易哈希查询未确认交易
      */
-    public abstract TransactionDTO queryMiningTransactionDtoByTransactionHash(String transactionHash) ;
+    public abstract TransactionDto queryUnconfirmedTransactionDtoByTransactionHash(String transactionHash) ;
 
 
 

@@ -16,24 +16,24 @@ public class TransactionToolTest {
     @Test
     public void bytesTransactionOmitTrueTest()
     {
-        TransactionDTO transactionDTO = new TransactionDTO();
+        TransactionDto transactionDTO = new TransactionDto();
 
-        TransactionDTO transactionDTO2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,true),true);
-        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDTO2));
+        TransactionDto transactionDto2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,true),true);
+        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDto2));
 
-        List<TransactionInputDTO> transactionInputDtoList = new ArrayList<>();
-        TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
+        List<TransactionInputDto> transactionInputDtoList = new ArrayList<>();
+        TransactionInputDto transactionInputDTO = new TransactionInputDto();
         transactionInputDTO.setTransactionHash("53b780303a801edbf75fe3463799547daf88ae152c06d16769218cec78b5d48e");
         transactionInputDTO.setTransactionOutputIndex(0);
         transactionInputDtoList.add(transactionInputDTO);
         transactionDTO.setInputs(transactionInputDtoList);
 
-        transactionDTO2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,true),true);
-        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDTO2));
+        transactionDto2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,true),true);
+        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDto2));
 
-        List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();
-        TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-        OutputScriptDTO outputScriptDTO = new OutputScriptDTO();
+        List<TransactionOutputDto> transactionOutputDtoList = new ArrayList<>();
+        TransactionOutputDto transactionOutputDTO = new TransactionOutputDto();
+        OutputScriptDto outputScriptDTO = new OutputScriptDto();
         outputScriptDTO.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()));
         outputScriptDTO.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()));
         outputScriptDTO.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
@@ -45,58 +45,58 @@ public class TransactionToolTest {
         transactionOutputDtoList.add(transactionOutputDTO);
         transactionDTO.setOutputs(transactionOutputDtoList);
 
-        transactionDTO2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,true),true);
-        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDTO2));
+        transactionDto2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,true),true);
+        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDto2));
 
-        TransactionInputDTO transactionInputDTO2 = new TransactionInputDTO();
-        transactionInputDTO2.setTransactionHash("53b780303a801edbf75fe3463799547daf88ae152c06d16769218cec78b5d48e");
-        transactionInputDTO2.setTransactionOutputIndex(0);
-        transactionInputDtoList.add(transactionInputDTO2);
+        TransactionInputDto transactionInputDto2 = new TransactionInputDto();
+        transactionInputDto2.setTransactionHash("53b780303a801edbf75fe3463799547daf88ae152c06d16769218cec78b5d48e");
+        transactionInputDto2.setTransactionOutputIndex(0);
+        transactionInputDtoList.add(transactionInputDto2);
 
-        transactionDTO2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,true),true);
-        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDTO2));
+        transactionDto2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,true),true);
+        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDto2));
 
-        TransactionOutputDTO transactionOutputDTO2 = new TransactionOutputDTO();
-        OutputScriptDTO outputScriptDTO2 = new OutputScriptDTO();
-        outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()));
-        outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()));
-        outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
-        outputScriptDTO2.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
-        outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()));
-        outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));
-        transactionOutputDTO2.setOutputScript(outputScriptDTO2);
-        transactionOutputDTO2.setValue(20);
-        transactionOutputDtoList.add(transactionOutputDTO2);
+        TransactionOutputDto transactionOutputDto2 = new TransactionOutputDto();
+        OutputScriptDto outputScriptDto2 = new OutputScriptDto();
+        outputScriptDto2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()));
+        outputScriptDto2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()));
+        outputScriptDto2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
+        outputScriptDto2.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
+        outputScriptDto2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()));
+        outputScriptDto2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));
+        transactionOutputDto2.setOutputScript(outputScriptDto2);
+        transactionOutputDto2.setValue(20);
+        transactionOutputDtoList.add(transactionOutputDto2);
 
-        transactionDTO2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,true),true);
-        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDTO2));
+        transactionDto2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,true),true);
+        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDto2));
     }
 
     @Test
     public void bytesTransactionOmitFalseTest()
     {
-        TransactionDTO transactionDTO = new TransactionDTO();
+        TransactionDto transactionDTO = new TransactionDto();
 
-        TransactionDTO transactionDTO2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,false),false);
-        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDTO2));
+        TransactionDto transactionDto2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,false),false);
+        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDto2));
 
-        List<TransactionInputDTO> transactionInputDtoList = new ArrayList<>();
-        TransactionInputDTO transactionInputDTO = new TransactionInputDTO();
+        List<TransactionInputDto> transactionInputDtoList = new ArrayList<>();
+        TransactionInputDto transactionInputDTO = new TransactionInputDto();
         transactionInputDTO.setTransactionHash("53b780303a801edbf75fe3463799547daf88ae152c06d16769218cec78b5d48e");
         transactionInputDTO.setTransactionOutputIndex(0);
-        InputScriptDTO inputScriptDTO = new InputScriptDTO();
+        InputScriptDto inputScriptDTO = new InputScriptDto();
         inputScriptDTO.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
         inputScriptDTO.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
         transactionInputDTO.setInputScript(inputScriptDTO);
         transactionInputDtoList.add(transactionInputDTO);
         transactionDTO.setInputs(transactionInputDtoList);
 
-        transactionDTO2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,false),false);
-        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDTO2));
+        transactionDto2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,false),false);
+        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDto2));
 
-        List<TransactionOutputDTO> transactionOutputDtoList = new ArrayList<>();
-        TransactionOutputDTO transactionOutputDTO = new TransactionOutputDTO();
-        OutputScriptDTO outputScriptDTO = new OutputScriptDTO();
+        List<TransactionOutputDto> transactionOutputDtoList = new ArrayList<>();
+        TransactionOutputDto transactionOutputDTO = new TransactionOutputDto();
+        OutputScriptDto outputScriptDTO = new OutputScriptDto();
         outputScriptDTO.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()));
         outputScriptDTO.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()));
         outputScriptDTO.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
@@ -108,34 +108,34 @@ public class TransactionToolTest {
         transactionOutputDtoList.add(transactionOutputDTO);
         transactionDTO.setOutputs(transactionOutputDtoList);
 
-        transactionDTO2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,false),false);
-        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDTO2));
+        transactionDto2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,false),false);
+        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDto2));
 
-        TransactionInputDTO transactionInputDTO2 = new TransactionInputDTO();
-        transactionInputDTO2.setTransactionHash("53b780303a801edbf75fe3463799547daf88ae152c06d16769218cec78b5d48e");
-        transactionInputDTO2.setTransactionOutputIndex(0);
-        InputScriptDTO inputScriptDTO2 = new InputScriptDTO();
-        inputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
-        inputScriptDTO2.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
-        transactionInputDTO2.setInputScript(inputScriptDTO2);
-        transactionInputDtoList.add(transactionInputDTO2);
+        TransactionInputDto transactionInputDto2 = new TransactionInputDto();
+        transactionInputDto2.setTransactionHash("53b780303a801edbf75fe3463799547daf88ae152c06d16769218cec78b5d48e");
+        transactionInputDto2.setTransactionOutputIndex(0);
+        InputScriptDto inputScriptDto2 = new InputScriptDto();
+        inputScriptDto2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
+        inputScriptDto2.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
+        transactionInputDto2.setInputScript(inputScriptDto2);
+        transactionInputDtoList.add(transactionInputDto2);
 
-        transactionDTO2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,false),false);
-        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDTO2));
+        transactionDto2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,false),false);
+        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDto2));
 
-        TransactionOutputDTO transactionOutputDTO2 = new TransactionOutputDTO();
-        OutputScriptDTO outputScriptDTO2 = new OutputScriptDTO();
-        outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()));
-        outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()));
-        outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
-        outputScriptDTO2.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
-        outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()));
-        outputScriptDTO2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));
-        transactionOutputDTO2.setOutputScript(outputScriptDTO2);
-        transactionOutputDTO2.setValue(20);
-        transactionOutputDtoList.add(transactionOutputDTO2);
+        TransactionOutputDto transactionOutputDto2 = new TransactionOutputDto();
+        OutputScriptDto outputScriptDto2 = new OutputScriptDto();
+        outputScriptDto2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()));
+        outputScriptDto2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()));
+        outputScriptDto2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
+        outputScriptDto2.add("955c1464982a1c904b7b1029598de6ace11bd2b1");
+        outputScriptDto2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()));
+        outputScriptDto2.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));
+        transactionOutputDto2.setOutputScript(outputScriptDto2);
+        transactionOutputDto2.setValue(20);
+        transactionOutputDtoList.add(transactionOutputDto2);
 
-        transactionDTO2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,false),false);
-        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDTO2));
+        transactionDto2 = TransactionTool.transactionDTO(TransactionTool.bytesTransaction(transactionDTO,false),false);
+        Assert.assertEquals(JsonUtil.toJson(transactionDTO),JsonUtil.toJson(transactionDto2));
     }
 }

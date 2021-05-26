@@ -68,7 +68,7 @@ public class NodeSearcher {
                 }else {
                     //将远程节点知道的节点，一一进行验证这些节点的合法性，如果正常，则将这些节点加入自己的区块链网络。
                     for(String nodeIp : getNodesResponse.getNodes()){
-                        addAvailableNodeToDatabase(new NodeDTO(nodeIp));
+                        addAvailableNodeToDatabase(new NodeDto(nodeIp));
                     }
                 }
             }catch (Exception e){
@@ -80,7 +80,7 @@ public class NodeSearcher {
     /**
      * 若节点是一个新的(之前没有加入过本地数据库)、可用的(网络连接是好的)的节点，那么将节点加入本地数据库
      */
-    private void addAvailableNodeToDatabase(NodeDTO node) {
+    private void addAvailableNodeToDatabase(NodeDto node) {
         if(!netCoreConfiguration.isAutoSearchNode()){
             return;
         }

@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.dao;
 
-import com.xingkaichun.helloworldblockchain.netcore.po.NodePO;
+import com.xingkaichun.helloworldblockchain.netcore.po.NodePo;
 
 import java.util.List;
 
@@ -15,19 +15,19 @@ public interface NodeDao {
     /**
      * 查询节点
      */
-    NodePO queryNode(String ip);
+    NodePo queryNode(String ip);
     /**
      * 查询所有节点
      */
-    List<NodePO> queryAllNodeList();
+    List<NodePo> queryAllNodeList();
     /**
      * 添加节点
      */
-    void addNode(NodePO node);
+    void addNode(NodePo node);
     /**
      * 更新节点信息
      */
-    void updateNode(NodePO node);
+    void updateNode(NodePo node);
     /**
      * 删除节点
      */

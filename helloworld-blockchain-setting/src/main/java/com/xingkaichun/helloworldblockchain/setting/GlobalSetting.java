@@ -74,7 +74,7 @@ public class GlobalSetting {
         /**
          * 版本列表
          */
-        public static final Long[] BLOCK_CHAIN_VERSION_LIST = new Long[]{10000L};
+        public static final long[] BLOCK_CHAIN_VERSION_LIST = new long[]{10000L};
 
         /**
          * 检查系统版本是否支持。

@@ -59,7 +59,7 @@ public class HttpServerHandlerResolver {
     public GetBlockResponse getBlock(GetBlockRequest request){
         try {
             Block blockByBlockHeight = blockchainCore.queryBlockByBlockHeight(request.getHeight());
-            BlockDTO block = Model2DtoTool.block2BlockDTO(blockByBlockHeight);
+            BlockDto block = Model2DtoTool.block2BlockDTO(blockByBlockHeight);
             GetBlockResponse response = new GetBlockResponse();
             response.setBlock(block);
             return response;
@@ -119,14 +119,14 @@ public class HttpServerHandlerResolver {
         }
     }
 
-    public PostBlockchianHeightResponse postBlockchainHeight(String requestIp, PostBlockchianHeightRequest request) {
+    public PostBlockchainHeightResponse postBlockchainHeight(String requestIp, PostBlockchainHeightRequest request) {
         try {
             Node node = new Node();
             node.setIp(requestIp);
             node.setBlockchainHeight(request.getHeight());
             nodeService.updateNode(node);
 
-            PostBlockchianHeightResponse response = new PostBlockchianHeightResponse();
+            PostBlockchainHeightResponse response = new PostBlockchainHeightResponse();
             return response;
         } catch (Exception e){
             String message = "post blockchain height failed";
@@ -135,10 +135,10 @@ public class HttpServerHandlerResolver {
         }
     }
 
-    public GetBlockchianHeightResponse getBlockchainHeight(GetBlockchianHeightRequest request) {
+    public GetBlockchainHeightResponse getBlockchainHeight(GetBlockchainHeightRequest request) {
         try {
             long blockchainHeight = blockchainCore.queryBlockchainHeight();
-            GetBlockchianHeightResponse response = new GetBlockchianHeightResponse();
+            GetBlockchainHeightResponse response = new GetBlockchainHeightResponse();
             response.setBlockchainHeight(blockchainHeight);
             return response;
         } catch (Exception e){
@@ -151,7 +151,7 @@ public class HttpServerHandlerResolver {
     public GetTransactionResponse getTransaction(GetTransactionRequest request) {
         try {
             Transaction transactionByTransactionHeight = blockchainCore.queryTransactionByTransactionHeight(request.getHeight());
-            TransactionDTO transactionDTO = Model2DtoTool.transaction2TransactionDTO(transactionByTransactionHeight);
+            TransactionDto transactionDTO = Model2DtoTool.transaction2TransactionDTO(transactionByTransactionHeight);
             GetTransactionResponse response = new GetTransactionResponse();
             response.setTransaction(transactionDTO);
             return response;

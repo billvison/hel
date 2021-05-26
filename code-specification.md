@@ -20,8 +20,8 @@
 HelloworldBlockchain项目由8个子项目组成。原则上，只有子项目helloworld-blockchain-crypto、子项目helloworld-blockchain-util可以引入外部项目。其它子项目有引入外部项目的需求时，通过这两个项目间接使用。这两个项目和SLF4J作用类似，对内部项目屏蔽实现细节，可以随时切换外部项目的实现。
 
 #### 6.DTO VO MODEL PO命名
-PO命名规范：类名+PO后缀结尾  
-DTO命名规范：类名+DTO后缀结尾  
-MODEL命名规范：类名后不需要特别后缀标识  
-VO命名规范：类名+VO后缀结尾  
+PO命名规范：类名以Po后缀结尾  
+DTO命名规范：类名以Dto后缀结尾  
+MODEL命名规范：类名不需要以特别后缀标识结尾 
+VO命名规范：类名以Vo后缀结尾  
 注意：只有两台节点间通信才会用到DTO，为了清晰，创建了子项目helloworld-blockchain-netcore-dto专门存放DTO。

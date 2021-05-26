@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore.service;
 
 import com.xingkaichun.helloworldblockchain.netcore.dao.NodeDao;
-import com.xingkaichun.helloworldblockchain.netcore.po.NodePO;
+import com.xingkaichun.helloworldblockchain.netcore.po.NodePo;
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
 
@@ -27,8 +27,8 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public List<Node> queryAllNodeList(){
-        List<NodePO> nodePOList = nodeDao.queryAllNodeList();
-        return nodeEntityConvertNode(nodePOList);
+        List<NodePo> nodePoList = nodeDao.queryAllNodeList();
+        return nodeEntityConvertNode(nodePoList);
     }
 
     @Override
@@ -36,49 +36,49 @@ public class NodeServiceImpl implements NodeService {
         if(queryNode(node.getIp()) != null){
             return;
         }
-        NodePO nodePO = new NodePO();
-        nodePO.setIp(node.getIp());
+        NodePo nodePo = new NodePo();
+        nodePo.setIp(node.getIp());
         long blockchainHeight = node.getBlockchainHeight()!=null?node.getBlockchainHeight():GlobalSetting.GenesisBlock.HEIGHT;
-        nodePO.setBlockchainHeight(blockchainHeight);
-        nodeDao.addNode(nodePO);
+        nodePo.setBlockchainHeight(blockchainHeight);
+        nodeDao.addNode(nodePo);
     }
 
     @Override
     public void updateNode(Node node){
-        NodePO nodePO = nodeDao.queryNode(node.getIp());
-        if(nodePO == null){
+        NodePo nodePo = nodeDao.queryNode(node.getIp());
+        if(nodePo == null){
             return;
         }
         if(node.getBlockchainHeight() != null){
-            nodePO.setBlockchainHeight(node.getBlockchainHeight());
+            nodePo.setBlockchainHeight(node.getBlockchainHeight());
         }
-        nodeDao.updateNode(nodePO);
+        nodeDao.updateNode(nodePo);
     }
 
     @Override
     public Node queryNode(String ip){
-        NodePO nodePO = nodeDao.queryNode(ip);
-        return nodeEntityConvertNode(nodePO);
+        NodePo nodePo = nodeDao.queryNode(ip);
+        return nodeEntityConvertNode(nodePo);
     }
 
-    private List<Node> nodeEntityConvertNode(List<NodePO> nodePOList){
+    private List<Node> nodeEntityConvertNode(List<NodePo> nodePoList){
         List<Node> nodeList = new ArrayList<>();
-        if(nodePOList != null){
-            for(NodePO nodePO : nodePOList){
-                Node node = nodeEntityConvertNode(nodePO);
+        if(nodePoList != null){
+            for(NodePo nodePo : nodePoList){
+                Node node = nodeEntityConvertNode(nodePo);
                 nodeList.add(node);
             }
         }
         return nodeList;
     }
 
-    private Node nodeEntityConvertNode(NodePO nodePO){
-        if(nodePO == null){
+    private Node nodeEntityConvertNode(NodePo nodePo){
+        if(nodePo == null){
             return null;
         }
         Node node = new Node();
-        node.setIp(nodePO.getIp());
-        node.setBlockchainHeight(nodePO.getBlockchainHeight());
+        node.setIp(nodePo.getIp());
+        node.setBlockchainHeight(nodePo.getBlockchainHeight());
         return node;
     }
 }

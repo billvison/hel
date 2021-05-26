@@ -85,12 +85,12 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
     }
 
     @Override
-    public PostBlockchianHeightResponse postBlockchainHeight(PostBlockchianHeightRequest request) {
+    public PostBlockchainHeightResponse postBlockchainHeight(PostBlockchainHeightRequest request) {
         try {
             String requestUrl = getUrl(API.POST_BLOCKCHAIN_HEIGHT);
             String requestBody = JsonUtil.toJson(request);
             String responseHtml = NetUtil.get(requestUrl,requestBody);
-            return JsonUtil.fromJson(responseHtml,PostBlockchianHeightResponse.class);
+            return JsonUtil.fromJson(responseHtml, PostBlockchainHeightResponse.class);
         } catch (Exception e) {
             LogUtil.error(StringUtil.format("向节点[%s:%d]提交区块链高度出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
             return null;
@@ -98,12 +98,12 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
     }
 
     @Override
-    public GetBlockchianHeightResponse getBlockchainHeight(GetBlockchianHeightRequest request) {
+    public GetBlockchainHeightResponse getBlockchainHeight(GetBlockchainHeightRequest request) {
         try {
             String requestUrl = getUrl(API.GET_BLOCKCHAIN_HEIGHT);
             String requestBody = JsonUtil.toJson(request);
             String responseHtml = NetUtil.get(requestUrl,requestBody);
-            return JsonUtil.fromJson(responseHtml,GetBlockchianHeightResponse.class);
+            return JsonUtil.fromJson(responseHtml, GetBlockchainHeightResponse.class);
         } catch (Exception e) {
             LogUtil.error(StringUtil.format("向节点[%s:%d]获取区块链高度出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
             return null;

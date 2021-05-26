@@ -11,8 +11,8 @@ public class API {
 
     public static final String GET_NODES = "/get_nodes";
 
-    public static final String GET_BLOCKCHAIN_HEIGHT = "/get_blockchian_height";
-    public static final String POST_BLOCKCHAIN_HEIGHT = "/post_blockchian_height";
+    public static final String GET_BLOCKCHAIN_HEIGHT = "/get_blockchain_height";
+    public static final String POST_BLOCKCHAIN_HEIGHT = "/post_blockchain_height";
 
     public static final String GET_BLOCK = "/get_block";
     public static final String POST_BLOCK = "/post_block";

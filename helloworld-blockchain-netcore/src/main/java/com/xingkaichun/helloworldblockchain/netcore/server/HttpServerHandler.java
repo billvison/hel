@@ -71,12 +71,12 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 			PostBlockResponse response = httpServerHandlerResolver.postBlock(request);
 			responseMessage = JsonUtil.toJson(response);
 		}else if(API.POST_BLOCKCHAIN_HEIGHT.equals(requestApi)){
-			PostBlockchianHeightRequest request = JsonUtil.fromJson(requestBody, PostBlockchianHeightRequest.class);
-			PostBlockchianHeightResponse response = httpServerHandlerResolver.postBlockchainHeight(requestIp,request);
+			PostBlockchainHeightRequest request = JsonUtil.fromJson(requestBody, PostBlockchainHeightRequest.class);
+			PostBlockchainHeightResponse response = httpServerHandlerResolver.postBlockchainHeight(requestIp,request);
 			responseMessage = JsonUtil.toJson(response);
 		}else if(API.GET_BLOCKCHAIN_HEIGHT.equals(requestApi)){
-			GetBlockchianHeightRequest request = JsonUtil.fromJson(requestBody, GetBlockchianHeightRequest.class);
-			GetBlockchianHeightResponse response = httpServerHandlerResolver.getBlockchainHeight(request);
+			GetBlockchainHeightRequest request = JsonUtil.fromJson(requestBody, GetBlockchainHeightRequest.class);
+			GetBlockchainHeightResponse response = httpServerHandlerResolver.getBlockchainHeight(request);
 			responseMessage = JsonUtil.toJson(response);
 		}else {
 			responseMessage = "404 NOT FOUND";

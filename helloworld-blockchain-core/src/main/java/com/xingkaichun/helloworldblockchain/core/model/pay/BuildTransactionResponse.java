@@ -2,7 +2,7 @@ package com.xingkaichun.helloworldblockchain.core.model.pay;
 
 import com.xingkaichun.helloworldblockchain.core.model.script.OutputScript;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class BuildTransactionResponse {
     private List<InnerTransactionOutput> transactionOutputList;
 
     //经过处理后的交易
-    private TransactionDTO transactionDTO;
+    private TransactionDto transactionDTO;
 
 
     public boolean isBuildTransactionSuccess() {
@@ -90,11 +90,11 @@ public class BuildTransactionResponse {
         this.transactionOutputList = transactionOutputList;
     }
 
-    public TransactionDTO getTransactionDTO() {
+    public TransactionDto getTransactionDTO() {
         return transactionDTO;
     }
 
-    public void setTransactionDTO(TransactionDTO transactionDTO) {
+    public void setTransactionDTO(TransactionDto transactionDTO) {
         this.transactionDTO = transactionDTO;
     }
 

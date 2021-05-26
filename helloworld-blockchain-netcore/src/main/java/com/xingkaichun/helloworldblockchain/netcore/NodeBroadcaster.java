@@ -1,6 +1,5 @@
 package com.xingkaichun.helloworldblockchain.netcore;
 
-import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
@@ -27,12 +26,10 @@ public class NodeBroadcaster {
 
     private NetCoreConfiguration netCoreConfiguration;
     private NodeService nodeService;
-    private BlockchainCore blockchainCore;
 
-    public NodeBroadcaster(NetCoreConfiguration netCoreConfiguration, NodeService nodeService, BlockchainCore blockchainCore) {
+    public NodeBroadcaster(NetCoreConfiguration netCoreConfiguration, NodeService nodeService) {
         this.netCoreConfiguration = netCoreConfiguration;
         this.nodeService = nodeService;
-        this.blockchainCore = blockchainCore;
     }
 
     public void start() {

@@ -16,7 +16,7 @@
     <module>helloworld-blockchain-setting</module>
     <module>helloworld-blockchain-util</module>
     <module>helloworld-blockchain-netcore-client</module>
-    <module>helloworld-blockchian-application</module>
+    <module>helloworld-blockchain-application</module>
   </modules>
 
   <name>helloworld-blockchain-parent</name>
@@ -69,27 +69,12 @@
       </dependency>
       <dependency>
         <groupId>com.xingkaichun.helloworldblockchain</groupId>
-        <artifactId>helloworld-blockchain-netcore-entity</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.xingkaichun.helloworldblockchain</groupId>
         <artifactId>helloworld-blockchain-netcore-client</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.xingkaichun.helloworldblockchain</groupId>
         <artifactId>helloworld-blockchain-netcore-dto</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.xingkaichun.helloworldblockchain</groupId>
-        <artifactId>helloworld-blockchain-netcore-service</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.xingkaichun.helloworldblockchain</groupId>
-        <artifactId>helloworld-blockchain-netcore-dao</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

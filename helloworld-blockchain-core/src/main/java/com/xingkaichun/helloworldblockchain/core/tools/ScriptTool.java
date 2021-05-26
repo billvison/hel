@@ -8,8 +8,8 @@ import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.NumberUtil;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.InputScriptDTO;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.OutputScriptDTO;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.InputScriptDto;
+import com.xingkaichun.helloworldblockchain.netcore.transport.dto.OutputScriptDto;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,11 +49,11 @@ public class ScriptTool {
     /**
      * 脚本：将字节型脚本反序列化为脚本.
      */
-    public static InputScriptDTO inputScriptDTO(byte[] bytesScript) {
+    public static InputScriptDto inputScriptDTO(byte[] bytesScript) {
         if(bytesScript == null || bytesScript.length == 0){
             return null;
         }
-        InputScriptDTO inputScriptDTO = new InputScriptDTO();
+        InputScriptDto inputScriptDTO = new InputScriptDto();
         List<String> script = script(bytesScript);
         inputScriptDTO.addAll(script);
         return inputScriptDTO;
@@ -61,11 +61,11 @@ public class ScriptTool {
     /**
      * 脚本：将字节型脚本反序列化为脚本.
      */
-    public static OutputScriptDTO outputScriptDTO(byte[] bytesScript) {
+    public static OutputScriptDto outputScriptDTO(byte[] bytesScript) {
         if(bytesScript == null || bytesScript.length == 0){
             return null;
         }
-        OutputScriptDTO outputScriptDTO = new OutputScriptDTO();
+        OutputScriptDto outputScriptDTO = new OutputScriptDto();
         List<String> script = script(bytesScript);
         outputScriptDTO.addAll(script);
         return outputScriptDTO;
@@ -178,7 +178,7 @@ public class ScriptTool {
     /**
      * 是否是P2PKH输入脚本
      */
-    public static boolean isPayToPublicKeyHashInputScript(InputScriptDTO inputScriptDTO) {
+    public static boolean isPayToPublicKeyHashInputScript(InputScriptDto inputScriptDTO) {
         try {
             return  inputScriptDTO.size() == 4
                     && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(inputScriptDTO.get(0))
@@ -193,7 +193,7 @@ public class ScriptTool {
     /**
      * 是否是P2PKH输出脚本
      */
-    public static boolean isPayToPublicKeyHashOutputScript(OutputScriptDTO outputScriptDTO) {
+    public static boolean isPayToPublicKeyHashOutputScript(OutputScriptDto outputScriptDTO) {
         try {
             return  outputScriptDTO.size() == 6
                     && HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()).equals(outputScriptDTO.get(0))

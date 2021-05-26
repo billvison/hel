@@ -6,13 +6,13 @@ package com.xingkaichun.helloworldblockchain.netcore.transport.dto;
  */
 public class GetTransactionResponse {
 
-    private TransactionDTO transaction;
+    private TransactionDto transaction;
 
-    public TransactionDTO getTransaction() {
+    public TransactionDto getTransaction() {
         return transaction;
     }
 
-    public void setTransaction(TransactionDTO transaction) {
+    public void setTransaction(TransactionDto transaction) {
         this.transaction = transaction;
     }
 }

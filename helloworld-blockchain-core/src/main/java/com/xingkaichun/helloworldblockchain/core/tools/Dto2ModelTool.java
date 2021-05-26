@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class Dto2ModelTool {
 
-    public static Block blockDto2Block(BlockchainDatabase blockchainDataBase, BlockDTO blockDTO) {
+    public static Block blockDto2Block(BlockchainDatabase blockchainDataBase, BlockDto blockDTO) {
         String previousBlockHash = blockDTO.getPreviousHash();
         Block previousBlock = blockchainDataBase.queryBlockByBlockHash(previousBlockHash);
 
@@ -50,10 +50,10 @@ public class Dto2ModelTool {
         return block;
     }
 
-    private static List<Transaction> transactionDto2Transaction(BlockchainDatabase blockchainDataBase, List<TransactionDTO> transactionDtoList) {
+    private static List<Transaction> transactionDto2Transaction(BlockchainDatabase blockchainDataBase, List<TransactionDto> transactionDtoList) {
         List<Transaction> transactionList = new ArrayList<>();
         if(transactionDtoList != null){
-            for(TransactionDTO transactionDTO:transactionDtoList){
+            for(TransactionDto transactionDTO:transactionDtoList){
                 Transaction transaction = transactionDto2Transaction(blockchainDataBase,transactionDTO);
                 transactionList.add(transaction);
             }
@@ -61,11 +61,11 @@ public class Dto2ModelTool {
         return transactionList;
     }
 
-    public static Transaction transactionDto2Transaction(BlockchainDatabase blockchainDataBase, TransactionDTO transactionDTO) {
+    public static Transaction transactionDto2Transaction(BlockchainDatabase blockchainDataBase, TransactionDto transactionDTO) {
         List<TransactionInput> inputs = new ArrayList<>();
-        List<TransactionInputDTO> transactionInputDtoList = transactionDTO.getInputs();
+        List<TransactionInputDto> transactionInputDtoList = transactionDTO.getInputs();
         if(transactionInputDtoList != null){
-            for (TransactionInputDTO transactionInputDTO:transactionInputDtoList){
+            for (TransactionInputDto transactionInputDTO:transactionInputDtoList){
                 TransactionOutputId transactionOutputId = new TransactionOutputId();
                 transactionOutputId.setTransactionHash(transactionInputDTO.getTransactionHash());
                 transactionOutputId.setTransactionOutputIndex(transactionInputDTO.getTransactionOutputIndex());
@@ -81,9 +81,9 @@ public class Dto2ModelTool {
         }
 
         List<TransactionOutput> outputs = new ArrayList<>();
-        List<TransactionOutputDTO> dtoOutputs = transactionDTO.getOutputs();
+        List<TransactionOutputDto> dtoOutputs = transactionDTO.getOutputs();
         if(dtoOutputs != null){
-            for(TransactionOutputDTO transactionOutputDTO:dtoOutputs){
+            for(TransactionOutputDto transactionOutputDTO:dtoOutputs){
                 TransactionOutput transactionOutput = transactionOutputDto2TransactionOutput(transactionOutputDTO);
                 outputs.add(transactionOutput);
             }
@@ -98,7 +98,7 @@ public class Dto2ModelTool {
         return transaction;
     }
 
-    public static TransactionOutput transactionOutputDto2TransactionOutput(TransactionOutputDTO transactionOutputDTO) {
+    public static TransactionOutput transactionOutputDto2TransactionOutput(TransactionOutputDto transactionOutputDTO) {
         TransactionOutput transactionOutput = new TransactionOutput();
         String publicKeyHash = ScriptTool.getPublicKeyHashByPayToPublicKeyHashOutputScript(transactionOutputDTO.getOutputScript());
         String address = AccountUtil.addressFromPublicKeyHash(publicKeyHash);
@@ -108,14 +108,14 @@ public class Dto2ModelTool {
         return transactionOutput;
     }
 
-    private static TransactionType obtainTransactionDTO(TransactionDTO transactionDTO) {
+    private static TransactionType obtainTransactionDTO(TransactionDto transactionDTO) {
         if(transactionDTO.getInputs() == null || transactionDTO.getInputs().size()==0){
             return TransactionType.GENESIS;
         }
         return TransactionType.STANDARD;
     }
 
-    private static OutputScript outputScriptDto2OutputScript(OutputScriptDTO outputScriptDTO) {
+    private static OutputScript outputScriptDto2OutputScript(OutputScriptDto outputScriptDTO) {
         if(outputScriptDTO == null){
             return null;
         }
@@ -124,7 +124,7 @@ public class Dto2ModelTool {
         return outputScript;
     }
 
-    private static InputScript inputScriptDto2InputScript(InputScriptDTO inputScriptDTO) {
+    private static InputScript inputScriptDto2InputScript(InputScriptDto inputScriptDTO) {
         if(inputScriptDTO == null){
             return null;
         }

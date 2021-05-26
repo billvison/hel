@@ -46,7 +46,6 @@ public class BlockchainNodeHttpServer {
 					} catch (InterruptedException e) {
 						SystemUtil.errorExit("节点服务器运行出现异常。",e);
 					} finally {
-						// 优雅的关闭
 						workerGroup.shutdownGracefully();
 						bossGroup.shutdownGracefully();
 					}
