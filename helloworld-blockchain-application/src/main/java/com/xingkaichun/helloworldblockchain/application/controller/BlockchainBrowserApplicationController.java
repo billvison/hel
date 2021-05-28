@@ -72,15 +72,15 @@ public class BlockchainBrowserApplicationController {
     /**
      * 根据区块哈希与交易高度查询交易列表
      */
-    @RequestMapping(value = BlockchainBrowserApplicationApi.QUERY_TRANSACTION_LIST_BY_BLOCK_HASH_TRANSACTION_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryTransactionListByBlockHashTransactionHeightResponse> queryTransactionListByBlockHashTransactionHeight(@RequestBody QueryTransactionListByBlockHashTransactionHeightRequest request){
+    @RequestMapping(value = BlockchainBrowserApplicationApi.QUERY_TRANSACTIONS_BY_BLOCK_HASH_TRANSACTION_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<QueryTransactionsByBlockHashTransactionHeightResponse> queryTransactionsByBlockHashTransactionHeight(@RequestBody QueryTransactionsByBlockHashTransactionHeightRequest request){
         try {
             PageCondition pageCondition = request.getPageCondition();
             if(StringUtil.isNullOrEmpty(request.getBlockHash())){
                 return ServiceResult.createFailServiceResult("区块哈希不能是空");
             }
             List<TransactionVo> transactionVos = blockchainBrowserApplicationService.queryTransactionListByBlockHashTransactionHeight(request.getBlockHash(),pageCondition.getFrom(),pageCondition.getSize());
-            QueryTransactionListByBlockHashTransactionHeightResponse response = new QueryTransactionListByBlockHashTransactionHeightResponse();
+            QueryTransactionsByBlockHashTransactionHeightResponse response = new QueryTransactionsByBlockHashTransactionHeightResponse();
             response.setTransactionVos(transactionVos);
             return ServiceResult.createSuccessServiceResult("根据交易高度查询交易成功",response);
         } catch (Exception e){
@@ -94,7 +94,7 @@ public class BlockchainBrowserApplicationController {
      * 根据地址获取交易输出
      */
     @RequestMapping(value = BlockchainBrowserApplicationApi.QUERY_TRANSACTION_OUTPUT_BY_ADDRESS,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryTransactionOutputByAddressResponse> queryTransactionOutputListByAddress(@RequestBody QueryTransactionOutputByAddressRequest request){
+    public ServiceResult<QueryTransactionOutputByAddressResponse> queryTransactionOutputByAddress(@RequestBody QueryTransactionOutputByAddressRequest request){
         try {
             TransactionOutputDetailVo transactionOutputDetailVo = blockchainBrowserApplicationService.queryTransactionOutputByAddress(request.getAddress());
             QueryTransactionOutputByAddressResponse response = new QueryTransactionOutputByAddressResponse();
@@ -193,7 +193,7 @@ public class BlockchainBrowserApplicationController {
      * 根据区块高度查询区块
      */
     @RequestMapping(value = BlockchainBrowserApplicationApi.QUERY_BLOCK_BY_BLOCK_HEIGHT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryBlockByBlockHeightResponse> queryBlockDtoByBlockHeight(@RequestBody QueryBlockByBlockHeightRequest request){
+    public ServiceResult<QueryBlockByBlockHeightResponse> queryBlockByBlockHeight(@RequestBody QueryBlockByBlockHeightRequest request){
         try {
             BlockVo blockVo = blockchainBrowserApplicationService.queryBlockViewByBlockHeight(request.getBlockHeight());
             if(blockVo == null){
@@ -234,7 +234,7 @@ public class BlockchainBrowserApplicationController {
      * 查询最近的10个区块
      */
     @RequestMapping(value = BlockchainBrowserApplicationApi.QUERY_TOP10_BLOCKS,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryTop10BlocksResponse> queryLast10Blocks(@RequestBody QueryTop10BlocksRequest request){
+    public ServiceResult<QueryTop10BlocksResponse> queryTop10Blocks(@RequestBody QueryTop10BlocksRequest request){
         try {
             List<Block> blockList = new ArrayList<>();
             long blockHeight = blockchainCore.queryBlockchainHeight();

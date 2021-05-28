@@ -12,7 +12,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 
@@ -33,25 +32,21 @@ public class WebMvcConfigurerConfiguration implements WebMvcConfigurer {
 	}
 
 	@Override
-	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-		exceptionResolvers.add((httpServletRequest, httpServletResponse, handler, exception) -> {
-			responseResult(httpServletResponse,exception);
+	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> handlerExceptionResolvers) {
+		handlerExceptionResolvers.add((httpServletRequest, httpServletResponse, handler, exception) -> {
 			LogUtil.error("统一异常拦截。",exception);
+			try {
+				httpServletResponse.setHeader("Content-type", "application/json;");
+				httpServletResponse.setStatus(500);
+				httpServletResponse.setCharacterEncoding("UTF-8");
+				ServiceResult serviceResult = ServiceResult.createFailServiceResult(exception.getMessage());
+				String jsonServiceResult = JsonUtil.toJson(serviceResult);
+				httpServletResponse.getWriter().write(jsonServiceResult);
+			} catch (Exception e) {
+				LogUtil.error("将统一异常写入到HttpServletResponse出现错误。",e);
+			}
 			return new ModelAndView();
 		});
-	}
-
-	private void responseResult(HttpServletResponse httpServletResponse, Exception exception) {
-		try {
-			httpServletResponse.setHeader("Content-type", "application/json;");
-			httpServletResponse.setStatus(500);
-			httpServletResponse.setCharacterEncoding("UTF-8");
-			ServiceResult serviceResult = ServiceResult.createFailServiceResult(exception.getMessage());
-			String jsonServiceResult = JsonUtil.toJson(serviceResult);
-			httpServletResponse.getWriter().write(jsonServiceResult);
-		} catch (Exception e) {
-			LogUtil.error("将统一异常写入到HttpServletResponse出现错误。",e);
-		}
 	}
 
 	@Override

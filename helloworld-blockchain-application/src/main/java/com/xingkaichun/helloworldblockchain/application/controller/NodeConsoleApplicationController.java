@@ -199,7 +199,7 @@ public class NodeConsoleApplicationController {
      * 查询所有节点
      */
     @RequestMapping(value = NodeConsoleApplicationApi.QUERY_ALL_NODES,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<QueryAllNodesResponse> queryAllNodeList(@RequestBody QueryAllNodesRequest request){
+    public ServiceResult<QueryAllNodesResponse> queryAllNodes(@RequestBody QueryAllNodesRequest request){
         try {
             List<Node> nodes = blockchainNetCore.getNodeService().queryAllNodeList();
             QueryAllNodesResponse response = new QueryAllNodesResponse();
@@ -218,7 +218,7 @@ public class NodeConsoleApplicationController {
      * 是否开启了自动寻找区块链节点的功能
      */
     @RequestMapping(value = NodeConsoleApplicationApi.IS_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<IsAutoSearchNodeResponse> isAutoSearchNewNode(@RequestBody IsAutoSearchNodeRequest request){
+    public ServiceResult<IsAutoSearchNodeResponse> isAutoSearchNode(@RequestBody IsAutoSearchNodeRequest request){
         try {
             boolean isAutoSearchNode = blockchainNetCore.getNetCoreConfiguration().isAutoSearchNode();
             IsAutoSearchNodeResponse response = new IsAutoSearchNodeResponse();
@@ -251,7 +251,7 @@ public class NodeConsoleApplicationController {
      * 删除区块
      */
     @RequestMapping(value = NodeConsoleApplicationApi.DELETE_BLOCKS,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<DeleteBlocksResponse> deleteBlock(@RequestBody DeleteBlocksRequest request){
+    public ServiceResult<DeleteBlocksResponse> deleteBlocks(@RequestBody DeleteBlocksRequest request){
         try {
             if(request.getBlockHeight() == null){
                 return ServiceResult.createFailServiceResult("删除区块失败，区块高度不能空。");

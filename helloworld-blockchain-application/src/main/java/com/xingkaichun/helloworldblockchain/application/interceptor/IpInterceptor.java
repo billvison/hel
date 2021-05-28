@@ -20,19 +20,19 @@ public class IpInterceptor implements HandlerInterceptor {
 	private static final String ALL_IP = "*";
 
 	//默认允许访问的ip列表。
-	private static final List<String> DEFAULT_PERMIT_VISIT_IP_LIST = Arrays.asList("localhost","127.0.0.1","0:0:0:0:0:0:0:1");
+	private static final List<String> DEFAULT_ALLOW_IPS = Arrays.asList("localhost","127.0.0.1","0:0:0:0:0:0:0:1");
 
 	//允许的ip列表，多个ip之间以分隔符逗号(,)进行分割分隔。
-	private static final String ALLOW_IPS_KEY = "allowIPs";
-	private static final String ALLOW_IPS_KEY_SEPARATOR = ",";
+	private static final String ALLOW_IPS_KEY = "allowIps";
+	private static final String ALLOW_IPS_VALUE_SEPARATOR = ",";
 
 	@Override
 	public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object){
 		String remoteHost = httpServletRequest.getRemoteHost();
-		if(DEFAULT_PERMIT_VISIT_IP_LIST.contains(remoteHost)){
+		if(DEFAULT_ALLOW_IPS.contains(remoteHost)){
 			return true;
 		}
-		List<String> allowIPs = getAllowIPs();
+		List<String> allowIPs = getAllowIps();
 		if(allowIPs != null && !allowIPs.isEmpty()){
 			if(allowIPs.contains(ALL_IP)){
 				return true;
@@ -45,10 +45,10 @@ public class IpInterceptor implements HandlerInterceptor {
 	}
 
 	//获取允许的ip列表
-	private List<String> getAllowIPs(){
+	private List<String> getAllowIps(){
 		String allowIps = System.getProperty(ALLOW_IPS_KEY);
 		if(allowIps != null && !allowIps.isEmpty()){
-			List<String> allowIpList = Arrays.asList(allowIps.split(ALLOW_IPS_KEY_SEPARATOR));
+			List<String> allowIpList = Arrays.asList(allowIps.split(ALLOW_IPS_VALUE_SEPARATOR));
 			return allowIpList;
 		}
 		return null;

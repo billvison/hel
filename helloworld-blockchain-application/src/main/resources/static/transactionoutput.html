@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +9,8 @@
         <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
         <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
 
-        <link rel="stylesheet" href="./assets/common/common.css">
-        <script src="./assets/common/common.js"></script>
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -36,7 +36,7 @@
 
         <div class="panel panel-default">
             <div class="panel-heading"></div>
-            <div id="zhaiyao"></div>
+            <div id="summary"></div>
         </div>
 
         <br/><br/>
@@ -47,10 +47,10 @@
 
         <script>
             $(async function(){
-                let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
+                let urlParameters = parseUrlParameters(location)
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryTransactionOutputByTransactionOutputId",
-                    data:`{
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionOutputByTransactionOutputId",
+                    data: `{
                         "transactionOutputId":{
                             "transactionHash":"${urlParameters.get("transactionHash")}",
                             "transactionOutputIndex":${urlParameters.get("transactionOutputIndex")}
@@ -61,7 +61,7 @@
                 var transactionOutputDetailVo = data.result.transactionOutputDetailVo;
                 $('.panel-heading').text(`交易输出[交易哈希${urlParameters.get("transactionHash")}    交易输出索引${urlParameters.get("transactionOutputIndex")}]`);
 
-                $('#zhaiyao').html(`
+                $('#summary').html(`
                     <button type="button" class="btn btn-default">摘要</button>
                     <table class="table">
                         <tbody>

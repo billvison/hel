@@ -6,7 +6,7 @@ import java.util.List;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class QueryTransactionListByBlockHashTransactionHeightResponse {
+public class QueryTransactionsByBlockHashTransactionHeightResponse {
 
     private List<TransactionVo> transactionVos;
 

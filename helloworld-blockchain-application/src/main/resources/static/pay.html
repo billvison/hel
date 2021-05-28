@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +10,8 @@
         <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
         <script src="./lib/layer-v3.0.1/layer.js" charset="utf-8"></script>
 
-        <link rel="stylesheet" href="./assets/common/common.css">
-        <script src="./assets/common/common.js"></script>
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -101,15 +101,15 @@
                     recipientList.push({address:$(item).find('[name="address"]:first').val().trim(),value:$(item).find('[name="money"]:first').val()})
                 });
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/WalletApplication/BuildTransaction",
-                    data:JSON.stringify({recipientList})
+                    url : baseUrl() + "/Api/WalletApplication/BuildTransaction",
+                    data: JSON.stringify({recipientList})
                 })
                 if(data.serviceCode == 'SUCCESS'){
                     const obj = {}
                     obj.transactionDTO = data.result.transactionDTO;
                     const data2 = await $ajax({
-                        url : baseUrl()+"/Api/WalletApplication/SubmitTransactionToBlockchainNetwork",
-                        data:JSON.stringify(obj),
+                        url : baseUrl() + "/Api/WalletApplication/SubmitTransactionToBlockchainNetwork",
+                        data: JSON.stringify(obj),
                     });
                     alert(data2.message)
 

@@ -15,7 +15,7 @@ public class BlockchainBrowserApplicationApi {
     //根据交易哈希查询交易
     public static final String QUERY_TRANSACTION_BY_TRANSACTION_HASH = "/Api/BlockchainBrowserApplication/QueryTransactionByTransactionHash";
     //根据区块哈希与交易高度查询交易列表
-    public static final String QUERY_TRANSACTION_LIST_BY_BLOCK_HASH_TRANSACTION_HEIGHT = "/Api/BlockchainBrowserApplication/QueryTransactionListByBlockHashTransactionHeight";
+    public static final String QUERY_TRANSACTIONS_BY_BLOCK_HASH_TRANSACTION_HEIGHT = "/Api/BlockchainBrowserApplication/QueryTransactionsByBlockHashTransactionHeight";
 
 
     //根据地址获取交易输出

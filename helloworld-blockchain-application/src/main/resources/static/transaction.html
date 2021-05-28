@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +9,8 @@
         <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
         <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
 
-        <link rel="stylesheet" href="./assets/common/common.css">
-        <script src="./assets/common/common.js"></script>
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -91,10 +91,10 @@
 
         <script>
             $(async function(){
-                let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
+                let urlParameters = parseUrlParameters(location)
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryTransactionByTransactionHash",
-                    data:`{"transactionHash":"${urlParameters.get("transactionHash")}"}`
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionByTransactionHash",
+                    data: `{"transactionHash":"${urlParameters.get("transactionHash")}"}`
                 });
                 let {inputScripts, outputScripts, transactionHash, transactionOutputValues, blockHeight, blockHash,transactionFee, confirmCount, transactionInputCount, transactionType, blockTime, transactionInputValues, transactionOutputCount} = data.result.transactionVo;
                 $('.panel-heading').text("交易哈希 " + transactionHash);

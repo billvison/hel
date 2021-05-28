@@ -5,7 +5,8 @@ import java.util.List;
 
 /**
  * 区块
- * 属性含义参考 com.xingkaichun.helloworldblockchain.core.bo.Block
+ * 属性含义参考
+ * @see com.xingkaichun.helloworldblockchain.core.model.Block
  *
  * 以下是对这个类的含有的属性的要求：
  * 在不依赖其它区块的数据情况下，可以独立计算该区块的哈希值。

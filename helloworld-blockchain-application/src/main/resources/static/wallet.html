@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,9 +10,8 @@
         <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
         <script src="./lib/layer-v3.0.1/layer.js" charset="utf-8"></script>
 
-        <link rel="stylesheet" href="./assets/common/common.css">
-        <script src="./assets/common/common.js"></script>
-
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -58,7 +57,7 @@
             const obj = {}
             $(async function(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/WalletApplication/QueryAllAccounts"
+                    url : baseUrl() + "/Api/WalletApplication/QueryAllAccounts"
                 })
                 $("#balance").text("总余额 "+data.result.balance);
                 let accountVos = data.result.accountVos
@@ -83,8 +82,8 @@
                 }, function(){
                     $.ajax({
                          type: "post",
-                         url : baseUrl()+"/Api/WalletApplication/DeleteAccount",
-                         data:`{"address":"${privateKey}"}`,
+                         url : baseUrl() + "/Api/WalletApplication/DeleteAccount",
+                         data: `{"address":"${privateKey}"}`,
                          dataType: "json",
                          contentType: "application/json",
                          success(data){
@@ -99,7 +98,7 @@
                 layer.prompt({title: '增加账户，请输入私钥(账户密码)。', formType: 2}, function(pass, index){
                     $.ajax({
                          type: "post",
-                         url : baseUrl()+"/Api/WalletApplication/AddAccount",
+                         url : baseUrl() + "/Api/WalletApplication/AddAccount",
                          data: `{"privateKey":"${pass}"}`,
                          dataType: "json",
                          contentType: "application/json",
@@ -116,8 +115,8 @@
 
             async function create(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/WalletApplication/GenerateAccount",
-                    data:`{}`
+                    url : baseUrl() + "/Api/WalletApplication/GenerateAccount",
+                    data: `{}`
                 })
                 var account = data.result.account;
                 var content = '<h2 class="red">提示: 请在您信任的站点生成账户！</h2>' +
@@ -128,8 +127,8 @@
 
             async function createAndSave(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/WalletApplication/GenerateAndSaveAccount",
-                    data:`{}`
+                    url : baseUrl() + "/Api/WalletApplication/GenerateAndSaveAccount",
+                    data: `{}`
                 })
                 var account = data.result.account;
                 var content = '<h2 class="red">提示: 请在您信任的站点生成账户！你创建的数字货币账号与密码已经保存本网站了！</h2>' +

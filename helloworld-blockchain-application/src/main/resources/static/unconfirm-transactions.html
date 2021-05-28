@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>地址详情-HelloworldBlockchain</title>
+        <title>未确认交易池-HelloworldBlockchain</title>
 
         <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
         <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
         <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
         <script src="./lib/layer-v3.0.1/layer.js" charset="utf-8"></script>
 
-        <link rel="stylesheet" href="./assets/common/common.css">
-        <script src="./assets/common/common.js"></script>
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -40,12 +40,12 @@
         </div>
         <div style="margin-top: 10px; " class="page" id="page"><button class="btn btn-primary" onclick="load()">加载更多</button></div>
         <script>
-            var reqJson = `{"pageCondition":{"from":1,"size":10}}`
+            var request = `{"pageCondition":{"from":1,"size":10}}`
             load();
             async function load(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryUnconfirmedTransactions",
-                    data: reqJson
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryUnconfirmedTransactions",
+                    data: request
                 });
                 let {transactionVos} = data.result;
                 if(transactionVos == null || transactionVos.length == 0){
@@ -55,9 +55,9 @@
                     $('#container').append(unconfirmTransactionHtml(item))
                 })
 
-                const JSONreqJson = JSON.parse(reqJson);
-                JSONreqJson.pageCondition.from += JSONreqJson.pageCondition.size;
-                reqJson = JSON.stringify(JSONreqJson);
+                const requestJsonObject = JSON.parse(request);
+                requestJsonObject.pageCondition.from += requestJsonObject.pageCondition.size;
+                request = JSON.stringify(requestJsonObject);
             }
             function unconfirmTransactionHtml(item){
                 let left = '';

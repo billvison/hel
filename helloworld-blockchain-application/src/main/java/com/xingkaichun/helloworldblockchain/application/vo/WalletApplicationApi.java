@@ -25,6 +25,6 @@ public class WalletApplicationApi {
     //构建交易
     public static final String BUILD_TRANSACTION = "/Api/WalletApplication/BuildTransaction";
     //提交交易到区块链网络
-    public static final String SUBMIT_TRANSACTION_TO_BLOCKCHIAINNEWWORK = "/Api/WalletApplication/SubmitTransactionToBlockchainNetwork";
+    public static final String SUBMIT_TRANSACTION_TO_BLOCKCHIAIN_NEWWORK = "/Api/WalletApplication/SubmitTransactionToBlockchainNetwork";
 
 }

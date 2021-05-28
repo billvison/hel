@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>区块详情-HelloworldBlockchain</title>
+        <title>搜索-HelloworldBlockchain</title>
 
         <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
         <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
         <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
 
-        <link rel="stylesheet" href="./assets/common/common.css">
-        <script src="./assets/common/common.js"></script>
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -51,15 +51,15 @@
                     return;
                 }
 
-                var reqJson = "" ;
+                var request = "" ;
                 var data = "" ;
 
                 if(!isNaN(searchValue)){
                     //区块高度
-                    reqJson = `{ "blockHeight": ${searchValue}}`;
+                    request = `{ "blockHeight": ${searchValue}}`;
                     data = await $ajax({
-                        url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryBlockByBlockHeight",
-                        data: reqJson
+                        url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockByBlockHeight",
+                        data: request
                     });
                     if(data.result != null){
                         alert("识别为区块高度，点击确认按钮，跳转到区块详情页。");
@@ -72,10 +72,10 @@
                 }
 
                 //区块哈希
-                reqJson = `{ "blockHash": "${searchValue}"}`;
+                request = `{ "blockHash": "${searchValue}"}`;
                 data = await $ajax({
-                    url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryBlockByBlockHash",
-                    data: reqJson
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockByBlockHash",
+                    data: request
                 });
                 if(data.result != null){
                     alert("识别为区块哈希，点击确认按钮，跳转到区块详情页。");
@@ -86,10 +86,10 @@
                 }
 
                 //交易哈希
-                reqJson = `{"transactionHash":"${searchValue}"}`
+                request = `{"transactionHash":"${searchValue}"}`
                 data = await $ajax({
-                    url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryTransactionByTransactionHash",
-                    data: reqJson
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionByTransactionHash",
+                    data: request
                 });
                 if(data.result != null){
                     alert("识别为交易哈希，点击确认按钮，跳转到交易详情页。");
@@ -100,10 +100,10 @@
                 }
 
                 //地址
-                reqJson = `{"address":"${searchValue}"}`
+                request = `{"address":"${searchValue}"}`
                 data = await $ajax({
-                    url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryTransactionOutputByAddress",
-                    data: reqJson
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionOutputByAddress",
+                    data: request
                 });
                 if(data.result != null && data.result.transactionOutputDetailVo != null){
                     alert("识别为地址，点击确认按钮，跳转到地址详情页。");
@@ -114,10 +114,10 @@
                 }
 
                 //未确认交易
-                reqJson = `{"transactionHash":"${searchValue}"}`
+                request = `{"transactionHash":"${searchValue}"}`
                 data = await $ajax({
-                    url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryUnconfirmedTransactionByTransactionHash",
-                    data: reqJson
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryUnconfirmedTransactionByTransactionHash",
+                    data: request
                 });
                 if(data.result != null && data.result.transactionDTO != null){
                     alert("识别为未确认的交易，点击确认按钮，跳转到未确认的交易详情页。");

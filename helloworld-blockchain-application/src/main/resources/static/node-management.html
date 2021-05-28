@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +10,8 @@
         <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
         <script src="./lib/layer-v3.0.1/layer.js" charset="utf-8"></script>
 
-        <link rel="stylesheet" href="./assets/common/common.css">
-        <script src="./assets/common/common.js"></script>
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -59,7 +59,7 @@
         <script type="text/javascript">
             $(async function(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/NodeConsoleApplication/QueryAllNodes"
+                    url : baseUrl() + "/Api/NodeConsoleApplication/QueryAllNodes"
                 });
                 const { nodes } = data.result
                 let $list = $('#table-node-list');
@@ -106,8 +106,8 @@
 
             $('body').delegate('#table-add-node-button-add', 'click', async function(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/NodeConsoleApplication/AddNode",
-                    data:`{"node":{"ip": "${$('#table-add-node-text-ip').val()}"}}`
+                    url : baseUrl() + "/Api/NodeConsoleApplication/AddNode",
+                    data: `{"node":{"ip": "${$('#table-add-node-text-ip').val()}"}}`
                 });
                 alert(data.message);
                 if(data.serviceCode == "SUCCESS"){
@@ -153,8 +153,8 @@
 
             $('body').delegate('#table-update-node-button-add', 'click', async function(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/NodeConsoleApplication/UpdateNode",
-                    data:`{"node":{"ip": "${$('#table-update-node-text-ip').val()}","blockchainHeight": "${$('#table-update-node-text-blockchainHeight').val()}"}}`
+                    url : baseUrl() + "/Api/NodeConsoleApplication/UpdateNode",
+                    data: `{"node":{"ip": "${$('#table-update-node-text-ip').val()}","blockchainHeight": "${$('#table-update-node-text-blockchainHeight').val()}"}}`
                 });
                 alert(data.message);
                 location.reload();
@@ -163,8 +163,8 @@
             $('body').delegate('.delete-node', 'click', async function(){
                 let ip = $(this).parent().parent().children(":first").text();
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/NodeConsoleApplication/DeleteNode",
-                    data:`{"node":{"ip": "${ip}"}}`
+                    url : baseUrl() + "/Api/NodeConsoleApplication/DeleteNode",
+                    data: `{"node":{"ip": "${ip}"}}`
                 });
                 alert(data.message);
                 location.reload();

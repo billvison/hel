@@ -5,7 +5,8 @@ import java.io.Serializable;
 
 /**
  * 交易输出
- * 属性含义参考 com.xingkaichun.helloworldblockchain.core.bo.transaction.TransactionOutput
+ * 属性含义参考
+ * @see com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput
  *
  * @author 邢开春 409060350@qq.com
  */

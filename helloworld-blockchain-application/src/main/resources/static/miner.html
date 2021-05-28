@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +9,8 @@
         <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
         <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
 
-        <link rel="stylesheet" href="./assets/common/common.css">
-        <script src="./assets/common/common.js"></script>
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -45,8 +45,8 @@
             let minerState2 = "我是一名矿工，我正在休息中...";
             $(async function(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/NodeConsoleApplication/IsMinerActive",
-                    data:`{}`
+                    url : baseUrl() + "/Api/NodeConsoleApplication/IsMinerActive",
+                    data: `{}`
                 });
                 minerInActiveState = data.result.minerInActiveState;
                 $('#minerStatus').text(data.result.minerInActiveState ? minerState1 : minerState2);
@@ -56,32 +56,32 @@
             $('#minerSwitch').click(async function(){
                 if(minerInActiveState){
                     await $ajax({
-                        url : baseUrl()+"/Api/NodeConsoleApplication/DeactiveMiner",
-                        data:"{}"
+                        url : baseUrl() + "/Api/NodeConsoleApplication/DeactiveMiner",
+                        data: `{}`
                     });
                 }else{
                     await $ajax({
-                        url : baseUrl()+"/Api/NodeConsoleApplication/ActiveMiner",
-                        data:"{}"
+                        url : baseUrl() + "/Api/NodeConsoleApplication/ActiveMiner",
+                        data: `{}`
                     });
                 }
                 location.reload();
             })
 
-            function consoleLog(){
+            function showMessage(){
                 if(minerInActiveState){
-                    var tip = ["矿工很累，但他还在坚持挖矿中","矿工举起了镐子，一稿子下去，挖出了一块金子"
+                    var message = ["矿工很累，但他还在坚持挖矿中","矿工举起了镐子，一稿子下去，挖出了一块金子"
                                 ,"矿工挖了连续工作四十八小时了，还没有任何收获","矿工为了诗与远方在挖矿中","矿工跌了一跤，他忍住疼痛，站起来继续挖矿"
                                 ,"矿工挖到了一颗螺丝钉","矿工挖到了一颗草莓","矿工挖到了一个苹果","矿工挖到了一条锦鲤"];
-                    $('#action').text(tip[Math.floor(Math.random()*(tip.length))]);
+                    $('#action').text(message[Math.floor(Math.random()*(message.length))]);
                 }else{
-                    var tip = ["矿工在嗑瓜子","矿工吃草莓","矿工在喝牛奶","矿工在看杂志","矿工在看小说","矿工在听音乐","矿工在做数学题","矿工在写作文"
+                    var message = ["矿工在嗑瓜子","矿工吃草莓","矿工在喝牛奶","矿工在看杂志","矿工在看小说","矿工在听音乐","矿工在做数学题","矿工在写作文"
                                 ,"矿工睡着了","矿工正在睡觉","矿工在做美梦","矿工有一个理想，他想当最牛的矿工，可是他在偷懒中"];
-                    $('#action').text(tip[Math.floor(Math.random()*(tip.length))]);
+                    $('#action').text(message[Math.floor(Math.random()*(message.length))]);
                 }
             }
             $(async function(){
-                setInterval(function(){consoleLog();},4000);
+                setInterval(function(){showMessage();},4000);
             }());
         </script>
     </body>

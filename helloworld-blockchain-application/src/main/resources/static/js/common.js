@@ -1,8 +1,11 @@
 function baseUrl(){
     //return "http://119.3.57.171";
     return "";
-};
+}
 
+function parseUrlParameters(location){
+    return new Map(location.search.slice(1).split('&').map(kv => kv.split('=')));
+}
 
 async function $ajax(option){
     const obj = {
@@ -24,7 +27,7 @@ async function $ajax(option){
             }
         })
     })
-};
+}
 
 function transactionHtml(item){
     let left = '';
@@ -51,4 +54,4 @@ function transactionHtml(item){
         </div>
     `;
     return transactionHtml;
-};
+}

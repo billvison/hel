@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +9,8 @@
         <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
         <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
 
-        <link rel="stylesheet" href="./assets/common/common.css">
-        <script src="./assets/common/common.js"></script>
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -43,14 +43,14 @@
         </div>
 
         <script>
-            let urlParameters = new Map(location.search.slice(1).split('&').map(kv => kv.split('=')))
-            var reqJson = `{ "blockHash": "${urlParameters.get("hash")}", "pageCondition": { "from": 1, "size": 10 } }`;
-            var reqJso2 = `{ "blockHash": "${urlParameters.get("hash")}"}`;
+            let urlParameters = parseUrlParameters(location)
+            var request = `{ "blockHash": "${urlParameters.get("hash")}", "pageCondition": { "from": 1, "size": 10 } }`;
+            var request2 = `{ "blockHash": "${urlParameters.get("hash")}"}`;
 
             $(async function(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryBlockByBlockHash",
-                    data: reqJso2
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockByBlockHash",
+                    data: request2
                 });
                 let {blockVo} = data.result;
                 $('#box').append(`
@@ -105,8 +105,8 @@
 
             async function load(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryTransactionListByBlockHashTransactionHeight",
-                    data: reqJson
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionsByBlockHashTransactionHeight",
+                    data: request
                 });
                 console.log(data);
                 if(data.serviceCode = 'SUCCESS' && (data.result == null || data.result.transactionVos == null || data.result.transactionVos.length==0)){
@@ -119,9 +119,9 @@
                     $('#box').append(transactionHtml(item))
                 })
 
-                const JSONreqJson = JSON.parse(reqJson);
-                JSONreqJson.pageCondition.from += JSONreqJson.pageCondition.size;
-                reqJson = JSON.stringify(JSONreqJson);
+                const requestJsonObject = JSON.parse(request);
+                requestJsonObject.pageCondition.from += requestJsonObject.pageCondition.size;
+                request = JSON.stringify(requestJsonObject);
             }
 
             $(load())

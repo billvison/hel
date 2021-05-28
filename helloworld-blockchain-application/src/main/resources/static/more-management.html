@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>区块详情-HelloworldBlockchain</title>
+        <title>更多管理-HelloworldBlockchain</title>
 
         <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
         <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
         <link rel="stylesheet" href="./lib/bootstrap-v3.4.1/css/bootstrap.css">
 
-        <link rel="stylesheet" href="./assets/common/common.css">
-        <script src="./assets/common/common.js"></script>
+        <script src="./js/common.js"></script>
+        <link rel="stylesheet" href="./css/common.css">
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -67,14 +67,14 @@
             let minerInActiveState,synchronizerInActiveState,autoSearchNewNode;
             $(async function(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/BlockchainBrowserApplication/QueryBlockchainHeight"
+                    url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockchainHeight"
                 });
                 $('#blockHeight').text(data.result.blockchainHeight);
             }());
             $(async function(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/NodeConsoleApplication/IsMinerActive",
-                    data:`{}`
+                    url : baseUrl() + "/Api/NodeConsoleApplication/IsMinerActive",
+                    data: `{}`
                 });
                 minerInActiveState = data.result.minerInActiveState;
                 $('#minerStatus').text(data.result.minerInActiveState ? '挖矿中' : '休息中');
@@ -82,8 +82,8 @@
             }());
             $(async function(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/NodeConsoleApplication/IsSynchronizerActive",
-                    data:`{}`
+                    url : baseUrl() + "/Api/NodeConsoleApplication/IsSynchronizerActive",
+                    data: `{}`
                 });
                 synchronizerInActiveState = data.result.synchronizerInActiveState;
                 $('#synchronizerStatus').text(data.result.synchronizerInActiveState ? '同步中' : '休息中')
@@ -91,8 +91,8 @@
             }());
             $(async function(){
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/NodeConsoleApplication/IsAutoSearchNode",
-                    data:`{}`
+                    url : baseUrl() + "/Api/NodeConsoleApplication/IsAutoSearchNode",
+                    data: `{}`
                 });
                 autoSearchNewNode = data.result.autoSearchNewNode;
                 $('#searchNodeStrategy').text(data.result.autoSearchNewNode ? '自动寻找' : '手动添加');
@@ -102,8 +102,8 @@
             $('#button_DeleteBlock').click(async function(){
                 let res = prompt('删除区块，请输入要删除区块的高度。');
                 const data = await $ajax({
-                    url : baseUrl()+"/Api/NodeConsoleApplication/DeleteBlocks",
-                    data:`{
+                    url : baseUrl() + "/Api/NodeConsoleApplication/DeleteBlocks",
+                    data: `{
                         "blockHeight":"${res}"
                     }`
                 });
@@ -112,13 +112,13 @@
             $('#minerSwitch').click(async function(){
                 if(minerInActiveState){
                     await $ajax({
-                        url : baseUrl()+"/Api/NodeConsoleApplication/DeactiveMiner",
-                        data:"{}"
+                        url : baseUrl() + "/Api/NodeConsoleApplication/DeactiveMiner",
+                        data: `{}`
                     });
                 }else{
                     await $ajax({
-                        url : baseUrl()+"/Api/NodeConsoleApplication/ActiveMiner",
-                        data:"{}"
+                        url : baseUrl() + "/Api/NodeConsoleApplication/ActiveMiner",
+                        data: `{}`
                     });
                 }
                 location.reload();
@@ -126,21 +126,21 @@
             $('#synchronizerSwitch').click(async function(){
                 if(!synchronizerInActiveState){
                     await $ajax({
-                        url : baseUrl()+"/Api/NodeConsoleApplicationle/ActiveSynchronizer",
-                        data:"{}"
+                        url : baseUrl() + "/Api/NodeConsoleApplicationle/ActiveSynchronizer",
+                        data: `{}`
                     });
                 }else{
                     await $ajax({
-                        url : baseUrl()+"/Api/NodeConsoleApplication/DeactiveSynchronizer",
-                        data:"{}"
+                        url : baseUrl() + "/Api/NodeConsoleApplication/DeactiveSynchronizer",
+                        data: `{}`
                     });
                 }
                 location.reload();
             })
             $('#searchNodeStrategySwitch').click(async function(){
                 await $ajax({
-                    url : baseUrl()+"/Api/NodeConsoleApplication/SetAutoSearchNode",
-                    data:`{"autoSearchNode": ${!autoSearchNewNode}}`
+                    url : baseUrl() + "/Api/NodeConsoleApplication/SetAutoSearchNode",
+                    data: `{"autoSearchNode": ${!autoSearchNewNode}}`
                 });
                 location.reload();
             })

@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.application.vo.framwork.PageConditio
  *
  * @author 邢开春 409060350@qq.com
  */
-public class QueryTransactionListByBlockHashTransactionHeightRequest {
+public class QueryTransactionsByBlockHashTransactionHeightRequest {
 
     private String blockHash;
     private PageCondition pageCondition;
