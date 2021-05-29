@@ -215,7 +215,7 @@ public class BlockchainBrowserApplicationServiceImpl implements BlockchainBrowse
                 transactionInputVos.add(transactionInputVo);
             }
         }
-        transactionVo.setTransactionInputVos(transactionInputVos);
+        transactionVo.setTransactionInputs(transactionInputVos);
 
         List<TransactionOutput> outputs = transaction.getOutputs();
         List<TransactionOutputVo> transactionOutputVos = new ArrayList<>();
@@ -230,7 +230,7 @@ public class BlockchainBrowserApplicationServiceImpl implements BlockchainBrowse
                 transactionOutputVos.add(transactionOutputVo);
             }
         }
-        transactionVo.setTransactionOutputVos(transactionOutputVos);
+        transactionVo.setTransactionOutputs(transactionOutputVos);
 
         List<String> inputScripts = new ArrayList<>();
         for (TransactionInputVo transactionInputVo : transactionInputVos){

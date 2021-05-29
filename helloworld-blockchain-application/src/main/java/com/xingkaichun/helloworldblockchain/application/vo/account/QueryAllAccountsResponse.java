@@ -10,7 +10,7 @@ import java.util.List;
 public class QueryAllAccountsResponse {
 
     private long balance;
-    private List<AccountVo> accountVos;
+    private List<AccountVo> accounts;
 
 
     public long getBalance() {
@@ -21,12 +21,12 @@ public class QueryAllAccountsResponse {
         this.balance = balance;
     }
 
-    public List<AccountVo> getAccountVos() {
-        return accountVos;
+    public List<AccountVo> getAccounts() {
+        return accounts;
     }
 
-    public void setAccountVos(List<AccountVo> accountVos) {
-        this.accountVos = accountVos;
+    public void setAccounts(List<AccountVo> accounts) {
+        this.accounts = accounts;
     }
 
     public static class AccountVo implements Serializable {

@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.BlockchainDatabase;
 import com.xingkaichun.helloworldblockchain.core.Consensus;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
 import java.math.BigInteger;
@@ -41,7 +41,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
      * 计算目标区块的挖矿难度
      * 为什么要设置挖矿难度？目的是控制出块的时间。
      * 挖矿的难度在一个挖矿周期内是不变的，而每当一个新的挖矿周期开始时，就需要重新计算新周期的挖矿难度。
-     * 每GlobalSetting.IncentiveConstant.INTERVAL_BLOCK_COUNT个区块为一个挖矿周期。
+     * 每GlobalSetting.IncentiveSetting.INTERVAL_BLOCK_COUNT个区块为一个挖矿周期。
      * 计算第X周期的难度需要参考第(X-1)周期的耗时。
      * 第X周期的难度 = 第(X-1)周期的难度 * 第(X-1)周期的实际挖矿耗时 / 一个周期的期望挖矿耗时。
      * 第一周期、第二周期的难度默认为创世区块的难度。
@@ -57,7 +57,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         // 目标区块高度
         long targetBlockHeight = targetBlock.getHeight();
         // 目标区块高度在第一周期、第二周期内
-        if(targetBlockHeight <= GlobalSetting.IncentiveConstant.INTERVAL_BLOCK_COUNT * 2){
+        if(targetBlockHeight <= Setting.IncentiveSetting.INTERVAL_BLOCK_COUNT * 2){
             /*
              * 最初，区块链有区块 0(创世区块)，假设每个挖矿周期有二个区块。
              * 现在要挖第一个周期的区块，即要挖区块1，区块2
@@ -72,7 +72,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
              * ，因为[开始挖区块3的时刻]就是[产生区块2的时间戳]，所以第二周期的耗时可以计算，
              * 所以从第三个开始的周期不用设置挖矿难度默认值了。
              */
-            targetDifficult = GlobalSetting.GenesisBlock.DIFFICULTY;
+            targetDifficult = Setting.GenesisBlockSetting.DIFFICULTY;
             return targetDifficult;
         }
 
@@ -82,7 +82,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
          * 目标区块的上一个区块如果不是一个周期的末尾，说明一个周期尚未结束
          * ，说明目标区块和[目标区块的上一个区块]位于同一个周期，此时目标区块难度和[目标区块的上一个区块]的难度相同。
          */
-        if (targetBlockPreviousBlock.getHeight() % GlobalSetting.IncentiveConstant.INTERVAL_BLOCK_COUNT != 0){
+        if (targetBlockPreviousBlock.getHeight() % Setting.IncentiveSetting.INTERVAL_BLOCK_COUNT != 0){
             targetDifficult = targetBlockPreviousBlock.getDifficulty();
             return targetDifficult;
         }
@@ -91,7 +91,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         // 上个周期的最后一个区块，此时，targetBlockPreviousBlock是上一个周期的最后一个区块，这里仅仅是重新命名了一个更为准确的变量名称。
         Block previousIntervalLastBlock = targetBlockPreviousBlock;
         // 上上个周期最后一个区块
-        Block previousPreviousIntervalLastBlock = blockchainDataBase.queryBlockByBlockHeight(previousIntervalLastBlock.getHeight()-GlobalSetting.IncentiveConstant.INTERVAL_BLOCK_COUNT);
+        Block previousPreviousIntervalLastBlock = blockchainDataBase.queryBlockByBlockHeight(previousIntervalLastBlock.getHeight()- Setting.IncentiveSetting.INTERVAL_BLOCK_COUNT);
         // 上个周期出块实际耗时
         long previousIntervalActualTimespan = previousIntervalLastBlock.getTimestamp() - previousPreviousIntervalLastBlock.getTimestamp();
 
@@ -137,7 +137,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         BigInteger bigIntegerTargetDifficult =
                 new BigInteger(previousIntervalLastBlock.getDifficulty(),16)
                         .multiply(new BigInteger(String.valueOf(previousIntervalActualTimespan)))
-                        .divide(new BigInteger(String.valueOf(GlobalSetting.IncentiveConstant.INTERVAL_TIME)));
+                        .divide(new BigInteger(String.valueOf(Setting.IncentiveSetting.INTERVAL_TIME)));
         return bigIntegerTargetDifficult.toString(16);
     }
 }

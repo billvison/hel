@@ -222,7 +222,7 @@ public class NodeConsoleApplicationController {
         try {
             boolean isAutoSearchNode = blockchainNetCore.getNetCoreConfiguration().isAutoSearchNode();
             IsAutoSearchNodeResponse response = new IsAutoSearchNodeResponse();
-            response.setAutoSearchNewNode(isAutoSearchNode);
+            response.setAutoSearchNode(isAutoSearchNode);
             return ServiceResult.createSuccessServiceResult("查询是否允许自动搜索区块链节点成功",response);
         } catch (Exception e){
             String message = "查询是否允许自动搜索区块链节点失败";

@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.netcore;
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
@@ -56,7 +56,7 @@ public class SeedNodeInitializer {
      * 添加种子节点
      */
     private void addSeedNode() {
-        for(String nodeIp: GlobalSetting.SEED_NODE_LIST){
+        for(String nodeIp: Setting.SEED_NODES){
             Node node = nodeService.queryNode(nodeIp);
             if(node == null){
                 if(netCoreConfiguration.isAutoSearchNode()){

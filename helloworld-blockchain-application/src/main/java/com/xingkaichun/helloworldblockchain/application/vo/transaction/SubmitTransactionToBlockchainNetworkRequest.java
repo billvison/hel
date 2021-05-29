@@ -8,19 +8,19 @@ import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto
  */
 public class SubmitTransactionToBlockchainNetworkRequest {
 
-    private TransactionDto transactionDTO;
+    private TransactionDto transaction;
 
 
 
 
     //region get set
 
-    public TransactionDto getTransactionDTO() {
-        return transactionDTO;
+    public TransactionDto getTransaction() {
+        return transaction;
     }
 
-    public void setTransactionDTO(TransactionDto transactionDTO) {
-        this.transactionDTO = transactionDTO;
+    public void setTransaction(TransactionDto transaction) {
+        this.transaction = transaction;
     }
 
 

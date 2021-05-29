@@ -25,11 +25,11 @@
                     <ul class="nav navbar-nav">
                         <li><a href="./search.html">搜索</a></li>
                         <li><a href="./miner.html">挖矿</a></li>
-                        <li><a href="./unconfirm-transactions.html">未确认交易</a></li>
+                        <li><a href="./unconfirm-transactions.html">未确认交易池</a></li>
                         <li><a href="./pay.html">支付</a></li>
                         <li><a href="./wallet.html">钱包</a></li>
                         <li><a href="./node-management.html">节点管理</a></li>
-                        <li><a href="./more-management.html">更多管理</a></li>
+                        <li><a href="./more-management.html">节点控制台</a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
@@ -52,50 +52,50 @@
                     url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockByBlockHash",
                     data: request2
                 });
-                let {blockVo} = data.result;
+                let {block} = data.result;
                 $('#box').append(`
                 <div class="panel panel-default">
                     <!-- Default panel contents -->
-                    <div class="panel-heading">区块哈希&nbsp;${blockVo.hash}</div>
+                    <div class="panel-heading">区块哈希&nbsp;${block.hash}</div>
                     <button type="button" class="btn btn-default">摘要</button>
                     <!-- Table -->
                     <table class="table">
                         <tbody>
                             <tr>
                                 <td style="width:10%">高度</td>
-                                <td style="width:40%"><a target="_blank" href="./block-by-height.html?height=${blockVo.height}">${blockVo.height}</a></td>
+                                <td style="width:40%"><a target="_blank" href="./block-by-height.html?height=${block.height}">${block.height}</a></td>
                                 <td style="width:10%">挖矿难度</td>
-                                <td style="width:40%">${blockVo.difficulty}</td>
+                                <td style="width:40%">${block.difficulty}</td>
                             </tr>
                             <tr>
                                 <td>确认数</td>
-                                <td>${blockVo.confirmCount}</td>
+                                <td>${block.confirmCount}</td>
                                 <td>随机数</td>
-                                <td>${blockVo.nonce}</td>
+                                <td>${block.nonce}</td>
                             </tr>
                             <tr>
                                 <td>区块大小</td>
-                                <td>${blockVo.blockSize}</td>
+                                <td>${block.blockSize}</td>
                                 <td>区块哈希</td>
-                                <td>${blockVo.hash}</td>
+                                <td>${block.hash}</td>
                             </tr>
                             <tr>
                                 <td>交易数量</td>
-                                <td>${blockVo.transactionCount}</td>
+                                <td>${block.transactionCount}</td>
                                 <td>上一个区块哈希</td>
-                                <td><a href='./block.html?hash=${blockVo.previousBlockHash}'>${blockVo.previousBlockHash}</a></td>
+                                <td><a href='./block.html?hash=${block.previousBlockHash}'>${block.previousBlockHash}</a></td>
                             </tr>
                             <tr>
                                 <td>时间</td>
-                                <td>${blockVo.time}</td>
+                                <td>${block.time}</td>
                                 <td>下一个区块哈希</td>
-                                <td><a href='./block.html?hash=${blockVo.nextBlockHash}'>${blockVo.nextBlockHash || ''}</a></td>
+                                <td><a href='./block.html?hash=${block.nextBlockHash}'>${block.nextBlockHash || ''}</a></td>
                             </tr>
                             <tr>
                                 <td>矿工奖励</td>
-                                <td>${blockVo.minerIncentiveValue}</td>
+                                <td>${block.minerIncentiveValue}</td>
                                 <td>默克尔树根</td>
-                                <td>${blockVo.merkleTreeRoot}</td>
+                                <td>${block.merkleTreeRoot}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -109,12 +109,12 @@
                     data: request
                 });
                 console.log(data);
-                if(data.serviceCode = 'SUCCESS' && (data.result == null || data.result.transactionVos == null || data.result.transactionVos.length==0)){
+                if(data.serviceCode = 'SUCCESS' && (data.result == null || data.result.transactions == null || data.result.transactions.length==0)){
                     $("#button-load").html("交易数据加载完毕。");
                     return;
                 }
-                let transactionVos = data.result.transactionVos;
-                $(transactionVos).each((index, item) => {
+                let transactions = data.result.transactions;
+                $(transactions).each((index, item) => {
                     console.log(item);
                     $('#box').append(transactionHtml(item))
                 })

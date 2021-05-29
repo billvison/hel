@@ -48,5 +48,5 @@ public interface BlockchainNodeClient {
     /**
      * 根据交易高度，获取交易
      */
-    GetTransactionResponse getTransaction(GetTransactionRequest getTransactionRequest);
+    GetUnconfirmedTransactionsResponse getUnconfirmedTransactions(GetUnconfirmedTransactionsRequest getUnconfirmedTransactionsRequest);
 }

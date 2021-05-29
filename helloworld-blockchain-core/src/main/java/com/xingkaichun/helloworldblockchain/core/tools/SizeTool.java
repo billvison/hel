@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.script.OperationCodeEnum;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
@@ -36,8 +36,8 @@ public class SizeTool {
 
         //校验区块随机数大小
         long nonceSize = stringSize(blockDTO.getNonce());
-        if(!LongUtil.isEquals(nonceSize, GlobalSetting.BlockConstant.NONCE_SIZE)){
-            LogUtil.debug(StringUtil.format("nonce[%s]长度不是[%s]。",blockDTO.getNonce(),GlobalSetting.BlockConstant.NONCE_SIZE));
+        if(!LongUtil.isEquals(nonceSize, Setting.BlockSetting.NONCE_SIZE)){
+            LogUtil.debug(StringUtil.format("nonce[%s]长度不是[%s]。",blockDTO.getNonce(), Setting.BlockSetting.NONCE_SIZE));
             return false;
         }
 
@@ -54,8 +54,8 @@ public class SizeTool {
 
         //校验区块占用的存储空间
         long blockSize = calculateBlockSize(blockDTO);
-        if(blockSize > GlobalSetting.BlockConstant.BLOCK_MAX_SIZE){
-            LogUtil.debug(String.format("区块数据大小[%s]超过限制[%s]。",blockSize,GlobalSetting.BlockConstant.BLOCK_MAX_SIZE));
+        if(blockSize > Setting.BlockSetting.BLOCK_MAX_SIZE){
+            LogUtil.debug(String.format("区块数据大小[%s]超过限制[%s]。",blockSize, Setting.BlockSetting.BLOCK_MAX_SIZE));
             return false;
         }
         return true;
@@ -102,8 +102,8 @@ public class SizeTool {
 
         //校验整笔交易大小十分合法
         long transactionSize = calculateTransactionSize(transactionDTO);
-        if(transactionSize > GlobalSetting.TransactionConstant.TRANSACTION_MAX_SIZE){
-            LogUtil.debug(StringUtil.format("交易[%s]字符超过大小限制值[%s]。",transactionSize,GlobalSetting.TransactionConstant.TRANSACTION_MAX_SIZE));
+        if(transactionSize > Setting.TransactionSetting.TRANSACTION_MAX_SIZE){
+            LogUtil.debug(StringUtil.format("交易[%s]字符超过大小限制值[%s]。",transactionSize, Setting.TransactionSetting.TRANSACTION_MAX_SIZE));
             return false;
         }
         return true;
@@ -152,7 +152,7 @@ public class SizeTool {
                 return false;
             }
         }
-        if(calculateScriptSize(scriptDTO) > GlobalSetting.ScriptConstant.SCRIPT_MAX_SIZE){
+        if(calculateScriptSize(scriptDTO) > Setting.ScriptSetting.SCRIPT_MAX_SIZE){
             LogUtil.debug("交易校验失败：交易输出脚本大小超出限制。");
             return false;
         }

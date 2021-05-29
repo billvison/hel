@@ -10,7 +10,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.util.TimeUtil;
@@ -141,12 +141,12 @@ public class MinerTool {
         for(int i=0; i<backupTransactionList.size(); i++){
             //序号从0开始，加一。
             //留给挖矿交易一个位置，减一。
-            if(i+1 > GlobalSetting.BlockConstant.BLOCK_MAX_TRANSACTION_COUNT-1){
+            if(i+1 > Setting.BlockSetting.BLOCK_MAX_TRANSACTION_COUNT-1){
                 break;
             }
             Transaction transaction = backupTransactionList.get(i);
             size += SizeTool.calculateTransactionSize(transaction);
-            if(size > GlobalSetting.BlockConstant.BLOCK_MAX_SIZE){
+            if(size > Setting.BlockSetting.BLOCK_MAX_SIZE){
                 break;
             }
             transactionList.add(transaction);
@@ -168,8 +168,8 @@ public class MinerTool {
         nonNonceBlock.setTimestamp(timestamp);
 
         if(tailBlock == null){
-            nonNonceBlock.setHeight(GlobalSetting.GenesisBlock.HEIGHT +1);
-            nonNonceBlock.setPreviousBlockHash(GlobalSetting.GenesisBlock.HASH);
+            nonNonceBlock.setHeight(Setting.GenesisBlockSetting.HEIGHT +1);
+            nonNonceBlock.setPreviousBlockHash(Setting.GenesisBlockSetting.HASH);
         } else {
             nonNonceBlock.setHeight(tailBlock.getHeight()+1);
             nonNonceBlock.setPreviousBlockHash(tailBlock.getHash());

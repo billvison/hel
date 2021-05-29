@@ -9,7 +9,7 @@ import com.xingkaichun.helloworldblockchain.core.model.enums.BlockchainActionEnu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.*;
 import com.xingkaichun.helloworldblockchain.core.tools.*;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
 import com.xingkaichun.helloworldblockchain.util.KvDBUtil;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
@@ -107,7 +107,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     @Override
     public boolean isBlockCanAddToBlockchain(Block block) {
         //检查系统版本是否支持
-        if(!GlobalSetting.SystemVersionConstant.isVersionLegal(block.getHeight())){
+        if(!Setting.SystemVersionSetting.isVersionLegal(block.getHeight())){
             LogUtil.debug("系统版本过低，不支持校验区块，请尽快升级系统。");
             return false;
         }
@@ -250,7 +250,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     public long queryBlockchainHeight() {
         byte[] bytesBlockchainHeight = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildBlockchainHeightKey());
         if(bytesBlockchainHeight == null){
-            return GlobalSetting.GenesisBlock.HEIGHT;
+            return Setting.GenesisBlockSetting.HEIGHT;
         }
         return ByteUtil.decodeToLong(bytesBlockchainHeight);
     }
@@ -279,7 +279,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     @Override
     public Block queryTailBlock() {
         long blockchainHeight = queryBlockchainHeight();
-        if(LongUtil.isLessEqualThan(blockchainHeight, GlobalSetting.GenesisBlock.HEIGHT)){
+        if(LongUtil.isLessEqualThan(blockchainHeight, Setting.GenesisBlockSetting.HEIGHT)){
             return null;
         }
         return queryBlockByBlockHeight(blockchainHeight);

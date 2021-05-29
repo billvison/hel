@@ -16,7 +16,7 @@ import com.xingkaichun.helloworldblockchain.core.tools.SizeTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.netcore.BlockchainNetCore;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.util.TimeUtil;
@@ -60,7 +60,7 @@ public class BlockchainBrowserApplicationController {
             }
 
             QueryTransactionByTransactionHashResponse response = new QueryTransactionByTransactionHashResponse();
-            response.setTransactionVo(transactionVo);
+            response.setTransactions(transactionVo);
             return ServiceResult.createSuccessServiceResult("根据交易哈希查询交易成功",response);
         } catch (Exception e){
             String message = "根据交易哈希查询交易失败";
@@ -81,7 +81,7 @@ public class BlockchainBrowserApplicationController {
             }
             List<TransactionVo> transactionVos = blockchainBrowserApplicationService.queryTransactionListByBlockHashTransactionHeight(request.getBlockHash(),pageCondition.getFrom(),pageCondition.getSize());
             QueryTransactionsByBlockHashTransactionHeightResponse response = new QueryTransactionsByBlockHashTransactionHeightResponse();
-            response.setTransactionVos(transactionVos);
+            response.setTransactions(transactionVos);
             return ServiceResult.createSuccessServiceResult("根据交易高度查询交易成功",response);
         } catch (Exception e){
             String message = "根据交易高度查询交易失败";
@@ -98,7 +98,7 @@ public class BlockchainBrowserApplicationController {
         try {
             TransactionOutputDetailVo transactionOutputDetailVo = blockchainBrowserApplicationService.queryTransactionOutputByAddress(request.getAddress());
             QueryTransactionOutputByAddressResponse response = new QueryTransactionOutputByAddressResponse();
-            response.setTransactionOutputDetailVo(transactionOutputDetailVo);
+            response.setTransactionOutputDetail(transactionOutputDetailVo);
             return ServiceResult.createSuccessServiceResult("[查询交易输出]成功",response);
         } catch (Exception e){
             String message = "[查询交易输出]失败";
@@ -116,7 +116,7 @@ public class BlockchainBrowserApplicationController {
             TransactionOutputId transactionOutputId = request.getTransactionOutputId();
             TransactionOutputDetailVo transactionOutputDetailVo = blockchainBrowserApplicationService.queryTransactionOutputByTransactionOutputId(transactionOutputId);
             QueryTransactionOutputByTransactionOutputIdResponse response = new QueryTransactionOutputByTransactionOutputIdResponse();
-            response.setTransactionOutputDetailVo(transactionOutputDetailVo);
+            response.setTransactionOutputDetail(transactionOutputDetailVo);
             return ServiceResult.createSuccessServiceResult("[查询交易输出]成功",response);
         } catch (Exception e){
             String message = "[查询交易输出]失败";
@@ -153,7 +153,7 @@ public class BlockchainBrowserApplicationController {
                 return ServiceResult.createFailServiceResult(String.format("交易哈希[%s]不是未确认交易。",request.getTransactionHash()));
             }
             QueryUnconfirmedTransactionByTransactionHashResponse response = new QueryUnconfirmedTransactionByTransactionHashResponse();
-            response.setTransactionDTO(unconfirmedTransactionVo);
+            response.setTransaction(unconfirmedTransactionVo);
             return ServiceResult.createSuccessServiceResult("根据交易哈希查询未确认交易成功",response);
         } catch (Exception e){
             String message = "根据交易哈希查询未确认交易失败";
@@ -180,7 +180,7 @@ public class BlockchainBrowserApplicationController {
                 transactionDtoListResp.add(unconfirmedTransactionVo);
             }
             QueryUnconfirmedTransactionsResponse response = new QueryUnconfirmedTransactionsResponse();
-            response.setTransactionVos(transactionDtoListResp);
+            response.setTransactions(transactionDtoListResp);
             return ServiceResult.createSuccessServiceResult("查询未确认交易成功",response);
         } catch (Exception e){
             String message = "查询未确认交易失败";
@@ -200,7 +200,7 @@ public class BlockchainBrowserApplicationController {
                 return ServiceResult.createFailServiceResult(String.format("区块链中不存在区块高度[%d]，请检查输入高度。",request.getBlockHeight()));
             }
             QueryBlockByBlockHeightResponse response = new QueryBlockByBlockHeightResponse();
-            response.setBlockVo(blockVo);
+            response.setBlock(blockVo);
             return ServiceResult.createSuccessServiceResult("成功获取区块",response);
         } catch (Exception e){
             String message = "查询获取失败";
@@ -221,7 +221,7 @@ public class BlockchainBrowserApplicationController {
             }
             BlockVo blockVo = blockchainBrowserApplicationService.queryBlockViewByBlockHeight(block.getHeight());
             QueryBlockByBlockHashResponse response = new QueryBlockByBlockHashResponse();
-            response.setBlockVo(blockVo);
+            response.setBlock(blockVo);
             return ServiceResult.createSuccessServiceResult("[根据区块哈希查询区块]成功",response);
         } catch (Exception e){
             String message = "[根据区块哈希查询区块]失败";
@@ -239,7 +239,7 @@ public class BlockchainBrowserApplicationController {
             List<Block> blockList = new ArrayList<>();
             long blockHeight = blockchainCore.queryBlockchainHeight();
             while (true){
-                if(blockHeight <= GlobalSetting.GenesisBlock.HEIGHT){
+                if(blockHeight <= Setting.GenesisBlockSetting.HEIGHT){
                     break;
                 }
                 Block block = blockchainCore.queryBlockByBlockHeight(blockHeight);
@@ -263,7 +263,7 @@ public class BlockchainBrowserApplicationController {
             }
 
             QueryTop10BlocksResponse response = new QueryTop10BlocksResponse();
-            response.setBlockVos(BlockVos);
+            response.setBlocks(BlockVos);
             return ServiceResult.createSuccessServiceResult("[查询最近的10个区块]成功",response);
         } catch (Exception e){
             String message = "[查询最近的10个区块]失败";

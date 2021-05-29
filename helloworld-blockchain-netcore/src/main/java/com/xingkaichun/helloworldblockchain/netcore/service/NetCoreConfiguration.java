@@ -47,4 +47,10 @@ public interface NetCoreConfiguration {
     long getAddSeedNodeTimeInterval();
     long getNodeBroadcastTimeInterval();
 
+    /**
+     * 两个区块链有分叉时，区块差异数量大于这个值，则真的分叉了。
+     */
+    long getForkBlockCount();
+
+    long getSearchUnconfirmedTransactionsInterval();
 }

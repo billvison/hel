@@ -7,7 +7,7 @@ import com.xingkaichun.helloworldblockchain.core.model.script.OutputScript;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.*;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.setting.Setting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class Dto2ModelTool {
         block.setPreviousBlockHash(previousBlockHash);
         block.setNonce(blockDTO.getNonce());
 
-        long blockHeight = previousBlock==null? GlobalSetting.GenesisBlock.HEIGHT+1:previousBlock.getHeight()+1;
+        long blockHeight = previousBlock==null? Setting.GenesisBlockSetting.HEIGHT+1:previousBlock.getHeight()+1;
         block.setHeight(blockHeight);
 
         List<Transaction> transactionList = transactionDto2Transaction(blockchainDataBase,blockDTO.getTransactions());

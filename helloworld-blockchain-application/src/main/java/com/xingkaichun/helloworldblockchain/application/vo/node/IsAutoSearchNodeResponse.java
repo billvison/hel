@@ -6,19 +6,19 @@ package com.xingkaichun.helloworldblockchain.application.vo.node;
  */
 public class IsAutoSearchNodeResponse {
 
-    private boolean autoSearchNewNode;
+    private boolean autoSearchNode;
 
 
 
 
     //region get set
 
-    public boolean isAutoSearchNewNode() {
-        return autoSearchNewNode;
+    public boolean isAutoSearchNode() {
+        return autoSearchNode;
     }
 
-    public void setAutoSearchNewNode(boolean autoSearchNewNode) {
-        this.autoSearchNewNode = autoSearchNewNode;
+    public void setAutoSearchNode(boolean autoSearchNode) {
+        this.autoSearchNode = autoSearchNode;
     }
 
 

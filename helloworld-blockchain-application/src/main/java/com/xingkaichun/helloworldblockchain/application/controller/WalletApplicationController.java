@@ -145,7 +145,7 @@ public class WalletApplicationController {
                 balance += accountVo.getValue();
             }
             QueryAllAccountsResponse response = new QueryAllAccountsResponse();
-            response.setAccountVos(accountVoList);
+            response.setAccounts(accountVoList);
             response.setBalance(balance);
             return ServiceResult.createSuccessServiceResult("[查询所有账户]成功",response);
         } catch (Exception e){

@@ -42,6 +42,11 @@ public class NetCoreConfigurationImpl implements NetCoreConfiguration {
     //广播自己节点的时间间隔。
     private static final long NODE_BROADCAST_TIME_INTERVAL = 1000 * 60 * 2;
 
+    //两个区块链有分叉时，区块差异数量大于这个值，则真的分叉了。
+    public static final long FORK_BLOCK_COUNT = 100;
+
+    //在区块链网络中搜寻未确认交易的间隔时间。
+    public static final long SEARCH_UNCONFIRMED_TRANSACTIONS_INTERVAL = 1000 * 60 * 2;
 
     public NetCoreConfigurationImpl(String netcorePath) {
         if(StringUtil.isNullOrEmpty(netcorePath)){
@@ -125,6 +130,16 @@ public class NetCoreConfigurationImpl implements NetCoreConfiguration {
     @Override
     public long getNodeBroadcastTimeInterval() {
         return NODE_BROADCAST_TIME_INTERVAL;
+    }
+
+    @Override
+    public long getForkBlockCount() {
+        return FORK_BLOCK_COUNT;
+    }
+
+    @Override
+    public long getSearchUnconfirmedTransactionsInterval() {
+        return SEARCH_UNCONFIRMED_TRANSACTIONS_INTERVAL;
     }
 
 

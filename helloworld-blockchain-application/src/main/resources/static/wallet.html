@@ -27,11 +27,11 @@
                     <ul class="nav navbar-nav">
                         <li><a href="./search.html">搜索</a></li>
                         <li><a href="./miner.html">挖矿</a></li>
-                        <li><a href="./unconfirm-transactions.html">未确认交易</a></li>
+                        <li><a href="./unconfirm-transactions.html">未确认交易池</a></li>
                         <li><a href="./pay.html">支付</a></li>
                         <li class="active"><a href="./wallet.html">钱包</a></li>
                         <li><a href="./node-management.html">节点管理</a></li>
-                        <li><a href="./more-management.html">更多管理</a></li>
+                        <li><a href="./more-management.html">节点控制台</a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
@@ -60,8 +60,8 @@
                     url : baseUrl() + "/Api/WalletApplication/QueryAllAccounts"
                 })
                 $("#balance").text("总余额 "+data.result.balance);
-                let accountVos = data.result.accountVos
-                $(accountVos).each((index, item) => {
+                let accounts = data.result.accounts
+                $(accounts).each((index, item) => {
                     $('tbody').append(`
                         <tr>
                             <td style="width:80%;">

@@ -11,7 +11,7 @@ import java.util.List;
 public class SubmitTransactionToBlockchainNetworkResponse {
 
     //交易
-    private TransactionDto transactionDTO;
+    private TransactionDto transaction;
 
     //交易成功提交的节点
     private List<Node> successSubmitNode;
@@ -47,12 +47,12 @@ public class SubmitTransactionToBlockchainNetworkResponse {
 
     //region get set
 
-    public TransactionDto getTransactionDTO() {
-        return transactionDTO;
+    public TransactionDto getTransaction() {
+        return transaction;
     }
 
-    public void setTransactionDTO(TransactionDto transactionDTO) {
-        this.transactionDTO = transactionDTO;
+    public void setTransaction(TransactionDto transaction) {
+        this.transaction = transaction;
     }
 
     public List<Node> getSuccessSubmitNode() {

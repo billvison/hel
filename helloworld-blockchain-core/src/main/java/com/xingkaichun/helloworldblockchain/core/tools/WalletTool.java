@@ -163,7 +163,7 @@ public class WalletTool {
         buildTransactionResponse.setPayerChange(payerChange);
         buildTransactionResponse.setTransactionInputList(inputs);
         buildTransactionResponse.setTransactionOutputList(innerTransactionOutputList);
-        buildTransactionResponse.setTransactionDTO(transactionDTO);
+        buildTransactionResponse.setTransaction(transactionDTO);
         return buildTransactionResponse;
     }
 }

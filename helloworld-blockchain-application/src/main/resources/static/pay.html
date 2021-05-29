@@ -24,11 +24,11 @@
                     <ul class="nav navbar-nav">
                         <li><a href="./search.html">搜索</a></li>
                         <li><a href="./miner.html">挖矿</a></li>
-                        <li><a href="./unconfirm-transactions.html">未确认交易</a></li>
+                        <li><a href="./unconfirm-transactions.html">未确认交易池</a></li>
                         <li class="active"><a href="./pay.html">支付</a></li>
                         <li><a href="./wallet.html">钱包</a></li>
                         <li><a href="./node-management.html">节点管理</a></li>
-                        <li><a href="./more-management.html">更多管理</a></li>
+                        <li><a href="./more-management.html">节点控制台</a></li>
                     </ul>
                 </div>
             </div>
@@ -106,7 +106,7 @@
                 })
                 if(data.serviceCode == 'SUCCESS'){
                     const obj = {}
-                    obj.transactionDTO = data.result.transactionDTO;
+                    obj.transaction = data.result.transaction;
                     const data2 = await $ajax({
                         url : baseUrl() + "/Api/WalletApplication/SubmitTransactionToBlockchainNetwork",
                         data: JSON.stringify(obj),

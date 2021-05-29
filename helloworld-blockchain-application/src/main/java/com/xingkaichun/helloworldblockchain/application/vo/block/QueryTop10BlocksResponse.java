@@ -8,15 +8,15 @@ import java.util.List;
  */
 public class QueryTop10BlocksResponse {
 
-    private List<BlockVo> blockVos ;
+    private List<BlockVo> blocks;
 
 
     //region get set
-    public List<BlockVo> getBlockVos() {
-        return blockVos;
+    public List<BlockVo> getBlocks() {
+        return blocks;
     }
-    public void setBlockVos(List<BlockVo> blockVos) {
-        this.blockVos = blockVos;
+    public void setBlocks(List<BlockVo> blocks) {
+        this.blocks = blocks;
     }
     //endregion
 

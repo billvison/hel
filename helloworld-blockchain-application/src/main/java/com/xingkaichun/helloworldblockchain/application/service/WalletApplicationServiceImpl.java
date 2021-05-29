@@ -32,7 +32,7 @@ public class WalletApplicationServiceImpl implements WalletApplicationService {
 
     @Override
     public SubmitTransactionToBlockchainNetworkResponse submitTransactionToBlockchainNetwork(SubmitTransactionToBlockchainNetworkRequest request) {
-        TransactionDto transactionDTO = request.getTransactionDTO();
+        TransactionDto transactionDTO = request.getTransaction();
         //将交易提交到本地区块链
         blockchainCore.submitTransaction(transactionDTO);
         //提交交易到网络
@@ -53,7 +53,7 @@ public class WalletApplicationServiceImpl implements WalletApplicationService {
         }
 
         SubmitTransactionToBlockchainNetworkResponse response = new SubmitTransactionToBlockchainNetworkResponse();
-        response.setTransactionDTO(transactionDTO);
+        response.setTransaction(transactionDTO);
         response.setSuccessSubmitNode(successSubmitNode);
         response.setFailSubmitNode(failSubmitNode);
         return response;

@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>更多管理-HelloworldBlockchain</title>
+        <title>节点控制台-HelloworldBlockchain</title>
 
         <script src="./lib/jquery-v3.5.1/jquery-3.5.1.js"></script>
         <script src="./lib/bootstrap-v3.4.1/js/bootstrap.js"></script>
@@ -24,18 +24,18 @@
                     <ul class="nav navbar-nav">
                         <li><a href="./search.html">搜索</a></li>
                         <li><a href="./miner.html">挖矿</a></li>
-                        <li><a href="./unconfirm-transactions.html">未确认交易</a></li>
+                        <li><a href="./unconfirm-transactions.html">未确认交易池</a></li>
                         <li><a href="./pay.html">支付</a></li>
                         <li><a href="./wallet.html">钱包</a></li>
                         <li><a href="./node-management.html">节点管理</a></li>
-                        <li class="active"><a href="./more-management.html">更多管理</a></li>
+                        <li class="active"><a href="./more-management.html">节点控制台</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
         <div class="panel panel-default">
             <!-- Default panel contents -->
-            <div class="panel-heading">☺更多管理☺</div>
+            <div class="panel-heading">☺节点控制台☺</div>
             <!-- Table -->
             <table class="table">
                 <thead>
@@ -47,7 +47,7 @@
                     <tr>
                         <td>挖矿状态</td>
                         <td id="minerStatus"></td>
-                        <td ><button class="btn btn-primary" type="submit" onclick="clickOpen()" id="minerSwitch">占位符</button></td>
+                        <td ><button class="btn btn-primary" type="submit"  id="minerSwitch">占位符</button></td>
                     </tr>
                     <tr>
                         <td>同步区块状态</td>
@@ -64,7 +64,7 @@
         </div>
 
         <script>
-            let minerInActiveState,synchronizerInActiveState,autoSearchNewNode;
+            let minerInActiveState,synchronizerInActiveState,autoSearchNode;
             $(async function(){
                 const data = await $ajax({
                     url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockchainHeight"
@@ -94,9 +94,9 @@
                     url : baseUrl() + "/Api/NodeConsoleApplication/IsAutoSearchNode",
                     data: `{}`
                 });
-                autoSearchNewNode = data.result.autoSearchNewNode;
-                $('#searchNodeStrategy').text(data.result.autoSearchNewNode ? '自动寻找' : '手动添加');
-                $('#searchNodeStrategySwitch').text(data.result.autoSearchNewNode ? '手动添加' : '自动寻找');
+                autoSearchNode = data.result.autoSearchNode;
+                $('#searchNodeStrategy').text(data.result.autoSearchNode ? '自动寻找' : '手动添加');
+                $('#searchNodeStrategySwitch').text(data.result.autoSearchNode ? '手动添加' : '自动寻找');
             }());
 
             $('#button_DeleteBlock').click(async function(){
@@ -140,7 +140,7 @@
             $('#searchNodeStrategySwitch').click(async function(){
                 await $ajax({
                     url : baseUrl() + "/Api/NodeConsoleApplication/SetAutoSearchNode",
-                    data: `{"autoSearchNode": ${!autoSearchNewNode}}`
+                    data: `{"autoSearchNode": ${!autoSearchNode}}`
                 });
                 location.reload();
             })

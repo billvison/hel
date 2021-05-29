@@ -57,11 +57,14 @@ public class BlockchainNetCoreFactory {
         BlockSearcher blockSearcher = new BlockSearcher(netCoreConfiguration,nodeService,blockchainCore, slaveBlockchainCore);
         BlockBroadcaster blockBroadcaster = new BlockBroadcaster(netCoreConfiguration,blockchainCore,nodeService);
 
+        UnconfirmedTransactionsSearcher unconfirmedTransactionsSearcher = new UnconfirmedTransactionsSearcher(netCoreConfiguration,nodeService,blockchainCore);
+
         BlockchainNetCore blockchainNetCore
                 = new BlockchainNetCore(netCoreConfiguration, blockchainCore, blockchainNodeHttpServer, nodeService
                 , seedNodeInitializer, nodeSearcher, nodeBroadcaster
                 , blockchainHeightSearcher, blockchainHeightBroadcaster
                 , blockSearcher, blockBroadcaster
+                , unconfirmedTransactionsSearcher
         );
         return blockchainNetCore;
     }

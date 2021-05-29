@@ -8,19 +8,19 @@ import java.util.List;
  */
 public class QueryTransactionsByBlockHashTransactionHeightResponse {
 
-    private List<TransactionVo> transactionVos;
+    private List<TransactionVo> transactions;
 
 
 
 
     //region get set
 
-    public List<TransactionVo> getTransactionVos() {
-        return transactionVos;
+    public List<TransactionVo> getTransactions() {
+        return transactions;
     }
 
-    public void setTransactionVos(List<TransactionVo> transactionVos) {
-        this.transactionVos = transactionVos;
+    public void setTransactions(List<TransactionVo> transactions) {
+        this.transactions = transactions;
     }
 
 

@@ -1,15 +1,15 @@
 package com.xingkaichun.helloworldblockchain.netcore.server;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
+import com.xingkaichun.helloworldblockchain.core.UnconfirmedTransactionDatabase;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Model2DtoTool;
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class HttpServerHandlerResolver {
                 Node node = new Node();
                 node.setIp(requestIp);
                 nodeService.addNode(node);
-                LogUtil.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",requestIp,GlobalSetting.DEFAULT_PORT));
+                LogUtil.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",requestIp, Setting.PORT));
             }
             PingResponse response = new PingResponse();
             return response;
@@ -148,12 +148,12 @@ public class HttpServerHandlerResolver {
         }
     }
 
-    public GetTransactionResponse getTransaction(GetTransactionRequest request) {
+    public GetUnconfirmedTransactionsResponse getUnconfirmedTransactions(GetUnconfirmedTransactionsRequest request) {
         try {
-            Transaction transactionByTransactionHeight = blockchainCore.queryTransactionByTransactionHeight(request.getHeight());
-            TransactionDto transactionDTO = Model2DtoTool.transaction2TransactionDTO(transactionByTransactionHeight);
-            GetTransactionResponse response = new GetTransactionResponse();
-            response.setTransaction(transactionDTO);
+            UnconfirmedTransactionDatabase unconfirmedTransactionDataBase = blockchainCore.getMiner().getUnconfirmedTransactionDataBase();
+            List<TransactionDto> transactions = unconfirmedTransactionDataBase.selectTransactionList(1,Setting.BlockSetting.BLOCK_MAX_TRANSACTION_COUNT);
+            GetUnconfirmedTransactionsResponse response = new GetUnconfirmedTransactionsResponse();
+            response.setTransactions(transactions);
             return response;
         } catch (Exception e){
             String message = "get transaction failed";

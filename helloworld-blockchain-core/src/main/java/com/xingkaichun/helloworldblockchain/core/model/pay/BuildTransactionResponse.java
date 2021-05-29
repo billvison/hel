@@ -31,7 +31,7 @@ public class BuildTransactionResponse {
     private List<InnerTransactionOutput> transactionOutputList;
 
     //经过处理后的交易
-    private TransactionDto transactionDTO;
+    private TransactionDto transaction;
 
 
     public boolean isBuildTransactionSuccess() {
@@ -90,12 +90,12 @@ public class BuildTransactionResponse {
         this.transactionOutputList = transactionOutputList;
     }
 
-    public TransactionDto getTransactionDTO() {
-        return transactionDTO;
+    public TransactionDto getTransaction() {
+        return transaction;
     }
 
-    public void setTransactionDTO(TransactionDto transactionDTO) {
-        this.transactionDTO = transactionDTO;
+    public void setTransaction(TransactionDto transaction) {
+        this.transaction = transaction;
     }
 
 

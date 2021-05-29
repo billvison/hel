@@ -21,8 +21,8 @@
                     data: request
                 });
                 if(data.result != null){
-                    let {blockVo} = data.result;
-                    var redirectUrl = `./block.html${location.search}&hash=${blockVo.hash}`;
+                    let {block} = data.result;
+                    var redirectUrl = `./block.html${location.search}&hash=${block.hash}`;
                     console.log(redirectUrl);
                     window.location.href = redirectUrl;
                 }else {

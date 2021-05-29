@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 
 import java.util.List;
@@ -29,8 +29,8 @@ public class StructureTool {
         }
         //校验区块中交易的数量
         long transactionCount = BlockTool.getTransactionCount(block);
-        if(transactionCount > GlobalSetting.BlockConstant.BLOCK_MAX_TRANSACTION_COUNT){
-            LogUtil.debug(String.format("区块包含交易数量是[%s]超过限制[%s]。",transactionCount,GlobalSetting.BlockConstant.BLOCK_MAX_TRANSACTION_COUNT));
+        if(transactionCount > Setting.BlockSetting.BLOCK_MAX_TRANSACTION_COUNT){
+            LogUtil.debug(String.format("区块包含交易数量是[%s]超过限制[%s]。",transactionCount, Setting.BlockSetting.BLOCK_MAX_TRANSACTION_COUNT));
             return false;
         }
         for(int i=0; i<transactions.size(); i++){

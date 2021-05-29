@@ -58,9 +58,9 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 			GetBlockRequest request = JsonUtil.fromJson(requestBody, GetBlockRequest.class);
 			GetBlockResponse getBlockResponse = httpServerHandlerResolver.getBlock(request);
 			responseMessage = JsonUtil.toJson(getBlockResponse);
-		}else if(API.GET_TRANSACTION.equals(requestApi)){
-			GetTransactionRequest request = JsonUtil.fromJson(requestBody, GetTransactionRequest.class);
-			GetTransactionResponse response = httpServerHandlerResolver.getTransaction(request);
+		}else if(API.GET_UNCONFIRMED_TRANSACTIONS.equals(requestApi)){
+			GetUnconfirmedTransactionsRequest request = JsonUtil.fromJson(requestBody, GetUnconfirmedTransactionsRequest.class);
+			GetUnconfirmedTransactionsResponse response = httpServerHandlerResolver.getUnconfirmedTransactions(request);
 			responseMessage = JsonUtil.toJson(response);
 		}else if(API.POST_TRANSACTION.equals(requestApi)){
 			PostTransactionRequest request = JsonUtil.fromJson(requestBody, PostTransactionRequest.class);

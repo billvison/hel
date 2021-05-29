@@ -25,11 +25,11 @@
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="./search.html">搜索</a></li>
                         <li><a href="./miner.html">挖矿</a></li>
-                        <li><a href="./unconfirm-transactions.html">未确认交易</a></li>
+                        <li><a href="./unconfirm-transactions.html">未确认交易池</a></li>
                         <li><a href="./pay.html">支付</a></li>
                         <li><a href="./wallet.html">钱包</a></li>
                         <li><a href="./node-management.html">节点管理</a></li>
-                        <li><a href="./more-management.html">更多管理</a></li>
+                        <li><a href="./more-management.html">节点控制台</a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
@@ -63,8 +63,8 @@
                     });
                     if(data.result != null){
                         alert("识别为区块高度，点击确认按钮，跳转到区块详情页。");
-                        let {blockVo} = data.result;
-                        var redirectUrl = `./block.html?hash=${blockVo.hash}`;
+                        let {block} = data.result;
+                        var redirectUrl = `./block.html?hash=${block.hash}`;
                         console.log(redirectUrl);
                         window.location.href = redirectUrl;
                         return;
@@ -105,7 +105,7 @@
                     url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionOutputByAddress",
                     data: request
                 });
-                if(data.result != null && data.result.transactionOutputDetailVo != null){
+                if(data.result != null && data.result.transactionOutputDetail != null){
                     alert("识别为地址，点击确认按钮，跳转到地址详情页。");
                     var redirectUrl = `./address.html?address=${searchValue}`;
                     console.log(redirectUrl);
@@ -119,7 +119,7 @@
                     url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryUnconfirmedTransactionByTransactionHash",
                     data: request
                 });
-                if(data.result != null && data.result.transactionDTO != null){
+                if(data.result != null && data.result.transaction != null){
                     alert("识别为未确认的交易，点击确认按钮，跳转到未确认的交易详情页。");
                     var redirectUrl = `./unconfirm-transaction.html?transactionHash=${searchValue}`;
                     console.log(redirectUrl);

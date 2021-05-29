@@ -29,11 +29,11 @@
                     <ul class="nav navbar-nav">
                         <li><a href="./search.html">搜索</a></li>
                         <li><a href="./miner.html">挖矿</a></li>
-                        <li><a href="./unconfirm-transactions.html">未确认交易</a></li>
+                        <li><a href="./unconfirm-transactions.html">未确认交易池</a></li>
                         <li><a href="./pay.html">支付</a></li>
                         <li><a href="./wallet.html">钱包</a></li>
                         <li><a href="./node-management.html">节点管理</a></li>
-                        <li><a href="./more-management.html">更多管理</a></li>
+                        <li><a href="./more-management.html">节点控制台</a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
@@ -69,7 +69,7 @@
                 const data = await $ajax({
                     url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTop10Blocks"
                 })
-                $(data.result.blockVos).each((index, item) => {
+                $(data.result.blocks).each((index, item) => {
                     $('tbody').append(`
                     <tr>
                         <td><a target="_blank" href="./block-by-height.html?height=${item.height}">${item.height}</a></td>

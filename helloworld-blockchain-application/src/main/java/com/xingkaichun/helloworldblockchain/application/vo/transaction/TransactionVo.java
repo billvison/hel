@@ -20,8 +20,8 @@ public class TransactionVo {
     private long transactionInputValues;
     private long transactionOutputValues;
 
-    private List<TransactionInputVo> transactionInputVos;
-    private List<TransactionOutputVo> transactionOutputVos;
+    private List<TransactionInputVo> transactionInputs;
+    private List<TransactionOutputVo> transactionOutputs;
 
     private List<String> inputScripts;
     private List<String> outputScripts;
@@ -107,20 +107,20 @@ public class TransactionVo {
         this.transactionOutputValues = transactionOutputValues;
     }
 
-    public List<TransactionInputVo> getTransactionInputVos() {
-        return transactionInputVos;
+    public List<TransactionInputVo> getTransactionInputs() {
+        return transactionInputs;
     }
 
-    public void setTransactionInputVos(List<TransactionInputVo> transactionInputVos) {
-        this.transactionInputVos = transactionInputVos;
+    public void setTransactionInputs(List<TransactionInputVo> transactionInputs) {
+        this.transactionInputs = transactionInputs;
     }
 
-    public List<TransactionOutputVo> getTransactionOutputVos() {
-        return transactionOutputVos;
+    public List<TransactionOutputVo> getTransactionOutputs() {
+        return transactionOutputs;
     }
 
-    public void setTransactionOutputVos(List<TransactionOutputVo> transactionOutputVos) {
-        this.transactionOutputVos = transactionOutputVos;
+    public void setTransactionOutputs(List<TransactionOutputVo> transactionOutputs) {
+        this.transactionOutputs = transactionOutputs;
     }
 
     public List<String> getInputScripts() {

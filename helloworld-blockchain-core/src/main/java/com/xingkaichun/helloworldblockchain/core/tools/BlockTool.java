@@ -8,7 +8,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionTy
 import com.xingkaichun.helloworldblockchain.crypto.*;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
@@ -155,7 +155,7 @@ public class BlockTool {
      */
     public static boolean isBlockPreviousBlockHashLegal(Block previousBlock, Block currentBlock) {
         if(previousBlock == null){
-            return StringUtil.isEquals(GlobalSetting.GenesisBlock.HASH,currentBlock.getPreviousBlockHash());
+            return StringUtil.isEquals(Setting.GenesisBlockSetting.HASH,currentBlock.getPreviousBlockHash());
         } else {
             return StringUtil.isEquals(previousBlock.getHash(),currentBlock.getPreviousBlockHash());
         }
@@ -166,7 +166,7 @@ public class BlockTool {
      */
     public static boolean isBlockHeightLegal(Block previousBlock, Block currentBlock) {
         if(previousBlock == null){
-            return LongUtil.isEquals((GlobalSetting.GenesisBlock.HEIGHT +1),currentBlock.getHeight());
+            return LongUtil.isEquals((Setting.GenesisBlockSetting.HEIGHT +1),currentBlock.getHeight());
         } else {
             return LongUtil.isEquals((previousBlock.getHeight()+1),currentBlock.getHeight());
         }

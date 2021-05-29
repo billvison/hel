@@ -9,13 +9,13 @@ import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostBlockRequest;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.*;
 
 import java.util.List;
 
 /**
- * 区块广播者：主动将自己最新的区块广播至全网。
+ * 区块广播器：主动将自己最新的区块广播至全网。
  * 别的节点可能由于这样那样的原因，不来同步我的区块，可我的这个区块对我很重要
  * ，例如我在全网前新挖了一个区块，可没人来同步我，我的区块不能传播至全网，我心有不甘呀，只有尝试将我的区块硬塞给别的节点了
  * ，如果别的节点真的是由于有'这样那样的原因'没来同步我，而不是恶意不同步我
@@ -55,7 +55,7 @@ public class BlockBroadcaster {
         }
 
         long blockchainHeight = blockchainCore.queryBlockchainHeight();
-        if(LongUtil.isLessEqualThan(blockchainHeight, GlobalSetting.GenesisBlock.HEIGHT)){
+        if(LongUtil.isLessEqualThan(blockchainHeight, Setting.GenesisBlockSetting.HEIGHT)){
             return;
         }
         Block block = blockchainCore.queryTailBlock();

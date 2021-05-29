@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.netcore.client;
 
 import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
-import com.xingkaichun.helloworldblockchain.setting.GlobalSetting;
+import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.NetUtil;
@@ -27,7 +27,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml,PostTransactionResponse.class);
         } catch (Exception e) {
-            LogUtil.error(StringUtil.format("提交交易[%s]至节点[%s:%d]出现异常", JsonUtil.toJson(request),ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(StringUtil.format("提交交易[%s]至节点[%s:%d]出现异常", JsonUtil.toJson(request),ip, Setting.PORT),e);
             return null;
         }
     }
@@ -40,7 +40,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml,PingResponse.class);
         } catch (Exception e) {
-            LogUtil.error(StringUtil.format("Ping节点[%s:%d]出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(StringUtil.format("Ping节点[%s:%d]出现异常",ip, Setting.PORT),e);
             return null;
         }
     }
@@ -53,7 +53,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml,GetBlockResponse.class);
         } catch (Exception e) {
-            LogUtil.error(StringUtil.format("在节点[%s:%d]查询区块出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(StringUtil.format("在节点[%s:%d]查询区块出现异常",ip, Setting.PORT),e);
             return null;
         }
     }
@@ -66,7 +66,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml,GetNodesResponse.class);
         } catch (Exception e) {
-            LogUtil.error(StringUtil.format("在节点[%s:%d]查询节点列表出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(StringUtil.format("在节点[%s:%d]查询节点列表出现异常",ip, Setting.PORT),e);
             return null;
         }
     }
@@ -79,7 +79,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml,PostBlockResponse.class);
         } catch (Exception e) {
-            LogUtil.error(StringUtil.format("向节点[%s:%d]提交区块出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(StringUtil.format("向节点[%s:%d]提交区块出现异常",ip, Setting.PORT),e);
             return null;
         }
     }
@@ -92,7 +92,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml, PostBlockchainHeightResponse.class);
         } catch (Exception e) {
-            LogUtil.error(StringUtil.format("向节点[%s:%d]提交区块链高度出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(StringUtil.format("向节点[%s:%d]提交区块链高度出现异常",ip, Setting.PORT),e);
             return null;
         }
     }
@@ -105,25 +105,25 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             String responseHtml = NetUtil.get(requestUrl,requestBody);
             return JsonUtil.fromJson(responseHtml, GetBlockchainHeightResponse.class);
         } catch (Exception e) {
-            LogUtil.error(StringUtil.format("向节点[%s:%d]获取区块链高度出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(StringUtil.format("向节点[%s:%d]获取区块链高度出现异常",ip, Setting.PORT),e);
             return null;
         }
     }
 
     @Override
-    public GetTransactionResponse getTransaction(GetTransactionRequest request) {
+    public GetUnconfirmedTransactionsResponse getUnconfirmedTransactions(GetUnconfirmedTransactionsRequest request) {
         try {
-            String requestUrl = getUrl(API.GET_TRANSACTION);
+            String requestUrl = getUrl(API.GET_UNCONFIRMED_TRANSACTIONS);
             String requestBody = JsonUtil.toJson(request);
             String responseHtml = NetUtil.get(requestUrl,requestBody);
-            return JsonUtil.fromJson(responseHtml,GetTransactionResponse.class);
+            return JsonUtil.fromJson(responseHtml, GetUnconfirmedTransactionsResponse.class);
         } catch (Exception e) {
-            LogUtil.error(StringUtil.format("在节点[%s:%d]查询交易出现异常",ip,GlobalSetting.DEFAULT_PORT),e);
+            LogUtil.error(StringUtil.format("在节点[%s:%d]查询交易出现异常",ip, Setting.PORT),e);
             return null;
         }
     }
 
     private String getUrl(String api) {
-        return "http://" + ip + ":" + GlobalSetting.DEFAULT_PORT + api;
+        return "http://" + ip + ":" + Setting.PORT + api;
     }
 }

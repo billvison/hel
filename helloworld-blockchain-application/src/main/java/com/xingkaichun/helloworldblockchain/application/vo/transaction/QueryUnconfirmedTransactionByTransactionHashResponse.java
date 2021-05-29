@@ -6,16 +6,16 @@ package com.xingkaichun.helloworldblockchain.application.vo.transaction;
  */
 public class QueryUnconfirmedTransactionByTransactionHashResponse {
 
-    private UnconfirmedTransactionVo transactionDTO;
+    private UnconfirmedTransactionVo transaction;
 
     //region get set
 
-    public UnconfirmedTransactionVo getTransactionDTO() {
-        return transactionDTO;
+    public UnconfirmedTransactionVo getTransaction() {
+        return transaction;
     }
 
-    public void setTransactionDTO(UnconfirmedTransactionVo transactionDTO) {
-        this.transactionDTO = transactionDTO;
+    public void setTransaction(UnconfirmedTransactionVo transaction) {
+        this.transaction = transaction;
     }
 
 
