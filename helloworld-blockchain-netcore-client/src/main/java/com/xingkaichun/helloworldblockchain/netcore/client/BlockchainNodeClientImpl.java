@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.client;
 
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
+import com.xingkaichun.helloworldblockchain.netcore.dto.*;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
@@ -64,7 +64,7 @@ public class BlockchainNodeClientImpl implements BlockchainNodeClient {
             String requestUrl = getUrl(API.GET_NODES);
             String requestBody = JsonUtil.toJson(request);
             String responseHtml = NetUtil.get(requestUrl,requestBody);
-            return JsonUtil.fromJson(responseHtml,GetNodesResponse.class);
+            return JsonUtil.fromJson(responseHtml, GetNodesResponse.class);
         } catch (Exception e) {
             LogUtil.error(StringUtil.format("在节点[%s:%d]查询节点列表出现异常",ip, Setting.PORT),e);
             return null;

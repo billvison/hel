@@ -48,11 +48,11 @@ public class WalletApplicationController {
     /**
      * 生成账户(私钥、公钥、公钥哈希、地址)
      */
-    @RequestMapping(value = WalletApplicationApi.GENERATE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<GenerateAccountResponse> generateAccount(@RequestBody GenerateAccountRequest request){
+    @RequestMapping(value = WalletApplicationApi.CREATE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<CreateAccountResponse> createAccount(@RequestBody CreateAccountRequest request){
         try {
             Account account = AccountUtil.randomAccount();
-            GenerateAccountResponse response = new GenerateAccountResponse();
+            CreateAccountResponse response = new CreateAccountResponse();
             response.setAccount(account);
             return ServiceResult.createSuccessServiceResult("生成账户成功",response);
         } catch (Exception e){
@@ -65,11 +65,11 @@ public class WalletApplicationController {
     /**
      * 生成账户(私钥、公钥、公钥哈希、地址)并保存
      */
-    @RequestMapping(value = WalletApplicationApi.GENERATE_AND_SAVE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<GenerateAndSaveAccountResponse> generateAndSaveAccount(@RequestBody GenerateAndSaveAccountRequest request){
+    @RequestMapping(value = WalletApplicationApi.CREATE_AND_SAVE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<CreateAndSaveAccountResponse> createAndSaveAccount(@RequestBody CreateAndSaveAccountRequest request){
         try {
-            Account account = blockchainCore.getWallet().createAndAddAccount();
-            GenerateAndSaveAccountResponse response = new GenerateAndSaveAccountResponse();
+            Account account = blockchainCore.getWallet().createAndSaveAccount();
+            CreateAndSaveAccountResponse response = new CreateAndSaveAccountResponse();
             response.setAccount(account);
             return ServiceResult.createSuccessServiceResult("[生成账户并保存]成功",response);
         } catch (Exception e){
@@ -82,16 +82,16 @@ public class WalletApplicationController {
     /**
      * 新增账户
      */
-    @RequestMapping(value = WalletApplicationApi.ADD_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<AddAccountResponse> addAccount(@RequestBody AddAccountRequest request){
+    @RequestMapping(value = WalletApplicationApi.SAVE_ACCOUNT,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<SaveAccountResponse> addAccount(@RequestBody SaveAccountRequest request){
         try {
             String privateKey = request.getPrivateKey();
             if(StringUtil.isNullOrEmpty(privateKey)){
                 return ServiceResult.createFailServiceResult("账户私钥不能为空。");
             }
             Account account = AccountUtil.accountFromPrivateKey(privateKey);
-            blockchainCore.getWallet().addAccount(account);
-            AddAccountResponse response = new AddAccountResponse();
+            blockchainCore.getWallet().saveAccount(account);
+            SaveAccountResponse response = new SaveAccountResponse();
             response.setAddAccountSuccess(true);
             return ServiceResult.createSuccessServiceResult("新增账户成功",response);
         } catch (Exception e){
@@ -128,11 +128,11 @@ public class WalletApplicationController {
     @RequestMapping(value = WalletApplicationApi.QUERY_ALL_ACCOUNTS,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryAllAccountsResponse> queryAllAccounts(@RequestBody QueryAllAccountsRequest request){
         try {
-            List<Account> allAccount = blockchainCore.getWallet().getAllAccount();
+            List<Account> allAccounts = blockchainCore.getWallet().getAllAccounts();
 
             List<QueryAllAccountsResponse.AccountVo> accountVoList = new ArrayList<>();
-            if(allAccount != null){
-                for(Account account:allAccount){
+            if(allAccounts != null){
+                for(Account account:allAccounts){
                     QueryAllAccountsResponse.AccountVo accountVo = new QueryAllAccountsResponse.AccountVo();
                     accountVo.setAddress(account.getAddress());
                     accountVo.setPrivateKey(account.getPrivateKey());

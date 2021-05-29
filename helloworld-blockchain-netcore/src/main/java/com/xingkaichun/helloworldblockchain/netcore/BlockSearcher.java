@@ -8,9 +8,9 @@ import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientI
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDto;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockRequest;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockResponse;
+import com.xingkaichun.helloworldblockchain.netcore.dto.BlockDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.GetBlockRequest;
+import com.xingkaichun.helloworldblockchain.netcore.dto.GetBlockResponse;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.*;
 
@@ -222,7 +222,7 @@ public class BlockSearcher {
             fork = false;
         } else {
             GetBlockRequest getBlockRequest = new GetBlockRequest();
-            getBlockRequest.setHeight(masterBlockchainCoreTailBlockHeight);
+            getBlockRequest.setBlockHeight(masterBlockchainCoreTailBlockHeight);
             GetBlockResponse getBlockResponse = new BlockchainNodeClientImpl(node.getIp()).getBlock(getBlockRequest);
             if(getBlockResponse == null){
                 return;
@@ -247,7 +247,7 @@ public class BlockSearcher {
             long forkBlockHeight = masterBlockchainCoreTailBlockHeight;
             while (true) {
                 GetBlockRequest getBlockRequest = new GetBlockRequest();
-                getBlockRequest.setHeight(forkBlockHeight);
+                getBlockRequest.setBlockHeight(forkBlockHeight);
                 GetBlockResponse getBlockResponse = new BlockchainNodeClientImpl(node.getIp()).getBlock(getBlockRequest);
                 if(getBlockResponse == null){
                     return;
@@ -277,7 +277,7 @@ public class BlockSearcher {
             slaveBlockchainCore.deleteBlocks(forkBlockHeight);
             while (true){
                 GetBlockRequest getBlockRequest = new GetBlockRequest();
-                getBlockRequest.setHeight(forkBlockHeight);
+                getBlockRequest.setBlockHeight(forkBlockHeight);
                 GetBlockResponse getBlockResponse = new BlockchainNodeClientImpl(node.getIp()).getBlock(getBlockRequest);
                 if(getBlockResponse == null){
                     return;
@@ -303,7 +303,7 @@ public class BlockSearcher {
             while (true){
                 long nextBlockHeight = masterBlockchainCore.queryBlockchainHeight()+1;
                 GetBlockRequest getBlockRequest = new GetBlockRequest();
-                getBlockRequest.setHeight(nextBlockHeight);
+                getBlockRequest.setBlockHeight(nextBlockHeight);
                 GetBlockResponse getBlockResponse = new BlockchainNodeClientImpl(node.getIp()).getBlock(getBlockRequest);
                 if(getBlockResponse == null){
                     return;

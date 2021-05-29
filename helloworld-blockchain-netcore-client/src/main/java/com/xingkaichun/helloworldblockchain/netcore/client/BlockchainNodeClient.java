@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.client;
 
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
+import com.xingkaichun.helloworldblockchain.netcore.dto.*;
 
 /**
  * 区块链节点客户端

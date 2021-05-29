@@ -4,8 +4,8 @@ import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientI
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockchainHeightRequest;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.GetBlockchainHeightResponse;
+import com.xingkaichun.helloworldblockchain.netcore.dto.GetBlockchainHeightRequest;
+import com.xingkaichun.helloworldblockchain.netcore.dto.GetBlockchainHeightResponse;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;

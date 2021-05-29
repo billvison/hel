@@ -10,7 +10,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.util.SystemUtil;
 
 import java.util.ArrayList;
@@ -100,7 +100,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
     @Override
     public BuildTransactionResponse buildTransactionDTO(BuildTransactionRequest request) {
-        List<Account> allAccountList = wallet.getAllAccount();
+        List<Account> allAccountList = wallet.getAllAccounts();
         if(allAccountList == null || allAccountList.isEmpty()){
             BuildTransactionResponse response = new BuildTransactionResponse();
             response.setBuildTransactionSuccess(false);
@@ -114,7 +114,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
         //创建一个地址用于存放找零
         Account payerChangeAccount = wallet.createAccount();
-        wallet.addAccount(payerChangeAccount);
+        wallet.saveAccount(payerChangeAccount);
 
         List<String> privateKeyList = new ArrayList<>();
         for(Account account:allAccountList){

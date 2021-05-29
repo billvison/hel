@@ -44,21 +44,21 @@ public class CoreConfigurationDefaultImpl extends CoreConfiguration {
 
     @Override
     public boolean isMinerActive() {
-        byte[] mineOption = getConfigurationValue(ByteUtil.encode(MINE_OPTION_KEY));
+        byte[] mineOption = getConfigurationValue(ByteUtil.stringToUtf8Bytes(MINE_OPTION_KEY));
         if(mineOption == null){
             return MINE_OPTION_DEFAULT_VALUE;
         }
-        return Boolean.parseBoolean(ByteUtil.decodeToUtf8String(mineOption));
+        return Boolean.parseBoolean(ByteUtil.utf8BytesToString(mineOption));
     }
 
     @Override
     public void activeMiner() {
-        addOrUpdateConfiguration(ByteUtil.encode(MINE_OPTION_KEY),ByteUtil.encode(String.valueOf(Boolean.TRUE)));
+        addOrUpdateConfiguration(ByteUtil.stringToUtf8Bytes(MINE_OPTION_KEY),ByteUtil.stringToUtf8Bytes(String.valueOf(Boolean.TRUE)));
     }
 
     @Override
     public void deactiveMiner() {
-        addOrUpdateConfiguration(ByteUtil.encode(MINE_OPTION_KEY),ByteUtil.encode(String.valueOf(Boolean.FALSE)));
+        addOrUpdateConfiguration(ByteUtil.stringToUtf8Bytes(MINE_OPTION_KEY),ByteUtil.stringToUtf8Bytes(String.valueOf(Boolean.FALSE)));
     }
 
     @Override

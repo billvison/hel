@@ -22,6 +22,6 @@ HelloworldBlockchain项目由8个子项目组成。原则上，只有子项目he
 #### 6.DTO VO MODEL PO命名
 PO命名规范：类名以Po后缀结尾  
 DTO命名规范：类名以Dto后缀结尾，VO对象名后缀不要加Dto，对象数组、列表后缀加s。  
-MODEL命名规范：类名不需要以特别后缀标识结尾 
+MODEL命名规范：类名不需要以特别后缀标识结尾  
 VO命名规范：类名以Vo后缀结尾，VO对象名后缀不要加Vo，对象数组、列表后缀加s。  
 注意：只有两台节点间通信才会用到DTO，为了清晰，创建了子项目helloworld-blockchain-netcore-dto专门存放DTO。

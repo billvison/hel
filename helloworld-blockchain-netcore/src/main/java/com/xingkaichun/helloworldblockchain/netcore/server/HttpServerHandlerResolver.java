@@ -5,10 +5,10 @@ import com.xingkaichun.helloworldblockchain.core.UnconfirmedTransactionDatabase;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Model2DtoTool;
+import com.xingkaichun.helloworldblockchain.netcore.dto.*;
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 
@@ -58,7 +58,7 @@ public class HttpServerHandlerResolver {
      */
     public GetBlockResponse getBlock(GetBlockRequest request){
         try {
-            Block blockByBlockHeight = blockchainCore.queryBlockByBlockHeight(request.getHeight());
+            Block blockByBlockHeight = blockchainCore.queryBlockByBlockHeight(request.getBlockHeight());
             BlockDto block = Model2DtoTool.block2BlockDTO(blockByBlockHeight);
             GetBlockResponse response = new GetBlockResponse();
             response.setBlock(block);
@@ -123,7 +123,7 @@ public class HttpServerHandlerResolver {
         try {
             Node node = new Node();
             node.setIp(requestIp);
-            node.setBlockchainHeight(request.getHeight());
+            node.setBlockchainHeight(request.getBlockchainHeight());
             nodeService.updateNode(node);
 
             PostBlockchainHeightResponse response = new PostBlockchainHeightResponse();

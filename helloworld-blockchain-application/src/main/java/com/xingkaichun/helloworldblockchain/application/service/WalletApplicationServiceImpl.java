@@ -6,9 +6,9 @@ import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.netcore.BlockchainNetCore;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostTransactionRequest;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostTransactionResponse;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.PostTransactionRequest;
+import com.xingkaichun.helloworldblockchain.netcore.dto.PostTransactionResponse;
+import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

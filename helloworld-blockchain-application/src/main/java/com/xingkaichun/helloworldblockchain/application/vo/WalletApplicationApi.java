@@ -10,11 +10,11 @@ public class WalletApplicationApi {
 
 
     //生成账户(公钥、私钥、地址)
-    public static final String GENERATE_ACCOUNT = "/Api/WalletApplication/GenerateAccount";
+    public static final String CREATE_ACCOUNT = "/Api/WalletApplication/CreateAccount";
     //生成账户(公钥、私钥、地址)并保存
-    public static final String GENERATE_AND_SAVE_ACCOUNT = "/Api/WalletApplication/GenerateAndSaveAccount";
+    public static final String CREATE_AND_SAVE_ACCOUNT = "/Api/WalletApplication/CreateAndSaveAccount";
     //新增账户
-    public static final String ADD_ACCOUNT = "/Api/WalletApplication/AddAccount";
+    public static final String SAVE_ACCOUNT = "/Api/WalletApplication/SaveAccount";
     //删除账户
     public static final String DELETE_ACCOUNT = "/Api/WalletApplication/DeleteAccount";
     //查询所有的账户

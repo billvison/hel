@@ -7,8 +7,8 @@ import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientI
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.BlockDto;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.PostBlockRequest;
+import com.xingkaichun.helloworldblockchain.netcore.dto.BlockDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.PostBlockRequest;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.*;
 

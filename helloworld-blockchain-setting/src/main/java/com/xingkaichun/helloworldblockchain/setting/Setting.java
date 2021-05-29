@@ -29,9 +29,9 @@ public class Setting {
      * 激励设置
      */
     public static class IncentiveSetting {
-        //挖出一个区块的期望耗时时间(单位：毫秒)
+        //挖出一个区块的期望耗时时间(单位：毫秒) TODO 上线确认大小
         public static final long BLOCK_TIME = 1000 * 60;
-        //一个挖矿难度周期内的区块数量
+        //一个挖矿难度周期内的区块数量 TODO 上线确认大小
         public static final long INTERVAL_BLOCK_COUNT = 14;
         //一个挖矿周期内的期望周期耗时时间
         public static final long INTERVAL_TIME = BLOCK_TIME * INTERVAL_BLOCK_COUNT;

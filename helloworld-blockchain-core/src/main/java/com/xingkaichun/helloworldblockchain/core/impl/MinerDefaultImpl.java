@@ -49,7 +49,7 @@ public class MinerDefaultImpl extends Miner {
                 //挖矿成功
                 if(blockchainDataBase.getConsensus().isReachConsensus(blockchainDataBase,block)){
                     //将账户放入钱包
-                    wallet.addAccount(minerAccount);
+                    wallet.saveAccount(minerAccount);
                     LogUtil.debug("祝贺您！挖矿成功！！！区块高度:"+block.getHeight()+",区块哈希:"+block.getHash());
                     //将矿放入区块链
                     boolean isAddBlockToBlockchainSuccess = blockchainDataBase.addBlock(block);

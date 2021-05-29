@@ -66,35 +66,35 @@ public class NetCoreConfigurationImpl implements NetCoreConfiguration {
 
     @Override
     public boolean isSynchronizerActive() {
-        byte[] bytesConfigurationValue = getConfigurationValue(ByteUtil.encode(SYNCHRONIZER_OPTION_KEY));
+        byte[] bytesConfigurationValue = getConfigurationValue(ByteUtil.stringToUtf8Bytes(SYNCHRONIZER_OPTION_KEY));
         if(bytesConfigurationValue == null){
             return SYNCHRONIZER_OPTION_DEFAULT_VALUE;
         }
-        return Boolean.valueOf(ByteUtil.decodeToUtf8String(bytesConfigurationValue));
+        return Boolean.valueOf(ByteUtil.utf8BytesToString(bytesConfigurationValue));
     }
 
     @Override
     public void activeSynchronizer() {
-        addOrUpdateConfiguration(ByteUtil.encode(SYNCHRONIZER_OPTION_KEY),ByteUtil.encode(String.valueOf(Boolean.TRUE)));
+        addOrUpdateConfiguration(ByteUtil.stringToUtf8Bytes(SYNCHRONIZER_OPTION_KEY),ByteUtil.stringToUtf8Bytes(String.valueOf(Boolean.TRUE)));
     }
 
     @Override
     public void deactiveSynchronizer() {
-        addOrUpdateConfiguration(ByteUtil.encode(SYNCHRONIZER_OPTION_KEY),ByteUtil.encode(String.valueOf(Boolean.FALSE)));
+        addOrUpdateConfiguration(ByteUtil.stringToUtf8Bytes(SYNCHRONIZER_OPTION_KEY),ByteUtil.stringToUtf8Bytes(String.valueOf(Boolean.FALSE)));
     }
 
     @Override
     public boolean isAutoSearchNode() {
-        byte[] bytesConfigurationValue = getConfigurationValue(ByteUtil.encode(AUTO_SEARCH_NODE_OPTION_KEY));
+        byte[] bytesConfigurationValue = getConfigurationValue(ByteUtil.stringToUtf8Bytes(AUTO_SEARCH_NODE_OPTION_KEY));
         if(bytesConfigurationValue == null){
             return SAUTO_SEARCH_NODE_OPTION_DEFAULT_VALUE;
         }
-        return Boolean.valueOf(ByteUtil.decodeToUtf8String(bytesConfigurationValue));
+        return Boolean.valueOf(ByteUtil.utf8BytesToString(bytesConfigurationValue));
     }
 
     @Override
     public void setAutoSearchNode(boolean autoSearchNode) {
-        addOrUpdateConfiguration(ByteUtil.encode(AUTO_SEARCH_NODE_OPTION_KEY),ByteUtil.encode(String.valueOf(Boolean.valueOf(autoSearchNode))));
+        addOrUpdateConfiguration(ByteUtil.stringToUtf8Bytes(AUTO_SEARCH_NODE_OPTION_KEY),ByteUtil.stringToUtf8Bytes(String.valueOf(Boolean.valueOf(autoSearchNode))));
     }
 
     @Override

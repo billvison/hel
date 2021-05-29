@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.application.vo.transaction;
 
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 
 /**
  *

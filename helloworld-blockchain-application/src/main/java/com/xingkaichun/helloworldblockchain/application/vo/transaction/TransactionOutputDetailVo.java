@@ -7,7 +7,7 @@ package com.xingkaichun.helloworldblockchain.application.vo.transaction;
 public class TransactionOutputDetailVo {
 
     private long value;
-    private boolean isSpent;
+    private boolean spent;
     private String transactionType;
 
 
@@ -28,11 +28,11 @@ public class TransactionOutputDetailVo {
     private TransactionVo outputTransaction;
 
     public boolean isSpent() {
-        return isSpent;
+        return spent;
     }
 
     public void setSpent(boolean spent) {
-        isSpent = spent;
+        this.spent = spent;
     }
 
     public long getValue() {

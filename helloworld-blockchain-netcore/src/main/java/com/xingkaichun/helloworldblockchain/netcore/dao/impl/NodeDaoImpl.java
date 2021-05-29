@@ -40,17 +40,17 @@ public class NodeDaoImpl implements NodeDao {
 
     @Override
     public void addNode(NodePo node){
-        KvDBUtil.put(nodeDatabasePath,ByteUtil.encode(node.getIp()), ByteUtil.encode(JsonUtil.toJson(node)));
+        KvDBUtil.put(nodeDatabasePath,ByteUtil.stringToUtf8Bytes(node.getIp()), ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(node)));
     }
 
     @Override
     public void updateNode(NodePo node){
-        KvDBUtil.put(nodeDatabasePath,ByteUtil.encode(node.getIp()),ByteUtil.encode(JsonUtil.toJson(node)));
+        KvDBUtil.put(nodeDatabasePath,ByteUtil.stringToUtf8Bytes(node.getIp()),ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(node)));
     }
 
     @Override
     public void deleteNode(String ip){
-        KvDBUtil.delete(nodeDatabasePath,ByteUtil.encode(ip));
+        KvDBUtil.delete(nodeDatabasePath,ByteUtil.stringToUtf8Bytes(ip));
     }
 
     @Override
@@ -60,7 +60,7 @@ public class NodeDaoImpl implements NodeDao {
         List<byte[]> bytesNodeEntityList = KvDBUtil.get(nodeDatabasePath,1,100000000);
         if(bytesNodeEntityList != null){
             for(byte[] bytesNodeEntity:bytesNodeEntityList){
-                NodePo nodePo = JsonUtil.fromJson(ByteUtil.decodeToUtf8String(bytesNodeEntity), NodePo.class);
+                NodePo nodePo = JsonUtil.fromJson(ByteUtil.utf8BytesToString(bytesNodeEntity), NodePo.class);
                 list.add(nodePo);
             }
         }

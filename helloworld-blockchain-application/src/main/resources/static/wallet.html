@@ -98,7 +98,7 @@
                 layer.prompt({title: '增加账户，请输入私钥(账户密码)。', formType: 2}, function(pass, index){
                     $.ajax({
                          type: "post",
-                         url : baseUrl() + "/Api/WalletApplication/AddAccount",
+                         url : baseUrl() + "/Api/WalletApplication/SaveAccount",
                          data: `{"privateKey":"${pass}"}`,
                          dataType: "json",
                          contentType: "application/json",
@@ -115,7 +115,7 @@
 
             async function create(){
                 const data = await $ajax({
-                    url : baseUrl() + "/Api/WalletApplication/GenerateAccount",
+                    url : baseUrl() + "/Api/WalletApplication/CreateAccount",
                     data: `{}`
                 })
                 var account = data.result.account;
@@ -127,7 +127,7 @@
 
             async function createAndSave(){
                 const data = await $ajax({
-                    url : baseUrl() + "/Api/WalletApplication/GenerateAndSaveAccount",
+                    url : baseUrl() + "/Api/WalletApplication/CreateAndSaveAccount",
                     data: `{}`
                 })
                 var account = data.result.account;

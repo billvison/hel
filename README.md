@@ -112,9 +112,9 @@ mvn -DskipTests=true clean package
 #### 发布项目
 ```  
 进入打包结果目录(请根据本地的实际项目目录运行命令)  
-cd C:\Users\xingkaichun\IdeaProjects\HelloworldBlockchain\helloworld-blockchain-explorer\target  
+cd C:\Users\xingkaichun\IdeaProjects\HelloworldBlockchain\helloworld-blockchain-application\target  
 运行启动命令  
-java -jar helloworld-blockchain-explorer-1.0-SNAPSHOT.jar  
+java -jar helloworld-blockchain-application-1.0-SNAPSHOT.jar  
 ```
 
 

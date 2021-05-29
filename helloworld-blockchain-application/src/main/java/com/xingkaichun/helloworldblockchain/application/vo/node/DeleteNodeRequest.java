@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.application.vo.node;
 
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.NodeDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.NodeDto;
 
 /**
  *

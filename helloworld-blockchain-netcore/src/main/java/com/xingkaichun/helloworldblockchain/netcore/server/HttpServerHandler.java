@@ -1,6 +1,6 @@
 package com.xingkaichun.helloworldblockchain.netcore.server;
 
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.*;
+import com.xingkaichun.helloworldblockchain.netcore.dto.*;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -38,11 +38,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 		 * 任何节点都可以访问这里的接口，请不要在这里写任何能泄露用户私钥的代码。
 		 * 因为有的节点没有公网IP，所以为了照顾这些节点，新增了一系列的接口。
 		 * 但是我们假设所有节点都有公网IP，我们只需要写五个接口就可以了。
-		 * @see com.xingkaichun.helloworldblockchain.netcore.transport.dto.API.PING
-		 * @see com.xingkaichun.helloworldblockchain.netcore.transport.dto.API.GET_NODES
-		 * @see com.xingkaichun.helloworldblockchain.netcore.transport.dto.API.POST_BLOCKCHAIN_HEIGHT
-		 * @see com.xingkaichun.helloworldblockchain.netcore.transport.dto.API.GET_BLOCK
-		 * @see com.xingkaichun.helloworldblockchain.netcore.transport.dto.API.POST_TRANSACTION
+		 * @see com.xingkaichun.helloworldblockchain.netcore.dto.API.PING
+		 * @see com.xingkaichun.helloworldblockchain.netcore.dto.API.GET_NODES
+		 * @see com.xingkaichun.helloworldblockchain.netcore.dto.API.POST_BLOCKCHAIN_HEIGHT
+		 * @see com.xingkaichun.helloworldblockchain.netcore.dto.API.GET_BLOCK
+		 * @see com.xingkaichun.helloworldblockchain.netcore.dto.API.POST_TRANSACTION
 		 */
 		if("/".equals(requestApi)){
 			responseMessage = "HelloworldBlockchain";

@@ -12,13 +12,13 @@ import java.util.List;
  */
 public abstract class Wallet {
 
-    public abstract List<Account> getAllAccount();
+    public abstract List<Account> getAllAccounts();
 
     public abstract Account createAccount();
 
-    public abstract Account createAndAddAccount();
+    public abstract Account createAndSaveAccount();
 
-    public abstract void addAccount(Account account);
+    public abstract void saveAccount(Account account);
 
     public abstract void deleteAccountByAddress(String address);
 }

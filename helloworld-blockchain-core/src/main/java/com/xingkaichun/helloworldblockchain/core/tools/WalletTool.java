@@ -7,9 +7,9 @@ import com.xingkaichun.helloworldblockchain.core.model.script.InputScript;
 import com.xingkaichun.helloworldblockchain.core.model.script.OutputScript;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionDto;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionInputDto;
-import com.xingkaichun.helloworldblockchain.netcore.transport.dto.TransactionOutputDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionInputDto;
+import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionOutputDto;
 
 import java.util.ArrayList;
 import java.util.List;
