@@ -46,7 +46,7 @@ public class UnconfirmedTransactionsSearcher {
     }
 
     private void searchUnconfirmedTransactions() {
-        List<Node> nodes = nodeService.queryAllNodeList();
+        List<Node> nodes = nodeService.queryAllNodes();
         if(nodes == null || nodes.size()==0){
             return;
         }
@@ -60,7 +60,7 @@ public class UnconfirmedTransactionsSearcher {
                     if(transactions != null){
                         for(TransactionDto transactionDto:transactions){
                             try {
-                                blockchainCore.getMiner().getUnconfirmedTransactionDataBase().insertTransaction(transactionDto);
+                                blockchainCore.getUnconfirmedTransactionDataBase().insertTransaction(transactionDto);
                             }catch (Exception e){
                                 LogUtil.error(StringUtil.format("交易[%s]放入交易池异常。", JsonUtil.toJson(transactionDto)),e);
                             }

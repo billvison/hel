@@ -54,7 +54,7 @@ public class NodeSearcher {
      */
     private void searchNodes() {
         //这里可以利用多线程进行性能优化，因为本项目是helloworld项目，因此只采用单线程轮询每一个节点查询新的网络节点，不做进一步优化拓展。
-        List<Node> nodes = nodeService.queryAllNodeList();
+        List<Node> nodes = nodeService.queryAllNodes();
         for(Node node:nodes){
             try {
                 if(!netCoreConfiguration.isAutoSearchNode()){

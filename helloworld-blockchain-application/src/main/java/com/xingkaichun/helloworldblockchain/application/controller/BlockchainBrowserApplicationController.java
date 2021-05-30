@@ -169,7 +169,7 @@ public class BlockchainBrowserApplicationController {
     public ServiceResult<QueryUnconfirmedTransactionsResponse> queryUnconfirmedTransactions(@RequestBody QueryUnconfirmedTransactionsRequest request){
         try {
             PageCondition pageCondition = request.getPageCondition();
-            List<TransactionDto> transactionDtoList = blockchainCore.queryUnconfirmedTransactionList(pageCondition.getFrom(),pageCondition.getSize());
+            List<TransactionDto> transactionDtoList = blockchainCore.queryUnconfirmedTransactions(pageCondition.getFrom(),pageCondition.getSize());
             if(transactionDtoList == null){
                 return ServiceResult.createSuccessServiceResult("未查询到未确认的交易");
             }

@@ -44,7 +44,7 @@ public class WalletTool {
         return txo==null?0:txo.getValue();
     }
 
-    public static BuildTransactionResponse buildTransactionDTO(Map<String,TransactionOutput> privateKeyUtxoMap, List<Recipient> recipientList, String payerChangeAddress, long fee) {
+    public static BuildTransactionResponse buildTransactionDto(Map<String,TransactionOutput> privateKeyUtxoMap, List<Recipient> recipientList, String payerChangeAddress, long fee) {
         //最少付款总金额
         long minInputValues = 0;
         if(recipientList != null){
@@ -62,11 +62,11 @@ public class WalletTool {
 
         if(recipientList != null){
             for(Recipient recipient : recipientList){
-                TransactionOutputDto transactionOutputDTO = new TransactionOutputDto();
-                transactionOutputDTO.setValue(recipient.getValue());
+                TransactionOutputDto transactionOutputDto = new TransactionOutputDto();
+                transactionOutputDto.setValue(recipient.getValue());
                 OutputScript outputScript = ScriptTool.createPayToPublicKeyHashOutputScript(recipient.getAddress());
-                transactionOutputDTO.setOutputScript(Model2DtoTool.outputScript2OutputScriptDTO(outputScript));
-                transactionOutputDtoList.add(transactionOutputDTO);
+                transactionOutputDto.setOutputScript(Model2DtoTool.outputScript2OutputScriptDto(outputScript));
+                transactionOutputDtoList.add(transactionOutputDto);
 
                 BuildTransactionResponse.InnerTransactionOutput innerTransactionOutput = new BuildTransactionResponse.InnerTransactionOutput();
                 innerTransactionOutput.setAddress(recipient.getAddress());
@@ -109,16 +109,16 @@ public class WalletTool {
         //构建交易输入
         List<TransactionInputDto> transactionInputDtoList = new ArrayList<>();
         for(TransactionOutput input:inputs){
-            TransactionInputDto transactionInputDTO = new TransactionInputDto();
-            transactionInputDTO.setTransactionHash(input.getTransactionHash());
-            transactionInputDTO.setTransactionOutputIndex(input.getTransactionOutputIndex());
-            transactionInputDtoList.add(transactionInputDTO);
+            TransactionInputDto transactionInputDto = new TransactionInputDto();
+            transactionInputDto.setTransactionHash(input.getTransactionHash());
+            transactionInputDto.setTransactionOutputIndex(input.getTransactionOutputIndex());
+            transactionInputDtoList.add(transactionInputDto);
         }
 
         //构建交易
-        TransactionDto transactionDTO = new TransactionDto();
-        transactionDTO.setInputs(transactionInputDtoList);
-        transactionDTO.setOutputs(transactionOutputDtoList);
+        TransactionDto transactionDto = new TransactionDto();
+        transactionDto.setInputs(transactionInputDtoList);
+        transactionDto.setOutputs(transactionOutputDtoList);
 
         //总收款金额
         long outputValues = 0;
@@ -132,11 +132,11 @@ public class WalletTool {
         long change = inputValues - outputValues - fee;
         BuildTransactionResponse.InnerTransactionOutput payerChange = null;
         if(change > 0){
-            TransactionOutputDto transactionOutputDTO = new TransactionOutputDto();
-            transactionOutputDTO.setValue(change);
+            TransactionOutputDto transactionOutputDto = new TransactionOutputDto();
+            transactionOutputDto.setValue(change);
             OutputScript outputScript = ScriptTool.createPayToPublicKeyHashOutputScript(payerChangeAddress);
-            transactionOutputDTO.setOutputScript(Model2DtoTool.outputScript2OutputScriptDTO(outputScript));
-            transactionOutputDtoList.add(transactionOutputDTO);
+            transactionOutputDto.setOutputScript(Model2DtoTool.outputScript2OutputScriptDto(outputScript));
+            transactionOutputDtoList.add(transactionOutputDto);
 
             payerChange = new BuildTransactionResponse.InnerTransactionOutput();
             payerChange.setAddress(payerChangeAddress);
@@ -148,22 +148,22 @@ public class WalletTool {
         for(int i=0;i<transactionInputDtoList.size();i++){
             String privateKey = inputPrivateKeyList.get(i);
             String publicKey = AccountUtil.accountFromPrivateKey(privateKey).getPublicKey();
-            TransactionInputDto transactionInputDTO = transactionInputDtoList.get(i);
-            String signature = TransactionTool.signature(privateKey,transactionDTO);
+            TransactionInputDto transactionInputDto = transactionInputDtoList.get(i);
+            String signature = TransactionTool.signature(privateKey,transactionDto);
             InputScript inputScript = ScriptTool.createPayToPublicKeyHashInputScript(signature, publicKey);
-            transactionInputDTO.setInputScript(Model2DtoTool.inputScript2InputScriptDTO(inputScript));
+            transactionInputDto.setInputScript(Model2DtoTool.inputScript2InputScriptDto(inputScript));
         }
 
 
         BuildTransactionResponse buildTransactionResponse = new BuildTransactionResponse();
         buildTransactionResponse.setBuildTransactionSuccess(true);
         buildTransactionResponse.setMessage("构建交易成功");
-        buildTransactionResponse.setTransactionHash(TransactionTool.calculateTransactionHash(transactionDTO));
+        buildTransactionResponse.setTransactionHash(TransactionTool.calculateTransactionHash(transactionDto));
         buildTransactionResponse.setFee(fee);
         buildTransactionResponse.setPayerChange(payerChange);
         buildTransactionResponse.setTransactionInputList(inputs);
         buildTransactionResponse.setTransactionOutputList(innerTransactionOutputList);
-        buildTransactionResponse.setTransaction(transactionDTO);
+        buildTransactionResponse.setTransaction(transactionDto);
         return buildTransactionResponse;
     }
 }

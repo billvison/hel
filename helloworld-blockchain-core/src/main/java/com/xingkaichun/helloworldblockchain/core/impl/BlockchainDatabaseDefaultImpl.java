@@ -488,9 +488,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * [交易输出ID]到[来源交易高度]的映射
      */
     private void storeTransactionOutputIdToSourceTransactionHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
-        List<Transaction> transactionList = block.getTransactions();
-        if(transactionList != null){
-            for(Transaction transaction:transactionList){
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
                 List<TransactionOutput> outputs = transaction.getOutputs();
                 if(outputs != null){
                     for(TransactionOutput transactionOutput:outputs){
@@ -509,9 +509,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * [已花费交易输出ID]到[去向交易高度]的映射
      */
     private void storeTransactionOutputIdToDestinationTransactionHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
-        List<Transaction> transactionList = block.getTransactions();
-        if(transactionList != null){
-            for(Transaction transaction:transactionList){
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
                 List<TransactionInput> inputs = transaction.getInputs();
                 if(inputs != null){
                     for(TransactionInput transactionInput:inputs){
@@ -531,9 +531,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * [交易输出ID]到[交易输出]的映射
      */
     private void storeTransactionOutputIdToTransactionOutputHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
-        List<Transaction> transactionList = block.getTransactions();
-        if(transactionList != null){
-            for(Transaction transaction:transactionList){
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
                 List<TransactionOutput> outputs = transaction.getOutputs();
                 if(outputs != null){
                     for(TransactionOutput output:outputs){
@@ -552,9 +552,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * [交易输出高度]到[交易输出]的映射
      */
     private void storeTransactionOutputHeightToTransactionOutput(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
-        List<Transaction> transactionList = block.getTransactions();
-        if(transactionList != null){
-            for(Transaction transaction:transactionList){
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
                 List<TransactionOutput> outputs = transaction.getOutputs();
                 if(outputs != null){
                     for(TransactionOutput output:outputs){
@@ -573,9 +573,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * 存储未花费交易输出ID到未花费交易输出的映射
      */
     private void storeTransactionOutputIdToUnspentTransactionOutputHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
-        List<Transaction> transactionList = block.getTransactions();
-        if(transactionList != null){
-            for(Transaction transaction:transactionList){
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
                 List<TransactionInput> inputs = transaction.getInputs();
                 if(inputs != null){
                     for(TransactionInput transactionInput:inputs){
@@ -606,9 +606,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * 存储已花费交易输出ID到已花费交易输出的映射
      */
     private void storeTransactionOutputIdToSpentTransactionOutputHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
-        List<Transaction> transactionList = block.getTransactions();
-        if(transactionList != null){
-            for(Transaction transaction:transactionList){
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
                 List<TransactionInput> inputs = transaction.getInputs();
                 if(inputs != null){
                     for(TransactionInput transactionInput:inputs){
@@ -639,9 +639,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * 存储交易高度到交易的映射
      */
     private void storeTransactionHeightToTransaction(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
-        List<Transaction> transactionList = block.getTransactions();
-        if(transactionList != null){
-            for(Transaction transaction:transactionList){
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
                 //更新区块链中的交易序列号数据
                 byte[] transactionHeightToTransactionKey = BlockchainDatabaseKeyTool.buildTransactionHeightToTransactionKey(transaction.getTransactionHeight());
                 if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
@@ -656,9 +656,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * 存储交易哈希到交易高度的映射
      */
     private void storeTransactionHashToTransactionHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
-        List<Transaction> transactionList = block.getTransactions();
-        if(transactionList != null){
-            for(Transaction transaction:transactionList){
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
                 byte[] transactionHashToTransactionHeightKey = BlockchainDatabaseKeyTool.buildTransactionHashToTransactionHeightKey(transaction.getTransactionHash());
                 if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
                     kvWriteBatch.put(transactionHashToTransactionHeightKey, ByteUtil.longToUtf8Bytes(transaction.getTransactionHeight()));
@@ -736,9 +736,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         } else {
             kvWriteBatch.delete(blockHashKey);
         }
-        List<Transaction> transactionList = block.getTransactions();
-        if(transactionList != null){
-            for(Transaction transaction:transactionList){
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
                 byte[] transactionHashKey = BlockchainDatabaseKeyTool.buildHashKey(transaction.getTransactionHash());
                 if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
                     kvWriteBatch.put(transactionHashKey, transactionHashKey);
@@ -753,9 +753,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * 存储已使用的地址
      */
     private void storeAddress(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
-        List<Transaction> transactionList = block.getTransactions();
-        if(transactionList != null){
-            for(Transaction transaction:transactionList){
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
                 List<TransactionOutput> outputs = transaction.getOutputs();
                 if(outputs != null){
                     for(TransactionOutput output:outputs){

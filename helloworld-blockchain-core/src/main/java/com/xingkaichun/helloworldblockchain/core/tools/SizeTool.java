@@ -27,25 +27,25 @@ public class SizeTool {
      * ，还要校验区块内部各个属性(时间戳、前哈希、随机数、交易)的大小是否合法。
      */
     public static boolean isBlockSizeLegal(Block block) {
-        return isBlockSizeLegal(Model2DtoTool.block2BlockDTO(block));
+        return isBlockSizeLegal(Model2DtoTool.block2BlockDto(block));
     }
-    public static boolean isBlockSizeLegal(BlockDto blockDTO) {
+    public static boolean isBlockSizeLegal(BlockDto blockDto) {
         //区块的时间戳的长度不需要校验  假设时间戳长度不正确，则在随后的业务逻辑中走不通
 
         //区块的前哈希的长度不需要校验  假设前哈希长度不正确，则在随后的业务逻辑中走不通
 
         //校验区块随机数大小
-        long nonceSize = stringSize(blockDTO.getNonce());
+        long nonceSize = stringSize(blockDto.getNonce());
         if(!LongUtil.isEquals(nonceSize, Setting.BlockSetting.NONCE_SIZE)){
-            LogUtil.debug(StringUtil.format("nonce[%s]长度不是[%s]。",blockDTO.getNonce(), Setting.BlockSetting.NONCE_SIZE));
+            LogUtil.debug(StringUtil.format("nonce[%s]长度不是[%s]。",blockDto.getNonce(), Setting.BlockSetting.NONCE_SIZE));
             return false;
         }
 
         //校验每一笔交易大小是否合法
-        List<TransactionDto> transactionDtoList = blockDTO.getTransactions();
+        List<TransactionDto> transactionDtoList = blockDto.getTransactions();
         if(transactionDtoList != null){
-            for(TransactionDto transactionDTO:transactionDtoList){
-                if(!isTransactionSizeLegal(transactionDTO)){
+            for(TransactionDto transactionDto:transactionDtoList){
+                if(!isTransactionSizeLegal(transactionDto)){
                     LogUtil.debug("交易数据异常，交易大小非法。");
                     return false;
                 }
@@ -53,7 +53,7 @@ public class SizeTool {
         }
 
         //校验区块占用的存储空间
-        long blockSize = calculateBlockSize(blockDTO);
+        long blockSize = calculateBlockSize(blockDto);
         if(blockSize > Setting.BlockSetting.BLOCK_MAX_SIZE){
             LogUtil.debug(String.format("区块数据大小[%s]超过限制[%s]。",blockSize, Setting.BlockSetting.BLOCK_MAX_SIZE));
             return false;
@@ -66,34 +66,34 @@ public class SizeTool {
      * ，还要校验交易内部各个属性(交易输入、交易输出)的大小是否合法。
      */
     public static boolean isTransactionSizeLegal(Transaction transaction) {
-        return isTransactionSizeLegal(Model2DtoTool.transaction2TransactionDTO(transaction));
+        return isTransactionSizeLegal(Model2DtoTool.transaction2TransactionDto(transaction));
     }
-    public static boolean isTransactionSizeLegal(TransactionDto transactionDTO) {
+    public static boolean isTransactionSizeLegal(TransactionDto transactionDto) {
         //校验交易输入
-        List<TransactionInputDto> transactionInputDtoList = transactionDTO.getInputs();
+        List<TransactionInputDto> transactionInputDtoList = transactionDto.getInputs();
         if(transactionInputDtoList != null){
-            for(TransactionInputDto transactionInputDTO:transactionInputDtoList){
+            for(TransactionInputDto transactionInputDto:transactionInputDtoList){
                 //交易的未花费输出大小不需要校验  假设不正确，则在随后的业务逻辑中走不通
 
                 //校验脚本大小
-                InputScriptDto inputScriptDTO = transactionInputDTO.getInputScript();
+                InputScriptDto inputScriptDto = transactionInputDto.getInputScript();
                 //校验输入脚本的大小
-                if(!isInputScriptSizeLegal(inputScriptDTO)){
+                if(!isInputScriptSizeLegal(inputScriptDto)){
                     return false;
                 }
             }
         }
 
         //校验交易输出
-        List<TransactionOutputDto> transactionOutputDtoList = transactionDTO.getOutputs();
+        List<TransactionOutputDto> transactionOutputDtoList = transactionDto.getOutputs();
         if(transactionOutputDtoList != null){
-            for(TransactionOutputDto transactionOutputDTO:transactionOutputDtoList){
+            for(TransactionOutputDto transactionOutputDto:transactionOutputDtoList){
                 //交易输出金额大小不需要校验  假设不正确，则在随后的业务逻辑中走不通
 
                 //校验脚本大小
-                OutputScriptDto outputScriptDTO = transactionOutputDTO.getOutputScript();
+                OutputScriptDto outputScriptDto = transactionOutputDto.getOutputScript();
                 //校验输出脚本的大小
-                if(!isOutputScriptSizeLegal(outputScriptDTO)){
+                if(!isOutputScriptSizeLegal(outputScriptDto)){
                     return false;
                 }
 
@@ -101,7 +101,7 @@ public class SizeTool {
         }
 
         //校验整笔交易大小十分合法
-        long transactionSize = calculateTransactionSize(transactionDTO);
+        long transactionSize = calculateTransactionSize(transactionDto);
         if(transactionSize > Setting.TransactionSetting.TRANSACTION_MAX_SIZE){
             LogUtil.debug(StringUtil.format("交易[%s]字符超过大小限制值[%s]。",transactionSize, Setting.TransactionSetting.TRANSACTION_MAX_SIZE));
             return false;
@@ -112,33 +112,33 @@ public class SizeTool {
     /**
      * 校验交易输入的大小
      */
-    private static boolean isInputScriptSizeLegal(InputScriptDto inputScriptDTO) {
+    private static boolean isInputScriptSizeLegal(InputScriptDto inputScriptDto) {
         //先宽泛的校验脚本大小
-        if(!isScriptSizeLegal(inputScriptDTO)){
+        if(!isScriptSizeLegal(inputScriptDto)){
             return false;
         }
         //严格校验输入脚本大小，因为当前输入脚本只有P2PKH，所以只需校验输入脚本是否是P2PKH输入脚本即可。
-        return ScriptTool.isPayToPublicKeyHashInputScript(inputScriptDTO);
+        return ScriptTool.isPayToPublicKeyHashInputScript(inputScriptDto);
     }
 
     /**
      * 校验交易输出的大小
      */
-    public static boolean isOutputScriptSizeLegal(OutputScriptDto outputScriptDTO) {
+    public static boolean isOutputScriptSizeLegal(OutputScriptDto outputScriptDto) {
         //先宽泛的校验脚本大小
-        if(!isScriptSizeLegal(outputScriptDTO)){
+        if(!isScriptSizeLegal(outputScriptDto)){
             return false;
         }
         //严格校验输入脚本大小，因为当前输出脚本只有P2PKH，所以只需校验输出脚本是否是P2PKH输出脚本即可。
-        return ScriptTool.isPayToPublicKeyHashOutputScript(outputScriptDTO);
+        return ScriptTool.isPayToPublicKeyHashOutputScript(outputScriptDto);
     }
 
     /**
      * 校验脚本的大小
      */
-    public static boolean isScriptSizeLegal(ScriptDto scriptDTO) {
-        for(int i=0;i<scriptDTO.size();i++){
-            String operationCode = scriptDTO.get(i);
+    public static boolean isScriptSizeLegal(ScriptDto scriptDto) {
+        for(int i=0;i<scriptDto.size();i++){
+            String operationCode = scriptDto.get(i);
             byte[] bytesOperationCode = HexUtil.hexStringToBytes(operationCode);
             if(Arrays.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode) ||
                     Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
@@ -152,7 +152,7 @@ public class SizeTool {
                 return false;
             }
         }
-        if(calculateScriptSize(scriptDTO) > Setting.ScriptSetting.SCRIPT_MAX_SIZE){
+        if(calculateScriptSize(scriptDto) > Setting.ScriptSetting.SCRIPT_MAX_SIZE){
             LogUtil.debug("交易校验失败：交易输出脚本大小超出限制。");
             return false;
         }
@@ -164,32 +164,32 @@ public class SizeTool {
 
     //region 计算大小
     public static long calculateBlockSize(Block block) {
-        return calculateBlockSize(Model2DtoTool.block2BlockDTO(block));
+        return calculateBlockSize(Model2DtoTool.block2BlockDto(block));
     }
-    public static long calculateBlockSize(BlockDto blockDTO) {
+    public static long calculateBlockSize(BlockDto blockDto) {
         long size = 0;
-        long timestamp = blockDTO.getTimestamp();
+        long timestamp = blockDto.getTimestamp();
         size += longSize(timestamp);
 
-        String previousBlockHash = blockDTO.getPreviousHash();
+        String previousBlockHash = blockDto.getPreviousHash();
         size += stringSize(previousBlockHash);
 
-        String nonce = blockDTO.getNonce();
+        String nonce = blockDto.getNonce();
         size += stringSize(nonce);
-        List<TransactionDto> transactionDtoList = blockDTO.getTransactions();
-        for(TransactionDto transactionDTO:transactionDtoList){
-            size += calculateTransactionSize(transactionDTO);
+        List<TransactionDto> transactionDtoList = blockDto.getTransactions();
+        for(TransactionDto transactionDto:transactionDtoList){
+            size += calculateTransactionSize(transactionDto);
         }
         return size;
     }
     public static long calculateTransactionSize(Transaction transaction) {
-        return calculateTransactionSize(Model2DtoTool.transaction2TransactionDTO(transaction));
+        return calculateTransactionSize(Model2DtoTool.transaction2TransactionDto(transaction));
     }
-    public static long calculateTransactionSize(TransactionDto transactionDTO) {
+    public static long calculateTransactionSize(TransactionDto transactionDto) {
         long size = 0;
-        List<TransactionInputDto> transactionInputDtoList = transactionDTO.getInputs();
+        List<TransactionInputDto> transactionInputDtoList = transactionDto.getInputs();
         size += calculateTransactionInputSize(transactionInputDtoList);
-        List<TransactionOutputDto> transactionOutputDtoList = transactionDTO.getOutputs();
+        List<TransactionOutputDto> transactionOutputDtoList = transactionDto.getOutputs();
         size += calculateTransactionOutputSize(transactionOutputDtoList);
         return size;
     }
@@ -198,16 +198,16 @@ public class SizeTool {
         if(transactionOutputDtoList == null || transactionOutputDtoList.size()==0){
             return size;
         }
-        for(TransactionOutputDto transactionOutputDTO:transactionOutputDtoList){
-            size += calculateTransactionOutputSize(transactionOutputDTO);
+        for(TransactionOutputDto transactionOutputDto:transactionOutputDtoList){
+            size += calculateTransactionOutputSize(transactionOutputDto);
         }
         return size;
     }
-    private static long calculateTransactionOutputSize(TransactionOutputDto transactionOutputDTO) {
+    private static long calculateTransactionOutputSize(TransactionOutputDto transactionOutputDto) {
         long size = 0;
-        OutputScriptDto outputScriptDTO = transactionOutputDTO.getOutputScript();
-        size += calculateScriptSize(outputScriptDTO);
-        long value = transactionOutputDTO.getValue();
+        OutputScriptDto outputScriptDto = transactionOutputDto.getOutputScript();
+        size += calculateScriptSize(outputScriptDto);
+        long value = transactionOutputDto.getValue();
         size += longSize(value);
         return size;
     }
@@ -216,8 +216,8 @@ public class SizeTool {
         if(inputs == null || inputs.size()==0){
             return size;
         }
-        for(TransactionInputDto transactionInputDTO:inputs){
-            size += calculateTransactionInputSize(transactionInputDTO);
+        for(TransactionInputDto transactionInputDto:inputs){
+            size += calculateTransactionInputSize(transactionInputDto);
         }
         return size;
     }
@@ -227,8 +227,8 @@ public class SizeTool {
         size += stringSize(transactionHash);
         long transactionOutputIndex = input.getTransactionOutputIndex();
         size += longSize(transactionOutputIndex);
-        InputScriptDto inputScriptDTO = input.getInputScript();
-        size += calculateScriptSize(inputScriptDTO);
+        InputScriptDto inputScriptDto = input.getInputScript();
+        size += calculateScriptSize(inputScriptDto);
         return size;
     }
     private static long calculateScriptSize(ScriptDto script) {

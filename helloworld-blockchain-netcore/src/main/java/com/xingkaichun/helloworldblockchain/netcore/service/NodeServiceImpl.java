@@ -26,7 +26,7 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public List<Node> queryAllNodeList(){
+    public List<Node> queryAllNodes(){
         List<NodePo> nodePoList = nodeDao.queryAllNodeList();
         return nodeEntityConvertNode(nodePoList);
     }

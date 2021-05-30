@@ -48,26 +48,26 @@ public class ScriptTool {
     /**
      * 脚本：将字节型脚本反序列化为脚本.
      */
-    public static InputScriptDto inputScriptDTO(byte[] bytesScript) {
+    public static InputScriptDto inputScriptDto(byte[] bytesScript) {
         if(bytesScript == null || bytesScript.length == 0){
             return null;
         }
-        InputScriptDto inputScriptDTO = new InputScriptDto();
+        InputScriptDto inputScriptDto = new InputScriptDto();
         List<String> script = script(bytesScript);
-        inputScriptDTO.addAll(script);
-        return inputScriptDTO;
+        inputScriptDto.addAll(script);
+        return inputScriptDto;
     }
     /**
      * 脚本：将字节型脚本反序列化为脚本.
      */
-    public static OutputScriptDto outputScriptDTO(byte[] bytesScript) {
+    public static OutputScriptDto outputScriptDto(byte[] bytesScript) {
         if(bytesScript == null || bytesScript.length == 0){
             return null;
         }
-        OutputScriptDto outputScriptDTO = new OutputScriptDto();
+        OutputScriptDto outputScriptDto = new OutputScriptDto();
         List<String> script = script(bytesScript);
-        outputScriptDTO.addAll(script);
-        return outputScriptDTO;
+        outputScriptDto.addAll(script);
+        return outputScriptDto;
     }
     /**
      * 脚本：将字节型脚本反序列化为脚本.
@@ -177,13 +177,13 @@ public class ScriptTool {
     /**
      * 是否是P2PKH输入脚本
      */
-    public static boolean isPayToPublicKeyHashInputScript(InputScriptDto inputScriptDTO) {
+    public static boolean isPayToPublicKeyHashInputScript(InputScriptDto inputScriptDto) {
         try {
-            return  inputScriptDTO.size() == 4
-                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(inputScriptDTO.get(0))
-                    && (136 <= inputScriptDTO.get(1).length() && 144 >= inputScriptDTO.get(1).length())
-                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(inputScriptDTO.get(2))
-                    && 66 == inputScriptDTO.get(3).length();
+            return  inputScriptDto.size() == 4
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(inputScriptDto.get(0))
+                    && (136 <= inputScriptDto.get(1).length() && 144 >= inputScriptDto.get(1).length())
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(inputScriptDto.get(2))
+                    && 66 == inputScriptDto.get(3).length();
         }catch (Exception e){
             return false;
         }
@@ -192,15 +192,15 @@ public class ScriptTool {
     /**
      * 是否是P2PKH输出脚本
      */
-    public static boolean isPayToPublicKeyHashOutputScript(OutputScriptDto outputScriptDTO) {
+    public static boolean isPayToPublicKeyHashOutputScript(OutputScriptDto outputScriptDto) {
         try {
-            return  outputScriptDTO.size() == 6
-                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()).equals(outputScriptDTO.get(0))
-                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()).equals(outputScriptDTO.get(1))
-                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(outputScriptDTO.get(2))
-                    && 40 == outputScriptDTO.get(3).length()
-                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()).equals(outputScriptDTO.get(4))
-                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()).equals(outputScriptDTO.get(5));
+            return  outputScriptDto.size() == 6
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()).equals(outputScriptDto.get(0))
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()).equals(outputScriptDto.get(1))
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()).equals(outputScriptDto.get(2))
+                    && 40 == outputScriptDto.get(3).length()
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()).equals(outputScriptDto.get(4))
+                    && HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()).equals(outputScriptDto.get(5));
         }catch (Exception e){
             return false;
         }

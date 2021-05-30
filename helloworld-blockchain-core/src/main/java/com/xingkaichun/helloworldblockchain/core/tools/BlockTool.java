@@ -30,7 +30,7 @@ public class BlockTool {
      * 计算区块的Hash值
      */
     public static String calculateBlockHash(Block block) {
-        BlockDto blockDto = Model2DtoTool.block2BlockDTO(block);
+        BlockDto blockDto = Model2DtoTool.block2BlockDto(block);
         return calculateBlockHash(blockDto);
     }
     /**
@@ -50,7 +50,7 @@ public class BlockTool {
      * 计算区块的默克尔树根值
      */
     public static String calculateBlockMerkleTreeRoot(Block block) {
-        BlockDto blockDto = Model2DtoTool.block2BlockDTO(block);
+        BlockDto blockDto = Model2DtoTool.block2BlockDto(block);
         return calculateBlockMerkleTreeRoot(blockDto);
     }
     /**
@@ -58,15 +58,15 @@ public class BlockTool {
      */
     public static String calculateBlockMerkleTreeRoot(BlockDto blockDto) {
         List<TransactionDto> transactions = blockDto.getTransactions();
-        List<byte[]> bytesTransactionHashList = new ArrayList<>();
+        List<byte[]> bytesTransactionHashs = new ArrayList<>();
         if(transactions != null){
             for(TransactionDto transactionDto : transactions) {
                 String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
                 byte[] bytesTransactionHash = HexUtil.hexStringToBytes(transactionHash);
-                bytesTransactionHashList.add(bytesTransactionHash);
+                bytesTransactionHashs.add(bytesTransactionHash);
             }
         }
-        return HexUtil.bytesToHexString(MerkleTreeUtil.calculateMerkleTreeRoot(bytesTransactionHashList));
+        return HexUtil.bytesToHexString(MerkleTreeUtil.calculateMerkleTreeRoot(bytesTransactionHashs));
     }
     /**
      * 区块新产生的哈希是否存在重复

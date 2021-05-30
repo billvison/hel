@@ -32,17 +32,17 @@ public class WalletApplicationServiceImpl implements WalletApplicationService {
 
     @Override
     public SubmitTransactionToBlockchainNetworkResponse submitTransactionToBlockchainNetwork(SubmitTransactionToBlockchainNetworkRequest request) {
-        TransactionDto transactionDTO = request.getTransaction();
+        TransactionDto transactionDto = request.getTransaction();
         //将交易提交到本地区块链
-        blockchainCore.submitTransaction(transactionDTO);
+        blockchainCore.submitTransaction(transactionDto);
         //提交交易到网络
-        List<Node> nodes = blockchainNetCore.getNodeService().queryAllNodeList();
+        List<Node> nodes = blockchainNetCore.getNodeService().queryAllNodes();
         List<SubmitTransactionToBlockchainNetworkResponse.Node> successSubmitNode = new ArrayList<>();
         List<SubmitTransactionToBlockchainNetworkResponse.Node> failSubmitNode = new ArrayList<>();
         if(nodes != null){
             for(Node node:nodes){
                 PostTransactionRequest postTransactionRequest = new PostTransactionRequest();
-                postTransactionRequest.setTransaction(transactionDTO);
+                postTransactionRequest.setTransaction(transactionDto);
                 PostTransactionResponse postTransactionResponse = new BlockchainNodeClientImpl(node.getIp()).postTransaction(postTransactionRequest);
                 if(postTransactionResponse != null){
                     successSubmitNode.add(new SubmitTransactionToBlockchainNetworkResponse.Node(node.getIp()));
@@ -53,7 +53,7 @@ public class WalletApplicationServiceImpl implements WalletApplicationService {
         }
 
         SubmitTransactionToBlockchainNetworkResponse response = new SubmitTransactionToBlockchainNetworkResponse();
-        response.setTransaction(transactionDTO);
+        response.setTransaction(transactionDto);
         response.setSuccessSubmitNode(successSubmitNode);
         response.setFailSubmitNode(failSubmitNode);
         return response;

@@ -17,7 +17,7 @@ public interface NodeService {
     /**
      * 获取所有节点
      */
-    List<Node> queryAllNodeList();
+    List<Node> queryAllNodes();
 
     /**
      * 删除节点

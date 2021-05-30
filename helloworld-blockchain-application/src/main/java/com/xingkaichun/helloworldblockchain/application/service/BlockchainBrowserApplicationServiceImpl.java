@@ -140,12 +140,12 @@ public class BlockchainBrowserApplicationServiceImpl implements BlockchainBrowse
 
     @Override
     public UnconfirmedTransactionVo queryUnconfirmedTransactionByTransactionHash(String transactionHash) {
-        TransactionDto transactionDTO = blockchainCore.queryUnconfirmedTransactionDtoByTransactionHash(transactionHash);
-        if(transactionDTO == null){
+        TransactionDto transactionDto = blockchainCore.queryUnconfirmedTransactionDtoByTransactionHash(transactionHash);
+        if(transactionDto == null){
             return null;
         }
 
-        Transaction transaction = Dto2ModelTool.transactionDto2Transaction(blockchainCore.getBlockchainDataBase(),transactionDTO);
+        Transaction transaction = Dto2ModelTool.transactionDto2Transaction(blockchainCore.getBlockchainDataBase(),transactionDto);
         UnconfirmedTransactionVo transactionDtoResp = new UnconfirmedTransactionVo();
         transactionDtoResp.setTransactionHash(transaction.getTransactionHash());
 

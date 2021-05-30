@@ -201,7 +201,7 @@ public class NodeConsoleApplicationController {
     @RequestMapping(value = NodeConsoleApplicationApi.QUERY_ALL_NODES,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryAllNodesResponse> queryAllNodes(@RequestBody QueryAllNodesRequest request){
         try {
-            List<Node> nodes = blockchainNetCore.getNodeService().queryAllNodeList();
+            List<Node> nodes = blockchainNetCore.getNodeService().queryAllNodes();
             QueryAllNodesResponse response = new QueryAllNodesResponse();
             response.setNodes(nodes);
             return ServiceResult.createSuccessServiceResult("查询节点成功",response);

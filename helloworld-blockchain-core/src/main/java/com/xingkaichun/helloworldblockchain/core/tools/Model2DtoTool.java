@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class Model2DtoTool {
 
-    public static BlockDto block2BlockDTO(Block block) {
+    public static BlockDto block2BlockDto(Block block) {
         if(block == null){
             return null;
         }
@@ -26,29 +26,29 @@ public class Model2DtoTool {
         List<Transaction> transactionList = block.getTransactions();
         if(transactionList != null){
             for(Transaction transaction:transactionList){
-                TransactionDto transactionDTO = transaction2TransactionDTO(transaction);
-                transactionDtoList.add(transactionDTO);
+                TransactionDto transactionDto = transaction2TransactionDto(transaction);
+                transactionDtoList.add(transactionDto);
             }
         }
 
-        BlockDto blockDTO = new BlockDto();
-        blockDTO.setTimestamp(block.getTimestamp());
-        blockDTO.setPreviousHash(block.getPreviousBlockHash());
-        blockDTO.setTransactions(transactionDtoList);
-        blockDTO.setNonce(block.getNonce());
-        return blockDTO;
+        BlockDto blockDto = new BlockDto();
+        blockDto.setTimestamp(block.getTimestamp());
+        blockDto.setPreviousHash(block.getPreviousBlockHash());
+        blockDto.setTransactions(transactionDtoList);
+        blockDto.setNonce(block.getNonce());
+        return blockDto;
     }
 
-    public static TransactionDto transaction2TransactionDTO(Transaction transaction) {
+    public static TransactionDto transaction2TransactionDto(Transaction transaction) {
         List<TransactionInputDto> inputs = new ArrayList<>();
         List<TransactionInput> transactionInputList = transaction.getInputs();
         if(transactionInputList!=null){
             for (TransactionInput transactionInput:transactionInputList){
-                TransactionInputDto transactionInputDTO = new TransactionInputDto();
-                transactionInputDTO.setTransactionHash(transactionInput.getUnspentTransactionOutput().getTransactionHash());
-                transactionInputDTO.setTransactionOutputIndex(transactionInput.getUnspentTransactionOutput().getTransactionOutputIndex());
-                transactionInputDTO.setInputScript(inputScript2InputScriptDTO(transactionInput.getInputScript()));
-                inputs.add(transactionInputDTO);
+                TransactionInputDto transactionInputDto = new TransactionInputDto();
+                transactionInputDto.setTransactionHash(transactionInput.getUnspentTransactionOutput().getTransactionHash());
+                transactionInputDto.setTransactionOutputIndex(transactionInput.getUnspentTransactionOutput().getTransactionOutputIndex());
+                transactionInputDto.setInputScript(inputScript2InputScriptDto(transactionInput.getInputScript()));
+                inputs.add(transactionInputDto);
             }
         }
 
@@ -56,33 +56,33 @@ public class Model2DtoTool {
         List<TransactionOutput> transactionOutputList = transaction.getOutputs();
         if(transactionOutputList!=null){
             for(TransactionOutput transactionOutput:transactionOutputList){
-                TransactionOutputDto transactionOutputDTO = transactionOutput2TransactionOutputDTO(transactionOutput);
-                outputs.add(transactionOutputDTO);
+                TransactionOutputDto transactionOutputDto = transactionOutput2TransactionOutputDto(transactionOutput);
+                outputs.add(transactionOutputDto);
             }
         }
 
-        TransactionDto transactionDTO = new TransactionDto();
-        transactionDTO.setInputs(inputs);
-        transactionDTO.setOutputs(outputs);
-        return transactionDTO;
+        TransactionDto transactionDto = new TransactionDto();
+        transactionDto.setInputs(inputs);
+        transactionDto.setOutputs(outputs);
+        return transactionDto;
     }
 
-    public static InputScriptDto inputScript2InputScriptDTO(InputScript inputScript) {
-        InputScriptDto inputScriptDTO = new InputScriptDto();
-        inputScriptDTO.addAll(inputScript);
-        return inputScriptDTO;
+    public static InputScriptDto inputScript2InputScriptDto(InputScript inputScript) {
+        InputScriptDto inputScriptDto = new InputScriptDto();
+        inputScriptDto.addAll(inputScript);
+        return inputScriptDto;
     }
 
-    public static OutputScriptDto outputScript2OutputScriptDTO(OutputScript outputScript) {
-        OutputScriptDto outputScriptDTO = new OutputScriptDto();
-        outputScriptDTO.addAll(outputScript);
-        return outputScriptDTO;
+    public static OutputScriptDto outputScript2OutputScriptDto(OutputScript outputScript) {
+        OutputScriptDto outputScriptDto = new OutputScriptDto();
+        outputScriptDto.addAll(outputScript);
+        return outputScriptDto;
     }
 
-    public static TransactionOutputDto transactionOutput2TransactionOutputDTO(TransactionOutput transactionOutput) {
-        TransactionOutputDto transactionOutputDTO = new TransactionOutputDto();
-        transactionOutputDTO.setValue(transactionOutput.getValue());
-        transactionOutputDTO.setOutputScript(outputScript2OutputScriptDTO(transactionOutput.getOutputScript()));
-        return transactionOutputDTO;
+    public static TransactionOutputDto transactionOutput2TransactionOutputDto(TransactionOutput transactionOutput) {
+        TransactionOutputDto transactionOutputDto = new TransactionOutputDto();
+        transactionOutputDto.setValue(transactionOutput.getValue());
+        transactionOutputDto.setOutputScript(outputScript2OutputScriptDto(transactionOutput.getOutputScript()));
+        return transactionOutputDto;
     }
 }

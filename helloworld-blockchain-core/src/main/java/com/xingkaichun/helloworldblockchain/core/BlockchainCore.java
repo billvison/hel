@@ -10,7 +10,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import java.util.List;
 
 /**
- * 单机版[没有网络交互版本]区块链核心，代表一个完整的单机版区块链核心系统，它在底层维护着一条区块链的完整数据。
+ * 区块链核心：单机版[没有网络交互功能的]区块链核心，代表一个完整的单机版区块链核心系统，它在底层维护着一条区块链的完整数据。
  * 设计之初，为了精简，它被设计为不含有网络模块。
  * 除了不含有网络模块外，它包含了一个区块链系统应有的所有功能，包含
  * 1.区块链账户生成 2.转账 3.提交交易至区块链
@@ -20,6 +20,8 @@ import java.util.List;
  * 单机版区块链核心系统，由以下几部分组成：
  * 区块链数据库：用于持久化本地区块链的数据
  * @see com.xingkaichun.helloworldblockchain.core.BlockchainDatabase
+ * 未确认交易数据库：存放未确认的交易数据
+ * @see com.xingkaichun.helloworldblockchain.core.UnconfirmedTransactionDatabase
  * 矿工：挖矿，将新挖取的矿放进区块链数据库
  * @see com.xingkaichun.helloworldblockchain.core.Miner
  * 钱包：管理拥有的账户（增加账户、删除账户、查询账户、获取账户等）
@@ -33,14 +35,18 @@ public abstract class BlockchainCore {
     protected CoreConfiguration coreConfiguration;
     //区块链数据库
     protected BlockchainDatabase blockchainDataBase ;
+    //未确认交易数据库
+    protected UnconfirmedTransactionDatabase unconfirmedTransactionDataBase;
     //矿工
     protected Miner miner ;
     //钱包
     protected Wallet wallet ;
 
-    public BlockchainCore(CoreConfiguration coreConfiguration, BlockchainDatabase blockchainDataBase, Wallet wallet, Miner miner) {
+
+    public BlockchainCore(CoreConfiguration coreConfiguration, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase, Wallet wallet, Miner miner) {
         this.coreConfiguration = coreConfiguration;
         this.blockchainDataBase = blockchainDataBase;
+        this.unconfirmedTransactionDataBase = unconfirmedTransactionDataBase;
         this.wallet = wallet;
         this.miner = miner;
     }
@@ -106,15 +112,15 @@ public abstract class BlockchainCore {
     /**
      * 构建交易。使用钱包里的账户。
      */
-    public abstract BuildTransactionResponse buildTransactionDTO(BuildTransactionRequest request) ;
+    public abstract BuildTransactionResponse buildTransactionDto(BuildTransactionRequest request) ;
     /**
      * 提交交易到区块链
      */
-    public abstract void submitTransaction(TransactionDto transactionDTO) ;
+    public abstract void submitTransaction(TransactionDto transactionDto) ;
     /**
      * 查询未确认的交易
      */
-    public abstract List<TransactionDto> queryUnconfirmedTransactionList(long from, long size) ;
+    public abstract List<TransactionDto> queryUnconfirmedTransactions(long from, long size) ;
     /**
      * 根据交易哈希查询未确认交易
      */
@@ -128,6 +134,10 @@ public abstract class BlockchainCore {
     //region get set
     public BlockchainDatabase getBlockchainDataBase() {
         return blockchainDataBase;
+    }
+
+    public UnconfirmedTransactionDatabase getUnconfirmedTransactionDataBase() {
+        return unconfirmedTransactionDataBase;
     }
 
     public Miner getMiner() {

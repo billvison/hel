@@ -29,7 +29,7 @@ public class MerkleTreeUtilTest {
     private static final String hex11 = "cb00f8a0573b18faa8c4f467b049f5d202bf1101d9ef2633bc611be70376a4b4";
     private static final String hex12 = "05d07bb2de2bda1115409f99bf6b626d23ecb6bed810d8be263352988e4548cb";
 
-    private static final List<byte[]> hashList = new ArrayList<>(Arrays.asList(Utils.reverseBytes(Hex.decode(hex1)),Utils.reverseBytes(Hex.decode(hex2)),Utils.reverseBytes(Hex.decode(hex3)),Utils.reverseBytes(Hex.decode(hex4)),Utils.reverseBytes(Hex.decode(hex5))
+    private static final List<byte[]> hashs = new ArrayList<>(Arrays.asList(Utils.reverseBytes(Hex.decode(hex1)),Utils.reverseBytes(Hex.decode(hex2)),Utils.reverseBytes(Hex.decode(hex3)),Utils.reverseBytes(Hex.decode(hex4)),Utils.reverseBytes(Hex.decode(hex5))
             ,Utils.reverseBytes(Hex.decode(hex6)),Utils.reverseBytes(Hex.decode(hex7)),Utils.reverseBytes(Hex.decode(hex8)),Utils.reverseBytes(Hex.decode(hex9)),Utils.reverseBytes(Hex.decode(hex10))
             ,Utils.reverseBytes(Hex.decode(hex11)),Utils.reverseBytes(Hex.decode(hex12))));
 
@@ -39,7 +39,7 @@ public class MerkleTreeUtilTest {
     @Test
     public void calculateMerkleRootByHashTest()
     {
-        byte[] merkleRoot = MerkleTreeUtil.calculateMerkleTreeRoot(hashList);
+        byte[] merkleRoot = MerkleTreeUtil.calculateMerkleTreeRoot(hashs);
         assertArrayEquals(Utils.reverseBytes(HexUtil.hexStringToBytes(merkleTreeRoot)),merkleRoot);
     }
 }

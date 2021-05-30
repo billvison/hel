@@ -50,7 +50,7 @@ public class BlockchainHeightBroadcaster {
      * 发现自己的区块链高度比全网节点都要高，则广播自己的区块链高度
      */
     private void broadcastBlockchainHeight() {
-        List<Node> nodes = nodeService.queryAllNodeList();
+        List<Node> nodes = nodeService.queryAllNodes();
         if(nodes == null || nodes.size()==0){
             return;
         }

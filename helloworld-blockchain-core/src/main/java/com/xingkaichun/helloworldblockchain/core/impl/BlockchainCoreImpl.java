@@ -25,8 +25,8 @@ import java.util.Map;
  */
 public class BlockchainCoreImpl extends BlockchainCore {
 
-    public BlockchainCoreImpl(CoreConfiguration coreConfiguration, BlockchainDatabase blockchainDataBase, Wallet wallet, Miner miner) {
-        super(coreConfiguration,blockchainDataBase,wallet,miner);
+    public BlockchainCoreImpl(CoreConfiguration coreConfiguration, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase, Wallet wallet, Miner miner) {
+        super(coreConfiguration,blockchainDataBase,unconfirmedTransactionDataBase,wallet,miner);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
 
     @Override
-    public BuildTransactionResponse buildTransactionDTO(BuildTransactionRequest request) {
+    public BuildTransactionResponse buildTransactionDto(BuildTransactionRequest request) {
         List<Account> allAccountList = wallet.getAllAccounts();
         if(allAccountList == null || allAccountList.isEmpty()){
             BuildTransactionResponse response = new BuildTransactionResponse();
@@ -119,15 +119,15 @@ public class BlockchainCoreImpl extends BlockchainCore {
         List<String> privateKeyList = new ArrayList<>();
         for(Account account:allAccountList){
             privateKeyList.add(account.getPrivateKey());
-            //TODO
-            response = buildTransactionDTO(privateKeyList,request.getRecipientList(),payerChangeAccount.getAddress(),100);
+            //TODO 这里没有设置交易手续费，如有需要可以在这里设置交易手续费
+            response = buildTransactionDto(privateKeyList,request.getRecipientList(),payerChangeAccount.getAddress(),0);
             if(response.isBuildTransactionSuccess()){
                 return response;
             }
         }
         return response;
     }
-    public BuildTransactionResponse buildTransactionDTO(List<String> payerPrivateKeyList, List<Recipient> recipientList, String payerChangeAddress, long fee) {
+    public BuildTransactionResponse buildTransactionDto(List<String> payerPrivateKeyList, List<Recipient> recipientList, String payerChangeAddress, long fee) {
         Map<String,TransactionOutput> privateKeyUtxoMap = new HashMap<>();
         BuildTransactionResponse response = new BuildTransactionResponse();
         response.setMessage("请输入足够的金额");
@@ -140,7 +140,7 @@ public class BlockchainCoreImpl extends BlockchainCore {
                 continue;
             }
             privateKeyUtxoMap.put(privateKey,utxo);
-            response = WalletTool.buildTransactionDTO(privateKeyUtxoMap,recipientList,payerChangeAddress,fee);
+            response = WalletTool.buildTransactionDto(privateKeyUtxoMap,recipientList,payerChangeAddress,fee);
             if(response.isBuildTransactionSuccess()){
                 break;
             }
@@ -149,17 +149,17 @@ public class BlockchainCoreImpl extends BlockchainCore {
     }
 
     @Override
-    public void submitTransaction(TransactionDto transactionDTO) {
-        miner.getUnconfirmedTransactionDataBase().insertTransaction(transactionDTO);
+    public void submitTransaction(TransactionDto transactionDto) {
+        getUnconfirmedTransactionDataBase().insertTransaction(transactionDto);
     }
 
     @Override
-    public List<TransactionDto> queryUnconfirmedTransactionList(long from, long size) {
-        return miner.getUnconfirmedTransactionDataBase().selectTransactionList(from,size);
+    public List<TransactionDto> queryUnconfirmedTransactions(long from, long size) {
+        return getUnconfirmedTransactionDataBase().selectTransactions(from,size);
     }
 
     @Override
     public TransactionDto queryUnconfirmedTransactionDtoByTransactionHash(String transactionHash) {
-        return miner.getUnconfirmedTransactionDataBase().selectTransactionByTransactionHash(transactionHash);
+        return getUnconfirmedTransactionDataBase().selectTransactionByTransactionHash(transactionHash);
     }
 }

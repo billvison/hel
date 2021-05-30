@@ -50,7 +50,7 @@ public class NodeBroadcaster {
      * 广播自己
      */
     private void broadcastNode() {
-        List<Node> nodes = nodeService.queryAllNodeList();
+        List<Node> nodes = nodeService.queryAllNodes();
         for(Node node:nodes){
             try {
                 new BlockchainNodeClientImpl(node.getIp()).pingNode(new PingRequest());

@@ -27,22 +27,22 @@ public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransa
     }
 
     @Override
-    public void insertTransaction(TransactionDto transactionDTO) {
+    public void insertTransaction(TransactionDto transactionDto) {
         //交易已经持久化进交易池数据库 丢弃交易
         synchronized (UnconfirmedTransactionDatabaseDefaultImpl.class){
-            String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
-            KvDBUtil.put(unconfirmedTransactionDatabasePath, getKey(transactionHash), EncodeDecodeTool.encode(transactionDTO));
+            String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
+            KvDBUtil.put(unconfirmedTransactionDatabasePath, getKey(transactionHash), EncodeDecodeTool.encode(transactionDto));
         }
     }
 
     @Override
-    public List<TransactionDto> selectTransactionList(long from, long size) {
+    public List<TransactionDto> selectTransactions(long from, long size) {
         List<TransactionDto> transactionDtoList = new ArrayList<>();
-        List<byte[]> bytesTransactionDTOList = KvDBUtil.get(unconfirmedTransactionDatabasePath,from,size);
-        if(bytesTransactionDTOList != null){
-            for(byte[] bytesTransactionDTO:bytesTransactionDTOList){
-                TransactionDto transactionDTO = EncodeDecodeTool.decodeToTransactionDTO(bytesTransactionDTO);
-                transactionDtoList.add(transactionDTO);
+        List<byte[]> bytesTransactionDtos = KvDBUtil.get(unconfirmedTransactionDatabasePath,from,size);
+        if(bytesTransactionDtos != null){
+            for(byte[] bytesTransactionDto:bytesTransactionDtos){
+                TransactionDto transactionDto = EncodeDecodeTool.decodeToTransactionDto(bytesTransactionDto);
+                transactionDtoList.add(transactionDto);
             }
         }
         return transactionDtoList;
@@ -55,11 +55,11 @@ public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransa
 
     @Override
     public TransactionDto selectTransactionByTransactionHash(String transactionHash) {
-        byte[] byteTransactionDTO = KvDBUtil.get(unconfirmedTransactionDatabasePath, getKey(transactionHash));
-        if(byteTransactionDTO == null){
+        byte[] byteTransactionDto = KvDBUtil.get(unconfirmedTransactionDatabasePath, getKey(transactionHash));
+        if(byteTransactionDto == null){
             return null;
         }
-        return EncodeDecodeTool.decodeToTransactionDTO(byteTransactionDTO);
+        return EncodeDecodeTool.decodeToTransactionDto(byteTransactionDto);
     }
 
     private byte[] getKey(String transactionHash){

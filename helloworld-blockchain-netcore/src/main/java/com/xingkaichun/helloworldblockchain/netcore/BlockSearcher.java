@@ -60,7 +60,10 @@ public class BlockSearcher {
      * 搜索新的区块，并同步这些区块到本地区块链系统
      */
     private void synchronizeBlocks() {
-        List<Node> nodes = nodeService.queryAllNodeList();
+        if(!netCoreConfiguration.isSynchronizerActive()){
+            return;
+        }
+        List<Node> nodes = nodeService.queryAllNodes();
         if(nodes == null || nodes.size()==0){
             return;
         }
@@ -68,6 +71,9 @@ public class BlockSearcher {
         long localBlockchainHeight = blockchainCore.queryBlockchainHeight();
         for(Node node:nodes){
             try {
+                if(!netCoreConfiguration.isSynchronizerActive()){
+                    return;
+                }
                 //本地区块链高度小于远程节点区块链高度，此时需要将远程节点的区块同步到本地区块链。
                 if(LongUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
                     try {
@@ -227,11 +233,11 @@ public class BlockSearcher {
             if(getBlockResponse == null){
                 return;
             }
-            BlockDto blockDTO = getBlockResponse.getBlock();
-            if(blockDTO == null){
+            BlockDto blockDto = getBlockResponse.getBlock();
+            if(blockDto == null){
                 return;
             }
-            String blockHash = BlockTool.calculateBlockHash(blockDTO);
+            String blockHash = BlockTool.calculateBlockHash(blockDto);
             //没有查询到区块哈希，代表着远程节点的高度没有本地大
             if(StringUtil.isNullOrEmpty(blockHash)){
                 return;
@@ -252,11 +258,11 @@ public class BlockSearcher {
                 if(getBlockResponse == null){
                     return;
                 }
-                BlockDto blockDTO = getBlockResponse.getBlock();
-                if(blockDTO == null){
+                BlockDto blockDto = getBlockResponse.getBlock();
+                if(blockDto == null){
                     return;
                 }
-                String blockHash = BlockTool.calculateBlockHash(blockDTO);
+                String blockHash = BlockTool.calculateBlockHash(blockDto);
                 Block localBlock = slaveBlockchainCore.queryBlockByBlockHeight(forkBlockHeight);
                 if(StringUtil.isEquals(blockHash,localBlock.getHash())){
                     break;
@@ -282,11 +288,11 @@ public class BlockSearcher {
                 if(getBlockResponse == null){
                     return;
                 }
-                BlockDto blockDTO = getBlockResponse.getBlock();
-                if(blockDTO == null){
+                BlockDto blockDto = getBlockResponse.getBlock();
+                if(blockDto == null){
                     return;
                 }
-                Block block = Dto2ModelTool.blockDto2Block(slaveBlockchainCore.getBlockchainDataBase(),blockDTO);
+                Block block = Dto2ModelTool.blockDto2Block(slaveBlockchainCore.getBlockchainDataBase(),blockDto);
                 boolean isAddBlockSuccess = slaveBlockchainCore.addBlock(block);
                 if(!isAddBlockSuccess){
                     return;
@@ -308,11 +314,11 @@ public class BlockSearcher {
                 if(getBlockResponse == null){
                     return;
                 }
-                BlockDto blockDTO = getBlockResponse.getBlock();
-                if(blockDTO == null){
+                BlockDto blockDto = getBlockResponse.getBlock();
+                if(blockDto == null){
                     return;
                 }
-                Block block = Dto2ModelTool.blockDto2Block(masterBlockchainCore.getBlockchainDataBase(),blockDTO);
+                Block block = Dto2ModelTool.blockDto2Block(masterBlockchainCore.getBlockchainDataBase(),blockDto);
                 boolean isAddBlockSuccess = masterBlockchainCore.addBlock(block);
                 if(!isAddBlockSuccess){
                     return;

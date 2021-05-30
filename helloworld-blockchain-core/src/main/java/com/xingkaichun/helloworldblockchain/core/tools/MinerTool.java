@@ -32,18 +32,18 @@ public class MinerTool {
      */
     public static Block buildMiningBlock(BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase, Account minerAccount) {
         //获取一部分未确认交易，最优的方式是获取所有未确认的交易进行处理，但是数据处理起来会很复杂，因为项目是helloworld的，所以简单的拿一部分数据即可。
-        List<TransactionDto> forMineBlockTransactionDtoList = unconfirmedTransactionDataBase.selectTransactionList(1,10000);
+        List<TransactionDto> forMineBlockTransactionDtoList = unconfirmedTransactionDataBase.selectTransactions(1,10000);
 
         List<Transaction> transactionList = new ArrayList<>();
         List<Transaction> backupTransactionList = new ArrayList<>();
 
         if(forMineBlockTransactionDtoList != null){
-            for(TransactionDto transactionDTO:forMineBlockTransactionDtoList){
+            for(TransactionDto transactionDto:forMineBlockTransactionDtoList){
                 try {
-                    Transaction transaction = Dto2ModelTool.transactionDto2Transaction(blockchainDataBase,transactionDTO);
+                    Transaction transaction = Dto2ModelTool.transactionDto2Transaction(blockchainDataBase,transactionDto);
                     transactionList.add(transaction);
                 } catch (Exception e) {
-                    String transactionHash = TransactionTool.calculateTransactionHash(transactionDTO);
+                    String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
                     LogUtil.error(StringUtil.format("类型转换异常,将从挖矿交易数据库中删除该交易。交易哈希[%s]。",transactionHash),e);
                     unconfirmedTransactionDataBase.deleteByTransactionHash(transactionHash);
                 }
@@ -181,14 +181,7 @@ public class MinerTool {
         Incentive incentive = blockchainDataBase.getIncentive();
         long incentiveValue = incentive.incentiveAmount(blockchainDataBase,nonNonceBlock);
         //激励发放地址
-        String incentiveAddress = incentive.incentiveAddress(blockchainDataBase,nonNonceBlock);
-        Transaction mineAwardTransaction;
-        //指定了激励地址
-        if(StringUtil.isNullOrEmpty(incentiveAddress)){
-            mineAwardTransaction =  buildIncentiveTransaction(minerAccount.getAddress(),incentiveValue);
-        }else {
-            mineAwardTransaction =  buildIncentiveTransaction(incentiveAddress,incentiveValue);
-        }
+        Transaction mineAwardTransaction = buildIncentiveTransaction(minerAccount.getAddress(),incentiveValue);
         packingTransactionList.add(0,mineAwardTransaction);
 
         String merkleTreeRoot = BlockTool.calculateBlockMerkleTreeRoot(nonNonceBlock);

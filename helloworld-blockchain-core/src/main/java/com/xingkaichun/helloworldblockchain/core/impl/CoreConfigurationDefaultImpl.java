@@ -62,7 +62,7 @@ public class CoreConfigurationDefaultImpl extends CoreConfiguration {
     }
 
     @Override
-    public long getMinerMineIntervalTimestamp() {
+    public long getMinerMineTimeInterval() {
         return MINE_TIMESTAMP_PER_ROUND;
     }
 

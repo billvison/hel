@@ -48,7 +48,7 @@ public class BlockchainHeightSearcher {
     }
 
     private void searchBlockchainHeight() {
-        List<Node> nodes = nodeService.queryAllNodeList();
+        List<Node> nodes = nodeService.queryAllNodes();
         for(Node node:nodes){
             try {
                 GetBlockchainHeightRequest getBlockchainHeightRequest = new GetBlockchainHeightRequest();

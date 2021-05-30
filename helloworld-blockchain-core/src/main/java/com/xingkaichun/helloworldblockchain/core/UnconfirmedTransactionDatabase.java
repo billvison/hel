@@ -16,12 +16,12 @@ public abstract class UnconfirmedTransactionDatabase {
     /**
      * 新增交易
      */
-    public abstract void insertTransaction(TransactionDto transactionDTO) ;
+    public abstract void insertTransaction(TransactionDto transactionDto) ;
 
     /**
      * 批量提取交易
      */
-    public abstract List<TransactionDto> selectTransactionList(long from, long size) ;
+    public abstract List<TransactionDto> selectTransactions(long from, long size) ;
 
     /**
      * 删除交易

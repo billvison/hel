@@ -59,7 +59,7 @@ public class HttpServerHandlerResolver {
     public GetBlockResponse getBlock(GetBlockRequest request){
         try {
             Block blockByBlockHeight = blockchainCore.queryBlockByBlockHeight(request.getBlockHeight());
-            BlockDto block = Model2DtoTool.block2BlockDTO(blockByBlockHeight);
+            BlockDto block = Model2DtoTool.block2BlockDto(blockByBlockHeight);
             GetBlockResponse response = new GetBlockResponse();
             response.setBlock(block);
             return response;
@@ -100,7 +100,7 @@ public class HttpServerHandlerResolver {
 
     public GetNodesResponse getNodes(GetNodesRequest request) {
         try {
-            List<Node> nodeList = nodeService.queryAllNodeList();
+            List<Node> nodeList = nodeService.queryAllNodes();
             if(nodeList == null){
                 nodeList = new ArrayList<>();
             }
@@ -150,8 +150,8 @@ public class HttpServerHandlerResolver {
 
     public GetUnconfirmedTransactionsResponse getUnconfirmedTransactions(GetUnconfirmedTransactionsRequest request) {
         try {
-            UnconfirmedTransactionDatabase unconfirmedTransactionDataBase = blockchainCore.getMiner().getUnconfirmedTransactionDataBase();
-            List<TransactionDto> transactions = unconfirmedTransactionDataBase.selectTransactionList(1,Setting.BlockSetting.BLOCK_MAX_TRANSACTION_COUNT);
+            UnconfirmedTransactionDatabase unconfirmedTransactionDataBase = blockchainCore.getUnconfirmedTransactionDataBase();
+            List<TransactionDto> transactions = unconfirmedTransactionDataBase.selectTransactions(1,Setting.BlockSetting.BLOCK_MAX_TRANSACTION_COUNT);
             GetUnconfirmedTransactionsResponse response = new GetUnconfirmedTransactionsResponse();
             response.setTransactions(transactions);
             return response;

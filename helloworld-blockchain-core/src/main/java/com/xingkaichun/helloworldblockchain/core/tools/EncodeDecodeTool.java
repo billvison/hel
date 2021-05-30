@@ -70,17 +70,17 @@ public class EncodeDecodeTool {
 
 
 
-    public static byte[] encode(TransactionDto transactionDTO) {
+    public static byte[] encode(TransactionDto transactionDto) {
         try {
-            return ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(transactionDTO));
+            return ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(transactionDto));
         } catch (Exception e) {
             LogUtil.error("serialize TransactionDto failed.",e);
             throw new RuntimeException(e);
         }
     }
-    public static TransactionDto decodeToTransactionDTO(byte[] bytesTransactionDTO) {
+    public static TransactionDto decodeToTransactionDto(byte[] bytesTransactionDto) {
         try {
-            return JsonUtil.fromJson(ByteUtil.utf8BytesToString(bytesTransactionDTO), TransactionDto.class);
+            return JsonUtil.fromJson(ByteUtil.utf8BytesToString(bytesTransactionDto), TransactionDto.class);
         } catch (Exception e) {
             LogUtil.error("deserialize TransactionDto failed.",e);
             throw new RuntimeException(e);
