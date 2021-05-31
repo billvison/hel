@@ -18,10 +18,8 @@ public class IncentiveDefaultImpl extends Incentive {
         long minerSubsidy = getMinerSubsidy(block);
         //给予矿工的交易手续费
         long minerFee = BlockTool.getBlockFee(block);
-        //预挖
-        long otherTeamIncentiveAmount = getInAdvanceMineSubsidy(block);
         //总的激励
-        return minerSubsidy + minerFee + otherTeamIncentiveAmount;
+        return minerSubsidy + minerFee;
     }
 
     @Override
@@ -35,22 +33,13 @@ public class IncentiveDefaultImpl extends Incentive {
         return true;
     }
 
-    private long getMinerSubsidy(Block block) {
-        //六六大顺
-        if(block.getHeight() <= 666666L){
-            return block.getHeight();
+    private static long getMinerSubsidy(Block block) {
+        long initCoin = 5000000000L;
+        long multiple = (block.getHeight() - 1L) / 210000L;
+        while (multiple > 0){
+            initCoin = initCoin / 2L;
+            --multiple;
         }
-        return 0L;
-    }
-
-    /**
-     * 预挖
-     */
-    private long getInAdvanceMineSubsidy(Block block) {
-        if(block.getHeight() == 1L){
-            //1 0000 0000 0000 - ( 1 + 666666 ) * ( 666666 / 2 ) = 7777 7788 8889L;
-            return 777777888889L;
-        }
-        return 0L;
+        return initCoin;
     }
 }
