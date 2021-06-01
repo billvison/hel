@@ -2,7 +2,7 @@ package com.xingkaichun.helloworldblockchain.netcore.service;
 
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
-import com.xingkaichun.helloworldblockchain.util.KvDBUtil;
+import com.xingkaichun.helloworldblockchain.util.KvDbUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
 /**
@@ -144,11 +144,11 @@ public class NetCoreConfigurationImpl implements NetCoreConfiguration {
 
 
     private byte[] getConfigurationValue(byte[] configurationKey) {
-        byte[] bytesConfigurationValue = KvDBUtil.get(netCoreConfigurationDatabasePath, configurationKey);
+        byte[] bytesConfigurationValue = KvDbUtil.get(netCoreConfigurationDatabasePath, configurationKey);
         return bytesConfigurationValue;
     }
 
     private void addOrUpdateConfiguration(byte[] configurationKey, byte[] configurationValue) {
-        KvDBUtil.put(netCoreConfigurationDatabasePath, configurationKey, configurationValue);
+        KvDbUtil.put(netCoreConfigurationDatabasePath, configurationKey, configurationValue);
     }
 }

@@ -188,9 +188,6 @@ public class BlockTool {
      * 注意：这里没有严格校验,例如没有校验交易是否完全一样
      */
     public static boolean isBlockEquals(Block block1, Block block2) {
-        if(block1 == null && block2 == null){
-            return true;
-        }
         if(block1 == null || block2 == null){
             return false;
         }

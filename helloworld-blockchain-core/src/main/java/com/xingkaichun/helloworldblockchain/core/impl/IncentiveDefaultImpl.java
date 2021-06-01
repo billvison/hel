@@ -4,6 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.BlockchainDatabase;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
+import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 
 /**
@@ -34,8 +35,8 @@ public class IncentiveDefaultImpl extends Incentive {
     }
 
     private static long getMinerSubsidy(Block block) {
-        long initCoin = 5000000000L;
-        long multiple = (block.getHeight() - 1L) / 210000L;
+        long initCoin = Setting.IncentiveSetting.BLOCK_INIT_INCENTIVE;
+        long multiple = (block.getHeight() - 1L) / Setting.IncentiveSetting.INCENTIVE_HALVING_INTERVAL;
         while (multiple > 0){
             initCoin = initCoin / 2L;
             --multiple;

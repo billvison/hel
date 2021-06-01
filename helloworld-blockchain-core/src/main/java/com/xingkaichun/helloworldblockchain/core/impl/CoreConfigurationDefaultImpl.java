@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.CoreConfiguration;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
-import com.xingkaichun.helloworldblockchain.util.KvDBUtil;
+import com.xingkaichun.helloworldblockchain.util.KvDbUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
 /**
@@ -72,9 +72,9 @@ public class CoreConfigurationDefaultImpl extends CoreConfiguration {
         return FileUtil.newPath(corePath, CONFIGURATION_DATABASE_NAME);
     }
     private byte[] getConfigurationValue(byte[] configurationKey) {
-        return KvDBUtil.get(getConfigurationDatabasePath(), configurationKey);
+        return KvDbUtil.get(getConfigurationDatabasePath(), configurationKey);
     }
     private void addOrUpdateConfiguration(byte[] configurationKey, byte[] configurationValue) {
-        KvDBUtil.put(getConfigurationDatabasePath(), configurationKey, configurationValue);
+        KvDbUtil.put(getConfigurationDatabasePath(), configurationKey, configurationValue);
     }
 }

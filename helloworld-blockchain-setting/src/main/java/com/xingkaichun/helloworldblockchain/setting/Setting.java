@@ -35,6 +35,10 @@ public class Setting {
         public static final long INTERVAL_BLOCK_COUNT = 6 * 24 * 7 * 2;
         //一个挖矿周期内的期望周期耗时时间
         public static final long INTERVAL_TIME = BLOCK_TIME * INTERVAL_BLOCK_COUNT;
+        //区块初始奖励
+        public static final long BLOCK_INIT_INCENTIVE = 50L * 100000000L;
+        //激励金额减半周期：每210000个区块激励减半
+        public static final long INCENTIVE_HALVING_INTERVAL = 210000L;
     }
 
     /**

@@ -7,7 +7,7 @@ import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
-import com.xingkaichun.helloworldblockchain.util.KvDBUtil;
+import com.xingkaichun.helloworldblockchain.util.KvDbUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +31,14 @@ public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransa
         //交易已经持久化进交易池数据库 丢弃交易
         synchronized (UnconfirmedTransactionDatabaseDefaultImpl.class){
             String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
-            KvDBUtil.put(unconfirmedTransactionDatabasePath, getKey(transactionHash), EncodeDecodeTool.encode(transactionDto));
+            KvDbUtil.put(unconfirmedTransactionDatabasePath, getKey(transactionHash), EncodeDecodeTool.encode(transactionDto));
         }
     }
 
     @Override
     public List<TransactionDto> selectTransactions(long from, long size) {
         List<TransactionDto> transactionDtoList = new ArrayList<>();
-        List<byte[]> bytesTransactionDtos = KvDBUtil.get(unconfirmedTransactionDatabasePath,from,size);
+        List<byte[]> bytesTransactionDtos = KvDbUtil.get(unconfirmedTransactionDatabasePath,from,size);
         if(bytesTransactionDtos != null){
             for(byte[] bytesTransactionDto:bytesTransactionDtos){
                 TransactionDto transactionDto = EncodeDecodeTool.decodeToTransactionDto(bytesTransactionDto);
@@ -50,12 +50,12 @@ public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransa
 
     @Override
     public void deleteByTransactionHash(String transactionHash) {
-        KvDBUtil.delete(unconfirmedTransactionDatabasePath, getKey(transactionHash));
+        KvDbUtil.delete(unconfirmedTransactionDatabasePath, getKey(transactionHash));
     }
 
     @Override
     public TransactionDto selectTransactionByTransactionHash(String transactionHash) {
-        byte[] byteTransactionDto = KvDBUtil.get(unconfirmedTransactionDatabasePath, getKey(transactionHash));
+        byte[] byteTransactionDto = KvDbUtil.get(unconfirmedTransactionDatabasePath, getKey(transactionHash));
         if(byteTransactionDto == null){
             return null;
         }

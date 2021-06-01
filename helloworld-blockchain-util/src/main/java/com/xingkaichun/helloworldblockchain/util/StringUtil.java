@@ -10,11 +10,8 @@ import com.google.common.base.Strings;
 public class StringUtil {
 
     public static boolean isEquals(String string,String anotherString){
-        if(string == anotherString){
-            return true;
-        }
-        if(string == null || anotherString == null){
-            return false;
+        if(string == null){
+            throw new RuntimeException("parameter not support null value.");
         }
         return string.equals(anotherString);
     }

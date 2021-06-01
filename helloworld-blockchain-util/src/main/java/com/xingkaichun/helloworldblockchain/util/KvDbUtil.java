@@ -18,13 +18,13 @@ import java.util.Map;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class KvDBUtil {
+public class KvDbUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(KvDBUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(KvDbUtil.class);
     private static Map<String,DB> dbMap = new HashMap<>();
 
     private static DB getDB(String dbPath) {
-        synchronized (KvDBUtil.class){
+        synchronized (KvDbUtil.class){
             DB db = dbMap.get(dbPath);
             if(db == null){
                 try {
@@ -59,7 +59,7 @@ public class KvDBUtil {
         return db.get(bytesKey);
     }
     public static List<byte[]> get(String dbPath, long from, long size) {
-        synchronized (KvDBUtil.class){
+        synchronized (KvDbUtil.class){
             List<byte[]> valueList = new ArrayList<>();
             int cunrrentFrom = 0;
             int cunrrentSize = 0;

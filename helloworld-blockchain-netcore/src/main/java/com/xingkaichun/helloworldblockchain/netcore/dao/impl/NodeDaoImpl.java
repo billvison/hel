@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.netcore.po.NodePo;
 import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
-import com.xingkaichun.helloworldblockchain.util.KvDBUtil;
+import com.xingkaichun.helloworldblockchain.util.KvDbUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
 import java.util.ArrayList;
@@ -40,24 +40,24 @@ public class NodeDaoImpl implements NodeDao {
 
     @Override
     public void addNode(NodePo node){
-        KvDBUtil.put(nodeDatabasePath,ByteUtil.stringToUtf8Bytes(node.getIp()), ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(node)));
+        KvDbUtil.put(nodeDatabasePath,ByteUtil.stringToUtf8Bytes(node.getIp()), ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(node)));
     }
 
     @Override
     public void updateNode(NodePo node){
-        KvDBUtil.put(nodeDatabasePath,ByteUtil.stringToUtf8Bytes(node.getIp()),ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(node)));
+        KvDbUtil.put(nodeDatabasePath,ByteUtil.stringToUtf8Bytes(node.getIp()),ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(node)));
     }
 
     @Override
     public void deleteNode(String ip){
-        KvDBUtil.delete(nodeDatabasePath,ByteUtil.stringToUtf8Bytes(ip));
+        KvDbUtil.delete(nodeDatabasePath,ByteUtil.stringToUtf8Bytes(ip));
     }
 
     @Override
     public List<NodePo> queryAllNodeList(){
         List<NodePo> list = new ArrayList<>();
         //获取所有
-        List<byte[]> bytesNodeEntityList = KvDBUtil.get(nodeDatabasePath,1,100000000);
+        List<byte[]> bytesNodeEntityList = KvDbUtil.get(nodeDatabasePath,1,100000000);
         if(bytesNodeEntityList != null){
             for(byte[] bytesNodeEntity:bytesNodeEntityList){
                 NodePo nodePo = JsonUtil.fromJson(ByteUtil.utf8BytesToString(bytesNodeEntity), NodePo.class);

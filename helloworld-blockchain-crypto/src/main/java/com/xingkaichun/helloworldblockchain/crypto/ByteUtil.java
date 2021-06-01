@@ -20,15 +20,6 @@ public class ByteUtil {
         return new String(bytesValue, StandardCharsets.UTF_8);
     }
 
-
-    public static byte[] longToUtf8Bytes(long longValue) {
-        return stringToUtf8Bytes(String.valueOf(longValue));
-    }
-    public static long utf8BytesToLong(byte[] bytesValue) {
-        return Long.parseLong(utf8BytesToString(bytesValue));
-    }
-
-
     /**
      * (8个的字节)long转换为(大端模式)8个字节的字节数组。
      */

@@ -11,7 +11,7 @@ import com.xingkaichun.helloworldblockchain.core.tools.*;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
-import com.xingkaichun.helloworldblockchain.util.KvDBUtil;
+import com.xingkaichun.helloworldblockchain.util.KvDbUtil;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
 
@@ -57,8 +57,8 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             if(!isBlockCanAddToBlockchain){
                 return false;
             }
-            KvDBUtil.KvWriteBatch kvWriteBatch = createBlockWriteBatch(block, BlockchainActionEnum.ADD_BLOCK);
-            KvDBUtil.write(blockchainDatabasePath, kvWriteBatch);
+            KvDbUtil.KvWriteBatch kvWriteBatch = createBlockWriteBatch(block, BlockchainActionEnum.ADD_BLOCK);
+            KvDbUtil.write(blockchainDatabasePath, kvWriteBatch);
             return true;
         }finally {
             writeLock.unlock();
@@ -73,8 +73,8 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             if(tailBlock == null){
                 return;
             }
-            KvDBUtil.KvWriteBatch kvWriteBatch = createBlockWriteBatch(tailBlock, BlockchainActionEnum.DELETE_BLOCK);
-            KvDBUtil.write(blockchainDatabasePath,kvWriteBatch);
+            KvDbUtil.KvWriteBatch kvWriteBatch = createBlockWriteBatch(tailBlock, BlockchainActionEnum.DELETE_BLOCK);
+            KvDbUtil.write(blockchainDatabasePath,kvWriteBatch);
         }finally {
             writeLock.unlock();
         }
@@ -92,8 +92,8 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                 if(LongUtil.isLessThan(tailBlock.getHeight(),blockHeight)){
                     return;
                 }
-                KvDBUtil.KvWriteBatch kvWriteBatch = createBlockWriteBatch(tailBlock, BlockchainActionEnum.DELETE_BLOCK);
-                KvDBUtil.write(blockchainDatabasePath,kvWriteBatch);
+                KvDbUtil.KvWriteBatch kvWriteBatch = createBlockWriteBatch(tailBlock, BlockchainActionEnum.DELETE_BLOCK);
+                KvDbUtil.write(blockchainDatabasePath,kvWriteBatch);
             }
         }finally {
             writeLock.unlock();
@@ -248,28 +248,28 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     //region 普通查询
     @Override
     public long queryBlockchainHeight() {
-        byte[] bytesBlockchainHeight = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildBlockchainHeightKey());
+        byte[] bytesBlockchainHeight = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildBlockchainHeightKey());
         if(bytesBlockchainHeight == null){
             return Setting.GenesisBlockSetting.HEIGHT;
         }
-        return ByteUtil.utf8BytesToLong(bytesBlockchainHeight);
+        return ByteUtil.byte8ToLong8(bytesBlockchainHeight);
     }
 
     @Override
     public long queryBlockchainTransactionHeight() {
-        byte[] byteTotalTransactionCount = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildBlockchainTransactionHeightKey());
+        byte[] byteTotalTransactionCount = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildBlockchainTransactionHeightKey());
         if(byteTotalTransactionCount == null){
             return 0;
         }
-        return ByteUtil.utf8BytesToLong(byteTotalTransactionCount);
+        return ByteUtil.byte8ToLong8(byteTotalTransactionCount);
     }
     @Override
     public long queryBlockchainTransactionOutputHeight() {
-        byte[] byteTotalTransactionCount = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildBlockchainTransactionOutputHeightKey());
+        byte[] byteTotalTransactionCount = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildBlockchainTransactionOutputHeightKey());
         if(byteTotalTransactionCount == null){
             return 0;
         }
-        return ByteUtil.utf8BytesToLong(byteTotalTransactionCount);
+        return ByteUtil.byte8ToLong8(byteTotalTransactionCount);
     }
     //endregion
 
@@ -286,7 +286,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     }
     @Override
     public Block queryBlockByBlockHeight(long blockHeight) {
-        byte[] bytesBlock = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildBlockHeightToBlockKey(blockHeight));
+        byte[] bytesBlock = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildBlockHeightToBlockKey(blockHeight));
         if(bytesBlock==null){
             return null;
         }
@@ -294,11 +294,11 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     }
     @Override
     public Block queryBlockByBlockHash(String blockHash) {
-        byte[] bytesBlockHeight = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildBlockHashToBlockHeightKey(blockHash));
+        byte[] bytesBlockHeight = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildBlockHashToBlockHeightKey(blockHash));
         if(bytesBlockHeight == null){
             return null;
         }
-        return queryBlockByBlockHeight(ByteUtil.utf8BytesToLong(bytesBlockHeight));
+        return queryBlockByBlockHeight(ByteUtil.byte8ToLong8(bytesBlockHeight));
     }
     //endregion
 
@@ -307,34 +307,34 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     //region 交易查询
     @Override
     public Transaction queryTransactionByTransactionHash(String transactionHash) {
-        byte[] transactionHeight = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionHashToTransactionHeightKey(transactionHash));
+        byte[] transactionHeight = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionHashToTransactionHeightKey(transactionHash));
         if(transactionHeight == null){
             return null;
         }
-        return queryTransactionByTransactionHeight(ByteUtil.utf8BytesToLong(transactionHeight));
+        return queryTransactionByTransactionHeight(ByteUtil.byte8ToLong8(transactionHeight));
     }
 
     @Override
     public Transaction querySourceTransactionByTransactionOutputId(TransactionOutputId transactionOutputId) {
-        byte[] sourceTransactionHeight = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionOutputIdToSourceTransactionHeightKey(transactionOutputId));
+        byte[] sourceTransactionHeight = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionOutputIdToSourceTransactionHeightKey(transactionOutputId));
         if(sourceTransactionHeight == null){
             return null;
         }
-        return queryTransactionByTransactionHeight(ByteUtil.utf8BytesToLong(sourceTransactionHeight));
+        return queryTransactionByTransactionHeight(ByteUtil.byte8ToLong8(sourceTransactionHeight));
     }
 
     @Override
     public Transaction queryDestinationTransactionByTransactionOutputId(TransactionOutputId transactionOutputId) {
-        byte[] destinationTransactionHeight = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionOutputIdToDestinationTransactionHeightKey(transactionOutputId));
+        byte[] destinationTransactionHeight = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionOutputIdToDestinationTransactionHeightKey(transactionOutputId));
         if(destinationTransactionHeight == null){
             return null;
         }
-        return queryTransactionByTransactionHeight(ByteUtil.utf8BytesToLong(destinationTransactionHeight));
+        return queryTransactionByTransactionHeight(ByteUtil.byte8ToLong8(destinationTransactionHeight));
     }
 
     @Override
     public TransactionOutput queryTransactionOutputByTransactionOutputHeight(long transactionOutputHeight) {
-        byte[] bytesTransactionOutput = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionOutputHeightToTransactionOutputKey(transactionOutputHeight));
+        byte[] bytesTransactionOutput = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionOutputHeightToTransactionOutputKey(transactionOutputHeight));
         if(bytesTransactionOutput == null){
             return null;
         }
@@ -343,7 +343,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
 
     @Override
     public Transaction queryTransactionByTransactionHeight(long transactionHeight) {
-        byte[] byteTransaction = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionHeightToTransactionKey(transactionHeight));
+        byte[] byteTransaction = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionHeightToTransactionKey(transactionHeight));
         if(byteTransaction == null){
             return null;
         }
@@ -356,56 +356,56 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     //region 交易输出查询
     @Override
     public TransactionOutput queryTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId) {
-        byte[] bytesTransactionOutputHeight = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionOutputIdToTransactionOutputHeightKey(transactionOutputId));
+        byte[] bytesTransactionOutputHeight = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionOutputIdToTransactionOutputHeightKey(transactionOutputId));
         if(bytesTransactionOutputHeight == null){
             return null;
         }
-        return queryTransactionOutputByTransactionOutputHeight(ByteUtil.utf8BytesToLong(bytesTransactionOutputHeight));
+        return queryTransactionOutputByTransactionOutputHeight(ByteUtil.byte8ToLong8(bytesTransactionOutputHeight));
     }
 
     @Override
     public TransactionOutput queryUnspentTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId) {
-        byte[] bytesTransactionOutputHeight = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionOutputIdToUnspentTransactionOutputHeightKey(transactionOutputId));
+        byte[] bytesTransactionOutputHeight = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionOutputIdToUnspentTransactionOutputHeightKey(transactionOutputId));
         if(bytesTransactionOutputHeight == null){
             return null;
         }
-        return queryTransactionOutputByTransactionOutputHeight(ByteUtil.utf8BytesToLong(bytesTransactionOutputHeight));
+        return queryTransactionOutputByTransactionOutputHeight(ByteUtil.byte8ToLong8(bytesTransactionOutputHeight));
     }
 
     @Override
     public TransactionOutput querySpentTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId) {
-        byte[] bytesTransactionOutputHeight = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionOutputIdToSpentTransactionOutputHeightKey(transactionOutputId));
+        byte[] bytesTransactionOutputHeight = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildTransactionOutputIdToSpentTransactionOutputHeightKey(transactionOutputId));
         if(bytesTransactionOutputHeight == null){
             return null;
         }
-        return queryTransactionOutputByTransactionOutputHeight(ByteUtil.utf8BytesToLong(bytesTransactionOutputHeight));
+        return queryTransactionOutputByTransactionOutputHeight(ByteUtil.byte8ToLong8(bytesTransactionOutputHeight));
     }
 
     @Override
     public TransactionOutput queryTransactionOutputByAddress(String address) {
-        byte[] bytesTransactionOutputHeight = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildAddressToTransactionOutputHeightKey(address));
+        byte[] bytesTransactionOutputHeight = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildAddressToTransactionOutputHeightKey(address));
         if(bytesTransactionOutputHeight == null){
             return null;
         }
-        return queryTransactionOutputByTransactionOutputHeight(ByteUtil.utf8BytesToLong(bytesTransactionOutputHeight));
+        return queryTransactionOutputByTransactionOutputHeight(ByteUtil.byte8ToLong8(bytesTransactionOutputHeight));
     }
 
     @Override
     public TransactionOutput queryUnspentTransactionOutputByAddress(String address) {
-        byte[] bytesTransactionOutputHeight = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildAddressToUnspentTransactionOutputHeightKey(address));
+        byte[] bytesTransactionOutputHeight = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildAddressToUnspentTransactionOutputHeightKey(address));
         if(bytesTransactionOutputHeight == null){
             return null;
         }
-        return queryTransactionOutputByTransactionOutputHeight(ByteUtil.utf8BytesToLong(bytesTransactionOutputHeight));
+        return queryTransactionOutputByTransactionOutputHeight(ByteUtil.byte8ToLong8(bytesTransactionOutputHeight));
     }
 
     @Override
     public TransactionOutput querySpentTransactionOutputByAddress(String address) {
-        byte[] bytesTransactionOutputHeight = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildAddressToSpentTransactionOutputHeightKey(address));
+        byte[] bytesTransactionOutputHeight = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildAddressToSpentTransactionOutputHeightKey(address));
         if(bytesTransactionOutputHeight == null){
             return null;
         }
-        return queryTransactionOutputByTransactionOutputHeight(ByteUtil.utf8BytesToLong(bytesTransactionOutputHeight));
+        return queryTransactionOutputByTransactionOutputHeight(ByteUtil.byte8ToLong8(bytesTransactionOutputHeight));
     }
     //endregion
 
@@ -415,9 +415,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * 根据区块信息组装WriteBatch对象
      */
-    private KvDBUtil.KvWriteBatch createBlockWriteBatch(Block block, BlockchainActionEnum blockchainActionEnum) {
+    private KvDbUtil.KvWriteBatch createBlockWriteBatch(Block block, BlockchainActionEnum blockchainActionEnum) {
         fillBlockProperty(block);
-        KvDBUtil.KvWriteBatch kvWriteBatch = new KvDBUtil.KvWriteBatch();
+        KvDbUtil.KvWriteBatch kvWriteBatch = new KvDbUtil.KvWriteBatch();
 
         storeHash(kvWriteBatch,block,blockchainActionEnum);
         storeAddress(kvWriteBatch,block,blockchainActionEnum);
@@ -487,7 +487,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * [交易输出ID]到[来源交易高度]的映射
      */
-    private void storeTransactionOutputIdToSourceTransactionHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeTransactionOutputIdToSourceTransactionHeight(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
@@ -496,7 +496,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                     for(TransactionOutput transactionOutput:outputs){
                         byte[] transactionOutputIdToToSourceTransactionHeightKey = BlockchainDatabaseKeyTool.buildTransactionOutputIdToSourceTransactionHeightKey(transactionOutput);
                         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-                            kvWriteBatch.put(transactionOutputIdToToSourceTransactionHeightKey, ByteUtil.longToUtf8Bytes(transaction.getTransactionHeight()));
+                            kvWriteBatch.put(transactionOutputIdToToSourceTransactionHeightKey, ByteUtil.long8ToByte8(transaction.getTransactionHeight()));
                         } else {
                             kvWriteBatch.delete(transactionOutputIdToToSourceTransactionHeightKey);
                         }
@@ -508,7 +508,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * [已花费交易输出ID]到[去向交易高度]的映射
      */
-    private void storeTransactionOutputIdToDestinationTransactionHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeTransactionOutputIdToDestinationTransactionHeight(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
@@ -518,7 +518,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                         TransactionOutput unspentTransactionOutput = transactionInput.getUnspentTransactionOutput();
                         byte[] transactionOutputIdToToDestinationTransactionHeightKey = BlockchainDatabaseKeyTool.buildTransactionOutputIdToDestinationTransactionHeightKey(unspentTransactionOutput);
                         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-                            kvWriteBatch.put(transactionOutputIdToToDestinationTransactionHeightKey, ByteUtil.longToUtf8Bytes(transaction.getTransactionHeight()));
+                            kvWriteBatch.put(transactionOutputIdToToDestinationTransactionHeightKey, ByteUtil.long8ToByte8(transaction.getTransactionHeight()));
                         } else {
                             kvWriteBatch.delete(transactionOutputIdToToDestinationTransactionHeightKey);
                         }
@@ -530,7 +530,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * [交易输出ID]到[交易输出]的映射
      */
-    private void storeTransactionOutputIdToTransactionOutputHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeTransactionOutputIdToTransactionOutputHeight(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
@@ -539,7 +539,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                     for(TransactionOutput output:outputs){
                         byte[] transactionOutputIdToTransactionOutputHeightKey = BlockchainDatabaseKeyTool.buildTransactionOutputIdToTransactionOutputHeightKey(output);
                         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-                            kvWriteBatch.put(transactionOutputIdToTransactionOutputHeightKey, ByteUtil.longToUtf8Bytes(output.getTransactionOutputHeight()));
+                            kvWriteBatch.put(transactionOutputIdToTransactionOutputHeightKey, ByteUtil.long8ToByte8(output.getTransactionOutputHeight()));
                         } else {
                             kvWriteBatch.delete(transactionOutputIdToTransactionOutputHeightKey);
                         }
@@ -551,7 +551,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * [交易输出高度]到[交易输出]的映射
      */
-    private void storeTransactionOutputHeightToTransactionOutput(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeTransactionOutputHeightToTransactionOutput(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
@@ -572,7 +572,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * 存储未花费交易输出ID到未花费交易输出的映射
      */
-    private void storeTransactionOutputIdToUnspentTransactionOutputHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeTransactionOutputIdToUnspentTransactionOutputHeight(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
@@ -584,7 +584,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
                             kvWriteBatch.delete(transactionOutputIdToUnspentTransactionOutputHeightKey);
                         } else {
-                            kvWriteBatch.put(transactionOutputIdToUnspentTransactionOutputHeightKey, ByteUtil.longToUtf8Bytes(unspentTransactionOutput.getTransactionOutputHeight()));
+                            kvWriteBatch.put(transactionOutputIdToUnspentTransactionOutputHeightKey, ByteUtil.long8ToByte8(unspentTransactionOutput.getTransactionOutputHeight()));
                         }
                     }
                 }
@@ -593,7 +593,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                     for(TransactionOutput output:outputs){
                         byte[] transactionOutputIdToUnspentTransactionOutputHeightKey = BlockchainDatabaseKeyTool.buildTransactionOutputIdToUnspentTransactionOutputHeightKey(output);
                         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-                            kvWriteBatch.put(transactionOutputIdToUnspentTransactionOutputHeightKey, ByteUtil.longToUtf8Bytes(output.getTransactionOutputHeight()));
+                            kvWriteBatch.put(transactionOutputIdToUnspentTransactionOutputHeightKey, ByteUtil.long8ToByte8(output.getTransactionOutputHeight()));
                         } else {
                             kvWriteBatch.delete(transactionOutputIdToUnspentTransactionOutputHeightKey);
                         }
@@ -605,7 +605,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * 存储已花费交易输出ID到已花费交易输出的映射
      */
-    private void storeTransactionOutputIdToSpentTransactionOutputHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeTransactionOutputIdToSpentTransactionOutputHeight(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
@@ -615,7 +615,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                         TransactionOutput unspentTransactionOutput = transactionInput.getUnspentTransactionOutput();
                         byte[] transactionOutputIdToSpentTransactionOutputHeightKey = BlockchainDatabaseKeyTool.buildTransactionOutputIdToSpentTransactionOutputHeightKey(unspentTransactionOutput);
                         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-                            kvWriteBatch.put(transactionOutputIdToSpentTransactionOutputHeightKey, ByteUtil.longToUtf8Bytes(unspentTransactionOutput.getTransactionOutputHeight()));
+                            kvWriteBatch.put(transactionOutputIdToSpentTransactionOutputHeightKey, ByteUtil.long8ToByte8(unspentTransactionOutput.getTransactionOutputHeight()));
                         } else {
                             kvWriteBatch.delete(transactionOutputIdToSpentTransactionOutputHeightKey);
                         }
@@ -628,7 +628,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
                             kvWriteBatch.delete(transactionOutputIdToSpentTransactionOutputHeightKey);
                         } else {
-                            kvWriteBatch.put(transactionOutputIdToSpentTransactionOutputHeightKey, ByteUtil.longToUtf8Bytes(output.getTransactionOutputHeight()));
+                            kvWriteBatch.put(transactionOutputIdToSpentTransactionOutputHeightKey, ByteUtil.long8ToByte8(output.getTransactionOutputHeight()));
                         }
                     }
                 }
@@ -638,7 +638,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * 存储交易高度到交易的映射
      */
-    private void storeTransactionHeightToTransaction(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeTransactionHeightToTransaction(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
@@ -655,13 +655,13 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * 存储交易哈希到交易高度的映射
      */
-    private void storeTransactionHashToTransactionHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeTransactionHashToTransactionHeight(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
                 byte[] transactionHashToTransactionHeightKey = BlockchainDatabaseKeyTool.buildTransactionHashToTransactionHeightKey(transaction.getTransactionHash());
                 if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-                    kvWriteBatch.put(transactionHashToTransactionHeightKey, ByteUtil.longToUtf8Bytes(transaction.getTransactionHeight()));
+                    kvWriteBatch.put(transactionHashToTransactionHeightKey, ByteUtil.long8ToByte8(transaction.getTransactionHeight()));
                 } else {
                     kvWriteBatch.delete(transactionHashToTransactionHeightKey);
                 }
@@ -671,21 +671,21 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * 存储区块链的高度
      */
-    private void storeBlockchainHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeBlockchainHeight(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         byte[] blockchainHeightKey = BlockchainDatabaseKeyTool.buildBlockchainHeightKey();
         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-            kvWriteBatch.put(blockchainHeightKey, ByteUtil.longToUtf8Bytes(block.getHeight()));
+            kvWriteBatch.put(blockchainHeightKey, ByteUtil.long8ToByte8(block.getHeight()));
         }else{
-            kvWriteBatch.put(blockchainHeightKey, ByteUtil.longToUtf8Bytes(block.getHeight()-1));
+            kvWriteBatch.put(blockchainHeightKey, ByteUtil.long8ToByte8(block.getHeight()-1));
         }
     }
     /**
      * 存储区块哈希到区块高度的映射
      */
-    private void storeBlockHashToBlockHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeBlockHashToBlockHeight(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         byte[] blockHashBlockHeightKey = BlockchainDatabaseKeyTool.buildBlockHashToBlockHeightKey(block.getHash());
         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-            kvWriteBatch.put(blockHashBlockHeightKey, ByteUtil.longToUtf8Bytes(block.getHeight()));
+            kvWriteBatch.put(blockHashBlockHeightKey, ByteUtil.long8ToByte8(block.getHeight()));
         }else{
             kvWriteBatch.delete(blockHashBlockHeightKey);
         }
@@ -693,31 +693,31 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * 存储区块链中总的交易高度
      */
-    private void storeBlockchainTransactionHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeBlockchainTransactionHeight(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         long transactionCount = queryBlockchainTransactionHeight();
         byte[] bytesBlockchainTransactionCountKey = BlockchainDatabaseKeyTool.buildBlockchainTransactionHeightKey();
         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-            kvWriteBatch.put(bytesBlockchainTransactionCountKey, ByteUtil.longToUtf8Bytes(transactionCount + BlockTool.getTransactionCount(block)));
+            kvWriteBatch.put(bytesBlockchainTransactionCountKey, ByteUtil.long8ToByte8(transactionCount + BlockTool.getTransactionCount(block)));
         }else{
-            kvWriteBatch.put(bytesBlockchainTransactionCountKey, ByteUtil.longToUtf8Bytes(transactionCount - BlockTool.getTransactionCount(block)));
+            kvWriteBatch.put(bytesBlockchainTransactionCountKey, ByteUtil.long8ToByte8(transactionCount - BlockTool.getTransactionCount(block)));
         }
     }
     /**
      * 存储区块链中总的交易数量
      */
-    private void storeBlockchainTransactionOutputHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeBlockchainTransactionOutputHeight(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         long transactionOutputCount = queryBlockchainTransactionOutputHeight();
         byte[] bytesBlockchainTransactionOutputHeightKey = BlockchainDatabaseKeyTool.buildBlockchainTransactionOutputHeightKey();
         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-            kvWriteBatch.put(bytesBlockchainTransactionOutputHeightKey, ByteUtil.longToUtf8Bytes(transactionOutputCount + BlockTool.getTransactionOutputCount(block)));
+            kvWriteBatch.put(bytesBlockchainTransactionOutputHeightKey, ByteUtil.long8ToByte8(transactionOutputCount + BlockTool.getTransactionOutputCount(block)));
         }else{
-            kvWriteBatch.put(bytesBlockchainTransactionOutputHeightKey, ByteUtil.longToUtf8Bytes(transactionOutputCount - BlockTool.getTransactionOutputCount(block)));
+            kvWriteBatch.put(bytesBlockchainTransactionOutputHeightKey, ByteUtil.long8ToByte8(transactionOutputCount - BlockTool.getTransactionOutputCount(block)));
         }
     }
     /**
      * 存储区块链高度到区块的映射
      */
-    private void storeBlockHeightToBlock(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeBlockHeightToBlock(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         byte[] blockHeightKey = BlockchainDatabaseKeyTool.buildBlockHeightToBlockKey(block.getHeight());
         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
             kvWriteBatch.put(blockHeightKey, EncodeDecodeTool.encode(block));
@@ -729,7 +729,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * 存储已使用的哈希
      */
-    private void storeHash(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeHash(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         byte[] blockHashKey = BlockchainDatabaseKeyTool.buildHashKey(block.getHash());
         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
             kvWriteBatch.put(blockHashKey, blockHashKey);
@@ -752,7 +752,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * 存储已使用的地址
      */
-    private void storeAddress(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeAddress(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
@@ -773,7 +773,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * 存储地址到未花费交易输出列表
      */
-    private void storeAddressToUnspentTransactionOutputHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeAddressToUnspentTransactionOutputHeight(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         for(Transaction transaction : block.getTransactions()){
             if(transaction == null){
                 return;
@@ -786,7 +786,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                     if(blockchainActionEnum == BlockchainActionEnum.ADD_BLOCK){
                         kvWriteBatch.delete(addressToUnspentTransactionOutputHeightKey);
                     }else{
-                        kvWriteBatch.put(addressToUnspentTransactionOutputHeightKey, ByteUtil.longToUtf8Bytes(utxo.getTransactionOutputHeight()));
+                        kvWriteBatch.put(addressToUnspentTransactionOutputHeightKey, ByteUtil.long8ToByte8(utxo.getTransactionOutputHeight()));
                     }
                 }
             }
@@ -795,7 +795,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                 for (TransactionOutput transactionOutput:outputs){
                     byte[] addressToUnspentTransactionOutputHeightKey = BlockchainDatabaseKeyTool.buildAddressToUnspentTransactionOutputHeightKey(transactionOutput.getAddress());
                     if(blockchainActionEnum == BlockchainActionEnum.ADD_BLOCK){
-                        kvWriteBatch.put(addressToUnspentTransactionOutputHeightKey, ByteUtil.longToUtf8Bytes(transactionOutput.getTransactionOutputHeight()));
+                        kvWriteBatch.put(addressToUnspentTransactionOutputHeightKey, ByteUtil.long8ToByte8(transactionOutput.getTransactionOutputHeight()));
                     }else{
                         kvWriteBatch.delete(addressToUnspentTransactionOutputHeightKey);
                     }
@@ -806,7 +806,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * 存储地址到交易输出
      */
-    private void storeAddressToTransactionOutputHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeAddressToTransactionOutputHeight(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         for(Transaction transaction : block.getTransactions()){
             if(transaction == null){
                 return;
@@ -816,7 +816,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                 for (TransactionOutput transactionOutput:outputs){
                     byte[] addressToTransactionOutputHeightKey = BlockchainDatabaseKeyTool.buildAddressToTransactionOutputHeightKey(transactionOutput.getAddress());
                     if(blockchainActionEnum == BlockchainActionEnum.ADD_BLOCK){
-                        kvWriteBatch.put(addressToTransactionOutputHeightKey, ByteUtil.longToUtf8Bytes(transactionOutput.getTransactionOutputHeight()));
+                        kvWriteBatch.put(addressToTransactionOutputHeightKey, ByteUtil.long8ToByte8(transactionOutput.getTransactionOutputHeight()));
                     }else{
                         kvWriteBatch.delete(addressToTransactionOutputHeightKey);
                     }
@@ -827,7 +827,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     /**
      * 存储地址到交易输出高度
      */
-    private void storeAddressToSpentTransactionOutputHeight(KvDBUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
+    private void storeAddressToSpentTransactionOutputHeight(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         for(Transaction transaction : block.getTransactions()){
             if(transaction == null){
                 return;
@@ -838,7 +838,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                     TransactionOutput utxo = transactionInput.getUnspentTransactionOutput();
                     byte[] addressToSpentTransactionOutputHeightKey = BlockchainDatabaseKeyTool.buildAddressToSpentTransactionOutputHeightKey(utxo.getAddress());
                     if(blockchainActionEnum == BlockchainActionEnum.ADD_BLOCK){
-                        kvWriteBatch.put(addressToSpentTransactionOutputHeightKey, ByteUtil.longToUtf8Bytes(utxo.getTransactionOutputHeight()));
+                        kvWriteBatch.put(addressToSpentTransactionOutputHeightKey, ByteUtil.long8ToByte8(utxo.getTransactionOutputHeight()));
                     }else{
                         kvWriteBatch.delete(addressToSpentTransactionOutputHeightKey);
                     }
@@ -873,7 +873,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * 哈希是否已经被区块链系统使用了？
      */
     private boolean isHashUsed(String hash){
-        byte[] bytesHash = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildHashKey(hash));
+        byte[] bytesHash = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildHashKey(hash));
         return bytesHash != null;
     }
     /**
@@ -975,7 +975,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         return false;
     }
     private boolean isAddressUsed(String address) {
-        byte[] bytesAddress = KvDBUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildAddressKey(address));
+        byte[] bytesAddress = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildAddressKey(address));
         return bytesAddress != null;
     }
     //endregion

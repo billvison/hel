@@ -7,7 +7,7 @@ package com.xingkaichun.helloworldblockchain.util;
 public class SystemUtil {
 
     public static void errorExit(String message, Exception exception) {
-        LogUtil.error("系统发生异常并退出，请检查！"+message,exception);
+        LogUtil.error("system error occurred, and exited, please check the error！"+message,exception);
         System.exit(1);
     }
 }
