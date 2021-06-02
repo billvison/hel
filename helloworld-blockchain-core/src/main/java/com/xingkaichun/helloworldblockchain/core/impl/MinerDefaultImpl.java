@@ -34,20 +34,20 @@ public class MinerDefaultImpl extends Miner {
             }
             Account minerAccount = wallet.createAccount();
             Block block = MinerTool.buildMiningBlock(blockchainDataBase,unconfirmedTransactionDataBase,minerAccount);
-            long startTimestamp = TimeUtil.currentTimeMillis();
+            long startTimestamp = TimeUtil.currentMillisecondTimestamp();
             while(true){
                 if(!isActive()){
                     break;
                 }
                 //在挖矿的期间，可能收集到新的交易。每隔一定的时间，重新组装挖矿中的区块，这样新收集到交易就可以被放进挖矿中的区块了。
-                if(TimeUtil.currentTimeMillis()-startTimestamp > coreConfiguration.getMinerMineTimeInterval()){
+                if(TimeUtil.currentMillisecondTimestamp()-startTimestamp > coreConfiguration.getMinerMineTimeInterval()){
                     break;
                 }
                 //随机数
                 block.setNonce(HexUtil.bytesToHexString(RandomUtil.random32Bytes()));
                 block.setHash(BlockTool.calculateBlockHash(block));
                 //挖矿成功
-                if(blockchainDataBase.getConsensus().isReachConsensus(blockchainDataBase,block)){
+                if(blockchainDataBase.getConsensus().checkConsensus(blockchainDataBase,block)){
                     //将账户放入钱包
                     wallet.saveAccount(minerAccount);
                     LogUtil.debug("祝贺您！挖矿成功！！！区块高度:"+block.getHeight()+",区块哈希:"+block.getHash());

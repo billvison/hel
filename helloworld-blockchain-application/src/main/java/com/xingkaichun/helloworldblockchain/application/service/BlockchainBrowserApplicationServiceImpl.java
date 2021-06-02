@@ -127,7 +127,7 @@ public class BlockchainBrowserApplicationServiceImpl implements BlockchainBrowse
         blockVo.setConfirmCount(BlockTool.getTransactionCount(block));
         blockVo.setBlockSize(SizeTool.calculateBlockSize(block)+"字符");
         blockVo.setTransactionCount(BlockTool.getTransactionCount(block));
-        blockVo.setTime(TimeUtil.timestamp2FormatDate(block.getTimestamp()));
+        blockVo.setTime(TimeUtil.formatMillisecondTimestamp2TimeString(block.getTimestamp()));
         blockVo.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
         blockVo.setDifficulty(BlockTool.formatDifficulty(block.getDifficulty()));
         blockVo.setNonce(block.getNonce());
@@ -199,7 +199,7 @@ public class BlockchainBrowserApplicationServiceImpl implements BlockchainBrowse
         long blockchainHeight = blockchainCore.queryBlockchainHeight();
         Block block = blockchainCore.queryBlockByBlockHeight(transaction.getBlockHeight());
         transactionVo.setConfirmCount(blockchainHeight-block.getHeight()+1);
-        transactionVo.setBlockTime(TimeUtil.timestamp2FormatDate(block.getTimestamp()));
+        transactionVo.setBlockTime(TimeUtil.formatMillisecondTimestamp2TimeString(block.getTimestamp()));
         transactionVo.setBlockHash(block.getHash());
 
         List<TransactionInput> inputs = transaction.getInputs();

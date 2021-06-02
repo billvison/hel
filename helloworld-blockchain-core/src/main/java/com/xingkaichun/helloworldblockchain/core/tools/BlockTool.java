@@ -138,12 +138,12 @@ public class BlockTool {
     }
 
     /**
-     * 校验区块的时间是否合法
-     * 区块时间戳一定要比当前时间戳小。因为挖矿是个技术活，默认矿工有能力将自己机器的时间调整正确。所以矿工不可能穿越到未来挖矿。
+     * 校验区块的时间
+     * 区块时间戳一定要比当前时间戳小。因为挖矿是个技术活，默认矿工有能力将自己机器的时间调整正确，所以矿工不可能穿越到未来挖矿。
      * 区块时间戳一定要比前一个区块的时间戳大。
      */
-    public static boolean isBlockTimestampLegal(Block previousBlock, Block currentBlock) {
-        if(currentBlock.getTimestamp() > TimeUtil.currentTimeMillis()){
+    public static boolean checkBlockTimestamp(Block previousBlock, Block currentBlock) {
+        if(currentBlock.getTimestamp() > TimeUtil.currentMillisecondTimestamp()){
             return false;
         }
         if(previousBlock == null){
@@ -156,7 +156,7 @@ public class BlockTool {
     /**
      * 校验区块的前哈希属性是否正确
      */
-    public static boolean isBlockPreviousBlockHashLegal(Block previousBlock, Block currentBlock) {
+    public static boolean checkBlockWritePreviousBlockHash(Block previousBlock, Block currentBlock) {
         if(previousBlock == null){
             return StringUtil.isEquals(Setting.GenesisBlockSetting.HASH,currentBlock.getPreviousBlockHash());
         } else {
@@ -165,9 +165,9 @@ public class BlockTool {
     }
 
     /**
-     * 校验区块的高度属性是否正确
+     * 校验写入的区块的高度属性是否正确
      */
-    public static boolean isBlockHeightLegal(Block previousBlock, Block currentBlock) {
+    public static boolean checkBlockWriteHeight(Block previousBlock, Block currentBlock) {
         if(previousBlock == null){
             return LongUtil.isEquals((Setting.GenesisBlockSetting.HEIGHT +1),currentBlock.getHeight());
         } else {

@@ -2,9 +2,7 @@ package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.xingkaichun.helloworldblockchain.core.VirtualMachine;
 import com.xingkaichun.helloworldblockchain.core.impl.StackBasedVirtualMachine;
-import com.xingkaichun.helloworldblockchain.core.model.script.BooleanEnum;
-import com.xingkaichun.helloworldblockchain.core.model.script.Script;
-import com.xingkaichun.helloworldblockchain.core.model.script.ScriptExecuteResult;
+import com.xingkaichun.helloworldblockchain.core.model.script.*;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.*;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
@@ -117,16 +115,25 @@ public class TransactionTool {
 
 
     /**
-     * 验证脚本
+     * 校验用户花费的是自己的钱吗，用户只可以花费自己的钱。专业点的说法，校验UTXO所有权，用户只可以花费自己拥有的UTXO。
+     * 用户如何能证明自己拥有这个UTXO，只要用户能创建出一个能解锁(该UTXO对应的交易输出脚本)的交易输入脚本，就证明了用户拥有该UTXO。
+     * 这是因为锁(交易输出脚本)是用户创建的，自然只有该用户有对应的钥匙(交易输入脚本)，自然意味着有钥匙的用户拥有这把锁的所有权。
      */
-    public static boolean verifyScript(Transaction transaction) {
+    public static boolean checkUtxoOwnership(Transaction transaction) {
         try{
             List<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null && inputs.size()!=0){
                 for(TransactionInput transactionInput:inputs){
-                    Script script = ScriptTool.createScript(transactionInput.getInputScript(),transactionInput.getUnspentTransactionOutput().getOutputScript());
+                    //锁(交易输出脚本)
+                    OutputScript outputScript = transactionInput.getUnspentTransactionOutput().getOutputScript();
+                    //钥匙(交易输入脚本)
+                    InputScript inputScript = transactionInput.getInputScript();
+                    //完整脚本
+                    Script script = ScriptTool.createScript(inputScript,outputScript);
                     VirtualMachine virtualMachine = new StackBasedVirtualMachine();
+                    //执行脚本
                     ScriptExecuteResult scriptExecuteResult = virtualMachine.executeScript(transaction,script);
+                    //脚本执行结果是个栈，如果栈有且只有一个元素，且这个元素是0x01，则解锁成功。
                     boolean executeSuccess = scriptExecuteResult.size()==1 && Arrays.equals(BooleanEnum.TRUE.getCode(),HexUtil.hexStringToBytes(scriptExecuteResult.pop()));
                     if(!executeSuccess){
                         return false;
@@ -302,12 +309,12 @@ public class TransactionTool {
     /**
      * 交易中的金额是否符合系统的约束
      */
-    public static boolean isTransactionAmountLegal(Transaction transaction) {
+    public static boolean checkTransactionValue(Transaction transaction) {
         List<TransactionInput> inputs = transaction.getInputs();
         if(inputs != null){
             //校验交易输入的金额
             for(TransactionInput input:inputs){
-                if(!isTransactionAmountLegal(input.getUnspentTransactionOutput().getValue())){
+                if(!checkTransactionValue(input.getUnspentTransactionOutput().getValue())){
                     LogUtil.debug("交易金额不合法");
                     return false;
                 }
@@ -318,7 +325,7 @@ public class TransactionTool {
         if(outputs != null){
             //校验交易输出的金额
             for(TransactionOutput output:outputs){
-                if(!isTransactionAmountLegal(output.getValue())){
+                if(!checkTransactionValue(output.getValue())){
                     LogUtil.debug("交易金额不合法");
                     return false;
                 }
@@ -330,7 +337,7 @@ public class TransactionTool {
     /**
      * 交易中的地址是否符合系统的约束
      */
-    public static boolean isTransactionAddressIllegal(Transaction transaction) {
+    public static boolean checkTransactionAddress(Transaction transaction) {
         List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs != null){
             for(TransactionOutput output:outputs){
@@ -344,9 +351,9 @@ public class TransactionTool {
     }
 
     /**
-     * 是否是一个合法的交易金额：这里用于限制交易金额的最大值、最小值、小数保留位置
+     * 校验交易金额是否是一个合法的交易金额：这里用于限制交易金额的最大值、最小值、小数保留位等
      */
-    public static boolean isTransactionAmountLegal(long transactionAmount) {
+    public static boolean checkTransactionValue(long transactionAmount) {
         try {
             //交易金额不能小于等于0
             if(transactionAmount <= 0){

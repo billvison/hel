@@ -13,10 +13,10 @@ public abstract class Incentive {
     /**
      * 奖励给矿工的挖矿激励金额。
      */
-    public abstract long incentiveAmount(BlockchainDatabase blockchainDataBase, Block block) ;
+    public abstract long incentiveValue(BlockchainDatabase blockchainDataBase, Block block) ;
 
     /**
      * 校验激励。
      */
-    public abstract boolean isIncentiveRight(BlockchainDatabase blockchainDataBase, Block block) ;
+    public abstract boolean checkIncentive(BlockchainDatabase blockchainDataBase, Block block) ;
 }

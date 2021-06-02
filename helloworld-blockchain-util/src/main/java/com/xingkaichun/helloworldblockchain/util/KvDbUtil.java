@@ -23,7 +23,7 @@ public class KvDbUtil {
     private static final Logger logger = LoggerFactory.getLogger(KvDbUtil.class);
     private static Map<String,DB> dbMap = new HashMap<>();
 
-    private static DB getDB(String dbPath) {
+    private static DB getDb(String dbPath) {
         synchronized (KvDbUtil.class){
             DB db = dbMap.get(dbPath);
             if(db == null){
@@ -42,20 +42,20 @@ public class KvDbUtil {
     }
 
     public static void put(String dbPath, byte[] bytesKey, byte[] bytesValue) {
-        DB db = getDB(dbPath);
+        DB db = getDb(dbPath);
         db.put(bytesKey,bytesValue);
     }
     public static void write(String dbPath, KvWriteBatch kvWriteBatch) {
-        DB db = getDB(dbPath);
+        DB db = getDb(dbPath);
         WriteBatch levelDBwriteBatch = levelDbWriteBatch(kvWriteBatch);
         db.write(levelDBwriteBatch);
     }
     public static void delete(String dbPath, byte[] bytesKey) {
-        DB db = getDB(dbPath);
+        DB db = getDb(dbPath);
         db.delete(bytesKey);
     }
     public static byte[] get(String dbPath, byte[] bytesKey) {
-        DB db = getDB(dbPath);
+        DB db = getDb(dbPath);
         return db.get(bytesKey);
     }
     public static List<byte[]> get(String dbPath, long from, long size) {
@@ -63,7 +63,7 @@ public class KvDbUtil {
             List<byte[]> valueList = new ArrayList<>();
             int cunrrentFrom = 0;
             int cunrrentSize = 0;
-            DB db = getDB(dbPath);
+            DB db = getDb(dbPath);
             for (DBIterator iterator = db.iterator(); iterator.hasNext(); iterator.next()) {
                 byte[] byteValue = iterator.peekNext().getValue();
                 if(byteValue == null || byteValue.length==0){

@@ -22,14 +22,14 @@ public class SizeTool {
 
     //region 校验大小
     /**
-     * 校验区块大小是否合法。用来限制区块的大小。
-     * 注意：校验区块的大小是否合法，不仅要校验区块的大小
-     * ，还要校验区块内部各个属性(时间戳、前哈希、随机数、交易)的大小是否合法。
+     * 校验区块大小。用来限制区块的大小。
+     * 注意：校验区块的大小，不仅要校验区块的大小
+     * ，还要校验区块内部各个属性(时间戳、前哈希、随机数、交易)的大小。
      */
-    public static boolean isBlockSizeLegal(Block block) {
-        return isBlockSizeLegal(Model2DtoTool.block2BlockDto(block));
+    public static boolean checkBlockSize(Block block) {
+        return checkBlockSize(Model2DtoTool.block2BlockDto(block));
     }
-    public static boolean isBlockSizeLegal(BlockDto blockDto) {
+    public static boolean checkBlockSize(BlockDto blockDto) {
         //区块的时间戳的长度不需要校验  假设时间戳长度不正确，则在随后的业务逻辑中走不通
 
         //区块的前哈希的长度不需要校验  假设前哈希长度不正确，则在随后的业务逻辑中走不通
@@ -41,11 +41,11 @@ public class SizeTool {
             return false;
         }
 
-        //校验每一笔交易大小是否合法
+        //校验每一笔交易大小
         List<TransactionDto> transactionDtoList = blockDto.getTransactions();
         if(transactionDtoList != null){
             for(TransactionDto transactionDto:transactionDtoList){
-                if(!isTransactionSizeLegal(transactionDto)){
+                if(!checkTransactionSize(transactionDto)){
                     LogUtil.debug("交易数据异常，交易大小非法。");
                     return false;
                 }
@@ -61,14 +61,14 @@ public class SizeTool {
         return true;
     }
     /**
-     * 校验交易的大小是否合法：用来限制交易的大小。
-     * 注意：校验交易的大小是否合法，不仅要校验交易的大小
-     * ，还要校验交易内部各个属性(交易输入、交易输出)的大小是否合法。
+     * 校验交易的大小：用来限制交易的大小。
+     * 注意：校验交易的大小，不仅要校验交易的大小
+     * ，还要校验交易内部各个属性(交易输入、交易输出)的大小。
      */
-    public static boolean isTransactionSizeLegal(Transaction transaction) {
-        return isTransactionSizeLegal(Model2DtoTool.transaction2TransactionDto(transaction));
+    public static boolean checkTransactionSize(Transaction transaction) {
+        return checkTransactionSize(Model2DtoTool.transaction2TransactionDto(transaction));
     }
-    public static boolean isTransactionSizeLegal(TransactionDto transactionDto) {
+    public static boolean checkTransactionSize(TransactionDto transactionDto) {
         //校验交易输入
         List<TransactionInputDto> transactionInputDtoList = transactionDto.getInputs();
         if(transactionInputDtoList != null){
@@ -78,7 +78,7 @@ public class SizeTool {
                 //校验脚本大小
                 InputScriptDto inputScriptDto = transactionInputDto.getInputScript();
                 //校验输入脚本的大小
-                if(!isInputScriptSizeLegal(inputScriptDto)){
+                if(!checkInputScriptSize(inputScriptDto)){
                     return false;
                 }
             }
@@ -93,7 +93,7 @@ public class SizeTool {
                 //校验脚本大小
                 OutputScriptDto outputScriptDto = transactionOutputDto.getOutputScript();
                 //校验输出脚本的大小
-                if(!isOutputScriptSizeLegal(outputScriptDto)){
+                if(!checkOutputScriptSize(outputScriptDto)){
                     return false;
                 }
 
@@ -110,11 +110,11 @@ public class SizeTool {
     }
 
     /**
-     * 校验交易输入的大小
+     * 校验输入脚本的大小
      */
-    private static boolean isInputScriptSizeLegal(InputScriptDto inputScriptDto) {
+    private static boolean checkInputScriptSize(InputScriptDto inputScriptDto) {
         //先宽泛的校验脚本大小
-        if(!isScriptSizeLegal(inputScriptDto)){
+        if(!checkScriptSize(inputScriptDto)){
             return false;
         }
         //严格校验输入脚本大小，因为当前输入脚本只有P2PKH，所以只需校验输入脚本是否是P2PKH输入脚本即可。
@@ -122,11 +122,11 @@ public class SizeTool {
     }
 
     /**
-     * 校验交易输出的大小
+     * 校验输出脚本的大小
      */
-    public static boolean isOutputScriptSizeLegal(OutputScriptDto outputScriptDto) {
+    public static boolean checkOutputScriptSize(OutputScriptDto outputScriptDto) {
         //先宽泛的校验脚本大小
-        if(!isScriptSizeLegal(outputScriptDto)){
+        if(!checkScriptSize(outputScriptDto)){
             return false;
         }
         //严格校验输入脚本大小，因为当前输出脚本只有P2PKH，所以只需校验输出脚本是否是P2PKH输出脚本即可。
@@ -136,7 +136,7 @@ public class SizeTool {
     /**
      * 校验脚本的大小
      */
-    public static boolean isScriptSizeLegal(ScriptDto scriptDto) {
+    public static boolean checkScriptSize(ScriptDto scriptDto) {
         for(int i=0;i<scriptDto.size();i++){
             String operationCode = scriptDto.get(i);
             byte[] bytesOperationCode = HexUtil.hexStringToBytes(operationCode);

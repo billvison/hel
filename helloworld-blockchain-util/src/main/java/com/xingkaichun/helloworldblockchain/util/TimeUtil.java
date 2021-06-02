@@ -10,13 +10,13 @@ import java.util.Date;
  */
 public class TimeUtil {
 
-    public static String timestamp2FormatDate(long timestamp) {
-        Date date = new Date(timestamp);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static String formatMillisecondTimestamp2TimeString(long millisecondTimestamp) {
+        Date date = new Date(millisecondTimestamp);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         return simpleDateFormat.format(date);
     }
 
-    public static long currentTimeMillis(){
+    public static long currentMillisecondTimestamp(){
         return System.currentTimeMillis();
     }
 }

@@ -160,7 +160,7 @@ public class MinerTool {
      * 构建挖矿中的区块对象，该区块的nonce为空。
      */
     public static Block buildMiningBlock(BlockchainDatabase blockchainDataBase, List<Transaction> packingTransactionList, Account minerAccount) {
-        long timestamp = TimeUtil.currentTimeMillis();
+        long timestamp = TimeUtil.currentMillisecondTimestamp();
 
         Block tailBlock = blockchainDataBase.queryTailBlock();
         Block nonNonceBlock = new Block();
@@ -179,7 +179,7 @@ public class MinerTool {
         //创建挖矿奖励交易
         //激励金额
         Incentive incentive = blockchainDataBase.getIncentive();
-        long incentiveValue = incentive.incentiveAmount(blockchainDataBase,nonNonceBlock);
+        long incentiveValue = incentive.incentiveValue(blockchainDataBase,nonNonceBlock);
         //激励发放地址
         Transaction mineAwardTransaction = buildIncentiveTransaction(minerAccount.getAddress(),incentiveValue);
         packingTransactionList.add(0,mineAwardTransaction);

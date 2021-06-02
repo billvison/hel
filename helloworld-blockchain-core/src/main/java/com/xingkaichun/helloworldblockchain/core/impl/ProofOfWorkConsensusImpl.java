@@ -23,7 +23,7 @@ import java.math.BigInteger;
 public class ProofOfWorkConsensusImpl extends Consensus {
 
     @Override
-    public boolean isReachConsensus(BlockchainDatabase blockchainDataBase, Block block) {
+    public boolean checkConsensus(BlockchainDatabase blockchainDataBase, Block block) {
         String difficulty = block.getDifficulty();
         if(StringUtil.isNullOrEmpty(difficulty)){
             difficulty = calculateDifficult(blockchainDataBase,block);

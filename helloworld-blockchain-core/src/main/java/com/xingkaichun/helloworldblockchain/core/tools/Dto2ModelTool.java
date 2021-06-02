@@ -44,7 +44,7 @@ public class Dto2ModelTool {
          * 也可以选择跳过此处预检，后续代码有完整的校验检测。
          * 此处预检，只是想预先抵消绝大部分的攻击。
          */
-        if(!blockchainDataBase.getConsensus().isReachConsensus(blockchainDataBase,block)){
+        if(!blockchainDataBase.getConsensus().checkConsensus(blockchainDataBase,block)){
             throw new RuntimeException("区块预检失败。");
         }
         return block;

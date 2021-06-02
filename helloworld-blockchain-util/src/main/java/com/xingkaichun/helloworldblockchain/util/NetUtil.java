@@ -30,7 +30,6 @@ public class NetUtil {
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept-Encoding", "identity");
             connection.setReadTimeout(3000);
             connection.setConnectTimeout(3000);
             connection.connect();

@@ -82,9 +82,9 @@ public class Setting {
         public static final long[] BLOCK_CHAIN_VERSION_LIST = new long[]{10000L};
 
         /**
-         * 检查系统版本是否支持。
+         * 校验系统版本是否支持
          */
-        public static boolean isVersionLegal(long blockHeight){
+        public static boolean checkSystemVersion(long blockHeight){
             return blockHeight <= BLOCK_CHAIN_VERSION_LIST[BLOCK_CHAIN_VERSION_LIST.length-1];
         }
     }

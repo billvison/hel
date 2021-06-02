@@ -106,58 +106,58 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     //region 校验区块、交易
     @Override
     public boolean isBlockCanAddToBlockchain(Block block) {
-        //检查系统版本是否支持
-        if(!Setting.SystemVersionSetting.isVersionLegal(block.getHeight())){
+        //校验系统版本是否支持
+        if(!Setting.SystemVersionSetting.checkSystemVersion(block.getHeight())){
             LogUtil.debug("系统版本过低，不支持校验区块，请尽快升级系统。");
             return false;
         }
 
         //校验区块的结构
-        if(!StructureTool.isBlockStructureLegal(block)){
+        if(!StructureTool.checkBlockStructure(block)){
             LogUtil.debug("区块数据异常，请校验区块的结构。");
             return false;
         }
-        //校验区块的存储容量
-        if(!SizeTool.isBlockSizeLegal(block)){
+        //校验区块的大小
+        if(!SizeTool.checkBlockSize(block)){
             LogUtil.debug("区块数据异常，请校验区块的大小。");
             return false;
         }
 
         Block previousBlock = queryTailBlock();
         //校验区块写入的属性值
-        if(!BlockPropertyTool.isWritePropertiesRight(previousBlock,block)){
+        if(!BlockPropertyTool.checkWriteProperties(previousBlock,block)){
             LogUtil.debug("区块校验失败：区块的属性写入值与实际计算结果不一致。");
             return false;
         }
 
         //校验业务
         //校验区块时间
-        if(!BlockTool.isBlockTimestampLegal(previousBlock,block)){
+        if(!BlockTool.checkBlockTimestamp(previousBlock,block)){
             LogUtil.debug("区块生成的时间太滞后。");
             return false;
         }
-        //新产生的哈希是否合法
-        if(isNewHashIllegal(block)){
+        //校验新产生的哈希
+        if(checkNewHash(block)){
             LogUtil.debug("区块数据异常，区块中新产生的哈希异常。");
             return false;
         }
-        //新产生的地址是否合法
-        if(isAddressIllegal(block)){
+        //校验新产生的地址
+        if(checkNewAddress(block)){
             LogUtil.debug("区块数据异常，区块中新产生的哈希异常。");
             return false;
         }
-        //双花校验
-        if(isDoubleSpentAttackHappen(block)){
+        //校验双花
+        if(checkDoubleSpend(block)){
             LogUtil.debug("区块数据异常，检测到双花攻击。");
             return false;
         }
         //校验共识
-        if(!consensus.isReachConsensus(this,block)){
+        if(!consensus.checkConsensus(this,block)){
             LogUtil.debug("区块数据异常，未满足共识规则。");
             return false;
         }
         //校验激励
-        if(!incentive.isIncentiveRight(this,block)){
+        if(!incentive.checkIncentive(this,block)){
             LogUtil.debug("区块数据异常，激励校验失败。");
             return false;
         }
@@ -176,44 +176,44 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     @Override
     public boolean isTransactionCanAddToNextBlock(Transaction transaction) {
         //校验交易的结构
-        if(!StructureTool.isTransactionStructureLegal(transaction)){
+        if(!StructureTool.checkTransactionStructure(transaction)){
             LogUtil.debug("交易数据异常，请校验交易的结构。");
             return false;
         }
-        //校验交易的存储容量
-        if(!SizeTool.isTransactionSizeLegal(transaction)){
+        //校验交易的大小
+        if(!SizeTool.checkTransactionSize(transaction)){
             LogUtil.debug("交易数据异常，请校验交易的大小。");
             return false;
         }
 
         //校验交易的属性是否与计算得来的一致
-        if(!TransactionPropertyTool.isWritePropertiesRight(transaction)){
+        if(!TransactionPropertyTool.checkWriteProperties(transaction)){
             return false;
         }
 
-        //交易地址是否合法
-        if(TransactionTool.isTransactionAddressIllegal(transaction)){
+        //校验交易交易地址
+        if(TransactionTool.checkTransactionAddress(transaction)){
             return false;
         }
 
         //业务校验
         //校验交易金额
-        if(!TransactionTool.isTransactionAmountLegal(transaction)){
+        if(!TransactionTool.checkTransactionValue(transaction)){
             LogUtil.debug("交易金额不合法");
             return false;
         }
-        //校验是否双花
-        if(isDoubleSpentAttackHappen(transaction)){
+        //校验双花
+        if(checkDoubleSpend(transaction)){
             LogUtil.debug("交易数据异常，检测到双花攻击。");
             return false;
         }
-        //新产生的哈希是否合法
-        if(isNewHashIllegal(transaction)){
+        //校验新产生的哈希
+        if(checkNewHash(transaction)){
             LogUtil.debug("区块数据异常，区块中新产生的哈希异常。");
             return false;
         }
-        //新产生的地址是否合法
-        if(isNewAddressIllegal(transaction)){
+        //校验新产生的地址
+        if(checkNewAddress(transaction)){
             LogUtil.debug("区块数据异常，区块中新产生的哈希异常。");
             return false;
         }
@@ -230,8 +230,8 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                 LogUtil.debug("交易校验失败：交易的输入必须大于等于交易的输出。不合法的交易。");
                 return false;
             }
-            //脚本
-            if(!TransactionTool.verifyScript(transaction)) {
+            //校验用户花费的是自己的钱吗
+            if(!TransactionTool.checkUtxoOwnership(transaction)) {
                 LogUtil.debug("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。");
                 return false;
             }
@@ -910,9 +910,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         return false;
     }
     /**
-     * 区块中新产生的哈希是否合法
+     * 区块中校验新产生的哈希
      */
-    private boolean isNewHashIllegal(Transaction transaction) {
+    private boolean checkNewHash(Transaction transaction) {
         //校验哈希作为主键的正确性
         //新产生的Hash不能被使用过
         if(isNewHashUsed(transaction)){
@@ -922,9 +922,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         return false;
     }
     /**
-     * 区块中新产生的哈希是否合法
+     * 区块中校验新产生的哈希
      */
-    private boolean isNewHashIllegal(Block block) {
+    private boolean checkNewHash(Block block) {
         //校验哈希作为主键的正确性
         //新产生的哈希不能有重复
         if(BlockTool.isExistDuplicateNewHash(block)){
@@ -938,7 +938,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         }
         return false;
     }
-    private boolean isAddressIllegal(Block block) {
+    private boolean checkNewAddress(Block block) {
         //校验地址作为主键的正确性
         //新产生的地址不能有重复
         if(BlockTool.isExistDuplicateNewAddress(block)){
@@ -948,7 +948,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
-                if(isNewAddressIllegal(transaction)){
+                if(checkNewAddress(transaction)){
                     return true;
                 }
             }
@@ -956,12 +956,14 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         return false;
     }
     /**
-     * 区块中新产生的哈希是否合法
+     * 区块中校验新产生的哈希
      */
-    private boolean isNewAddressIllegal(Transaction transaction) {
+    private boolean checkNewAddress(Transaction transaction) {
+        //区块新产生的地址不能有重复
         if(TransactionTool.isExistDuplicateNewAddress(transaction)){
             return true;
         }
+        //区块新产生的地址不能被使用过了
         List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs != null){
             for (TransactionOutput output:outputs){
@@ -983,9 +985,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
 
     //region 双花攻击
     /**
-     * 是否有双花攻击
+     * 校验双花
      */
-    private boolean isDoubleSpentAttackHappen(Transaction transaction) {
+    private boolean checkDoubleSpend(Transaction transaction) {
         //双花交易：交易内部存在重复的(未花费交易输出)
         if(TransactionTool.isExistDuplicateTransactionInput(transaction)){
             LogUtil.debug("交易数据异常，检测到双花攻击。");
@@ -1000,9 +1002,10 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     }
 
     /**
-     * 是否有双花攻击
+     * 校验双花
+     * 双花指的是同一笔UTXO被花费两次或多次。
      */
-    private boolean isDoubleSpentAttackHappen(Block block) {
+    private boolean checkDoubleSpend(Block block) {
         //双花交易：区块内部存在重复的(未花费交易输出)
         if(BlockTool.isExistDuplicateTransactionInput(block)){
             LogUtil.debug("区块数据异常：发生双花交易。");

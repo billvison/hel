@@ -257,7 +257,7 @@ public class BlockchainBrowserApplicationController {
                 blockVo.setBlockSize(SizeTool.calculateBlockSize(block)+"字符");
                 blockVo.setTransactionCount(BlockTool.getTransactionCount(block));
                 blockVo.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
-                blockVo.setTime(TimeUtil.timestamp2FormatDate(block.getTimestamp()));
+                blockVo.setTime(TimeUtil.formatMillisecondTimestamp2TimeString(block.getTimestamp()));
                 blockVo.setHash(block.getHash());
                 BlockVos.add(blockVo);
             }

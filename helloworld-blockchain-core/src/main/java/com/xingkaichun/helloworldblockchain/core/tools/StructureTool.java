@@ -21,7 +21,7 @@ public class StructureTool {
     /**
      * 校验区块的结构
      */
-    public static boolean isBlockStructureLegal(Block block) {
+    public static boolean checkBlockStructure(Block block) {
         List<Transaction> transactions = block.getTransactions();
         if(transactions == null || transactions.size()==0){
             LogUtil.debug("区块数据异常：区块中的交易数量为0。区块必须有一笔创世的交易。");
@@ -49,7 +49,7 @@ public class StructureTool {
         }
         //校验交易的结构
         for(Transaction transaction:transactions){
-            if(!isTransactionStructureLegal(transaction)){
+            if(!checkTransactionStructure(transaction)){
                 LogUtil.debug("交易数据异常：交易结构异常。");
                 return false;
             }
@@ -59,7 +59,7 @@ public class StructureTool {
     /**
      * 校验交易的结构
      */
-    public static boolean isTransactionStructureLegal(Transaction transaction) {
+    public static boolean checkTransactionStructure(Transaction transaction) {
         if(transaction.getTransactionType() == TransactionType.GENESIS){
             List<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null && inputs.size()!=0){

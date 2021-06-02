@@ -15,8 +15,8 @@ public class TransactionPropertyTool {
     /**
      * 校验交易的属性是否与计算得来的一致
      */
-    public static boolean isWritePropertiesRight(Transaction transaction) {
-        if(!isTransactionHashRight(transaction)){
+    public static boolean checkWriteProperties(Transaction transaction) {
+        if(!checkWriteTransactionHash(transaction)){
             return false;
         }
         if(transaction.getTransactionType() == TransactionType.GENESIS){
@@ -30,9 +30,9 @@ public class TransactionPropertyTool {
     }
 
     /**
-     * 校验交易的哈希是否正确
+     * 校验写入的交易哈希是否正确
      */
-    public static boolean isTransactionHashRight(Transaction transaction) {
+    public static boolean checkWriteTransactionHash(Transaction transaction) {
         String targetTransactionHash = TransactionTool.calculateTransactionHash(transaction);
         return StringUtil.isEquals(targetTransactionHash,transaction.getTransactionHash());
     }
