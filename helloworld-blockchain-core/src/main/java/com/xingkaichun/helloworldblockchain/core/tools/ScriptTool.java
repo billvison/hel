@@ -177,6 +177,10 @@ public class ScriptTool {
     /**
      * 是否是P2PKH输入脚本
      */
+    public static boolean isPayToPublicKeyHashInputScript(InputScript inputScript) {
+        InputScriptDto inputScriptDto = Model2DtoTool.inputScript2InputScriptDto(inputScript);
+        return isPayToPublicKeyHashInputScript(inputScriptDto);
+    }
     public static boolean isPayToPublicKeyHashInputScript(InputScriptDto inputScriptDto) {
         try {
             return  inputScriptDto.size() == 4
@@ -192,6 +196,10 @@ public class ScriptTool {
     /**
      * 是否是P2PKH输出脚本
      */
+    public static boolean isPayToPublicKeyHashOutputScript(OutputScript outputScript) {
+        OutputScriptDto outputScriptDto = Model2DtoTool.outputScript2OutputScriptDto(outputScript);
+        return isPayToPublicKeyHashOutputScript(outputScriptDto);
+    }
     public static boolean isPayToPublicKeyHashOutputScript(OutputScriptDto outputScriptDto) {
         try {
             return  outputScriptDto.size() == 6

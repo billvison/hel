@@ -331,23 +331,40 @@ public class TransactionTool {
                 }
             }
         }
+
+        //根据交易类型，做进一步的校验
+        if(transaction.getTransactionType() == TransactionType.GENESIS){
+            //没有需要校验的，跳过。
+        } else if(transaction.getTransactionType() == TransactionType.STANDARD){
+            //交易输入必须要大于等于交易输出
+            long inputsValue = TransactionTool.getInputsValue(transaction);
+            long outputsValue = TransactionTool.getOutputsValue(transaction);
+            if(inputsValue < outputsValue) {
+                LogUtil.debug("交易校验失败：交易的输入必须大于等于交易的输出。不合法的交易。");
+                return false;
+            }
+            return true;
+        } else {
+            LogUtil.debug("区块数据异常，不能识别的交易类型。");
+            return false;
+        }
         return true;
     }
 
     /**
-     * 交易中的地址是否符合系统的约束
+     * 校验交易中的地址是否是P2PKH地址
      */
-    public static boolean checkTransactionAddress(Transaction transaction) {
+    public static boolean checkPayToPublicKeyHashAddress(Transaction transaction) {
         List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs != null){
             for(TransactionOutput output:outputs){
                 if(!AccountUtil.isPayToPublicKeyHashAddress(output.getAddress())){
                     LogUtil.debug("交易地址不合法");
-                    return true;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     /**
@@ -371,9 +388,9 @@ public class TransactionTool {
     }
 
     /**
-     * 是否存在重复的交易输入
+     * 交易中是否存在重复的[未花费交易输出]
      */
-    public static boolean isExistDuplicateTransactionInput(Transaction transaction) {
+    public static boolean isExistDuplicateUtxo(Transaction transaction) {
         List<TransactionInput> inputs = transaction.getInputs();
         if(inputs == null || inputs.size()==0){
             return false;
@@ -460,5 +477,28 @@ public class TransactionTool {
                 return 1;
             }
         });
+    }
+
+    /**
+     * 校验交易中的脚本是否是P2PKH脚本
+     */
+    public static boolean checkPayToPublicKeyHashScript(Transaction transaction) {
+        List<TransactionInput> inputs = transaction.getInputs();
+        if(inputs != null){
+            for(TransactionInput input:inputs){
+                if(!ScriptTool.isPayToPublicKeyHashInputScript(input.getInputScript())){
+                    return false;
+                }
+            }
+        }
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        if(outputs != null){
+            for (TransactionOutput output:outputs) {
+                if(!ScriptTool.isPayToPublicKeyHashOutputScript(output.getOutputScript())){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

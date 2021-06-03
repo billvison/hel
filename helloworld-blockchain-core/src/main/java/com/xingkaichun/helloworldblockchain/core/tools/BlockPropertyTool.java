@@ -30,11 +30,6 @@ public class BlockPropertyTool {
             LogUtil.debug("区块写入的默克尔树根出错。");
             return false;
         }
-        //校验区块中写入的区块哈希是否正确
-        if(!checkBlockWriteHash(block)){
-            LogUtil.debug("区块写入的区块哈希出错。");
-            return false;
-        }
         //校验写入的区块前区块哈希
         if(!BlockTool.checkBlockWritePreviousBlockHash(previousBlock,block)){
             LogUtil.debug("区块写入的前区块哈希出错。");
@@ -45,6 +40,11 @@ public class BlockPropertyTool {
             LogUtil.debug("区块写入的区块高度出错。");
             return false;
         }
+        //校验区块中写入的区块哈希是否正确
+        if(!checkBlockWriteHash(block)){
+            LogUtil.debug("区块写入的区块哈希出错。");
+            return false;
+        }
         return true;
     }
 
@@ -52,8 +52,8 @@ public class BlockPropertyTool {
      * 校验区块中写入的区块哈希是否正确
      */
     public static boolean checkBlockWriteHash(Block block){
-        String targetHash = BlockTool.calculateBlockHash(block);
-        return StringUtil.isEquals(targetHash,block.getHash());
+        String targetBlockHash = BlockTool.calculateBlockHash(block);
+        return StringUtil.isEquals(targetBlockHash,block.getHash());
     }
 
     /**

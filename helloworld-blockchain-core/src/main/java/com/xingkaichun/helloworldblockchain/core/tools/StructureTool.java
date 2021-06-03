@@ -1,13 +1,17 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.core.model.script.OperationCodeEnum;
+import com.xingkaichun.helloworldblockchain.core.model.script.Script;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -71,17 +75,59 @@ public class StructureTool {
                 LogUtil.debug("交易数据异常：创世交易有且只能有一笔交易输出。");
                 return false;
             }
-            return true;
         }else if(transaction.getTransactionType() == TransactionType.STANDARD){
             List<TransactionInput> inputs = transaction.getInputs();
             if(inputs == null || inputs.size()<1){
                 LogUtil.debug("交易数据异常：标准交易的交易输入数量至少是1。");
                 return false;
             }
-            return true;
+            List<TransactionOutput> outputs = transaction.getOutputs();
+            if(outputs == null || outputs.size()<1){
+                LogUtil.debug("交易数据异常：标准交易的交易输出数量至少是1。");
+                return false;
+            }
         }else {
             LogUtil.debug("交易数据异常：不能识别的交易的类型。");
             return false;
         }
+        //校验脚本结构
+        //输入脚本不需要校验，如果输入脚本结构有误，则在业务[交易输入脚本解锁交易输出脚本]上就通不过。
+
+        //校验输出脚本
+        List<TransactionOutput> outputs = transaction.getOutputs();
+        if(outputs != null){
+            for (TransactionOutput transactionOutput:outputs) {
+                if(!checkScriptStructure(transactionOutput.getOutputScript())){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    /**
+     * 校验脚本的结构
+     */
+    public static boolean checkScriptStructure(Script script) {
+        for(int i=0;i<script.size();i++){
+            String operationCode = script.get(i);
+            byte[] bytesOperationCode = HexUtil.hexStringToBytes(operationCode);
+            if(Arrays.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode) ||
+                    Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
+                    Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
+                    Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
+                continue;
+            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
+                //跳过操作数
+                ++i;
+                //验证操作码后一定有操作数
+                if(script.size()<i+1){
+                    return false;
+                }
+            }else {
+                //不能识别的操作码
+                return false;
+            }
+        }
+        return true;
     }
 }

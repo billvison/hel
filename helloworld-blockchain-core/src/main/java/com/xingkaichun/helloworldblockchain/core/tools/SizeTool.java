@@ -1,16 +1,13 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.script.OperationCodeEnum;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
-import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.*;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -113,45 +110,29 @@ public class SizeTool {
      * 校验输入脚本的大小
      */
     private static boolean checkInputScriptSize(InputScriptDto inputScriptDto) {
-        //先宽泛的校验脚本大小
+        //校验脚本大小
         if(!checkScriptSize(inputScriptDto)){
             return false;
         }
-        //严格校验输入脚本大小，因为当前输入脚本只有P2PKH，所以只需校验输入脚本是否是P2PKH输入脚本即可。
-        return ScriptTool.isPayToPublicKeyHashInputScript(inputScriptDto);
+        return true;
     }
 
     /**
      * 校验输出脚本的大小
      */
     public static boolean checkOutputScriptSize(OutputScriptDto outputScriptDto) {
-        //先宽泛的校验脚本大小
+        //校验脚本大小
         if(!checkScriptSize(outputScriptDto)){
             return false;
         }
-        //严格校验输入脚本大小，因为当前输出脚本只有P2PKH，所以只需校验输出脚本是否是P2PKH输出脚本即可。
-        return ScriptTool.isPayToPublicKeyHashOutputScript(outputScriptDto);
+        return true;
     }
 
     /**
      * 校验脚本的大小
      */
     public static boolean checkScriptSize(ScriptDto scriptDto) {
-        for(int i=0;i<scriptDto.size();i++){
-            String operationCode = scriptDto.get(i);
-            byte[] bytesOperationCode = HexUtil.hexStringToBytes(operationCode);
-            if(Arrays.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
-                continue;
-            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
-                //跳过操作数
-                ++i;
-            }else {
-                return false;
-            }
-        }
+        //脚本内的操作码、操作数大小不需要校验，因为操作码、操作数不合规，在脚本结构上就构不成一个合格的脚本。
         if(calculateScriptSize(scriptDto) > Setting.ScriptSetting.SCRIPT_MAX_SIZE){
             LogUtil.debug("交易校验失败：交易输出脚本大小超出限制。");
             return false;

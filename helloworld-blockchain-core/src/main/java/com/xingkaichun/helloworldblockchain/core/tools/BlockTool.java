@@ -116,9 +116,9 @@ public class BlockTool {
         return false;
     }
     /**
-     * 是否存在重复的交易输入
+     * 区块中是否存在重复的[未花费交易输出]
      */
-    public static boolean isExistDuplicateTransactionInput(Block block) {
+    public static boolean isExistDuplicateUtxo(Block block) {
         Set<String> transactionOutputIdSet = new HashSet<>();
         for(Transaction transaction : block.getTransactions()){
             List<TransactionInput> inputs = transaction.getInputs();
@@ -139,7 +139,7 @@ public class BlockTool {
 
     /**
      * 校验区块的时间
-     * 区块时间戳一定要比当前时间戳小。因为挖矿是个技术活，默认矿工有能力将自己机器的时间调整正确，所以矿工不可能穿越到未来挖矿。
+     * 区块时间戳一定要比当前时间戳小。挖矿是个技术活，默认矿工有能力将自己机器的时间调整正确，所以矿工不应该穿越到未来挖矿。
      * 区块时间戳一定要比前一个区块的时间戳大。
      */
     public static boolean checkBlockTimestamp(Block previousBlock, Block currentBlock) {

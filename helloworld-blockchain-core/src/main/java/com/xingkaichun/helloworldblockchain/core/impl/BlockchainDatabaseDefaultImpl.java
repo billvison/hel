@@ -137,17 +137,17 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             return false;
         }
         //校验新产生的哈希
-        if(checkNewHash(block)){
+        if(!checkNewHash(block)){
             LogUtil.debug("区块数据异常，区块中新产生的哈希异常。");
             return false;
         }
         //校验新产生的地址
-        if(checkNewAddress(block)){
+        if(!checkNewAddress(block)){
             LogUtil.debug("区块数据异常，区块中新产生的哈希异常。");
             return false;
         }
         //校验双花
-        if(checkDoubleSpend(block)){
+        if(!checkDoubleSpend(block)){
             LogUtil.debug("区块数据异常，检测到双花攻击。");
             return false;
         }
@@ -185,16 +185,23 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             LogUtil.debug("交易数据异常，请校验交易的大小。");
             return false;
         }
-
         //校验交易的属性是否与计算得来的一致
         if(!TransactionPropertyTool.checkWriteProperties(transaction)){
             return false;
         }
 
-        //校验交易交易地址
-        if(TransactionTool.checkTransactionAddress(transaction)){
+
+
+        //校验交易中的地址是否是P2PKH地址
+        if(!TransactionTool.checkPayToPublicKeyHashAddress(transaction)){
             return false;
         }
+        //校验交易中的脚本是否是P2PKH脚本
+        if(!TransactionTool.checkPayToPublicKeyHashScript(transaction)){
+            return false;
+        }
+
+
 
         //业务校验
         //校验交易金额
@@ -202,44 +209,27 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             LogUtil.debug("交易金额不合法");
             return false;
         }
+        //校验用户花费的是自己的钱吗
+        if(!TransactionTool.checkUtxoOwnership(transaction)) {
+            LogUtil.debug("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。");
+            return false;
+        }
         //校验双花
-        if(checkDoubleSpend(transaction)){
+        if(!checkDoubleSpend(transaction)){
             LogUtil.debug("交易数据异常，检测到双花攻击。");
             return false;
         }
         //校验新产生的哈希
-        if(checkNewHash(transaction)){
+        if(!checkNewHash(transaction)){
             LogUtil.debug("区块数据异常，区块中新产生的哈希异常。");
             return false;
         }
         //校验新产生的地址
-        if(checkNewAddress(transaction)){
+        if(!checkNewAddress(transaction)){
             LogUtil.debug("区块数据异常，区块中新产生的哈希异常。");
             return false;
         }
-
-        //根据交易类型，做进一步的校验
-        if(transaction.getTransactionType() == TransactionType.GENESIS){
-            //校验激励，在区块层面进行校验
-            return true;
-        } else if(transaction.getTransactionType() == TransactionType.STANDARD){
-            //交易输入必须要大于等于交易输出
-            long inputsValue = TransactionTool.getInputsValue(transaction);
-            long outputsValue = TransactionTool.getOutputsValue(transaction);
-            if(inputsValue < outputsValue) {
-                LogUtil.debug("交易校验失败：交易的输入必须大于等于交易的输出。不合法的交易。");
-                return false;
-            }
-            //校验用户花费的是自己的钱吗
-            if(!TransactionTool.checkUtxoOwnership(transaction)) {
-                LogUtil.debug("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。");
-                return false;
-            }
-            return true;
-        } else {
-            LogUtil.debug("区块数据异常，不能识别的交易类型。");
-            return false;
-        }
+        return true;
     }
     //endregion
 
@@ -850,9 +840,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
 
 
     /**
-     * 检查交易输入是否都是未花费交易输出
+     * 检查[花费的交易输出]是否都是[未花费的交易输出]
      */
-    private boolean isTransactionInputFromUnspentTransactionOutput(Transaction transaction) {
+    private boolean checkStxoIsUtxo(Transaction transaction) {
         List<TransactionInput> inputs = transaction.getInputs();
         if(inputs != null){
             for(TransactionInput transactionInput : inputs) {
@@ -917,43 +907,46 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         //新产生的Hash不能被使用过
         if(isNewHashUsed(transaction)){
             LogUtil.debug("校验数据异常，校验中占用的部分主键已经被使用了。");
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
     /**
-     * 区块中校验新产生的哈希
+     * 校验区块新产生的哈希
      */
     private boolean checkNewHash(Block block) {
         //校验哈希作为主键的正确性
         //新产生的哈希不能有重复
         if(BlockTool.isExistDuplicateNewHash(block)){
             LogUtil.debug("区块数据异常，区块中新产生的哈希有重复。");
-            return true;
+            return false;
         }
         //新产生的哈希不能被区块链使用过了
         if(isHashUsed(block)){
             LogUtil.debug("区块数据异常，区块中新产生的哈希已经早被区块链使用了。");
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
+    /**
+     * 校验区块新产生的地址
+     */
     private boolean checkNewAddress(Block block) {
         //校验地址作为主键的正确性
         //新产生的地址不能有重复
         if(BlockTool.isExistDuplicateNewAddress(block)){
             LogUtil.debug("区块数据异常，区块中新产生的地址有重复。");
-            return true;
+            return false;
         }
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
-                if(checkNewAddress(transaction)){
-                    return true;
+                if(!checkNewAddress(transaction)){
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
     /**
      * 区块中校验新产生的哈希
@@ -961,7 +954,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     private boolean checkNewAddress(Transaction transaction) {
         //区块新产生的地址不能有重复
         if(TransactionTool.isExistDuplicateNewAddress(transaction)){
-            return true;
+            return false;
         }
         //区块新产生的地址不能被使用过了
         List<TransactionOutput> outputs = transaction.getOutputs();
@@ -970,11 +963,11 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                 String address = output.getAddress();
                 if(isAddressUsed(address)){
                     LogUtil.debug(String.format("区块数据异常，地址[%s]重复。",address));
-                    return true;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
     private boolean isAddressUsed(String address) {
         byte[] bytesAddress = KvDbUtil.get(blockchainDatabasePath, BlockchainDatabaseKeyTool.buildAddressKey(address));
@@ -988,17 +981,17 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * 校验双花
      */
     private boolean checkDoubleSpend(Transaction transaction) {
-        //双花交易：交易内部存在重复的(未花费交易输出)
-        if(TransactionTool.isExistDuplicateTransactionInput(transaction)){
+        //双花交易：交易内部存在重复的[未花费交易输出]
+        if(TransactionTool.isExistDuplicateUtxo(transaction)){
             LogUtil.debug("交易数据异常，检测到双花攻击。");
-            return true;
+            return false;
         }
-        //双花交易：交易内部存在已经花费的(未花费交易输出)
-        if(!isTransactionInputFromUnspentTransactionOutput(transaction)){
+        //双花交易：交易内部使用了[已经花费的[未花费交易输出]]
+        if(!checkStxoIsUtxo(transaction)){
             LogUtil.debug("交易数据异常：发生双花交易。");
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     /**
@@ -1006,19 +999,21 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * 双花指的是同一笔UTXO被花费两次或多次。
      */
     private boolean checkDoubleSpend(Block block) {
-        //双花交易：区块内部存在重复的(未花费交易输出)
-        if(BlockTool.isExistDuplicateTransactionInput(block)){
+        //双花交易：区块内部存在重复的[未花费交易输出]
+        if(BlockTool.isExistDuplicateUtxo(block)){
             LogUtil.debug("区块数据异常：发生双花交易。");
-            return true;
+            return false;
         }
-        //双花交易：区块内部存在已经花费的(未花费交易输出)
-        for(Transaction transaction : block.getTransactions()){
-            if(!isTransactionInputFromUnspentTransactionOutput(transaction)){
-                LogUtil.debug("区块数据异常：发生双花交易。");
-                return true;
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction:transactions){
+                if(!checkDoubleSpend(transaction)){
+                    LogUtil.debug("区块数据异常：发生双花交易。");
+                    return false;
+                }
             }
         }
-        return false;
+        return true;
     }
     //endregion
 }
