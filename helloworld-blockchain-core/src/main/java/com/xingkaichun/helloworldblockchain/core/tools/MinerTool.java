@@ -55,8 +55,8 @@ public class MinerTool {
         transactionList.clear();
 
         for(Transaction transaction : backupTransactionList){
-            boolean transactionCanAddToNextBlock = blockchainDataBase.isTransactionCanAddToNextBlock(transaction);
-            if(transactionCanAddToNextBlock){
+            boolean checkTransaction = blockchainDataBase.checkTransaction(transaction);
+            if(checkTransaction){
                 transactionList.add(transaction);
             }else {
                 String transactionHash = TransactionTool.calculateTransactionHash(transaction);

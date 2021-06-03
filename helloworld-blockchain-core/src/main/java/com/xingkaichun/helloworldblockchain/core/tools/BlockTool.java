@@ -11,7 +11,6 @@ import com.xingkaichun.helloworldblockchain.crypto.MerkleTreeUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.netcore.dto.BlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
-import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
@@ -150,28 +149,6 @@ public class BlockTool {
             return true;
         } else {
             return currentBlock.getTimestamp() > previousBlock.getTimestamp();
-        }
-    }
-
-    /**
-     * 校验区块的前哈希属性是否正确
-     */
-    public static boolean checkBlockWritePreviousBlockHash(Block previousBlock, Block currentBlock) {
-        if(previousBlock == null){
-            return StringUtil.isEquals(Setting.GenesisBlockSetting.HASH,currentBlock.getPreviousBlockHash());
-        } else {
-            return StringUtil.isEquals(previousBlock.getHash(),currentBlock.getPreviousBlockHash());
-        }
-    }
-
-    /**
-     * 校验写入的区块的高度属性是否正确
-     */
-    public static boolean checkBlockWriteHeight(Block previousBlock, Block currentBlock) {
-        if(previousBlock == null){
-            return LongUtil.isEquals((Setting.GenesisBlockSetting.HEIGHT +1),currentBlock.getHeight());
-        } else {
-            return LongUtil.isEquals((previousBlock.getHeight()+1),currentBlock.getHeight());
         }
     }
 

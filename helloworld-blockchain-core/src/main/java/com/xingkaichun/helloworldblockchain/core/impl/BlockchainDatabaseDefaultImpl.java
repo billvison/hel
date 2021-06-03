@@ -53,8 +53,8 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{
-            boolean isBlockCanAddToBlockchain = isBlockCanAddToBlockchain(block);
-            if(!isBlockCanAddToBlockchain){
+            boolean checkBlock = checkBlock(block);
+            if(!checkBlock){
                 return false;
             }
             KvDbUtil.KvWriteBatch kvWriteBatch = createBlockWriteBatch(block, BlockchainActionEnum.ADD_BLOCK);
@@ -105,7 +105,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
 
     //region 校验区块、交易
     @Override
-    public boolean isBlockCanAddToBlockchain(Block block) {
+    public boolean checkBlock(Block block) {
         //校验系统版本是否支持
         if(!Setting.SystemVersionSetting.checkSystemVersion(block.getHeight())){
             LogUtil.debug("系统版本过低，不支持校验区块，请尽快升级系统。");
@@ -122,10 +122,9 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             LogUtil.debug("区块数据异常，请校验区块的大小。");
             return false;
         }
-
         Block previousBlock = queryTailBlock();
         //校验区块写入的属性值
-        if(!BlockPropertyTool.checkWriteProperties(previousBlock,block)){
+        if(!WritePropertyTool.checkBlockWriteProperties(previousBlock,block)){
             LogUtil.debug("区块校验失败：区块的属性写入值与实际计算结果不一致。");
             return false;
         }
@@ -164,7 +163,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
 
         //从交易角度校验每一笔交易
         for(Transaction transaction : block.getTransactions()){
-            boolean transactionCanAddToNextBlock = isTransactionCanAddToNextBlock(transaction);
+            boolean transactionCanAddToNextBlock = checkTransaction(transaction);
             if(!transactionCanAddToNextBlock){
                 LogUtil.debug("区块数据异常，交易异常。");
                 return false;
@@ -174,7 +173,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     }
 
     @Override
-    public boolean isTransactionCanAddToNextBlock(Transaction transaction) {
+    public boolean checkTransaction(Transaction transaction) {
         //校验交易的结构
         if(!StructureTool.checkTransactionStructure(transaction)){
             LogUtil.debug("交易数据异常，请校验交易的结构。");
@@ -186,7 +185,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             return false;
         }
         //校验交易的属性是否与计算得来的一致
-        if(!TransactionPropertyTool.checkWriteProperties(transaction)){
+        if(!WritePropertyTool.checkTransactionWriteProperties(transaction)){
             return false;
         }
 
