@@ -6,7 +6,10 @@ import com.xingkaichun.helloworldblockchain.core.CoreConfiguration;
 import com.xingkaichun.helloworldblockchain.core.Incentive;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.enums.BlockchainActionEnum;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.*;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
 import com.xingkaichun.helloworldblockchain.core.tools.*;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
@@ -122,14 +125,25 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             LogUtil.debug("区块数据异常，请校验区块的大小。");
             return false;
         }
-        Block previousBlock = queryTailBlock();
         //校验区块写入的属性值
-        if(!WritePropertyTool.checkBlockWriteProperties(previousBlock,block)){
+        if(!WritePropertyTool.checkBlockWriteProperties(block)){
             LogUtil.debug("区块校验失败：区块的属性写入值与实际计算结果不一致。");
             return false;
         }
 
+
         //校验业务
+        Block previousBlock = queryTailBlock();
+        //校验区块高度的连贯性
+        if(!BlockTool.checkBlockHeight(previousBlock,block)){
+            LogUtil.debug("区块写入的区块高度出错。");
+            return false;
+        }
+        //校验区块的前区块哈希
+        if(!BlockTool.checkPreviousBlockHash(previousBlock,block)){
+            LogUtil.debug("区块写入的前区块哈希出错。");
+            return false;
+        }
         //校验区块时间
         if(!BlockTool.checkBlockTimestamp(previousBlock,block)){
             LogUtil.debug("区块生成的时间太滞后。");
@@ -189,8 +203,6 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             return false;
         }
 
-
-
         //校验交易中的地址是否是P2PKH地址
         if(!TransactionTool.checkPayToPublicKeyHashAddress(transaction)){
             return false;
@@ -200,24 +212,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             return false;
         }
 
-
-
         //业务校验
-        //校验交易金额
-        if(!TransactionTool.checkTransactionValue(transaction)){
-            LogUtil.debug("交易金额不合法");
-            return false;
-        }
-        //校验用户花费的是自己的钱吗
-        if(!TransactionTool.checkUtxoOwnership(transaction)) {
-            LogUtil.debug("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。");
-            return false;
-        }
-        //校验双花
-        if(!checkDoubleSpend(transaction)){
-            LogUtil.debug("交易数据异常，检测到双花攻击。");
-            return false;
-        }
         //校验新产生的哈希
         if(!checkNewHash(transaction)){
             LogUtil.debug("区块数据异常，区块中新产生的哈希异常。");
@@ -226,6 +221,21 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         //校验新产生的地址
         if(!checkNewAddress(transaction)){
             LogUtil.debug("区块数据异常，区块中新产生的哈希异常。");
+            return false;
+        }
+        //校验交易金额
+        if(!TransactionTool.checkTransactionValue(transaction)){
+            LogUtil.debug("交易金额不合法");
+            return false;
+        }
+        //校验双花
+        if(!checkDoubleSpend(transaction)){
+            LogUtil.debug("交易数据异常，检测到双花攻击。");
+            return false;
+        }
+        //校验用户花费的是自己的钱吗
+        if(!TransactionTool.checkUtxoOwnership(transaction)) {
+            LogUtil.debug("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。");
             return false;
         }
         return true;

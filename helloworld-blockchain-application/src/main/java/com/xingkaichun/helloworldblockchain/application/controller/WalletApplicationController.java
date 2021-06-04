@@ -7,9 +7,9 @@ import com.xingkaichun.helloworldblockchain.application.vo.framwork.ServiceResul
 import com.xingkaichun.helloworldblockchain.application.vo.transaction.SubmitTransactionToBlockchainNetworkRequest;
 import com.xingkaichun.helloworldblockchain.application.vo.transaction.SubmitTransactionToBlockchainNetworkResponse;
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
-import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionRequest;
-import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionResponse;
-import com.xingkaichun.helloworldblockchain.core.model.pay.Recipient;
+import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionRequest;
+import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionResponse;
+import com.xingkaichun.helloworldblockchain.core.model.wallet.Recipient;
 import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;

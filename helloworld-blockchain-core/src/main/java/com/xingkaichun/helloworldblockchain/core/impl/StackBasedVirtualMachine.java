@@ -25,28 +25,28 @@ public class StackBasedVirtualMachine extends VirtualMachine {
         ScriptExecuteResult stack = new ScriptExecuteResult();
 
         for(int i=0;i<script.size();i++){
-            String command = script.get(i);
-            byte[] byteCommand = HexUtil.hexStringToBytes(command);
-            if(Arrays.equals(OperationCodeEnum.OP_DUP.getCode(),byteCommand)){
+            String operationCode = script.get(i);
+            byte[] bytesOperationCode = HexUtil.hexStringToBytes(operationCode);
+            if(Arrays.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode)){
                 if(stack.size()<1){
                     throw new RuntimeException("指令运行异常");
                 }
                 stack.push(stack.peek());
-            }else if(Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),byteCommand)){
+            }else if(Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode)){
                 if(stack.size()<1){
                     throw new RuntimeException("指令运行异常");
                 }
                 String publicKey = stack.pop();
                 String publicKeyHash = AccountUtil.publicKeyHashFromPublicKey(publicKey);
                 stack.push(publicKeyHash);
-            }else if(Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),byteCommand)){
+            }else if(Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode)){
                 if(stack.size()<2){
                     throw new RuntimeException("指令运行异常");
                 }
                 if(!StringUtil.isEquals(stack.pop(),stack.pop())){
                     throw new RuntimeException("脚本执行失败");
                 }
-            }else if(Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),byteCommand)){
+            }else if(Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
                 if(stack.size()<2){
                     throw new RuntimeException("指令运行异常");
                 }
@@ -58,13 +58,14 @@ public class StackBasedVirtualMachine extends VirtualMachine {
                     throw new RuntimeException("脚本执行失败");
                 }
                 stack.push(HexUtil.bytesToHexString(BooleanEnum.TRUE.getCode()));
-            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),byteCommand)){
-                if(script.size()<=i){
+            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
+                if(script.size()<i+2){
                     throw new RuntimeException("指令运行异常");
                 }
-                stack.push(script.get(++i));
+                ++i;
+                stack.push(script.get(i));
             }else {
-                throw new RuntimeException("不能识别的指令");
+                throw new RuntimeException("不能识别的操作码");
             }
         }
         return stack;

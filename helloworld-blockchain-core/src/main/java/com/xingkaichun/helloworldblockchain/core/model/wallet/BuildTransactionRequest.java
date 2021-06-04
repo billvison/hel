@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.core.model.pay;
+package com.xingkaichun.helloworldblockchain.core.model.wallet;
 
 import java.util.List;
 

@@ -51,15 +51,21 @@ public class ByteUtil {
     }
 
     /**
-     * 拼接长度。
-     * 将[传入字节数组]列表拼接生成新的字节数组，然后计算[新的字节数组]的长度，
-     * 然后将长度转为8个字节的字节数组(大端)，然后将长度字节数组拼接在[新的字节数组]前，然后返回。
+     * 碾平字节数组列表为字节数组。
      */
-    public static byte[] flatAndConcatLength(List<byte[]> values) {
+    public static byte[] flat(List<byte[]> values) {
         byte[] concatBytes = new byte[0];
         for(byte[] value:values){
             concatBytes = concat(concatBytes,value);
         }
-        return concatLength(concatBytes);
+        return concatBytes;
+    }
+
+    /**
+     * 碾平字节数组列表为新的字节数组，然后拼接长度并返回。
+     */
+    public static byte[] flatAndConcatLength(List<byte[]> values) {
+        byte[] flatBytes = flat(values);
+        return concatLength(flatBytes);
     }
 }

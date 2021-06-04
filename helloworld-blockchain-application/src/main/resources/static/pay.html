@@ -113,7 +113,7 @@
                     });
                     alert(data2.message)
 
-                    let payerList = data.result.transactionInputList.map((item,index) => {
+                    let payerList = data.result.transactionInputs.map((item,index) => {
                         return `
                         <div class="panel-heading">交易付款方${index+1}</div>
                           <ul class="list-group">
@@ -125,7 +125,7 @@
                         `
                     })
 
-                    let payeeList = data.result.transactionOutputList.map((item,index) => {
+                    let payeeList = data.result.transactionOutputs.map((item,index) => {
                         return `
                           <div class="panel-heading">交易收款方${index+1}</div>
                           <ul class="list-group">
@@ -137,16 +137,16 @@
                     });
 
                     let payerChangeHtml = "";
-                    if(data.result.payerChange != null){
+                    if(data.result.payerChangeTransactionOutput != null){
                         payerChangeHtml = `
                             <div class="panel panel-default">
                               <!-- Default panel contents -->
                               <div class="panel-heading">找零</div>
                               <!-- List group -->
                               <ul class="list-group">
-                                <li class="list-group-item">找零地址 : <a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${data.result.payerChange.address}">${data.result.payerChange.address}</a></li>
-                                <li class="list-group-item">找零金额 : ${data.result.payerChange.value}</li>
-                                <li class="list-group-item">输出脚本 : ${data.result.payerChange.outputScript.join(' ')}</li>
+                                <li class="list-group-item">找零地址 : <a title="地址，点击查看地址详情。" target="_blank" href="./address.html?address=${data.result.payerChangeTransactionOutput.address}">${data.result.payerChangeTransactionOutput.address}</a></li>
+                                <li class="list-group-item">找零金额 : ${data.result.payerChangeTransactionOutput.value}</li>
+                                <li class="list-group-item">输出脚本 : ${data.result.payerChangeTransactionOutput.outputScript.join(' ')}</li>
                               </ul>
                             </div>
                         `;

@@ -1,5 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core;
 
+import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionRequest;
+import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionResponse;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 
 import java.util.List;
@@ -21,4 +23,8 @@ public abstract class Wallet {
     public abstract void saveAccount(Account account);
 
     public abstract void deleteAccountByAddress(String address);
+    /**
+     * 构建交易。使用钱包里的账户。
+     */
+    public abstract BuildTransactionResponse buildTransactionDto(BlockchainDatabase blockchainDataBase, BuildTransactionRequest request) ;
 }

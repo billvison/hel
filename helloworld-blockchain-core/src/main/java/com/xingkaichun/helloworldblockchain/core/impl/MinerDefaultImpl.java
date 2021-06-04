@@ -32,6 +32,7 @@ public class MinerDefaultImpl extends Miner {
             if(!isActive()){
                 continue;
             }
+            //创建一个账户用于存放挖矿成功后发放的激励金额
             Account minerAccount = wallet.createAccount();
             Block block = MinerTool.buildMiningBlock(blockchainDataBase,unconfirmedTransactionDataBase,minerAccount);
             long startTimestamp = TimeUtil.currentMillisecondTimestamp();
@@ -48,7 +49,7 @@ public class MinerDefaultImpl extends Miner {
                 block.setHash(BlockTool.calculateBlockHash(block));
                 //挖矿成功
                 if(blockchainDataBase.getConsensus().checkConsensus(blockchainDataBase,block)){
-                    //将账户放入钱包
+                    //挖到矿了，账户里有挖矿成功发放的激励金额，将账户放入钱包。
                     wallet.saveAccount(minerAccount);
                     LogUtil.debug("祝贺您！挖矿成功！！！区块高度:"+block.getHeight()+",区块哈希:"+block.getHash());
                     //将矿放入区块链

@@ -256,7 +256,7 @@ public class NodeConsoleApplicationController {
             if(request.getBlockHeight() == null){
                 return ServiceResult.createFailServiceResult("删除区块失败，区块高度不能空。");
             }
-            blockchainNetCore.deleteBlocks(request.getBlockHeight());
+            blockchainCore.deleteBlocks(request.getBlockHeight());
             DeleteBlocksResponse response = new DeleteBlocksResponse();
             return ServiceResult.createSuccessServiceResult("删除区块成功",response);
         } catch (Exception e){

@@ -1,4 +1,4 @@
-package com.xingkaichun.helloworldblockchain.core.model.pay;
+package com.xingkaichun.helloworldblockchain.core.model.wallet;
 
 /**
  * 付款接收方

@@ -5,12 +5,12 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
-import com.xingkaichun.helloworldblockchain.netcore.model.Node;
-import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
-import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.netcore.dto.BlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.GetBlockRequest;
 import com.xingkaichun.helloworldblockchain.netcore.dto.GetBlockResponse;
+import com.xingkaichun.helloworldblockchain.netcore.model.Node;
+import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
+import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.*;
 
@@ -77,8 +77,6 @@ public class BlockSearcher {
                 //本地区块链高度小于远程节点区块链高度，此时需要将远程节点的区块同步到本地区块链。
                 if(LongUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
                     try {
-                        //提高主区块链核心的高度，若上次程序异常退出，可能存在主链没有成功同步从链数据的情况
-                        promoteMasterBlockchainCore(blockchainCore, slaveBlockchainCore);
                         //同步主区块链核心数据到从区块链核心
                         copyMasterBlockchainCoreToSlaveBlockchainCore(blockchainCore, slaveBlockchainCore);
                         //同步远程节点的区块到本地，未分叉同步至主链，分叉同步至从链

@@ -1,11 +1,11 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
-import com.xingkaichun.helloworldblockchain.core.model.pay.BuildTransactionResponse;
-import com.xingkaichun.helloworldblockchain.core.model.pay.Recipient;
 import com.xingkaichun.helloworldblockchain.core.model.script.InputScript;
 import com.xingkaichun.helloworldblockchain.core.model.script.OutputScript;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionResponse;
+import com.xingkaichun.helloworldblockchain.core.model.wallet.Recipient;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionInputDto;
@@ -58,7 +58,7 @@ public class WalletTool {
 
         //创建交易输出
         List<TransactionOutputDto> transactionOutputDtoList = new ArrayList<>();
-        List<BuildTransactionResponse.InnerTransactionOutput> innerTransactionOutputList = new ArrayList<>();
+        List<TransactionOutput> innerTransactionOutputList = new ArrayList<>();
 
         if(recipientList != null){
             for(Recipient recipient : recipientList){
@@ -68,7 +68,7 @@ public class WalletTool {
                 transactionOutputDto.setOutputScript(Model2DtoTool.outputScript2OutputScriptDto(outputScript));
                 transactionOutputDtoList.add(transactionOutputDto);
 
-                BuildTransactionResponse.InnerTransactionOutput innerTransactionOutput = new BuildTransactionResponse.InnerTransactionOutput();
+                TransactionOutput innerTransactionOutput = new TransactionOutput();
                 innerTransactionOutput.setAddress(recipient.getAddress());
                 innerTransactionOutput.setValue(recipient.getValue());
                 innerTransactionOutput.setOutputScript(outputScript);
@@ -130,7 +130,7 @@ public class WalletTool {
 
         //找零
         long change = inputValues - outputValues - fee;
-        BuildTransactionResponse.InnerTransactionOutput payerChange = null;
+        TransactionOutput payerChangeTransactionOutput = null;
         if(change > 0){
             TransactionOutputDto transactionOutputDto = new TransactionOutputDto();
             transactionOutputDto.setValue(change);
@@ -138,10 +138,10 @@ public class WalletTool {
             transactionOutputDto.setOutputScript(Model2DtoTool.outputScript2OutputScriptDto(outputScript));
             transactionOutputDtoList.add(transactionOutputDto);
 
-            payerChange = new BuildTransactionResponse.InnerTransactionOutput();
-            payerChange.setAddress(payerChangeAddress);
-            payerChange.setValue(change);
-            payerChange.setOutputScript(outputScript);
+            payerChangeTransactionOutput = new TransactionOutput();
+            payerChangeTransactionOutput.setAddress(payerChangeAddress);
+            payerChangeTransactionOutput.setValue(change);
+            payerChangeTransactionOutput.setOutputScript(outputScript);
         }
 
         //签名
@@ -160,9 +160,9 @@ public class WalletTool {
         buildTransactionResponse.setMessage("构建交易成功");
         buildTransactionResponse.setTransactionHash(TransactionTool.calculateTransactionHash(transactionDto));
         buildTransactionResponse.setFee(fee);
-        buildTransactionResponse.setPayerChange(payerChange);
-        buildTransactionResponse.setTransactionInputList(inputs);
-        buildTransactionResponse.setTransactionOutputList(innerTransactionOutputList);
+        buildTransactionResponse.setPayerChangeTransactionOutput(payerChangeTransactionOutput);
+        buildTransactionResponse.setTransactionInputs(inputs);
+        buildTransactionResponse.setTransactionOutputs(innerTransactionOutputList);
         buildTransactionResponse.setTransaction(transactionDto);
         return buildTransactionResponse;
     }

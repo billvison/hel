@@ -4,7 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.CoreConfiguration;
 import com.xingkaichun.helloworldblockchain.core.UnconfirmedTransactionDatabase;
 import com.xingkaichun.helloworldblockchain.core.tools.EncodeDecodeTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
-import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
+import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
 import com.xingkaichun.helloworldblockchain.util.KvDbUtil;
@@ -28,11 +28,8 @@ public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransa
 
     @Override
     public void insertTransaction(TransactionDto transactionDto) {
-        //交易已经持久化进交易池数据库 丢弃交易
-        synchronized (UnconfirmedTransactionDatabaseDefaultImpl.class){
-            String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
-            KvDbUtil.put(unconfirmedTransactionDatabasePath, getKey(transactionHash), EncodeDecodeTool.encode(transactionDto));
-        }
+        String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
+        KvDbUtil.put(unconfirmedTransactionDatabasePath, getKey(transactionHash), EncodeDecodeTool.encode(transactionDto));
     }
 
     @Override
@@ -63,6 +60,6 @@ public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransa
     }
 
     private byte[] getKey(String transactionHash){
-        return ByteUtil.stringToUtf8Bytes(transactionHash);
+        return HexUtil.hexStringToBytes(transactionHash);
     }
 }
