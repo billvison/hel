@@ -25,7 +25,7 @@ public class IncentiveDefaultImpl extends Incentive {
 
     @Override
     public boolean checkIncentive(BlockchainDatabase blockchainDataBase, Block block) {
-        long writeIncentiveValue = BlockTool.getMinerIncentiveValue(block);
+        long writeIncentiveValue = BlockTool.getIncentiveValue(block);
         long targetIncentiveValue = incentiveValue(blockchainDataBase,block);
         if(writeIncentiveValue != targetIncentiveValue){
             LogUtil.debug("区块数据异常，挖矿奖励数据异常。");

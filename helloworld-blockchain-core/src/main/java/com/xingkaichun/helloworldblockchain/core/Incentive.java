@@ -11,7 +11,7 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 public abstract class Incentive {
 
     /**
-     * 奖励给矿工的挖矿激励金额。
+     * 矿工挖矿成功后，奖励给矿工的激励金额。
      */
     public abstract long incentiveValue(BlockchainDatabase blockchainDataBase, Block block) ;
 

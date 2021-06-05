@@ -101,8 +101,11 @@ public abstract class BlockchainCore {
      */
     public abstract Transaction queryTransactionByTransactionHeight(long transactionHeight) ;
 
+
+
+
     /**
-     * 根据地址获取[交易输出列表(包含未花费交易输出和已花费交易输出)]。
+     * 根据地址获取[交易输出(包含未花费交易输出和已花费交易输出)]。
      */
     public abstract TransactionOutput queryTransactionOutputByAddress(String address) ;
 
@@ -110,13 +113,13 @@ public abstract class BlockchainCore {
 
 
     /**
-     * 构建交易。使用钱包里的账户。
+     * 构建交易。
      */
-    public abstract BuildTransactionResponse buildTransactionDto(BuildTransactionRequest request) ;
+    public abstract BuildTransactionResponse buildTransaction(BuildTransactionRequest request) ;
     /**
      * 提交交易到区块链
      */
-    public abstract void submitTransaction(TransactionDto transactionDto) ;
+    public abstract void postTransaction(TransactionDto transactionDto) ;
     /**
      * 查询未确认的交易
      */
@@ -124,7 +127,7 @@ public abstract class BlockchainCore {
     /**
      * 根据交易哈希查询未确认交易
      */
-    public abstract TransactionDto queryUnconfirmedTransactionDtoByTransactionHash(String transactionHash) ;
+    public abstract TransactionDto queryUnconfirmedTransactionByTransactionHash(String transactionHash) ;
 
 
 

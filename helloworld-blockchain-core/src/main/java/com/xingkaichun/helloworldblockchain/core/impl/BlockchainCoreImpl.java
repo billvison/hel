@@ -2,10 +2,10 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.*;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionRequest;
-import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionResponse;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionRequest;
+import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionResponse;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.util.SystemUtil;
 
@@ -91,22 +91,22 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
 
     @Override
-    public BuildTransactionResponse buildTransactionDto(BuildTransactionRequest request) {
-        return wallet.buildTransactionDto(blockchainDataBase,request);
+    public BuildTransactionResponse buildTransaction(BuildTransactionRequest request) {
+        return wallet.buildTransaction(blockchainDataBase,request);
     }
 
     @Override
-    public void submitTransaction(TransactionDto transactionDto) {
-        getUnconfirmedTransactionDataBase().insertTransaction(transactionDto);
+    public void postTransaction(TransactionDto transactionDto) {
+        unconfirmedTransactionDataBase.insertTransaction(transactionDto);
     }
 
     @Override
     public List<TransactionDto> queryUnconfirmedTransactions(long from, long size) {
-        return getUnconfirmedTransactionDataBase().selectTransactions(from,size);
+        return unconfirmedTransactionDataBase.selectTransactions(from,size);
     }
 
     @Override
-    public TransactionDto queryUnconfirmedTransactionDtoByTransactionHash(String transactionHash) {
-        return getUnconfirmedTransactionDataBase().selectTransactionByTransactionHash(transactionHash);
+    public TransactionDto queryUnconfirmedTransactionByTransactionHash(String transactionHash) {
+        return unconfirmedTransactionDataBase.selectTransactionByTransactionHash(transactionHash);
     }
 }

@@ -170,7 +170,7 @@ public class WalletApplicationController {
                     return ServiceResult.createFailServiceResult("交易输出的地址不能为空。");
                 }
             }
-            BuildTransactionResponse buildTransactionResponse = blockchainCore.buildTransactionDto(request);
+            BuildTransactionResponse buildTransactionResponse = blockchainCore.buildTransaction(request);
             if(buildTransactionResponse.isBuildTransactionSuccess()){
                 return ServiceResult.createSuccessServiceResult("构建交易成功",buildTransactionResponse);
             }else {

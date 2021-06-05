@@ -114,7 +114,7 @@ public class BlockSearcher {
                 break;
             }
             Block masterBlockchainBlock = masterBlockchainCore.queryBlockByBlockHeight(slaveBlockchainTailBlock.getHeight());
-            if(BlockTool.isBlockEquals(masterBlockchainBlock,slaveBlockchainTailBlock)){
+            if(BlockTool.simpleCheckBlockEquals(masterBlockchainBlock,slaveBlockchainTailBlock)){
                 break;
             }
             slaveBlockchainCore.deleteTailBlock();
@@ -171,7 +171,7 @@ public class BlockSearcher {
             }
             Block masterBlock = masterBlockchainCore.queryBlockByBlockHeight(blockHeight);
             Block slaveBlock = slaveBlockchainCore.queryBlockByBlockHeight(blockHeight);
-            if(BlockTool.isBlockEquals(masterBlock,slaveBlock)){
+            if(BlockTool.simpleCheckBlockEquals(masterBlock,slaveBlock)){
                 break;
             }
             if(LongUtil.isGreatEqualThan(masterBlockchainTailBlock.getHeight()-blockHeight+1, netCoreConfiguration.getForkBlockCount())){

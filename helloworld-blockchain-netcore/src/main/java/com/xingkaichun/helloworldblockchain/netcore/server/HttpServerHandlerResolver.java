@@ -75,7 +75,7 @@ public class HttpServerHandlerResolver {
      */
     public PostTransactionResponse postTransaction(PostTransactionRequest request){
         try {
-            blockchainCore.submitTransaction(request.getTransaction());
+            blockchainCore.postTransaction(request.getTransaction());
             PostTransactionResponse response = new PostTransactionResponse();
             return response;
         } catch (Exception e){

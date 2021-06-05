@@ -30,9 +30,6 @@ public abstract class BlockchainDatabase {
     //region 区块增加与删除
     /**
      * 将一个区块添加到区块链的尾部。
-     * 这是一个有些复杂的操作，需要考虑如下几点:
-     * 新增区块本身的数据的正确性;
-     * 新增的区块是否能够正确衔接到区块链的尾部;
      */
     public abstract boolean addBlock(Block block) ;
     /**
@@ -50,13 +47,13 @@ public abstract class BlockchainDatabase {
     //region 校验区块、交易
     /**
      * 检测区块是否可以被添加到区块链上
-     * 只有一种情况，区块可以被添加到区块链，即: 区块是区块链上的下一个区块
+     * 只有一种情况，区块可以被添加到区块链，即: 区块是区块链上的下一个区块。
      */
     public abstract boolean checkBlock(Block block) ;
     /**
      * 校验交易是否可以被添加进下一个区块之中。
      * 注意，如果是创世交易，则会跳过激励金额的校验，但除了不校验激励金额外，仍然会校验创世交易的方方面面，如交易大小、交易的结构等。
-     * 为什么会跳过激励金额的校验？
+     * 为什么会跳过创世交易的激励金额的校验？
      * 因为激励金额的校验需要整个区块的信息，因此激励校验是区块层面的校验，而不是在交易层面校验激励金额。
      */
     public abstract boolean checkTransaction(Transaction transaction) ;
@@ -74,7 +71,7 @@ public abstract class BlockchainDatabase {
      */
     public abstract long queryBlockchainTransactionHeight() ;
     /**
-     * 查询区块链中总的交易数量
+     * 查询区块链中总的交易输出数量
      */
     public abstract long queryBlockchainTransactionOutputHeight() ;
     //endregion
@@ -108,11 +105,11 @@ public abstract class BlockchainDatabase {
      */
     public abstract Transaction queryTransactionByTransactionHash(String transactionHash) ;
     /**
-     * 来源交易
+     * 查询来源交易：查询交易输出产生于的那笔交易
      */
     public abstract Transaction querySourceTransactionByTransactionOutputId(TransactionOutputId transactionOutputId) ;
     /**
-     * 去向交易
+     * 查询去向交易：查询使用交易输出的那笔交易
      */
     public abstract Transaction queryDestinationTransactionByTransactionOutputId(TransactionOutputId transactionOutputId) ;
     //endregion

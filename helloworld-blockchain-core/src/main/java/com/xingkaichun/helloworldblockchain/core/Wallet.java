@@ -24,7 +24,7 @@ public abstract class Wallet {
 
     public abstract void deleteAccountByAddress(String address);
     /**
-     * 构建交易。使用钱包里的账户。
+     * 构建交易。
      */
-    public abstract BuildTransactionResponse buildTransactionDto(BlockchainDatabase blockchainDataBase, BuildTransactionRequest request) ;
+    public abstract BuildTransactionResponse buildTransaction(BlockchainDatabase blockchainDataBase, BuildTransactionRequest request) ;
 }

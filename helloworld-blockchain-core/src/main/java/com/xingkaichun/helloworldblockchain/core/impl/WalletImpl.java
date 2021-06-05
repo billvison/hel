@@ -71,7 +71,7 @@ public class WalletImpl extends Wallet {
     }
 
     @Override
-    public BuildTransactionResponse buildTransactionDto(BlockchainDatabase blockchainDataBase, BuildTransactionRequest request) {
+    public BuildTransactionResponse buildTransaction(BlockchainDatabase blockchainDataBase, BuildTransactionRequest request) {
         List<Account> allAccountList = getAllAccounts();
         if(allAccountList == null || allAccountList.isEmpty()){
             BuildTransactionResponse response = new BuildTransactionResponse();

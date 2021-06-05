@@ -12,12 +12,14 @@ import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.netcore.dto.BlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
-import com.xingkaichun.helloworldblockchain.util.LogUtil;
+import com.xingkaichun.helloworldblockchain.util.ListUtil;
 import com.xingkaichun.helloworldblockchain.util.LongUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.util.TimeUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 区块工具类
@@ -72,69 +74,56 @@ public class BlockTool {
      * 区块新产生的哈希是否存在重复
      */
     public static boolean isExistDuplicateNewHash(Block block) {
+        List<String> newHashList = new ArrayList<>();
         String blockHash = block.getHash();
-        List<Transaction> blockTransactions = block.getTransactions();
-        //在不同的交易中，新生产的哈希(区块的哈希、交易的哈希、交易输出哈希)不应该被使用两次或是两次以上
-        Set<String> hashSet = new HashSet<>();
-        if(hashSet.contains(blockHash)){
-            return true;
-        }else {
-            hashSet.add(blockHash);
-        }
-        for(Transaction transaction : blockTransactions){
-            String transactionHash = transaction.getTransactionHash();
-            if(hashSet.contains(transactionHash)){
-                return true;
-            }else {
-                hashSet.add(transactionHash);
+        newHashList.add(blockHash);
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction : transactions){
+                String transactionHash = transaction.getTransactionHash();
+                newHashList.add(transactionHash);
             }
         }
-        return false;
+        return ListUtil.isExistDuplicateElement(newHashList);
     }
     /**
      * 区块新产生的地址是否存在重复
      */
     public static boolean isExistDuplicateNewAddress(Block block) {
-        Set<String> addressSet = new HashSet<>();
-        List<Transaction> blockTransactions = block.getTransactions();
-        if(blockTransactions != null){
-            for(Transaction transaction : blockTransactions){
+        List<String> newAddressList = new ArrayList<>();
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null){
+            for(Transaction transaction : transactions){
                 List<TransactionOutput> outputs = transaction.getOutputs();
                 if(outputs != null){
                     for (TransactionOutput output:outputs){
                         String address = output.getAddress();
-                        if(addressSet.contains(address)){
-                            LogUtil.debug(String.format("区块数据异常，地址[%s]重复。",address));
-                            return true;
-                        }else {
-                            addressSet.add(address);
-                        }
+                        newAddressList.add(address);
                     }
                 }
             }
         }
-        return false;
+        return ListUtil.isExistDuplicateElement(newAddressList);
     }
     /**
      * 区块中是否存在重复的[未花费交易输出]
      */
     public static boolean isExistDuplicateUtxo(Block block) {
-        Set<String> transactionOutputIdSet = new HashSet<>();
-        for(Transaction transaction : block.getTransactions()){
-            List<TransactionInput> inputs = transaction.getInputs();
-            if(inputs != null){
-                for(TransactionInput transactionInput : inputs) {
-                    TransactionOutput unspentTransactionOutput = transactionInput.getUnspentTransactionOutput();
-                    String transactionOutputId = unspentTransactionOutput.getTransactionOutputId();
-                    if(transactionOutputIdSet.contains(transactionOutputId)){
-                        return true;
-                    }else {
-                        transactionOutputIdSet.add(transactionOutputId);
+        List<String> utxoIdList = new ArrayList<>();
+        List<Transaction> transactions = block.getTransactions();
+        if(transactions != null) {
+            for(Transaction transaction : transactions){
+                List<TransactionInput> inputs = transaction.getInputs();
+                if(inputs != null){
+                    for(TransactionInput transactionInput : inputs) {
+                        TransactionOutput unspentTransactionOutput = transactionInput.getUnspentTransactionOutput();
+                        String utxoId = unspentTransactionOutput.getTransactionOutputId();
+                        utxoIdList.add(utxoId);
                     }
                 }
             }
         }
-        return false;
+        return ListUtil.isExistDuplicateElement(utxoIdList);
     }
 
     /**
@@ -184,10 +173,11 @@ public class BlockTool {
     }
 
     /**
-     * 两个区块是否相等
-     * 注意：这里没有严格校验,例如没有校验交易是否完全一样
+     * 简单的校验两个区块是否相等
+     * 注意：这里没有严格校验,例如没有校验区块中的交易是否完全一样
+     * ，所以即使这里认为两个区块相等，实际上这两个区块还是有可能不相等的。
      */
-    public static boolean isBlockEquals(Block block1, Block block2) {
+    public static boolean simpleCheckBlockEquals(Block block1, Block block2) {
         if(block1 == null || block2 == null){
             return false;
         }
@@ -199,9 +189,9 @@ public class BlockTool {
     }
 
     /**
-     * 获取矿工奖励
+     * 获取激励金额
      */
-    public static long getMinerIncentiveValue(Block block) {
+    public static long getIncentiveValue(Block block) {
         return block.getTransactions().get(0).getOutputs().get(0).getValue();
     }
 
@@ -218,6 +208,9 @@ public class BlockTool {
         return difficulty;
     }
 
+    /**
+     * 获取交易输出数量
+     */
     public static long getTransactionOutputCount(Block block) {
         long transactionOutputCount = 0;
         List<Transaction> transactions = block.getTransactions();

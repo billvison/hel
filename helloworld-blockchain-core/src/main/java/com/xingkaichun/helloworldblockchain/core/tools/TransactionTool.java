@@ -10,9 +10,12 @@ import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
 import com.xingkaichun.helloworldblockchain.netcore.dto.*;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
+import com.xingkaichun.helloworldblockchain.util.ListUtil;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Transaction工具类
@@ -54,8 +57,8 @@ public class TransactionTool {
     public static long getOutputsValue(List<TransactionOutput> outputs) {
         long total = 0;
         if(outputs != null){
-            for(TransactionOutput o : outputs) {
-                total += o.getValue();
+            for(TransactionOutput output : outputs) {
+                total += output.getValue();
             }
         }
         return total;
@@ -78,9 +81,9 @@ public class TransactionTool {
      */
     public static long getFeeRate(Transaction transaction) {
         if(transaction.getTransactionType() == TransactionType.STANDARD){
-            return TransactionTool.getTransactionFee(transaction)/SizeTool.calculateTransactionSize(transaction);
+            return getTransactionFee(transaction)/SizeTool.calculateTransactionSize(transaction);
         }else {
-            throw new RuntimeException("只能计算标准交易类型的手续费");
+            throw new RuntimeException("只能计算标准交易类型的交易费率");
         }
     }
 
@@ -391,39 +394,30 @@ public class TransactionTool {
      * 交易中是否存在重复的[未花费交易输出]
      */
     public static boolean isExistDuplicateUtxo(Transaction transaction) {
+        List<String> utxoIdList = new ArrayList<>();
         List<TransactionInput> inputs = transaction.getInputs();
-        if(inputs == null || inputs.size()==0){
-            return false;
-        }
-        Set<String> transactionOutputIdSet = new HashSet<>();
-        for(TransactionInput transactionInput : inputs) {
-            TransactionOutput unspentTransactionOutput = transactionInput.getUnspentTransactionOutput();
-            String transactionOutputId = unspentTransactionOutput.getTransactionOutputId();
-            if(transactionOutputIdSet.contains(transactionOutputId)){
-                return true;
+        if(inputs != null){
+            for(TransactionInput transactionInput : inputs) {
+                TransactionOutput unspentTransactionOutput = transactionInput.getUnspentTransactionOutput();
+                String utxoId = unspentTransactionOutput.getTransactionOutputId();
+                utxoIdList.add(utxoId);
             }
-            transactionOutputIdSet.add(transactionOutputId);
         }
-        return false;
+        return ListUtil.isExistDuplicateElement(utxoIdList);
     }
     /**
      * 区块新产生的地址是否存在重复
      */
     public static boolean isExistDuplicateNewAddress(Transaction transaction) {
-        Set<String> addressSet = new HashSet<>();
+        List<String> newAddressList = new ArrayList<>();
         List<TransactionOutput> outputs = transaction.getOutputs();
         if(outputs != null){
             for (TransactionOutput output:outputs){
                 String address = output.getAddress();
-                if(addressSet.contains(address)){
-                    LogUtil.debug(String.format("区块数据异常，地址[%s]重复。",address));
-                    return true;
-                }else {
-                    addressSet.add(address);
-                }
+                newAddressList.add(address);
             }
         }
-        return false;
+        return ListUtil.isExistDuplicateElement(newAddressList);
     }
 
     public static UnspentTransactionOutput transactionOutput2UnspentTransactionOutput(TransactionOutput transactionOutput) {

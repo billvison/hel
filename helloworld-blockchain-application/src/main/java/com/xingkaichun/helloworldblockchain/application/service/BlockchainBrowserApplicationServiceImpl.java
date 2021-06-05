@@ -128,7 +128,7 @@ public class BlockchainBrowserApplicationServiceImpl implements BlockchainBrowse
         blockVo.setBlockSize(SizeTool.calculateBlockSize(block)+"字符");
         blockVo.setTransactionCount(BlockTool.getTransactionCount(block));
         blockVo.setTime(TimeUtil.formatMillisecondTimestamp2TimeString(block.getTimestamp()));
-        blockVo.setMinerIncentiveValue(BlockTool.getMinerIncentiveValue(block));
+        blockVo.setMinerIncentiveValue(BlockTool.getIncentiveValue(block));
         blockVo.setDifficulty(BlockTool.formatDifficulty(block.getDifficulty()));
         blockVo.setNonce(block.getNonce());
         blockVo.setHash(block.getHash());
@@ -140,7 +140,7 @@ public class BlockchainBrowserApplicationServiceImpl implements BlockchainBrowse
 
     @Override
     public UnconfirmedTransactionVo queryUnconfirmedTransactionByTransactionHash(String transactionHash) {
-        TransactionDto transactionDto = blockchainCore.queryUnconfirmedTransactionDtoByTransactionHash(transactionHash);
+        TransactionDto transactionDto = blockchainCore.queryUnconfirmedTransactionByTransactionHash(transactionHash);
         if(transactionDto == null){
             return null;
         }

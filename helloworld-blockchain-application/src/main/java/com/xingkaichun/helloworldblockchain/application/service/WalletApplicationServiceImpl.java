@@ -34,7 +34,7 @@ public class WalletApplicationServiceImpl implements WalletApplicationService {
     public SubmitTransactionToBlockchainNetworkResponse submitTransactionToBlockchainNetwork(SubmitTransactionToBlockchainNetworkRequest request) {
         TransactionDto transactionDto = request.getTransaction();
         //将交易提交到本地区块链
-        blockchainCore.submitTransaction(transactionDto);
+        blockchainCore.postTransaction(transactionDto);
         //提交交易到网络
         List<Node> nodes = blockchainNetCore.getNodeService().queryAllNodes();
         List<SubmitTransactionToBlockchainNetworkResponse.Node> successSubmitNode = new ArrayList<>();

@@ -6,7 +6,6 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 
 /**
  * 虚拟机
- * 用于执行脚本。
  *
  * @author 邢开春 409060350@qq.com
  */
