@@ -34,7 +34,7 @@ public class RipeMD160Test {
     public void digestTest()
     {
         for(int i=0;i<messages.length;i++){
-            byte[] messageDigest = RipeMD160Util.digest(toByteArray(messages[i]));
+            byte[] messageDigest = Ripemd160Util.digest(toByteArray(messages[i]));
             assertArrayEquals(Hex.decode(digests[i]), messageDigest);
         }
     }

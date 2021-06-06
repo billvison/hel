@@ -89,7 +89,7 @@ public class WalletApplicationController {
             if(StringUtil.isNullOrEmpty(privateKey)){
                 return ServiceResult.createFailServiceResult("账户私钥不能为空。");
             }
-            Account account = AccountUtil.accountFromPrivateKey(privateKey);
+            Account account = AccountUtil.accountFromStringPrivateKey(privateKey);
             blockchainCore.getWallet().saveAccount(account);
             SaveAccountResponse response = new SaveAccountResponse();
             response.setAddAccountSuccess(true);

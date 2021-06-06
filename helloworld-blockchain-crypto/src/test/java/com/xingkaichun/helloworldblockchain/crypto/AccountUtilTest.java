@@ -1,10 +1,7 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
-import org.bitcoinj.core.Address;
-import org.bitcoinj.core.ECKey;
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.core.*;
 import org.bitcoinj.script.Script;
 import org.junit.Test;
 
@@ -35,7 +32,7 @@ public class AccountUtilTest {
     @Test
     public void accountFromPrivateKeyTest()
     {
-        Account account = AccountUtil.accountFromPrivateKey(ACCOUNT_1.getPrivateKey());
+        Account account = AccountUtil.accountFromStringPrivateKey(ACCOUNT_1.getPrivateKey());
         assertEquals(ACCOUNT_1.getPrivateKey(),account.getPrivateKey());
         assertEquals(ACCOUNT_1.getPublicKey(),account.getPublicKey());
         assertEquals(ACCOUNT_1.getAddress(),account.getAddress());
@@ -43,9 +40,9 @@ public class AccountUtilTest {
     }
 
     @Test
-    public void addressFromPublicKeyTest()
+    public void addressFromStringPublicKeyTest()
     {
-        String address = AccountUtil.addressFromPublicKey(ACCOUNT_1.getPublicKey());
+        String address = AccountUtil.addressFromStringPublicKey(ACCOUNT_1.getPublicKey());
         assertEquals(ACCOUNT_1.getAddress(),address);
     }
 
@@ -60,7 +57,7 @@ public class AccountUtilTest {
     public void verifySignatureTest()
     {
         byte[] zeroValueWith32Byte = new byte[32];
-        Account account = AccountUtil.accountFromPrivateKey("180cb41c7c600be951b5d3d0a7334acc7506173875834f7a6c4c786a28fcbb19");
+        Account account = AccountUtil.accountFromStringPrivateKey("180cb41c7c600be951b5d3d0a7334acc7506173875834f7a6c4c786a28fcbb19");
         byte[] signatureByAccount = signatureProxy(privateKeyFromProxy(account.getPrivateKey()),zeroValueWith32Byte);
         boolean verifySignatureByAccount = verifySignatureProxy(publicKeyFromProxy(account.getPublicKey()),zeroValueWith32Byte,signatureByAccount);
         assertTrue(verifySignatureByAccount);
@@ -114,7 +111,7 @@ public class AccountUtilTest {
         }
 
         for (int i=0;i<10000;i++){
-            Account account = AccountUtil.accountFromPrivateKey(randomPrivateKey());
+            Account account = AccountUtil.accountFromStringPrivateKey(randomPrivateKey());
             assertAccount(account);
         }
 
@@ -125,7 +122,7 @@ public class AccountUtilTest {
 
 
     private static void assertAccount(Account account){
-        Account accountFromPrivateKey = AccountUtil.accountFromPrivateKey(account.getPrivateKey());
+        Account accountFromPrivateKey = AccountUtil.accountFromStringPrivateKey(account.getPrivateKey());
         assertEquals(account.getPrivateKey(),accountFromPrivateKey.getPrivateKey());
         assertEquals(account.getPublicKey(),accountFromPrivateKey.getPublicKey());
         assertEquals(account.getAddress(),accountFromPrivateKey.getAddress());

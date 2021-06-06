@@ -8,7 +8,7 @@ import java.util.Random;
 import static org.junit.Assert.assertArrayEquals;
 
 
-public class SHA256UtilTest {
+public class Sha256UtilTest {
 
     private static final Random RANDOM = new Random();
 
@@ -32,7 +32,7 @@ public class SHA256UtilTest {
     public void digestTest()
     {
         for(int i=0;i<messages.length;i++){
-            byte[] messageDigest = SHA256Util.digest(toByteArray(messages[i]));
+            byte[] messageDigest = Sha256Util.digest(toByteArray(messages[i]));
             assertArrayEquals(Hex.decode(digests[i]), messageDigest);
         }
     }
@@ -43,7 +43,7 @@ public class SHA256UtilTest {
         for (int j = 0; j < 100; j++) {
             byte[] randomBytes = new byte[j];
             RANDOM.nextBytes(randomBytes);
-            assertArrayEquals(SHA256Util.digest(SHA256Util.digest(randomBytes)), SHA256Util.doubleDigest(randomBytes));
+            assertArrayEquals(Sha256Util.digest(Sha256Util.digest(randomBytes)), Sha256Util.doubleDigest(randomBytes));
         }
     }
 

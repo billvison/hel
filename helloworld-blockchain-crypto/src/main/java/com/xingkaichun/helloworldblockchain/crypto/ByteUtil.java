@@ -4,6 +4,7 @@ import com.google.common.primitives.Bytes;
 import com.google.common.primitives.Longs;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -67,5 +68,16 @@ public class ByteUtil {
     public static byte[] flatAndConcatLength(List<byte[]> values) {
         byte[] flatBytes = flat(values);
         return concatLength(flatBytes);
+    }
+
+    public static boolean equals(byte[] a, byte[] a2) {
+        return Arrays.equals(a,a2);
+    }
+
+    public static byte[] copy(byte[] src, int srcPos, int destPos) {
+        int length = destPos - srcPos;
+        byte[] dest = new byte[length];
+        System.arraycopy(src,srcPos,dest,0,length);
+        return dest;
     }
 }

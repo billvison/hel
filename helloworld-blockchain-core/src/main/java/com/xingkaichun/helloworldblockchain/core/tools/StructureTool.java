@@ -7,11 +7,11 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
+import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -111,12 +111,12 @@ public class StructureTool {
         for(int i=0;i<script.size();i++){
             String operationCode = script.get(i);
             byte[] bytesOperationCode = HexUtil.hexStringToBytes(operationCode);
-            if(Arrays.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
+            if(ByteUtil.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode) ||
+                    ByteUtil.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
+                    ByteUtil.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
+                    ByteUtil.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
                 continue;
-            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
+            }else if(ByteUtil.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
                 //跳过操作数
                 ++i;
                 //验证操作码后一定有操作数

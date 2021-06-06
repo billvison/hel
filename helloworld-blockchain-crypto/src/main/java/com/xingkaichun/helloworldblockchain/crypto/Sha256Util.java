@@ -7,7 +7,7 @@ import java.security.MessageDigest;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class SHA256Util {
+public class Sha256Util {
 
     static {
         JavaCryptographyExtensionProviderUtil.addBouncyCastleProvider();

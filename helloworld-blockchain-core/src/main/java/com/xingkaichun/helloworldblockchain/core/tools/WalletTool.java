@@ -147,7 +147,7 @@ public class WalletTool {
         //签名
         for(int i=0;i<transactionInputDtoList.size();i++){
             String privateKey = inputPrivateKeyList.get(i);
-            String publicKey = AccountUtil.accountFromPrivateKey(privateKey).getPublicKey();
+            String publicKey = AccountUtil.accountFromStringPrivateKey(privateKey).getPublicKey();
             TransactionInputDto transactionInputDto = transactionInputDtoList.get(i);
             String signature = TransactionTool.signature(privateKey,transactionDto);
             InputScript inputScript = ScriptTool.createPayToPublicKeyHashInputScript(signature, publicKey);

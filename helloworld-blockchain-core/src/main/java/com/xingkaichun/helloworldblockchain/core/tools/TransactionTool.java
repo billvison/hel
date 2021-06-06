@@ -7,7 +7,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.*;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
-import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
+import com.xingkaichun.helloworldblockchain.crypto.Sha256Util;
 import com.xingkaichun.helloworldblockchain.netcore.dto.*;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import com.xingkaichun.helloworldblockchain.util.ListUtil;
@@ -97,7 +97,7 @@ public class TransactionTool {
     }
     public static String signatureHashAll(TransactionDto transactionDto) {
         byte[] bytesTransaction = bytesTransaction(transactionDto,true);
-        byte[] sha256Digest = SHA256Util.doubleDigest(bytesTransaction);
+        byte[] sha256Digest = Sha256Util.doubleDigest(bytesTransaction);
         return HexUtil.bytesToHexString(sha256Digest);
     }
 
@@ -137,7 +137,7 @@ public class TransactionTool {
                     //执行脚本
                     ScriptExecuteResult scriptExecuteResult = virtualMachine.executeScript(transaction,script);
                     //脚本执行结果是个栈，如果栈有且只有一个元素，且这个元素是0x01，则解锁成功。
-                    boolean executeSuccess = scriptExecuteResult.size()==1 && Arrays.equals(BooleanEnum.TRUE.getCode(),HexUtil.hexStringToBytes(scriptExecuteResult.pop()));
+                    boolean executeSuccess = scriptExecuteResult.size()==1 && ByteUtil.equals(BooleanEnum.TRUE.getCode(),HexUtil.hexStringToBytes(scriptExecuteResult.pop()));
                     if(!executeSuccess){
                         return false;
                     }
@@ -161,7 +161,7 @@ public class TransactionTool {
     }
     public static String calculateTransactionHash(TransactionDto transactionDto){
         byte[] bytesTransaction = bytesTransaction(transactionDto,false);
-        byte[] sha256Digest = SHA256Util.doubleDigest(bytesTransaction);
+        byte[] sha256Digest = Sha256Util.doubleDigest(bytesTransaction);
         return HexUtil.bytesToHexString(sha256Digest);
     }
 

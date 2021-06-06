@@ -106,7 +106,7 @@ public class WalletImpl extends Wallet {
         response.setBuildTransactionSuccess(false);
 
         for(String privateKey : payerPrivateKeyList){
-            String address = AccountUtil.accountFromPrivateKey(privateKey).getAddress();
+            String address = AccountUtil.accountFromStringPrivateKey(privateKey).getAddress();
             TransactionOutput utxo = queryUnspentTransactionOutputByAddress(blockchainDataBase, address);
             if(utxo == null || utxo.getValue() <= 0){
                 continue;

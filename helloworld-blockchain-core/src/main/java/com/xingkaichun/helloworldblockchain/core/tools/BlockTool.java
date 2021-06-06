@@ -8,7 +8,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionTy
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.MerkleTreeUtil;
-import com.xingkaichun.helloworldblockchain.crypto.SHA256Util;
+import com.xingkaichun.helloworldblockchain.crypto.Sha256Util;
 import com.xingkaichun.helloworldblockchain.netcore.dto.BlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
@@ -45,7 +45,7 @@ public class BlockTool {
         byte[] bytesNonce = HexUtil.hexStringToBytes(blockDto.getNonce());
 
         byte[] bytesInput = ByteUtil.concat(bytesTimestamp,bytesPreviousBlockHash,bytesMerkleTreeRoot,bytesNonce);
-        byte[] sha256DoubleDigest = SHA256Util.doubleDigest(bytesInput);
+        byte[] sha256DoubleDigest = Sha256Util.doubleDigest(bytesInput);
         return HexUtil.bytesToHexString(sha256DoubleDigest);
     }
     /**

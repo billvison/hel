@@ -30,12 +30,12 @@ public class ScriptTool {
         for(int i=0;i<script.size();i++){
             String operationCode = script.get(i);
             byte[] bytesOperationCode = HexUtil.hexStringToBytes(operationCode);
-            if(Arrays.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
+            if(ByteUtil.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode) ||
+                    ByteUtil.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
+                    ByteUtil.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
+                    ByteUtil.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
                 bytesScript = ByteUtil.concat(bytesScript, ByteUtil.concatLength(bytesOperationCode));
-            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
+            }else if(ByteUtil.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
                 String operationData = script.get(++i);
                 byte[] bytesOperationData = HexUtil.hexStringToBytes(operationData);
                 bytesScript = ByteUtil.concat(bytesScript, ByteUtil.concatLength(bytesOperationCode), ByteUtil.concatLength(bytesOperationData));
@@ -83,13 +83,13 @@ public class ScriptTool {
             start += 8;
             byte[] bytesOperationCode = Arrays.copyOfRange(bytesScript,start, start+(int) bytesOperationCodeLength);
             start += bytesOperationCodeLength;
-            if(Arrays.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
-                    Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
+            if(ByteUtil.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode) ||
+                    ByteUtil.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
+                    ByteUtil.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
+                    ByteUtil.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
                 String stringOperationCode = HexUtil.bytesToHexString(bytesOperationCode);
                 script.add(stringOperationCode);
-            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
+            }else if(ByteUtil.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
                 String stringOperationCode = HexUtil.bytesToHexString(bytesOperationCode);
                 script.add(stringOperationCode);
 
@@ -118,15 +118,15 @@ public class ScriptTool {
         for(int i=0;i<script.size();i++){
             String operationCode = script.get(i);
             byte[] bytesOperationCode = HexUtil.hexStringToBytes(operationCode);
-            if(Arrays.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode)){
+            if(ByteUtil.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode)){
                 stringScript.append(OperationCodeEnum.OP_DUP.getName()).append(" ");
-            }else if(Arrays.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode)){
+            }else if(ByteUtil.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode)){
                 stringScript.append(OperationCodeEnum.OP_HASH160.getName()).append(" ");
-            }else if(Arrays.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode)){
+            }else if(ByteUtil.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode)){
                 stringScript.append(OperationCodeEnum.OP_EQUALVERIFY.getName()).append(" ");
-            }else if(Arrays.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
+            }else if(ByteUtil.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
                 stringScript.append(OperationCodeEnum.OP_CHECKSIG.getName()).append(" ");
-            }else if(Arrays.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
+            }else if(ByteUtil.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
                 String operationData = script.get(++i);
                 stringScript.append(OperationCodeEnum.OP_PUSHDATA.getName()).append(" ");
                 stringScript.append(operationData).append(" ");
@@ -167,7 +167,7 @@ public class ScriptTool {
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()));
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()));
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
-        String publicKeyHash = AccountUtil.publicKeyHashFromAddress(address);
+        String publicKeyHash = AccountUtil.publicKeyHashFromStringAddress(address);
         script.add(publicKeyHash);
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()));
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));

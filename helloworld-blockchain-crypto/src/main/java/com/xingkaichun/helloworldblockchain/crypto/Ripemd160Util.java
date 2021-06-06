@@ -7,7 +7,7 @@ import java.security.MessageDigest;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class RipeMD160Util {
+public class Ripemd160Util {
 
     static {
         JavaCryptographyExtensionProviderUtil.addBouncyCastleProvider();
