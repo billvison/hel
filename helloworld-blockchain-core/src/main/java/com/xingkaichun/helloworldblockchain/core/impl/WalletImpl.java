@@ -27,18 +27,19 @@ import java.util.Map;
  */
 public class WalletImpl extends Wallet {
 
+    private CoreConfiguration coreConfiguration;
     private static final String WALLET_DATABASE_NAME = "WalletDatabase";
-    private final String walletDatabasePath;
 
     public WalletImpl(CoreConfiguration coreConfiguration) {
-        this.walletDatabasePath = FileUtil.newPath(coreConfiguration.getCorePath(), WALLET_DATABASE_NAME);
+        this.coreConfiguration = coreConfiguration;
     }
+
 
     @Override
     public List<Account> getAllAccounts() {
         List<Account> accountList = new ArrayList<>();
         //获取所有
-        List<byte[]> bytesAccountList = KvDbUtil.get(walletDatabasePath,1,100000000);
+        List<byte[]> bytesAccountList = KvDbUtil.get(getWalletDatabasePath(),1,100000000);
         if(bytesAccountList != null){
             for(byte[] bytesAccount:bytesAccountList){
                 Account account = JsonUtil.fromJson(ByteUtil.utf8BytesToString(bytesAccount),Account.class);
@@ -62,12 +63,12 @@ public class WalletImpl extends Wallet {
 
     @Override
     public void saveAccount(Account account) {
-        KvDbUtil.put(walletDatabasePath,ByteUtil.stringToUtf8Bytes(account.getAddress()),ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(account)));
+        KvDbUtil.put(getWalletDatabasePath(),ByteUtil.stringToUtf8Bytes(account.getAddress()),ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(account)));
     }
 
     @Override
     public void deleteAccountByAddress(String address) {
-        KvDbUtil.delete(walletDatabasePath,ByteUtil.stringToUtf8Bytes(address));
+        KvDbUtil.delete(getWalletDatabasePath(),ByteUtil.stringToUtf8Bytes(address));
     }
 
     @Override
@@ -99,7 +100,11 @@ public class WalletImpl extends Wallet {
         return response;
     }
 
-    public BuildTransactionResponse buildTransactionDto(BlockchainDatabase blockchainDataBase, List<String> payerPrivateKeyList, List<Recipient> recipientList, String payerChangeAddress, long fee) {
+    private String getWalletDatabasePath() {
+        return FileUtil.newPath(coreConfiguration.getCorePath(), WALLET_DATABASE_NAME);
+    }
+
+    private BuildTransactionResponse buildTransactionDto(BlockchainDatabase blockchainDataBase, List<String> payerPrivateKeyList, List<Recipient> recipientList, String payerChangeAddress, long fee) {
         Map<String, TransactionOutput> privateKeyUtxoMap = new HashMap<>();
         BuildTransactionResponse response = new BuildTransactionResponse();
         response.setMessage("请输入足够的金额");

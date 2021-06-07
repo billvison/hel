@@ -45,11 +45,6 @@ public class KvDbUtil {
         DB db = getDb(dbPath);
         db.put(bytesKey,bytesValue);
     }
-    public static void write(String dbPath, KvWriteBatch kvWriteBatch) {
-        DB db = getDb(dbPath);
-        WriteBatch levelDBwriteBatch = levelDbWriteBatch(kvWriteBatch);
-        db.write(levelDBwriteBatch);
-    }
     public static void delete(String dbPath, byte[] bytesKey) {
         DB db = getDb(dbPath);
         db.delete(bytesKey);
@@ -82,7 +77,11 @@ public class KvDbUtil {
             return valueList;
         }
     }
-
+    public static void write(String dbPath, KvWriteBatch kvWriteBatch) {
+        DB db = getDb(dbPath);
+        WriteBatch levelDBwriteBatch = levelDbWriteBatch(kvWriteBatch);
+        db.write(levelDBwriteBatch);
+    }
     private static WriteBatch levelDbWriteBatch(KvWriteBatch kvWriteBatch) {
         WriteBatch writeBatch = new WriteBatchImpl();
         if(kvWriteBatch != null){

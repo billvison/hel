@@ -19,23 +19,23 @@ import java.util.List;
  */
 public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransactionDatabase {
 
+    private CoreConfiguration coreConfiguration;
     private static final String UNCONFIRMED_TRANSACTION_DATABASE_NAME = "UnconfirmedTransactionDatabase";
-    private final String unconfirmedTransactionDatabasePath;
 
     public UnconfirmedTransactionDatabaseDefaultImpl(CoreConfiguration coreConfiguration) {
-        this.unconfirmedTransactionDatabasePath = FileUtil.newPath(coreConfiguration.getCorePath(), UNCONFIRMED_TRANSACTION_DATABASE_NAME);
+        this.coreConfiguration = coreConfiguration;
     }
 
     @Override
     public void insertTransaction(TransactionDto transactionDto) {
         String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
-        KvDbUtil.put(unconfirmedTransactionDatabasePath, getKey(transactionHash), EncodeDecodeTool.encode(transactionDto));
+        KvDbUtil.put(getUnconfirmedTransactionDatabasePath(), getKey(transactionHash), EncodeDecodeTool.encode(transactionDto));
     }
 
     @Override
     public List<TransactionDto> selectTransactions(long from, long size) {
         List<TransactionDto> transactionDtoList = new ArrayList<>();
-        List<byte[]> bytesTransactionDtos = KvDbUtil.get(unconfirmedTransactionDatabasePath,from,size);
+        List<byte[]> bytesTransactionDtos = KvDbUtil.get(getUnconfirmedTransactionDatabasePath(),from,size);
         if(bytesTransactionDtos != null){
             for(byte[] bytesTransactionDto:bytesTransactionDtos){
                 TransactionDto transactionDto = EncodeDecodeTool.decodeToTransactionDto(bytesTransactionDto);
@@ -47,16 +47,20 @@ public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransa
 
     @Override
     public void deleteByTransactionHash(String transactionHash) {
-        KvDbUtil.delete(unconfirmedTransactionDatabasePath, getKey(transactionHash));
+        KvDbUtil.delete(getUnconfirmedTransactionDatabasePath(), getKey(transactionHash));
     }
 
     @Override
     public TransactionDto selectTransactionByTransactionHash(String transactionHash) {
-        byte[] byteTransactionDto = KvDbUtil.get(unconfirmedTransactionDatabasePath, getKey(transactionHash));
+        byte[] byteTransactionDto = KvDbUtil.get(getUnconfirmedTransactionDatabasePath(), getKey(transactionHash));
         if(byteTransactionDto == null){
             return null;
         }
         return EncodeDecodeTool.decodeToTransactionDto(byteTransactionDto);
+    }
+
+    private String getUnconfirmedTransactionDatabasePath() {
+        return FileUtil.newPath(coreConfiguration.getCorePath(), UNCONFIRMED_TRANSACTION_DATABASE_NAME);
     }
 
     private byte[] getKey(String transactionHash){

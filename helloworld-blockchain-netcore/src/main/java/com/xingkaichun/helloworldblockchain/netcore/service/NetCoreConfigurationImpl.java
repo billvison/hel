@@ -12,10 +12,7 @@ import com.xingkaichun.helloworldblockchain.util.StringUtil;
 public class NetCoreConfigurationImpl implements NetCoreConfiguration {
 
     private String netcorePath;
-
     private static final String NETCORE_CONFIGURATION_DATABASE_NAME = "NetCoreConfigurationDatabase";
-    private String netCoreConfigurationDatabasePath;
-
 
     //同步器'同步器是否是激活状态'状态存入到数据库时的主键
     private static final String SYNCHRONIZER_OPTION_KEY = "IS_SYNCHRONIZER_ACTIVE";
@@ -49,13 +46,8 @@ public class NetCoreConfigurationImpl implements NetCoreConfiguration {
     public static final long SEARCH_UNCONFIRMED_TRANSACTIONS_INTERVAL = 1000 * 60 * 2;
 
     public NetCoreConfigurationImpl(String netcorePath) {
-        if(StringUtil.isNullOrEmpty(netcorePath)){
-            throw new NullPointerException("netcore Path不能为空。");
-        }
         FileUtil.mkdirs(netcorePath);
-
         this.netcorePath = netcorePath;
-        this.netCoreConfigurationDatabasePath = FileUtil.newPath(netcorePath, NETCORE_CONFIGURATION_DATABASE_NAME);
     }
 
 
@@ -144,11 +136,15 @@ public class NetCoreConfigurationImpl implements NetCoreConfiguration {
 
 
     private byte[] getConfigurationValue(byte[] configurationKey) {
-        byte[] bytesConfigurationValue = KvDbUtil.get(netCoreConfigurationDatabasePath, configurationKey);
+        byte[] bytesConfigurationValue = KvDbUtil.get(getNetCoreConfigurationDatabasePath(), configurationKey);
         return bytesConfigurationValue;
     }
 
     private void addOrUpdateConfiguration(byte[] configurationKey, byte[] configurationValue) {
-        KvDbUtil.put(netCoreConfigurationDatabasePath, configurationKey, configurationValue);
+        KvDbUtil.put(getNetCoreConfigurationDatabasePath(), configurationKey, configurationValue);
+    }
+
+    private String getNetCoreConfigurationDatabasePath(){
+        return FileUtil.newPath(netcorePath, NETCORE_CONFIGURATION_DATABASE_NAME);
     }
 }

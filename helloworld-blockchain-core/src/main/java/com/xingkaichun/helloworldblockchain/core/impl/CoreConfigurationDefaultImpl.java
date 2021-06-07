@@ -27,11 +27,7 @@ public class CoreConfigurationDefaultImpl extends CoreConfiguration {
     public static final long MINE_TIMESTAMP_PER_ROUND = 1000 * 10;
 
     public CoreConfigurationDefaultImpl(String corePath) {
-        if(StringUtil.isNullOrEmpty(corePath)){
-            throw new NullPointerException("core Path不能为空。");
-        }
         FileUtil.mkdirs(corePath);
-
         this.corePath = corePath;
     }
 
