@@ -94,8 +94,9 @@ public class AccountUtil {
      */
     public static Account accountFromStringPrivateKey(String stringPrivateKey) {
         try {
-            stringPrivateKey = formatPrivateKey(stringPrivateKey);
-
+            if(!checkPrivateKey(stringPrivateKey)){
+                throw new RuntimeException("私钥不合法。");
+            }
             BigInteger bigIntegerPrivateKey = privateKeyFrom(stringPrivateKey);
             byte[] bytesPublicKey = publicKeyFromPrivateKey(bigIntegerPrivateKey);
 
@@ -165,7 +166,7 @@ public class AccountUtil {
         try {
             byte[] bytesAddress = Base58Util.decode(stringAddress);
             byte[] bytesPublicKeyHash = new byte[20];
-            System.arraycopy(bytesAddress, 1, bytesPublicKeyHash, 0, 20);
+            ByteUtil.copy(bytesAddress, 1, bytesPublicKeyHash, 0, 20);
             return HexUtil.bytesToHexString(bytesPublicKeyHash);
         } catch (Exception e) {
             logger.debug("地址生成公钥哈希失败。",e);
@@ -204,6 +205,12 @@ public class AccountUtil {
     }
 
 
+    /**
+     * 校验是否是合法的私钥
+     */
+    public static boolean checkPrivateKey(String stringPrivateKey){
+        return stringPrivateKey.length()==64 && HexUtil.checkHexString(stringPrivateKey);
+    }
 
     /**
      * 由原始私钥推导出原始公钥
@@ -302,17 +309,15 @@ public class AccountUtil {
      * 公钥哈希生成base58格式地址
      */
     private static String base58AddressFromBytesPublicKeyHash(byte[] bytesPublicKeyHash) {
-        //计算校验码
-        byte[] bytesCheckCode = ByteUtil.copy(Sha256Util.doubleDigest(ByteUtil.concat(new byte[]{VERSION},bytesPublicKeyHash)),0,4);
 
-        //地址
-        byte[] bytesAddress = new byte[1 + 20 + 4];
-        //将地址的版本号0x00放进地址
-        System.arraycopy(new byte[]{VERSION}, 0, bytesAddress, 0, 1);
-        //将公钥哈希放进地址
-        System.arraycopy(bytesPublicKeyHash, 0, bytesAddress, 1, 20);
-        //将校验码放进地址
-        System.arraycopy(bytesCheckCode, 0, bytesAddress, 21, 4);
+        //地址版本号(1个字节)与公钥哈希(20个字节)
+        byte[] bytesVersionAndPublicKeyHash = ByteUtil.concat(new byte[]{VERSION},bytesPublicKeyHash);
+
+        //地址校验码(4个字节)
+        byte[] bytesCheckCode = ByteUtil.get(Sha256Util.doubleDigest(bytesVersionAndPublicKeyHash), 0, 4);
+
+        //地址(25个字节)=地址版本号(1个字节)+公钥哈希(20个字节)+地址校验码(4个字节)
+        byte[] bytesAddress = ByteUtil.concat(bytesVersionAndPublicKeyHash,bytesCheckCode);
 
         //用Base58编码地址
         String base58Address = Base58Util.encode(bytesAddress);
@@ -339,7 +344,7 @@ public class AccountUtil {
         try {
             byte[] bytesAddress = Base58.decode(address);
             byte[] bytePublicKeyHash = new byte[20];
-            System.arraycopy(bytesAddress, 1, bytePublicKeyHash, 0, 20);
+            ByteUtil.copy(bytesAddress, 1, bytePublicKeyHash, 0, 20);
             String base58Address = addressFromStringPublicKeyHash(HexUtil.bytesToHexString(bytePublicKeyHash));
             return base58Address.equals(address);
         }catch (Exception e){

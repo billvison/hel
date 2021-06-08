@@ -19,10 +19,10 @@ import java.util.List;
 public class NodeDaoImpl implements NodeDao {
 
     private static final String NODE_DATABASE_NAME = "NodeDatabase";
-    private String nodeDatabasePath ;
+    private NetCoreConfiguration netCoreConfiguration;
 
     public NodeDaoImpl(NetCoreConfiguration netCoreConfiguration) {
-        this.nodeDatabasePath = FileUtil.newPath(netCoreConfiguration.getNetCorePath(), NODE_DATABASE_NAME);
+        this.netCoreConfiguration = netCoreConfiguration;
     }
 
     @Override
@@ -40,30 +40,45 @@ public class NodeDaoImpl implements NodeDao {
 
     @Override
     public void addNode(NodePo node){
-        KvDbUtil.put(nodeDatabasePath,ByteUtil.stringToUtf8Bytes(node.getIp()), ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(node)));
+        KvDbUtil.put(getNodeDatabasePath(),getKeyByNodePo(node), encode(node));
     }
 
     @Override
     public void updateNode(NodePo node){
-        KvDbUtil.put(nodeDatabasePath,ByteUtil.stringToUtf8Bytes(node.getIp()),ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(node)));
+        KvDbUtil.put(getNodeDatabasePath(),getKeyByNodePo(node),encode(node));
     }
 
     @Override
     public void deleteNode(String ip){
-        KvDbUtil.delete(nodeDatabasePath,ByteUtil.stringToUtf8Bytes(ip));
+        KvDbUtil.delete(getNodeDatabasePath(),getKeyByIp(ip));
     }
 
     @Override
     public List<NodePo> queryAllNodeList(){
         List<NodePo> list = new ArrayList<>();
         //获取所有
-        List<byte[]> bytesNodeEntityList = KvDbUtil.get(nodeDatabasePath,1,100000000);
-        if(bytesNodeEntityList != null){
-            for(byte[] bytesNodeEntity:bytesNodeEntityList){
-                NodePo nodePo = JsonUtil.fromJson(ByteUtil.utf8BytesToString(bytesNodeEntity), NodePo.class);
+        List<byte[]> bytesNodePoList = KvDbUtil.gets(getNodeDatabasePath(),1,100000000);
+        if(bytesNodePoList != null){
+            for(byte[] bytesNodePo:bytesNodePoList){
+                NodePo nodePo = decodeToNodePo(bytesNodePo);
                 list.add(nodePo);
             }
         }
         return list;
+    }
+    private String getNodeDatabasePath(){
+        return FileUtil.newPath(netCoreConfiguration.getNetCorePath(), NODE_DATABASE_NAME);
+    }
+    private byte[] getKeyByNodePo(NodePo node){
+        return getKeyByIp(node.getIp());
+    }
+    private byte[] getKeyByIp(String ip){
+        return ByteUtil.stringToUtf8Bytes(ip);
+    }
+    private byte[] encode(NodePo node){
+        return ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(node));
+    }
+    private NodePo decodeToNodePo(byte[] bytesNodePo){
+        return JsonUtil.fromJson(ByteUtil.utf8BytesToString(bytesNodePo), NodePo.class);
     }
 }

@@ -18,7 +18,6 @@ import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.util.TimeUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -201,11 +200,7 @@ public class BlockTool {
      */
     public static String formatDifficulty(String difficulty) {
         //难度长度是256bit，64位十六进制的字符串数，如果传入的难度长度不够，这里进行前置补充零操作。
-        final int length = 64;
-        if(difficulty.length()<length){
-            difficulty = (String.join("", Collections.nCopies(length-difficulty.length(), "0")))+difficulty;
-        }
-        return difficulty;
+        return StringUtil.prefixPadding(difficulty,64,"0");
     }
 
     /**

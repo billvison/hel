@@ -7,12 +7,12 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionRequest;
 import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionResponse;
 import com.xingkaichun.helloworldblockchain.core.model.wallet.Recipient;
+import com.xingkaichun.helloworldblockchain.core.tools.EncodeDecodeTool;
 import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
-import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import com.xingkaichun.helloworldblockchain.util.KvDbUtil;
 
 import java.util.ArrayList;
@@ -39,10 +39,10 @@ public class WalletImpl extends Wallet {
     public List<Account> getAllAccounts() {
         List<Account> accountList = new ArrayList<>();
         //获取所有
-        List<byte[]> bytesAccountList = KvDbUtil.get(getWalletDatabasePath(),1,100000000);
+        List<byte[]> bytesAccountList = KvDbUtil.gets(getWalletDatabasePath(),1,100000000);
         if(bytesAccountList != null){
             for(byte[] bytesAccount:bytesAccountList){
-                Account account = JsonUtil.fromJson(ByteUtil.utf8BytesToString(bytesAccount),Account.class);
+                Account account = EncodeDecodeTool.decodeToAccount(bytesAccount);
                 accountList.add(account);
             }
         }
@@ -63,12 +63,19 @@ public class WalletImpl extends Wallet {
 
     @Override
     public void saveAccount(Account account) {
-        KvDbUtil.put(getWalletDatabasePath(),ByteUtil.stringToUtf8Bytes(account.getAddress()),ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(account)));
+        KvDbUtil.put(getWalletDatabasePath(),getKeyByAccount(account), EncodeDecodeTool.encodeAccount(account));
     }
 
     @Override
     public void deleteAccountByAddress(String address) {
-        KvDbUtil.delete(getWalletDatabasePath(),ByteUtil.stringToUtf8Bytes(address));
+        KvDbUtil.delete(getWalletDatabasePath(),getKeyByAddress(address));
+    }
+
+    private byte[] getKeyByAddress(String address){
+        return ByteUtil.stringToUtf8Bytes(address);
+    }
+    private byte[] getKeyByAccount(Account account){
+        return getKeyByAddress(account.getAddress());
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.xingkaichun.helloworldblockchain.util;
 
 import com.google.common.base.Strings;
 
+import java.util.Collections;
+
 /**
  * String工具类
  *
@@ -22,5 +24,12 @@ public class StringUtil {
 
     public static String format(String format, Object... args) {
         return String.format(format,args);
+    }
+
+    public static String prefixPadding(String rawValue,int targetLength,String paddingValue) {
+        if(rawValue.length() >= targetLength){
+            return rawValue;
+        }
+        return String.join("", Collections.nCopies(targetLength-rawValue.length(), paddingValue)) + rawValue;
     }
 }

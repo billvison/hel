@@ -9,7 +9,6 @@ import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.crypto.Sha256Util;
 import com.xingkaichun.helloworldblockchain.netcore.dto.*;
-import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import com.xingkaichun.helloworldblockchain.util.ListUtil;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
 
@@ -421,9 +420,17 @@ public class TransactionTool {
     }
 
     public static UnspentTransactionOutput transactionOutput2UnspentTransactionOutput(TransactionOutput transactionOutput) {
-        //UnspentTransactionOutput是TransactionOutput子类，且没有其它的属性才可以这样转换。
-        String json = JsonUtil.toJson(transactionOutput);
-        UnspentTransactionOutput unspentTransactionOutput = JsonUtil.fromJson(json,UnspentTransactionOutput.class);
+        UnspentTransactionOutput unspentTransactionOutput = new UnspentTransactionOutput();
+        unspentTransactionOutput.setTransactionHash(transactionOutput.getTransactionHash());
+        unspentTransactionOutput.setTransactionOutputIndex(transactionOutput.getTransactionOutputIndex());
+        unspentTransactionOutput.setValue(transactionOutput.getValue());
+        unspentTransactionOutput.setOutputScript(transactionOutput.getOutputScript());
+        unspentTransactionOutput.setAddress(transactionOutput.getAddress());
+        unspentTransactionOutput.setBlockHeight(transactionOutput.getBlockHeight());
+        unspentTransactionOutput.setBlockHash(transactionOutput.getBlockHash());
+        unspentTransactionOutput.setTransactionHeight(transactionOutput.getTransactionHeight());
+        unspentTransactionOutput.setTransactionIndex(transactionOutput.getTransactionIndex());
+        unspentTransactionOutput.setTransactionOutputHeight(transactionOutput.getTransactionOutputHeight());
         return unspentTransactionOutput;
     }
 

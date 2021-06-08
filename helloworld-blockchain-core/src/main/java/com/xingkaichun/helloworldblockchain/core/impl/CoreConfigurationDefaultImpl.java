@@ -4,7 +4,6 @@ import com.xingkaichun.helloworldblockchain.core.CoreConfiguration;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
 import com.xingkaichun.helloworldblockchain.util.KvDbUtil;
-import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
 /**
  * 默认实现

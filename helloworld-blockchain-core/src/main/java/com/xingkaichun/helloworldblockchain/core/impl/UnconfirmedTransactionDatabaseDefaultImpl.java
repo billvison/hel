@@ -29,13 +29,13 @@ public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransa
     @Override
     public void insertTransaction(TransactionDto transactionDto) {
         String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
-        KvDbUtil.put(getUnconfirmedTransactionDatabasePath(), getKey(transactionHash), EncodeDecodeTool.encode(transactionDto));
+        KvDbUtil.put(getUnconfirmedTransactionDatabasePath(), getKey(transactionHash), EncodeDecodeTool.encodeTransactionDto(transactionDto));
     }
 
     @Override
     public List<TransactionDto> selectTransactions(long from, long size) {
         List<TransactionDto> transactionDtoList = new ArrayList<>();
-        List<byte[]> bytesTransactionDtos = KvDbUtil.get(getUnconfirmedTransactionDatabasePath(),from,size);
+        List<byte[]> bytesTransactionDtos = KvDbUtil.gets(getUnconfirmedTransactionDatabasePath(),from,size);
         if(bytesTransactionDtos != null){
             for(byte[] bytesTransactionDto:bytesTransactionDtos){
                 TransactionDto transactionDto = EncodeDecodeTool.decodeToTransactionDto(bytesTransactionDto);

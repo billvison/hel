@@ -24,4 +24,20 @@ public class HexUtil {
     public static byte[] hexStringToBytes(String hexString) {
         return Hex.decode(hexString);
     }
+
+    /**
+     * 校验是否是合法的十六进制字符串
+     */
+    public static boolean checkHexString(String hexString){
+        if(hexString.length()%2 != 0){
+            return false;
+        }
+        for(int i=0;i<hexString.length();i++){
+            char ch = hexString.charAt(i);
+            if(!((ch>='0' && ch <='9')||ch>='a' && ch <='f')){
+                return false;
+            }
+        }
+        return true;
+    }
 }

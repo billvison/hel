@@ -4,6 +4,7 @@ import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
+import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.util.JsonUtil;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
@@ -15,7 +16,7 @@ import com.xingkaichun.helloworldblockchain.util.LogUtil;
  */
 public class EncodeDecodeTool {
 
-    public static byte[] encode(Transaction transaction) {
+    public static byte[] encodeTransaction(Transaction transaction) {
         try {
             return ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(transaction));
         } catch (Exception e) {
@@ -33,7 +34,7 @@ public class EncodeDecodeTool {
     }
 
 
-    public static byte[] encode(TransactionOutput transactionOutput) {
+    public static byte[] encodeTransactionOutput(TransactionOutput transactionOutput) {
         try {
             return ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(transactionOutput));
         } catch (Exception e) {
@@ -51,7 +52,7 @@ public class EncodeDecodeTool {
     }
 
 
-    public static byte[] encode(Block block) {
+    public static byte[] encodeBlock(Block block) {
         try {
             return ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(block));
         } catch (Exception e) {
@@ -69,8 +70,7 @@ public class EncodeDecodeTool {
     }
 
 
-
-    public static byte[] encode(TransactionDto transactionDto) {
+    public static byte[] encodeTransactionDto(TransactionDto transactionDto) {
         try {
             return ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(transactionDto));
         } catch (Exception e) {
@@ -83,6 +83,24 @@ public class EncodeDecodeTool {
             return JsonUtil.fromJson(ByteUtil.utf8BytesToString(bytesTransactionDto), TransactionDto.class);
         } catch (Exception e) {
             LogUtil.error("deserialize TransactionDto failed.",e);
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public static byte[] encodeAccount(Account account) {
+        try {
+            return ByteUtil.stringToUtf8Bytes(JsonUtil.toJson(account));
+        } catch (Exception e) {
+            LogUtil.error("serialize Transaction failed.",e);
+            throw new RuntimeException(e);
+        }
+    }
+    public static Account decodeToAccount(byte[] bytesAccount) {
+        try {
+            return JsonUtil.fromJson(ByteUtil.utf8BytesToString(bytesAccount),Account.class);
+        } catch (Exception e) {
+            LogUtil.error("deserialize Account failed.",e);
             throw new RuntimeException(e);
         }
     }

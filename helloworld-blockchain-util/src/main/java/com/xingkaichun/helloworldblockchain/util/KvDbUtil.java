@@ -53,7 +53,7 @@ public class KvDbUtil {
         DB db = getDb(dbPath);
         return db.get(bytesKey);
     }
-    public static List<byte[]> get(String dbPath, long from, long size) {
+    public static List<byte[]> gets(String dbPath, long from, long size) {
         synchronized (KvDbUtil.class){
             List<byte[]> valueList = new ArrayList<>();
             int cunrrentFrom = 0;

@@ -559,7 +559,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                     for(TransactionOutput output:outputs){
                         byte[] transactionOutputHeightToTransactionOutputKey = BlockchainDatabaseKeyTool.buildTransactionOutputHeightToTransactionOutputKey(output.getTransactionOutputHeight());
                         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-                            kvWriteBatch.put(transactionOutputHeightToTransactionOutputKey, EncodeDecodeTool.encode(output));
+                            kvWriteBatch.put(transactionOutputHeightToTransactionOutputKey, EncodeDecodeTool.encodeTransactionOutput(output));
                         } else {
                             kvWriteBatch.delete(transactionOutputHeightToTransactionOutputKey);
                         }
@@ -644,7 +644,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                 //更新区块链中的交易序列号数据
                 byte[] transactionHeightToTransactionKey = BlockchainDatabaseKeyTool.buildTransactionHeightToTransactionKey(transaction.getTransactionHeight());
                 if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-                    kvWriteBatch.put(transactionHeightToTransactionKey, EncodeDecodeTool.encode(transaction));
+                    kvWriteBatch.put(transactionHeightToTransactionKey, EncodeDecodeTool.encodeTransaction(transaction));
                 } else {
                     kvWriteBatch.delete(transactionHeightToTransactionKey);
                 }
@@ -719,7 +719,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     private void storeBlockHeightToBlock(KvDbUtil.KvWriteBatch kvWriteBatch, Block block, BlockchainActionEnum blockchainActionEnum) {
         byte[] blockHeightKey = BlockchainDatabaseKeyTool.buildBlockHeightToBlockKey(block.getHeight());
         if(BlockchainActionEnum.ADD_BLOCK == blockchainActionEnum){
-            kvWriteBatch.put(blockHeightKey, EncodeDecodeTool.encode(block));
+            kvWriteBatch.put(blockHeightKey, EncodeDecodeTool.encodeBlock(block));
         }else{
             kvWriteBatch.delete(blockHeightKey);
         }

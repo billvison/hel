@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class ByteUtil {
 
-    public static byte[] stringToUtf8Bytes(String strValue) {
-        return strValue.getBytes(StandardCharsets.UTF_8);
+    public static byte[] stringToUtf8Bytes(String stringValue) {
+        return stringValue.getBytes(StandardCharsets.UTF_8);
     }
     public static String utf8BytesToString(byte[] bytesValue) {
         return new String(bytesValue, StandardCharsets.UTF_8);
@@ -74,10 +74,14 @@ public class ByteUtil {
         return Arrays.equals(a,a2);
     }
 
-    public static byte[] copy(byte[] src, int srcPos, int destPos) {
+    public static byte[] get(byte[] src, int srcPos, int destPos) {
         int length = destPos - srcPos;
         byte[] dest = new byte[length];
         System.arraycopy(src,srcPos,dest,0,length);
         return dest;
+    }
+
+    public static void copy(Object src, int srcPos, Object dest, int destPos, int length){
+        System.arraycopy(src,srcPos,dest,destPos,length);
     }
 }
