@@ -448,7 +448,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * 补充区块的属性
      */
     private void fillBlockProperty(Block block) {
-        long transactionIndex = 1;
+        long transactionIndex = 0;
         long transactionHeight = queryBlockchainTransactionHeight();
         long transactionOutputHeight = queryBlockchainTransactionOutputHeight();
         long blockHeight = block.getHeight();
@@ -456,10 +456,10 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         List<Transaction> transactions = block.getTransactions();
         long transactionCount = BlockTool.getTransactionCount(block);
         block.setTransactionCount(transactionCount);
-        block.setPreviousTransactionHeight(queryBlockchainTransactionHeight());
+        block.setPreviousTransactionHeight(transactionHeight);
         if(transactions != null){
             for(Transaction transaction:transactions){
-                //下一个交易高度
+                transactionIndex++;
                 transactionHeight++;
                 transaction.setBlockHeight(blockHeight);
                 transaction.setTransactionIndex(transactionIndex);
@@ -468,16 +468,15 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                 List<TransactionOutput> outputs = transaction.getOutputs();
                 if(outputs != null){
                     for (int i=0; i <outputs.size(); i++){
-                        //下一个交易输出高度
                         transactionOutputHeight++;
-                        TransactionOutput transactionOutput = outputs.get(i);
-                        transactionOutput.setBlockHeight(blockHeight);
-                        transactionOutput.setBlockHash(blockHash);
-                        transactionOutput.setTransactionHeight(transactionHeight);
-                        transactionOutput.setTransactionHash(transaction.getTransactionHash());
-                        transactionOutput.setTransactionOutputIndex(i+1);
-                        transactionOutput.setTransactionIndex(transaction.getTransactionIndex());
-                        transactionOutput.setTransactionOutputHeight(transactionOutputHeight);
+                        TransactionOutput output = outputs.get(i);
+                        output.setBlockHeight(blockHeight);
+                        output.setBlockHash(blockHash);
+                        output.setTransactionHeight(transactionHeight);
+                        output.setTransactionHash(transaction.getTransactionHash());
+                        output.setTransactionOutputIndex(i+1);
+                        output.setTransactionIndex(transaction.getTransactionIndex());
+                        output.setTransactionOutputHeight(transactionOutputHeight);
                     }
                 }
             }

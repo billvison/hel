@@ -85,7 +85,7 @@ public class KvDbUtil {
     private static WriteBatch levelDbWriteBatch(KvWriteBatch kvWriteBatch) {
         WriteBatch writeBatch = new WriteBatchImpl();
         if(kvWriteBatch != null){
-            for (KvWrite kvWrite : kvWriteBatch.getKvWriteList()){
+            for (KvWrite kvWrite : kvWriteBatch.getKvWrites()){
                 if(kvWrite.getKvWriteActionEnum() == KvWriteActionEnum.ADD){
                     writeBatch.put(kvWrite.key, kvWrite.value);
                 }else if(kvWrite.getKvWriteActionEnum() == KvWriteActionEnum.DELETE){
@@ -101,21 +101,21 @@ public class KvDbUtil {
 
 
     public static class KvWriteBatch {
-        private List<KvWrite> kvWriteList;
+        private List<KvWrite> kvWrites;
         public KvWriteBatch() {
-            this.kvWriteList = new ArrayList<>();
+            this.kvWrites = new ArrayList<>();
         }
-        public List<KvWrite> getKvWriteList() {
-            return kvWriteList;
+        public List<KvWrite> getKvWrites() {
+            return kvWrites;
         }
-        public void setKvWriteList(List<KvWrite> kvWriteList) {
-            this.kvWriteList = kvWriteList;
+        public void setKvWrites(List<KvWrite> kvWrites) {
+            this.kvWrites = kvWrites;
         }
         public void put(byte[] key, byte[] value) {
-            kvWriteList.add(new KvWrite(KvWriteActionEnum.ADD,key,value));
+            kvWrites.add(new KvWrite(KvWriteActionEnum.ADD,key,value));
         }
         public void delete(byte[] key) {
-            kvWriteList.add(new KvWrite(KvWriteActionEnum.DELETE,key,null));
+            kvWrites.add(new KvWrite(KvWriteActionEnum.DELETE,key,null));
         }
     }
     public static class KvWrite {
