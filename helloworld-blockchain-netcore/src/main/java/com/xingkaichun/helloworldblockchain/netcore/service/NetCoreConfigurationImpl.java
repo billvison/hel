@@ -13,15 +13,15 @@ public class NetCoreConfigurationImpl implements NetCoreConfiguration {
     private String netcorePath;
     private static final String NETCORE_CONFIGURATION_DATABASE_NAME = "NetCoreConfigurationDatabase";
 
-    //同步器'同步器是否是激活状态'状态存入到数据库时的主键
-    private static final String SYNCHRONIZER_OPTION_KEY = "IS_SYNCHRONIZER_ACTIVE";
-    //同步器'同步器是否是激活状态'开关的默认状态
-    private static final boolean SYNCHRONIZER_OPTION_DEFAULT_VALUE = false;
+    //节点搜索器"是否是自动搜索新区块"状态存入到数据库时的主键
+    private static final String AUTO_SEARCH_BLOCK_OPTION_KEY = "IS_AUTO_SEARCH_BLOCK";
+    //节点搜索器"是否是自动搜索新区块"开关的默认状态
+    private static final boolean AUTO_SEARCH_BLOCK_OPTION_DEFAULT_VALUE = false;
 
     //节点搜索器'是否自动搜索节点'状态存入到数据库时的主键
     private static final String AUTO_SEARCH_NODE_OPTION_KEY = "IS_AUTO_SEARCH_NODE";
     //节点搜索器'是否自动搜索节点'开关的默认状态
-    private static final boolean SAUTO_SEARCH_NODE_OPTION_DEFAULT_VALUE = false;
+    private static final boolean AUTO_SEARCH_NODE_OPTION_DEFAULT_VALUE = false;
 
     //在区块链网络中自动搜寻新的节点的间隔时间
     private static final long SEARCH_NODE_TIME_INTERVAL = 1000 * 60 * 2;
@@ -56,36 +56,41 @@ public class NetCoreConfigurationImpl implements NetCoreConfiguration {
     }
 
     @Override
-    public boolean isSynchronizerActive() {
-        byte[] bytesConfigurationValue = getConfigurationValue(ByteUtil.stringToUtf8Bytes(SYNCHRONIZER_OPTION_KEY));
+    public boolean isAutoSearchBlock() {
+        byte[] bytesConfigurationValue = getConfigurationValue(ByteUtil.stringToUtf8Bytes(AUTO_SEARCH_BLOCK_OPTION_KEY));
         if(bytesConfigurationValue == null){
-            return SYNCHRONIZER_OPTION_DEFAULT_VALUE;
+            return AUTO_SEARCH_BLOCK_OPTION_DEFAULT_VALUE;
         }
         return Boolean.valueOf(ByteUtil.utf8BytesToString(bytesConfigurationValue));
     }
 
     @Override
-    public void activeSynchronizer() {
-        addOrUpdateConfiguration(ByteUtil.stringToUtf8Bytes(SYNCHRONIZER_OPTION_KEY),ByteUtil.stringToUtf8Bytes(String.valueOf(Boolean.TRUE)));
+    public void activeAutoSearchBlock() {
+        addOrUpdateConfiguration(ByteUtil.stringToUtf8Bytes(AUTO_SEARCH_BLOCK_OPTION_KEY),ByteUtil.stringToUtf8Bytes(String.valueOf(Boolean.TRUE)));
     }
 
     @Override
-    public void deactiveSynchronizer() {
-        addOrUpdateConfiguration(ByteUtil.stringToUtf8Bytes(SYNCHRONIZER_OPTION_KEY),ByteUtil.stringToUtf8Bytes(String.valueOf(Boolean.FALSE)));
+    public void deactiveAutoSearchBlock() {
+        addOrUpdateConfiguration(ByteUtil.stringToUtf8Bytes(AUTO_SEARCH_BLOCK_OPTION_KEY),ByteUtil.stringToUtf8Bytes(String.valueOf(Boolean.FALSE)));
     }
 
     @Override
     public boolean isAutoSearchNode() {
         byte[] bytesConfigurationValue = getConfigurationValue(ByteUtil.stringToUtf8Bytes(AUTO_SEARCH_NODE_OPTION_KEY));
         if(bytesConfigurationValue == null){
-            return SAUTO_SEARCH_NODE_OPTION_DEFAULT_VALUE;
+            return AUTO_SEARCH_NODE_OPTION_DEFAULT_VALUE;
         }
         return Boolean.valueOf(ByteUtil.utf8BytesToString(bytesConfigurationValue));
     }
 
     @Override
-    public void setAutoSearchNode(boolean autoSearchNode) {
-        addOrUpdateConfiguration(ByteUtil.stringToUtf8Bytes(AUTO_SEARCH_NODE_OPTION_KEY),ByteUtil.stringToUtf8Bytes(String.valueOf(Boolean.valueOf(autoSearchNode))));
+    public void activeAutoSearchNode() {
+        addOrUpdateConfiguration(ByteUtil.stringToUtf8Bytes(AUTO_SEARCH_NODE_OPTION_KEY),ByteUtil.stringToUtf8Bytes(String.valueOf(Boolean.valueOf(true))));
+    }
+
+    @Override
+    public void deactiveAutoSearchNode() {
+        addOrUpdateConfiguration(ByteUtil.stringToUtf8Bytes(AUTO_SEARCH_NODE_OPTION_KEY),ByteUtil.stringToUtf8Bytes(String.valueOf(Boolean.valueOf(false))));
     }
 
     @Override

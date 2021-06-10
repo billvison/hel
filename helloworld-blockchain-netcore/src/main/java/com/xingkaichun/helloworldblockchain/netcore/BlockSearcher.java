@@ -45,7 +45,7 @@ public class BlockSearcher {
         new Thread(()->{
             while (true){
                 try {
-                    if(netCoreConfiguration.isSynchronizerActive()){
+                    if(netCoreConfiguration.isAutoSearchBlock()){
                         synchronizeBlocks();
                     }
                     SleepUtil.sleep(netCoreConfiguration.getSearchBlockTimeInterval());
@@ -60,7 +60,7 @@ public class BlockSearcher {
      * 搜索新的区块，并同步这些区块到本地区块链系统
      */
     private void synchronizeBlocks() {
-        if(!netCoreConfiguration.isSynchronizerActive()){
+        if(!netCoreConfiguration.isAutoSearchBlock()){
             return;
         }
         List<Node> nodes = nodeService.queryAllNodes();
@@ -71,7 +71,7 @@ public class BlockSearcher {
         long localBlockchainHeight = blockchainCore.queryBlockchainHeight();
         for(Node node:nodes){
             try {
-                if(!netCoreConfiguration.isSynchronizerActive()){
+                if(!netCoreConfiguration.isAutoSearchBlock()){
                     return;
                 }
                 //本地区块链高度小于远程节点区块链高度，此时需要将远程节点的区块同步到本地区块链。

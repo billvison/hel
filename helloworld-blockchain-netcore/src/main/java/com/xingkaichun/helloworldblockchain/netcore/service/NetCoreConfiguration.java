@@ -17,26 +17,30 @@ public interface NetCoreConfiguration {
     String getNetCorePath();
 
     /**
-     * 是否同步区块
+     * 是否"自动搜索新区块"
      */
-    boolean isSynchronizerActive();
+    boolean isAutoSearchBlock();
     /**
-     * 激活"同步区块"选项
+     * 开启"自动搜索新区块"选项
      */
-    void activeSynchronizer() ;
+    void activeAutoSearchBlock() ;
     /**
-     * 关闭"同步区块"选项
+     * 关闭"自动搜索新区块"选项
      */
-    void deactiveSynchronizer() ;
+    void deactiveAutoSearchBlock() ;
 
     /**
      * 是否自动搜索节点
      */
     boolean isAutoSearchNode();
     /**
-     * 设置"是否自动搜索节点"
+     * 开启自动搜索节点
      */
-    void setAutoSearchNode(boolean autoSearchNode);
+    void activeAutoSearchNode();
+    /**
+     * 关闭自动搜索节点
+     */
+    void deactiveAutoSearchNode();
 
 
     long getSearchNodeTimeInterval();

@@ -42,7 +42,7 @@
                     <tr>
                         <td style="width:30%;">当前区块高度</td>
                         <td style="width:40%;" id="blockHeight"></td>
-                        <td style="width:30%;"><button class="btn btn-primary" type="submit" id="button_DeleteBlock">删除区块</button></td>
+                        <td style="width:30%;"><button class="btn btn-primary" type="submit" id="deleteBlocks">删除区块</button></td>
                     </tr>
                     <tr>
                         <td>挖矿状态</td>
@@ -50,21 +50,21 @@
                         <td ><button class="btn btn-primary" type="submit"  id="minerSwitch">占位符</button></td>
                     </tr>
                     <tr>
-                        <td>同步区块状态</td>
-                        <td id="synchronizerStatus"></td>
-                        <td><button class="btn btn-primary" type="submit" id="synchronizerSwitch">占位符</button></td>
+                        <td>区块搜寻策略</td>
+                        <td id="autoSearchBlock"></td>
+                        <td><button class="btn btn-primary" type="submit" id="autoSearchBlockSwitch">占位符</button></td>
                     </tr>
                     <tr>
                         <td>节点搜寻策略</td>
-                        <td id="searchNodeStrategy"></td>
-                        <td ><button class="btn btn-primary" type="submit" id="searchNodeStrategySwitch">占位符</button></td>
+                        <td id="autoSearchNode"></td>
+                        <td ><button class="btn btn-primary" type="submit" id="autoSearchNodeSwitch">占位符</button></td>
                     </tr>
                 </thead>
             </table>
         </div>
 
         <script>
-            let minerInActiveState,synchronizerInActiveState,autoSearchNode;
+            let minerInActiveState,autoSearchBlock,autoSearchNode;
             $(async function(){
                 const data = await $ajax({
                     url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryBlockchainHeight"
@@ -82,12 +82,12 @@
             }());
             $(async function(){
                 const data = await $ajax({
-                    url : baseUrl() + "/Api/NodeConsoleApplication/IsSynchronizerActive",
+                    url : baseUrl() + "/Api/NodeConsoleApplication/IsAutoSearchBlock",
                     data: `{}`
                 });
-                synchronizerInActiveState = data.result.synchronizerInActiveState;
-                $('#synchronizerStatus').text(data.result.synchronizerInActiveState ? '同步中' : '休息中')
-                $('#synchronizerSwitch').text(data.result.synchronizerInActiveState ? '停止同步' : '开启同步')
+                autoSearchBlock = data.result.autoSearchBlock;
+                $('#autoSearchBlock').text(autoSearchBlock ? '自动搜索新区块' : '已暂停搜索新区块')
+                $('#autoSearchBlockSwitch').text(autoSearchBlock ? '停止搜索新区块' : '自动搜索新区块')
             }());
             $(async function(){
                 const data = await $ajax({
@@ -95,11 +95,11 @@
                     data: `{}`
                 });
                 autoSearchNode = data.result.autoSearchNode;
-                $('#searchNodeStrategy').text(data.result.autoSearchNode ? '自动寻找' : '手动添加');
-                $('#searchNodeStrategySwitch').text(data.result.autoSearchNode ? '手动添加' : '自动寻找');
+                $('#autoSearchNode').text(autoSearchNode ? '自动搜索新节点' : '已暂停搜索新节点');
+                $('#autoSearchNodeSwitch').text(autoSearchNode ? '停止搜索新节点' : '自动搜索新节点');
             }());
 
-            $('#button_DeleteBlock').click(async function(){
+            $('#deleteBlocks').click(async function(){
                 let res = prompt('删除区块，请输入要删除区块的高度。');
                 const data = await $ajax({
                     url : baseUrl() + "/Api/NodeConsoleApplication/DeleteBlocks",
@@ -123,25 +123,32 @@
                 }
                 location.reload();
             })
-            $('#synchronizerSwitch').click(async function(){
-                if(!synchronizerInActiveState){
+            $('#autoSearchBlockSwitch').click(async function(){
+                if(autoSearchBlock){
                     await $ajax({
-                        url : baseUrl() + "/Api/NodeConsoleApplicationle/ActiveSynchronizer",
+                        url : baseUrl() + "/Api/NodeConsoleApplication/DeactiveAutoSearchBlock",
                         data: `{}`
                     });
                 }else{
                     await $ajax({
-                        url : baseUrl() + "/Api/NodeConsoleApplication/DeactiveSynchronizer",
+                        url : baseUrl() + "/Api/NodeConsoleApplicationle/ActiveAutoSearchBlock",
                         data: `{}`
                     });
                 }
                 location.reload();
             })
-            $('#searchNodeStrategySwitch').click(async function(){
-                await $ajax({
-                    url : baseUrl() + "/Api/NodeConsoleApplication/SetAutoSearchNode",
-                    data: `{"autoSearchNode": ${!autoSearchNode}}`
-                });
+            $('#autoSearchNodeSwitch').click(async function(){
+                if(autoSearchNode){
+                    await $ajax({
+                        url : baseUrl() + "/Api/NodeConsoleApplication/DeactiveAutoSearchNode",
+                        data: `{}`
+                    });
+                }else{
+                    await $ajax({
+                        url : baseUrl() + "/Api/NodeConsoleApplication/ActiveAutoSearchNode",
+                        data: `{}`
+                    });
+                }
                 location.reload();
             })
         </script>

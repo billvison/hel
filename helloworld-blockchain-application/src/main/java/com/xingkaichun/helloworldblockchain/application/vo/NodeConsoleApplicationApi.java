@@ -16,12 +16,21 @@ public class NodeConsoleApplicationApi {
 
 
 
-    //同步器是否激活
-    public static final String IS_SYNCHRONIZER_ACTIVE = "/Api/NodeConsoleApplication/IsSynchronizerActive";
-    //激活同步器
-    public static final String ACTIVE_SYNCHRONIZER = "/Api/NodeConsoleApplicationle/ActiveSynchronizer";
-    //停用同步器
-    public static final String DEACTIVE_SYNCHRONIZER = "/Api/NodeConsoleApplication/DeactiveSynchronizer";
+    //是否"自动搜索新区块"
+    public static final String IS_AUTO_SEARCH_BLOCK = "/Api/NodeConsoleApplication/IsAutoSearchBlock";
+    //开启"自动搜索新区块"选项
+    public static final String ACTIVE_AUTO_SEARCH_BLOCK = "/Api/NodeConsoleApplicationle/ActiveAutoSearchBlock";
+    //关闭"自动搜索新区块"选项
+    public static final String DEACTIVE_AUTO_SEARCH_BLOCK = "/Api/NodeConsoleApplication/DeactiveAutoSearchBlock";
+
+
+
+    //是否开启了自动寻找区块链节点的功能
+    public static final String IS_AUTO_SEARCH_NODE = "/Api/NodeConsoleApplication/IsAutoSearchNode";
+    //开启"自动搜索节点"选项
+    public static final String ACTIVE_AUTO_SEARCH_NODE = "/Api/NodeConsoleApplication/ActiveAutoSearchNode";
+    //关闭"自动搜索节点"选项
+    public static final String DEACTIVE_AUTO_SEARCH_NODE = "/Api/NodeConsoleApplication/DeactiveAutoSearchNode";
 
 
 
@@ -33,13 +42,6 @@ public class NodeConsoleApplicationApi {
     public static final String DELETE_NODE = "/Api/NodeConsoleApplication/DeleteNode";
     //查询所有节点
     public static final String QUERY_ALL_NODES = "/Api/NodeConsoleApplication/QueryAllNodes";
-
-
-
-    //是否开启了自动寻找区块链节点的功能
-    public static final String IS_AUTO_SEARCH_NODE = "/Api/NodeConsoleApplication/IsAutoSearchNode";
-    //设置是否允许自动寻找区块链节点
-    public static final String SET_AUTO_SEARCH_NODE = "/Api/NodeConsoleApplication/SetAutoSearchNode";
 
 
 

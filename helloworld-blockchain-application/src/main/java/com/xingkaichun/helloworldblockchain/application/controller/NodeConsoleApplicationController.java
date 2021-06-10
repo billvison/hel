@@ -89,49 +89,49 @@ public class NodeConsoleApplicationController {
 
 
     /**
-     * 同步器是否激活
+     * 是否"自动搜索新区块"
      */
-    @RequestMapping(value = NodeConsoleApplicationApi.IS_SYNCHRONIZER_ACTIVE,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<IsSynchronizerActiveResponse> isSynchronizerActive(@RequestBody IsSynchronizerActiveRequest request){
+    @RequestMapping(value = NodeConsoleApplicationApi.IS_AUTO_SEARCH_BLOCK,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<IsAutoSearchBlockResponse> isAutoSearchBlock(@RequestBody IsAutoSearchBlockRequest request){
         try {
-            boolean isSynchronizerActive = blockchainNetCore.getNetCoreConfiguration().isSynchronizerActive();
-            IsSynchronizerActiveResponse response = new IsSynchronizerActiveResponse();
-            response.setSynchronizerInActiveState(isSynchronizerActive);
-            return ServiceResult.createSuccessServiceResult("查询同步器是否激活成功",response);
+            boolean isAutoSearchBlock = blockchainNetCore.getNetCoreConfiguration().isAutoSearchBlock();
+            IsAutoSearchBlockResponse response = new IsAutoSearchBlockResponse();
+            response.setAutoSearchBlock(isAutoSearchBlock);
+            return ServiceResult.createSuccessServiceResult("查询[是否自动搜索新区块]成功",response);
         } catch (Exception e){
-            String message = "查询同步器是否激活失败";
+            String message = "查询[是否自动搜索新区块]失败";
             LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
     /**
-     * 激活同步器
+     * 开启"自动搜索新区块"选项
      */
-    @RequestMapping(value = NodeConsoleApplicationApi.ACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<ActiveSynchronizerResponse> activeSynchronizer(@RequestBody ActiveSynchronizerRequest request){
+    @RequestMapping(value = NodeConsoleApplicationApi.ACTIVE_AUTO_SEARCH_BLOCK,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<ActiveAutoSearchBlockResponse> activeAutoSearchBlock(@RequestBody ActiveAutoSearchBlockRequest request){
         try {
-            blockchainNetCore.getNetCoreConfiguration().activeSynchronizer();
-            ActiveSynchronizerResponse response = new ActiveSynchronizerResponse();
-            response.setActiveSynchronizerSuccess(true);
-            return ServiceResult.createSuccessServiceResult("激活同步器成功",response);
+            blockchainNetCore.getNetCoreConfiguration().activeAutoSearchBlock();
+            ActiveAutoSearchBlockResponse response = new ActiveAutoSearchBlockResponse();
+            response.setActiveAutoSearchBlockSuccess(true);
+            return ServiceResult.createSuccessServiceResult("开启自动搜索新区块选项成功",response);
         } catch (Exception e){
-            String message = "激活同步器失败";
+            String message = "开启自动搜索新区块选项失败";
             LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
     /**
-     * 停用同步器
+     * 关闭"自动搜索新区块"选项
      */
-    @RequestMapping(value = NodeConsoleApplicationApi.DEACTIVE_SYNCHRONIZER,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<DeactiveSynchronizerResponse> deactiveSynchronizer(@RequestBody DeactiveSynchronizerRequest request){
+    @RequestMapping(value = NodeConsoleApplicationApi.DEACTIVE_AUTO_SEARCH_BLOCK,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<DeactiveAutoSearchBlockResponse> deactiveSynchronizer(@RequestBody DeactiveAutoSearchBlockRequest request){
         try {
-            blockchainNetCore.getNetCoreConfiguration().deactiveSynchronizer();
-            DeactiveSynchronizerResponse response = new DeactiveSynchronizerResponse();
-            response.setDeactiveSynchronizerSuccess(true);
-            return ServiceResult.createSuccessServiceResult("停用同步器成功",response);
+            blockchainNetCore.getNetCoreConfiguration().deactiveAutoSearchBlock();
+            DeactiveAutoSearchBlockResponse response = new DeactiveAutoSearchBlockResponse();
+            response.setDeactiveAutoSearchBlockSuccess(true);
+            return ServiceResult.createSuccessServiceResult("关闭自动搜索新区块选项成功",response);
         } catch (Exception e){
-            String message = "停用同步器失败";
+            String message = "关闭自动搜索新区块选项失败";
             LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
@@ -231,20 +231,36 @@ public class NodeConsoleApplicationController {
         }
     }
     /**
-     * 设置是否允许自动寻找区块链节点
+     * 开启"自动搜索节点"选项
      */
-    @RequestMapping(value = NodeConsoleApplicationApi.SET_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
-    public ServiceResult<SetAutoSearchNodeResponse> setAutoSearchNode(@RequestBody SetAutoSearchNodeRequest request){
+    @RequestMapping(value = NodeConsoleApplicationApi.ACTIVE_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<ActiveAutoSearchNodeResponse> activeAutoSearchNode(@RequestBody ActiveAutoSearchNodeRequest request){
         try {
-            blockchainNetCore.getNetCoreConfiguration().setAutoSearchNode(request.isAutoSearchNode());
-            SetAutoSearchNodeResponse response = new SetAutoSearchNodeResponse();
-            return ServiceResult.createSuccessServiceResult("设置是否允许自动搜索区块链节点成功",response);
+            blockchainNetCore.getNetCoreConfiguration().activeAutoSearchNode();
+            ActiveAutoSearchNodeResponse response = new ActiveAutoSearchNodeResponse();
+            return ServiceResult.createSuccessServiceResult("开启自动搜索节点选项成功",response);
         } catch (Exception e){
-            String message = "设置是否允许自动搜索区块链节点失败";
+            String message = "开启自动搜索节点选项失败";
             LogUtil.error(message,e);
             return ServiceResult.createFailServiceResult(message);
         }
     }
+    /**
+     * 关闭"自动搜索节点"选项
+     */
+    @RequestMapping(value = NodeConsoleApplicationApi.DEACTIVE_AUTO_SEARCH_NODE,method={RequestMethod.GET,RequestMethod.POST})
+    public ServiceResult<DeactiveAutoSearchNodeResponse> deactiveAutoSearchNode(@RequestBody DeactiveAutoSearchNodeRequest request){
+        try {
+            blockchainNetCore.getNetCoreConfiguration().deactiveAutoSearchNode();
+            DeactiveAutoSearchNodeResponse response = new DeactiveAutoSearchNodeResponse();
+            return ServiceResult.createSuccessServiceResult("关闭自动搜索新区块选项成功",response);
+        } catch (Exception e){
+            String message = "关闭自动搜索新区块选项失败";
+            LogUtil.error(message,e);
+            return ServiceResult.createFailServiceResult(message);
+        }
+    }
+
 
 
     /**
