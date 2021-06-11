@@ -11,6 +11,9 @@ import java.util.Collections;
  */
 public class StringUtil {
 
+    public static final String BLANKSPACE = " ";
+
+
     public static boolean isEquals(String string,String anotherString){
         if(string == null){
             throw new RuntimeException("parameter not support null value.");
@@ -31,5 +34,12 @@ public class StringUtil {
             return rawValue;
         }
         return String.join("", Collections.nCopies(targetLength-rawValue.length(), paddingValue)) + rawValue;
+    }
+
+    public static String concat(String value1,String value2) {
+        return value1 + value2;
+    }
+    public static String concat3(String value1,String value2,String value3) {
+        return value1 + value2 + value3;
     }
 }

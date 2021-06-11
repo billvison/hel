@@ -9,6 +9,7 @@ import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.InputScriptDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.OutputScriptDto;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +39,7 @@ public class ScriptTool {
             }else if(ByteUtil.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
                 String operationData = script.get(++i);
                 byte[] bytesOperationData = HexUtil.hexStringToBytes(operationData);
-                bytesScript = ByteUtil.concat(bytesScript, ByteUtil.concatLength(bytesOperationCode), ByteUtil.concatLength(bytesOperationData));
+                bytesScript = ByteUtil.concat3(bytesScript, ByteUtil.concatLength(bytesOperationCode), ByteUtil.concatLength(bytesOperationData));
             }else {
                 throw new RuntimeException("不能识别的指令");
             }
@@ -79,8 +80,8 @@ public class ScriptTool {
         int start = 0;
         List<String> script = new ArrayList<>();
         while (start<bytesScript.length){
-            long bytesOperationCodeLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesScript,start,start+8));
-            start += 8;
+            long bytesOperationCodeLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesScript,start,start + ByteUtil.BYTE8_BYTE_COUNT));
+            start += ByteUtil.BYTE8_BYTE_COUNT;
             byte[] bytesOperationCode = Arrays.copyOfRange(bytesScript,start, start+(int) bytesOperationCodeLength);
             start += bytesOperationCodeLength;
             if(ByteUtil.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode) ||
@@ -93,8 +94,8 @@ public class ScriptTool {
                 String stringOperationCode = HexUtil.bytesToHexString(bytesOperationCode);
                 script.add(stringOperationCode);
 
-                long bytesOperationDataLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesScript,start,start+8));
-                start += 8;
+                long bytesOperationDataLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesScript,start,start + ByteUtil.BYTE8_BYTE_COUNT));
+                start += ByteUtil.BYTE8_BYTE_COUNT;
                 byte[] bytesOperationData = Arrays.copyOfRange(bytesScript,start, start+(int) bytesOperationDataLength);
                 start += bytesOperationDataLength;
                 String stringOperationData = HexUtil.bytesToHexString(bytesOperationData);
@@ -114,27 +115,27 @@ public class ScriptTool {
      * 可视、可阅读的脚本，区块链浏览器使用
      */
     public static String toString(List<String> script) {
-        StringBuilder stringScript = new StringBuilder();
+        String stringScript = "";
         for(int i=0;i<script.size();i++){
             String operationCode = script.get(i);
             byte[] bytesOperationCode = HexUtil.hexStringToBytes(operationCode);
             if(ByteUtil.equals(OperationCodeEnum.OP_DUP.getCode(),bytesOperationCode)){
-                stringScript.append(OperationCodeEnum.OP_DUP.getName()).append(" ");
+                stringScript = StringUtil.concat3(stringScript,OperationCodeEnum.OP_DUP.getName(),StringUtil.BLANKSPACE);
             }else if(ByteUtil.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode)){
-                stringScript.append(OperationCodeEnum.OP_HASH160.getName()).append(" ");
+                stringScript = StringUtil.concat3(stringScript,OperationCodeEnum.OP_HASH160.getName(),StringUtil.BLANKSPACE);
             }else if(ByteUtil.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode)){
-                stringScript.append(OperationCodeEnum.OP_EQUALVERIFY.getName()).append(" ");
+                stringScript = StringUtil.concat3(stringScript,OperationCodeEnum.OP_EQUALVERIFY.getName(),StringUtil.BLANKSPACE);
             }else if(ByteUtil.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
-                stringScript.append(OperationCodeEnum.OP_CHECKSIG.getName()).append(" ");
+                stringScript = StringUtil.concat3(stringScript,OperationCodeEnum.OP_CHECKSIG.getName(),StringUtil.BLANKSPACE);
             }else if(ByteUtil.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
                 String operationData = script.get(++i);
-                stringScript.append(OperationCodeEnum.OP_PUSHDATA.getName()).append(" ");
-                stringScript.append(operationData).append(" ");
+                stringScript = StringUtil.concat3(stringScript,OperationCodeEnum.OP_PUSHDATA.getName(),StringUtil.BLANKSPACE);
+                stringScript = StringUtil.concat3(stringScript,operationData,StringUtil.BLANKSPACE);
             }else {
                 throw new RuntimeException("不能识别的指令");
             }
         }
-        return stringScript.toString();
+        return stringScript;
     }
 
     /**

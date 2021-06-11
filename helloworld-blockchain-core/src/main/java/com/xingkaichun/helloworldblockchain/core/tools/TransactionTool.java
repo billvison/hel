@@ -210,15 +210,15 @@ public class TransactionTool {
     public static TransactionDto transactionDto(byte[] bytesTransaction, boolean omitInputScript) {
         TransactionDto transactionDto = new TransactionDto();
         int start = 0;
-        long bytesTransactionInputDtosLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransaction,start,start+8));
-        start += 8;
+        long bytesTransactionInputDtosLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransaction,start,start + ByteUtil.BYTE8_BYTE_COUNT));
+        start += ByteUtil.BYTE8_BYTE_COUNT;
         byte[] bytesTransactionInputDtos = Arrays.copyOfRange(bytesTransaction,start, start+(int) bytesTransactionInputDtosLength);
         start += bytesTransactionInputDtosLength;
         List<TransactionInputDto> transactionInputDtos = transactionInputDtos(bytesTransactionInputDtos,omitInputScript);
         transactionDto.setInputs(transactionInputDtos);
 
-        long bytesTransactionOutputsLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransaction,start,start+8));
-        start += 8;
+        long bytesTransactionOutputsLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransaction,start,start + ByteUtil.BYTE8_BYTE_COUNT));
+        start += ByteUtil.BYTE8_BYTE_COUNT;
         byte[] bytesTransactionOutputs = Arrays.copyOfRange(bytesTransaction,start, start+(int) bytesTransactionOutputsLength);
         start += bytesTransactionOutputsLength;
         List<TransactionOutputDto> transactionOutputDtos = transactionOutputDtos(bytesTransactionOutputs);
@@ -232,8 +232,8 @@ public class TransactionTool {
         int start = 0;
         List<TransactionOutputDto> transactionOutputDtos = new ArrayList<>();
         while (start < bytesTransactionOutputs.length){
-            long bytesTransactionOutputDtoLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionOutputs,start,start+8));
-            start += 8;
+            long bytesTransactionOutputDtoLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionOutputs,start,start + ByteUtil.BYTE8_BYTE_COUNT));
+            start += ByteUtil.BYTE8_BYTE_COUNT;
             byte[] bytesTransactionOutput = Arrays.copyOfRange(bytesTransactionOutputs,start, start+(int) bytesTransactionOutputDtoLength);
             start += bytesTransactionOutputDtoLength;
             TransactionOutputDto transactionOutputDto = transactionOutputDto(bytesTransactionOutput);
@@ -246,14 +246,14 @@ public class TransactionTool {
     }
     private static TransactionOutputDto transactionOutputDto(byte[] bytesTransactionOutput) {
         int start = 0;
-        long bytesOutputScriptLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionOutput,start,start+8));
-        start += 8;
+        long bytesOutputScriptLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionOutput,start,start + ByteUtil.BYTE8_BYTE_COUNT));
+        start += ByteUtil.BYTE8_BYTE_COUNT;
         byte[] bytesOutputScript = Arrays.copyOfRange(bytesTransactionOutput,start, start+(int) bytesOutputScriptLength);
         start += bytesOutputScriptLength;
         OutputScriptDto outputScriptDto = ScriptTool.outputScriptDto(bytesOutputScript);
 
-        long bytesValueLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionOutput,start,start+8));
-        start += 8;
+        long bytesValueLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionOutput,start,start + ByteUtil.BYTE8_BYTE_COUNT));
+        start += ByteUtil.BYTE8_BYTE_COUNT;
         byte[] bytesValue = Arrays.copyOfRange(bytesTransactionOutput,start, start+(int) bytesValueLength);
         start += bytesValueLength;
 
@@ -269,8 +269,8 @@ public class TransactionTool {
         int start = 0;
         List<TransactionInputDto> transactionInputDtos = new ArrayList<>();
         while (start < bytesTransactionInputDtos.length){
-            long bytesTransactionInputDtoLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionInputDtos,start,start+8));
-            start += 8;
+            long bytesTransactionInputDtoLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionInputDtos,start,start + ByteUtil.BYTE8_BYTE_COUNT));
+            start += ByteUtil.BYTE8_BYTE_COUNT;
             byte[] bytesTransactionInput = Arrays.copyOfRange(bytesTransactionInputDtos,start, start+(int) bytesTransactionInputDtoLength);
             start += bytesTransactionInputDtoLength;
             TransactionInputDto transactionInputDto = transactionInputDto(bytesTransactionInput,omitInputScript);
@@ -283,20 +283,20 @@ public class TransactionTool {
     }
     private static TransactionInputDto transactionInputDto(byte[] bytesTransactionInputDto, boolean omitInputScript) {
         int start = 0;
-        long bytesTransactionHashLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionInputDto,start,start+8));
-        start += 8;
+        long bytesTransactionHashLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionInputDto,start,start + ByteUtil.BYTE8_BYTE_COUNT));
+        start += ByteUtil.BYTE8_BYTE_COUNT;
         byte[] bytesTransactionHash = Arrays.copyOfRange(bytesTransactionInputDto,start, start+(int) bytesTransactionHashLength);
         start += bytesTransactionHashLength;
 
-        long bytesTransactionOutputIndexLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionInputDto,start,start+8));
-        start += 8;
+        long bytesTransactionOutputIndexLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionInputDto,start,start + ByteUtil.BYTE8_BYTE_COUNT));
+        start += ByteUtil.BYTE8_BYTE_COUNT;
         byte[] bytesTransactionOutputIndex = Arrays.copyOfRange(bytesTransactionInputDto,start, start+(int) bytesTransactionOutputIndexLength);
         start += bytesTransactionOutputIndexLength;
 
         TransactionInputDto transactionInputDto = new TransactionInputDto();
         if(!omitInputScript){
-            long bytesOutputScriptLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionInputDto,start,start+8));
-            start += 8;
+            long bytesOutputScriptLength = ByteUtil.byte8ToLong8(Arrays.copyOfRange(bytesTransactionInputDto,start,start + ByteUtil.BYTE8_BYTE_COUNT));
+            start += ByteUtil.BYTE8_BYTE_COUNT;
             byte[] bytesOutputScript = Arrays.copyOfRange(bytesTransactionInputDto,start, start+(int) bytesOutputScriptLength);
             start += bytesOutputScriptLength;
             InputScriptDto inputScriptDto = ScriptTool.inputScriptDto(bytesOutputScript);

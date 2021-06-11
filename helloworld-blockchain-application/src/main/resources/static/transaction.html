@@ -109,7 +109,7 @@
                 $('.transactionOutputValues').text(transactionOutputValues);
                 $('.transactionOutputCount').text(transactionOutputCount);
 
-                let item = data.result.transactions;
+                let item = data.result.transaction;
                 $('#transaction-list-container').append(transactionHtml(item))
 
                 inputScripts.forEach(item => {

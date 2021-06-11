@@ -14,6 +14,8 @@ import java.util.List;
  */
 public class ByteUtil {
 
+    public static final int BYTE8_BYTE_COUNT = 8;
+
     public static byte[] stringToUtf8Bytes(String stringValue) {
         return stringValue.getBytes(StandardCharsets.UTF_8);
     }
@@ -39,8 +41,14 @@ public class ByteUtil {
     /**
      * 拼接数组。
      */
-    public static byte[] concat(byte[]... arrays) {
-        return Bytes.concat(arrays);
+    public static byte[] concat(byte[] byteArray1,byte[] byteArray2) {
+        return Bytes.concat(byteArray1,byteArray2);
+    }
+    public static byte[] concat3(byte[] byteArray1,byte[] byteArray2,byte[] byteArray3) {
+        return Bytes.concat(byteArray1,byteArray2,byteArray3);
+    }
+    public static byte[] concat4(byte[] byteArray1,byte[] byteArray2,byte[] byteArray3,byte[] byteArray4) {
+        return Bytes.concat(byteArray1,byteArray2,byteArray3,byteArray4);
     }
 
     /**

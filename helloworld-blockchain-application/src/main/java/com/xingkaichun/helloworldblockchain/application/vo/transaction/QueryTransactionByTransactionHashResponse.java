@@ -6,22 +6,19 @@ package com.xingkaichun.helloworldblockchain.application.vo.transaction;
  */
 public class QueryTransactionByTransactionHashResponse {
 
-    private TransactionVo transactions;
+    private TransactionVo transaction;
 
 
 
 
     //region get set
-
-    public TransactionVo getTransactions() {
-        return transactions;
+    public TransactionVo getTransaction() {
+        return transaction;
     }
 
-    public void setTransactions(TransactionVo transactions) {
-        this.transactions = transactions;
+    public void setTransaction(TransactionVo transaction) {
+        this.transaction = transaction;
     }
-
-
     //endregion
 
 }

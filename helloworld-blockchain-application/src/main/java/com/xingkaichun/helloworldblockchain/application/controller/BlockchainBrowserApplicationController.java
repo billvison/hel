@@ -60,7 +60,7 @@ public class BlockchainBrowserApplicationController {
             }
 
             QueryTransactionByTransactionHashResponse response = new QueryTransactionByTransactionHashResponse();
-            response.setTransactions(transactionVo);
+            response.setTransaction(transactionVo);
             return ServiceResult.createSuccessServiceResult("根据交易哈希查询交易成功",response);
         } catch (Exception e){
             String message = "根据交易哈希查询交易失败";

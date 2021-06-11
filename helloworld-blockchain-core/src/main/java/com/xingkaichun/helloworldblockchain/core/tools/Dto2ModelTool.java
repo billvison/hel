@@ -39,7 +39,7 @@ public class Dto2ModelTool {
 
         block.setHash(BlockTool.calculateBlockHash(block));
 
-        /**
+        /*
          * 预先校验区块工作量共识。伪造工作量共识是一件十分耗费资源的事情，因此预先校验工作量共识可以抵消绝大部分的攻击。
          * 也可以选择跳过此处预检，后续业务有完整的校验检测。
          * 此处预检，只是想预先抵消绝大部分的攻击。
