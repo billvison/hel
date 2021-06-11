@@ -36,7 +36,7 @@ public class StackBasedVirtualMachine extends VirtualMachine {
                     throw new RuntimeException("指令运行异常");
                 }
                 String publicKey = stack.pop();
-                String publicKeyHash = AccountUtil.publicKeyHashFromStringAddress(publicKey);
+                String publicKeyHash = AccountUtil.publicKeyHashFromStringPublicKey(publicKey);
                 stack.push(publicKeyHash);
             }else if(ByteUtil.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode)){
                 if(stack.size()<2){
