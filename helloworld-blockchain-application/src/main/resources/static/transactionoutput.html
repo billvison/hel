@@ -51,10 +51,8 @@
                 const data = await $ajax({
                     url : baseUrl() + "/Api/BlockchainBrowserApplication/QueryTransactionOutputByTransactionOutputId",
                     data: `{
-                        "transactionOutputId":{
-                            "transactionHash":"${urlParameters.get("transactionHash")}",
-                            "transactionOutputIndex":${urlParameters.get("transactionOutputIndex")}
-                        }
+                        "transactionHash":"${urlParameters.get("transactionHash")}",
+                        "transactionOutputIndex":${urlParameters.get("transactionOutputIndex")}
                     }`
                 });
                 console.log(data);

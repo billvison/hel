@@ -18,7 +18,7 @@ public class TransactionToolTest {
     {
         TransactionDto transactionDto = new TransactionDto();
 
-        TransactionDto transactionDto2 = TransactionTool.transactionDto(TransactionTool.bytesTransaction(transactionDto,true),true);
+        TransactionDto transactionDto2 = TransactionDtoTool.transactionDto(TransactionDtoTool.bytesTransaction(transactionDto,true),true);
         Assert.assertEquals(JsonUtil.toJson(transactionDto),JsonUtil.toJson(transactionDto2));
 
         List<TransactionInputDto> transactionInputDtoList = new ArrayList<>();
@@ -28,7 +28,7 @@ public class TransactionToolTest {
         transactionInputDtoList.add(transactionInputDto);
         transactionDto.setInputs(transactionInputDtoList);
 
-        transactionDto2 = TransactionTool.transactionDto(TransactionTool.bytesTransaction(transactionDto,true),true);
+        transactionDto2 = TransactionDtoTool.transactionDto(TransactionDtoTool.bytesTransaction(transactionDto,true),true);
         Assert.assertEquals(JsonUtil.toJson(transactionDto),JsonUtil.toJson(transactionDto2));
 
         List<TransactionOutputDto> transactionOutputDtoList = new ArrayList<>();
@@ -45,7 +45,7 @@ public class TransactionToolTest {
         transactionOutputDtoList.add(transactionOutputDto);
         transactionDto.setOutputs(transactionOutputDtoList);
 
-        transactionDto2 = TransactionTool.transactionDto(TransactionTool.bytesTransaction(transactionDto,true),true);
+        transactionDto2 = TransactionDtoTool.transactionDto(TransactionDtoTool.bytesTransaction(transactionDto,true),true);
         Assert.assertEquals(JsonUtil.toJson(transactionDto),JsonUtil.toJson(transactionDto2));
 
         TransactionInputDto transactionInputDto2 = new TransactionInputDto();
@@ -53,7 +53,7 @@ public class TransactionToolTest {
         transactionInputDto2.setTransactionOutputIndex(0);
         transactionInputDtoList.add(transactionInputDto2);
 
-        transactionDto2 = TransactionTool.transactionDto(TransactionTool.bytesTransaction(transactionDto,true),true);
+        transactionDto2 = TransactionDtoTool.transactionDto(TransactionDtoTool.bytesTransaction(transactionDto,true),true);
         Assert.assertEquals(JsonUtil.toJson(transactionDto),JsonUtil.toJson(transactionDto2));
 
         TransactionOutputDto transactionOutputDto2 = new TransactionOutputDto();
@@ -68,7 +68,7 @@ public class TransactionToolTest {
         transactionOutputDto2.setValue(20);
         transactionOutputDtoList.add(transactionOutputDto2);
 
-        transactionDto2 = TransactionTool.transactionDto(TransactionTool.bytesTransaction(transactionDto,true),true);
+        transactionDto2 = TransactionDtoTool.transactionDto(TransactionDtoTool.bytesTransaction(transactionDto,true),true);
         Assert.assertEquals(JsonUtil.toJson(transactionDto),JsonUtil.toJson(transactionDto2));
     }
 
@@ -77,7 +77,7 @@ public class TransactionToolTest {
     {
         TransactionDto transactionDto = new TransactionDto();
 
-        TransactionDto transactionDto2 = TransactionTool.transactionDto(TransactionTool.bytesTransaction(transactionDto,false),false);
+        TransactionDto transactionDto2 = TransactionDtoTool.transactionDto(TransactionDtoTool.bytesTransaction(transactionDto,false),false);
         Assert.assertEquals(JsonUtil.toJson(transactionDto),JsonUtil.toJson(transactionDto2));
 
         List<TransactionInputDto> transactionInputDtoList = new ArrayList<>();
@@ -91,7 +91,7 @@ public class TransactionToolTest {
         transactionInputDtoList.add(transactionInputDto);
         transactionDto.setInputs(transactionInputDtoList);
 
-        transactionDto2 = TransactionTool.transactionDto(TransactionTool.bytesTransaction(transactionDto,false),false);
+        transactionDto2 = TransactionDtoTool.transactionDto(TransactionDtoTool.bytesTransaction(transactionDto,false),false);
         Assert.assertEquals(JsonUtil.toJson(transactionDto),JsonUtil.toJson(transactionDto2));
 
         List<TransactionOutputDto> transactionOutputDtoList = new ArrayList<>();
@@ -108,7 +108,7 @@ public class TransactionToolTest {
         transactionOutputDtoList.add(transactionOutputDto);
         transactionDto.setOutputs(transactionOutputDtoList);
 
-        transactionDto2 = TransactionTool.transactionDto(TransactionTool.bytesTransaction(transactionDto,false),false);
+        transactionDto2 = TransactionDtoTool.transactionDto(TransactionDtoTool.bytesTransaction(transactionDto,false),false);
         Assert.assertEquals(JsonUtil.toJson(transactionDto),JsonUtil.toJson(transactionDto2));
 
         TransactionInputDto transactionInputDto2 = new TransactionInputDto();
@@ -120,7 +120,7 @@ public class TransactionToolTest {
         transactionInputDto2.setInputScript(inputScriptDto2);
         transactionInputDtoList.add(transactionInputDto2);
 
-        transactionDto2 = TransactionTool.transactionDto(TransactionTool.bytesTransaction(transactionDto,false),false);
+        transactionDto2 = TransactionDtoTool.transactionDto(TransactionDtoTool.bytesTransaction(transactionDto,false),false);
         Assert.assertEquals(JsonUtil.toJson(transactionDto),JsonUtil.toJson(transactionDto2));
 
         TransactionOutputDto transactionOutputDto2 = new TransactionOutputDto();
@@ -135,7 +135,7 @@ public class TransactionToolTest {
         transactionOutputDto2.setValue(20);
         transactionOutputDtoList.add(transactionOutputDto2);
 
-        transactionDto2 = TransactionTool.transactionDto(TransactionTool.bytesTransaction(transactionDto,false),false);
+        transactionDto2 = TransactionDtoTool.transactionDto(TransactionDtoTool.bytesTransaction(transactionDto,false),false);
         Assert.assertEquals(JsonUtil.toJson(transactionDto),JsonUtil.toJson(transactionDto2));
     }
 }

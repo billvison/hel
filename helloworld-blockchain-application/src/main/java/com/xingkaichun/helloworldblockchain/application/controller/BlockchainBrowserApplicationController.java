@@ -10,10 +10,9 @@ import com.xingkaichun.helloworldblockchain.application.vo.node.QueryBlockchainH
 import com.xingkaichun.helloworldblockchain.application.vo.transaction.*;
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.SizeTool;
-import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
+import com.xingkaichun.helloworldblockchain.core.tools.TransactionDtoTool;
 import com.xingkaichun.helloworldblockchain.netcore.BlockchainNetCore;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
@@ -113,8 +112,7 @@ public class BlockchainBrowserApplicationController {
     @RequestMapping(value = BlockchainBrowserApplicationApi.QUERY_TRANSACTION_OUTPUT_BY_TRANSACTION_OUTPUT_ID,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryTransactionOutputByTransactionOutputIdResponse> queryTransactionOutputByTransactionOutputId(@RequestBody QueryTransactionOutputByTransactionOutputIdRequest request){
         try {
-            TransactionOutputId transactionOutputId = request.getTransactionOutputId();
-            TransactionOutputDetailVo transactionOutputDetailVo = blockchainBrowserApplicationService.queryTransactionOutputByTransactionOutputId(transactionOutputId);
+            TransactionOutputDetailVo transactionOutputDetailVo = blockchainBrowserApplicationService.queryTransactionOutputByTransactionOutputId(request.getTransactionHash(),request.getTransactionOutputIndex());
             QueryTransactionOutputByTransactionOutputIdResponse response = new QueryTransactionOutputByTransactionOutputIdResponse();
             response.setTransactionOutputDetail(transactionOutputDetailVo);
             return ServiceResult.createSuccessServiceResult("[查询交易输出]成功",response);
@@ -176,8 +174,10 @@ public class BlockchainBrowserApplicationController {
 
             List<UnconfirmedTransactionVo> transactionDtoListResp = new ArrayList<>();
             for(TransactionDto transactionDto : transactionDtoList){
-                UnconfirmedTransactionVo unconfirmedTransactionVo = blockchainBrowserApplicationService.queryUnconfirmedTransactionByTransactionHash(TransactionTool.calculateTransactionHash(transactionDto));
-                transactionDtoListResp.add(unconfirmedTransactionVo);
+                UnconfirmedTransactionVo unconfirmedTransactionVo = blockchainBrowserApplicationService.queryUnconfirmedTransactionByTransactionHash(TransactionDtoTool.calculateTransactionHash(transactionDto));
+                if(unconfirmedTransactionVo != null){
+                    transactionDtoListResp.add(unconfirmedTransactionVo);
+                }
             }
             QueryUnconfirmedTransactionsResponse response = new QueryUnconfirmedTransactionsResponse();
             response.setTransactions(transactionDtoListResp);

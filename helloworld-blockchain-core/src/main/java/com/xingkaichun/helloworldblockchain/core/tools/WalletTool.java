@@ -149,7 +149,7 @@ public class WalletTool {
             String privateKey = inputPrivateKeyList.get(i);
             String publicKey = AccountUtil.accountFromStringPrivateKey(privateKey).getPublicKey();
             TransactionInputDto transactionInputDto = transactionInputDtoList.get(i);
-            String signature = TransactionTool.signature(privateKey,transactionDto);
+            String signature = TransactionDtoTool.signature(privateKey,transactionDto);
             InputScript inputScript = ScriptTool.createPayToPublicKeyHashInputScript(signature, publicKey);
             transactionInputDto.setInputScript(Model2DtoTool.inputScript2InputScriptDto(inputScript));
         }
@@ -158,7 +158,7 @@ public class WalletTool {
         BuildTransactionResponse buildTransactionResponse = new BuildTransactionResponse();
         buildTransactionResponse.setBuildTransactionSuccess(true);
         buildTransactionResponse.setMessage("构建交易成功");
-        buildTransactionResponse.setTransactionHash(TransactionTool.calculateTransactionHash(transactionDto));
+        buildTransactionResponse.setTransactionHash(TransactionDtoTool.calculateTransactionHash(transactionDto));
         buildTransactionResponse.setFee(fee);
         buildTransactionResponse.setPayerChangeTransactionOutput(payerChangeTransactionOutput);
         buildTransactionResponse.setTransactionInputs(inputs);

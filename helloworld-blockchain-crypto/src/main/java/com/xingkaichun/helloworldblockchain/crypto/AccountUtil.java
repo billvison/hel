@@ -1,6 +1,7 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import org.bitcoinj.core.Base58;
 import org.bitcoinj.core.ECKey;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -24,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Collections;
 
 /**
  * 账户工具类
@@ -326,15 +326,11 @@ public class AccountUtil {
 
     /**
      * 格式化私钥
-     * 前置填零，返回[长度为64位][十六进制字符串形式的]私钥
+     * 前置填零，返回[长度为64位][十六进制字符串][形式的]私钥
      */
     private static String formatPrivateKey(String privateKey) {
-        //私钥长度是256bit，64位十六进制的字符串数，如果传入的私钥长度不够，这里进行前置补充零操作。
-        final int length = 64;
-        if(privateKey.length()<length){
-            privateKey = (String.join("", Collections.nCopies(length-privateKey.length(), "0")))+privateKey;
-        }
-        return privateKey;
+        //私钥长度是256bit，64位十六进制的字符串数，如果私钥的长度不够，这里进行前置补零进行格式化。
+        return StringUtil.prefixPadding(privateKey,64,"0");
     }
 
     /**

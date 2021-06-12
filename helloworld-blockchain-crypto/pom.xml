@@ -23,6 +23,12 @@
 
 
         <dependency>
+            <groupId>com.xingkaichun.helloworldblockchain</groupId>
+            <artifactId>helloworld-blockchain-util</artifactId>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
         </dependency>

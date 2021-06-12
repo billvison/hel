@@ -1,7 +1,7 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
-import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
+import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
 /**
  * 区块链数据库主键工具类
@@ -58,6 +58,8 @@ public class BlockchainDatabaseKeyTool {
 
     //截止标识
     private static final String END_FLAG = "#" ;
+    //竖线分隔符
+    private static final String VERTICAL_LINE_FLAG = "|" ;
 
 
 
@@ -76,7 +78,7 @@ public class BlockchainDatabaseKeyTool {
         return ByteUtil.stringToUtf8Bytes(stringKey);
     }
     public static byte[] buildBlockHeightToBlockKey(long blockHeight) {
-        String stringKey = BLOCK_HEIGHT_TO_BLOCK_PREFIX_FLAG + blockHeight + END_FLAG;
+        String stringKey = BLOCK_HEIGHT_TO_BLOCK_PREFIX_FLAG + ByteUtil.long8ToHexString8(blockHeight) + END_FLAG;
         return ByteUtil.stringToUtf8Bytes(stringKey);
     }
     public static byte[] buildBlockHashToBlockHeightKey(String blockHash) {
@@ -88,23 +90,27 @@ public class BlockchainDatabaseKeyTool {
         return ByteUtil.stringToUtf8Bytes(stringKey);
     }
     public static byte[] buildTransactionOutputHeightToTransactionOutputKey(long transactionOutputHeight) {
-        String stringKey = TRANSACTION_OUTPUT_HEIGHT_TO_TRANSACTION_OUTPUT_PREFIX_FLAG + transactionOutputHeight + END_FLAG;
+        String stringKey = TRANSACTION_OUTPUT_HEIGHT_TO_TRANSACTION_OUTPUT_PREFIX_FLAG + ByteUtil.long8ToHexString8(transactionOutputHeight) + END_FLAG;
         return ByteUtil.stringToUtf8Bytes(stringKey);
     }
-    public static byte[] buildTransactionOutputIdToTransactionOutputHeightKey(TransactionOutputId transactionOutputId) {
-        String stringKey = TRANSACTION_OUTPUT_ID_TO_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId.getTransactionOutputId() + END_FLAG;
+    public static byte[] buildTransactionOutputIdToTransactionOutputHeightKey(String transactionHash,long transactionOutputIndex) {
+        String transactionOutputId = buildTransactionOutputId(transactionHash, transactionOutputIndex);
+        String stringKey = TRANSACTION_OUTPUT_ID_TO_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG;
         return ByteUtil.stringToUtf8Bytes(stringKey);
     }
-    public static byte[] buildTransactionOutputIdToUnspentTransactionOutputHeightKey(TransactionOutputId transactionOutputId) {
-        String stringKey = TRANSACTION_OUTPUT_ID_TO_UNSPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId.getTransactionOutputId() + END_FLAG;
+    public static byte[] buildTransactionOutputIdToUnspentTransactionOutputHeightKey(String transactionHash,long transactionOutputIndex) {
+        String transactionOutputId = buildTransactionOutputId(transactionHash, transactionOutputIndex);
+        String stringKey = TRANSACTION_OUTPUT_ID_TO_UNSPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG;
         return ByteUtil.stringToUtf8Bytes(stringKey);
     }
-    public static byte[] buildTransactionOutputIdToSourceTransactionHeightKey(TransactionOutputId transactionOutputId) {
-        String stringKey = TRANSACTION_OUTPUT_ID_TO_SOURCE_TRANSACTION_HEIGHT_PREFIX_FLAG + transactionOutputId.getTransactionOutputId() + END_FLAG;
+    public static byte[] buildTransactionOutputIdToSourceTransactionHeightKey(String transactionHash,long transactionOutputIndex) {
+        String transactionOutputId = buildTransactionOutputId(transactionHash, transactionOutputIndex);
+        String stringKey = TRANSACTION_OUTPUT_ID_TO_SOURCE_TRANSACTION_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG;
         return ByteUtil.stringToUtf8Bytes(stringKey);
     }
-    public static byte[] buildTransactionOutputIdToDestinationTransactionHeightKey(TransactionOutputId transactionOutputId) {
-        String stringKey = TRANSACTION_OUTPUT_ID_TO_DESTINATION_TRANSACTION_HEIGHT_PREFIX_FLAG + transactionOutputId.getTransactionOutputId() + END_FLAG;
+    public static byte[] buildTransactionOutputIdToDestinationTransactionHeightKey(String transactionHash,long transactionOutputIndex) {
+        String transactionOutputId = buildTransactionOutputId(transactionHash, transactionOutputIndex);
+        String stringKey = TRANSACTION_OUTPUT_ID_TO_DESTINATION_TRANSACTION_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG;
         return ByteUtil.stringToUtf8Bytes(stringKey);
     }
     public static byte[] buildAddressToTransactionOutputHeightKey(String address) {
@@ -132,8 +138,14 @@ public class BlockchainDatabaseKeyTool {
         return ByteUtil.stringToUtf8Bytes(stringKey);
     }
 
-    public static byte[] buildTransactionOutputIdToSpentTransactionOutputHeightKey(TransactionOutputId transactionOutputId) {
-        String stringKey = TRANSACTION_OUTPUT_ID_TO_SPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId.getTransactionOutputId() + END_FLAG;
+    public static byte[] buildTransactionOutputIdToSpentTransactionOutputHeightKey(String transactionHash,long transactionOutputIndex) {
+        String transactionOutputId = buildTransactionOutputId(transactionHash, transactionOutputIndex);
+        String stringKey = TRANSACTION_OUTPUT_ID_TO_SPENT_TRANSACTION_OUTPUT_HEIGHT_PREFIX_FLAG + transactionOutputId + END_FLAG;
         return ByteUtil.stringToUtf8Bytes(stringKey);
+    }
+
+    public static String buildTransactionOutputId(String transactionHash,long transactionOutputIndex) {
+        String transactionOutputId = StringUtil.concat3(transactionHash, VERTICAL_LINE_FLAG, ByteUtil.long8ToHexString8(transactionOutputIndex));
+        return transactionOutputId;
     }
 }

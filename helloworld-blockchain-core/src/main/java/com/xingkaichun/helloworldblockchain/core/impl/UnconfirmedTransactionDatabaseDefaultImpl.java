@@ -3,7 +3,7 @@ package com.xingkaichun.helloworldblockchain.core.impl;
 import com.xingkaichun.helloworldblockchain.core.CoreConfiguration;
 import com.xingkaichun.helloworldblockchain.core.UnconfirmedTransactionDatabase;
 import com.xingkaichun.helloworldblockchain.core.tools.EncodeDecodeTool;
-import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
+import com.xingkaichun.helloworldblockchain.core.tools.TransactionDtoTool;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
@@ -28,7 +28,7 @@ public class UnconfirmedTransactionDatabaseDefaultImpl extends UnconfirmedTransa
 
     @Override
     public void insertTransaction(TransactionDto transactionDto) {
-        String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
+        String transactionHash = TransactionDtoTool.calculateTransactionHash(transactionDto);
         KvDbUtil.put(getUnconfirmedTransactionDatabasePath(), getKey(transactionHash), EncodeDecodeTool.encodeTransactionDto(transactionDto));
     }
 

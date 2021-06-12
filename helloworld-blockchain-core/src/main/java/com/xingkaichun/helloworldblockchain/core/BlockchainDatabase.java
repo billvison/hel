@@ -3,7 +3,6 @@ package com.xingkaichun.helloworldblockchain.core;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
 
 
 /**
@@ -107,11 +106,11 @@ public abstract class BlockchainDatabase {
     /**
      * 查询来源交易：查询交易输出产生于的那笔交易
      */
-    public abstract Transaction querySourceTransactionByTransactionOutputId(TransactionOutputId transactionOutputId) ;
+    public abstract Transaction querySourceTransactionByTransactionOutputId(String transactionHash,long transactionOutputIndex) ;
     /**
      * 查询去向交易：查询使用交易输出的那笔交易
      */
-    public abstract Transaction queryDestinationTransactionByTransactionOutputId(TransactionOutputId transactionOutputId) ;
+    public abstract Transaction queryDestinationTransactionByTransactionOutputId(String transactionHash,long transactionOutputIndex) ;
     //endregion
 
 
@@ -124,15 +123,15 @@ public abstract class BlockchainDatabase {
     /**
      * 根据 交易输出ID 查找 交易输出
      */
-    public abstract TransactionOutput queryTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId) ;
+    public abstract TransactionOutput queryTransactionOutputByTransactionOutputId(String transactionHash,long transactionOutputIndex) ;
     /**
      * 根据 交易输出ID 查找 未花费交易输出
      */
-    public abstract TransactionOutput queryUnspentTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId) ;
+    public abstract TransactionOutput queryUnspentTransactionOutputByTransactionOutputId(String transactionHash,long transactionOutputIndex) ;
     /**
      * 根据 交易输出ID 查找 已花费交易输出
      */
-    public abstract TransactionOutput querySpentTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId) ;
+    public abstract TransactionOutput querySpentTransactionOutputByTransactionOutputId(String transactionHash,long transactionOutputIndex) ;
     //endregion
 
 

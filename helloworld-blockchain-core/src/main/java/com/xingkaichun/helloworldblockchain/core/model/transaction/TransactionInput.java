@@ -15,7 +15,7 @@ public class TransactionInput implements Serializable {
      * 交易的输入是一笔交易的输出
      * 在此笔交易(此交易输入所在的交易)发生之前，交易的输入是一个未花费交易输出。
      */
-    private UnspentTransactionOutput unspentTransactionOutput;
+    private TransactionOutput unspentTransactionOutput;
     /**
      * [输入脚本]
      * [输入脚本]用于解锁交易输出的[输出脚本]。解锁成功，则证明了(持有[输入脚本]的)用户拥有([输出脚本]所在的)交易输出的所有权，
@@ -40,11 +40,11 @@ public class TransactionInput implements Serializable {
     //region get set
 
 
-    public UnspentTransactionOutput getUnspentTransactionOutput() {
+    public TransactionOutput getUnspentTransactionOutput() {
         return unspentTransactionOutput;
     }
 
-    public void setUnspentTransactionOutput(UnspentTransactionOutput unspentTransactionOutput) {
+    public void setUnspentTransactionOutput(TransactionOutput unspentTransactionOutput) {
         this.unspentTransactionOutput = unspentTransactionOutput;
     }
 

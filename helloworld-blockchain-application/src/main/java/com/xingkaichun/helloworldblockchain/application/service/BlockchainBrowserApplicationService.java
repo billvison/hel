@@ -4,7 +4,6 @@ import com.xingkaichun.helloworldblockchain.application.vo.block.BlockVo;
 import com.xingkaichun.helloworldblockchain.application.vo.transaction.UnconfirmedTransactionVo;
 import com.xingkaichun.helloworldblockchain.application.vo.transaction.TransactionOutputDetailVo;
 import com.xingkaichun.helloworldblockchain.application.vo.transaction.TransactionVo;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public interface BlockchainBrowserApplicationService {
     /**
      * 根据交易输出ID获取交易输出
      */
-    TransactionOutputDetailVo queryTransactionOutputByTransactionOutputId(TransactionOutputId transactionOutputId);
+    TransactionOutputDetailVo queryTransactionOutputByTransactionOutputId(String transactionHash,long transactionOutputIndex);
     /**
      * 根据地址获取交易输出
      */

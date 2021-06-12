@@ -2,6 +2,7 @@ package com.xingkaichun.helloworldblockchain.netcore;
 
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
+import com.xingkaichun.helloworldblockchain.core.tools.BlockDtoTool;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
 import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
@@ -235,7 +236,7 @@ public class BlockSearcher {
             if(blockDto == null){
                 return;
             }
-            String blockHash = BlockTool.calculateBlockHash(blockDto);
+            String blockHash = BlockDtoTool.calculateBlockHash(blockDto);
             //没有查询到区块哈希，代表着远程节点的高度没有本地大
             if(StringUtil.isNullOrEmpty(blockHash)){
                 return;
@@ -260,7 +261,7 @@ public class BlockSearcher {
                 if(blockDto == null){
                     return;
                 }
-                String blockHash = BlockTool.calculateBlockHash(blockDto);
+                String blockHash = BlockDtoTool.calculateBlockHash(blockDto);
                 Block localBlock = slaveBlockchainCore.queryBlockByBlockHeight(forkBlockHeight);
                 if(StringUtil.isEquals(blockHash,localBlock.getHash())){
                     break;

@@ -4,7 +4,10 @@ import com.xingkaichun.helloworldblockchain.core.BlockchainDatabase;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.script.InputScript;
 import com.xingkaichun.helloworldblockchain.core.model.script.OutputScript;
-import com.xingkaichun.helloworldblockchain.core.model.transaction.*;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.*;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
@@ -66,15 +69,12 @@ public class Dto2ModelTool {
         List<TransactionInputDto> transactionInputDtoList = transactionDto.getInputs();
         if(transactionInputDtoList != null){
             for (TransactionInputDto transactionInputDto:transactionInputDtoList){
-                TransactionOutputId transactionOutputId = new TransactionOutputId();
-                transactionOutputId.setTransactionHash(transactionInputDto.getTransactionHash());
-                transactionOutputId.setTransactionOutputIndex(transactionInputDto.getTransactionOutputIndex());
-                TransactionOutput unspentTransactionOutput = blockchainDataBase.queryUnspentTransactionOutputByTransactionOutputId(transactionOutputId);
+                TransactionOutput unspentTransactionOutput = blockchainDataBase.queryUnspentTransactionOutputByTransactionOutputId(transactionInputDto.getTransactionHash(),transactionInputDto.getTransactionOutputIndex());
                 if(unspentTransactionOutput == null){
                     throw new RuntimeException("非法交易。交易输入并不是一笔未花费交易输出。");
                 }
                 TransactionInput transactionInput = new TransactionInput();
-                transactionInput.setUnspentTransactionOutput(TransactionTool.transactionOutput2UnspentTransactionOutput(unspentTransactionOutput));
+                transactionInput.setUnspentTransactionOutput(unspentTransactionOutput);
                 transactionInput.setInputScript(inputScriptDto2InputScript(transactionInputDto.getInputScript()));
                 inputs.add(transactionInput);
             }
@@ -92,7 +92,7 @@ public class Dto2ModelTool {
         Transaction transaction = new Transaction();
         TransactionType transactionType = obtainTransactionDto(transactionDto);
         transaction.setTransactionType(transactionType);
-        transaction.setTransactionHash(TransactionTool.calculateTransactionHash(transactionDto));
+        transaction.setTransactionHash(TransactionDtoTool.calculateTransactionHash(transactionDto));
         transaction.setInputs(inputs);
         transaction.setOutputs(outputs);
         return transaction;

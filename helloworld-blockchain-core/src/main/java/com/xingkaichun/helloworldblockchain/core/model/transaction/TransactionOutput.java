@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class TransactionOutput extends TransactionOutputId implements Serializable {
+public class TransactionOutput implements Serializable {
 
     /**
      * 交易输出的金额
@@ -30,6 +30,17 @@ public class TransactionOutput extends TransactionOutputId implements Serializab
      */
     private OutputScript outputScript;
 
+    /**
+     * 交易哈希
+     * 冗余
+     */
+    private String transactionHash;
+    /**
+     * 交易输出在[此笔交易所有的交易输出]中的序列号，序列号从1开始。
+     * 从日常生活角度看，交易的第1笔交易输出明显比交易的第0笔交易输出符合认知，因此我选择序列号从1开始。
+     * 冗余
+     */
+    private long transactionOutputIndex;
     /**
      * 交易输出的地址
      * 冗余；可以从[输出脚本]解析出地址
@@ -129,6 +140,22 @@ public class TransactionOutput extends TransactionOutputId implements Serializab
 
     public void setTransactionHeight(long transactionHeight) {
         this.transactionHeight = transactionHeight;
+    }
+
+    public long getTransactionOutputIndex() {
+        return transactionOutputIndex;
+    }
+
+    public void setTransactionOutputIndex(long transactionOutputIndex) {
+        this.transactionOutputIndex = transactionOutputIndex;
+    }
+
+    public String getTransactionHash() {
+        return transactionHash;
+    }
+
+    public void setTransactionHash(String transactionHash) {
+        this.transactionHash = transactionHash;
     }
     //endregion
 }

@@ -35,7 +35,12 @@ public class ByteUtil {
     public static long byte8ToLong8(byte[] bytes) {
         return Longs.fromByteArray(bytes);
     }
-
+    /**
+     * (大端模式)8个字节的字节数组转换为十六进制字符串。
+     */
+    public static String long8ToHexString8(long number) {
+        return HexUtil.bytesToHexString(long8ToByte8(number));
+    }
 
 
     /**

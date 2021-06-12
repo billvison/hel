@@ -1,21 +1,27 @@
 package com.xingkaichun.helloworldblockchain.application.vo.transaction;
 
-import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutputId;
-
 /**
  *
  * @author 邢开春 409060350@qq.com
  */
 public class QueryTransactionOutputByTransactionOutputIdRequest {
 
-    private TransactionOutputId transactionOutputId;
+    private String transactionHash;
+    private long transactionOutputIndex;
 
-
-    public TransactionOutputId getTransactionOutputId() {
-        return transactionOutputId;
+    public String getTransactionHash() {
+        return transactionHash;
     }
 
-    public void setTransactionOutputId(TransactionOutputId transactionOutputId) {
-        this.transactionOutputId = transactionOutputId;
+    public void setTransactionHash(String transactionHash) {
+        this.transactionHash = transactionHash;
+    }
+
+    public long getTransactionOutputIndex() {
+        return transactionOutputIndex;
+    }
+
+    public void setTransactionOutputIndex(long transactionOutputIndex) {
+        this.transactionOutputIndex = transactionOutputIndex;
     }
 }

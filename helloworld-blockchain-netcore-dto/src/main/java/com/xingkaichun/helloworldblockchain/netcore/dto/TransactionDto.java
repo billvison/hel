@@ -20,10 +20,7 @@ public class TransactionDto implements Serializable {
 
 
 
-
     //region get set
-
-
     public List<TransactionInputDto> getInputs() {
         return inputs;
     }
@@ -39,5 +36,5 @@ public class TransactionDto implements Serializable {
     public void setOutputs(List<TransactionOutputDto> outputs) {
         this.outputs = outputs;
     }
-//endregion
+    //endregion
 }

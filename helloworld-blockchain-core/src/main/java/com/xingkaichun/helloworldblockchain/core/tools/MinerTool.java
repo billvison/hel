@@ -43,7 +43,7 @@ public class MinerTool {
                     Transaction transaction = Dto2ModelTool.transactionDto2Transaction(blockchainDataBase,transactionDto);
                     transactionList.add(transaction);
                 } catch (Exception e) {
-                    String transactionHash = TransactionTool.calculateTransactionHash(transactionDto);
+                    String transactionHash = TransactionDtoTool.calculateTransactionHash(transactionDto);
                     LogUtil.error(StringUtil.format("类型转换异常,将从挖矿交易数据库中删除该交易。交易哈希[%s]。",transactionHash),e);
                     unconfirmedTransactionDataBase.deleteByTransactionHash(transactionHash);
                 }
@@ -78,7 +78,7 @@ public class MinerTool {
                 boolean canAdd = true;
                 for(TransactionInput transactionInput : inputs) {
                     TransactionOutput unspentTransactionOutput = transactionInput.getUnspentTransactionOutput();
-                    String transactionOutputId = unspentTransactionOutput.getTransactionOutputId();
+                    String transactionOutputId = TransactionTool.getTransactionOutputId(unspentTransactionOutput);
                     if(transactionOutputIdSet.contains(transactionOutputId)){
                         canAdd = false;
                         String transactionHash = TransactionTool.calculateTransactionHash(transaction);
@@ -128,7 +128,7 @@ public class MinerTool {
 
 
         //按照费率(每字符的手续费)从大到小排序交易
-        TransactionTool.sortByFeeRateDescend(transactionList);
+        TransactionTool.sortByTransactionFeeRateDescend(transactionList);
 
 
         backupTransactionList.clear();
