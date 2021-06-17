@@ -5,7 +5,7 @@ package com.xingkaichun.helloworldblockchain.util;
  *
  * @author 邢开春 409060350@qq.com
  */
-public class LongUtil {
+public class NumberUtil {
 
     public static boolean isEquals(long long1,long long2){
         return long1 == long2;

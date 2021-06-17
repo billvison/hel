@@ -42,7 +42,7 @@ public class HttpServerHandlerResolver {
                 Node node = new Node();
                 node.setIp(requestIp);
                 nodeService.addNode(node);
-                LogUtil.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",requestIp, Setting.PORT));
+                LogUtil.debug(String.format("有节点[%s:%d]尝试Ping本地节点，将来路节点加入节点数据库。",requestIp, Setting.NetworkSetting.PORT));
             }
             PingResponse response = new PingResponse();
             return response;
@@ -87,8 +87,8 @@ public class HttpServerHandlerResolver {
 
     public PostBlockResponse postBlock(PostBlockRequest request) {
         try {
-            Block block = Dto2ModelTool.blockDto2Block(blockchainCore.getBlockchainDataBase(),request.getBlock());
-            blockchainCore.addBlock(block);
+            BlockDto block = request.getBlock();
+            blockchainCore.addBlockDto(block);
             PostBlockResponse response = new PostBlockResponse();
             return response;
         } catch (Exception e){
@@ -150,8 +150,8 @@ public class HttpServerHandlerResolver {
 
     public GetUnconfirmedTransactionsResponse getUnconfirmedTransactions(GetUnconfirmedTransactionsRequest request) {
         try {
-            UnconfirmedTransactionDatabase unconfirmedTransactionDataBase = blockchainCore.getUnconfirmedTransactionDataBase();
-            List<TransactionDto> transactions = unconfirmedTransactionDataBase.selectTransactions(1,Setting.BlockSetting.BLOCK_MAX_TRANSACTION_COUNT);
+            UnconfirmedTransactionDatabase unconfirmedTransactionDatabase = blockchainCore.getUnconfirmedTransactionDatabase();
+            List<TransactionDto> transactions = unconfirmedTransactionDatabase.selectTransactions(1,Setting.BlockSetting.BLOCK_MAX_TRANSACTION_COUNT);
             GetUnconfirmedTransactionsResponse response = new GetUnconfirmedTransactionsResponse();
             response.setTransactions(transactions);
             return response;

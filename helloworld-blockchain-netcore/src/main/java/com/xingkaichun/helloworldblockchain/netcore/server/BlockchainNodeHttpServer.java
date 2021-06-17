@@ -40,8 +40,8 @@ public class BlockchainNodeHttpServer {
 								.option(ChannelOption.SO_BACKLOG, 128)
 								.childOption(ChannelOption.SO_KEEPALIVE, true);
 
-						ChannelFuture f = b.bind(Setting.PORT).sync();
-						LogUtil.debug("HttpServer已启动，端口：" + Setting.PORT);
+						ChannelFuture f = b.bind(Setting.NetworkSetting.PORT).sync();
+						LogUtil.debug("HttpServer已启动，端口：" + Setting.NetworkSetting.PORT);
 						f.channel().closeFuture().sync();
 					} catch (InterruptedException e) {
 						SystemUtil.errorExit("节点服务器运行出现异常。",e);

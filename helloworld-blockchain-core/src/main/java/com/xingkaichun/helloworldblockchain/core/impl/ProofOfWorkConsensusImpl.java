@@ -23,11 +23,10 @@ import java.math.BigInteger;
 public class ProofOfWorkConsensusImpl extends Consensus {
 
     @Override
-    public boolean checkConsensus(BlockchainDatabase blockchainDataBase, Block block) {
+    public boolean checkConsensus(BlockchainDatabase blockchainDatabase, Block block) {
         String difficulty = block.getDifficulty();
         if(StringUtil.isNullOrEmpty(difficulty)){
-            difficulty = calculateDifficult(blockchainDataBase,block);
-            block.setDifficulty(difficulty);
+            difficulty = calculateDifficult(blockchainDatabase,block);
         }
 
         String hash = block.getHash();
@@ -46,11 +45,11 @@ public class ProofOfWorkConsensusImpl extends Consensus {
      * 第X周期的难度 = 第(X-1)周期的难度 * 第(X-1)周期的实际挖矿耗时 / 一个周期的期望挖矿耗时。
      * 第一周期、第二周期的难度默认为创世区块的难度。
      *
-     * @param blockchainDataBase "目标区块"所在的区块链
+     * @param blockchainDatabase "目标区块"所在的区块链
      * @param targetBlock 需要计算难度的"目标区块"
      * @return "目标区块"的难度
      */
-    public String calculateDifficult(BlockchainDatabase blockchainDataBase, Block targetBlock) {
+    public String calculateDifficult(BlockchainDatabase blockchainDatabase, Block targetBlock) {
 
         // 目标难度
         String targetDifficult;
@@ -77,7 +76,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         }
 
         // 目标区块的上一个区块
-        Block targetBlockPreviousBlock = blockchainDataBase.queryBlockByBlockHeight(targetBlockHeight-1);
+        Block targetBlockPreviousBlock = blockchainDatabase.queryBlockByBlockHeight(targetBlockHeight-1);
         /*
          * 目标区块的上一个区块如果不是一个周期的末尾，说明一个周期尚未结束
          * ，说明目标区块和[目标区块的上一个区块]位于同一个周期，此时目标区块难度和[目标区块的上一个区块]的难度相同。
@@ -91,7 +90,7 @@ public class ProofOfWorkConsensusImpl extends Consensus {
         // 上个周期的最后一个区块，此时，targetBlockPreviousBlock是上一个周期的最后一个区块，这里仅仅是重新命名了一个更为准确的变量名称。
         Block previousIntervalLastBlock = targetBlockPreviousBlock;
         // 上上个周期最后一个区块
-        Block previousPreviousIntervalLastBlock = blockchainDataBase.queryBlockByBlockHeight(previousIntervalLastBlock.getHeight()- Setting.IncentiveSetting.INTERVAL_BLOCK_COUNT);
+        Block previousPreviousIntervalLastBlock = blockchainDatabase.queryBlockByBlockHeight(previousIntervalLastBlock.getHeight()- Setting.IncentiveSetting.INTERVAL_BLOCK_COUNT);
         // 上个周期出块实际耗时
         long previousIntervalActualTimespan = previousIntervalLastBlock.getTimestamp() - previousPreviousIntervalLastBlock.getTimestamp();
 

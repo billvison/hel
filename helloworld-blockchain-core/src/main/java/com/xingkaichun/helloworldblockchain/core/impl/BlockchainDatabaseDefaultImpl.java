@@ -1,9 +1,6 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
-import com.xingkaichun.helloworldblockchain.core.BlockchainDatabase;
-import com.xingkaichun.helloworldblockchain.core.Consensus;
-import com.xingkaichun.helloworldblockchain.core.CoreConfiguration;
-import com.xingkaichun.helloworldblockchain.core.Incentive;
+import com.xingkaichun.helloworldblockchain.core.*;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.enums.BlockchainActionEnum;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
@@ -11,11 +8,12 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionIn
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.tools.*;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
+import com.xingkaichun.helloworldblockchain.netcore.dto.BlockDto;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.FileUtil;
 import com.xingkaichun.helloworldblockchain.util.KvDbUtil;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
-import com.xingkaichun.helloworldblockchain.util.LongUtil;
+import com.xingkaichun.helloworldblockchain.util.NumberUtil;
 
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -41,8 +39,8 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      */
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
-    public BlockchainDatabaseDefaultImpl(CoreConfiguration coreConfiguration, Incentive incentive, Consensus consensus) {
-        super(consensus,incentive);
+    public BlockchainDatabaseDefaultImpl(CoreConfiguration coreConfiguration, Incentive incentive, Consensus consensus, VirtualMachine virtualMachine) {
+        super(consensus,incentive,virtualMachine);
         this.coreConfiguration = coreConfiguration;
     }
     //endregion
@@ -51,10 +49,11 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
 
     //region 区块增加与删除
     @Override
-    public boolean addBlock(Block block) {
+    public boolean addBlockDto(BlockDto blockDto) {
         Lock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try{
+            Block block = Dto2ModelTool.blockDto2Block(this,blockDto);
             boolean checkBlock = checkBlock(block);
             if(!checkBlock){
                 return false;
@@ -91,7 +90,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
                 if(tailBlock == null){
                     return;
                 }
-                if(LongUtil.isLessThan(tailBlock.getHeight(),blockHeight)){
+                if(NumberUtil.isLessThan(tailBlock.getHeight(),blockHeight)){
                     return;
                 }
                 KvDbUtil.KvWriteBatch kvWriteBatch = createBlockWriteBatch(tailBlock, BlockchainActionEnum.DELETE_BLOCK);
@@ -122,11 +121,6 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         //校验区块的大小
         if(!SizeTool.checkBlockSize(block)){
             LogUtil.debug("区块数据异常，请校验区块的大小。");
-            return false;
-        }
-        //校验区块写入的属性值
-        if(!WritePropertyTool.checkBlockWriteProperties(block)){
-            LogUtil.debug("区块校验失败：区块的属性写入值与实际计算结果不一致。");
             return false;
         }
 
@@ -197,10 +191,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             LogUtil.debug("交易数据异常，请校验交易的大小。");
             return false;
         }
-        //校验交易的属性是否与计算得来的一致
-        if(!WritePropertyTool.checkTransactionWriteProperties(transaction)){
-            return false;
-        }
+
 
         //校验交易中的地址是否是P2PKH地址
         if(!TransactionTool.checkPayToPublicKeyHashAddress(transaction)){
@@ -232,8 +223,8 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
             LogUtil.debug("交易数据异常，检测到双花攻击。");
             return false;
         }
-        //校验用户花费的是自己的钱吗
-        if(!TransactionTool.checkUtxoOwnership(transaction)) {
+        //校验脚本
+        if(!virtualMachine.checkTransactionScript(transaction)) {
             LogUtil.debug("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。");
             return false;
         }
@@ -277,7 +268,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
     @Override
     public Block queryTailBlock() {
         long blockchainHeight = queryBlockchainHeight();
-        if(LongUtil.isLessEqualThan(blockchainHeight, Setting.GenesisBlockSetting.HEIGHT)){
+        if(NumberUtil.isLessEqualThan(blockchainHeight, Setting.GenesisBlockSetting.HEIGHT)){
             return null;
         }
         return queryBlockByBlockHeight(blockchainHeight);
@@ -414,7 +405,6 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
      * 根据区块信息组装WriteBatch对象
      */
     private KvDbUtil.KvWriteBatch createBlockWriteBatch(Block block, BlockchainActionEnum blockchainActionEnum) {
-        fillBlockProperty(block);
         KvDbUtil.KvWriteBatch kvWriteBatch = new KvDbUtil.KvWriteBatch();
 
         storeHash(kvWriteBatch,block,blockchainActionEnum);
@@ -443,44 +433,7 @@ public class BlockchainDatabaseDefaultImpl extends BlockchainDatabase {
         return kvWriteBatch;
     }
 
-    /**
-     * 补充区块的属性
-     */
-    private void fillBlockProperty(Block block) {
-        long transactionIndex = 0;
-        long transactionHeight = queryBlockchainTransactionHeight();
-        long transactionOutputHeight = queryBlockchainTransactionOutputHeight();
-        long blockHeight = block.getHeight();
-        String blockHash = block.getHash();
-        List<Transaction> transactions = block.getTransactions();
-        long transactionCount = BlockTool.getTransactionCount(block);
-        block.setTransactionCount(transactionCount);
-        block.setPreviousTransactionHeight(transactionHeight);
-        if(transactions != null){
-            for(Transaction transaction:transactions){
-                transactionIndex++;
-                transactionHeight++;
-                transaction.setBlockHeight(blockHeight);
-                transaction.setTransactionIndex(transactionIndex);
-                transaction.setTransactionHeight(transactionHeight);
 
-                List<TransactionOutput> outputs = transaction.getOutputs();
-                if(outputs != null){
-                    for (int i=0; i <outputs.size(); i++){
-                        transactionOutputHeight++;
-                        TransactionOutput output = outputs.get(i);
-                        output.setBlockHeight(blockHeight);
-                        output.setBlockHash(blockHash);
-                        output.setTransactionHeight(transactionHeight);
-                        output.setTransactionHash(transaction.getTransactionHash());
-                        output.setTransactionOutputIndex(i+1);
-                        output.setTransactionIndex(transaction.getTransactionIndex());
-                        output.setTransactionOutputHeight(transactionOutputHeight);
-                    }
-                }
-            }
-        }
-    }
     /**
      * [交易输出ID]到[来源交易高度]的映射
      */

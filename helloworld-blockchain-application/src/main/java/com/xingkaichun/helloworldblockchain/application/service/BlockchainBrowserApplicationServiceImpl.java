@@ -36,7 +36,7 @@ public class BlockchainBrowserApplicationServiceImpl implements BlockchainBrowse
     @Override
     public TransactionOutputDetailVo queryTransactionOutputByTransactionOutputId(String transactionHash,long transactionOutputIndex) {
         //查询交易输出
-        TransactionOutput transactionOutput = blockchainCore.getBlockchainDataBase().queryTransactionOutputByTransactionOutputId(transactionHash,transactionOutputIndex);
+        TransactionOutput transactionOutput = blockchainCore.getBlockchainDatabase().queryTransactionOutputByTransactionOutputId(transactionHash,transactionOutputIndex);
         if(transactionOutput == null){
             return null;
         }
@@ -50,7 +50,7 @@ public class BlockchainBrowserApplicationServiceImpl implements BlockchainBrowse
         transactionOutputDetailVo.setFromTransactionOutputIndex(transactionOutput.getTransactionOutputIndex());
 
         //是否是未花费输出
-        TransactionOutput transactionOutputTemp = blockchainCore.getBlockchainDataBase().queryUnspentTransactionOutputByTransactionOutputId(transactionOutput.getTransactionHash(),transactionOutput.getTransactionOutputIndex());
+        TransactionOutput transactionOutputTemp = blockchainCore.getBlockchainDatabase().queryUnspentTransactionOutputByTransactionOutputId(transactionOutput.getTransactionHash(),transactionOutput.getTransactionOutputIndex());
         transactionOutputDetailVo.setSpent(transactionOutputTemp==null);
 
         //来源
@@ -62,10 +62,10 @@ public class BlockchainBrowserApplicationServiceImpl implements BlockchainBrowse
         //去向
         TransactionVo outputTransactionVo;
         if(transactionOutputTemp == null){
-            Transaction destinationTransaction = blockchainCore.getBlockchainDataBase().queryDestinationTransactionByTransactionOutputId(transactionOutput.getTransactionHash(),transactionOutput.getTransactionOutputIndex());
+            Transaction destinationTransaction = blockchainCore.getBlockchainDatabase().queryDestinationTransactionByTransactionOutputId(transactionOutput.getTransactionHash(),transactionOutput.getTransactionOutputIndex());
             outputTransactionVo = queryTransactionByTransactionHash(destinationTransaction.getTransactionHash());
 
-            Transaction outputTransaction = blockchainCore.getBlockchainDataBase().queryTransactionByTransactionHash(destinationTransaction.getTransactionHash());
+            Transaction outputTransaction = blockchainCore.getBlockchainDatabase().queryTransactionByTransactionHash(destinationTransaction.getTransactionHash());
             List<TransactionInput> inputs = outputTransaction.getInputs();
             if(inputs != null){
                 for(TransactionInput transactionInput : inputs){
@@ -129,11 +129,11 @@ public class BlockchainBrowserApplicationServiceImpl implements BlockchainBrowse
         blockVo.setBlockSize(SizeTool.calculateBlockSize(block)+"字符");
         blockVo.setTransactionCount(BlockTool.getTransactionCount(block));
         blockVo.setTime(TimeUtil.formatMillisecondTimestamp2TimeString(block.getTimestamp()));
-        blockVo.setMinerIncentiveValue(BlockTool.getIncentiveValue(block));
+        blockVo.setMinerIncentiveValue(BlockTool.getWritedIncentiveValue(block));
         blockVo.setDifficulty(BlockTool.formatDifficulty(block.getDifficulty()));
         blockVo.setNonce(block.getNonce());
         blockVo.setHash(block.getHash());
-        blockVo.setPreviousBlockHash(block.getPreviousBlockHash());
+        blockVo.setPreviousBlockHash(block.getPreviousHash());
         blockVo.setNextBlockHash(nextBlock==null?null:nextBlock.getHash());
         blockVo.setMerkleTreeRoot(block.getMerkleTreeRoot());
         return blockVo;
@@ -147,7 +147,7 @@ public class BlockchainBrowserApplicationServiceImpl implements BlockchainBrowse
             if(transactionDto == null){
                 return null;
             }
-            Transaction transaction = Dto2ModelTool.transactionDto2Transaction(blockchainCore.getBlockchainDataBase(),transactionDto);
+            Transaction transaction = Dto2ModelTool.transactionDto2Transaction(blockchainCore.getBlockchainDatabase(),transactionDto);
             UnconfirmedTransactionVo transactionDtoResp = new UnconfirmedTransactionVo();
             transactionDtoResp.setTransactionHash(transaction.getTransactionHash());
 

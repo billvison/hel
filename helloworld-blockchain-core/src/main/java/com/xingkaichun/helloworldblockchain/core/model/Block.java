@@ -31,7 +31,7 @@ public class Block implements Serializable {
     /**
      * 上一个区块的哈希
      */
-    private String previousBlockHash;
+    private String previousHash;
     /**
      * 区块里的交易
      */
@@ -115,12 +115,12 @@ public class Block implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public String getPreviousBlockHash() {
-        return previousBlockHash;
+    public String getPreviousHash() {
+        return previousHash;
     }
 
-    public void setPreviousBlockHash(String previousBlockHash) {
-        this.previousBlockHash = previousBlockHash;
+    public void setPreviousHash(String previousHash) {
+        this.previousHash = previousHash;
     }
 
     public long getHeight() {

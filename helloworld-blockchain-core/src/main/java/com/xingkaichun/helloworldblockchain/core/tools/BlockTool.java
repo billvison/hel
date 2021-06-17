@@ -8,7 +8,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionTy
 import com.xingkaichun.helloworldblockchain.netcore.dto.BlockDto;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.ListUtil;
-import com.xingkaichun.helloworldblockchain.util.LongUtil;
+import com.xingkaichun.helloworldblockchain.util.NumberUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.util.TimeUtil;
 
@@ -99,9 +99,9 @@ public class BlockTool {
      */
     public static boolean checkPreviousBlockHash(Block previousBlock, Block currentBlock) {
         if(previousBlock == null){
-            return StringUtil.isEquals(Setting.GenesisBlockSetting.HASH,currentBlock.getPreviousBlockHash());
+            return StringUtil.isEquals(Setting.GenesisBlockSetting.HASH,currentBlock.getPreviousHash());
         } else {
-            return StringUtil.isEquals(previousBlock.getHash(),currentBlock.getPreviousBlockHash());
+            return StringUtil.isEquals(previousBlock.getHash(),currentBlock.getPreviousHash());
         }
     }
 
@@ -110,9 +110,9 @@ public class BlockTool {
      */
     public static boolean checkBlockHeight(Block previousBlock, Block currentBlock) {
         if(previousBlock == null){
-            return LongUtil.isEquals((Setting.GenesisBlockSetting.HEIGHT +1),currentBlock.getHeight());
+            return NumberUtil.isEquals((Setting.GenesisBlockSetting.HEIGHT +1),currentBlock.getHeight());
         } else {
-            return LongUtil.isEquals((previousBlock.getHeight()+1),currentBlock.getHeight());
+            return NumberUtil.isEquals((previousBlock.getHeight()+1),currentBlock.getHeight());
         }
     }
 
@@ -149,17 +149,17 @@ public class BlockTool {
         if(block1 == null || block2 == null){
             return false;
         }
-        return LongUtil.isEquals(block1.getTimestamp(), block2.getTimestamp()) &&
+        return NumberUtil.isEquals(block1.getTimestamp(), block2.getTimestamp()) &&
                 StringUtil.isEquals(block1.getHash(), block2.getHash()) &&
-                StringUtil.isEquals(block1.getPreviousBlockHash(), block2.getPreviousBlockHash()) &&
+                StringUtil.isEquals(block1.getPreviousHash(), block2.getPreviousHash()) &&
                 StringUtil.isEquals(block1.getMerkleTreeRoot(), block2.getMerkleTreeRoot()) &&
                 StringUtil.isEquals(block1.getNonce(), block2.getNonce());
     }
 
     /**
-     * 获取激励金额
+     * 获取写入的激励金额
      */
-    public static long getIncentiveValue(Block block) {
+    public static long getWritedIncentiveValue(Block block) {
         return block.getTransactions().get(0).getOutputs().get(0).getValue();
     }
 
@@ -190,20 +190,27 @@ public class BlockTool {
      * 区块总交易手续费
      */
     public static long getBlockFee(Block block) {
-        long fees = 0;
+        long blockFee = 0;
         List<Transaction> transactions = block.getTransactions();
         if(transactions != null){
             for(Transaction transaction:transactions){
-                if(transaction.getTransactionType() == TransactionType.GENESIS){
+                if(transaction.getTransactionType() == TransactionType.GENESIS_TRANSACTION){
                     continue;
-                }else if(transaction.getTransactionType() == TransactionType.STANDARD){
+                }else if(transaction.getTransactionType() == TransactionType.STANDARD_TRANSACTION){
                     long fee = TransactionTool.getTransactionFee(transaction);
-                    fees += fee;
+                    blockFee += fee;
                 }else{
                     throw new RuntimeException("不能识别的交易类型");
                 }
             }
         }
-        return fees;
+        return blockFee;
+    }
+    /**
+     * 获取下一个区块的高度
+     */
+    public static long getNextBlockHeight(Block currentBlock) {
+        long nextBlockHeight = currentBlock==null? Setting.GenesisBlockSetting.HEIGHT+1:currentBlock.getHeight()+1;
+        return nextBlockHeight;
     }
 }

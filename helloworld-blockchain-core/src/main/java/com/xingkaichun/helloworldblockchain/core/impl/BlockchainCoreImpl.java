@@ -6,6 +6,8 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionRequest;
 import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionResponse;
+import com.xingkaichun.helloworldblockchain.core.tools.Model2DtoTool;
+import com.xingkaichun.helloworldblockchain.netcore.dto.BlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.util.SystemUtil;
 
@@ -18,8 +20,8 @@ import java.util.List;
  */
 public class BlockchainCoreImpl extends BlockchainCore {
 
-    public BlockchainCoreImpl(CoreConfiguration coreConfiguration, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase, Wallet wallet, Miner miner) {
-        super(coreConfiguration,blockchainDataBase,unconfirmedTransactionDataBase,wallet,miner);
+    public BlockchainCoreImpl(CoreConfiguration coreConfiguration, BlockchainDatabase blockchainDatabase, UnconfirmedTransactionDatabase unconfirmedTransactionDatabase, Wallet wallet, Miner miner) {
+        super(coreConfiguration,blockchainDatabase,unconfirmedTransactionDatabase,wallet,miner);
     }
 
     @Override
@@ -38,75 +40,81 @@ public class BlockchainCoreImpl extends BlockchainCore {
 
     @Override
     public long queryBlockchainHeight() {
-        return blockchainDataBase.queryBlockchainHeight();
+        return blockchainDatabase.queryBlockchainHeight();
     }
 
 
     @Override
     public Transaction queryTransactionByTransactionHash(String transactionHash) {
-        return blockchainDataBase.queryTransactionByTransactionHash(transactionHash);
+        return blockchainDatabase.queryTransactionByTransactionHash(transactionHash);
     }
 
     @Override
     public Transaction queryTransactionByTransactionHeight(long transactionHeight) {
-        return blockchainDataBase.queryTransactionByTransactionHeight(transactionHeight);
+        return blockchainDatabase.queryTransactionByTransactionHeight(transactionHeight);
     }
 
     @Override
     public TransactionOutput queryTransactionOutputByAddress(String address) {
-        return blockchainDataBase.queryTransactionOutputByAddress(address);
+        return blockchainDatabase.queryTransactionOutputByAddress(address);
     }
 
 
     @Override
     public Block queryBlockByBlockHeight(long blockHeight) {
-        return blockchainDataBase.queryBlockByBlockHeight(blockHeight);
+        return blockchainDatabase.queryBlockByBlockHeight(blockHeight);
     }
 
     @Override
     public Block queryBlockByBlockHash(String blockHash) {
-        return blockchainDataBase.queryBlockByBlockHash(blockHash);
+        return blockchainDatabase.queryBlockByBlockHash(blockHash);
     }
 
     @Override
     public Block queryTailBlock() {
-        return blockchainDataBase.queryTailBlock();
+        return blockchainDatabase.queryTailBlock();
     }
 
     @Override
     public void deleteTailBlock() {
-        blockchainDataBase.deleteTailBlock();
+        blockchainDatabase.deleteTailBlock();
+    }
+
+    @Override
+    public boolean addBlockDto(BlockDto blockDto) {
+        return blockchainDatabase.addBlockDto(blockDto);
     }
 
     @Override
     public boolean addBlock(Block block) {
-        return blockchainDataBase.addBlock(block);
+        BlockDto blockDto = Model2DtoTool.block2BlockDto(block);
+        return addBlockDto(blockDto);
     }
 
 
     @Override
     public void deleteBlocks(long blockHeight) {
-        blockchainDataBase.deleteBlocks(blockHeight);
+        blockchainDatabase.deleteBlocks(blockHeight);
     }
 
 
     @Override
     public BuildTransactionResponse buildTransaction(BuildTransactionRequest request) {
-        return wallet.buildTransaction(blockchainDataBase,request);
+        return wallet.buildTransaction(request);
     }
 
     @Override
     public void postTransaction(TransactionDto transactionDto) {
-        unconfirmedTransactionDataBase.insertTransaction(transactionDto);
+        unconfirmedTransactionDatabase.insertTransaction(transactionDto);
     }
 
     @Override
     public List<TransactionDto> queryUnconfirmedTransactions(long from, long size) {
-        return unconfirmedTransactionDataBase.selectTransactions(from,size);
+        return unconfirmedTransactionDatabase.selectTransactions(from,size);
     }
 
     @Override
     public TransactionDto queryUnconfirmedTransactionByTransactionHash(String transactionHash) {
-        return unconfirmedTransactionDataBase.selectTransactionByTransactionHash(transactionHash);
+        return unconfirmedTransactionDatabase.selectTransactionByTransactionHash(transactionHash);
     }
 }

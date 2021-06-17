@@ -14,7 +14,7 @@ import com.xingkaichun.helloworldblockchain.util.LogUtil;
 public class IncentiveDefaultImpl extends Incentive {
 
     @Override
-    public long incentiveValue(BlockchainDatabase blockchainDataBase, Block block) {
+    public long incentiveValue(BlockchainDatabase blockchainDatabase, Block block) {
         //给予矿工的挖矿津贴
         long minerSubsidy = getMinerSubsidy(block);
         //给予矿工的交易手续费
@@ -24,9 +24,9 @@ public class IncentiveDefaultImpl extends Incentive {
     }
 
     @Override
-    public boolean checkIncentive(BlockchainDatabase blockchainDataBase, Block block) {
-        long writeIncentiveValue = BlockTool.getIncentiveValue(block);
-        long targetIncentiveValue = incentiveValue(blockchainDataBase,block);
+    public boolean checkIncentive(BlockchainDatabase blockchainDatabase, Block block) {
+        long writeIncentiveValue = BlockTool.getWritedIncentiveValue(block);
+        long targetIncentiveValue = incentiveValue(blockchainDatabase,block);
         if(writeIncentiveValue != targetIncentiveValue){
             LogUtil.debug("区块数据异常，挖矿奖励数据异常。");
             return false;

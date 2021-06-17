@@ -27,11 +27,12 @@ public class BlockchainCoreFactory {
         CoreConfiguration coreConfiguration = new CoreConfigurationDefaultImpl(corePath);
         Incentive incentive = new IncentiveDefaultImpl();
         Consensus consensus = new ProofOfWorkConsensusImpl();
-        BlockchainDatabase blockchainDataBase = new BlockchainDatabaseDefaultImpl(coreConfiguration,incentive,consensus);
+        VirtualMachine virtualMachine = new StackBasedVirtualMachine();
+        BlockchainDatabase blockchainDatabase = new BlockchainDatabaseDefaultImpl(coreConfiguration,incentive,consensus,virtualMachine);
 
-        UnconfirmedTransactionDatabase unconfirmedTransactionDataBase = new UnconfirmedTransactionDatabaseDefaultImpl(coreConfiguration);
-        Wallet wallet = new WalletImpl(coreConfiguration);
-        Miner miner = new MinerDefaultImpl(coreConfiguration,wallet,blockchainDataBase,unconfirmedTransactionDataBase);
-        return new BlockchainCoreImpl(coreConfiguration,blockchainDataBase,unconfirmedTransactionDataBase,wallet,miner);
+        UnconfirmedTransactionDatabase unconfirmedTransactionDatabase = new UnconfirmedTransactionDatabaseDefaultImpl(coreConfiguration);
+        Wallet wallet = new WalletImpl(coreConfiguration,blockchainDatabase);
+        Miner miner = new MinerDefaultImpl(coreConfiguration,wallet,blockchainDatabase,unconfirmedTransactionDatabase);
+        return new BlockchainCoreImpl(coreConfiguration,blockchainDatabase,unconfirmedTransactionDatabase,wallet,miner);
     }
 }

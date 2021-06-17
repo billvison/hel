@@ -10,7 +10,6 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOu
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.*;
-import com.xingkaichun.helloworldblockchain.setting.Setting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,54 +21,59 @@ import java.util.List;
  */
 public class Dto2ModelTool {
 
-    public static Block blockDto2Block(BlockchainDatabase blockchainDataBase, BlockDto blockDto) {
+    public static Block blockDto2Block(BlockchainDatabase blockchainDatabase, BlockDto blockDto) {
         String previousBlockHash = blockDto.getPreviousHash();
-        Block previousBlock = blockchainDataBase.queryBlockByBlockHash(previousBlockHash);
+        Block previousBlock = blockchainDatabase.queryBlockByBlockHash(previousBlockHash);
 
         Block block = new Block();
         block.setTimestamp(blockDto.getTimestamp());
-        block.setPreviousBlockHash(previousBlockHash);
+        block.setPreviousHash(previousBlockHash);
         block.setNonce(blockDto.getNonce());
 
-        long blockHeight = previousBlock==null? Setting.GenesisBlockSetting.HEIGHT+1:previousBlock.getHeight()+1;
+        long blockHeight = BlockTool.getNextBlockHeight(previousBlock);
         block.setHeight(blockHeight);
 
-        List<Transaction> transactionList = transactionDto2Transaction(blockchainDataBase,blockDto.getTransactions());
+        List<Transaction> transactionList = transactionDtos2Transactions(blockchainDatabase,blockDto.getTransactions());
         block.setTransactions(transactionList);
 
         String merkleTreeRoot = BlockTool.calculateBlockMerkleTreeRoot(block);
         block.setMerkleTreeRoot(merkleTreeRoot);
 
-        block.setHash(BlockTool.calculateBlockHash(block));
+        String blockHash = BlockTool.calculateBlockHash(block);
+        block.setHash(blockHash);
 
+        String difficult = blockchainDatabase.getConsensus().calculateDifficult(blockchainDatabase,block);
+        block.setDifficulty(difficult);
+
+        fillBlockProperty(blockchainDatabase,block);
         /*
          * 预先校验区块工作量共识。伪造工作量共识是一件十分耗费资源的事情，因此预先校验工作量共识可以抵消绝大部分的攻击。
          * 也可以选择跳过此处预检，后续业务有完整的校验检测。
          * 此处预检，只是想预先抵消绝大部分的攻击。
          */
-        if(!blockchainDataBase.getConsensus().checkConsensus(blockchainDataBase,block)){
+        if(!blockchainDatabase.getConsensus().checkConsensus(blockchainDatabase,block)){
             throw new RuntimeException("区块预检失败。");
         }
         return block;
     }
 
-    private static List<Transaction> transactionDto2Transaction(BlockchainDatabase blockchainDataBase, List<TransactionDto> transactionDtoList) {
-        List<Transaction> transactionList = new ArrayList<>();
+    private static List<Transaction> transactionDtos2Transactions(BlockchainDatabase blockchainDatabase, List<TransactionDto> transactionDtoList) {
+        List<Transaction> transactions = new ArrayList<>();
         if(transactionDtoList != null){
             for(TransactionDto transactionDto:transactionDtoList){
-                Transaction transaction = transactionDto2Transaction(blockchainDataBase,transactionDto);
-                transactionList.add(transaction);
+                Transaction transaction = transactionDto2Transaction(blockchainDatabase,transactionDto);
+                transactions.add(transaction);
             }
         }
-        return transactionList;
+        return transactions;
     }
 
-    public static Transaction transactionDto2Transaction(BlockchainDatabase blockchainDataBase, TransactionDto transactionDto) {
+    public static Transaction transactionDto2Transaction(BlockchainDatabase blockchainDatabase, TransactionDto transactionDto) {
         List<TransactionInput> inputs = new ArrayList<>();
-        List<TransactionInputDto> transactionInputDtoList = transactionDto.getInputs();
-        if(transactionInputDtoList != null){
-            for (TransactionInputDto transactionInputDto:transactionInputDtoList){
-                TransactionOutput unspentTransactionOutput = blockchainDataBase.queryUnspentTransactionOutputByTransactionOutputId(transactionInputDto.getTransactionHash(),transactionInputDto.getTransactionOutputIndex());
+        List<TransactionInputDto> transactionInputDtos = transactionDto.getInputs();
+        if(transactionInputDtos != null){
+            for (TransactionInputDto transactionInputDto:transactionInputDtos){
+                TransactionOutput unspentTransactionOutput = blockchainDatabase.queryUnspentTransactionOutputByTransactionOutputId(transactionInputDto.getTransactionHash(),transactionInputDto.getTransactionOutputIndex());
                 if(unspentTransactionOutput == null){
                     throw new RuntimeException("非法交易。交易输入并不是一笔未花费交易输出。");
                 }
@@ -81,9 +85,9 @@ public class Dto2ModelTool {
         }
 
         List<TransactionOutput> outputs = new ArrayList<>();
-        List<TransactionOutputDto> dtoOutputs = transactionDto.getOutputs();
-        if(dtoOutputs != null){
-            for(TransactionOutputDto transactionOutputDto:dtoOutputs){
+        List<TransactionOutputDto> transactionOutputDtos = transactionDto.getOutputs();
+        if(transactionOutputDtos != null){
+            for(TransactionOutputDto transactionOutputDto:transactionOutputDtos){
                 TransactionOutput transactionOutput = transactionOutputDto2TransactionOutput(transactionOutputDto);
                 outputs.add(transactionOutput);
             }
@@ -98,10 +102,10 @@ public class Dto2ModelTool {
         return transaction;
     }
 
-    public static TransactionOutput transactionOutputDto2TransactionOutput(TransactionOutputDto transactionOutputDto) {
+    private static TransactionOutput transactionOutputDto2TransactionOutput(TransactionOutputDto transactionOutputDto) {
         TransactionOutput transactionOutput = new TransactionOutput();
         String publicKeyHash = ScriptTool.getPublicKeyHashByPayToPublicKeyHashOutputScript(transactionOutputDto.getOutputScript());
-        String address = AccountUtil.addressFromStringPublicKeyHash(publicKeyHash);
+        String address = AccountUtil.addressFromPublicKeyHash(publicKeyHash);
         transactionOutput.setAddress(address);
         transactionOutput.setValue(transactionOutputDto.getValue());
         transactionOutput.setOutputScript(outputScriptDto2OutputScript(transactionOutputDto.getOutputScript()));
@@ -110,9 +114,9 @@ public class Dto2ModelTool {
 
     private static TransactionType obtainTransactionDto(TransactionDto transactionDto) {
         if(transactionDto.getInputs() == null || transactionDto.getInputs().size()==0){
-            return TransactionType.GENESIS;
+            return TransactionType.GENESIS_TRANSACTION;
         }
-        return TransactionType.STANDARD;
+        return TransactionType.STANDARD_TRANSACTION;
     }
 
     private static OutputScript outputScriptDto2OutputScript(OutputScriptDto outputScriptDto) {
@@ -131,5 +135,44 @@ public class Dto2ModelTool {
         InputScript inputScript = new InputScript();
         inputScript.addAll(inputScriptDto);
         return inputScript;
+    }
+
+    /**
+     * 补充区块的属性
+     */
+    private static void fillBlockProperty(BlockchainDatabase blockchainDatabase,Block block) {
+        long transactionIndex = 0;
+        long transactionHeight = blockchainDatabase.queryBlockchainTransactionHeight();
+        long transactionOutputHeight = blockchainDatabase.queryBlockchainTransactionOutputHeight();
+        long blockHeight = block.getHeight();
+        String blockHash = block.getHash();
+        List<Transaction> transactions = block.getTransactions();
+        long transactionCount = BlockTool.getTransactionCount(block);
+        block.setTransactionCount(transactionCount);
+        block.setPreviousTransactionHeight(transactionHeight);
+        if(transactions != null){
+            for(Transaction transaction:transactions){
+                transactionIndex++;
+                transactionHeight++;
+                transaction.setBlockHeight(blockHeight);
+                transaction.setTransactionIndex(transactionIndex);
+                transaction.setTransactionHeight(transactionHeight);
+
+                List<TransactionOutput> outputs = transaction.getOutputs();
+                if(outputs != null){
+                    for (int i=0; i <outputs.size(); i++){
+                        transactionOutputHeight++;
+                        TransactionOutput output = outputs.get(i);
+                        output.setBlockHeight(blockHeight);
+                        output.setBlockHash(blockHash);
+                        output.setTransactionHeight(transactionHeight);
+                        output.setTransactionHash(transaction.getTransactionHash());
+                        output.setTransactionOutputIndex(i+1);
+                        output.setTransactionIndex(transaction.getTransactionIndex());
+                        output.setTransactionOutputHeight(transactionOutputHeight);
+                    }
+                }
+            }
+        }
     }
 }

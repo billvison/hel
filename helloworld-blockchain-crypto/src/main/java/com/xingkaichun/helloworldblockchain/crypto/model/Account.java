@@ -4,7 +4,7 @@ package com.xingkaichun.helloworldblockchain.crypto.model;
 import java.io.Serializable;
 
 /**
- * (十六进制大端模式)字符串格式的数字货币的账户
+ * 数字货币账户
  *
  * 数字货币的账户(账户在区块链领域被称为钱包)由账号(账号在区块链领域被称为地址)、密码(密码在区块链领域被称为私钥)组成。
  *

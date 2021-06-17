@@ -87,14 +87,13 @@ public class ByteUtil {
         return Arrays.equals(a,a2);
     }
 
-    public static byte[] get(byte[] src, int srcPos, int destPos) {
-        int length = destPos - srcPos;
-        byte[] dest = new byte[length];
-        System.arraycopy(src,srcPos,dest,0,length);
-        return dest;
+    public static byte[] copy(byte[] sourceBytes, int sourceStartPosition, int length) {
+        byte[] destinationBytes = new byte[length];
+        System.arraycopy(sourceBytes,sourceStartPosition,destinationBytes,0,length);
+        return destinationBytes;
     }
 
-    public static void copy(Object src, int srcPos, Object dest, int destPos, int length){
-        System.arraycopy(src,srcPos,dest,destPos,length);
+    public static void copyTo(byte[] sourceBytes, int sourceStartPosition, int length, byte[] destinationBytes, int destinationStartPosition){
+        System.arraycopy(sourceBytes,sourceStartPosition,destinationBytes,destinationStartPosition,length);
     }
 }

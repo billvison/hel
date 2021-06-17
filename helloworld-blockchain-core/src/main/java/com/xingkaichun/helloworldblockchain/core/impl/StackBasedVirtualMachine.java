@@ -1,16 +1,18 @@
 package com.xingkaichun.helloworldblockchain.core.impl;
 
 import com.xingkaichun.helloworldblockchain.core.VirtualMachine;
-import com.xingkaichun.helloworldblockchain.core.model.script.BooleanEnum;
-import com.xingkaichun.helloworldblockchain.core.model.script.OperationCodeEnum;
-import com.xingkaichun.helloworldblockchain.core.model.script.Script;
-import com.xingkaichun.helloworldblockchain.core.model.script.ScriptExecuteResult;
+import com.xingkaichun.helloworldblockchain.core.model.script.*;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
+import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
+import com.xingkaichun.helloworldblockchain.core.tools.ScriptTool;
 import com.xingkaichun.helloworldblockchain.core.tools.TransactionTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
 import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
+import com.xingkaichun.helloworldblockchain.util.LogUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
+
+import java.util.List;
 
 /**
  * 基于栈的虚拟机
@@ -36,7 +38,7 @@ public class StackBasedVirtualMachine extends VirtualMachine {
                     throw new RuntimeException("指令运行异常");
                 }
                 String publicKey = stack.pop();
-                String publicKeyHash = AccountUtil.publicKeyHashFromStringPublicKey(publicKey);
+                String publicKeyHash = AccountUtil.publicKeyHashFromPublicKey(publicKey);
                 stack.push(publicKeyHash);
             }else if(ByteUtil.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode)){
                 if(stack.size()<2){
@@ -70,4 +72,30 @@ public class StackBasedVirtualMachine extends VirtualMachine {
         return stack;
     }
 
+    public boolean checkTransactionScript(Transaction transaction) {
+        try{
+            List<TransactionInput> inputs = transaction.getInputs();
+            if(inputs != null && inputs.size()!=0){
+                for(TransactionInput transactionInput:inputs){
+                    //锁(交易输出脚本)
+                    OutputScript outputScript = transactionInput.getUnspentTransactionOutput().getOutputScript();
+                    //钥匙(交易输入脚本)
+                    InputScript inputScript = transactionInput.getInputScript();
+                    //完整脚本
+                    Script script = ScriptTool.createScript(inputScript,outputScript);
+                    //执行脚本
+                    ScriptExecuteResult scriptExecuteResult = executeScript(transaction,script);
+                    //脚本执行结果是个栈，如果栈有且只有一个元素，且这个元素是0x01，则解锁成功。
+                    boolean executeSuccess = scriptExecuteResult.size()==1 && ByteUtil.equals(BooleanEnum.TRUE.getCode(),HexUtil.hexStringToBytes(scriptExecuteResult.pop()));
+                    if(!executeSuccess){
+                        return false;
+                    }
+                }
+            }
+        }catch (Exception e){
+            LogUtil.error("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。",e);
+            return false;
+        }
+        return true;
+    }
 }

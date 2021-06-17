@@ -1,15 +1,11 @@
 package com.xingkaichun.helloworldblockchain.core.tools;
 
-import com.xingkaichun.helloworldblockchain.core.VirtualMachine;
-import com.xingkaichun.helloworldblockchain.core.impl.StackBasedVirtualMachine;
-import com.xingkaichun.helloworldblockchain.core.model.script.*;
+
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionInput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionType;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
-import com.xingkaichun.helloworldblockchain.crypto.ByteUtil;
-import com.xingkaichun.helloworldblockchain.crypto.HexUtil;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 import com.xingkaichun.helloworldblockchain.util.ListUtil;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
@@ -59,9 +55,9 @@ public class TransactionTool {
      * 交易手续费（只计算标准交易的手续费，创世交易抛出异常）
      */
     public static long getTransactionFee(Transaction transaction) {
-        if(transaction.getTransactionType() == TransactionType.STANDARD){
-            long fee = getInputValue(transaction) - getOutputValue(transaction);
-            return fee;
+        if(transaction.getTransactionType() == TransactionType.STANDARD_TRANSACTION){
+            long transactionFee = getInputValue(transaction) - getOutputValue(transaction);
+            return transactionFee;
         }else {
             throw new RuntimeException("只能计算标准交易类型的手续费");
         }
@@ -70,7 +66,7 @@ public class TransactionTool {
      * 交易费率（只计算标准交易的手续费，创世交易抛出异常）
      */
     public static long getTransactionFeeRate(Transaction transaction) {
-        if(transaction.getTransactionType() == TransactionType.STANDARD){
+        if(transaction.getTransactionType() == TransactionType.STANDARD_TRANSACTION){
             return getTransactionFee(transaction)/SizeTool.calculateTransactionSize(transaction);
         }else {
             throw new RuntimeException("只能计算标准交易类型的交易费率");
@@ -93,45 +89,6 @@ public class TransactionTool {
         TransactionDto transactionDto = Model2DtoTool.transaction2TransactionDto(transaction);
         return TransactionDtoTool.signature(privateKey,transactionDto);
     }
-
-
-
-
-    /**
-     * 校验用户花费的是自己的钱吗，用户只可以花费自己的钱。专业点的说法，校验UTXO所有权，用户只可以花费自己拥有的UTXO。
-     * 用户如何能证明自己拥有这个UTXO，只要用户能创建出一个能解锁(该UTXO对应的交易输出脚本)的交易输入脚本，就证明了用户拥有该UTXO。
-     * 这是因为锁(交易输出脚本)是用户创建的，自然只有该用户有对应的钥匙(交易输入脚本)，自然意味着有钥匙的用户拥有这把锁的所有权。
-     */
-    public static boolean checkUtxoOwnership(Transaction transaction) {
-        try{
-            List<TransactionInput> inputs = transaction.getInputs();
-            if(inputs != null && inputs.size()!=0){
-                for(TransactionInput transactionInput:inputs){
-                    //锁(交易输出脚本)
-                    OutputScript outputScript = transactionInput.getUnspentTransactionOutput().getOutputScript();
-                    //钥匙(交易输入脚本)
-                    InputScript inputScript = transactionInput.getInputScript();
-                    //完整脚本
-                    Script script = ScriptTool.createScript(inputScript,outputScript);
-                    VirtualMachine virtualMachine = new StackBasedVirtualMachine();
-                    //执行脚本
-                    ScriptExecuteResult scriptExecuteResult = virtualMachine.executeScript(transaction,script);
-                    //脚本执行结果是个栈，如果栈有且只有一个元素，且这个元素是0x01，则解锁成功。
-                    boolean executeSuccess = scriptExecuteResult.size()==1 && ByteUtil.equals(BooleanEnum.TRUE.getCode(),HexUtil.hexStringToBytes(scriptExecuteResult.pop()));
-                    if(!executeSuccess){
-                        return false;
-                    }
-                }
-            }
-        }catch (Exception e){
-            LogUtil.error("交易校验失败：交易[输入脚本]解锁交易[输出脚本]异常。",e);
-            return false;
-        }
-        return true;
-    }
-
-
-
 
     /**
      * 计算交易哈希
@@ -173,9 +130,9 @@ public class TransactionTool {
         }
 
         //根据交易类型，做进一步的校验
-        if(transaction.getTransactionType() == TransactionType.GENESIS){
+        if(transaction.getTransactionType() == TransactionType.GENESIS_TRANSACTION){
             //没有需要校验的，跳过。
-        } else if(transaction.getTransactionType() == TransactionType.STANDARD){
+        } else if(transaction.getTransactionType() == TransactionType.STANDARD_TRANSACTION){
             //交易输入必须要大于等于交易输出
             long inputsValue = TransactionTool.getInputValue(transaction);
             long outputsValue = TransactionTool.getOutputValue(transaction);
@@ -270,10 +227,10 @@ public class TransactionTool {
     }
 
     public static long calculateTransactionFee(Transaction transaction) {
-        if(transaction.getTransactionType() == TransactionType.GENESIS){
+        if(transaction.getTransactionType() == TransactionType.GENESIS_TRANSACTION){
             //创世交易没有交易手续费
             return 0;
-        }else if(transaction.getTransactionType() == TransactionType.STANDARD){
+        }else if(transaction.getTransactionType() == TransactionType.STANDARD_TRANSACTION){
             long inputsValue = getInputValue(transaction);
             long outputsValue = getOutputValue(transaction);
             return inputsValue - outputsValue;

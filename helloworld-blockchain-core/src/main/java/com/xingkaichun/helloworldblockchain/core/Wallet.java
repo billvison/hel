@@ -14,6 +14,9 @@ import java.util.List;
  */
 public abstract class Wallet {
 
+    //钱包所在的区块链
+    protected BlockchainDatabase blockchainDatabase;
+
     public abstract List<Account> getAllAccounts();
 
     public abstract Account createAccount();
@@ -23,8 +26,14 @@ public abstract class Wallet {
     public abstract void saveAccount(Account account);
 
     public abstract void deleteAccountByAddress(String address);
+
+    /**
+     * 获取地址余额
+     */
+    public abstract long getBalanceByAddress(String address);
+
     /**
      * 构建交易。
      */
-    public abstract BuildTransactionResponse buildTransaction(BlockchainDatabase blockchainDataBase, BuildTransactionRequest request) ;
+    public abstract BuildTransactionResponse buildTransaction(BuildTransactionRequest request) ;
 }

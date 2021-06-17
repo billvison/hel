@@ -168,7 +168,7 @@ public class ScriptTool {
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_DUP.getCode()));
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_HASH160.getCode()));
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_PUSHDATA.getCode()));
-        String publicKeyHash = AccountUtil.publicKeyHashFromStringAddress(address);
+        String publicKeyHash = AccountUtil.publicKeyHashFromAddress(address);
         script.add(publicKeyHash);
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_EQUALVERIFY.getCode()));
         script.add(HexUtil.bytesToHexString(OperationCodeEnum.OP_CHECKSIG.getCode()));

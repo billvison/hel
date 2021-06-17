@@ -5,7 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.netcore.dto.*;
 import com.xingkaichun.helloworldblockchain.setting.Setting;
 import com.xingkaichun.helloworldblockchain.util.LogUtil;
-import com.xingkaichun.helloworldblockchain.util.LongUtil;
+import com.xingkaichun.helloworldblockchain.util.NumberUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class SizeTool {
 
         //校验区块随机数大小
         long nonceSize = stringSize(blockDto.getNonce());
-        if(!LongUtil.isEquals(nonceSize, Setting.BlockSetting.NONCE_SIZE)){
+        if(!NumberUtil.isEquals(nonceSize, Setting.BlockSetting.NONCE_SIZE)){
             LogUtil.debug(StringUtil.format("nonce[%s]长度不是[%s]。",blockDto.getNonce(), Setting.BlockSetting.NONCE_SIZE));
             return false;
         }

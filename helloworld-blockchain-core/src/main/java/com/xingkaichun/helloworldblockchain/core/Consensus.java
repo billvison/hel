@@ -29,6 +29,11 @@ public abstract class Consensus implements Serializable {
      * ，如果进一步校验通过的话，那么这个区块就被允许添加进区块链了。
      * 如果区块不满足共识的要求，那么这个区块一定是一个非法的区块，非法的区块一定不能被添加进区块链。
      */
-    public abstract boolean checkConsensus(BlockchainDatabase blockchainDataBase, Block block) ;
+    public abstract boolean checkConsensus(BlockchainDatabase blockchainDatabase, Block block) ;
+
+    /**
+     * 计算目标区块的挖矿难度
+     */
+    public abstract String calculateDifficult(BlockchainDatabase blockchainDatabase, Block block) ;
 }
 

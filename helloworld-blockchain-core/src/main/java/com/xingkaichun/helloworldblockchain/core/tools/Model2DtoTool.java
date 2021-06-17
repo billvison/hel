@@ -19,9 +19,6 @@ import java.util.List;
 public class Model2DtoTool {
 
     public static BlockDto block2BlockDto(Block block) {
-        if(block == null){
-            return null;
-        }
         List<TransactionDto> transactionDtoList = new ArrayList<>();
         List<Transaction> transactionList = block.getTransactions();
         if(transactionList != null){
@@ -33,7 +30,7 @@ public class Model2DtoTool {
 
         BlockDto blockDto = new BlockDto();
         blockDto.setTimestamp(block.getTimestamp());
-        blockDto.setPreviousHash(block.getPreviousBlockHash());
+        blockDto.setPreviousHash(block.getPreviousHash());
         blockDto.setTransactions(transactionDtoList);
         blockDto.setNonce(block.getNonce());
         return blockDto;

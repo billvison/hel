@@ -14,9 +14,9 @@ public enum TransactionType {
      * ，它没有交易输入，它的交易输入被允许小于交易输出，它的交易输出被用于发放矿工挖矿激励，它是维持区块链网络存在的动力之一，
      * ，所以它值得被赋予一个自己名字，与其余的标准交易作以区分，我称呼它为创世交易。
      */
-    GENESIS,
+    GENESIS_TRANSACTION,
     /**
      * 标准交易
      */
-    STANDARD
+    STANDARD_TRANSACTION
 }

@@ -16,8 +16,6 @@ public class MerkleTreeUtil {
     /**
      * 计算默克尔树根
      * https://en.bitcoin.it/wiki/Protocol_documentation#Merkle_Trees
-     * https://blog.csdn.net/jason_cuijiahui/article/details/79011118
-     * https://www.cnblogs.com/web-java/articles/5544093.html
      * 摘抄于bitcoinj-core-0.15.8.jar!\org\bitcoinj\core\Block.java MerkleRoot()方法
      *
      * @author 邢开春 409060350@qq.com

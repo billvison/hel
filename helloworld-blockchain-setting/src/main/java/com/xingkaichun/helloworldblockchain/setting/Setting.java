@@ -8,13 +8,18 @@ package com.xingkaichun.helloworldblockchain.setting;
  */
 public class Setting {
 
-    //区块链网络使用的端口
-    public static final int PORT = 8888;
-    //区块链网络中的种子节点
-    public static final String[] SEED_NODES = new String[]{"139.9.125.122","119.3.57.171"};
+    /**
+     * 网络设置
+     */
+    public static class NetworkSetting {
+        //区块链网络使用的端口
+        public static final int PORT = 8888;
+        //区块链网络中的种子节点
+        public static final String[] SEED_NODES = new String[]{"139.9.125.122","119.3.57.171"};
+    }
 
     /**
-     * 创世区块
+     * 创世区块设置
      */
     public static class GenesisBlockSetting {
         //创世区块的高度

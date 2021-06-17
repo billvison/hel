@@ -16,12 +16,12 @@ public class NetCoreConfigurationImpl implements NetCoreConfiguration {
     //节点搜索器"是否是自动搜索新区块"状态存入到数据库时的主键
     private static final String AUTO_SEARCH_BLOCK_OPTION_KEY = "IS_AUTO_SEARCH_BLOCK";
     //节点搜索器"是否是自动搜索新区块"开关的默认状态
-    private static final boolean AUTO_SEARCH_BLOCK_OPTION_DEFAULT_VALUE = false;
+    private static final boolean AUTO_SEARCH_BLOCK_OPTION_DEFAULT_VALUE = true;
 
     //节点搜索器'是否自动搜索节点'状态存入到数据库时的主键
     private static final String AUTO_SEARCH_NODE_OPTION_KEY = "IS_AUTO_SEARCH_NODE";
     //节点搜索器'是否自动搜索节点'开关的默认状态
-    private static final boolean AUTO_SEARCH_NODE_OPTION_DEFAULT_VALUE = false;
+    private static final boolean AUTO_SEARCH_NODE_OPTION_DEFAULT_VALUE = true;
 
     //在区块链网络中自动搜寻新的节点的间隔时间
     private static final long SEARCH_NODE_TIME_INTERVAL = 1000 * 60 * 2;

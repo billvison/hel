@@ -40,12 +40,12 @@ public class StructureTool {
         for(int i=0; i<transactions.size(); i++){
             Transaction transaction = transactions.get(i);
             if(i == 0){
-                if(transaction.getTransactionType() != TransactionType.GENESIS){
+                if(transaction.getTransactionType() != TransactionType.GENESIS_TRANSACTION){
                     LogUtil.debug("区块数据异常：区块第一笔交易必须是创世交易。");
                     return false;
                 }
             }else {
-                if(transaction.getTransactionType() != TransactionType.STANDARD){
+                if(transaction.getTransactionType() != TransactionType.STANDARD_TRANSACTION){
                     LogUtil.debug("区块数据异常：区块非第一笔交易必须是标准交易。");
                     return false;
                 }
@@ -64,7 +64,7 @@ public class StructureTool {
      * 校验交易的结构
      */
     public static boolean checkTransactionStructure(Transaction transaction) {
-        if(transaction.getTransactionType() == TransactionType.GENESIS){
+        if(transaction.getTransactionType() == TransactionType.GENESIS_TRANSACTION){
             List<TransactionInput> inputs = transaction.getInputs();
             if(inputs != null && inputs.size()!=0){
                 LogUtil.debug("交易数据异常：创世交易不能有交易输入。");
@@ -75,7 +75,7 @@ public class StructureTool {
                 LogUtil.debug("交易数据异常：创世交易有且只能有一笔交易输出。");
                 return false;
             }
-        }else if(transaction.getTransactionType() == TransactionType.STANDARD){
+        }else if(transaction.getTransactionType() == TransactionType.STANDARD_TRANSACTION){
             List<TransactionInput> inputs = transaction.getInputs();
             if(inputs == null || inputs.size()<1){
                 LogUtil.debug("交易数据异常：标准交易的交易输入数量至少是1。");

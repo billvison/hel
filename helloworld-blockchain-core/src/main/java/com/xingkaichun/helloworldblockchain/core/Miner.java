@@ -12,15 +12,15 @@ public abstract class Miner {
     //矿工钱包：矿工的挖矿奖励会放到钱包里。
     protected Wallet wallet;
     //矿工挖矿所在的区块链
-    protected BlockchainDatabase blockchainDataBase;
+    protected BlockchainDatabase blockchainDatabase;
     //未确认交易数据库：矿工从未确认交易数据库里获取挖矿的原材料(未确认交易数据)
-    protected UnconfirmedTransactionDatabase unconfirmedTransactionDataBase;
+    protected UnconfirmedTransactionDatabase unconfirmedTransactionDatabase;
 
-    public Miner(CoreConfiguration coreConfiguration, Wallet wallet, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase) {
+    public Miner(CoreConfiguration coreConfiguration, Wallet wallet, BlockchainDatabase blockchainDatabase, UnconfirmedTransactionDatabase unconfirmedTransactionDatabase) {
         this.coreConfiguration = coreConfiguration;
         this.wallet = wallet;
-        this.blockchainDataBase = blockchainDataBase;
-        this.unconfirmedTransactionDataBase = unconfirmedTransactionDataBase;
+        this.blockchainDatabase = blockchainDatabase;
+        this.unconfirmedTransactionDatabase = unconfirmedTransactionDatabase;
     }
 
 
@@ -57,12 +57,12 @@ public abstract class Miner {
         return wallet;
     }
 
-    public BlockchainDatabase getBlockchainDataBase() {
-        return blockchainDataBase;
+    public BlockchainDatabase getBlockchainDatabase() {
+        return blockchainDatabase;
     }
 
-    public UnconfirmedTransactionDatabase getUnconfirmedTransactionDataBase() {
-        return unconfirmedTransactionDataBase;
+    public UnconfirmedTransactionDatabase getUnconfirmedTransactionDatabase() {
+        return unconfirmedTransactionDatabase;
     }
 
     public CoreConfiguration getCoreConfiguration() {

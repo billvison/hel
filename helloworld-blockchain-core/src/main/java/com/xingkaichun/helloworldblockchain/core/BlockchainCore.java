@@ -5,6 +5,7 @@ import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionRe
 import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionResponse;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.netcore.dto.BlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.TransactionDto;
 
 import java.util.List;
@@ -34,19 +35,19 @@ public abstract class BlockchainCore {
     //配置
     protected CoreConfiguration coreConfiguration;
     //区块链数据库
-    protected BlockchainDatabase blockchainDataBase ;
+    protected BlockchainDatabase blockchainDatabase ;
     //未确认交易数据库
-    protected UnconfirmedTransactionDatabase unconfirmedTransactionDataBase;
+    protected UnconfirmedTransactionDatabase unconfirmedTransactionDatabase;
     //矿工
     protected Miner miner ;
     //钱包
     protected Wallet wallet ;
 
 
-    public BlockchainCore(CoreConfiguration coreConfiguration, BlockchainDatabase blockchainDataBase, UnconfirmedTransactionDatabase unconfirmedTransactionDataBase, Wallet wallet, Miner miner) {
+    public BlockchainCore(CoreConfiguration coreConfiguration, BlockchainDatabase blockchainDatabase, UnconfirmedTransactionDatabase unconfirmedTransactionDatabase, Wallet wallet, Miner miner) {
         this.coreConfiguration = coreConfiguration;
-        this.blockchainDataBase = blockchainDataBase;
-        this.unconfirmedTransactionDataBase = unconfirmedTransactionDataBase;
+        this.blockchainDatabase = blockchainDatabase;
+        this.unconfirmedTransactionDatabase = unconfirmedTransactionDatabase;
         this.wallet = wallet;
         this.miner = miner;
     }
@@ -58,7 +59,10 @@ public abstract class BlockchainCore {
 
 
 
-
+    /**
+     * 将一个区块添加到区块链
+     */
+    public abstract boolean addBlockDto(BlockDto blockDto);
     /**
      * 将一个区块添加到区块链
      */
@@ -135,12 +139,12 @@ public abstract class BlockchainCore {
 
 
     //region get set
-    public BlockchainDatabase getBlockchainDataBase() {
-        return blockchainDataBase;
+    public BlockchainDatabase getBlockchainDatabase() {
+        return blockchainDatabase;
     }
 
-    public UnconfirmedTransactionDatabase getUnconfirmedTransactionDataBase() {
-        return unconfirmedTransactionDataBase;
+    public UnconfirmedTransactionDatabase getUnconfirmedTransactionDatabase() {
+        return unconfirmedTransactionDatabase;
     }
 
     public Miner getMiner() {

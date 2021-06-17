@@ -3,6 +3,7 @@ package com.xingkaichun.helloworldblockchain.core;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.Transaction;
 import com.xingkaichun.helloworldblockchain.core.model.transaction.TransactionOutput;
+import com.xingkaichun.helloworldblockchain.netcore.dto.BlockDto;
 
 
 /**
@@ -17,10 +18,13 @@ public abstract class BlockchainDatabase {
     protected Consensus consensus ;
     //矿工激励
     protected Incentive incentive ;
+    //虚拟机
+    protected VirtualMachine virtualMachine;
 
-    public BlockchainDatabase(Consensus consensus, Incentive incentive) {
+    public BlockchainDatabase(Consensus consensus, Incentive incentive,VirtualMachine virtualMachine) {
         this.consensus = consensus;
         this.incentive = incentive;
+        this.virtualMachine = virtualMachine;
     }
     //endregion
 
@@ -30,7 +34,7 @@ public abstract class BlockchainDatabase {
     /**
      * 将一个区块添加到区块链的尾部。
      */
-    public abstract boolean addBlock(Block block) ;
+    public abstract boolean addBlockDto(BlockDto blockDto) ;
     /**
      * 删除区块链的尾巴区块(最后一个区块)
      */

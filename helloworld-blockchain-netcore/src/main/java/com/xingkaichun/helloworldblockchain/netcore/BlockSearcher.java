@@ -4,7 +4,6 @@ import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
 import com.xingkaichun.helloworldblockchain.core.model.Block;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockDtoTool;
 import com.xingkaichun.helloworldblockchain.core.tools.BlockTool;
-import com.xingkaichun.helloworldblockchain.core.tools.Dto2ModelTool;
 import com.xingkaichun.helloworldblockchain.netcore.client.BlockchainNodeClientImpl;
 import com.xingkaichun.helloworldblockchain.netcore.dto.BlockDto;
 import com.xingkaichun.helloworldblockchain.netcore.dto.GetBlockRequest;
@@ -76,7 +75,7 @@ public class BlockSearcher {
                     return;
                 }
                 //本地区块链高度小于远程节点区块链高度，此时需要将远程节点的区块同步到本地区块链。
-                if(LongUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
+                if(NumberUtil.isLessThan(localBlockchainHeight,node.getBlockchainHeight())){
                     try {
                         //同步主区块链核心数据到从区块链核心
                         copyMasterBlockchainCoreToSlaveBlockchainCore(blockchainCore, slaveBlockchainCore);
@@ -160,14 +159,14 @@ public class BlockSearcher {
         }
         //至此，主链、从链高度至少都为1
         //判断主链是否需要同步从链
-        if(LongUtil.isGreatEqualThan(masterBlockchainTailBlock.getHeight(),slaveBlockchainTailBlock.getHeight())){
+        if(NumberUtil.isGreatEqualThan(masterBlockchainTailBlock.getHeight(),slaveBlockchainTailBlock.getHeight())){
             return;
         }
 
         //是否硬分叉
         long blockHeight = masterBlockchainTailBlock.getHeight();
         while (true){
-            if(LongUtil.isLessEqualThan(blockHeight, Setting.GenesisBlockSetting.HEIGHT)){
+            if(NumberUtil.isLessEqualThan(blockHeight, Setting.GenesisBlockSetting.HEIGHT)){
                 break;
             }
             Block masterBlock = masterBlockchainCore.queryBlockByBlockHeight(blockHeight);
@@ -175,7 +174,7 @@ public class BlockSearcher {
             if(BlockTool.simpleCheckBlockEquals(masterBlock,slaveBlock)){
                 break;
             }
-            if(LongUtil.isGreatEqualThan(masterBlockchainTailBlock.getHeight()-blockHeight+1, netCoreConfiguration.getForkBlockCount())){
+            if(NumberUtil.isGreatEqualThan(masterBlockchainTailBlock.getHeight()-blockHeight+1, netCoreConfiguration.getForkBlockCount())){
                 //硬分叉，终止。
                 return;
             }
@@ -186,7 +185,7 @@ public class BlockSearcher {
         //删除主区块链分叉区块
         long masterBlockchainTailBlockHeight = masterBlockchainTailBlock.getHeight();
         while (true){
-            if(LongUtil.isLessEqualThan(masterBlockchainTailBlockHeight, Setting.GenesisBlockSetting.HEIGHT)){
+            if(NumberUtil.isLessEqualThan(masterBlockchainTailBlockHeight, Setting.GenesisBlockSetting.HEIGHT)){
                 break;
             }
             Block masterBlock = masterBlockchainCore.queryBlockByBlockHeight(masterBlockchainTailBlockHeight);
@@ -223,7 +222,7 @@ public class BlockSearcher {
 
         //本地区块链与node区块链是否分叉？
         boolean fork = false;
-        if(LongUtil.isEquals(masterBlockchainCoreTailBlockHeight, Setting.GenesisBlockSetting.HEIGHT)){
+        if(NumberUtil.isEquals(masterBlockchainCoreTailBlockHeight, Setting.GenesisBlockSetting.HEIGHT)){
             fork = false;
         } else {
             GetBlockRequest getBlockRequest = new GetBlockRequest();
@@ -267,12 +266,12 @@ public class BlockSearcher {
                     break;
                 }
                 //分叉长度过大，不可同步。这里，认为这已经形成了硬分叉(两条完全不同的区块链)。
-                if (LongUtil.isGreatThan(masterBlockchainCoreTailBlockHeight, forkBlockHeight + netCoreConfiguration.getForkBlockCount())) {
+                if (NumberUtil.isGreatThan(masterBlockchainCoreTailBlockHeight, forkBlockHeight + netCoreConfiguration.getForkBlockCount())) {
                     //硬分叉了，删除该节点
                     nodeService.deleteNode(node.getIp());
                     return;
                 }
-                if (LongUtil.isLessEqualThan(forkBlockHeight, Setting.GenesisBlockSetting.HEIGHT+1)) {
+                if (NumberUtil.isLessEqualThan(forkBlockHeight, Setting.GenesisBlockSetting.HEIGHT+1)) {
                     //再向后已经没有区块了
                     break;
                 }
@@ -291,15 +290,14 @@ public class BlockSearcher {
                 if(blockDto == null){
                     return;
                 }
-                Block block = Dto2ModelTool.blockDto2Block(slaveBlockchainCore.getBlockchainDataBase(),blockDto);
-                boolean isAddBlockSuccess = slaveBlockchainCore.addBlock(block);
+                boolean isAddBlockSuccess = slaveBlockchainCore.addBlockDto(blockDto);
                 if(!isAddBlockSuccess){
                     return;
                 }
                 forkBlockHeight++;
 
                 //若是有分叉时，一次同步的最后一个区块至少要比本地区块链的高度大于N个
-                if(LongUtil.isGreatEqualThan(forkBlockHeight,masterBlockchainCoreTailBlockHeight + netCoreConfiguration.getForkBlockCount())){
+                if(NumberUtil.isGreatEqualThan(forkBlockHeight,masterBlockchainCoreTailBlockHeight + netCoreConfiguration.getForkBlockCount())){
                     return;
                 }
             }
@@ -317,8 +315,7 @@ public class BlockSearcher {
                 if(blockDto == null){
                     return;
                 }
-                Block block = Dto2ModelTool.blockDto2Block(masterBlockchainCore.getBlockchainDataBase(),blockDto);
-                boolean isAddBlockSuccess = masterBlockchainCore.addBlock(block);
+                boolean isAddBlockSuccess = masterBlockchainCore.addBlockDto(blockDto);
                 if(!isAddBlockSuccess){
                     return;
                 }

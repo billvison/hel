@@ -57,7 +57,7 @@ public class SeedNodeInitializer {
      * 添加种子节点
      */
     private void addSeedNode() {
-        for(String nodeIp: Setting.SEED_NODES){
+        for(String nodeIp: Setting.NetworkSetting.SEED_NODES){
             Node node = nodeService.queryNode(nodeIp);
             if(node == null){
                 if(netCoreConfiguration.isAutoSearchNode()){

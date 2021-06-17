@@ -7,10 +7,10 @@ import com.xingkaichun.helloworldblockchain.application.vo.framwork.ServiceResul
 import com.xingkaichun.helloworldblockchain.application.vo.transaction.SubmitTransactionToBlockchainNetworkRequest;
 import com.xingkaichun.helloworldblockchain.application.vo.transaction.SubmitTransactionToBlockchainNetworkResponse;
 import com.xingkaichun.helloworldblockchain.core.BlockchainCore;
+import com.xingkaichun.helloworldblockchain.core.Wallet;
 import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionRequest;
 import com.xingkaichun.helloworldblockchain.core.model.wallet.BuildTransactionResponse;
 import com.xingkaichun.helloworldblockchain.core.model.wallet.Recipient;
-import com.xingkaichun.helloworldblockchain.core.tools.WalletTool;
 import com.xingkaichun.helloworldblockchain.crypto.AccountUtil;
 import com.xingkaichun.helloworldblockchain.crypto.model.Account;
 import com.xingkaichun.helloworldblockchain.netcore.BlockchainNetCore;
@@ -89,7 +89,7 @@ public class WalletApplicationController {
             if(StringUtil.isNullOrEmpty(privateKey)){
                 return ServiceResult.createFailServiceResult("账户私钥不能为空。");
             }
-            Account account = AccountUtil.accountFromStringPrivateKey(privateKey);
+            Account account = AccountUtil.accountFromPrivateKey(privateKey);
             blockchainCore.getWallet().saveAccount(account);
             SaveAccountResponse response = new SaveAccountResponse();
             response.setAddAccountSuccess(true);
@@ -128,7 +128,8 @@ public class WalletApplicationController {
     @RequestMapping(value = WalletApplicationApi.QUERY_ALL_ACCOUNTS,method={RequestMethod.GET,RequestMethod.POST})
     public ServiceResult<QueryAllAccountsResponse> queryAllAccounts(@RequestBody QueryAllAccountsRequest request){
         try {
-            List<Account> allAccounts = blockchainCore.getWallet().getAllAccounts();
+            Wallet wallet = blockchainCore.getWallet();
+            List<Account> allAccounts = wallet.getAllAccounts();
 
             List<QueryAllAccountsResponse.AccountVo> accountVoList = new ArrayList<>();
             if(allAccounts != null){
@@ -136,7 +137,7 @@ public class WalletApplicationController {
                     QueryAllAccountsResponse.AccountVo accountVo = new QueryAllAccountsResponse.AccountVo();
                     accountVo.setAddress(account.getAddress());
                     accountVo.setPrivateKey(account.getPrivateKey());
-                    accountVo.setValue(WalletTool.obtainBalance(blockchainCore,account.getAddress()));
+                    accountVo.setValue(wallet.getBalanceByAddress(account.getAddress()));
                     accountVoList.add(accountVo);
                 }
             }

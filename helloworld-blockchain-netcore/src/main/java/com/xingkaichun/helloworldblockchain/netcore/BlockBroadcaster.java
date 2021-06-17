@@ -57,7 +57,7 @@ public class BlockBroadcaster {
         }
 
         long blockchainHeight = blockchainCore.queryBlockchainHeight();
-        if(LongUtil.isLessEqualThan(blockchainHeight, Setting.GenesisBlockSetting.HEIGHT)){
+        if(NumberUtil.isLessEqualThan(blockchainHeight, Setting.GenesisBlockSetting.HEIGHT)){
             return;
         }
         Block block = blockchainCore.queryTailBlock();
@@ -65,9 +65,9 @@ public class BlockBroadcaster {
 
         //按照节点的高度进行排序
         nodes.sort((Node node1, Node node2) -> {
-            if (LongUtil.isGreatThan(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
+            if (NumberUtil.isGreatThan(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
                 return -1;
-            } else if (LongUtil.isEquals(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
+            } else if (NumberUtil.isEquals(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
                 return 0;
             } else {
                 return 1;
@@ -78,7 +78,7 @@ public class BlockBroadcaster {
         int broadcastNodeCount = 0;
         for(Node node:nodes){
             try {
-                if(LongUtil.isLessEqualThan(blockchainHeight,node.getBlockchainHeight())){
+                if(NumberUtil.isLessEqualThan(blockchainHeight,node.getBlockchainHeight())){
                     continue;
                 }
                 PostBlockRequest postBlockRequest = new PostBlockRequest();

@@ -6,7 +6,7 @@ import com.xingkaichun.helloworldblockchain.netcore.dto.PostBlockchainHeightRequ
 import com.xingkaichun.helloworldblockchain.netcore.model.Node;
 import com.xingkaichun.helloworldblockchain.netcore.service.NetCoreConfiguration;
 import com.xingkaichun.helloworldblockchain.netcore.service.NodeService;
-import com.xingkaichun.helloworldblockchain.util.LongUtil;
+import com.xingkaichun.helloworldblockchain.util.NumberUtil;
 import com.xingkaichun.helloworldblockchain.util.SleepUtil;
 import com.xingkaichun.helloworldblockchain.util.StringUtil;
 import com.xingkaichun.helloworldblockchain.util.SystemUtil;
@@ -61,9 +61,9 @@ public class BlockchainHeightBroadcaster {
         long blockchainHeight = blockchainCore.queryBlockchainHeight();
         //按照节点的高度进行排序
         nodes.sort((Node node1, Node node2) -> {
-            if (LongUtil.isGreatThan(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
+            if (NumberUtil.isGreatThan(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
                 return -1;
-            } else if (LongUtil.isEquals(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
+            } else if (NumberUtil.isEquals(node1.getBlockchainHeight(), node2.getBlockchainHeight())) {
                 return 0;
             } else {
                 return 1;
@@ -81,7 +81,7 @@ public class BlockchainHeightBroadcaster {
         int broadcastNodeCount = 0;
         for(Node node:nodes){
             try {
-                if(LongUtil.isLessEqualThan(blockchainHeight,node.getBlockchainHeight())){
+                if(NumberUtil.isLessEqualThan(blockchainHeight,node.getBlockchainHeight())){
                     continue;
                 }
                 PostBlockchainHeightRequest postBlockchainHeightRequest = new PostBlockchainHeightRequest();
