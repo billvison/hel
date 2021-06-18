@@ -326,13 +326,13 @@ public class AccountUtil {
     private static String base58AddressFromPublicKeyHash0(byte[] bytesPublicKeyHash) {
 
         //地址版本号(1个字节)与公钥哈希(20个字节)
-        byte[] bytesVersionAndPublicKeyHash = ByteUtil.concat(new byte[]{VERSION},bytesPublicKeyHash);
+        byte[] bytesVersionAndPublicKeyHash = ByteUtil.concatenate(new byte[]{VERSION},bytesPublicKeyHash);
 
         //地址校验码(4个字节)
         byte[] bytesCheckCode = ByteUtil.copy(Sha256Util.doubleDigest(bytesVersionAndPublicKeyHash), 0, 4);
 
         //地址(25个字节)=地址版本号(1个字节)+公钥哈希(20个字节)+地址校验码(4个字节)
-        byte[] bytesAddress = ByteUtil.concat(bytesVersionAndPublicKeyHash,bytesCheckCode);
+        byte[] bytesAddress = ByteUtil.concatenate(bytesVersionAndPublicKeyHash,bytesCheckCode);
 
         //用Base58编码地址
         String base58Address = Base58Util.encode(bytesAddress);

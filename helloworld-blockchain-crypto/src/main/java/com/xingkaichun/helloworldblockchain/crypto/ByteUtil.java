@@ -46,13 +46,13 @@ public class ByteUtil {
     /**
      * 拼接数组。
      */
-    public static byte[] concat(byte[] byteArray1,byte[] byteArray2) {
+    public static byte[] concatenate(byte[] byteArray1,byte[] byteArray2) {
         return Bytes.concat(byteArray1,byteArray2);
     }
-    public static byte[] concat3(byte[] byteArray1,byte[] byteArray2,byte[] byteArray3) {
+    public static byte[] concatenate3(byte[] byteArray1,byte[] byteArray2,byte[] byteArray3) {
         return Bytes.concat(byteArray1,byteArray2,byteArray3);
     }
-    public static byte[] concat4(byte[] byteArray1,byte[] byteArray2,byte[] byteArray3,byte[] byteArray4) {
+    public static byte[] concatenate4(byte[] byteArray1,byte[] byteArray2,byte[] byteArray3,byte[] byteArray4) {
         return Bytes.concat(byteArray1,byteArray2,byteArray3,byteArray4);
     }
 
@@ -60,8 +60,8 @@ public class ByteUtil {
      * 拼接长度。
      * 计算[传入字节数组]的长度，然后将长度转为8个字节的字节数组(大端)，然后将长度字节数组拼接在[传入字节数组]前，然后返回。
      */
-    public static byte[] concatLength(byte[] value) {
-        return concat(long8ToByte8(value.length),value);
+    public static byte[] concatenateLength(byte[] value) {
+        return concatenate(long8ToByte8(value.length),value);
     }
 
     /**
@@ -70,7 +70,7 @@ public class ByteUtil {
     public static byte[] flat(List<byte[]> values) {
         byte[] concatBytes = new byte[0];
         for(byte[] value:values){
-            concatBytes = concat(concatBytes,value);
+            concatBytes = concatenate(concatBytes,value);
         }
         return concatBytes;
     }
@@ -78,9 +78,9 @@ public class ByteUtil {
     /**
      * 碾平字节数组列表为新的字节数组，然后拼接长度并返回。
      */
-    public static byte[] flatAndConcatLength(List<byte[]> values) {
+    public static byte[] flatAndConcatenateLength(List<byte[]> values) {
         byte[] flatBytes = flat(values);
-        return concatLength(flatBytes);
+        return concatenateLength(flatBytes);
     }
 
     public static boolean equals(byte[] a, byte[] a2) {

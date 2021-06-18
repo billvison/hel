@@ -54,13 +54,13 @@ public class TransactionDtoTool {
                 byte[] bytesTransactionHash = HexUtil.hexStringToBytes(transactionInputDto.getTransactionHash());
                 byte[] bytesTransactionOutputIndex = ByteUtil.long8ToByte8(transactionInputDto.getTransactionOutputIndex());
 
-                byte[] bytesUnspentTransactionOutput = ByteUtil.concat(ByteUtil.concatLength(bytesTransactionHash),
-                        ByteUtil.concatLength(bytesTransactionOutputIndex));
+                byte[] bytesUnspentTransactionOutput = ByteUtil.concatenate(ByteUtil.concatenateLength(bytesTransactionHash),
+                        ByteUtil.concatenateLength(bytesTransactionOutputIndex));
                 if(!omitInputScript){
                     byte[] bytesInputScript = ScriptTool.bytesScript(transactionInputDto.getInputScript());
-                    bytesUnspentTransactionOutput = ByteUtil.concat(bytesUnspentTransactionOutput,ByteUtil.concatLength(bytesInputScript));
+                    bytesUnspentTransactionOutput = ByteUtil.concatenate(bytesUnspentTransactionOutput,ByteUtil.concatenateLength(bytesInputScript));
                 }
-                bytesUnspentTransactionOutputs.add(ByteUtil.concatLength(bytesUnspentTransactionOutput));
+                bytesUnspentTransactionOutputs.add(ByteUtil.concatenateLength(bytesUnspentTransactionOutput));
             }
         }
 
@@ -70,13 +70,13 @@ public class TransactionDtoTool {
             for(TransactionOutputDto transactionOutputDto:outputs){
                 byte[] bytesOutputScript = ScriptTool.bytesScript(transactionOutputDto.getOutputScript());
                 byte[] bytesValue = ByteUtil.long8ToByte8(transactionOutputDto.getValue());
-                byte[] bytesTransactionOutput = ByteUtil.concat(ByteUtil.concatLength(bytesOutputScript),ByteUtil.concatLength(bytesValue));
-                bytesTransactionOutputs.add(ByteUtil.concatLength(bytesTransactionOutput));
+                byte[] bytesTransactionOutput = ByteUtil.concatenate(ByteUtil.concatenateLength(bytesOutputScript),ByteUtil.concatenateLength(bytesValue));
+                bytesTransactionOutputs.add(ByteUtil.concatenateLength(bytesTransactionOutput));
             }
         }
 
-        byte[] data = ByteUtil.concat(ByteUtil.flatAndConcatLength(bytesUnspentTransactionOutputs),
-                ByteUtil.flatAndConcatLength(bytesTransactionOutputs));
+        byte[] data = ByteUtil.concatenate(ByteUtil.flatAndConcatenateLength(bytesUnspentTransactionOutputs),
+                ByteUtil.flatAndConcatenateLength(bytesTransactionOutputs));
         return data;
     }
     /**

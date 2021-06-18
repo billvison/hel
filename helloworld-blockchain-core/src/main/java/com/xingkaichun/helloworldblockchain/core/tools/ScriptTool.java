@@ -35,11 +35,11 @@ public class ScriptTool {
                     ByteUtil.equals(OperationCodeEnum.OP_HASH160.getCode(),bytesOperationCode) ||
                     ByteUtil.equals(OperationCodeEnum.OP_EQUALVERIFY.getCode(),bytesOperationCode) ||
                     ByteUtil.equals(OperationCodeEnum.OP_CHECKSIG.getCode(),bytesOperationCode)){
-                bytesScript = ByteUtil.concat(bytesScript, ByteUtil.concatLength(bytesOperationCode));
+                bytesScript = ByteUtil.concatenate(bytesScript, ByteUtil.concatenateLength(bytesOperationCode));
             }else if(ByteUtil.equals(OperationCodeEnum.OP_PUSHDATA.getCode(),bytesOperationCode)){
                 String operationData = script.get(++i);
                 byte[] bytesOperationData = HexUtil.hexStringToBytes(operationData);
-                bytesScript = ByteUtil.concat3(bytesScript, ByteUtil.concatLength(bytesOperationCode), ByteUtil.concatLength(bytesOperationData));
+                bytesScript = ByteUtil.concatenate3(bytesScript, ByteUtil.concatenateLength(bytesOperationCode), ByteUtil.concatenateLength(bytesOperationData));
             }else {
                 throw new RuntimeException("不能识别的指令");
             }
