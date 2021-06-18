@@ -1,7 +1,5 @@
 package com.xingkaichun.helloworldblockchain.crypto;
 
-import org.bouncycastle.util.Arrays;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +27,7 @@ public class MerkleTreeUtil {
                 int right = Math.min(left + 1, levelSize - 1);
                 byte[] leftBytes = tree.get(levelOffset + left);
                 byte[] rightBytes = tree.get(levelOffset + right);
-                tree.add(Sha256Util.doubleDigest(Arrays.concatenate(leftBytes, rightBytes)));
+                tree.add(Sha256Util.doubleDigest(ByteUtil.concat(leftBytes, rightBytes)));
             }
             levelOffset += levelSize;
         }
